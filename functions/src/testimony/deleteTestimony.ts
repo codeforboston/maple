@@ -1,6 +1,7 @@
 import { DocumentSnapshot } from "@google-cloud/firestore"
 import { https, logger } from "firebase-functions"
 import { Record } from "runtypes"
+import { BallotQuestion } from "../ballotQuestions/types"
 import { Bill } from "../bills/types"
 import {
   checkAuth,
@@ -63,6 +64,8 @@ class DeleteTestimonyTransaction {
   private publication!: Testimony
   private billSnap!: DocumentSnapshot
   private bill!: Bill
+  private ballotQuestion?: BallotQuestion
+  private ballotQuestionRef?: FirebaseFirestore.DocumentReference
   private draftSnap?: DocumentSnapshot
 
   constructor(
@@ -79,6 +82,7 @@ class DeleteTestimonyTransaction {
     await this.loadPublication()
     if (!this.publicationSnap.exists) return { deleted: false }
     await this.loadBill()
+    await this.loadBallotQuestion()
     await this.loadDraft()
 
     const billUpdate: DocUpdate<Bill> = {
@@ -91,6 +95,12 @@ class DeleteTestimonyTransaction {
     }
 
     this.t.update(this.billSnap.ref, billUpdate)
+    if (this.ballotQuestion && this.ballotQuestionRef) {
+      this.t.update(
+        this.ballotQuestionRef,
+        updateTestimonyCounts(this.ballotQuestion, this.publication, undefined)
+      )
+    }
     this.t.delete(this.publicationSnap.ref)
     if (this.draftSnap) this.t.update(this.draftSnap.ref, draftUpdate)
 
@@ -130,6 +140,17 @@ class DeleteTestimonyTransaction {
     if (result.docs.length === 1) {
       this.draftSnap = result.docs[0]
     }
+  }
+
+  private async loadBallotQuestion() {
+    const ballotQuestionId = this.publication.ballotQuestionId ?? null
+    if (!ballotQuestionId) return
+
+    this.ballotQuestionRef = db.doc(`/ballotQuestions/${ballotQuestionId}`)
+    const snap = await this.t.get(this.ballotQuestionRef)
+    if (!snap.exists) return
+
+    this.ballotQuestion = BallotQuestion.checkWithDefaults(snap.data())
   }
 
   private async resolveNewLatestTestimony() {

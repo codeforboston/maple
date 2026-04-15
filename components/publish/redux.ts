@@ -3,6 +3,7 @@ import { createAppThunk } from "components/hooks"
 import { indexOf, isEqual, uniqBy } from "lodash"
 import { Literal as L, Static, Union } from "runtypes"
 import { authChanged } from "../auth/redux"
+import { getPublishMode } from "./mode"
 import {
   Bill,
   DraftTestimony,
@@ -28,6 +29,18 @@ export const Step = Union(
 )
 export type Step = Static<typeof Step>
 export const stepsInOrder = Step.alternatives.map(s => s.value)
+export const ballotQuestionStepsInOrder: Step[] = [
+  "position",
+  "write",
+  "publish"
+]
+
+const stepsInOrderForState = ({
+  ballotQuestionId
+}: Pick<State, "ballotQuestionId">) =>
+  getPublishMode(ballotQuestionId) === "ballotQuestion"
+    ? ballotQuestionStepsInOrder
+    : stepsInOrder
 
 export const isComplete = (current: Step, step: Step) => {
   return !!current && stepsInOrder.indexOf(current) > stepsInOrder.indexOf(step)
@@ -57,6 +70,9 @@ export type State = {
 
   /** Current bill */
   bill?: Bill
+
+  /** Current ballot question ID (for ballot question testimony) */
+  ballotQuestionId?: string
 
   /** Current step in the testimony form */
   step: Step
@@ -140,7 +156,8 @@ export const {
     setPublicationInfo,
     setSyncState,
     bindService,
-    setBill
+    setBill,
+    setBallotQuestionId
   }
 } = createSlice({
   name: "publish",
@@ -193,6 +210,9 @@ export const {
       const bill = action.payload
       if (isEqual(state.bill, bill)) return state
       return resetForm({ ...state, bill })
+    },
+    setBallotQuestionId(state, action: PayloadAction<string | undefined>) {
+      state.ballotQuestionId = action.payload
     },
     setPublicationInfo(
       state,
@@ -319,22 +339,26 @@ const validateForm = ({
   editReason,
   publication,
   draft,
-  errors
+  errors,
+  ballotQuestionId
 }: State) => {
+  const isBallotQuestion = Boolean(ballotQuestionId)
+  const contentNoun = isBallotQuestion ? "Perspective" : "Testimony"
+  const editNoun = isBallotQuestion ? "perspective" : "testimony"
   const validated = Position.validate(position)
   if (!validated.success) errors.position = "Invalid position"
   else errors.position = undefined
 
-  if (!content) errors.content = "Testimony content must not be empty"
+  if (!content) errors.content = `${contentNoun} content must not be empty`
   else if (content && content.length > maxTestimonyLength)
-    errors.content = "Testimony content is too long"
+    errors.content = `${contentNoun} content is too long`
   else if (containsSocialSecurityNumber(content)) {
     // TODO: include the offending number(s) in the error string.
-    errors.content = "Testimony must not contain social security numbers"
+    errors.content = `${contentNoun} must not contain social security numbers`
   } else errors.content = undefined
 
   if (hasDraftChanged(draft, publication) && !editReason)
-    errors.editReason = "You must provide a reason for editing your testimony"
+    errors.editReason = `You must provide a reason for editing your ${editNoun}`
   else errors.editReason = undefined
 }
 
@@ -342,6 +366,7 @@ const validateForm = ({
 const resetForm = (state: State) => ({
   ...initialState,
   bill: state.bill,
+  ballotQuestionId: state.ballotQuestionId,
   authorUid: state.authorUid,
   service: state.service
 })
@@ -349,15 +374,17 @@ const resetForm = (state: State) => ({
 export const nextStep = createAppThunk("publish/nextStep", async (_, api) => {
   const {
     profile: { profile },
-    publish: { step }
+    publish
   } = api.getState()
+  const { step } = publish
   const hasLegislators = Boolean(profile?.representative && profile.senator)
+  const orderedSteps = stepsInOrderForState(publish)
 
-  let i = indexOf(stepsInOrder, step)
-  let nextStep = i !== -1 && stepsInOrder[i + 1]
+  let i = indexOf(orderedSteps, step)
+  let nextStep = i !== -1 && orderedSteps[i + 1]
 
   if (nextStep === "selectLegislators" && hasLegislators)
-    nextStep = stepsInOrder[i + 2]
+    nextStep = orderedSteps[i + 2]
 
   if (nextStep) api.dispatch(setStep(nextStep))
 })
@@ -367,15 +394,17 @@ export const previousStep = createAppThunk(
   async (_, api) => {
     const {
       profile: { profile },
-      publish: { step }
+      publish
     } = api.getState()
+    const { step } = publish
     const hasLegislators = Boolean(profile?.representative && profile.senator)
+    const orderedSteps = stepsInOrderForState(publish)
 
-    let i = indexOf(stepsInOrder, step)
-    let nextStep = stepsInOrder[i - 1]
+    let i = indexOf(orderedSteps, step)
+    let nextStep = orderedSteps[i - 1]
 
     if (nextStep === "selectLegislators" && hasLegislators)
-      nextStep = stepsInOrder[i - 2]
+      nextStep = orderedSteps[i - 2]
 
     if (nextStep) api.dispatch(setStep(nextStep))
   }

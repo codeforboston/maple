@@ -3,13 +3,26 @@ import { Internal, maple } from "components/links"
 import styled from "styled-components"
 import { useCurrentTestimonyDetails } from "./testimonyDetailSlice"
 
-export const BillTitle = styled(props => {
-  const { bill } = useCurrentTestimonyDetails()
+function formatBallotQuestionTitle(ballotQuestion: {
+  id: string
+  title?: string | null
+  description?: string | null
+}) {
+  const title = ballotQuestion.title ?? ballotQuestion.description
+  return title
+    ? `Ballot Question ${ballotQuestion.id}: ${title}`
+    : `Ballot Question ${ballotQuestion.id}`
+}
 
-  const href = maple.bill(bill)
-  const title = `${formatBillId(bill.content.BillNumber)}: ${
-    bill.content.Title
-  }`
+export const BillTitle = styled(props => {
+  const { bill, ballotQuestion } = useCurrentTestimonyDetails()
+
+  const href = ballotQuestion
+    ? maple.ballotQuestion(ballotQuestion)
+    : maple.bill(bill)
+  const title = ballotQuestion
+    ? formatBallotQuestionTitle(ballotQuestion)
+    : `${formatBillId(bill.content.BillNumber)}: ${bill.content.Title}`
 
   return (
     <h3 {...props}>

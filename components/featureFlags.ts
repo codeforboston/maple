@@ -17,7 +17,9 @@ export const FeatureFlags = z.object({
   /** Hearings and Transcriptions **/
   hearingsAndTranscriptions: z.boolean().default(false),
   /** Phone Verification UI changes **/
-  phoneVerificationUI: z.boolean().default(false)
+  phoneVerificationUI: z.boolean().default(false),
+  /** Ballot Questions feature */
+  ballotQuestions: z.boolean().default(false)
 })
 
 export type FeatureFlags = z.infer<typeof FeatureFlags>
@@ -38,7 +40,8 @@ const defaults: Record<Env, FeatureFlags> = {
     lobbyingTable: false,
     showLLMFeatures: true,
     hearingsAndTranscriptions: true,
-    phoneVerificationUI: true
+    phoneVerificationUI: true,
+    ballotQuestions: true
   },
   production: {
     testimonyDiffing: false,
@@ -48,7 +51,8 @@ const defaults: Record<Env, FeatureFlags> = {
     lobbyingTable: false,
     showLLMFeatures: true,
     hearingsAndTranscriptions: true,
-    phoneVerificationUI: false
+    phoneVerificationUI: false,
+    ballotQuestions: false
   },
   test: {
     testimonyDiffing: false,
@@ -58,7 +62,8 @@ const defaults: Record<Env, FeatureFlags> = {
     lobbyingTable: false,
     showLLMFeatures: true,
     hearingsAndTranscriptions: true,
-    phoneVerificationUI: true
+    phoneVerificationUI: true,
+    ballotQuestions: false
   }
 }
 

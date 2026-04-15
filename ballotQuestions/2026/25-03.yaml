@@ -1,0 +1,24 @@
+# ballotQuestions/25-03.yaml
+id: "25-03"
+billId: "H5000"
+title: "To allow single-family homes on small lots in areas with adequate infrastructure"
+court: 194
+electionYear: 2026
+type: initiative_statute
+ballotStatus: expectedOnBallot
+ballotQuestionNumber: null
+relatedBillIds: []
+description: null
+atAGlance: null
+fullSummary: |-
+  This proposed law would allow single-family homes to be built in a residentially zoned
+  area as long as the land on which it is to be constructed is at least 5,000 square feet, has at least
+  50 feet of land bordering the street, road, or public way that it faces, and has access to public
+  sewer and water services.
+
+  The proposed law would allow cities and towns to reasonably regulate certain aspects of
+  those single-family homes, including their height, distance from neighboring buildings, open
+  space, parking requirements, and whether they can be rented out on a short-term basis. The
+  proposed law would also allow the Executive Office of Housing and Livable Communities to
+  issue guidance or regulations to administer the proposed law.
+pdfUrl: "https://malegislature.gov/Bills/194/H5000.pdf"

@@ -1,5 +1,5 @@
 import { collection, deleteDoc, doc, getDoc, setDoc } from "firebase/firestore"
-import { Bill } from "../db"
+import { BallotQuestion, Bill } from "../db"
 import { firestore } from "../firebase"
 
 function getTopicRef(uid: string | undefined, topicName: string) {
@@ -12,6 +12,8 @@ function getTopicRef(uid: string | undefined, topicName: string) {
 export const billTopicName = (court: number, billId: string) =>
   `bill-${court}-${billId}`
 export const profileTopicName = (profileId: string) => `testimony-${profileId}`
+export const ballotQuestionTopicName = (court: number, id: string) =>
+  `ballot-question-${court}-${id}`
 
 export const followBill = async (uid: string | undefined, bill: Bill) => {
   const topicName = billTopicName(bill.court, bill.id)
@@ -51,6 +53,34 @@ export const unfollowProfile = async (
   uid: string | undefined,
   profileId: string
 ) => await unfollowTopic(uid, profileTopicName(profileId))
+
+export const followBallotQuestion = async (
+  uid: string | undefined,
+  ballotQuestion: Pick<BallotQuestion, "id" | "court">
+) => {
+  const topicName = ballotQuestionTopicName(
+    ballotQuestion.court,
+    ballotQuestion.id
+  )
+  await setDoc(getTopicRef(uid, topicName), {
+    topicName,
+    uid,
+    ballotQuestionLookup: {
+      ballotQuestionId: ballotQuestion.id,
+      court: ballotQuestion.court
+    },
+    type: "ballotQuestion"
+  })
+}
+
+export const unfollowBallotQuestion = async (
+  uid: string | undefined,
+  ballotQuestion: Pick<BallotQuestion, "id" | "court">
+) =>
+  await unfollowTopic(
+    uid,
+    ballotQuestionTopicName(ballotQuestion.court, ballotQuestion.id)
+  )
 
 export const followsTopic = async (
   uid: string | undefined,

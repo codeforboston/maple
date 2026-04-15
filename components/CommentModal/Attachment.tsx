@@ -9,11 +9,13 @@ import { useTranslation } from "next-i18next"
 export function Attachment({
   attachment,
   className,
-  confirmRemove = false
+  confirmRemove = false,
+  label
 }: {
   attachment: UseDraftTestimonyAttachment
   className?: string
   confirmRemove?: boolean
+  label?: string
 }) {
   const { upload, error, id } = attachment
   const [key, setKey] = useState(0),
@@ -35,7 +37,7 @@ export function Attachment({
 
   return (
     <Form.Group className={className} controlId="testimonyAttachment">
-      <Label attachment={attachment} />
+      <Label attachment={attachment} label={label} />
       {id ? (
         <Attached attachment={attachment} confirmRemove={confirmRemove} />
       ) : (
@@ -62,14 +64,16 @@ const formatSize = (size: number) => {
 }
 
 const Label = ({
-  attachment: { status }
+  attachment: { status },
+  label
 }: {
   attachment: UseDraftTestimonyAttachment
+  label?: string
 }) => {
   const { t } = useTranslation("attachment")
   return (
     <Form.Label>
-      <span className="me-1">{t("provide_testimony_as_file")}</span>
+      <span className="me-1">{label ?? t("provide_testimony_as_file")}</span>
       {status === "loading" && <Spinner animation="border" size="sm" />}
       {status === "error" && (
         <FontAwesomeIcon icon={faExclamationTriangle} className="text-danger" />

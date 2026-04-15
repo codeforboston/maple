@@ -1,12 +1,14 @@
 import Link from "next/link"
-import { forwardRef, PropsWithChildren } from "react"
+import { AnchorHTMLAttributes, forwardRef, PropsWithChildren } from "react"
 import { BillTopic, CurrentCommittee } from "../functions/src/bills/types"
 import { Testimony } from "components/db/testimony"
 import { Bill, MemberContent } from "./db"
 import { formatBillId } from "./formatting"
 import { TFunction } from "next-i18next"
 
-type LinkProps = PropsWithChildren<{ href: string; className?: string }>
+type LinkProps = PropsWithChildren<
+  AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }
+>
 
 export const Internal = forwardRef<HTMLAnchorElement, LinkProps>(
   ({ href, children, className, ...rest }: LinkProps, ref) => {
@@ -69,6 +71,8 @@ export function siteUrl(path?: string) {
 export const maple = {
   home: () => "/",
   billSearch: () => `/bills`,
+  ballotQuestionSearch: () => `/ballotQuestions`,
+  ballotQuestion: ({ id }: { id: string }) => `/ballotQuestions/${id}`,
   bill: ({ court, id }: { court: number; id: string }) =>
     `/bills/${court}/${id}`,
   testimony: ({ publishedId }: { publishedId: string }) =>
@@ -76,12 +80,19 @@ export const maple = {
   userTestimony: ({
     authorUid,
     billId,
-    court
+    court,
+    ballotQuestionId
   }: {
     authorUid: string
     billId: string
     court: number
-  }) => `/testimony/${authorUid}/${court}/${billId}`
+    ballotQuestionId?: string
+  }) =>
+    `/testimony/${authorUid}/${court}/${billId}${
+      ballotQuestionId
+        ? `?${new URLSearchParams({ ballotQuestionId }).toString()}`
+        : ""
+    }`
 }
 
 export function billSiteURL(billNumber: string, court: number) {

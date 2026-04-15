@@ -46,6 +46,7 @@
   },
   "follow": {
     "bills": "Bills I Follow",
+    "ballotQuestions": "Ballot Questions I Follow",
     "orgs": "Users I Follow",
     "your_followers": "Your Followers",
     "unfollow": "Unfollow",

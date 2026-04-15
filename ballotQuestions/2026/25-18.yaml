@@ -1,0 +1,22 @@
+# ballotQuestions/25-18.yaml
+id: "25-18"
+billId: "H5007"
+title: "To reducing the state personal income tax rate from 5% to 4%"
+court: 194
+electionYear: 2026
+type: initiative_statute
+ballotStatus: expectedOnBallot
+ballotQuestionNumber: null
+relatedBillIds: []
+description: null
+atAGlance: null
+fullSummary: |-
+  This proposed law would, over a period of three years, lower the tax rates on (1) personal
+  taxable income consisting of interest and dividends, and (2) personal taxable income other than
+  interest, dividends or capital gain income, such as wages and salaries. Both tax rates were 5.00%
+  for tax year 2024. The proposed law would set both tax rates at 4.67% for tax year 2027, 4.33%
+  for tax year 2028, and 4.00% beginning in tax year 2029.
+
+  The proposed law states that, if any of its parts were declared invalid, the other parts
+  would stay in effect.
+pdfUrl: "https://malegislature.gov/Bills/194/H5007.pdf"

@@ -1,0 +1,22 @@
+# ballotQuestions/23-26.yaml
+id: "23-26"
+billId: "H4252"
+title: "Elimination of MCAS as High School Graduation Requirement"
+court: 193
+electionYear: 2024
+type: initiative_statute
+ballotStatus: accepted
+ballotQuestionNumber: 2
+relatedBillIds: []
+description: null
+atAGlance: null
+fullSummary: |-
+  This proposed law would eliminate the requirement that a student pass the Massachusetts
+  Comprehensive Assessment System (MCAS) tests (or other statewide or district-wide
+  assessments) in mathematics, science and technology, and English in order to receive a high
+  school diploma. Instead, in order for a student to receive a high school diploma, the proposed
+  law would require the student to complete coursework certified by the student’s district as
+  demonstrating mastery of the competencies contained in the state academic standards in
+  mathematics, science and technology, and English, as well as any additional areas determined by
+  the Board of Elementary and Secondary Education.
+pdfUrl: "https://malegislature.gov/Bills/193/H4252.pdf"

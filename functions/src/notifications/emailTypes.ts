@@ -20,6 +20,13 @@ export type UserDigest = {
   bills: BillResult[]
   newTestimonyCount: number // displayed bills are capped at 6
 }
+export type BallotQuestionDigest = {
+  ballotQuestionId: string
+  description: string
+  endorseCount: number
+  neutralCount: number
+  opposeCount: number
+}
 export type NotificationEmailDigest = {
   notificationFrequency: Frequency
   startDate: Date
@@ -28,4 +35,6 @@ export type NotificationEmailDigest = {
   numBillsWithNewTestimony: number
   users: UserDigest[] // cap of 4
   numUsersWithNewTestimony: number
+  ballotQuestions: BallotQuestionDigest[] // cap of 4
+  numBallotQuestionsWithNewTestimony: number
 }

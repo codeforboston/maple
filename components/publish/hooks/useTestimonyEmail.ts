@@ -7,8 +7,13 @@ import { usePublishState } from "./usePublishState"
 
 /** Generates the email sent to legislators. */
 export const useTestimonyEmail = () => {
-  const { share, position, bill, content, authorUid } = usePublishState()
+  const { share, position, bill, content, authorUid, ballotQuestionId } =
+    usePublishState()
   const { profile } = useProfile()
+
+  if (ballotQuestionId) {
+    return { ready: false } as const
+  }
 
   const to = share.recipients
       .map(r => `${r.Name} <${r.EmailAddress}>`)
@@ -21,7 +26,12 @@ export const useTestimonyEmail = () => {
       authorUid &&
       bill &&
       siteUrl(
-        maple.userTestimony({ authorUid, billId: bill.id, court: bill.court })
+        maple.userTestimony({
+          authorUid,
+          billId: bill.id,
+          court: bill.court,
+          ballotQuestionId
+        })
       ),
     cta = `You can see my full testimony at ${testimonyUrl}`,
     ending = `Thank you for taking the time to read this email.\n\nSincerely,\n${

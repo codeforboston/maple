@@ -13,7 +13,7 @@ import { useProfileState } from "../db/profile/redux"
 import { useAppDispatch } from "../hooks"
 import { Loading, MultiSearch } from "../legislatorSearch"
 import { calloutLabels } from "./content"
-import { usePublishState, useTestimonyEmail } from "./hooks"
+import { usePublishMode, usePublishState, useTestimonyEmail } from "./hooks"
 import {
   addCommittee,
   removeCommittee,
@@ -27,11 +27,10 @@ import {
 import { isNotNull } from "components/utils"
 import { useTranslation } from "next-i18next"
 
-export const SelectRecipients = styled(props => {
+const BillSelectRecipients = (props: { className?: string }) => {
   useEmailRecipients()
   const email = useTestimonyEmail()
   const { t } = useTranslation("testimony")
-
   const isMobile = useMediaQuery("(max-width: 1199px)")
 
   return (
@@ -65,6 +64,13 @@ export const SelectRecipients = styled(props => {
       <SelectLegislatorEmails className="my-2" />
     </div>
   )
+}
+
+export const SelectRecipients = styled(props => {
+  const mode = usePublishMode()
+  if (mode === "ballotQuestion") return null
+
+  return <BillSelectRecipients {...props} />
 })`
   .label-callout {
     font-size: 0.75rem;
