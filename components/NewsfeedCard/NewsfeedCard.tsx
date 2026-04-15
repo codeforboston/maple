@@ -1,6 +1,7 @@
 import styled from "styled-components"
 import { Timestamp } from "firebase/firestore"
 import { Card as MapleCard } from "../Card/Card"
+import { flags } from "../featureFlags"
 import {
   NewsfeedBallotQuestionCardBody,
   NewsfeedBillCardBody,
@@ -69,7 +70,7 @@ export const NewsfeedCard = (props: {
         type={props.type}
       />
     )
-  } else if (props.type == `ballotQuestion`) {
+  } else if (props.type == `ballotQuestion` && flags().ballotQuestions) {
     body = (
       <NewsfeedBallotQuestionCardBody
         ballotQuestionId={props.ballotQuestionId}
