@@ -17,6 +17,7 @@ import {
   NavbarLinkEffective,
   NavbarLinkFAQ,
   NavbarLinkGoals,
+  NavbarLinkInTheNews,
   NavbarLinkLogo,
   NavbarLinkNewsfeed,
   NavbarLinkProcess,
@@ -94,6 +95,7 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           <NavbarLinkSupport handleClick={closeNav} />
           <NavbarLinkFAQ handleClick={closeNav} />
           <NavbarLinkAI handleClick={closeNav} />
+          <NavbarLinkInTheNews handleClick={closeNav} />
         </NavDropdown>
 
         <NavDropdown className={"navLink-primary"} title={t("learn")}>
@@ -260,6 +262,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             <NavbarLinkSupport />
             <NavbarLinkFAQ />
             <NavbarLinkAI />
+            <NavbarLinkInTheNews />
           </Dropdown.Menu>
         </Dropdown>
       </div>
