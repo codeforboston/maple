@@ -33,10 +33,10 @@ const BrowseHeader = styled(NavLink)`
   font-size: 1rem;
   color: var(--maple-text-inverse);
   padding: 0.5rem 1rem 0 0;
-  margin: 0 0 10px 0;
+  margin: 0 0 var(--maple-space-sm) 0;
 
   @media (max-width: 768px) {
-    padding-bottom: 0.6rem;
+    padding-bottom: var(--maple-space-sm);
     border-bottom: solid 1.5px var(--maple-border-inverse-soft);
     margin: 0;
   }
@@ -50,8 +50,8 @@ const BrowseHeader = styled(NavLink)`
 const StyledInternalLink = styled(NavLink)`
   color: var(--maple-text-inverse-muted);
   letter-spacing: -0.63px;
-  padding-top: 4;
-  margin: 5px 0;
+  padding-top: var(--maple-space-xs);
+  margin: var(--maple-space-xs) 0;
 
   &:hover {
     color: var(--maple-text-inverse);

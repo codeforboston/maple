@@ -45,7 +45,7 @@ const VideoParent = styled.div`
 const VideoButton = styled(Button)`
   border: none;
   background: transparent;
-  color: ${({ $active }) => ($active ? "#212529" : "#6c757d")};
+  color: ${({ $active }) => ($active ? "var(--maple-text-strong)" : "var(--maple-text-muted)")};
   font-weight: ${({ $active }) => ($active ? "600" : "500")};
   padding: 0.75rem 1rem;
   border-radius: 0;
@@ -53,8 +53,8 @@ const VideoButton = styled(Button)`
   transition: all 0.25s ease-in-out;
 
   &:hover {
-    color: #212529;
-    background-color: rgba(0, 0, 0, 0.03);
+    color: var(--maple-text-strong);
+    background-color: var(--maple-surface-muted);
   }
 
   &::after {
@@ -64,7 +64,7 @@ const VideoButton = styled(Button)`
     left: 50%;
     width: ${({ $active }) => ($active ? "100%" : "0%")};
     height: 2px;
-    background-color: #212529;
+    background-color: var(--maple-text-strong);
     transition: all 0.3s ease-in-out;
     transform: translateX(-50%);
   }

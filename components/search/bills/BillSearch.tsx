@@ -1,5 +1,6 @@
 import { TFunction, useTranslation } from "next-i18next"
 import {
+  Configure,
   CurrentRefinements,
   Hits,
   InstantSearch,
@@ -84,6 +85,7 @@ export const BillSearch = () => {
         }}
         future={{ preserveSharedStateOnUnmount: true }}
       >
+        <Configure hitsPerPage={20} />
         <VirtualFilters type="bill" />
         <Layout items={items} />
       </InstantSearch>
@@ -91,12 +93,24 @@ export const BillSearch = () => {
   )
 }
 
+const ControlsBar = styled.div`
+  background: var(--maple-surface-gradient);
+  border: 1px solid var(--maple-surface-border);
+  border-radius: var(--bs-border-radius-xl);
+  box-shadow: var(--maple-shadow-sm);
+  padding: var(--maple-space-lg);
+  margin-bottom: var(--maple-space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--maple-space-sm);
+`
+
 const RefinementRow = styled.div`
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--maple-space-sm);
 `
 
 const useSearchStatus = () => {
@@ -162,26 +176,25 @@ const Layout: FC<
 
   return (
     <SearchContainer>
-      <Row>
-        <SearchBox placeholder="Search For Bills" className="mt-2 mb-3" />
-      </Row>
+      <ControlsBar>
+        <SearchBox placeholder="Search For Bills" />
+        <RefinementRow>
+          <ResultCount className="flex-grow-1" />
+          <SortBy items={items} />
+          {refinements.show}
+        </RefinementRow>
+        <CurrentRefinements
+          excludedAttributes={["nextHearingAt"]}
+          transformItems={extractLastSegmentOfRefinements}
+        />
+      </ControlsBar>
       <Row>
         <Col xs={0} lg={3}>
           {refinements.options}
         </Col>
         <Col className="d-flex flex-column">
-          <RefinementRow>
-            <ResultCount className="flex-grow-1 m-1" />
-            <SortBy items={items} />
-            {refinements.show}
-          </RefinementRow>
-          <CurrentRefinements
-            className="mt-2 mb-2"
-            excludedAttributes={["nextHearingAt"]}
-            transformItems={extractLastSegmentOfRefinements}
-          />
           <Results status={status} t={t} />
-          <Pagination className="mx-auto mt-2 mb-3" />
+          <Pagination className="mx-auto mt-4 mb-3" />
         </Col>
       </Row>
     </SearchContainer>

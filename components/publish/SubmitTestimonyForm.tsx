@@ -73,7 +73,7 @@ const PolicyDetailsStyle = styled.div`
   background-color: var(--bs-body-bg);
   font-weight: bolder;
   text-align: center;
-  box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--maple-shadow-hover);
 `
 
 const PolicyDetails = ({ bill, profile }: { bill: Bill; profile: Profile }) => {

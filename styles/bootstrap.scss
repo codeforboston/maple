@@ -81,6 +81,10 @@ $maple-overlay-inverse-subtle: rgba(255, 255, 255, 0.08);
 $maple-overlay-inverse-medium: rgba(255, 255, 255, 0.12);
 $maple-overlay-inverse-focus: rgba(255, 255, 255, 0.18);
 
+// Dark overlays (black-alpha for scrollbars, backdrops, etc.)
+$maple-overlay-backdrop-subtle: rgba(0, 0, 0, 0.3);
+$maple-overlay-backdrop: rgba(0, 0, 0, 0.6);
+
 // Borders
 $maple-border-default: rgba(15, 23, 42, 0.15);
 $maple-border-inverse-soft: rgba(255, 255, 255, 0.75);
@@ -275,6 +279,9 @@ $utilities: (
   --maple-overlay-inverse-subtle: #{$maple-overlay-inverse-subtle};
   --maple-overlay-inverse-medium: #{$maple-overlay-inverse-medium};
   --maple-overlay-inverse-focus: #{$maple-overlay-inverse-focus};
+
+  --maple-overlay-backdrop-subtle: #{$maple-overlay-backdrop-subtle};
+  --maple-overlay-backdrop: #{$maple-overlay-backdrop};
 
   --maple-border-default: #{$maple-border-default};
   --maple-border-inverse-soft: #{$maple-border-inverse-soft};

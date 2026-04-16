@@ -140,13 +140,13 @@ function BallotGlyph() {
     >
       <path
         d="M8 4.75H14.4L18.25 8.6V17.75C18.25 18.9926 17.2426 20 16 20H8C6.75736 20 5.75 18.9926 5.75 17.75V7C5.75 5.75736 6.75736 4.75 8 4.75Z"
-        fill="rgba(255, 255, 255, 0.94)"
-        stroke="rgba(50, 73, 179, 0.24)"
+        fill="var(--maple-surface-base)"
+        stroke="var(--maple-border-accent)"
         strokeWidth="1.5"
       />
       <path
         d="M14.25 4.75V7.85C14.25 8.49015 14.7598 9 15.4 9H18.25"
-        stroke="rgba(50, 73, 179, 0.24)"
+        stroke="var(--maple-border-accent)"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -157,7 +157,7 @@ function BallotGlyph() {
         width="2.7"
         height="2.7"
         rx="0.7"
-        fill="rgba(94, 114, 228, 0.14)"
+        fill="var(--maple-surface-accent)"
         stroke="var(--maple-brand-primary)"
         strokeWidth="1.2"
       />
