@@ -2,7 +2,6 @@ import { TFunction, useTranslation } from "next-i18next"
 import {
   CurrentRefinements,
   Hits,
-  HitsPerPage,
   InstantSearch,
   Pagination,
   SearchBox,
@@ -85,9 +84,6 @@ export const BillSearch = () => {
         }}
         future={{ preserveSharedStateOnUnmount: true }}
       >
-        <HitsPerPage
-          items={[{ label: "20 per page", value: 20, default: true }]}
-        />
         <VirtualFilters type="bill" />
         <Layout items={items} />
       </InstantSearch>
@@ -101,6 +97,7 @@ const ControlsBar = styled.div`
   border-radius: var(--bs-border-radius-xl);
   box-shadow: var(--maple-shadow-sm);
   padding: var(--maple-space-lg);
+  margin-top: var(--maple-space-sm);
   margin-bottom: var(--maple-space-xl);
   display: flex;
   flex-direction: column;

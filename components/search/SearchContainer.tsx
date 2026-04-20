@@ -24,7 +24,7 @@ export const SearchContainer = styled.div`
   }
 
   .ais-CurrentRefinements--noRefinement {
-    height: 0;
+    display: none;
   }
 
   .ais-RefinementList-item {
@@ -33,6 +33,7 @@ export const SearchContainer = styled.div`
 
   .ais-RefinementList-list {
     padding: 0;
+    padding-right: var(--maple-space-lg);
     margin: 0;
     max-height: 200px;
     overflow-y: auto;
@@ -67,6 +68,8 @@ export const SearchContainer = styled.div`
     box-shadow: none;
     border: 1px solid var(--maple-border-default);
     border-radius: var(--maple-radius-sm);
+    padding-top: 0.65rem;
+    padding-bottom: 0.65rem;
     padding-left: var(--maple-space-sm);
     padding-right: 2rem;
     font-size: 1rem;
@@ -161,6 +164,7 @@ export const SearchContainer = styled.div`
     white-space: normal;
     display: inline-block;
     width: 75%;
+    line-height: 1.25;
   }
 
   .ais-RefinementList-label {
