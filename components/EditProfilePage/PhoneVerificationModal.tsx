@@ -30,8 +30,9 @@ const AUTH_ERROR_CODE_TO_KEY: Record<string, string> = {
 
 export default function PhoneVerificationModal({
   show,
-  onHide
-}: Pick<ModalProps, "show" | "onHide">) {
+  onHide,
+  onVerified
+}: Pick<ModalProps, "show" | "onHide"> & { onVerified?: () => void }) {
   const { t } = useTranslation("editProfile")
   const { user } = useAuth()
   const completePhoneVerification = useCompletePhoneVerification()
@@ -137,6 +138,7 @@ export default function PhoneVerificationModal({
       if (completePhoneVerification.execute) {
         await completePhoneVerification.execute()
       }
+      onVerified?.()
       setStep("success")
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code

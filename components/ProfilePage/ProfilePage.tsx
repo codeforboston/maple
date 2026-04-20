@@ -105,10 +105,14 @@ export function ProfilePage(profileprops: {
           profile={profile}
         />
 
-        {isCurrentUser && !user.emailVerified ? (
+        {isCurrentUser && (!user.emailVerified || !profile.phoneVerified) ? (
           <Row>
             <Col>
-              <VerifyAccountSection className="mb-4" user={user} />
+              <VerifyAccountSection
+                className="mb-4"
+                user={user}
+                profile={profile}
+              />
             </Col>
           </Row>
         ) : null}
