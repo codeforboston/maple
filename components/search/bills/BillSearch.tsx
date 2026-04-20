@@ -1,8 +1,8 @@
 import { TFunction, useTranslation } from "next-i18next"
 import {
-  Configure,
   CurrentRefinements,
   Hits,
+  HitsPerPage,
   InstantSearch,
   Pagination,
   SearchBox,
@@ -85,7 +85,7 @@ export const BillSearch = () => {
         }}
         future={{ preserveSharedStateOnUnmount: true }}
       >
-        <Configure hitsPerPage={20} />
+        <HitsPerPage items={[{ label: "20 per page", value: 20, default: true }]} />
         <VirtualFilters type="bill" />
         <Layout items={items} />
       </InstantSearch>
