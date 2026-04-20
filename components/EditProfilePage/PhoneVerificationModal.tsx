@@ -179,7 +179,6 @@ export default function PhoneVerificationModal({
               <span style={{ whiteSpace: "pre-line" }}>{error}</span>
             </Alert>
           ) : null}
-
           {step === "phone" ? (
             <Form
               noValidate
@@ -198,7 +197,7 @@ export default function PhoneVerificationModal({
                 placeholder={t("phoneVerification.phonePlaceholder")}
                 value={phone}
                 onChange={e => setPhone(e.target.value)}
-                className="mb-5"
+                className="mb-4"
                 style={{
                   border: "none",
                   borderRadius: 0,
