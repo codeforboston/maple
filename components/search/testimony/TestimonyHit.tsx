@@ -222,7 +222,9 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
         <FooterRow>
           {committee && (
             <CommitteePill>
-              {isMobile ? truncateText(committee.name, 30) : truncateText(committee.name, 40)}
+              {isMobile
+                ? truncateText(committee.name, 30)
+                : truncateText(committee.name, 40)}
             </CommitteePill>
           )}
           <DateLabel>{date}</DateLabel>

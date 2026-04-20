@@ -42,7 +42,9 @@ const StyledCard = styled(Card)`
   overflow: hidden;
   cursor: pointer;
   font-size: 0.75rem;
-  transition: transform var(--maple-transition-fast), box-shadow var(--maple-transition-fast), border-color var(--maple-transition-fast);
+  transition: transform var(--maple-transition-fast),
+    box-shadow var(--maple-transition-fast),
+    border-color var(--maple-transition-fast);
 
   &:hover {
     transform: translateY(-2px);

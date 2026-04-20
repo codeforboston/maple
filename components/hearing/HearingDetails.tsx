@@ -45,7 +45,8 @@ const VideoParent = styled.div`
 const VideoButton = styled(Button)`
   border: none;
   background: transparent;
-  color: ${({ $active }) => ($active ? "var(--maple-text-strong)" : "var(--maple-text-muted)")};
+  color: ${({ $active }) =>
+    $active ? "var(--maple-text-strong)" : "var(--maple-text-muted)"};
   font-weight: ${({ $active }) => ($active ? "600" : "500")};
   padding: 0.75rem 1rem;
   border-radius: 0;

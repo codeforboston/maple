@@ -38,7 +38,7 @@ const ATTRIBUTE_LABELS: Record<string, string> = {
   hasVideo: "Video",
   month: "Month",
   year: "Year",
-  chairNames: "Chairs",
+  chairNames: "Chairs"
 }
 
 const formatAttributeLabel = (attribute: string): string =>

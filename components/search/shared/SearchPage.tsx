@@ -155,9 +155,7 @@ export const SearchPage = <TRecord extends Hit>({
                   <SortBy items={sortByItems} />
                   {filterToggle}
                 </RefinementToolbar>
-                <CurrentRefinements
-                  {...currentRefinementsProps}
-                />
+                <CurrentRefinements {...currentRefinementsProps} />
               </ControlsBar>
               <Row>
                 <Col xs={12} lg={3} className="mb-3 mb-lg-0">

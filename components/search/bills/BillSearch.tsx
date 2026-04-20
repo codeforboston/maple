@@ -85,7 +85,9 @@ export const BillSearch = () => {
         }}
         future={{ preserveSharedStateOnUnmount: true }}
       >
-        <HitsPerPage items={[{ label: "20 per page", value: 20, default: true }]} />
+        <HitsPerPage
+          items={[{ label: "20 per page", value: 20, default: true }]}
+        />
         <VirtualFilters type="bill" />
         <Layout items={items} />
       </InstantSearch>
