@@ -183,13 +183,15 @@ export function EditProfileForm({
           uid={uid}
           role={profile.role}
         />
-        {phoneVerificationUI && user && (!user.emailVerified || !profile.phoneVerified) && (
-          <VerifyAccountSection
-            user={user}
-            profile={profile}
-            className="mb-4"
-          />
-        )}
+        {phoneVerificationUI &&
+          user &&
+          (!user.emailVerified || !profile.phoneVerified) && (
+            <VerifyAccountSection
+              user={user}
+              profile={profile}
+              className="mb-4"
+            />
+          )}
         <TabContainer
           defaultActiveKey="about-you"
           activeKey={tabTitle}

@@ -117,7 +117,9 @@ export function ProfilePage(profileprops: {
           </Row>
         ) : null}
 
-        {phoneVerificationUI && isCurrentUser && (!user.emailVerified || !profile.phoneVerified) ? (
+        {phoneVerificationUI &&
+        isCurrentUser &&
+        (!user.emailVerified || !profile.phoneVerified) ? (
           <Row>
             <Col>
               <VerifyAccountSection

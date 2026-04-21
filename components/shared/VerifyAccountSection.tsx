@@ -25,7 +25,10 @@ export const VerifyAccountSection = ({
   )
 
   return (
-    <TitledSectionCard title={t("verifyAccountSection.title")} className={className}>
+    <TitledSectionCard
+      title={t("verifyAccountSection.title")}
+      className={className}
+    >
       <p>
         <Trans
           t={t}
