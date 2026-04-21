@@ -5,7 +5,7 @@ import { Alert, Card, Col, Row } from "components/bootstrap"
 import { User } from "firebase/auth"
 import { LoadingButton } from "components/buttons"
 import { Trans, useTranslation } from "next-i18next"
-import PhoneVerificationModal from "components/EditProfilePage/PhoneVerificationModal"
+import { PhoneVerificationModal } from "components/shared/PhoneVerificationModal"
 import { Profile } from "components/db/profile/types"
 
 export const VerifyAccountSection = ({
@@ -18,7 +18,7 @@ export const VerifyAccountSection = ({
   className: string
 }) => {
   const sendEmailVerification = useSendEmailVerification()
-  const { t } = useTranslation("profile")
+  const { t } = useTranslation("auth")
   const [showPhoneModal, setShowPhoneModal] = useState(false)
   const [localPhoneVerified, setLocalPhoneVerified] = useState(
     profile.phoneVerified ?? false

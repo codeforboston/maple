@@ -28,12 +28,12 @@ const AUTH_ERROR_CODE_TO_KEY: Record<string, string> = {
   "auth/operation-not-allowed": "phoneVerification.errors.operationNotAllowed"
 }
 
-export default function PhoneVerificationModal({
+export function PhoneVerificationModal({
   show,
   onHide,
   onVerified
 }: Pick<ModalProps, "show" | "onHide"> & { onVerified?: () => void }) {
-  const { t } = useTranslation("editProfile")
+  const { t } = useTranslation("auth")
   const { user } = useAuth()
   const completePhoneVerification = useCompletePhoneVerification()
 

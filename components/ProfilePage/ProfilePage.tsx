@@ -14,7 +14,7 @@ import { OrgContactInfo } from "./OrgContactInfo"
 import { ProfileAboutSection } from "./ProfileAboutSection"
 import { ProfileHeader } from "./ProfileHeader"
 import { ProfileLegislators } from "./ProfileLegislators"
-import { VerifyAccountSection } from "./VerifyAccountSection"
+import { VerifyAccountSection } from "components/shared"
 
 export function ProfilePage(profileprops: {
   id: string

@@ -19,19 +19,6 @@
     "privateProfile": "Your profile is currently private. You can change this in \"settings\"",
     "noLegislatorInfo": "No legislator information given"
   },
-  "verifyAccountSection":{
-    "title": "Verify Account",
-    "description": "MAPLE requires our users to verify both their <bold>email address</bold> and <bold>phone number</bold> to be able to post testimony on our platform. We do this in an effort to reduce the number of bots that are able to publish on MAPLE.",
-    "emailHeader": "Email address",
-    "verifyEmail": "Click the link in your email inbox from MAPLE.",
-    "verifyEmailSpam": "If you don't see it, be sure to check your spam folder.",
-    "checkEmail": "Check your email!",
-    "sendAnotherLink": "Resend link",
-    "phoneHeader": "Phone number",
-    "phoneDescription": "Receive a verification code on your phone",
-    "verifyPhone": "Verify",
-    "successMessage": "Successfully verified. Thank you!"
-  },
   "legislators": "Legislators",
   "position": {
     "endorse":"The author of the submitted testimony endorses the bill.",
