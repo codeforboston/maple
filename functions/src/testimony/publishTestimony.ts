@@ -2,6 +2,7 @@ import { DocumentReference, DocumentSnapshot } from "@google-cloud/firestore"
 import { https, logger } from "firebase-functions"
 import { nanoid } from "nanoid"
 import { Record } from "runtypes"
+import { BallotQuestion } from "../ballotQuestions/types"
 import { Bill } from "../bills/types"
 import { checkAuth, checkRequest, DocUpdate, fail, Id } from "../common"
 import { db, FieldValue, Timestamp } from "../firebase"
@@ -58,8 +59,10 @@ class PublishTestimonyTransaction {
 
   private draftSnap!: DocumentSnapshot
   private draft!: DraftTestimony
+  private bqId!: string | null
   private billSnap!: DocumentSnapshot
   private bill!: Bill
+  private ballotQuestion?: BallotQuestion
   private publicationRef!: DocumentReference
   private currentPublication?: Testimony
   private profile?: any
@@ -93,7 +96,8 @@ class PublishTestimonyTransaction {
       attachmentId: this.attachments.id,
       draftAttachmentId: this.attachments.draftId,
       fullName: this.profile?.fullName ?? "Anonymous",
-      public: this.profile?.public ?? true
+      public: this.profile?.public ?? true,
+      ballotQuestionId: this.bqId
     }
     if (this.profile?.representative?.id) {
       newPublication.representativeId = this.profile.representative.id
@@ -113,6 +117,7 @@ class PublishTestimonyTransaction {
     this.createArchive(newPublication)
     this.updateDraft(newPublication)
     this.updateBill(newPublication)
+    this.updateBallotQuestion(newPublication)
 
     return {
       publicationId: this.publicationRef.id,
@@ -153,6 +158,19 @@ class PublishTestimonyTransaction {
     this.t.update(this.billSnap.ref, billTestimonyFields)
   }
 
+  private updateBallotQuestion(newPublication: Testimony) {
+    if (!this.bqId || !this.ballotQuestion) return
+
+    const ballotQuestionFields: DocUpdate<BallotQuestion> =
+      updateTestimonyCounts(
+        this.ballotQuestion,
+        this.currentPublication,
+        newPublication
+      )
+
+    this.t.update(db.doc(`/ballotQuestions/${this.bqId}`), ballotQuestionFields)
+  }
+
   private async resolveDraft() {
     const ref = db.doc(`/users/${this.uid}/draftTestimony/${this.draftId}`),
       draftSnap = await this.t.get(ref)
@@ -172,20 +190,38 @@ class PublishTestimonyTransaction {
 
     await this.checkValidCourt(draft.court)
 
-    const billSnap = await db
-      .doc(`/generalCourts/${draft.court}/bills/${draft.billId}`)
-      .get()
+    const bqId = draft.ballotQuestionId ?? null
+    const billRef = db.doc(
+      `/generalCourts/${draft.court}/bills/${draft.billId}`
+    )
+    const bqRef = bqId !== null ? db.doc(`/ballotQuestions/${bqId}`) : null
+    const [billSnap, bqSnap] = await Promise.all([
+      this.t.get(billRef),
+      bqRef ? this.t.get(bqRef) : Promise.resolve(null)
+    ])
+
     if (!billSnap.exists) {
       throw fail(
         "failed-precondition",
         `Draft testimony has invalid bill ID ${draft.billId}`
       )
     }
+    if (bqSnap !== null && !bqSnap.exists) {
+      throw fail(
+        "failed-precondition",
+        `Draft testimony has invalid ballotQuestionId ${bqId}`
+      )
+    }
 
     this.draft = draft
+    this.bqId = bqId
     this.draftSnap = draftSnap
     this.billSnap = billSnap
     this.bill = Bill.checkWithDefaults(billSnap.data())
+    this.ballotQuestion =
+      bqSnap && bqSnap.exists
+        ? BallotQuestion.checkWithDefaults(bqSnap.data())
+        : undefined
   }
 
   private async resolveProfile() {
@@ -240,6 +276,7 @@ class PublishTestimonyTransaction {
         .collection(`/users/${this.uid}/archivedTestimony`)
         .where("billId", "==", this.draft.billId)
         .where("court", "==", this.draft.court)
+        .where("ballotQuestionId", "==", this.bqId)
         .orderBy("version", "desc")
         .limit(1)
     )
@@ -263,6 +300,7 @@ class PublishTestimonyTransaction {
         .collection(`/users/${this.uid}/publishedTestimony`)
         .where("billId", "==", this.draft.billId)
         .where("court", "==", this.draft.court)
+        .where("ballotQuestionId", "==", this.bqId)
         .limit(1)
     )
 

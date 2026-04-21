@@ -9,7 +9,7 @@ import { firestore } from "../firebase"
 import * as links from "../links"
 import { billSiteURL, Internal } from "../links"
 import { LabeledIcon } from "../shared"
-import { Paragraph, formatVTTTimestamp } from "./hearing"
+import { Paragraph, TranscriptData, formatVTTTimestamp } from "./hearing"
 
 type Bill = {
   BillNumber: string
@@ -114,19 +114,19 @@ const SidebarSubbody = styled.div`
 `
 
 export const HearingSidebar = ({
+  activeVideo,
   billsInAgenda,
   committeeCode,
   generalCourtNumber,
   hearingDate,
-  hearingId,
-  transcriptData
+  transcripts
 }: {
+  activeVideo: number
   billsInAgenda: any[] | null
   committeeCode: string | null
   generalCourtNumber: string | null
   hearingDate: string | null
-  hearingId: string
-  transcriptData: Paragraph[] | null
+  transcripts: (TranscriptData | null)[] | null
 }) => {
   const { t } = useTranslation(["common", "hearing"])
 
@@ -186,35 +186,14 @@ export const HearingSidebar = ({
   }, [committeeCode, generalCourtNumber])
 
   useEffect(() => {
-    setDownloadName(`hearing-${hearingId}.vtt`)
-  }, [hearingId])
-
-  useEffect(() => {
-    if (!transcriptData) return
-    const vttLines = ["WEBVTT", ""]
-
-    transcriptData.forEach((paragraph, index) => {
-      const cueNumber = index + 1
-      const startTime = formatVTTTimestamp(paragraph.start)
-      const endTime = formatVTTTimestamp(paragraph.end)
-
-      vttLines.push(
-        String(cueNumber),
-        `${startTime} --> ${endTime}`,
-        paragraph.text,
-        ""
-      )
-    })
-
-    const vtt = vttLines.join("\n")
-    const blob = new Blob([vtt], { type: "text/vtt" })
-    const url = URL.createObjectURL(blob)
+    if (!transcripts || !transcripts[activeVideo]) return
+    setDownloadName(transcripts[activeVideo]!.filename)
+    const url = URL.createObjectURL(transcripts[activeVideo]!.blob)
     setDownloadURL(url)
-
     return () => {
       URL.revokeObjectURL(url)
     }
-  }, [transcriptData])
+  }, [activeVideo, transcripts])
 
   useEffect(() => {
     committeeCode && generalCourtNumber ? committeeData() : null
@@ -245,14 +224,21 @@ export const HearingSidebar = ({
           ) : (
             <></>
           )}
-          {downloadURL !== "" ? (
+          {downloadURL !== "" &&
+          transcripts !== null &&
+          transcripts[activeVideo] !== null ? (
             <div>
               <a
                 href={downloadURL}
                 download={downloadName}
                 className="text-blue-600 underline"
               >
-                {t("download_transcript", { ns: "hearing" })}
+                {transcripts.length == 1
+                  ? t("download_transcript", { ns: "hearing" })
+                  : t("download_transcript_x", {
+                      ns: "hearing",
+                      title: transcripts[activeVideo]!.title
+                    })}
               </a>
             </div>
           ) : (

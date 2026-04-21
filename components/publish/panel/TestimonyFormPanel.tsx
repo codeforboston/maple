@@ -1,55 +1,81 @@
 import { useEffect } from "react"
 import { useAuth } from "../../auth"
+import { Spinner } from "../../bootstrap"
 import { Bill } from "../../db"
 import { useAppDispatch } from "../../hooks"
 import { resolveBill, usePanelStatus } from "../hooks"
 import {
   CompleteTestimony,
   CreateTestimony,
+  PanelCtaVariant,
   PendingUpgrade,
   SignedOut,
   UnverifiedEmail
 } from "./ctas"
 import { ThankYouModal } from "./ThankYouModal"
 import { YourTestimony } from "./YourTestimony"
-import { useMediaQuery } from "usehooks-ts"
+import { useTranslation } from "next-i18next"
 
-export const TestimonyFormPanel = ({ bill }: { bill: Bill }) => {
+export const TestimonyFormPanel = ({
+  bill,
+  ballotQuestionId,
+  variant = "default"
+}: {
+  bill: Bill
+  ballotQuestionId?: string
+  variant?: PanelCtaVariant
+}) => {
   const dispatch = useAppDispatch()
   const authorUid = useAuth().user?.uid
   useEffect(() => {
-    dispatch(resolveBill({ bill }))
-  }, [authorUid, bill, dispatch])
+    dispatch(resolveBill({ bill, ballotQuestionId }))
+  }, [authorUid, bill, ballotQuestionId, dispatch])
   return (
-    <div className="mt-4">
+    <div className={variant === "ballotQuestion" ? "mt-3" : "mt-4"}>
       <ThankYouModal />
-      <Panel />
+      <Panel variant={variant} />
     </div>
   )
 }
-//create testimony ln 43. make a ternary same with
-const Panel = () => {
-  //tempory check for isMobile to hide create/CompleteTestimony on mobile view
-  const isMobile = useMediaQuery("(max-width: 768px)")
+
+const Panel = ({ variant }: { variant: PanelCtaVariant }) => {
   const status = usePanelStatus()
-  console.log({ status })
-  // // TODO: remove
-  // return <CreateTestimony />
 
   switch (status) {
     case "loading":
-      return null
+      return <LoadingPanel variant={variant} />
     case "signedOut":
-      return <SignedOut />
+      return <SignedOut variant={variant} />
     case "unverified":
-      return <UnverifiedEmail />
+      return <UnverifiedEmail variant={variant} />
     case "noTestimony":
-      return <CreateTestimony />
+      return <CreateTestimony variant={variant} />
     case "createInProgress":
-      return <CompleteTestimony />
+      return <CompleteTestimony variant={variant} />
     case "pendingUpgrade":
-      return <PendingUpgrade />
+      return <PendingUpgrade variant={variant} />
     default:
-      return <YourTestimony />
+      return <YourTestimony variant={variant} />
   }
+}
+
+const LoadingPanel = ({ variant }: { variant: PanelCtaVariant }) => {
+  const { t } = useTranslation("testimony")
+  const loadingText =
+    variant === "ballotQuestion"
+      ? t("ballotQuestion.panel.loading")
+      : t("panel.loading")
+
+  return (
+    <div
+      className={
+        variant === "ballotQuestion"
+          ? "rounded border bg-light px-3 py-3 small text-body-secondary d-flex align-items-center gap-2"
+          : "rounded border bg-light px-3 py-3 text-body-secondary d-flex align-items-center gap-2"
+      }
+    >
+      <Spinner animation="border" size="sm" />
+      <span>{loadingText}</span>
+    </div>
+  )
 }

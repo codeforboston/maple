@@ -11,4 +11,9 @@ export interface TopicSubscription {
     profileId: string
     fullName: string
   }
+
+  ballotQuestionLookup?: {
+    ballotQuestionId: string
+    court: number
+  }
 }

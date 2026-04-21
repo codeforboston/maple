@@ -6,41 +6,50 @@ import { useTranslation } from "next-i18next"
 interface Props {
   label?: string
   className?: string
+  buttonClassName?: string
 }
 
-export default function SignInWithButton({ className }: Props) {
+export default function SignInWithButton({
+  label,
+  className,
+  buttonClassName
+}: Props) {
   const { t } = useTranslation("auth")
   const dispatch = useAppDispatch()
   const setCurrentModal = (step: AuthFlowStep) =>
     dispatch(authStepChanged(step))
 
   return (
-    <span className={className}>
+    <span className={className ?? "d-block"}>
       <Button
         variant="primary"
-        className="w-100"
+        className={`w-100 ${buttonClassName ?? ""}`.trim()}
         onClick={() => setCurrentModal("start")}
       >
-        {t("logInSignUp")}
+        {label ?? t("logInSignUp")}
       </Button>
     </span>
   )
 }
 
-export function AltSignInWithButton({ className }: Props) {
+export function AltSignInWithButton({
+  label,
+  className,
+  buttonClassName
+}: Props) {
   const { t } = useTranslation("auth")
   const dispatch = useAppDispatch()
   const setCurrentModal = (step: AuthFlowStep) =>
     dispatch(authStepChanged(step))
 
   return (
-    <span className={className}>
+    <span className={className ?? "d-block"}>
       <Button
         variant="primary"
-        className="w-100"
+        className={`w-100 ${buttonClassName ?? ""}`.trim()}
         onClick={() => setCurrentModal("start")}
       >
-        {t("altLogInSignUp")}
+        {label ?? t("altLogInSignUp")}
       </Button>
     </span>
   )

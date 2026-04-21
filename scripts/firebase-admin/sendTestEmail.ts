@@ -193,7 +193,9 @@ const generateTestData = (
     bills: bills.slice(0, Math.min(4, numBills)),
     users: users.slice(0, Math.min(4, numUsers)),
     numBillsWithNewTestimony: numBills,
-    numUsersWithNewTestimony: numUsers
+    numUsersWithNewTestimony: numUsers,
+    ballotQuestions: [],
+    numBallotQuestionsWithNewTestimony: 0
   }
 }
 

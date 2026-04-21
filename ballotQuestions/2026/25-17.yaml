@@ -1,0 +1,27 @@
+# ballotQuestions/25-17.yaml
+id: "25-17"
+billId: "H5006"
+title: "To limiting state tax collection growth and returning surpluses to taxpayers"
+court: 194
+electionYear: 2026
+type: initiative_statute
+ballotStatus: expectedOnBallot
+ballotQuestionNumber: null
+relatedBillIds: []
+description: null
+atAGlance: null
+fullSummary: |-
+  This proposed law would change the limit on how much revenue the state can collect in a
+  given year. The proposal would limit state revenue in a given year to the net amount of state
+  revenue from the year before, increased by a rate equal to the average growth of wages and
+  salaries in Massachusetts over the most recent three years. If revenue collected by the state in a
+  given year exceeds the limit, the excess amount would be refunded to taxpayers the following
+  year. The proposed law would include all revenue from the surtax on incomes over $1 million
+  when calculating the revenue limit and when determining whether state revenue exceeds the
+  limit.
+
+  The provisions of the proposed law would all be effective as of July 1, 2027.
+
+  The proposed law states that, if any of its parts were declared invalid, the other parts
+  would stay in effect.
+pdfUrl: "https://malegislature.gov/Bills/194/H5006.pdf"

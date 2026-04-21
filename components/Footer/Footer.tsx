@@ -224,6 +224,11 @@ const BrowseList = () => {
         </BrowseHeader>
       ) : null}
       <BrowseHeader href="/bills">{t("navigation.browseBills")}</BrowseHeader>
+      {flags().ballotQuestions ? (
+        <BrowseHeader href="/ballotQuestions">
+          {t("navigation.browseBallotQuestions")}
+        </BrowseHeader>
+      ) : null}
     </>
   )
 }

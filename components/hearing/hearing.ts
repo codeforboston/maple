@@ -9,6 +9,12 @@ import {
 } from "firebase/firestore"
 import { DateTime } from "luxon"
 
+export type Video = {
+  title: string
+  url: string
+  transcriptionId: string | null
+}
+
 export type HearingData = {
   billsInAgenda: any[] | null
   committeeCode: string | null
@@ -18,8 +24,7 @@ export type HearingData = {
   // Date and DateTime cannot be sent through getServerSideProps
   hearingDate: string | null
   hearingId: string
-  videoTranscriptionId: string | null
-  videoURL: string | null
+  videos: Video[]
 }
 
 export type Paragraph = {
@@ -27,6 +32,13 @@ export type Paragraph = {
   end: number
   start: number
   text: string
+}
+
+export type TranscriptData = {
+  title: string
+  transcript: Paragraph[]
+  blob: Blob
+  filename: string
 }
 
 export const convertToString = (
@@ -54,6 +66,18 @@ export async function fetchHearingData(
     ? DateTime.fromISO(maybeDate, { zone: "America/New_York" }).toISO()
     : null
 
+  const videos = docData.videos
+    ? docData.videos
+    : docData.videoURL
+    ? [
+        {
+          title: `Hearing ${hearingId}`,
+          url: docData.videoURL,
+          transcriptionId: docData.videoTranscriptionId ?? null
+        }
+      ]
+    : []
+
   return {
     billsInAgenda:
       docData.content?.HearingAgendas[0]?.DocumentsInAgenda ?? null,
@@ -64,8 +88,7 @@ export async function fetchHearingData(
       docData.content?.HearingHost?.GeneralCourtNumber ?? null,
     hearingDate: hearingDate,
     hearingId: hearingId,
-    videoTranscriptionId: docData.videoTranscriptionId ?? null,
-    videoURL: docData.videoURL ?? null
+    videos: videos
   }
 }
 
@@ -127,4 +150,23 @@ export function formatVTTTimestamp(ms: number): string {
   const formattedMilliseconds = String(milliseconds).padStart(3, "0")
 
   return `${formattedHours}:${formattedMinutes}:${formattedSeconds}.${formattedMilliseconds}`
+}
+
+export function toVTT(transcriptData: Paragraph[]): string {
+  const vttLines = ["WEBVTT", ""]
+
+  transcriptData.forEach((paragraph, index) => {
+    const cueNumber = index + 1
+    const startTime = formatVTTTimestamp(paragraph.start)
+    const endTime = formatVTTTimestamp(paragraph.end)
+
+    vttLines.push(
+      String(cueNumber),
+      `${startTime} --> ${endTime}`,
+      paragraph.text,
+      ""
+    )
+  })
+
+  return vttLines.join("\n")
 }

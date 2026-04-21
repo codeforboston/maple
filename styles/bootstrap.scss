@@ -149,3 +149,9 @@ $utilities: (
 .tracking-widest {
   letter-spacing: 0.1em;
 }
+
+.hover-underline {
+  &:hover {
+    text-decoration: underline !important;
+  }
+}
