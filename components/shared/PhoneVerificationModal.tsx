@@ -28,15 +28,16 @@ const AUTH_ERROR_CODE_TO_KEY: Record<string, string> = {
   "auth/operation-not-allowed": "phoneVerification.errors.operationNotAllowed"
 }
 
-export default function PhoneVerificationModal({
+export function PhoneVerificationModal({
   show,
-  onHide
-}: Pick<ModalProps, "show" | "onHide">) {
-  const { t } = useTranslation("editProfile")
+  onHide,
+  onVerified
+}: Pick<ModalProps, "show" | "onHide"> & { onVerified?: () => void }) {
+  const { t } = useTranslation("auth")
   const { user } = useAuth()
   const completePhoneVerification = useCompletePhoneVerification()
 
-  const [step, setStep] = useState<"phone" | "code">("phone")
+  const [step, setStep] = useState<"phone" | "code" | "success">("phone")
   const [phone, setPhone] = useState("")
   const [code, setCode] = useState("")
   const [error, setError] = useState<string | null>(null)
@@ -137,7 +138,8 @@ export default function PhoneVerificationModal({
       if (completePhoneVerification.execute) {
         await completePhoneVerification.execute()
       }
-      onHide?.()
+      onVerified?.()
+      setStep("success")
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code
       setError(
@@ -165,6 +167,7 @@ export default function PhoneVerificationModal({
       onHide={onHide}
       aria-labelledby="phone-verification-modal"
       centered
+      size="lg"
     >
       <Modal.Header closeButton>
         <Modal.Title id="phone-verification-modal">
@@ -178,7 +181,6 @@ export default function PhoneVerificationModal({
               <span style={{ whiteSpace: "pre-line" }}>{error}</span>
             </Alert>
           ) : null}
-
           {step === "phone" ? (
             <Form
               noValidate
@@ -187,25 +189,36 @@ export default function PhoneVerificationModal({
                 handleSendCode()
               }}
             >
-              <Input
+              <p className="mb-4">
+                <strong>{t("phoneVerification.stepOne")}</strong>{" "}
+                {t("phoneVerification.stepOneDescription")}
+              </p>
+              <Form.Control
                 ref={phoneInputRef}
-                label={t("phoneVerification.phoneLabel")}
                 type="tel"
                 placeholder={t("phoneVerification.phonePlaceholder")}
                 value={phone}
                 onChange={e => setPhone(e.target.value)}
-                className="mb-3"
+                className="mb-4"
+                style={{
+                  border: "none",
+                  borderRadius: 0,
+                  borderBottom: "1px solid",
+                  boxShadow: "none",
+                  background: "transparent",
+                  paddingLeft: 0
+                }}
               />
               <div id={RECAPTCHA_CONTAINER_ID} />
               <LoadingButton
                 type="submit"
-                className="w-100"
+                className="w-100 mt-4 py-2"
                 loading={sendingCode}
               >
-                {t("phoneVerification.continue")}
+                {t("phoneVerification.receiveCode")}
               </LoadingButton>
             </Form>
-          ) : (
+          ) : step === "code" ? (
             <Form
               noValidate
               onSubmit={e => {
@@ -213,23 +226,56 @@ export default function PhoneVerificationModal({
                 handleVerify()
               }}
             >
-              <Input
+              <p className="mb-4">
+                <strong>{t("phoneVerification.stepTwo")}</strong>{" "}
+                {t("phoneVerification.stepTwoDescription")}
+              </p>
+              <Form.Control
                 ref={codeInputRef}
-                label={t("phoneVerification.codeLabel")}
                 type="text"
                 placeholder={t("phoneVerification.codePlaceholder")}
                 value={code}
                 onChange={e => setCode(e.target.value)}
-                className="mb-3"
+                className="mb-5"
+                style={{
+                  border: "none",
+                  borderRadius: 0,
+                  borderBottom: "1px solid",
+                  boxShadow: "none",
+                  background: "transparent",
+                  paddingLeft: 0
+                }}
               />
               <LoadingButton
                 type="submit"
-                className="w-100"
+                className="w-100 mt-4 py-2"
                 loading={verifying}
               >
                 {t("phoneVerification.verify")}
               </LoadingButton>
             </Form>
+          ) : (
+            <div className="text-center py-3">
+              <div
+                style={{
+                  width: 96,
+                  height: 96,
+                  borderRadius: "50%",
+                  backgroundColor: "#3D9922",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "0 auto",
+                  fontSize: 48,
+                  color: "white"
+                }}
+              >
+                {"\u2713" /* checkmark */}
+              </div>
+              <p className="mt-3 mb-0 py-3">
+                {t("phoneVerification.successMessage")}
+              </p>
+            </div>
           )}
         </Col>
       </Modal.Body>

@@ -5,7 +5,7 @@ import { User } from "firebase/auth"
 import { LoadingButton } from "components/buttons"
 import { useTranslation } from "next-i18next"
 
-export const VerifyAccountSection = ({
+export const VerifyAccountSectionLegacy = ({
   user,
   className
 }: {
