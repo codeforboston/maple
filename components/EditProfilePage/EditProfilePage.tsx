@@ -186,11 +186,13 @@ export function EditProfileForm({
         {phoneVerificationUI &&
           user &&
           (!user.emailVerified || !profile.phoneVerified) && (
-            <VerifyAccountSection
-              user={user}
-              profile={profile}
-              className="mb-4"
-            />
+            <div style={{ marginBottom: "3.5rem" }}>
+              <VerifyAccountSection
+                user={user}
+                profile={profile}
+                className=""
+              />
+            </div>
           )}
         <TabContainer
           defaultActiveKey="about-you"
