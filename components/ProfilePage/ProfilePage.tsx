@@ -15,6 +15,8 @@ import { ProfileAboutSection } from "./ProfileAboutSection"
 import { ProfileHeader } from "./ProfileHeader"
 import { ProfileLegislators } from "./ProfileLegislators"
 import { VerifyAccountSection } from "components/shared"
+import { VerifyAccountSectionLegacy } from "./VerifyAccountSectionLegacy"
+import { useFlags } from "components/featureFlags"
 
 export function ProfilePage(profileprops: {
   id: string
@@ -37,6 +39,8 @@ export function ProfilePage(profileprops: {
   const [totalUserPubTestimony, setTotalUserPubTestimony] = useState<
     number | undefined
   >()
+
+  const { phoneVerificationUI } = useFlags()
 
   useEffect(() => {
     const countPublishedTestimony = async () => {
@@ -105,7 +109,15 @@ export function ProfilePage(profileprops: {
           profile={profile}
         />
 
-        {isCurrentUser && (!user.emailVerified || !profile.phoneVerified) ? (
+        {!phoneVerificationUI && isCurrentUser && !user.emailVerified ? (
+          <Row>
+            <Col>
+              <VerifyAccountSectionLegacy className="mb-4" user={user} />
+            </Col>
+          </Row>
+        ) : null}
+
+        {phoneVerificationUI && isCurrentUser && (!user.emailVerified || !profile.phoneVerified) ? (
           <Row>
             <Col>
               <VerifyAccountSection
