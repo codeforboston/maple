@@ -52,7 +52,7 @@ export function ReportModal({
           <Form.Group as="fieldset">
             <legend>
               {t("reason")}
-              <span style={{ color: "red" }}>*</span>
+              <span style={{ color: "var(--maple-brand-danger)" }}>*</span>
             </legend>
             {reasons.map(reason => {
               return (

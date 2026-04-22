@@ -15,7 +15,7 @@ export const FooterContainer = styled(Container)`
     display: flex;
     flex-grow: 1;
     justify-content: space-between;
-    color: (var(--bs-white));
+    color: var(--maple-text-inverse);
   }
 
   .navbar-dark .navbar-nav .nav-link {
@@ -49,7 +49,7 @@ export const FooterContainer = styled(Container)`
   }
 
   .dropdown-menu.show {
-    background-color: #000;
+    background-color: var(--maple-brand-dark);
     transition-timing-function: ease;
   }
 `

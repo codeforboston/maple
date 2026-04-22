@@ -18,7 +18,7 @@ export const OverviewTab = ({
   const { t } = useTranslation("search")
   const sortedHearings = [...hearings].sort((a, b) => b.startsAt - a.startsAt)
   const sectionCopyStyle = {
-    color: "#334155",
+    color: "var(--maple-text-body)",
     fontSize: "0.98rem",
     lineHeight: 1.8,
     maxWidth: "75ch"
@@ -29,13 +29,10 @@ export const OverviewTab = ({
       <SectionCard>
         <div className="d-flex align-items-start gap-3 mb-0">
           <div
-            className="rounded-4 border d-flex align-items-center justify-content-center flex-shrink-0"
+            className="maple-icon-chip rounded-4 d-flex align-items-center justify-content-center flex-shrink-0"
             style={{
               width: "3rem",
-              height: "3rem",
-              borderColor: "rgba(94, 114, 228, 0.16)",
-              background:
-                "linear-gradient(180deg, rgba(94, 114, 228, 0.16) 0%, rgba(226, 232, 240, 0.55) 100%)"
+              height: "3rem"
             }}
           >
             <BallotGlyph />
@@ -70,26 +67,11 @@ export const OverviewTab = ({
           <Row className="g-3">
             {ballotQuestion.atAGlance.map((item, idx) => (
               <Col key={idx} md={6}>
-                <div
-                  className="rounded-4 border h-100 px-3 py-3"
-                  style={{
-                    backgroundColor: "rgba(248, 250, 252, 0.9)",
-                    borderColor: "rgba(15, 23, 42, 0.08)"
-                  }}
-                >
-                  <div
-                    className="text-uppercase fw-semibold mb-2"
-                    style={{
-                      fontSize: "0.72rem",
-                      letterSpacing: "0.08em",
-                      color: "#64748b"
-                    }}
-                  >
-                    {item.label}
-                  </div>
+                <div className="maple-muted-surface rounded-4 h-100 px-3 py-3">
+                  <div className="maple-eyebrow mb-2">{item.label}</div>
                   <div
                     style={{
-                      color: "#1e293b",
+                      color: "var(--maple-text-strong)",
                       fontSize: "0.98rem",
                       lineHeight: 1.5
                     }}
@@ -176,25 +158,25 @@ function BallotGlyph() {
         height="2.7"
         rx="0.7"
         fill="rgba(94, 114, 228, 0.14)"
-        stroke="#3249b3"
+        stroke="var(--maple-brand-primary)"
         strokeWidth="1.2"
       />
       <path
         d="M9.1 11.45L9.8 12.15L10.95 10.95"
-        stroke="#3249b3"
+        stroke="var(--maple-brand-primary)"
         strokeWidth="1.25"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M12.6 10.9H15.95"
-        stroke="#3249b3"
+        stroke="var(--maple-brand-primary)"
         strokeWidth="1.35"
         strokeLinecap="round"
       />
       <path
         d="M8.3 15.2H15.95"
-        stroke="#94A3B8"
+        stroke="var(--maple-text-muted)"
         strokeWidth="1.35"
         strokeLinecap="round"
       />
@@ -204,14 +186,6 @@ function BallotGlyph() {
 
 function SectionCard({ children }: { children: ReactNode }) {
   return (
-    <section
-      className="rounded-4 border bg-white px-4 py-4 shadow-sm"
-      style={{
-        borderColor: "rgba(15, 23, 42, 0.08)",
-        boxShadow: "0 0.5rem 1.5rem rgba(15, 23, 42, 0.06)"
-      }}
-    >
-      {children}
-    </section>
+    <section className="maple-surface rounded-4 px-4 py-4">{children}</section>
   )
 }

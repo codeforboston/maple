@@ -207,7 +207,7 @@ const ViewTestimony = (
 export default ViewTestimony
 
 const FeedShell = styled.div`
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--maple-border-default);
   border-radius: 0.75rem;
   padding: 1.5rem;
   box-shadow: 0 0.125rem 0.5rem rgba(15, 23, 42, 0.06);

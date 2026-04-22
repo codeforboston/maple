@@ -10,6 +10,9 @@ $green: #3d9922;
 $gray-700: #495057;
 $pantone-blue: #d1d6e7;
 
+// Keep current page background and semantic bootstrap palette stable in PR 1.
+// Revisit $body-bg / $primary only after the maple token migration settles and
+// the broader visual-system blast radius has been tested.
 $body-bg: #eae7e7;
 
 $primary: $red;
@@ -22,6 +25,140 @@ $dark: $dark-blue;
 $link-color: $secondary;
 
 $line-height-0: 0;
+
+// -----------------------------------------------------------------------------
+// Maple design tokens — single source of truth.
+// Defined as SCSS variables so Bootstrap's compile-time Sass can consume them,
+// then emitted as CSS custom properties in the :root block below @import.
+// Do NOT redefine these in globals.css.
+// -----------------------------------------------------------------------------
+
+// Mobile nav
+$maple-nav-link-color: rgba(255, 255, 255, 0.92);
+$maple-nav-link-color-active: rgba(255, 255, 255, 1);
+
+// Brand
+$maple-brand-primary: #1a3185;
+$maple-brand-primary-strong: #12266f;
+$maple-brand-accent: #ff8600;
+$maple-brand-danger: #c71e32;
+$maple-brand-dark: #0b0a3e;
+$maple-brand-senate: #a92929;
+$maple-brand-stage-past: #8ebc81;
+
+// Text
+$maple-text-strong: #1e293b;
+$maple-text-body: #334155;
+$maple-text-muted: #64748b;
+$maple-text-inverse: #ffffff;
+$maple-text-inverse-muted: rgba(255, 255, 255, 0.55);
+
+// Surfaces
+$maple-surface-base: #ffffff;
+// Provisional: keep the current page background in PR 1 and retune later with surface contrast as a group.
+$maple-surface-page: #eae7e7;
+$maple-surface-muted: rgba(248, 250, 252, 0.9);
+$maple-surface-accent: rgba(94, 114, 228, 0.08);
+$maple-surface-accent-strong: rgba(94, 114, 228, 0.12);
+$maple-surface-border: rgba(15, 23, 42, 0.08);
+$maple-surface-hearing-search: #8c98c2;
+$maple-surface-hearing-header: #c0c4dc;
+$maple-surface-transcript-stripe: #e8ecf4;
+$maple-surface-transcript-hover: #d9dfea;
+$maple-surface-gradient: linear-gradient(
+  180deg,
+  #ffffff 0%,
+  var(--bs-body-bg) 100%
+);
+$maple-accent-gradient: linear-gradient(
+  180deg,
+  rgba(237, 242, 255, 0.95) 0%,
+  rgba(248, 250, 255, 1) 100%
+);
+
+// Inverse overlays (white-alpha for dark backgrounds like the navbar)
+$maple-overlay-inverse-subtle: rgba(255, 255, 255, 0.08);
+$maple-overlay-inverse-medium: rgba(255, 255, 255, 0.12);
+$maple-overlay-inverse-focus: rgba(255, 255, 255, 0.18);
+
+// Borders
+$maple-border-default: rgba(15, 23, 42, 0.15);
+$maple-border-inverse-soft: rgba(255, 255, 255, 0.75);
+$maple-border-accent: rgba(94, 114, 228, 0.18);
+$maple-border-accent-strong: rgba(94, 114, 228, 0.24);
+
+// Focus
+$maple-focus-ring: rgba(94, 114, 228, 0.35);
+$maple-focus-border: rgba(94, 114, 228, 0.5);
+
+// Shadows
+$maple-shadow-sm: 0 0.25rem 1rem rgba(15, 23, 42, 0.06);
+$maple-shadow-md: 0 0.5rem 1.5rem rgba(15, 23, 42, 0.06);
+$maple-shadow-hover: 0 0.65rem 1.35rem rgba(15, 23, 42, 0.12);
+
+// Radius
+$maple-radius-sm: 4px;
+$maple-radius-md: 8px;
+$maple-radius-lg: 10px;
+$maple-radius-xl: 16px;
+$maple-radius-pill: 999px;
+
+// Spacing
+$maple-space-xs: 0.25rem;
+$maple-space-sm: 0.5rem;
+$maple-space-md: 0.75rem;
+$maple-space-lg: 1rem;
+$maple-space-xl: 1.5rem;
+$maple-space-2xl: 2rem;
+$maple-space-3xl: 3rem;
+
+// Typography
+$maple-font-weight-normal: 400;
+$maple-font-weight-medium: 500;
+$maple-font-weight-semibold: 600;
+$maple-font-weight-bold: 700;
+
+$maple-line-height-tight: 1.2;
+$maple-line-height-base: 1.5;
+$maple-line-height-loose: 1.75;
+
+// Transitions
+$maple-transition-fast: 0.15s ease;
+$maple-transition-base: 0.2s ease;
+
+// Semantic color palette — reusable subtle tints, usable anywhere in the app
+$maple-color-blue-subtle-bg: #e8efff;
+$maple-color-blue-subtle-text: #1d3f8a;
+$maple-color-blue-subtle-border: #c9d8ff;
+
+$maple-color-green-subtle-bg: #e8f6ea;
+$maple-color-green-subtle-text: #1d5d2d;
+$maple-color-green-subtle-border: #c8e7cf;
+
+$maple-color-red-subtle-bg: #fde8ef;
+$maple-color-red-subtle-text: #902141;
+$maple-color-red-subtle-border: #f4bfd0;
+
+$maple-color-gray-subtle-bg: #f1f5f9;
+$maple-color-gray-subtle-text: #475569;
+$maple-color-gray-subtle-border: #d7e0ea;
+
+// Ballot question status palettes — aliases of the semantic color palette
+$maple-status-expectedonballot-bg: $maple-color-blue-subtle-bg;
+$maple-status-expectedonballot-text: $maple-color-blue-subtle-text;
+$maple-status-expectedonballot-border: $maple-color-blue-subtle-border;
+
+$maple-status-accepted-bg: $maple-color-green-subtle-bg;
+$maple-status-accepted-text: $maple-color-green-subtle-text;
+$maple-status-accepted-border: $maple-color-green-subtle-border;
+
+$maple-status-rejected-bg: $maple-color-red-subtle-bg;
+$maple-status-rejected-text: $maple-color-red-subtle-text;
+$maple-status-rejected-border: $maple-color-red-subtle-border;
+
+$maple-status-failedtoappear-bg: $maple-color-gray-subtle-bg;
+$maple-status-failedtoappear-text: $maple-color-gray-subtle-text;
+$maple-status-failedtoappear-border: $maple-color-gray-subtle-border;
 
 // Nunito, rest copied from node_modules/bootstrap/scss/_variables.scss
 $font-family-sans-serif: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto,
@@ -39,10 +176,11 @@ $modal-inner-padding: 2rem;
 
 $modal-lg: 650px;
 
-// Input overrides
+// Input overrides — use maple focus tokens so inputs and buttons share one ring.
 $input-bg: #fff;
-$input-focus-border-color: rgba($gray-700, 0.75);
-$input-btn-focus-color: rgba($gray-700, 0.25);
+$input-focus-border-color: $maple-focus-border;
+$input-btn-focus-color: $maple-focus-ring;
+$input-btn-focus-box-shadow: 0 0 0 0.25rem $maple-focus-ring;
 
 // Close button overrides
 $btn-close-color: #fff;
@@ -59,14 +197,17 @@ $tooltip-arrow-color: $blue;
 $enable-negative-margins: true;
 
 // Font size adjustments
-// $font-size-base: 16px; // default is 1rem. initially using exact px values but may go back to rem etc
+// Tighten heading hierarchy while keeping the current scale broadly intact.
+$font-size-base: 1rem;
+$line-height-base: 1.5;
+$headings-line-height: 1.2;
 
-$h1-font-size: 40px;
-$h2-font-size: 32px;
-$h3-font-size: 28px;
-$h4-font-size: 24px;
-$h5-font-size: 20px;
-$h6-font-size: 16px;
+$h1-font-size: 3rem;
+$h2-font-size: 2.375rem;
+$h3-font-size: 1.875rem;
+$h4-font-size: 1.5rem;
+$h5-font-size: 1.25rem;
+$h6-font-size: 1rem;
 
 $font-sizes: (
   1: $h1-font-size,
@@ -97,6 +238,125 @@ $utilities: (
   --bs-blue-300: #{$blue-300};
   --bs-red-100: #{$red-100};
   --bs-dark-blue: #0b0a3e;
+
+  // Maple design tokens — emitted from the SCSS variables defined above so
+  // the compile-time (Bootstrap) and runtime (app components) layers stay
+  // structurally linked. Edit the SCSS variable, not the custom property.
+  --maple-nav-link-color: #{$maple-nav-link-color};
+  --maple-nav-link-color-active: #{$maple-nav-link-color-active};
+
+  --maple-brand-primary: #{$maple-brand-primary};
+  --maple-brand-primary-strong: #{$maple-brand-primary-strong};
+  --maple-brand-accent: #{$maple-brand-accent};
+  --maple-brand-danger: #{$maple-brand-danger};
+  --maple-brand-dark: #{$maple-brand-dark};
+  --maple-brand-senate: #{$maple-brand-senate};
+  --maple-brand-stage-past: #{$maple-brand-stage-past};
+
+  --maple-text-strong: #{$maple-text-strong};
+  --maple-text-body: #{$maple-text-body};
+  --maple-text-muted: #{$maple-text-muted};
+  --maple-text-inverse: #{$maple-text-inverse};
+  --maple-text-inverse-muted: #{$maple-text-inverse-muted};
+
+  --maple-surface-base: #{$maple-surface-base};
+  --maple-surface-page: #{$maple-surface-page};
+  --maple-surface-muted: #{$maple-surface-muted};
+  --maple-surface-accent: #{$maple-surface-accent};
+  --maple-surface-accent-strong: #{$maple-surface-accent-strong};
+  --maple-surface-border: #{$maple-surface-border};
+  --maple-surface-hearing-search: #{$maple-surface-hearing-search};
+  --maple-surface-hearing-header: #{$maple-surface-hearing-header};
+  --maple-surface-transcript-stripe: #{$maple-surface-transcript-stripe};
+  --maple-surface-transcript-hover: #{$maple-surface-transcript-hover};
+  --maple-surface-gradient: #{$maple-surface-gradient};
+  --maple-accent-gradient: #{$maple-accent-gradient};
+
+  --maple-overlay-inverse-subtle: #{$maple-overlay-inverse-subtle};
+  --maple-overlay-inverse-medium: #{$maple-overlay-inverse-medium};
+  --maple-overlay-inverse-focus: #{$maple-overlay-inverse-focus};
+
+  --maple-border-default: #{$maple-border-default};
+  --maple-border-inverse-soft: #{$maple-border-inverse-soft};
+  --maple-border-accent: #{$maple-border-accent};
+  --maple-border-accent-strong: #{$maple-border-accent-strong};
+
+  --maple-font-weight-normal: #{$maple-font-weight-normal};
+  --maple-font-weight-medium: #{$maple-font-weight-medium};
+  --maple-font-weight-semibold: #{$maple-font-weight-semibold};
+  --maple-font-weight-bold: #{$maple-font-weight-bold};
+
+  --maple-line-height-tight: #{$maple-line-height-tight};
+  --maple-line-height-base: #{$maple-line-height-base};
+  --maple-line-height-loose: #{$maple-line-height-loose};
+
+  --maple-focus-ring: #{$maple-focus-ring};
+  --maple-focus-border: #{$maple-focus-border};
+
+  --maple-shadow-sm: #{$maple-shadow-sm};
+  --maple-shadow-md: #{$maple-shadow-md};
+  --maple-shadow-hover: #{$maple-shadow-hover};
+
+  --maple-radius-sm: #{$maple-radius-sm};
+  --maple-radius-md: #{$maple-radius-md};
+  --maple-radius-lg: #{$maple-radius-lg};
+  --maple-radius-xl: #{$maple-radius-xl};
+  --maple-radius-pill: #{$maple-radius-pill};
+
+  --maple-space-xs: #{$maple-space-xs};
+  --maple-space-sm: #{$maple-space-sm};
+  --maple-space-md: #{$maple-space-md};
+  --maple-space-lg: #{$maple-space-lg};
+  --maple-space-xl: #{$maple-space-xl};
+  --maple-space-2xl: #{$maple-space-2xl};
+  --maple-space-3xl: #{$maple-space-3xl};
+
+  --maple-transition-fast: #{$maple-transition-fast};
+  --maple-transition-base: #{$maple-transition-base};
+
+  --maple-status-expectedonballot-bg: #{$maple-status-expectedonballot-bg};
+  --maple-status-expectedonballot-text: #{$maple-status-expectedonballot-text};
+  --maple-status-expectedonballot-border: #{$maple-status-expectedonballot-border};
+  --maple-status-accepted-bg: #{$maple-status-accepted-bg};
+  --maple-status-accepted-text: #{$maple-status-accepted-text};
+  --maple-status-accepted-border: #{$maple-status-accepted-border};
+  --maple-status-rejected-bg: #{$maple-status-rejected-bg};
+  --maple-status-rejected-text: #{$maple-status-rejected-text};
+  --maple-status-rejected-border: #{$maple-status-rejected-border};
+  --maple-status-failedtoappear-bg: #{$maple-status-failedtoappear-bg};
+  --maple-status-failedtoappear-text: #{$maple-status-failedtoappear-text};
+  --maple-status-failedtoappear-border: #{$maple-status-failedtoappear-border};
+
+  --maple-color-blue-subtle-bg: #{$maple-color-blue-subtle-bg};
+  --maple-color-blue-subtle-text: #{$maple-color-blue-subtle-text};
+  --maple-color-blue-subtle-border: #{$maple-color-blue-subtle-border};
+  --maple-color-green-subtle-bg: #{$maple-color-green-subtle-bg};
+  --maple-color-green-subtle-text: #{$maple-color-green-subtle-text};
+  --maple-color-green-subtle-border: #{$maple-color-green-subtle-border};
+  --maple-color-red-subtle-bg: #{$maple-color-red-subtle-bg};
+  --maple-color-red-subtle-text: #{$maple-color-red-subtle-text};
+  --maple-color-red-subtle-border: #{$maple-color-red-subtle-border};
+  --maple-color-gray-subtle-bg: #{$maple-color-gray-subtle-bg};
+  --maple-color-gray-subtle-text: #{$maple-color-gray-subtle-text};
+  --maple-color-gray-subtle-border: #{$maple-color-gray-subtle-border};
+}
+
+.btn {
+  --bs-btn-border-radius: var(--maple-radius-md);
+  --bs-btn-focus-box-shadow: 0 0 0 0.25rem var(--maple-focus-ring);
+  transition: background-color var(--maple-transition-fast),
+    border-color var(--maple-transition-fast),
+    color var(--maple-transition-fast), box-shadow var(--maple-transition-fast),
+    transform var(--maple-transition-fast);
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-outline-primary,
+.btn-outline-secondary {
+  --bs-btn-font-weight: 700;
+  --bs-btn-padding-x: var(--maple-space-xl);
+  --bs-btn-padding-y: var(--maple-space-sm);
 }
 
 @mixin button-contrast($color-a, $color-b) {

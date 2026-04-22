@@ -33,14 +33,14 @@ export const BallotQuestionTabButton = forwardRef<
       tabIndex={isActive ? 0 : -1}
       onClick={() => onSelect(item.id)}
       onKeyDown={onKeyDown}
-      className={`ballot-question-nav-link rounded-3 px-3 py-3 d-flex align-items-center justify-content-between gap-3 small fw-medium h-100 w-100 text-start ${
+      className={`maple-nav-link rounded-3 px-3 py-3 d-flex align-items-center justify-content-between gap-3 small fw-medium h-100 w-100 text-start ${
         isActive ? "is-active" : ""
       }`}
     >
       <span>{item.label}</span>
       {item.badge !== undefined && (
         <span
-          className={`ballot-question-nav-badge badge rounded-pill ${
+          className={`maple-nav-badge badge rounded-pill ${
             isActive ? "is-active" : ""
           }`}
         >

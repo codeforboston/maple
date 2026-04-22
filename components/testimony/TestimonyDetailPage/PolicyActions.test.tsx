@@ -84,7 +84,7 @@ describe("PolicyActions", () => {
     mockFollowBallotQuestion.mockResolvedValue(undefined)
     mockUnfollowBallotQuestion.mockResolvedValue(undefined)
     mockGetBallotQuestion.mockResolvedValue({
-      ballotStatus: "ballot"
+      ballotStatus: "expectedOnBallot"
     })
   })
 

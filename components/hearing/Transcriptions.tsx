@@ -23,7 +23,7 @@ const ClearButton = styled(FontAwesomeIcon)`
   right: 3rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #1a3185;
+  color: var(--maple-brand-primary);
   font-size: 1rem;
   z-index: 1;
   cursor: pointer;
@@ -39,7 +39,7 @@ const ResultNumText = styled.div`
   top: 50%;
   user-select: none;
   transform: translateY(-50%);
-  color: #979797;
+  color: var(--maple-text-muted);
 `
 
 const NoResultFound = styled.div`
@@ -54,17 +54,17 @@ const SearchInput = styled.input`
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
   border: none;
-  background-color: #ffffff;
+  background-color: var(--maple-surface-base);
   font-size: 1rem;
   outline: none;
-  color: #1a3185;
+  color: var(--maple-brand-primary);
   &:focus {
-    border-color: #999;
-    background-color: #fff;
+    border-color: var(--maple-border-default);
+    background-color: var(--maple-surface-base);
   }
 
   &::placeholder {
-    color: #aaa;
+    color: var(--maple-text-muted);
   }
 `
 
@@ -73,7 +73,7 @@ const SearchIcon = styled(FontAwesomeIcon)`
   right: 1.75rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #1a3185;
+  color: var(--maple-brand-primary);
   font-size: 1rem;
   z-index: 1;
 `
@@ -81,7 +81,7 @@ const SearchIcon = styled(FontAwesomeIcon)`
 const SearchWrapper = styled.div`
   position: relative;
   width: 100%;
-  background-color: #8c98c2;
+  background-color: var(--maple-surface-hearing-search);
   padding: 1.5rem 1rem;
 `
 
@@ -109,7 +109,7 @@ const TranscriptBottom = styled(Container)`
 const TranscriptContainer = styled(Container)`
   max-height: 483px;
   overflow-y: auto;
-  background-color: #ffffff;
+  background-color: var(--maple-surface-base);
 `
 
 const TranscriptRow = styled(Row)`
@@ -120,8 +120,8 @@ const TranscriptRow = styled(Row)`
     border-left-width: 5px;
   }
   &:nth-child(odd) {
-    background-color: #e8ecf4;
-    border-left-color: #e8ecf4;
+    background-color: var(--maple-surface-transcript-stripe);
+    border-left-color: var(--maple-surface-transcript-stripe);
     border-left-style: solid;
     border-left-width: 5px;
   }
@@ -130,8 +130,8 @@ const TranscriptRow = styled(Row)`
     border-bottom-right-radius: 0.75rem;
   }
   &:hover {
-    background-color: #d9dfea;
-    border-color: #1a3185;
+    background-color: var(--maple-surface-transcript-hover);
+    border-color: var(--maple-brand-primary);
     border-style: solid;
     border-width: 5px;
   }
@@ -460,7 +460,10 @@ const TranscriptItem = forwardRef(function TranscriptItem(
               value={element.start}
             >
               {isHovered ? (
-                <ArrowRightAlt fontSize="large" style={{ color: "#737373" }} />
+                <ArrowRightAlt
+                  fontSize="large"
+                  style={{ color: "var(--maple-text-muted)" }}
+                />
               ) : (
                 <></>
               )}

@@ -47,20 +47,12 @@ export const BallotQuestionHeader = ({
 
   return (
     <Container fluid="xl" className="mt-4">
-      <div
-        className="rounded-4 border px-4 py-4 px-lg-5 py-lg-5 shadow-sm"
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(248, 250, 255, 1) 100%)",
-          borderColor: "rgba(15, 23, 42, 0.08)",
-          boxShadow: "0 0.75rem 2rem rgba(15, 23, 42, 0.07)"
-        }}
-      >
+      <div className="maple-surface-gradient rounded-4 px-4 py-4 px-lg-5 py-lg-5">
         <Row className="g-4 align-items-start">
           <Col lg={8}>
             <Link
               href="/ballotQuestions"
-              className="ballot-question-back-link text-decoration-none small fw-semibold d-inline-flex align-items-center gap-2 mb-4"
+              className="maple-back-link text-decoration-none small fw-semibold d-inline-flex align-items-center gap-2 mb-4"
             >
               <span aria-hidden="true">←</span>
               <span>Back to ballot questions</span>
@@ -70,7 +62,7 @@ export const BallotQuestionHeader = ({
               <span
                 className="d-inline-flex align-items-center gap-2 fw-semibold"
                 style={{
-                  color: "var(--bs-secondary)",
+                  color: "var(--maple-brand-primary)",
                   fontSize: "0.95rem",
                   lineHeight: 1.2
                 }}
@@ -80,9 +72,9 @@ export const BallotQuestionHeader = ({
                   style={{
                     width: "0.6rem",
                     height: "0.6rem",
-                    borderRadius: "999px",
-                    backgroundColor: "var(--bs-secondary)",
-                    boxShadow: "0 0 0 4px rgba(94, 114, 228, 0.12)"
+                    borderRadius: "var(--maple-radius-pill)",
+                    backgroundColor: "var(--maple-brand-primary)",
+                    boxShadow: "0 0 0 4px var(--maple-surface-accent-strong)"
                   }}
                 />
                 {statusLabel}
@@ -135,23 +127,8 @@ export const BallotQuestionHeader = ({
           </Col>
 
           <Col lg={4}>
-            <div
-              className="h-100 rounded-4 border p-4"
-              style={{
-                backgroundColor: "rgba(248, 250, 252, 0.92)",
-                borderColor: "rgba(15, 23, 42, 0.08)"
-              }}
-            >
-              <div
-                className="text-uppercase fw-semibold mb-3"
-                style={{
-                  fontSize: "0.75rem",
-                  letterSpacing: "0.08em",
-                  color: "#64748b"
-                }}
-              >
-                Take part
-              </div>
+            <div className="h-100 maple-muted-surface rounded-4 p-4">
+              <div className="maple-eyebrow mb-3">Take part</div>
               <div className="mb-3">
                 {notifications && user && (
                   <FollowBallotQuestionButton ballotQuestion={ballotQuestion} />
@@ -171,11 +148,11 @@ export const BallotQuestionHeader = ({
                 href={ballotQuestion.pdfUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ballot-question-pdf-link d-inline-flex align-items-center gap-2 rounded-pill border px-3 py-2 small text-decoration-none fw-semibold mt-3 mt-lg-0"
+                className="maple-pill-link d-inline-flex align-items-center gap-2 rounded-pill border px-3 py-2 small text-decoration-none fw-semibold mt-3 mt-lg-0"
                 style={{
-                  color: "var(--bs-secondary)",
-                  borderColor: "rgba(94, 114, 228, 0.18)",
-                  backgroundColor: "rgba(255, 255, 255, 0.85)"
+                  color: "var(--maple-brand-primary)",
+                  borderColor: "var(--maple-border-accent)",
+                  backgroundColor: "var(--maple-surface-base)"
                 }}
               >
                 <span aria-hidden="true">↗</span>
@@ -197,19 +174,10 @@ function MetaFact({ label, value }: { label: string; value: string }) {
         minWidth: "6.5rem"
       }}
     >
-      <span
-        className="text-uppercase fw-semibold"
-        style={{
-          fontSize: "0.72rem",
-          letterSpacing: "0.08em",
-          color: "#64748b"
-        }}
-      >
-        {label}
-      </span>
+      <span className="maple-eyebrow">{label}</span>
       <span
         style={{
-          color: "#334155",
+          color: "var(--maple-text-body)",
           fontSize: "1.05rem",
           fontWeight: 650,
           lineHeight: 1.3

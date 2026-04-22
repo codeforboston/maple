@@ -22,88 +22,37 @@ export type BallotQuestionBrowseItem = {
   opposeCount: number
 }
 
-const BROWSE_SHADOWS = {
-  soft: "0 0.25rem 1rem rgba(15, 23, 42, 0.06)",
-  card: "0 0.3rem 1rem rgba(15, 23, 42, 0.06)",
-  hover: "0 0.65rem 1.35rem rgba(15, 23, 42, 0.12)"
-}
-
-const BROWSE_BORDERS = {
-  chrome: "#d9e2ec",
-  muted: "#dce5ee",
-  hover: "#bfd0e2"
-}
-
 const STATUS_STYLES: Record<
   BallotQuestionStatus,
   { background: string; color: string; border: string }
 > = {
-  legislature: {
-    background: "#fff4db",
-    color: "#7a4b00",
-    border: "#f6d58a"
-  },
-  qualifying: {
-    background: "#eef7ff",
-    color: "#16537e",
-    border: "#b9ddf8"
-  },
-  certified: {
-    background: "#e9f8ef",
-    color: "#17633a",
-    border: "#bee8cd"
-  },
-  ballot: {
-    background: "#e8efff",
-    color: "#1d3f8a",
-    border: "#c9d8ff"
-  },
-  enacted: {
-    background: "#e8f6ea",
-    color: "#1d5d2d",
-    border: "#c8e7cf"
-  },
-  failed: {
-    background: "#fde8ef",
-    color: "#902141",
-    border: "#f4bfd0"
-  },
-  withdrawn: {
-    background: "#f1f5f9",
-    color: "#475569",
-    border: "#d7e0ea"
-  },
   expectedOnBallot: {
-    background: "#e8efff",
-    color: "#1d3f8a",
-    border: "#c9d8ff"
-  },
-  failedToAppear: {
-    background: "#f1f5f9",
-    color: "#475569",
-    border: "#d7e0ea"
-  },
-  rejected: {
-    background: "#fde8ef",
-    color: "#902141",
-    border: "#f4bfd0"
+    background: "var(--maple-status-expectedonballot-bg)",
+    color: "var(--maple-status-expectedonballot-text)",
+    border: "var(--maple-status-expectedonballot-border)"
   },
   accepted: {
-    background: "#e8f6ea",
-    color: "#1d5d2d",
-    border: "#c8e7cf"
+    background: "var(--maple-status-accepted-bg)",
+    color: "var(--maple-status-accepted-text)",
+    border: "var(--maple-status-accepted-border)"
+  },
+  rejected: {
+    background: "var(--maple-status-rejected-bg)",
+    color: "var(--maple-status-rejected-text)",
+    border: "var(--maple-status-rejected-border)"
+  },
+  failedToAppear: {
+    background: "var(--maple-status-failedtoappear-bg)",
+    color: "var(--maple-status-failedtoappear-text)",
+    border: "var(--maple-status-failedtoappear-border)"
   }
 }
 
 const Controls = styled.section<{ $expanded: boolean }>`
-  background: linear-gradient(
-    180deg,
-    var(--bs-white) 0%,
-    var(--bs-body-bg) 100%
-  );
-  border: 1px solid ${BROWSE_BORDERS.chrome};
+  background: var(--maple-surface-gradient);
+  border: 1px solid var(--maple-surface-border);
   border-radius: var(--bs-border-radius-xl);
-  box-shadow: ${BROWSE_SHADOWS.soft};
+  box-shadow: var(--maple-shadow-sm);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -118,7 +67,7 @@ const ControlsHeader = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  gap: 0.75rem;
+  gap: var(--maple-space-md);
 
   @media (max-width: 576px) {
     align-items: stretch;
@@ -148,13 +97,13 @@ const ControlsActions = styled.div`
 
 const ControlsButton = styled(Button)`
   flex: 0 0 auto;
-  padding: 0.375rem 0.5rem;
+  padding: var(--maple-space-xs) var(--maple-space-sm);
   font-size: 0.9rem;
   white-space: nowrap;
   width: fit-content;
 
   &:focus-visible {
-    outline: 2px solid var(--bs-blue);
+    outline: 2px solid var(--maple-focus-ring);
     outline-offset: 2px;
   }
 `
@@ -183,8 +132,8 @@ const ControlsGrid = styled.div<{ $expanded: boolean }>`
 const FilterLabel = styled(Form.Label)`
   color: var(--bs-gray-700);
   font-size: 0.82rem;
-  font-weight: 700;
-  margin-bottom: 0.35rem;
+  font-weight: var(--maple-font-weight-bold);
+  margin-bottom: var(--maple-space-xs);
 `
 
 const ResultsSummary = styled.p.attrs({
@@ -193,7 +142,7 @@ const ResultsSummary = styled.p.attrs({
 })`
   color: var(--bs-gray-600);
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: var(--maple-font-weight-semibold);
   margin: 0;
 `
 
@@ -216,14 +165,10 @@ const ListItem = styled.div.attrs({ role: "listitem" })`
 `
 
 const StyledCard = styled(Card)`
-  background: linear-gradient(
-    180deg,
-    var(--bs-white) 0%,
-    var(--bs-body-bg) 100%
-  );
-  border: 1px solid ${BROWSE_BORDERS.chrome};
+  background: var(--maple-surface-gradient);
+  border: 1px solid var(--maple-surface-border);
   border-radius: var(--bs-border-radius-xl);
-  box-shadow: ${BROWSE_SHADOWS.card};
+  box-shadow: var(--maple-shadow-sm);
   height: 100%;
   overflow: hidden;
   transition: transform 0.16s ease, box-shadow 0.16s ease,
@@ -232,10 +177,10 @@ const StyledCard = styled(Card)`
   .card-body {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: var(--maple-space-md);
     height: 100%;
     border-radius: var(--bs-border-radius-xl);
-    padding: 0.8rem 0.9rem;
+    padding: var(--maple-space-md) var(--maple-space-lg);
   }
 `
 
@@ -246,14 +191,14 @@ const CardLink = styled(Link)`
   text-decoration: none;
 
   &:hover ${StyledCard} {
-    border-color: ${BROWSE_BORDERS.hover};
-    box-shadow: ${BROWSE_SHADOWS.hover};
+    border-color: var(--maple-border-accent-strong);
+    box-shadow: var(--maple-shadow-hover);
     transform: translateY(-2px);
   }
 
   &:focus-visible {
     border-radius: 1rem;
-    outline: 3px solid var(--bs-blue);
+    outline: 3px solid var(--maple-focus-ring);
     outline-offset: 4px;
   }
 `
@@ -272,10 +217,10 @@ const StatusBadge = styled.span<{ $status: BallotQuestionStatus }>`
   color: ${({ $status }) => STATUS_STYLES[$status].color};
   display: inline-flex;
   font-size: 0.74rem;
-  font-weight: 700;
+  font-weight: var(--maple-font-weight-bold);
   letter-spacing: 0.02em;
-  line-height: 1;
-  padding: 0.4rem 0.62rem;
+  line-height: var(--maple-line-height-tight);
+  padding: var(--maple-space-xs) var(--maple-space-sm);
   white-space: nowrap;
 `
 
@@ -296,15 +241,15 @@ const TitleBlock = styled.div`
 const QuestionNumber = styled.h2`
   color: var(--bs-dark-blue);
   font-size: 1.3rem;
-  font-weight: 700;
-  line-height: 1.2;
+  font-weight: var(--maple-font-weight-bold);
+  line-height: var(--maple-line-height-tight);
   margin: 0;
 `
 
 const QuestionTitle = styled.p`
   color: var(--bs-gray-700);
   font-size: 0.95rem;
-  font-weight: 700;
+  font-weight: var(--maple-font-weight-bold);
   line-height: 1.4;
   margin: 0;
 `
@@ -328,12 +273,12 @@ const MetaStack = styled.div`
 `
 
 const MetaItem = styled.span`
-  background: var(--bs-body-bg);
-  border: 1px solid ${BROWSE_BORDERS.muted};
+  background: var(--maple-surface-base);
+  border: 1px solid var(--maple-surface-border);
   border-radius: 999px;
   color: var(--bs-gray-700);
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: var(--maple-font-weight-semibold);
   padding: 0.24rem 0.55rem;
 `
 
@@ -354,8 +299,8 @@ const SentimentRow = styled.div`
 
 const SentimentStat = styled.span`
   align-items: center;
-  background: var(--bs-body-bg);
-  border: 1px solid ${BROWSE_BORDERS.muted};
+  background: var(--maple-surface-base);
+  border: 1px solid var(--maple-surface-border);
   border-radius: 999px;
   color: var(--bs-blue);
   display: inline-flex;
@@ -371,14 +316,10 @@ const SentimentStat = styled.span`
 `
 
 const EmptyState = styled.div`
-  background: linear-gradient(
-    180deg,
-    var(--bs-white) 0%,
-    var(--bs-body-bg) 100%
-  );
-  border: 1px solid ${BROWSE_BORDERS.chrome};
+  background: var(--maple-surface-gradient);
+  border: 1px solid var(--maple-surface-border);
   border-radius: 1rem;
-  box-shadow: ${BROWSE_SHADOWS.soft};
+  box-shadow: var(--maple-shadow-sm);
   color: var(--bs-gray-700);
   padding: 1rem;
 `
@@ -459,7 +400,7 @@ export const BrowseBallotQuestions = ({
           variant="info"
           dismissible
           onClose={() => setShowInfo(false)}
-          className="mb-3 rounded-4 ballot-question-info-alert"
+          className="maple-info-alert mb-3 rounded-4"
         >
           {questionNumberDisclaimer}
         </Alert>

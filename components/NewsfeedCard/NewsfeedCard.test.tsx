@@ -29,7 +29,7 @@ describe("NewsfeedCard", () => {
     render(
       <NewsfeedCard
         ballotQuestionId="25-14"
-        ballotStatus="certified"
+        ballotStatus="expectedOnBallot"
         bodyText=""
         header="Question 1: Should we do the thing?"
         isBallotQuestionMatch={true}

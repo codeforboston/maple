@@ -24,37 +24,37 @@ export type PageFooterProps = {
 const TextHeader = styled.h6`
   font-size: 1rem;
   font-weight: bold;
-  color: #fff;
+  color: var(--maple-text-inverse);
   padding: 0.5rem 1rem 0 0;
   margin: 0;
 `
 
 const BrowseHeader = styled(NavLink)`
   font-size: 1rem;
-  color: #fff;
+  color: var(--maple-text-inverse);
   padding: 0.5rem 1rem 0 0;
   margin: 0 0 10px 0;
 
   @media (max-width: 768px) {
     padding-bottom: 0.6rem;
-    border-bottom: solid 1.5px rgba(255, 255, 255, 0.75);
+    border-bottom: solid 1.5px var(--maple-border-inverse-soft);
     margin: 0;
   }
 
   &:hover {
-    color: white;
+    color: var(--maple-text-inverse);
     text-decoration: underline 1.5px;
   }
 `
 
 const StyledInternalLink = styled(NavLink)`
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--maple-text-inverse-muted);
   letter-spacing: -0.63px;
   padding-top: 4;
   margin: 5px 0;
 
   &:hover {
-    color: white;
+    color: var(--maple-text-inverse);
     text-decoration: none;
   }
 `
@@ -64,13 +64,19 @@ function MapleContainer({ className }: { className?: string }) {
   return (
     <div style={{ maxWidth: "220px" }} className={className}>
       <Row style={{ textAlign: "center" }}>
-        <p style={{ fontSize: "1em", color: "#fff" }}>{t("headers.follow")}</p>
+        <p style={{ fontSize: "1em", color: "var(--maple-text-inverse)" }}>
+          {t("headers.follow")}
+        </p>
       </Row>
       <Row style={{ justifyContent: "center" }}>
         <Col style={{ display: "flex", justifyContent: "center" }}>
           <Button
             variant="light"
-            style={{ borderRadius: 50, padding: 8, margin: 5 }}
+            style={{
+              borderRadius: "var(--maple-radius-pill)",
+              padding: "var(--maple-space-md)",
+              margin: "var(--maple-space-sm)"
+            }}
             href="https://twitter.com/MapleTestimony"
             target="_blank"
             rel="noopener noreferrer"
@@ -85,7 +91,11 @@ function MapleContainer({ className }: { className?: string }) {
           <Button
             variant="light"
             href="https://www.instagram.com/mapletestimony/?hl=en"
-            style={{ borderRadius: 50, padding: 8, margin: 5 }}
+            style={{
+              borderRadius: "var(--maple-radius-pill)",
+              padding: "var(--maple-space-md)",
+              margin: "var(--maple-space-sm)"
+            }}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -98,7 +108,11 @@ function MapleContainer({ className }: { className?: string }) {
           </Button>
           <Button
             variant="light"
-            style={{ borderRadius: 50, padding: 8, margin: 5 }}
+            style={{
+              borderRadius: "var(--maple-radius-pill)",
+              padding: "var(--maple-space-md)",
+              margin: "var(--maple-space-sm)"
+            }}
             href="https://www.linkedin.com/company/maple-testimony"
             target="_blank"
             rel="noopener noreferrer"
@@ -238,7 +252,8 @@ const PageFooter = (props: PageFooterProps) => {
   return (
     <FooterContainer
       fluid
-      className="bg-black d-flex flex-wrap flex-column-reverse flex-md-row align-items-center align-items-md-stretch p-2 p-md-5"
+      className="d-flex flex-wrap flex-column-reverse flex-md-row align-items-center align-items-md-stretch p-2 p-md-5"
+      style={{ backgroundColor: "var(--maple-brand-dark)" }}
     >
       <Navbar
         variant="dark"
@@ -284,12 +299,15 @@ const PageFooter = (props: PageFooterProps) => {
         </Col>
       </div>
       <MapleContainer className={`col-auto order-md-2 justify-self-end `} />
-      <div className={`col-12 order-md-3 text-center text-md-start text-white`}>
+      <div
+        className={`col-12 order-md-3 text-center text-md-start`}
+        style={{ color: "var(--maple-text-inverse)" }}
+      >
         {t("legal.disclaimer")}
         {" - "}
         <a
           href={NEWSLETTER_SIGNUP_URL}
-          style={{ color: "white" }}
+          style={{ color: "var(--maple-text-inverse)" }}
           target="_blank"
           rel="noopener noreferrer"
         >

@@ -3,7 +3,7 @@ billId: "H5099"
 court: 194
 electionYear: 2099
 type: initiative_statute
-ballotStatus: legislature
+ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: "This proposal would allow adults 21 and older to grow, possess, and use certain natural psychedelic substances under limited and regulated conditions."

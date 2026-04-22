@@ -11,13 +11,6 @@ import {
 import { withDefaults } from "../common"
 
 const BallotQuestionStatus = Union(
-  L("legislature"),
-  L("qualifying"),
-  L("certified"),
-  L("ballot"),
-  L("enacted"),
-  L("failed"),
-  L("withdrawn"),
   L("expectedOnBallot"),
   L("failedToAppear"),
   L("rejected"),

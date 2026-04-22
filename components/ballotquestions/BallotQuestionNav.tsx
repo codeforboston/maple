@@ -70,24 +70,9 @@ export const BallotQuestionNav = ({
   }
 
   return (
-    <div
-      className="rounded-4 border bg-white p-3 p-lg-4 shadow-sm"
-      style={{
-        borderColor: "rgba(15, 23, 42, 0.08)",
-        boxShadow: "0 0.5rem 1.5rem rgba(15, 23, 42, 0.06)"
-      }}
-    >
+    <div className="maple-surface rounded-4 p-3 p-lg-4">
       <div className="mb-3 mb-lg-4">
-        <div
-          className="text-uppercase fw-semibold mb-1"
-          style={{
-            fontSize: "0.75rem",
-            letterSpacing: "0.08em",
-            color: "#64748b"
-          }}
-        >
-          Explore
-        </div>
+        <div className="maple-eyebrow mb-1">Explore</div>
         <p className="mb-0 small text-body-secondary">
           Move between the question overview and public perspectives.
         </p>

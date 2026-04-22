@@ -1,6 +1,6 @@
 .container {
   color: white;
-  background-color: #1a3185;
+  background-color: var(--maple-brand-primary);
   overflow: hidden;
 }
 
