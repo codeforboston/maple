@@ -8,6 +8,9 @@ import { useProfile } from "./db"
 import { NavLink } from "./Navlink"
 import { Wrap } from "./links"
 
+export const DESKTOP_NAV_ITEM_CLASS =
+  "desktop-navbar-link px-3 py-1 btn-secondary"
+
 const NavbarDropdownLink: React.FC<
   React.PropsWithChildren<{
     href: string
@@ -110,9 +113,7 @@ export const NavbarLinkBills: React.FC<
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
-        className={
-          isMobile ? "navLink-primary" : "desktop-navbar-link rounded px-3 py-1"
-        }
+        className={isMobile ? "navLink-primary" : DESKTOP_NAV_ITEM_CLASS}
         href="/bills"
         {...other}
       >
@@ -133,9 +134,7 @@ export const NavbarLinkBallotQuestions: React.FC<
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
-        className={
-          isMobile ? "navLink-primary" : "desktop-navbar-link rounded px-3 py-1"
-        }
+        className={isMobile ? "navLink-primary" : DESKTOP_NAV_ITEM_CLASS}
         href="/ballotQuestions"
         {...other}
       >
@@ -156,9 +155,7 @@ export const NavbarLinkHearings: React.FC<
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
-        className={
-          isMobile ? "navLink-primary" : "desktop-navbar-link rounded px-3 py-1"
-        }
+        className={isMobile ? "navLink-primary" : DESKTOP_NAV_ITEM_CLASS}
         href="/hearings"
         {...other}
       >
@@ -303,9 +300,7 @@ export const NavbarLinkNewsfeed: React.FC<
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
-        className={
-          isMobile ? "navLink-primary" : "desktop-navbar-link rounded px-3 py-1"
-        }
+        className={isMobile ? "navLink-primary" : DESKTOP_NAV_ITEM_CLASS}
         href="/newsfeed"
         {...other}
       >
@@ -420,9 +415,7 @@ export const NavbarLinkTestimony: React.FC<
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
-        className={
-          isMobile ? "navLink-primary" : "desktop-navbar-link rounded px-3 py-1"
-        }
+        className={isMobile ? "navLink-primary" : DESKTOP_NAV_ITEM_CLASS}
         href="/testimony"
         {...other}
       >
@@ -496,15 +489,19 @@ export const NavbarLinkInTheNews: React.FC<
 > = ({ handleClick, other }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const { t } = useTranslation(["common", "auth"])
-  return (
+  return isMobile ? (
     <NavDropdown.Item onClick={handleClick}>
-      <NavLink
-        className={isMobile ? "navLink-primary" : ""}
-        href="/about/in-the-news"
-        {...other}
-      >
+      <NavLink className="navLink-primary" href="/about/in-the-news" {...other}>
         {t("navigation.inTheNews")}
       </NavLink>
     </NavDropdown.Item>
+  ) : (
+    <NavbarDropdownLink
+      href="/about/in-the-news"
+      handleClick={handleClick}
+      other={other}
+    >
+      {t("navigation.inTheNews")}
+    </NavbarDropdownLink>
   )
 }

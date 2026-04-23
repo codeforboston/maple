@@ -1,0 +1,66 @@
+# ballotQuestions/23-36.yaml
+id: "23-36"
+billId: "H4252"
+title: "Elimination of MCAS as High School Graduation Requirement"
+court: 193
+electionYear: 2024
+type: initiative_statute
+ballotStatus: accepted
+ballotQuestionNumber: 2
+relatedBillIds: []
+description: null
+atAGlance: null
+voteEffectYes: "A YES VOTE would eliminate the requirement that students pass the Massachusetts Comprehensive Assessment System (MCAS) in order to graduate high school but still require students to complete coursework that meets state standards."
+voteEffectNo: "A NO Vote would make no change in the law relative to the requirement that a student pass the MCAS in order to graduate high school."
+fiscalConsequences: "The proposed law has no discernible material fiscal consequences for state and municipal government finances."
+inFavor: |-
+  A Yes on Question 2 gives all students the opportunity to thrive and reach
+  their full potential. We all agree that high standards help keep our public
+  schools great, and assessments are needed to ensure that students master the
+  knowledge and skills to succeed in life after high school. However, the MCAS
+  is a one-size-fits-all exam that fails to measure other student achievement
+  measures such as GPA, coursework, and teacher assessments in determining if a
+  student is allowed to graduate. Replacing the MCAS graduation requirement
+  with more comprehensive measures will allow teachers to stop teaching to a
+  test and unburden students from a make-or-break standardized test. Voting Yes
+  will allow schools and teachers, together with parents and students, to focus
+  on the most important skills and knowledge to help students succeed in life,
+  rather than having to focus on only those skills that can be measured on a
+  standardized test.
+supportCommittee: "Committee for High Standards Not High Stakes 95507"
+opposeCommittee: "Protect Our Kids' Future: Vote No on 2 95518"
+against: |-
+  Vote NO on Question 2. Question 2 is unfair to kids and will increase
+  inequality. Some school districts will just adopt lower standards so students
+  “graduate” even if they haven’t learned the knowledge and skills they need to
+  succeed. It’s not fair to grant diplomas to kids who aren’t yet ready to
+  graduate. If students cannot pass basic assessments in math, English, or
+  science, we adults should do the hard work to get them up to speed. Instead
+  of supporting kids, Question 2 would abandon them. Question 2 would remove
+  our only statewide graduation standard. Massachusetts would have less
+  rigorous high school graduation requirements than Mississippi and Alabama.
+  Question 2 is a radical and untested proposal and should be rejected.
+  Significant changes to our education system should be carefully studied,
+  designed, and implemented by experts to ensure these policies are actually
+  better for our kids. Vote No on Question 2.
+campaignFinancials:
+  support:
+    - cashRaised: 950000
+      spent: 950000
+      inKind: 15604360.49
+  oppose:
+    - cashRaised: 5318307.02
+      spent: 5318307.02
+      inKind: 93763.81
+fullSummary: >-
+  This proposed law would eliminate the requirement that a student pass the
+  Massachusetts Comprehensive Assessment System (MCAS) tests (or other statewide
+  or district-wide assessments) in mathematics, science and technology, and
+  English in order to receive a high school diploma. Instead, in order for a
+  student to receive a high school diploma, the proposed law would require the
+  student to complete coursework certified by the student’s district as
+  demonstrating mastery of the competencies contained in the state academic
+  standards in mathematics, science and technology, and English, as well as any
+  additional areas determined by the Board of Elementary and Secondary
+  Education.
+pdfUrl: "https://malegislature.gov/Bills/193/H4252.pdf"

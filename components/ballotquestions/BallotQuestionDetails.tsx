@@ -5,6 +5,8 @@ import { BallotQuestionHeader } from "./BallotQuestionHeader"
 import { BallotQuestionNav } from "./BallotQuestionNav"
 import { OverviewTab } from "./OverviewTab"
 import { TestimoniesTab } from "./TestimoniesTab"
+import { ForAndAgainstTab } from "./ForAndAgainstTab"
+import { CampaignFinancialsTab } from "./CampaignFinancialsTab"
 import {
   BallotQuestionTab,
   BallotQuestionTestimonySummary,
@@ -181,6 +183,8 @@ export const BallotQuestionDetails = ({
     neutralCount: testimonySummary.neutralCount + countDelta.neutralCount,
     opposeCount: testimonySummary.opposeCount + countDelta.opposeCount
   }
+  const showCampaignFinancials = true
+  const showForAndAgainst = true
 
   const renderContent = () => {
     switch (activeTab) {
@@ -201,6 +205,10 @@ export const BallotQuestionDetails = ({
             testimonySummary={displayedSummary}
           />
         )
+      case "for_against":
+        return <ForAndAgainstTab ballotQuestion={ballotQuestion} />
+      case "financials":
+        return <CampaignFinancialsTab ballotQuestion={ballotQuestion} />
       default:
         return null
     }
@@ -211,14 +219,16 @@ export const BallotQuestionDetails = ({
       <BallotQuestionHeader ballotQuestion={ballotQuestion} bill={bill} />
       <Container fluid="xl" className="my-4 pb-5">
         <Row className="g-4 align-items-start">
-          <Col lg={3} md={4} className="mb-4">
+          <Col lg={3}>
             <BallotQuestionNav
               activeTab={activeTab}
               onTabChange={setActiveTab}
               testimonyCount={displayedSummary.testimonyCount}
+              showCampaignFinancials={showCampaignFinancials}
+              showForAndAgainst={showForAndAgainst}
             />
           </Col>
-          <Col lg={9} md={8}>
+          <Col lg={9}>
             <div
               role="tabpanel"
               id={getBallotQuestionPanelId(activeTab)}

@@ -62,6 +62,43 @@ yarn firebase-admin run-script syncBallotQuestions --env dev -- --dir /path/to/y
 
 YAML files must export a document whose shape matches the `BallotQuestion` type defined in `functions/src/ballotQuestions/types.ts`, including a top-level `id` field used as the Firestore document ID.
 
+For phase 1, ballot-question YAML should include these fields when available:
+
+```yaml
+id: "23-36"
+billId: "H4252"
+title: "Elimination of MCAS as High School Graduation Requirement"
+court: 193
+electionYear: 2024
+type: initiative_statute
+ballotStatus: accepted
+ballotQuestionNumber: 2
+relatedBillIds: []
+description: "Would replace the MCAS graduation requirement with district-certified coursework mastery."
+atAGlance:
+  - label: "What it does"
+    value: "Removes MCAS as a graduation requirement."
+voteEffectYes: "A YES vote would replace the MCAS graduation requirement with district-certified coursework mastery."
+voteEffectNo: "A NO vote would make no change in the law governing the MCAS graduation requirement."
+fiscalConsequences: "The proposed law has no discernible material fiscal consequences for state and municipal government finances."
+inFavor: "..."
+against: "..."
+campaignFinancials:
+  support:
+    - committee: "Committee name"
+      cashRaised: 950000
+      spent: 950000
+      inKind: 15604360.49
+  oppose: []
+fullSummary: "Official summary text from the voter guide."
+pdfUrl: "https://..."
+```
+
+Notes:
+
+- `description`, `atAGlance`, `voteEffectYes`, `voteEffectNo`, `fiscalConsequences`, `inFavor`, `against`, `campaignFinancials`, and `pdfUrl` are optional in the schema and may be `null`.
+- `campaignFinancials` is only shown in the UI when present.
+
 ---
 
 #### `backfillBallotQuestionTestimonyCounts`

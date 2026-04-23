@@ -10,6 +10,7 @@ import { flags } from "./featureFlags"
 import {
   Avatar,
   NavbarLinkBallotQuestions,
+  DESKTOP_NAV_ITEM_CLASS,
   NavbarLinkAI,
   NavbarLinkBills,
   NavbarLinkHearings,
@@ -251,9 +252,9 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         <></>
       )}
 
-      <div className={`align-self-center px-2`}>
+      <div className={`align-self-center`}>
         <Dropdown>
-          <Dropdown.Toggle className={`desktop-navbar-dropdown btn-secondary`}>
+          <Dropdown.Toggle className={`${DESKTOP_NAV_ITEM_CLASS}`}>
             {t("about")}
           </Dropdown.Toggle>
           <Dropdown.Menu>
@@ -267,9 +268,9 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         </Dropdown>
       </div>
 
-      <div className={`align-self-center px-2`}>
+      <div className={`align-self-center`}>
         <Dropdown>
-          <Dropdown.Toggle className={`desktop-navbar-dropdown btn-secondary`}>
+          <Dropdown.Toggle className={`${DESKTOP_NAV_ITEM_CLASS}`}>
             {t("learn")}
           </Dropdown.Toggle>
           <Dropdown.Menu>

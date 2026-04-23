@@ -87,9 +87,9 @@ export const OverviewTab = ({
 
       {ballotQuestion.fullSummary && (
         <SectionCard>
-          <h3 className="h5 mb-3 text-dark d-flex align-items-center">
+          <h3 className="h5 mb-3 text-dark d-flex align-items-center gap-1">
             Official summary by the Massachusetts Attorney General
-            <QuestionTooltip text="Prepared as required by state law. This summary may be revised through the legal process before the election" />
+            <QuestionTooltip text="As required by law, summaries are written by the State Attorney General." />
           </h3>
           <div
             style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
@@ -107,6 +107,38 @@ export const OverviewTab = ({
         </SectionCard>
       )}
 
+      {(ballotQuestion.voteEffectYes || ballotQuestion.voteEffectNo) && (
+        <SectionCard>
+          <h3 className="h5 mb-3 text-dark d-flex align-items-center gap-1">
+            What your vote will do
+            <QuestionTooltip text="As required by law, the statements describing the effect of a 'yes' or 'no' vote are written jointly by the State Attorney General and the Secretary of the Commonwealth." />
+          </h3>
+          <div className="d-grid gap-3">
+            {ballotQuestion.voteEffectYes && (
+              <Callout
+                label="Voting YES"
+                value={ballotQuestion.voteEffectYes}
+              />
+            )}
+            {ballotQuestion.voteEffectNo && (
+              <Callout label="Voting NO" value={ballotQuestion.voteEffectNo} />
+            )}
+          </div>
+        </SectionCard>
+      )}
+
+      {ballotQuestion.fiscalConsequences && (
+        <SectionCard>
+          <h3 className="h5 mb-3 text-dark d-flex align-items-center gap-1">
+            Statement of Fiscal Consequences
+            <QuestionTooltip text="As required by law, statements of fiscal consequences are written by the Executive Office of Administration and Finance." />
+          </h3>
+          <p className="mb-0 lh-lg" style={{ whiteSpace: "pre-wrap" }}>
+            {ballotQuestion.fiscalConsequences}
+          </p>
+        </SectionCard>
+      )}
+
       {bill &&
         sortedHearings.length > 0 &&
         sortedHearings.some(h => new Date(h.startsAt) < new Date()) && (
@@ -121,6 +153,15 @@ export const OverviewTab = ({
             </div>
           </SectionCard>
         )}
+    </div>
+  )
+}
+
+function Callout({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="maple-muted-surface rounded-4 px-3 py-3">
+      <div className="maple-eyebrow mb-1">{label}</div>
+      <div className="lh-lg">{value}</div>
     </div>
   )
 }

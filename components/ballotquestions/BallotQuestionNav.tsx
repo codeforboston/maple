@@ -8,11 +8,15 @@ import {
 export const BallotQuestionNav = ({
   activeTab,
   onTabChange,
-  testimonyCount
+  testimonyCount,
+  showCampaignFinancials,
+  showForAndAgainst
 }: {
   activeTab: BallotQuestionTab | string
   onTabChange: (tab: BallotQuestionTab) => void
   testimonyCount?: number
+  showCampaignFinancials?: boolean
+  showForAndAgainst?: boolean
 }) => {
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const navItems: Array<BallotQuestionNavItem & { enabled: boolean }> = [
@@ -23,11 +27,18 @@ export const BallotQuestionNav = ({
       enabled: true,
       badge: testimonyCount
     },
-    { id: "synthesis", label: "Synthesis & Insights", enabled: false },
-    { id: "for_against", label: "For & Against", enabled: false },
+    {
+      id: "for_against",
+      label: "For & Against",
+      enabled: showForAndAgainst ?? false
+    },
     { id: "news", label: "News & Media", enabled: false },
     { id: "academia", label: "Academia", enabled: false },
-    { id: "financials", label: "Campaign Financials", enabled: false },
+    {
+      id: "financials",
+      label: "Campaign Financials",
+      enabled: showCampaignFinancials ?? false
+    },
     { id: "map", label: "Map", enabled: false }
   ]
   const visibleItems = navItems.filter(item => item.enabled)
@@ -71,22 +82,17 @@ export const BallotQuestionNav = ({
 
   return (
     <div className="maple-surface rounded-4 p-3 p-lg-4">
-      <div className="mb-3 mb-lg-4">
-        <div className="maple-eyebrow mb-1">Explore</div>
-        <p className="mb-0 small text-body-secondary">
-          Move between the question overview and public perspectives.
-        </p>
-      </div>
+      <div className="maple-eyebrow mb-3">Explore</div>
 
       <div
         role="tablist"
-        className="d-flex flex-row flex-lg-column gap-2"
+        className="d-flex flex-row flex-lg-column gap-2 overflow-x-auto overflow-lg-visible pb-1 pb-lg-0"
         aria-label="Ballot question sections"
       >
         {visibleItems.map((item, itemIndex) => {
           const isActive = activeTab === item.id
           return (
-            <div key={item.id} className="flex-fill">
+            <div key={item.id} className="flex-shrink-0 flex-lg-fill">
               <BallotQuestionTabButton
                 ref={element => {
                   tabRefs.current[itemIndex] = element

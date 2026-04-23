@@ -10,6 +10,14 @@ ballotQuestionNumber: null
 relatedBillIds: []
 description: null
 atAGlance: null
+voteEffectYes: null
+voteEffectNo: null
+fiscalConsequences: null
+inFavor: null
+against: null
+supportCommittee: null
+opposeCommittee: null
+campaignFinancials: null
 fullSummary: |-
   This proposed law would establish a Nature for All Fund that, subject to appropriation by
   the Legislature, would receive 50% of state taxes collected from the sale and use of sporting

@@ -81,6 +81,11 @@
     color var(--maple-transition-fast);
 }
 
+.desktop-navbar-link.btn-secondary {
+  font-weight: normal;
+  --bs-btn-border-width: 0;
+}
+
 .desktop-navbar-link:hover,
 .desktop-navbar-link:focus-visible {
   color: var(--maple-text-inverse) !important;
@@ -93,6 +98,7 @@
 
 .desktop-navbar-dropdown.btn-secondary {
   --bs-btn-bg: transparent;
+  --bs-btn-border-width: 0;
   --bs-btn-border-color: transparent;
   --bs-btn-hover-bg: var(--maple-overlay-inverse-subtle);
   --bs-btn-hover-border-color: transparent;
@@ -442,4 +448,8 @@
   color: var(--maple-brand-primary-strong);
   border-bottom: 4px solid;
   border-color: var(--maple-brand-primary-strong);
+}
+
+.finance-spending-group {
+  background-color: var(--maple-surface-page, #f4f5f7);
 }

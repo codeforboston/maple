@@ -10,6 +10,14 @@ ballotQuestionNumber: null
 relatedBillIds: []
 description: null
 atAGlance: null
+voteEffectYes: null
+voteEffectNo: null
+fiscalConsequences: null
+inFavor: null
+against: null
+supportCommittee: "Coalition for Healthy Democracy"
+opposeCommittee: null
+campaignFinancials: null
 fullSummary: |-
   This proposed law would eliminate political party primaries for state elections and
   instead establish a system where there would be a single, all-party primary in which all

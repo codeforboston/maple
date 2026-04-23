@@ -10,6 +10,14 @@ ballotQuestionNumber: null
 relatedBillIds: []
 description: null
 atAGlance: null
+voteEffectYes: null
+voteEffectNo: null
+fiscalConsequences: null
+inFavor: null
+against: null
+supportCommittee: "Massachusetts Opportunity Alliance"
+opposeCommittee: "Protect Massachusetts' Future"
+campaignFinancials: null
 fullSummary: |-
   This proposed law would change the limit on how much revenue the state can collect in a
   given year. The proposal would limit state revenue in a given year to the net amount of state

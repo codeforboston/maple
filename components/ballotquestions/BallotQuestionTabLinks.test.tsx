@@ -122,7 +122,7 @@ describe("Ballot question tab links", () => {
     const tabs = screen.getAllByRole("tab")
 
     expect(screen.getByRole("tablist")).toBeInTheDocument()
-    expect(tabs).toHaveLength(2)
+    expect(tabs).toHaveLength(3)
     expect(screen.getByRole("tab", { name: "Overview" })).toHaveAttribute(
       "aria-selected",
       "true"
@@ -139,6 +139,21 @@ describe("Ballot question tab links", () => {
       "aria-controls",
       "ballot-question-panel-testimonies"
     )
+  })
+
+  it("shows campaign financials only when ballot question financial data exists", () => {
+    render(
+      <BallotQuestionNav
+        activeTab="overview"
+        onTabChange={jest.fn()}
+        testimonyCount={5}
+        showCampaignFinancials
+      />
+    )
+
+    expect(
+      screen.getByRole("tab", { name: "Campaign Financials" })
+    ).toHaveAttribute("aria-controls", "ballot-question-panel-financials")
   })
 
   it("supports arrow-key navigation between ballot question tabs", () => {

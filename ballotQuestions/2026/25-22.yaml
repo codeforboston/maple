@@ -10,6 +10,14 @@ ballotQuestionNumber: null
 relatedBillIds: []
 description: null
 atAGlance: null
+voteEffectYes: null
+voteEffectNo: null
+fiscalConsequences: null
+inFavor: null
+against: null
+supportCommittee: null
+opposeCommittee: null
+campaignFinancials: null
 fullSummary: |-
   This proposed law would specify that employees of the Committee for Public Counsel
   Services (“CPCS”) are permitted to engage in collective bargaining with their employer. It would

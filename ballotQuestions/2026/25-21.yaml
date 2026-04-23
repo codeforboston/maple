@@ -10,6 +10,14 @@ ballotQuestionNumber: null
 relatedBillIds: []
 description: null
 atAGlance: null
+voteEffectYes: null
+voteEffectNo: null
+fiscalConsequences: null
+inFavor: null
+against: null
+supportCommittee: "Keep Massachusetts Home"
+opposeCommittee: "Housing for Massachusetts"
+campaignFinancials: null
 fullSummary: |-
   This proposed law would limit the annual rent increase for residential units in
   Massachusetts to the annual increase in the Consumer Price Index for a 12-month period, or 5%,

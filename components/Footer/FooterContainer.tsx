@@ -49,7 +49,7 @@ export const FooterContainer = styled(Container)`
   }
 
   .dropdown-menu.show {
-    background-color: var(--maple-brand-dark);
+    background-color: #000;
     transition-timing-function: ease;
   }
 `

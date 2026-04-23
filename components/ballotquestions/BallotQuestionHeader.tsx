@@ -140,15 +140,19 @@ export const BallotQuestionHeader = ({
         </Row>
 
         {(hasDescription || ballotQuestion.pdfUrl) && (
-          <div>
-            {description && <DescriptionBox description={description} />}
+          <div className="mt-4">
+            {description && (
+              <div className="mb-3">
+                <DescriptionBox description={description} />
+              </div>
+            )}
 
             {ballotQuestion.pdfUrl && (
               <a
                 href={ballotQuestion.pdfUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="maple-pill-link d-inline-flex align-items-center gap-2 rounded-pill border px-3 py-2 small text-decoration-none fw-semibold mt-3 mt-lg-0"
+                className="maple-pill-link d-inline-flex align-items-center gap-2 rounded-pill border px-3 py-2 small text-decoration-none fw-semibold"
                 style={{
                   color: "var(--maple-brand-primary)",
                   borderColor: "var(--maple-border-accent)",

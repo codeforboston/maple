@@ -253,7 +253,7 @@ const PageFooter = (props: PageFooterProps) => {
     <FooterContainer
       fluid
       className="d-flex flex-wrap flex-column-reverse flex-md-row align-items-center align-items-md-stretch p-2 p-md-5"
-      style={{ backgroundColor: "var(--maple-brand-dark)" }}
+      style={{ backgroundColor: "#000" }}
     >
       <Navbar
         variant="dark"

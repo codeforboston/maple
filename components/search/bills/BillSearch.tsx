@@ -5,6 +5,8 @@ import {
   InstantSearch,
   Pagination,
   SearchBox,
+  useConfigure,
+  UseConfigureProps,
   useInstantSearch
 } from "react-instantsearch"
 import { createInstantSearchRouterNext } from "react-instantsearch-router-nextjs"
@@ -175,6 +177,7 @@ const Layout: FC<
 
   return (
     <SearchContainer>
+      <BillSearchConfigure />
       <ControlsBar>
         <SearchBox placeholder="Search For Bills" />
         <RefinementRow>
@@ -198,4 +201,12 @@ const Layout: FC<
       </Row>
     </SearchContainer>
   )
+}
+
+const BillSearchConfigure = () => {
+  const configure: UseConfigureProps & { hitsPerPage: number } = {
+    hitsPerPage: 20
+  }
+  useConfigure(configure)
+  return null
 }
