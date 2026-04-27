@@ -84,6 +84,7 @@ const ControlsToolbar = styled.div`
 
   @media (max-width: 992px) {
     flex-direction: column;
+    align-items: stretch;
   }
 `
 
@@ -101,6 +102,8 @@ const FilterColumn = styled.div`
 
   @media (max-width: 992px) {
     grid-template-columns: 1fr 1fr;
+    flex: none;
+    width: 100%;
   }
 
   @media (max-width: 576px) {
