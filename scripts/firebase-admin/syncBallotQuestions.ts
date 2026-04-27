@@ -26,11 +26,7 @@ export const script: Script = async ({ db, args }) => {
     const raw = yaml.load(fs.readFileSync(path.join(dir, file), "utf8"))
     const doc = BallotQuestion.checkWithDefaults(raw)
     const ref = db.collection("ballotQuestions").doc(doc.id)
-    const current = await ref
-      .get()
-      .then(snap =>
-        snap.exists ? BallotQuestion.checkWithDefaults(snap.data()) : undefined
-      )
+    const current = await ref.get().then(snap => snap.data())
     batch.set(ref, {
       ...doc,
       testimonyCount: current?.testimonyCount ?? doc.testimonyCount,
