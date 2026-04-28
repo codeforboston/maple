@@ -1,0 +1,35 @@
+# ballotQuestions/2026/24-firearms-referendum.yaml
+#
+# Referendum petition (Article 48 §2) to repeal Chapter 135 of the Acts of 2024,
+# "An Act Modernizing Firearm Laws." Filed with the Secretary of the
+# Commonwealth on Aug. 9, 2024 by ten qualified voters; certified for the
+# November 2026 ballot. Underlying bill is H.4885 of the 193rd General Court.
+#
+# id: descriptive. Unlike initiative petitions (which carry an AG YY-NN
+# docket number — e.g. 25-03), referendum petitions in MA are not assigned
+# a docket number; the Secretary's transmittal letter to the AG identifies
+# the petition only by the chapter it seeks to repeal.
+id: "24-firearms-referendum"
+billId: "H4885"
+title: "Referendum on the 2024 firearms law (Chapter 135)"
+court: 193
+electionYear: 2026
+type: referendum
+ballotStatus: certified
+ballotQuestionNumber: null
+relatedBillIds: []
+description: null
+atAGlance: null
+fullSummary: |-
+  This referendum asks voters whether to repeal Chapter 135 of the Acts of 2024,
+  "An Act Modernizing Firearm Laws," an omnibus law passed by the Legislature
+  and signed by Governor Healey in 2024 that made several changes to the
+  state's firearm regulations.
+
+  Opponents of the law gathered enough certified signatures to qualify a
+  referendum petition for the November 2026 ballot. A YES vote keeps the law
+  in effect. A NO vote repeals it.
+
+  An official summary prepared by the Attorney General will appear in the
+  state's Information for Voters guide closer to the election.
+pdfUrl: "https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter135"

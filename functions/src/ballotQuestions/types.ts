@@ -36,7 +36,8 @@ export const BallotQuestion = withDefaults(
       L("initiative_constitutional"),
       L("legislative_referral"),
       L("constitutional_amendment"),
-      L("advisory")
+      L("advisory"),
+      L("referendum")
     ),
     ballotStatus: BallotQuestionStatus,
     ballotQuestionNumber: Union(Number, Null),

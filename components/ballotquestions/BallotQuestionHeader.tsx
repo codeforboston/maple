@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import Link from "next/link"
 import { Container, Row, Col } from "react-bootstrap"
 import { useAuth } from "../auth"
@@ -16,6 +17,7 @@ export const BallotQuestionHeader = ({
   ballotQuestion: BallotQuestion
   bill: Bill | null
 }) => {
+  const { t } = useTranslation("search")
   const { notifications } = useFlags()
   const { user } = useAuth()
   const statusLabel = getBallotQuestionStatusLabel(ballotQuestion.ballotStatus)
@@ -36,6 +38,8 @@ export const BallotQuestionHeader = ({
         return "Constitutional Amendment"
       case "advisory":
         return "Advisory Question"
+      case "referendum":
+        return t("ballot_question_type.referendum")
       default:
         return "Ballot Question"
     }

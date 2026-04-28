@@ -1,3 +1,4 @@
+import { Trans, useTranslation } from "next-i18next"
 import type { ReactNode } from "react"
 import { Col, Row } from "react-bootstrap"
 import { BallotQuestion, Bill } from "../db"
@@ -14,6 +15,7 @@ export const OverviewTab = ({
   bill: Bill | null
   hearings: Hearing[]
 }) => {
+  const { t } = useTranslation("search")
   const sortedHearings = [...hearings].sort((a, b) => b.startsAt - a.startsAt)
   const sectionCopyStyle = {
     color: "#334155",
@@ -46,6 +48,21 @@ export const OverviewTab = ({
           </div>
         </div>
       </SectionCard>
+
+      {ballotQuestion.type === "referendum" && (
+        <SectionCard>
+          <h3 className="h5 mb-2 text-dark">
+            {t("ballot_question_referendum_how_vote_works.title")}
+          </h3>
+          <p className="mb-0" style={sectionCopyStyle}>
+            <Trans
+              i18nKey="ballot_question_referendum_how_vote_works.body"
+              ns="search"
+              components={[<strong key="yes" />, <strong key="no" />]}
+            />
+          </p>
+        </SectionCard>
+      )}
 
       {ballotQuestion.atAGlance && ballotQuestion.atAGlance.length > 0 && (
         <SectionCard>

@@ -28,6 +28,13 @@
     "rejected": "Rejected",
     "accepted": "Accepted"
   },
+  "ballot_question_type": {
+    "referendum": "Veto Referendum"
+  },
+  "ballot_question_referendum_how_vote_works": {
+    "title": "How the vote works",
+    "body": "This is a referendum on a law the Legislature has already enacted. <0>A YES vote keeps this law in effect.</0> <1>A NO vote repeals it.</1>"
+  },
   "ballot_question_results_summary": "Showing {{count}} questions",
   "ballot_question_reset_filters": "Reset filters",
   "ballot_question_no_summary": "No summary available yet.",
