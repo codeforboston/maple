@@ -94,7 +94,9 @@ class DeleteTestimonyTransaction {
       publishedVersion: FieldValue.delete()
     }
 
-    this.t.update(this.billSnap.ref, billUpdate)
+    if (!this.publication.ballotQuestionId) {
+      this.t.update(this.billSnap.ref, billUpdate)
+    }
     if (this.ballotQuestion && this.ballotQuestionRef) {
       this.t.update(
         this.ballotQuestionRef,
@@ -159,6 +161,7 @@ class DeleteTestimonyTransaction {
         .collectionGroup("publishedTestimony")
         .where("billId", "==", this.publication.billId)
         .where("court", "==", this.publication.court)
+        .where("ballotQuestionId", "==", null)
         .orderBy("publishedAt", "desc")
         .limit(2)
     )

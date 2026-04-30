@@ -146,6 +146,8 @@ class PublishTestimonyTransaction {
   }
 
   private updateBill(newPublication: Testimony) {
+    if (this.bqId) return
+
     const billTestimonyFields: DocUpdate<Bill> = {
       latestTestimonyAt: newPublication.publishedAt,
       latestTestimonyId: this.publicationRef.id,
