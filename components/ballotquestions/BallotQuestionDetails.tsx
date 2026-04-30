@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { Container, Row, Col } from "react-bootstrap"
 import { BallotQuestion, Bill, usePublishedTestimonyListing } from "../db"
 import { BallotQuestionHeader } from "./BallotQuestionHeader"
@@ -84,53 +84,54 @@ export const BallotQuestionDetails = ({
   }, [panelStatus, publication])
 
   // Reconciliation: fetch fresh ballot question doc
-  const reconcileBallotQuestionCounters = async (
-    expectedSummary: BallotQuestionTestimonySummary
-  ) => {
-    const maxRetries = 3
-    const delayMs = 500
+  const reconcileBallotQuestionCounters = useCallback(
+    async (expectedSummary: BallotQuestionTestimonySummary) => {
+      const maxRetries = 3
+      const delayMs = 500
 
-    for (let attempt = 0; attempt < maxRetries; attempt++) {
-      if (!isMountedRef.current) return
+      for (let attempt = 0; attempt < maxRetries; attempt++) {
+        if (!isMountedRef.current) return
 
-      try {
-        const ballotQuestionRef = doc(
-          firestore,
-          "ballotQuestions",
-          ballotQuestion.id
-        )
-        const freshBQ = await getDoc(ballotQuestionRef)
-        const freshData = freshBQ.data() as BallotQuestion | undefined
+        try {
+          const ballotQuestionRef = doc(
+            firestore,
+            "ballotQuestions",
+            ballotQuestion.id
+          )
+          const freshBQ = await getDoc(ballotQuestionRef)
+          const freshData = freshBQ.data() as BallotQuestion | undefined
 
-        if (freshData && isMountedRef.current) {
-          // Compare all four counters
-          const countersMatch =
-            (freshData.testimonyCount ?? 0) ===
-              expectedSummary.testimonyCount &&
-            (freshData.endorseCount ?? 0) === expectedSummary.endorseCount &&
-            (freshData.neutralCount ?? 0) === expectedSummary.neutralCount &&
-            (freshData.opposeCount ?? 0) === expectedSummary.opposeCount
+          if (freshData && isMountedRef.current) {
+            // Compare all four counters
+            const countersMatch =
+              (freshData.testimonyCount ?? 0) ===
+                expectedSummary.testimonyCount &&
+              (freshData.endorseCount ?? 0) === expectedSummary.endorseCount &&
+              (freshData.neutralCount ?? 0) === expectedSummary.neutralCount &&
+              (freshData.opposeCount ?? 0) === expectedSummary.opposeCount
 
-          if (countersMatch) {
-            // Counters have caught up; clear the delta
-            setCountDelta(zeroCountDelta())
-            capturedOldPositionRef.current = undefined
-            return
+            if (countersMatch) {
+              // Counters have caught up; clear the delta
+              setCountDelta(zeroCountDelta())
+              capturedOldPositionRef.current = undefined
+              return
+            }
           }
+        } catch (err) {
+          console.error("Error fetching ballot question counters:", err)
         }
-      } catch (err) {
-        console.error("Error fetching ballot question counters:", err)
+
+        // If counters don't match yet, wait and retry
+        if (attempt < maxRetries - 1 && isMountedRef.current) {
+          await new Promise(resolve => setTimeout(resolve, delayMs))
+        }
       }
 
-      // If counters don't match yet, wait and retry
-      if (attempt < maxRetries - 1 && isMountedRef.current) {
-        await new Promise(resolve => setTimeout(resolve, delayMs))
-      }
-    }
-
-    // After retries exhausted, leave delta applied; user will see eventual consistency
-    console.warn("Ballot question counters did not reconcile after retries")
-  }
+      // After retries exhausted, leave delta applied; user will see eventual consistency
+      console.warn("Ballot question counters did not reconcile after retries")
+    },
+    [ballotQuestion.id]
+  )
 
   // Detect successful publish and apply delta
   useEffect(() => {
@@ -167,7 +168,13 @@ export const BallotQuestionDetails = ({
       }
       reconcileBallotQuestionCounters(expectedSummary)
     }
-  }, [countDelta, panelStatus, publication, testimonySummary])
+  }, [
+    countDelta,
+    panelStatus,
+    publication,
+    reconcileBallotQuestionCounters,
+    testimonySummary
+  ])
 
   // Cleanup on unmount
   useEffect(() => {

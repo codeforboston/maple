@@ -1,5 +1,7 @@
 import type { ReactNode } from "react"
+import { useMemo } from "react"
 import { BallotQuestion } from "../db"
+import { formatTestimony } from "components/testimony/formatting"
 
 export const ForAndAgainstTab = ({
   ballotQuestion
@@ -81,12 +83,7 @@ const ArgumentCard = ({
       </p>
     )}
     {statement ? (
-      <div
-        className="maple-muted-surface rounded-4 px-4 py-4 lh-lg"
-        style={{ whiteSpace: "pre-wrap" }}
-      >
-        {statement}
-      </div>
+      <BallotQuestionMarkdown content={statement} />
     ) : (
       <p className="text-body-secondary small mb-0">
         No official statement has been made.
@@ -94,6 +91,17 @@ const ArgumentCard = ({
     )}
   </SectionCard>
 )
+
+function BallotQuestionMarkdown({ content }: { content: string }) {
+  const htmlContent = useMemo(() => formatTestimony(content), [content])
+
+  return (
+    <div
+      className="maple-muted-surface rounded-4 px-4 py-4 lh-lg ballot-question-markdown"
+      dangerouslySetInnerHTML={htmlContent}
+    />
+  )
+}
 
 function SectionCard({ children }: { children: ReactNode }) {
   return (

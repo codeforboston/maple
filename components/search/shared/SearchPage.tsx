@@ -25,6 +25,8 @@ import { ResultsPane } from "./ResultsPane"
 import { getServerConfig } from "../common"
 import { SearchErrorBoundary } from "../SearchErrorBoundary"
 
+const EMPTY_MENU_ATTRIBUTES: string[] = []
+
 const ControlsBar = styled.div`
   background: var(--maple-surface-gradient);
   border: 1px solid var(--maple-surface-border);
@@ -104,7 +106,7 @@ export const SearchPage = <TRecord extends Hit>({
       })),
     [filters, searchType, t]
   )
-  const menuAttributes = menuProps?.attributes ?? []
+  const menuAttributes = menuProps?.attributes ?? EMPTY_MENU_ATTRIBUTES
   const virtualFilters = useMemo(() => {
     const items = new Set<string>()
     filtersWithDefaults.forEach(({ attribute }) => items.add(attribute))
