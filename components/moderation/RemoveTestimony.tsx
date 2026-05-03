@@ -2,13 +2,11 @@ import { Card, CardContent, CardHeader, Stack } from "@mui/material"
 import { deleteTestimony } from "components/api/delete-testimony"
 import { resolveReport } from "components/db"
 import { getAuth } from "firebase/auth"
-import { doc, getDoc } from "firebase/firestore"
 import { Timestamp } from "functions/src/firebase"
 import { FormEventHandler, useState } from "react"
 import { useRedirect, useNotify, useRefresh } from "react-admin"
 import { Report, Resolution } from "."
-import { firestore } from "components/firebase"
-import { refreshToken } from "firebase-admin/app"
+
 
 export type ReportResponseValues = {
   reportId: string
@@ -21,7 +19,7 @@ export const onSubmitReport = async (
   resolution: Resolution,
   reason: string,
   authorUid: string,
-  testimonyId: string,
+  publicationId: string,
   refresh: () => void
 ) => {
   const r = await resolveReport({
@@ -36,7 +34,7 @@ export const onSubmitReport = async (
 
   if (resolution === "remove-testimony") {
     // If removing testimony, call deleteTestimony to move testimony from 'published' to 'archived'
-    const res = await deleteTestimony(authorUid, testimonyId)
+    await deleteTestimony(authorUid, publicationId)
   }
   refresh()
 }
