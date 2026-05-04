@@ -51,7 +51,9 @@ export const OverviewTab = ({
       {ballotQuestion.type === "referendum" && (
         <SectionCard>
           <h3 className="h5 mb-2 text-dark">
-            {t("ballot_question_referendum_how_vote_works.title")}
+            {t("ballot_question_referendum_how_vote_works.title", {
+              ns: "search"
+            })}
           </h3>
           <p className="mb-0" style={sectionCopyStyle}>
             <Trans
