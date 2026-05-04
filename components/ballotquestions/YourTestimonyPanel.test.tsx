@@ -2,6 +2,21 @@ import "@testing-library/jest-dom"
 import { render, screen } from "@testing-library/react"
 import { YourTestimonyPanel } from "./YourTestimonyPanel"
 
+jest.mock("next-i18next", () => ({
+  useTranslation: () => ({
+    t: (key: string) => {
+      const messages: Record<string, string> = {
+        "ballotQuestion.yourPerspective.closed":
+          "Perspectives are no longer being accepted for this ballot question.",
+        "ballotQuestion.yourPerspective.notAvailable":
+          "Perspectives are not available for this ballot question yet.",
+        "ballotQuestion.yourPerspective.title": "Your Perspective"
+      }
+      return messages[key] ?? key
+    }
+  })
+}))
+
 jest.mock("../publish/hooks", () => ({
   usePanelStatus: () => "ready",
   usePublishState: () => ({

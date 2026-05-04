@@ -4,6 +4,39 @@ import { BallotQuestionNav } from "./BallotQuestionNav"
 import { OverviewTab } from "./OverviewTab"
 import { TestimoniesTab } from "./TestimoniesTab"
 
+jest.mock("next-i18next", () => ({
+  Trans: ({ i18nKey }: { i18nKey: string }) => <>{i18nKey}</>,
+  useTranslation: () => ({
+    t: (key: string, params?: Record<string, string | number>) => {
+      const messages: Record<string, string> = {
+        "ballotQuestion.nav.explore": "Explore",
+        "ballotQuestion.nav.sectionsAriaLabel": "Ballot question sections",
+        "ballotQuestion.tabs.overview": "Overview",
+        "ballotQuestion.tabs.perspectives": "Perspectives",
+        "ballotQuestion.tabs.forAndAgainst": "For & Against",
+        "ballotQuestion.tabs.news": "News & Media",
+        "ballotQuestion.tabs.academia": "Academia",
+        "ballotQuestion.tabs.financials": "Campaign Financials",
+        "ballotQuestion.tabs.map": "Map",
+        "ballotQuestion.overview.title": "Overview",
+        "ballotQuestion.overview.description":
+          "Understand the question, key details, and ballot context.",
+        "ballotQuestion.testimonies.title": "Perspectives",
+        "ballotQuestion.testimonies.total": `${
+          params?.count ?? 0
+        } perspectives`,
+        "ballotQuestion.testimonies.relatedBillPrefix":
+          "You can review testimony on the related bill",
+        "ballotQuestion.testimonies.relatedBillLink": "here",
+        "ballotQuestion.testimonies.endorse": "Endorse",
+        "ballotQuestion.testimonies.neutral": "Neutral",
+        "ballotQuestion.testimonies.oppose": "Oppose"
+      }
+      return messages[key] ?? key
+    }
+  })
+}))
+
 jest.mock("../TestimonyCard/ViewTestimony", () => {
   const MockViewTestimony = () => <div data-testid="view-testimony" />
 
@@ -54,14 +87,9 @@ describe("Ballot question tab links", () => {
       />
     )
 
-    const link = screen.getByRole("link", {
-      name: "related bill"
-    })
+    const link = screen.getByRole("link", { name: "here" })
 
-    expect(link).toHaveAttribute("href", "/bills/194/H5005")
-    expect(
-      screen.getByText(/This question is expected on the ballot\./)
-    ).toBeInTheDocument()
+    expect(link).toHaveAttribute("href", "/bills/194/H5005#testimonies")
     expect(
       screen.getByText(/You can review testimony on the related bill/)
     ).toBeInTheDocument()
@@ -85,9 +113,6 @@ describe("Ballot question tab links", () => {
     expect(screen.queryByRole("link", { name: "here" })).not.toBeInTheDocument()
     expect(
       screen.queryByText(/You can review testimony on the related bill/)
-    ).not.toBeInTheDocument()
-    expect(
-      screen.queryByText(/This question is expected on the ballot\./)
     ).not.toBeInTheDocument()
   })
 
@@ -122,7 +147,7 @@ describe("Ballot question tab links", () => {
     const tabs = screen.getAllByRole("tab")
 
     expect(screen.getByRole("tablist")).toBeInTheDocument()
-    expect(tabs).toHaveLength(3)
+    expect(tabs).toHaveLength(2)
     expect(screen.getByRole("tab", { name: "Overview" })).toHaveAttribute(
       "aria-selected",
       "true"

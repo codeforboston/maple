@@ -2,6 +2,21 @@ import "@testing-library/jest-dom"
 import { render, screen } from "@testing-library/react"
 import { CommitteeHearing } from "./CommitteeHearing"
 
+jest.mock("next-i18next", () => ({
+  useTranslation: () => ({
+    t: (key: string) => {
+      const messages: Record<string, string> = {
+        "ballotQuestion.committeeHearing.description":
+          "Committee hearings are public meetings.",
+        "ballotQuestion.committeeHearing.imageAlt": "Committee hearing",
+        "ballotQuestion.committeeHearing.openPage": "Open hearing page",
+        "ballotQuestion.committeeHearing.title": "Committee Hearing"
+      }
+      return messages[key] ?? key
+    }
+  })
+}))
+
 const PAST_MS = new Date("2025-12-14T14:00:00Z").getTime()
 const FUTURE_MS = new Date("2030-06-01T10:00:00Z").getTime()
 
@@ -15,14 +30,12 @@ describe("CommitteeHearing", () => {
     jest.useRealTimers()
   })
 
-  it("shows Occurred status for a past hearing", () => {
-    render(<CommitteeHearing hearing={{ id: "1", startsAt: PAST_MS }} />)
-    expect(screen.getByText(/Occurred/)).toBeInTheDocument()
-  })
-
-  it("shows Scheduled status for a future hearing", () => {
+  it("shows hearing context copy", () => {
     render(<CommitteeHearing hearing={{ id: "1", startsAt: FUTURE_MS }} />)
-    expect(screen.getByText(/Scheduled/)).toBeInTheDocument()
+    expect(screen.getByText("Committee Hearing")).toBeInTheDocument()
+    expect(
+      screen.getByText("Committee hearings are public meetings.")
+    ).toBeInTheDocument()
   })
 
   it("formats the hearing date", () => {

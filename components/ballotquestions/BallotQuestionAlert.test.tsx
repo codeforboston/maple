@@ -2,6 +2,17 @@ import { render, screen } from "@testing-library/react"
 import type { ComponentType } from "react"
 import { BallotQuestionAlert } from "./BallotQuestionAlert"
 
+jest.mock("next-i18next", () => ({
+  useTranslation: () => ({
+    t: (key: string) => {
+      const messages: Record<string, string> = {
+        "ballotQuestion.alert.ariaLabel": "Important ballot question notice"
+      }
+      return messages[key] ?? key
+    }
+  })
+}))
+
 jest.mock("react-markdown", () => ({
   __esModule: true,
   default: ({
