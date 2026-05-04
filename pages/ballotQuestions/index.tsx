@@ -17,7 +17,7 @@ type BrowseBallotQuestionsPageProps = {
 export default createPage({
   titleI18nKey: "navigation.browseBallotQuestions",
   Page: ({ currentYear, items }: BrowseBallotQuestionsPageProps) => {
-    const { t } = useTranslation("search")
+    const { t } = useTranslation("ballotquestions")
 
     return (
       <Container fluid="xl" className="mt-3 mb-4">
@@ -75,7 +75,7 @@ export const getServerSideProps: GetServerSideProps<
       items,
       ...(await serverSideTranslations(locale ?? "en", [
         "auth",
-        "search",
+        "ballotquestions",
         "common",
         "footer",
         "testimony"
