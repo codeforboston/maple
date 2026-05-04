@@ -15,7 +15,7 @@ title: "Referendum on the 2024 firearms law (Chapter 135)"
 court: 193
 electionYear: 2026
 type: referendum
-ballotStatus: certified
+ballotStatus: "expectedOnBallot"
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null
