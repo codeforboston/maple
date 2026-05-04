@@ -9,14 +9,16 @@ ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null
+alertFlag: "Active legal challenge - ruling expected in late July"
+alertTip: "Opposition Committee has filed a lawsuit with the Massachusetts Supreme Judicial Court."
 atAGlance: null
 voteEffectYes: null
 voteEffectNo: null
 fiscalConsequences: null
 inFavor: null
 against: null
-supportCommittee: "Keep Massachusetts Home"
-opposeCommittee: "Housing for Massachusetts"
+supportCommittee: "Keep Massachusetts Home (Homes for All MA coalition)"
+opposeCommittee: "Housing for Massachusetts (Greater Boston Real Estate Board + MA Realtors + NAIOP MA)"
 campaignFinancials: null
 fullSummary: |-
   This proposed law would limit the annual rent increase for residential units in

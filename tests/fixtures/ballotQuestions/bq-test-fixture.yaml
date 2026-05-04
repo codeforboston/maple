@@ -7,6 +7,9 @@ ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: "This proposal would allow adults 21 and older to grow, possess, and use certain natural psychedelic substances under limited and regulated conditions."
+alertFlag: |-
+  Legal challenge pending. [Read more](https://example.com/legal-challenge).
+alertTip: "This may affect whether the question appears on the ballot."
 atAGlance:
   - label: "Who"
     value: "Adults 21 and older"

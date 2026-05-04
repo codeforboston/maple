@@ -9,13 +9,15 @@ ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null
+alertFlag: "Advisory opinion requested from Massachusetts Supreme Judicial Court"
+alertTip: "MA Senate requested an opinion on whether this question violates Legislature's authority over its own rules"
 atAGlance: null
 voteEffectYes: null
 voteEffectNo: null
 fiscalConsequences: null
 inFavor: null
 against: null
-supportCommittee: "Coalition for Healthy Democracy"
+supportCommittee: "Coalition for Healthy Democracy / Auditor Diana DiZoglio"
 opposeCommittee: null
 campaignFinancials: null
 fullSummary: |-

@@ -6,6 +6,7 @@ import { BallotQuestion, Bill } from "../db"
 import { useFlags } from "../featureFlags"
 import { FollowBallotQuestionButton } from "../shared/FollowButton"
 import { QuestionTooltip } from "../tooltip"
+import { BallotQuestionAlert } from "./BallotQuestionAlert"
 import { DescriptionBox } from "./DescriptionBox"
 import { getBallotQuestionStatusLabel } from "./status"
 import { YourTestimonyPanel } from "./YourTestimonyPanel"
@@ -112,8 +113,13 @@ export const BallotQuestionHeader = ({
               {ballotQuestion.title || bill?.content.Title || ballotQuestion.id}
             </p>
 
+            <BallotQuestionAlert
+              alertFlag={ballotQuestion.alertFlag}
+              alertTip={ballotQuestion.alertTip}
+            />
+
             <div
-              className="d-flex flex-wrap gap-2 gap-lg-3 mb-4"
+              className="d-flex flex-wrap gap-2 gap-lg-3 mb-4 mt-3"
               style={{ maxWidth: "42rem" }}
             >
               <MetaFact label="Type" value={getTypeLabel()} />

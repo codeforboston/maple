@@ -9,13 +9,15 @@ ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null
+alertFlag: null
+alertTip: null
 atAGlance: null
 voteEffectYes: null
 voteEffectNo: null
 fiscalConsequences: null
 inFavor: null
 against: null
-supportCommittee: null
+supportCommittee: "SEIU Local 888"
 opposeCommittee: null
 campaignFinancials: null
 fullSummary: |-

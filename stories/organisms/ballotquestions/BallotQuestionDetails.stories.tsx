@@ -78,6 +78,10 @@ const sampleBallotQuestion: BallotQuestion = {
   title: "Worker Benefits and Independent Contractor Standards",
   description:
     "This proposed law would establish standards for certain app-based drivers and create portable benefits funded through company contributions.",
+  alertFlag:
+    "Active legal challenge in progress. [Read more](https://example.com/legal-challenge).",
+  alertTip:
+    "Legal challenges can affect whether a question appears on the ballot.",
   atAGlance: [
     {
       label: "Topic",

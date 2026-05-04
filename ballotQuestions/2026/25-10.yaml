@@ -9,14 +9,16 @@ ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null
+alertFlag: null
+alertTip: null
 atAGlance: null
 voteEffectYes: null
 voteEffectNo: null
 fiscalConsequences: null
 inFavor: null
 against: null
-supportCommittee: "Coalition for a Healthy Massachusetts"
-opposeCommittee: "Massachusetts Cannabis Business Association"
+supportCommittee: "Coalition for a Healthy Massachusetts (Wendy Wakeman, Spokesperson; Caroline Cunningham, MassGOP)"
+opposeCommittee: "Massachusetts Cannabis Business Association (David O'Brien, CEO) + cannabis industry"
 campaignFinancials: null
 fullSummary: |-
   The proposed law would change the type and amount of marijuana that may legally be

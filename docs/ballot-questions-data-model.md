@@ -39,8 +39,8 @@ interface BallotQuestion {
   against: string | null // Arguments opposing the question
   fullSummary: string | null // Official summary from the Attorney General
   pdfUrl: string | null // Link to the initiative petition PDF
-  alertFlag: string | null // Alert banner (supports Markdown links)
-  alertTip: string | null // Optional tooltip text for the alert
+  alertFlag: string | null // Important notice text; may include Markdown links
+  alertTip: string | null // Optional plain-text tooltip for the alert
 
   // Auto-managed counters (read-only from YAML perspective)
   testimonyCount: number // Total testimony submissions

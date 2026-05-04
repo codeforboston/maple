@@ -9,13 +9,15 @@ ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null
+alertFlag: null
+alertTip: null
 atAGlance: null
 voteEffectYes: null
 voteEffectNo: null
 fiscalConsequences: null
 inFavor: null
 against: null
-supportCommittee: "Legalize Starter Homes"
+supportCommittee: "Legalize Starter Homes (Pioneer Institute / Andrew Mikula)"
 opposeCommittee: null
 campaignFinancials: null
 fullSummary: |-

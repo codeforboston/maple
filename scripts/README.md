@@ -75,6 +75,9 @@ ballotStatus: accepted
 ballotQuestionNumber: 2
 relatedBillIds: []
 description: "Would replace the MCAS graduation requirement with district-certified coursework mastery."
+alertFlag: |-
+  Legal challenge pending. [Read more](https://example.com/legal-challenge).
+alertTip: "This may affect whether the question appears on the ballot."
 atAGlance:
   - label: "What it does"
     value: "Removes MCAS as a graduation requirement."

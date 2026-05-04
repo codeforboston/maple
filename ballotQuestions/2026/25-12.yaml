@@ -9,13 +9,15 @@ ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null
+alertFlag: "Active legal challenge"
+alertTip: "Dem. State Committee members Jackson & Roosevelt have filed a lawsuit with the Massachusetts Supreme Judicial Court."
 atAGlance: null
 voteEffectYes: null
 voteEffectNo: null
 fiscalConsequences: null
 inFavor: null
 against: null
-supportCommittee: "Coalition for Healthy Democracy"
+supportCommittee: "Coalition for Healthy Democracy (Jesse Littlewood, Campaign Mgr.)"
 opposeCommittee: null
 campaignFinancials: null
 fullSummary: |-

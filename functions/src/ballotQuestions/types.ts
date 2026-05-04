@@ -42,6 +42,8 @@ export const BallotQuestion = withDefaults(
     ballotQuestionNumber: Union(Number, Null),
     relatedBillIds: Array(String),
     description: Union(String, Null),
+    alertFlag: Union(String, Null),
+    alertTip: Union(String, Null),
     atAGlance: Union(Array(Record({ label: String, value: String })), Null),
     voteEffectYes: Union(String, Null),
     voteEffectNo: Union(String, Null),
@@ -68,6 +70,8 @@ export const BallotQuestion = withDefaults(
   {
     title: null,
     description: null,
+    alertFlag: null,
+    alertTip: null,
     atAGlance: null,
     voteEffectYes: null,
     voteEffectNo: null,

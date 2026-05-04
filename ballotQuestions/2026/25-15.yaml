@@ -9,6 +9,8 @@ ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null
+alertFlag: null
+alertTip: null
 atAGlance: null
 voteEffectYes: null
 voteEffectNo: null

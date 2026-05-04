@@ -9,14 +9,16 @@ ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null
+alertFlag: null
+alertTip: null
 atAGlance: null
 voteEffectYes: null
 voteEffectNo: null
 fiscalConsequences: null
 inFavor: null
 against: null
-supportCommittee: "Massachusetts Opportunity Alliance"
-opposeCommittee: "Protect Massachusetts' Future"
+supportCommittee: "Massachusetts Opportunity Alliance (w/ MA High Technology Council & Pioneer Institute)"
+opposeCommittee: "Protect Massachusetts' Future (SEIU MA State Council)"
 campaignFinancials: null
 fullSummary: |-
   This proposed law would, over a period of three years, lower the tax rates on (1) personal

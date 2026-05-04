@@ -9,14 +9,16 @@ ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null
+alertFlag: null
+alertTip: null
 atAGlance: null
 voteEffectYes: null
 voteEffectNo: null
 fiscalConsequences: null
 inFavor: null
 against: null
-supportCommittee: "Massachusetts Opportunity Alliance"
-opposeCommittee: "Protect Massachusetts' Future"
+supportCommittee: "Massachusetts Opportunity Alliance (w/ Pioneer Institute)"
+opposeCommittee: "Protect Massachusetts' Future (SEIU MA State Council)"
 campaignFinancials: null
 fullSummary: |-
   This proposed law would change the limit on how much revenue the state can collect in a
