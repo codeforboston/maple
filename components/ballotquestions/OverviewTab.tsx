@@ -38,9 +38,7 @@ export const OverviewTab = ({
             <BallotGlyph />
           </div>
           <div>
-            <h2 className="h4 mb-1 text-secondary">
-              {t("overview.title")}
-            </h2>
+            <h2 className="h4 mb-1 text-secondary">{t("overview.title")}</h2>
             <p className="text-body-secondary small mb-0">
               {t("overview.description")}
             </p>
@@ -65,9 +63,7 @@ export const OverviewTab = ({
 
       {ballotQuestion.atAGlance && ballotQuestion.atAGlance.length > 0 && (
         <SectionCard>
-          <h3 className="h5 mb-3 text-dark">
-            {t("overview.keyDetails")}
-          </h3>
+          <h3 className="h5 mb-3 text-dark">{t("overview.keyDetails")}</h3>
           <Row className="g-3">
             {ballotQuestion.atAGlance.map((item, idx) => (
               <Col key={idx} md={6}>
@@ -93,9 +89,7 @@ export const OverviewTab = ({
         <SectionCard>
           <h3 className="h5 mb-3 text-dark d-flex align-items-center gap-1">
             {t("overview.officialSummary")}
-            <QuestionTooltip
-              text={t("overview.officialSummaryTooltip")}
-            />
+            <QuestionTooltip text={t("overview.officialSummaryTooltip")} />
           </h3>
           <div
             style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
@@ -117,9 +111,7 @@ export const OverviewTab = ({
         <SectionCard>
           <h3 className="h5 mb-3 text-dark d-flex align-items-center gap-1">
             {t("voteEffects.title")}
-            <QuestionTooltip
-              text={t("voteEffects.tooltip")}
-            />
+            <QuestionTooltip text={t("voteEffects.tooltip")} />
           </h3>
           <div className="d-grid gap-3">
             {ballotQuestion.voteEffectYes && (
@@ -142,9 +134,7 @@ export const OverviewTab = ({
         <SectionCard>
           <h3 className="h5 mb-3 text-dark d-flex align-items-center gap-1">
             {t("fiscalConsequences.title")}
-            <QuestionTooltip
-              text={t("fiscalConsequences.tooltip")}
-            />
+            <QuestionTooltip text={t("fiscalConsequences.tooltip")} />
           </h3>
           <p className="mb-0 lh-lg" style={{ whiteSpace: "pre-wrap" }}>
             {ballotQuestion.fiscalConsequences}
@@ -156,9 +146,7 @@ export const OverviewTab = ({
         sortedHearings.length > 0 &&
         sortedHearings.some(h => new Date(h.startsAt) < new Date()) && (
           <SectionCard>
-            <h3 className="h5 mb-4 text-dark">
-              {t("committeeHearing.title")}
-            </h3>
+            <h3 className="h5 mb-4 text-dark">{t("committeeHearing.title")}</h3>
             <div className="d-grid gap-3">
               {sortedHearings
                 .filter(h => new Date(h.startsAt) < new Date())

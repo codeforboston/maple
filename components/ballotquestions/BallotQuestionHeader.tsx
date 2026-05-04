@@ -22,9 +22,7 @@ export const BallotQuestionHeader = ({
   const { notifications } = useFlags()
   const { user } = useAuth()
   const statusLabel = getBallotQuestionStatusLabel(ballotQuestion.ballotStatus)
-  const questionNumberDisclaimer = t(
-    "header.questionNumberDisclaimer"
-  )
+  const questionNumberDisclaimer = t("header.questionNumberDisclaimer")
   const description = ballotQuestion.description
   const hasDescription = Boolean(description)
 
@@ -57,9 +55,7 @@ export const BallotQuestionHeader = ({
               className="maple-back-link text-decoration-none small fw-semibold d-inline-flex align-items-center gap-2 mb-4"
             >
               <span aria-hidden="true">←</span>
-              <span>
-                {t("header.backLink")}
-              </span>
+              <span>{t("header.backLink")}</span>
             </Link>
 
             <div className="d-flex flex-wrap align-items-center gap-2 gap-lg-3 mb-3">
@@ -125,10 +121,7 @@ export const BallotQuestionHeader = ({
               className="d-flex flex-wrap gap-2 gap-lg-3 mb-4 mt-3"
               style={{ maxWidth: "42rem" }}
             >
-              <MetaFact
-                label={t("header.type")}
-                value={getTypeLabel()}
-              />
+              <MetaFact label={t("header.type")} value={getTypeLabel()} />
               <MetaFact
                 label={t("header.election")}
                 value={ballotQuestion.electionYear.toString()}
@@ -146,9 +139,7 @@ export const BallotQuestionHeader = ({
 
           <Col lg={4}>
             <div className="h-100 maple-muted-surface rounded-4 p-4">
-              <div className="maple-eyebrow mb-3">
-                {t("header.takePart")}
-              </div>
+              <div className="maple-eyebrow mb-3">{t("header.takePart")}</div>
               <div className="mb-3">
                 {notifications && user && (
                   <FollowBallotQuestionButton ballotQuestion={ballotQuestion} />
@@ -180,9 +171,7 @@ export const BallotQuestionHeader = ({
                 }}
               >
                 <span aria-hidden="true">↗</span>
-                <span>
-                  {t("header.readPetitionPdf")}
-                </span>
+                <span>{t("header.readPetitionPdf")}</span>
               </a>
             )}
           </div>

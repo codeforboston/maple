@@ -23,9 +23,7 @@ export const CampaignFinancialsTab = ({
       <SectionCard>
         <h2 className="h4 mb-1 text-secondary d-flex align-items-center gap-1">
           {t("campaignFinancials.title")}
-          <QuestionTooltip
-            text={t("campaignFinancials.titleTooltip")}
-          />
+          <QuestionTooltip text={t("campaignFinancials.titleTooltip")} />
         </h2>
         <p className="text-body-secondary small mb-2">
           {t("campaignFinancials.description", {
@@ -117,9 +115,7 @@ const FinanceCard = ({ entry }: { entry: CampaignFinanceEntry }) => {
             <Metric
               label={t("campaignFinancials.expenditures")}
               value={formatMoney(entry.spent)}
-              tooltip={t(
-                "ballotQuestion.campaignFinancials.expendituresTooltip"
-              )}
+              tooltip={t("campaignFinancials.expendituresTooltip")}
               colClass="col-12 col-sm-4"
             />
             <Metric

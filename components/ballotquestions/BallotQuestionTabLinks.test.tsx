@@ -22,9 +22,7 @@ jest.mock("next-i18next", () => ({
         "overview.description":
           "Understand the question, key details, and ballot context.",
         "testimonies.title": "Perspectives",
-        "testimonies.total": `${
-          params?.count ?? 0
-        } perspectives`,
+        "testimonies.total": `${params?.count ?? 0} perspectives`,
         "testimonies.relatedBillPrefix":
           "You can review testimony on the related bill",
         "testimonies.relatedBillLink": "here",

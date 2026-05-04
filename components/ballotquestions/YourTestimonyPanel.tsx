@@ -33,9 +33,7 @@ export const YourTestimonyPanel = ({
   return (
     <div className="h-100">
       <div className="d-flex align-items-center justify-content-between mb-3">
-        <div className="maple-panel-title">
-          {t("yourPerspective.title")}
-        </div>
+        <div className="maple-panel-title">{t("yourPerspective.title")}</div>
         {showInlineEditButton && bill ? (
           <EditTestimonyButton
             billId={bill.id}

@@ -92,9 +92,7 @@ export const BallotQuestionNav = ({
 
   return (
     <div className="maple-surface rounded-4 p-3 p-lg-4">
-      <div className="maple-eyebrow mb-3">
-        {t("nav.explore")}
-      </div>
+      <div className="maple-eyebrow mb-3">{t("nav.explore")}</div>
 
       <div
         role="tablist"

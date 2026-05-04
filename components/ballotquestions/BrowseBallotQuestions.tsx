@@ -415,9 +415,7 @@ export const BrowseBallotQuestions = ({
     setSelectedCourt("all")
     setSelectedStatus("all")
   }
-  const questionNumberDisclaimer = t(
-    "header.questionNumberDisclaimer"
-  )
+  const questionNumberDisclaimer = t("header.questionNumberDisclaimer")
 
   return (
     <>
@@ -433,9 +431,7 @@ export const BrowseBallotQuestions = ({
       )}
 
       <SearchContainer>
-        <Controls
-          aria-label={t("browse.filtersAriaLabel")}
-        >
+        <Controls aria-label={t("browse.filtersAriaLabel")}>
           <ControlsToolbar>
             <SearchBoxShell className="ais-SearchBox">
               <div className="ais-SearchBox-form">
@@ -461,9 +457,7 @@ export const BrowseBallotQuestions = ({
                   value={selectedYear}
                   onChange={e => setSelectedYear(e.target.value)}
                 >
-                  <option value="all">
-                    {t("ballot_question_all_years")}
-                  </option>
+                  <option value="all">{t("ballot_question_all_years")}</option>
                   {yearOptions.map(optionYear => (
                     <option key={optionYear} value={optionYear}>
                       {optionYear}
@@ -481,9 +475,7 @@ export const BrowseBallotQuestions = ({
                   value={selectedCourt}
                   onChange={e => setSelectedCourt(e.target.value)}
                 >
-                  <option value="all">
-                    {t("ballot_question_all_courts")}
-                  </option>
+                  <option value="all">{t("ballot_question_all_courts")}</option>
                   {courtOptions.map(court => (
                     <option key={court} value={court}>
                       {t("ballot_question_court", { court })}
@@ -535,9 +527,7 @@ export const BrowseBallotQuestions = ({
         </Controls>
 
         {filteredItems.length === 0 ? (
-          <EmptyState>
-            {t("ballot_question_no_results")}
-          </EmptyState>
+          <EmptyState>{t("ballot_question_no_results")}</EmptyState>
         ) : (
           <List>
             {filteredItems.map(item => (
@@ -607,8 +597,7 @@ export const BrowseBallotQuestions = ({
                         <QuestionTitle>{item.title}</QuestionTitle>
                       </TitleBlock>
                       <Summary>
-                        {item.fullSummary ||
-                          t("ballot_question_no_summary")}
+                        {item.fullSummary || t("ballot_question_no_summary")}
                       </Summary>
                     </Card.Body>
                   </StyledCard>

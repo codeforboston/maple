@@ -16,9 +16,7 @@ export const SynthesisTab = ({
   return (
     <div className="d-grid gap-4">
       <SectionCard>
-        <h2 className="h4 mb-1 text-secondary">
-          {t("synthesis.title")}
-        </h2>
+        <h2 className="h4 mb-1 text-secondary">{t("synthesis.title")}</h2>
         <p className="text-body-secondary small mb-0">
           {t("synthesis.description")}
         </p>
@@ -31,15 +29,8 @@ export const SynthesisTab = ({
             <QuestionTooltip text={t("voteEffects.tooltip")} />
           </div>
           <div className="d-grid gap-3">
-            {yes && (
-              <Callout
-                label={t("voteEffects.yes")}
-                value={yes}
-              />
-            )}
-            {no && (
-              <Callout label={t("voteEffects.no")} value={no} />
-            )}
+            {yes && <Callout label={t("voteEffects.yes")} value={yes} />}
+            {no && <Callout label={t("voteEffects.no")} value={no} />}
           </div>
         </SectionCard>
       )}
@@ -48,9 +39,7 @@ export const SynthesisTab = ({
         <SectionCard>
           <div className="maple-eyebrow mb-2 d-flex align-items-center">
             {t("fiscalConsequences.title")}
-            <QuestionTooltip
-              text={t("fiscalConsequences.tooltip")}
-            />
+            <QuestionTooltip text={t("fiscalConsequences.tooltip")} />
           </div>
           <p className="mb-0 lh-lg" style={{ whiteSpace: "pre-wrap" }}>
             {fiscal}
