@@ -9,28 +9,26 @@ jest.mock("next-i18next", () => ({
   useTranslation: () => ({
     t: (key: string, params?: Record<string, string | number>) => {
       const messages: Record<string, string> = {
-        "ballotQuestion.nav.explore": "Explore",
-        "ballotQuestion.nav.sectionsAriaLabel": "Ballot question sections",
-        "ballotQuestion.tabs.overview": "Overview",
-        "ballotQuestion.tabs.perspectives": "Perspectives",
-        "ballotQuestion.tabs.forAndAgainst": "For & Against",
-        "ballotQuestion.tabs.news": "News & Media",
-        "ballotQuestion.tabs.academia": "Academia",
-        "ballotQuestion.tabs.financials": "Campaign Financials",
-        "ballotQuestion.tabs.map": "Map",
-        "ballotQuestion.overview.title": "Overview",
-        "ballotQuestion.overview.description":
+        "nav.explore": "Explore",
+        "nav.sectionsAriaLabel": "Ballot question sections",
+        "tabs.overview": "Overview",
+        "tabs.perspectives": "Perspectives",
+        "tabs.forAndAgainst": "For & Against",
+        "tabs.news": "News & Media",
+        "tabs.academia": "Academia",
+        "tabs.financials": "Campaign Financials",
+        "tabs.map": "Map",
+        "overview.title": "Overview",
+        "overview.description":
           "Understand the question, key details, and ballot context.",
-        "ballotQuestion.testimonies.title": "Perspectives",
-        "ballotQuestion.testimonies.total": `${
-          params?.count ?? 0
-        } perspectives`,
-        "ballotQuestion.testimonies.relatedBillPrefix":
+        "testimonies.title": "Perspectives",
+        "testimonies.total": `${params?.count ?? 0} perspectives`,
+        "testimonies.relatedBillPrefix":
           "You can review testimony on the related bill",
-        "ballotQuestion.testimonies.relatedBillLink": "here",
-        "ballotQuestion.testimonies.endorse": "Endorse",
-        "ballotQuestion.testimonies.neutral": "Neutral",
-        "ballotQuestion.testimonies.oppose": "Oppose"
+        "testimonies.relatedBillLink": "here",
+        "testimonies.endorse": "Endorse",
+        "testimonies.neutral": "Neutral",
+        "testimonies.oppose": "Oppose"
       }
       return messages[key] ?? key
     }

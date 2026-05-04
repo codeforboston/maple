@@ -15,7 +15,7 @@ export const YourTestimonyPanel = ({
   ballotQuestion: BallotQuestion
   bill: Bill | null
 }) => {
-  const { t } = useTranslation("common")
+  const { t } = useTranslation("ballotquestions")
   const isActivePhase = isActiveBallotQuestionPhase(ballotQuestion.ballotStatus)
   const isTerminalPhase = isTerminalBallotQuestionPhase(
     ballotQuestion.ballotStatus
@@ -33,9 +33,7 @@ export const YourTestimonyPanel = ({
   return (
     <div className="h-100">
       <div className="d-flex align-items-center justify-content-between mb-3">
-        <div className="maple-panel-title">
-          {t("ballotQuestion.yourPerspective.title")}
-        </div>
+        <div className="maple-panel-title">{t("yourPerspective.title")}</div>
         {showInlineEditButton && bill ? (
           <EditTestimonyButton
             billId={bill.id}
@@ -54,11 +52,11 @@ export const YourTestimonyPanel = ({
         </>
       ) : isTerminalPhase ? (
         <div className="maple-info-note rounded px-3 py-3 small">
-          {t("ballotQuestion.yourPerspective.closed")}
+          {t("yourPerspective.closed")}
         </div>
       ) : (
         <div className="maple-info-note rounded px-3 py-3 small">
-          {t("ballotQuestion.yourPerspective.notAvailable")}
+          {t("yourPerspective.notAvailable")}
         </div>
       )}
     </div>

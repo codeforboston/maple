@@ -9,7 +9,7 @@ export const ForAndAgainstTab = ({
 }: {
   ballotQuestion: BallotQuestion
 }) => {
-  const { t } = useTranslation("common")
+  const { t } = useTranslation("ballotquestions")
 
   return (
     <div className="d-grid gap-4">
@@ -26,10 +26,10 @@ export const ForAndAgainstTab = ({
           </div>
           <div>
             <h2 className="h4 mb-1 text-secondary">
-              {t("ballotQuestion.forAndAgainst.argumentsTitle")}
+              {t("forAndAgainst.argumentsTitle")}
             </h2>
             <p className="text-body-secondary small mb-0 lh-lg">
-              {t("ballotQuestion.forAndAgainst.argumentsBody")}
+              {t("forAndAgainst.argumentsBody")}
             </p>
           </div>
         </div>
@@ -38,24 +38,24 @@ export const ForAndAgainstTab = ({
       {hasAnyData(ballotQuestion) ? (
         <>
           <ArgumentCard
-            title={t("ballotQuestion.forAndAgainst.inFavorTitle")}
+            title={t("forAndAgainst.inFavorTitle")}
             committee={ballotQuestion.supportCommittee}
             statement={ballotQuestion.inFavor}
-            noCommitteeText={t("ballotQuestion.forAndAgainst.noCommitteeText")}
-            noStatementText={t("ballotQuestion.forAndAgainst.noStatementText")}
+            noCommitteeText={t("forAndAgainst.noCommitteeText")}
+            noStatementText={t("forAndAgainst.noStatementText")}
           />
           <ArgumentCard
-            title={t("ballotQuestion.forAndAgainst.againstTitle")}
+            title={t("forAndAgainst.againstTitle")}
             committee={ballotQuestion.opposeCommittee}
             statement={ballotQuestion.against}
-            noCommitteeText={t("ballotQuestion.forAndAgainst.noCommitteeText")}
-            noStatementText={t("ballotQuestion.forAndAgainst.noStatementText")}
+            noCommitteeText={t("forAndAgainst.noCommitteeText")}
+            noStatementText={t("forAndAgainst.noStatementText")}
           />
         </>
       ) : (
         <SectionCard>
           <p className="text-body-secondary small mb-0">
-            {t("ballotQuestion.forAndAgainst.noCommitteeText")}
+            {t("forAndAgainst.noCommitteeText")}
           </p>
         </SectionCard>
       )}

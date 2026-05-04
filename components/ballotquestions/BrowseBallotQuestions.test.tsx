@@ -32,12 +32,10 @@ jest.mock("next-i18next", () => ({
         ballot_question_number: `Question ${params?.number ?? ""}`,
         ballot_question_court: `Court ${params?.court ?? ""}`,
         ballot_question_no_summary: "No summary available yet.",
-        "ballotQuestion.browse.filtersAriaLabel": "Filter ballot questions",
-        "ballotQuestion.browse.questionUnassigned": "Question #",
-        "ballotQuestion.browse.questionWithNumber": `Question ${
-          params?.count ?? ""
-        }`,
-        "ballotQuestion.header.questionNumberDisclaimer":
+        "browse.filtersAriaLabel": "Filter ballot questions",
+        "browse.questionUnassigned": "Question #",
+        "browse.questionWithNumber": `Question ${params?.count ?? ""}`,
+        "header.questionNumberDisclaimer":
           "Question numbers are assigned by the Secretary of State in the summer prior to an election",
         "counts.endorsements.alt": "Endorsements",
         "counts.neutral.alt": "Neutral",

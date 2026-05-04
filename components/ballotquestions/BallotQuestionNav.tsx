@@ -19,37 +19,37 @@ export const BallotQuestionNav = ({
   showCampaignFinancials?: boolean
   showForAndAgainst?: boolean
 }) => {
-  const { t } = useTranslation("common")
+  const { t } = useTranslation("ballotquestions")
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const navItems: Array<BallotQuestionNavItem & { enabled: boolean }> = [
     {
       id: "overview",
-      label: t("ballotQuestion.tabs.overview"),
+      label: t("tabs.overview"),
       enabled: true
     },
     {
       id: "testimonies",
-      label: t("ballotQuestion.tabs.perspectives"),
+      label: t("tabs.perspectives"),
       enabled: true,
       badge: testimonyCount
     },
     {
       id: "for_against",
-      label: t("ballotQuestion.tabs.forAndAgainst"),
+      label: t("tabs.forAndAgainst"),
       enabled: showForAndAgainst ?? false
     },
-    { id: "news", label: t("ballotQuestion.tabs.news"), enabled: false },
+    { id: "news", label: t("tabs.news"), enabled: false },
     {
       id: "academia",
-      label: t("ballotQuestion.tabs.academia"),
+      label: t("tabs.academia"),
       enabled: false
     },
     {
       id: "financials",
-      label: t("ballotQuestion.tabs.financials"),
+      label: t("tabs.financials"),
       enabled: showCampaignFinancials ?? false
     },
-    { id: "map", label: t("ballotQuestion.tabs.map"), enabled: false }
+    { id: "map", label: t("tabs.map"), enabled: false }
   ]
   const visibleItems = navItems.filter(item => item.enabled)
 
@@ -92,14 +92,12 @@ export const BallotQuestionNav = ({
 
   return (
     <div className="maple-surface rounded-4 p-3 p-lg-4">
-      <div className="maple-eyebrow mb-3">
-        {t("ballotQuestion.nav.explore")}
-      </div>
+      <div className="maple-eyebrow mb-3">{t("nav.explore")}</div>
 
       <div
         role="tablist"
         className="d-flex flex-row flex-lg-column gap-2 overflow-x-auto overflow-lg-visible pb-1 pb-lg-0"
-        aria-label={t("ballotQuestion.nav.sectionsAriaLabel")}
+        aria-label={t("nav.sectionsAriaLabel")}
       >
         {visibleItems.map((item, itemIndex) => {
           const isActive = activeTab === item.id

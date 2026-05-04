@@ -358,9 +358,9 @@ export const BrowseBallotQuestions = ({
   items: BallotQuestionBrowseItem[]
   currentYear: number
 }) => {
-  const { t } = useTranslation(["common", "search", "testimony"])
+  const { t } = useTranslation(["ballotquestions", "testimony"])
   const getStatusLabel = (status: BallotQuestionStatus) =>
-    t(`ballot_question_status.${status}`, { ns: "search" })
+    t(`ballot_question_status.${status}`)
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedYear, setSelectedYear] = useState(String(currentYear))
   const [selectedCourt, setSelectedCourt] = useState("all")
@@ -372,7 +372,6 @@ export const BrowseBallotQuestions = ({
     return (
       <p className="text-muted mb-0">
         {t("browse_ballot_questions_empty", {
-          ns: "search",
           year: currentYear
         })}
       </p>
@@ -416,10 +415,7 @@ export const BrowseBallotQuestions = ({
     setSelectedCourt("all")
     setSelectedStatus("all")
   }
-  const questionNumberDisclaimer = t(
-    "ballotQuestion.header.questionNumberDisclaimer",
-    { ns: "common" }
-  )
+  const questionNumberDisclaimer = t("header.questionNumberDisclaimer")
 
   return (
     <>
@@ -435,11 +431,7 @@ export const BrowseBallotQuestions = ({
       )}
 
       <SearchContainer>
-        <Controls
-          aria-label={t("ballotQuestion.browse.filtersAriaLabel", {
-            ns: "common"
-          })}
-        >
+        <Controls aria-label={t("browse.filtersAriaLabel")}>
           <ControlsToolbar>
             <SearchBoxShell className="ais-SearchBox">
               <div className="ais-SearchBox-form">
@@ -448,12 +440,8 @@ export const BrowseBallotQuestions = ({
                   type="search"
                   value={searchQuery}
                   className="ais-SearchBox-input"
-                  aria-label={t("ballot_question_search_label", {
-                    ns: "search"
-                  })}
-                  placeholder={t("ballot_question_search_placeholder", {
-                    ns: "search"
-                  })}
+                  aria-label={t("ballot_question_search_label")}
+                  placeholder={t("ballot_question_search_placeholder")}
                   onChange={e => setSearchQuery(e.target.value)}
                 />
               </div>
@@ -462,16 +450,14 @@ export const BrowseBallotQuestions = ({
             <FilterColumn>
               <div>
                 <FilterLabel htmlFor="ballot-question-year">
-                  {t("ballot_question_filter_year", { ns: "search" })}
+                  {t("ballot_question_filter_year")}
                 </FilterLabel>
                 <Form.Select
                   id="ballot-question-year"
                   value={selectedYear}
                   onChange={e => setSelectedYear(e.target.value)}
                 >
-                  <option value="all">
-                    {t("ballot_question_all_years", { ns: "search" })}
-                  </option>
+                  <option value="all">{t("ballot_question_all_years")}</option>
                   {yearOptions.map(optionYear => (
                     <option key={optionYear} value={optionYear}>
                       {optionYear}
@@ -482,19 +468,17 @@ export const BrowseBallotQuestions = ({
 
               <div>
                 <FilterLabel htmlFor="ballot-question-court">
-                  {t("ballot_question_filter_court", { ns: "search" })}
+                  {t("ballot_question_filter_court")}
                 </FilterLabel>
                 <Form.Select
                   id="ballot-question-court"
                   value={selectedCourt}
                   onChange={e => setSelectedCourt(e.target.value)}
                 >
-                  <option value="all">
-                    {t("ballot_question_all_courts", { ns: "search" })}
-                  </option>
+                  <option value="all">{t("ballot_question_all_courts")}</option>
                   {courtOptions.map(court => (
                     <option key={court} value={court}>
-                      {t("ballot_question_court", { ns: "search", court })}
+                      {t("ballot_question_court", { court })}
                     </option>
                   ))}
                 </Form.Select>
@@ -502,7 +486,7 @@ export const BrowseBallotQuestions = ({
 
               <div>
                 <FilterLabel htmlFor="ballot-question-status">
-                  {t("ballot_question_filter_status", { ns: "search" })}
+                  {t("ballot_question_filter_status")}
                 </FilterLabel>
                 <Form.Select
                   id="ballot-question-status"
@@ -510,7 +494,7 @@ export const BrowseBallotQuestions = ({
                   onChange={e => setSelectedStatus(e.target.value)}
                 >
                   <option value="all">
-                    {t("ballot_question_all_statuses", { ns: "search" })}
+                    {t("ballot_question_all_statuses")}
                   </option>
                   {statusOptions.map(status => (
                     <option key={status} value={status}>
@@ -525,7 +509,6 @@ export const BrowseBallotQuestions = ({
           <SummaryRow>
             <ResultsSummary>
               {t("ballot_question_results_summary", {
-                ns: "search",
                 count: filteredItems.length,
                 total: items.length
               })}
@@ -537,16 +520,14 @@ export const BrowseBallotQuestions = ({
                 size="sm"
                 onClick={resetFilters}
               >
-                {t("ballot_question_reset_filters", { ns: "search" })}
+                {t("ballot_question_reset_filters")}
               </ControlsButton>
             ) : null}
           </SummaryRow>
         </Controls>
 
         {filteredItems.length === 0 ? (
-          <EmptyState>
-            {t("ballot_question_no_results", { ns: "search" })}
-          </EmptyState>
+          <EmptyState>{t("ballot_question_no_results")}</EmptyState>
         ) : (
           <List>
             {filteredItems.map(item => (
@@ -600,15 +581,12 @@ export const BrowseBallotQuestions = ({
                         >
                           <QuestionNumber>
                             {item.ballotQuestionNumber != null ? (
-                              t("ballotQuestion.browse.questionWithNumber", {
-                                count: item.ballotQuestionNumber,
-                                ns: "common"
+                              t("browse.questionWithNumber", {
+                                count: item.ballotQuestionNumber
                               })
                             ) : (
                               <>
-                                {t("ballotQuestion.browse.questionUnassigned", {
-                                  ns: "common"
-                                })}
+                                {t("browse.questionUnassigned")}
                                 <QuestionTooltip
                                   text={questionNumberDisclaimer}
                                 />
@@ -619,8 +597,7 @@ export const BrowseBallotQuestions = ({
                         <QuestionTitle>{item.title}</QuestionTitle>
                       </TitleBlock>
                       <Summary>
-                        {item.fullSummary ||
-                          t("ballot_question_no_summary", { ns: "search" })}
+                        {item.fullSummary || t("ballot_question_no_summary")}
                       </Summary>
                     </Card.Body>
                   </StyledCard>

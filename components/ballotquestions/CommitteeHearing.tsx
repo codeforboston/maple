@@ -4,7 +4,7 @@ import { Image } from "components/bootstrap"
 import { Hearing } from "./types"
 
 export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
-  const { t } = useTranslation("common")
+  const { t } = useTranslation("ballotquestions")
   const startsAt = new Date(hearing.startsAt)
   const hearingId = hearing.id.replace(/^hearing-/, "")
 
@@ -29,7 +29,7 @@ export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
           >
             <Image
               src="/speaker-podium.svg"
-              alt={t("ballotQuestion.committeeHearing.imageAlt")}
+              alt={t("committeeHearing.imageAlt")}
               width={40}
               height={40}
             />
@@ -37,10 +37,10 @@ export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
 
           <div className="flex-grow-1">
             <div className="fw-semibold mb-3 text-dark">
-              {t("ballotQuestion.committeeHearing.title")}
+              {t("committeeHearing.title")}
             </div>
             <div className="small text-body-secondary lh-lg mb-3">
-              {t("ballotQuestion.committeeHearing.description")}
+              {t("committeeHearing.description")}
             </div>
             <div className="small text-body-secondary">{dateStr}</div>
           </div>
@@ -60,7 +60,7 @@ export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
               whiteSpace: "nowrap"
             }}
           >
-            <span>{t("ballotQuestion.committeeHearing.openPage")}</span>
+            <span>{t("committeeHearing.openPage")}</span>
             <span aria-hidden="true">↗</span>
           </a>
         ) : null}

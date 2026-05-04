@@ -6,7 +6,7 @@ jest.mock("next-i18next", () => ({
   useTranslation: () => ({
     t: (key: string) => {
       const messages: Record<string, string> = {
-        "ballotQuestion.alert.ariaLabel": "Important ballot question notice"
+        "alert.ariaLabel": "Important ballot question notice"
       }
       return messages[key] ?? key
     }

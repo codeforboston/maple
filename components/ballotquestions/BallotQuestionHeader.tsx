@@ -18,37 +18,30 @@ export const BallotQuestionHeader = ({
   ballotQuestion: BallotQuestion
   bill: Bill | null
 }) => {
-  const { t } = useTranslation(["common", "search"])
+  const { t } = useTranslation(["ballotquestions"])
   const { notifications } = useFlags()
   const { user } = useAuth()
   const statusLabel = getBallotQuestionStatusLabel(ballotQuestion.ballotStatus)
-  const questionNumberDisclaimer = t(
-    "ballotQuestion.header.questionNumberDisclaimer",
-    { ns: "common" }
-  )
+  const questionNumberDisclaimer = t("header.questionNumberDisclaimer")
   const description = ballotQuestion.description
   const hasDescription = Boolean(description)
 
   const getTypeLabel = () => {
     switch (ballotQuestion.type) {
       case "initiative_statute":
-        return t("ballotQuestion.types.law", { ns: "common" })
+        return t("types.law")
       case "initiative_constitutional":
-        return t("ballotQuestion.types.constitutionalInitiative", {
-          ns: "common"
-        })
+        return t("types.constitutionalInitiative")
       case "legislative_referral":
-        return t("ballotQuestion.types.legislativeReferral", { ns: "common" })
+        return t("types.legislativeReferral")
       case "constitutional_amendment":
-        return t("ballotQuestion.types.constitutionalAmendment", {
-          ns: "common"
-        })
+        return t("types.constitutionalAmendment")
       case "advisory":
-        return t("ballotQuestion.types.advisoryQuestion", { ns: "common" })
+        return t("types.advisoryQuestion")
       case "referendum":
-        return t("ballot_question_type.referendum", { ns: "search" })
+        return t("ballot_question_type.referendum")
       default:
-        return t("ballotQuestion.types.default", { ns: "common" })
+        return t("types.default")
     }
   }
 
@@ -62,9 +55,7 @@ export const BallotQuestionHeader = ({
               className="maple-back-link text-decoration-none small fw-semibold d-inline-flex align-items-center gap-2 mb-4"
             >
               <span aria-hidden="true">←</span>
-              <span>
-                {t("ballotQuestion.header.backLink", { ns: "common" })}
-              </span>
+              <span>{t("header.backLink")}</span>
             </Link>
 
             <div className="d-flex flex-wrap align-items-center gap-2 gap-lg-3 mb-3">
@@ -99,7 +90,7 @@ export const BallotQuestionHeader = ({
                 letterSpacing: "-0.02em"
               }}
             >
-              {t("ballotQuestion.header.question", { ns: "common" })}{" "}
+              {t("header.question")}{" "}
               {ballotQuestion.ballotQuestionNumber != null ? (
                 ballotQuestion.ballotQuestionNumber
               ) : (
@@ -130,20 +121,17 @@ export const BallotQuestionHeader = ({
               className="d-flex flex-wrap gap-2 gap-lg-3 mb-4 mt-3"
               style={{ maxWidth: "42rem" }}
             >
+              <MetaFact label={t("header.type")} value={getTypeLabel()} />
               <MetaFact
-                label={t("ballotQuestion.header.type", { ns: "common" })}
-                value={getTypeLabel()}
-              />
-              <MetaFact
-                label={t("ballotQuestion.header.election", { ns: "common" })}
+                label={t("header.election")}
                 value={ballotQuestion.electionYear.toString()}
               />
               <MetaFact
-                label={t("ballotQuestion.header.court", { ns: "common" })}
+                label={t("header.court")}
                 value={ballotQuestion.court.toString()}
               />
               <MetaFact
-                label={t("ballotQuestion.header.document", { ns: "common" })}
+                label={t("header.document")}
                 value={ballotQuestion.id}
               />
             </div>
@@ -151,9 +139,7 @@ export const BallotQuestionHeader = ({
 
           <Col lg={4}>
             <div className="h-100 maple-muted-surface rounded-4 p-4">
-              <div className="maple-eyebrow mb-3">
-                {t("ballotQuestion.header.takePart", { ns: "common" })}
-              </div>
+              <div className="maple-eyebrow mb-3">{t("header.takePart")}</div>
               <div className="mb-3">
                 {notifications && user && (
                   <FollowBallotQuestionButton ballotQuestion={ballotQuestion} />
@@ -185,11 +171,7 @@ export const BallotQuestionHeader = ({
                 }}
               >
                 <span aria-hidden="true">↗</span>
-                <span>
-                  {t("ballotQuestion.header.readPetitionPdf", {
-                    ns: "common"
-                  })}
-                </span>
+                <span>{t("header.readPetitionPdf")}</span>
               </a>
             )}
           </div>

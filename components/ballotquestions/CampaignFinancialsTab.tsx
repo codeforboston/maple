@@ -14,7 +14,7 @@ export const CampaignFinancialsTab = ({
 }: {
   ballotQuestion: BallotQuestion
 }) => {
-  const { t } = useTranslation("common")
+  const { t } = useTranslation("ballotquestions")
   const support = ballotQuestion.campaignFinancials?.support ?? []
   const oppose = ballotQuestion.campaignFinancials?.oppose ?? []
 
@@ -22,13 +22,11 @@ export const CampaignFinancialsTab = ({
     <div className="d-grid gap-4">
       <SectionCard>
         <h2 className="h4 mb-1 text-secondary d-flex align-items-center gap-1">
-          {t("ballotQuestion.campaignFinancials.title")}
-          <QuestionTooltip
-            text={t("ballotQuestion.campaignFinancials.titleTooltip")}
-          />
+          {t("campaignFinancials.title")}
+          <QuestionTooltip text={t("campaignFinancials.titleTooltip")} />
         </h2>
         <p className="text-body-secondary small mb-2">
-          {t("ballotQuestion.campaignFinancials.description", {
+          {t("campaignFinancials.description", {
             year: ballotQuestion.electionYear
           })}
         </p>
@@ -43,7 +41,7 @@ export const CampaignFinancialsTab = ({
             color: "var(--maple-brand-primary)"
           }}
         >
-          <span>{t("ballotQuestion.campaignFinancials.reportsLink")}</span>
+          <span>{t("campaignFinancials.reportsLink")}</span>
           <span aria-hidden="true">↗</span>
         </a>
       </SectionCard>
@@ -51,7 +49,7 @@ export const CampaignFinancialsTab = ({
       {!ballotQuestion.campaignFinancials && (
         <SectionCard>
           <p className="text-body-secondary small mb-0">
-            {t("ballotQuestion.campaignFinancials.notAvailable")}
+            {t("campaignFinancials.notAvailable")}
           </p>
         </SectionCard>
       )}
@@ -59,7 +57,7 @@ export const CampaignFinancialsTab = ({
       {support.length > 0 && (
         <SectionCard>
           <div className="maple-eyebrow mb-1">
-            {t("ballotQuestion.campaignFinancials.support")}
+            {t("campaignFinancials.support")}
           </div>
           {ballotQuestion.supportCommittee && (
             <div className="fw-semibold text-dark mb-3">
@@ -77,7 +75,7 @@ export const CampaignFinancialsTab = ({
       {oppose.length > 0 && (
         <SectionCard>
           <div className="maple-eyebrow mb-1">
-            {t("ballotQuestion.campaignFinancials.oppose")}
+            {t("campaignFinancials.oppose")}
           </div>
           {ballotQuestion.opposeCommittee && (
             <div className="fw-semibold text-dark mb-3">
@@ -100,38 +98,36 @@ const SectionCard = ({ children }: { children: ReactNode }) => (
 )
 
 const FinanceCard = ({ entry }: { entry: CampaignFinanceEntry }) => {
-  const { t } = useTranslation("common")
+  const { t } = useTranslation("ballotquestions")
 
   return (
     <div className="maple-muted-surface rounded-4 p-3 p-lg-4">
       <div className="d-flex flex-column flex-md-row gap-3 align-items-md-center">
         <div className="flex-shrink-0">
           <Metric
-            label={t("ballotQuestion.campaignFinancials.receipts")}
+            label={t("campaignFinancials.receipts")}
             value={formatMoney(entry.cashRaised)}
-            tooltip={t("ballotQuestion.campaignFinancials.receiptsTooltip")}
+            tooltip={t("campaignFinancials.receiptsTooltip")}
           />
         </div>
         <div className="finance-spending-group rounded-3 p-3 flex-grow-1">
           <div className="row g-3">
             <Metric
-              label={t("ballotQuestion.campaignFinancials.expenditures")}
+              label={t("campaignFinancials.expenditures")}
               value={formatMoney(entry.spent)}
-              tooltip={t(
-                "ballotQuestion.campaignFinancials.expendituresTooltip"
-              )}
+              tooltip={t("campaignFinancials.expendituresTooltip")}
               colClass="col-12 col-sm-4"
             />
             <Metric
-              label={t("ballotQuestion.campaignFinancials.inKinds")}
+              label={t("campaignFinancials.inKinds")}
               value={formatMoney(entry.inKind)}
-              tooltip={t("ballotQuestion.campaignFinancials.inKindsTooltip")}
+              tooltip={t("campaignFinancials.inKindsTooltip")}
               colClass="col-12 col-sm-4"
             />
             <Metric
-              label={t("ballotQuestion.campaignFinancials.total")}
+              label={t("campaignFinancials.total")}
               value={formatMoney(entry.spent + entry.inKind)}
-              tooltip={t("ballotQuestion.campaignFinancials.totalTooltip")}
+              tooltip={t("campaignFinancials.totalTooltip")}
               colClass="col-12 col-sm-4"
             />
           </div>

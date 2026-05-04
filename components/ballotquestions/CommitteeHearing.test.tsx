@@ -6,11 +6,11 @@ jest.mock("next-i18next", () => ({
   useTranslation: () => ({
     t: (key: string) => {
       const messages: Record<string, string> = {
-        "ballotQuestion.committeeHearing.description":
+        "committeeHearing.description":
           "Committee hearings are public meetings.",
-        "ballotQuestion.committeeHearing.imageAlt": "Committee hearing",
-        "ballotQuestion.committeeHearing.openPage": "Open hearing page",
-        "ballotQuestion.committeeHearing.title": "Committee Hearing"
+        "committeeHearing.imageAlt": "Committee hearing",
+        "committeeHearing.openPage": "Open hearing page",
+        "committeeHearing.title": "Committee Hearing"
       }
       return messages[key] ?? key
     }
