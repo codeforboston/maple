@@ -8,7 +8,7 @@ export const SynthesisTab = ({
 }: {
   ballotQuestion: BallotQuestion
 }) => {
-  const { t } = useTranslation("common")
+  const { t } = useTranslation("ballotquestions")
   const yes = ballotQuestion.voteEffectYes
   const no = ballotQuestion.voteEffectNo
   const fiscal = ballotQuestion.fiscalConsequences
@@ -17,28 +17,28 @@ export const SynthesisTab = ({
     <div className="d-grid gap-4">
       <SectionCard>
         <h2 className="h4 mb-1 text-secondary">
-          {t("ballotQuestion.synthesis.title")}
+          {t("synthesis.title")}
         </h2>
         <p className="text-body-secondary small mb-0">
-          {t("ballotQuestion.synthesis.description")}
+          {t("synthesis.description")}
         </p>
       </SectionCard>
 
       {(yes || no) && (
         <SectionCard>
           <div className="maple-eyebrow mb-3 d-flex align-items-center">
-            {t("ballotQuestion.voteEffects.title")}
-            <QuestionTooltip text={t("ballotQuestion.voteEffects.tooltip")} />
+            {t("voteEffects.title")}
+            <QuestionTooltip text={t("voteEffects.tooltip")} />
           </div>
           <div className="d-grid gap-3">
             {yes && (
               <Callout
-                label={t("ballotQuestion.voteEffects.yes")}
+                label={t("voteEffects.yes")}
                 value={yes}
               />
             )}
             {no && (
-              <Callout label={t("ballotQuestion.voteEffects.no")} value={no} />
+              <Callout label={t("voteEffects.no")} value={no} />
             )}
           </div>
         </SectionCard>
@@ -47,9 +47,9 @@ export const SynthesisTab = ({
       {fiscal && (
         <SectionCard>
           <div className="maple-eyebrow mb-2 d-flex align-items-center">
-            {t("ballotQuestion.fiscalConsequences.title")}
+            {t("fiscalConsequences.title")}
             <QuestionTooltip
-              text={t("ballotQuestion.fiscalConsequences.tooltip")}
+              text={t("fiscalConsequences.tooltip")}
             />
           </div>
           <p className="mb-0 lh-lg" style={{ whiteSpace: "pre-wrap" }}>

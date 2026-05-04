@@ -6,11 +6,11 @@ jest.mock("next-i18next", () => ({
   useTranslation: () => ({
     t: (key: string) => {
       const messages: Record<string, string> = {
-        "ballotQuestion.yourPerspective.closed":
+        "yourPerspective.closed":
           "Perspectives are no longer being accepted for this ballot question.",
-        "ballotQuestion.yourPerspective.notAvailable":
+        "yourPerspective.notAvailable":
           "Perspectives are not available for this ballot question yet.",
-        "ballotQuestion.yourPerspective.title": "Your Perspective"
+        "yourPerspective.title": "Your Perspective"
       }
       return messages[key] ?? key
     }

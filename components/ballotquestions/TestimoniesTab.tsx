@@ -17,11 +17,11 @@ export const TestimoniesTab = ({
   testimony: UsePublishedTestimonyListing
   testimonySummary: BallotQuestionTestimonySummary
 }) => {
-  const { t } = useTranslation("common")
+  const { t } = useTranslation("ballotquestions")
   const isExpectedOnBallotPhase =
     ballotQuestion.ballotStatus === "expectedOnBallot"
   const allowEdit = isActiveBallotQuestionPhase(ballotQuestion.ballotStatus)
-  const totalLabel = t("ballotQuestion.testimonies.total", {
+  const totalLabel = t("testimonies.total", {
     count: testimonySummary.testimonyCount
   })
 
@@ -41,7 +41,7 @@ export const TestimoniesTab = ({
             </div>
             <div>
               <h2 className="h4 mb-1 text-secondary">
-                {t("ballotQuestion.testimonies.title")}
+                {t("testimonies.title")}
               </h2>
               <p className="text-body-secondary small mb-0">{totalLabel}</p>
               {isExpectedOnBallotPhase && bill && (
@@ -49,12 +49,12 @@ export const TestimoniesTab = ({
                   className="small text-body-secondary mt-3 mb-0"
                   style={{ maxWidth: "44rem" }}
                 >
-                  {t("ballotQuestion.testimonies.relatedBillPrefix")}{" "}
+                  {t("testimonies.relatedBillPrefix")}{" "}
                   <Link
                     href={`/bills/${bill.court}/${bill.id}#testimonies`}
                     className="fw-semibold text-decoration-none"
                   >
-                    {t("ballotQuestion.testimonies.relatedBillLink")}
+                    {t("testimonies.relatedBillLink")}
                   </Link>
                   .
                 </p>
@@ -70,7 +70,7 @@ export const TestimoniesTab = ({
           <div className="row g-3">
             <div className="col-md-4">
               <SummaryItem
-                label={t("ballotQuestion.testimonies.endorse")}
+                label={t("testimonies.endorse")}
                 count={testimonySummary.endorseCount}
                 icon="/thumbs-endorse.svg"
                 color="var(--bs-green)"
@@ -78,7 +78,7 @@ export const TestimoniesTab = ({
             </div>
             <div className="col-md-4">
               <SummaryItem
-                label={t("ballotQuestion.testimonies.neutral")}
+                label={t("testimonies.neutral")}
                 count={testimonySummary.neutralCount}
                 icon="/thumbs-neutral.svg"
                 color="var(--bs-blue)"
@@ -86,7 +86,7 @@ export const TestimoniesTab = ({
             </div>
             <div className="col-md-4">
               <SummaryItem
-                label={t("ballotQuestion.testimonies.oppose")}
+                label={t("testimonies.oppose")}
                 count={testimonySummary.opposeCount}
                 icon="/thumbs-oppose.svg"
                 color="var(--bs-orange)"
