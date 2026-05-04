@@ -15,7 +15,7 @@ export const OverviewTab = ({
   bill: Bill | null
   hearings: Hearing[]
 }) => {
-  const { t } = useTranslation("search")
+  const { t } = useTranslation(["common", "search"])
   const sortedHearings = [...hearings].sort((a, b) => b.startsAt - a.startsAt)
   const sectionCopyStyle = {
     color: "var(--maple-text-body)",
@@ -38,9 +38,11 @@ export const OverviewTab = ({
             <BallotGlyph />
           </div>
           <div>
-            <h2 className="h4 mb-1 text-secondary">Overview</h2>
+            <h2 className="h4 mb-1 text-secondary">
+              {t("ballotQuestion.overview.title", { ns: "common" })}
+            </h2>
             <p className="text-body-secondary small mb-0">
-              Understand the question, key details, and ballot context.
+              {t("ballotQuestion.overview.description", { ns: "common" })}
             </p>
           </div>
         </div>
@@ -63,7 +65,9 @@ export const OverviewTab = ({
 
       {ballotQuestion.atAGlance && ballotQuestion.atAGlance.length > 0 && (
         <SectionCard>
-          <h3 className="h5 mb-3 text-dark">Key Details</h3>
+          <h3 className="h5 mb-3 text-dark">
+            {t("ballotQuestion.overview.keyDetails", { ns: "common" })}
+          </h3>
           <Row className="g-3">
             {ballotQuestion.atAGlance.map((item, idx) => (
               <Col key={idx} md={6}>
@@ -88,8 +92,12 @@ export const OverviewTab = ({
       {ballotQuestion.fullSummary && (
         <SectionCard>
           <h3 className="h5 mb-3 text-dark d-flex align-items-center gap-1">
-            Official summary by the Massachusetts Attorney General
-            <QuestionTooltip text="As required by law, summaries are written by the State Attorney General." />
+            {t("ballotQuestion.overview.officialSummary", { ns: "common" })}
+            <QuestionTooltip
+              text={t("ballotQuestion.overview.officialSummaryTooltip", {
+                ns: "common"
+              })}
+            />
           </h3>
           <div
             style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
@@ -110,18 +118,23 @@ export const OverviewTab = ({
       {(ballotQuestion.voteEffectYes || ballotQuestion.voteEffectNo) && (
         <SectionCard>
           <h3 className="h5 mb-3 text-dark d-flex align-items-center gap-1">
-            What your vote will do
-            <QuestionTooltip text="As required by law, the statements describing the effect of a 'yes' or 'no' vote are written jointly by the State Attorney General and the Secretary of the Commonwealth." />
+            {t("ballotQuestion.voteEffects.title", { ns: "common" })}
+            <QuestionTooltip
+              text={t("ballotQuestion.voteEffects.tooltip", { ns: "common" })}
+            />
           </h3>
           <div className="d-grid gap-3">
             {ballotQuestion.voteEffectYes && (
               <Callout
-                label="Voting YES"
+                label={t("ballotQuestion.voteEffects.yes", { ns: "common" })}
                 value={ballotQuestion.voteEffectYes}
               />
             )}
             {ballotQuestion.voteEffectNo && (
-              <Callout label="Voting NO" value={ballotQuestion.voteEffectNo} />
+              <Callout
+                label={t("ballotQuestion.voteEffects.no", { ns: "common" })}
+                value={ballotQuestion.voteEffectNo}
+              />
             )}
           </div>
         </SectionCard>
@@ -130,8 +143,12 @@ export const OverviewTab = ({
       {ballotQuestion.fiscalConsequences && (
         <SectionCard>
           <h3 className="h5 mb-3 text-dark d-flex align-items-center gap-1">
-            Statement of Fiscal Consequences
-            <QuestionTooltip text="As required by law, statements of fiscal consequences are written by the Executive Office of Administration and Finance." />
+            {t("ballotQuestion.fiscalConsequences.title", { ns: "common" })}
+            <QuestionTooltip
+              text={t("ballotQuestion.fiscalConsequences.tooltip", {
+                ns: "common"
+              })}
+            />
           </h3>
           <p className="mb-0 lh-lg" style={{ whiteSpace: "pre-wrap" }}>
             {ballotQuestion.fiscalConsequences}
@@ -143,7 +160,9 @@ export const OverviewTab = ({
         sortedHearings.length > 0 &&
         sortedHearings.some(h => new Date(h.startsAt) < new Date()) && (
           <SectionCard>
-            <h3 className="h5 mb-4 text-dark">Committee Hearing</h3>
+            <h3 className="h5 mb-4 text-dark">
+              {t("ballotQuestion.committeeHearing.title", { ns: "common" })}
+            </h3>
             <div className="d-grid gap-3">
               {sortedHearings
                 .filter(h => new Date(h.startsAt) < new Date())

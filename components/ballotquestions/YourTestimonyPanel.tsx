@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import { BallotQuestion, Bill } from "../db"
 import { TestimonyFormPanel } from "../publish/panel/TestimonyFormPanel"
 import { EditTestimonyButton } from "../publish/panel/EditTestimonyButton"
@@ -14,6 +15,7 @@ export const YourTestimonyPanel = ({
   ballotQuestion: BallotQuestion
   bill: Bill | null
 }) => {
+  const { t } = useTranslation("common")
   const isActivePhase = isActiveBallotQuestionPhase(ballotQuestion.ballotStatus)
   const isTerminalPhase = isTerminalBallotQuestionPhase(
     ballotQuestion.ballotStatus
@@ -31,7 +33,9 @@ export const YourTestimonyPanel = ({
   return (
     <div className="h-100">
       <div className="d-flex align-items-center justify-content-between mb-3">
-        <div className="maple-panel-title">Your Perspective</div>
+        <div className="maple-panel-title">
+          {t("ballotQuestion.yourPerspective.title")}
+        </div>
         {showInlineEditButton && bill ? (
           <EditTestimonyButton
             billId={bill.id}
@@ -50,11 +54,11 @@ export const YourTestimonyPanel = ({
         </>
       ) : isTerminalPhase ? (
         <div className="maple-info-note rounded px-3 py-3 small">
-          Perspectives are no longer being accepted for this ballot question.
+          {t("ballotQuestion.yourPerspective.closed")}
         </div>
       ) : (
         <div className="maple-info-note rounded px-3 py-3 small">
-          Perspectives are not available for this ballot question yet.
+          {t("ballotQuestion.yourPerspective.notAvailable")}
         </div>
       )}
     </div>

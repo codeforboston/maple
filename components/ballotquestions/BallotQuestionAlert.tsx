@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import ReactMarkdown from "react-markdown"
 import { QuestionTooltip } from "../tooltip"
 
@@ -8,12 +9,14 @@ export function BallotQuestionAlert({
   alertFlag: string | null
   alertTip?: string | null
 }) {
+  const { t } = useTranslation("common")
+
   if (!alertFlag) return null
 
   return (
     <aside
       className="ballot-question-alert d-flex align-items-center gap-3 rounded-4 px-3 py-3"
-      aria-label="Important ballot question notice"
+      aria-label={t("ballotQuestion.alert.ariaLabel")}
     >
       <span className="ballot-question-alert-icon" aria-hidden="true">
         !

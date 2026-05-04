@@ -358,7 +358,7 @@ export const BrowseBallotQuestions = ({
   items: BallotQuestionBrowseItem[]
   currentYear: number
 }) => {
-  const { t } = useTranslation(["search", "testimony"])
+  const { t } = useTranslation(["common", "search", "testimony"])
   const getStatusLabel = (status: BallotQuestionStatus) =>
     t(`ballot_question_status.${status}`, { ns: "search" })
   const [searchQuery, setSearchQuery] = useState("")
@@ -416,8 +416,10 @@ export const BrowseBallotQuestions = ({
     setSelectedCourt("all")
     setSelectedStatus("all")
   }
-  const questionNumberDisclaimer =
-    "Question numbers are assigned by the Secretary of State in the summer prior to an election"
+  const questionNumberDisclaimer = t(
+    "ballotQuestion.header.questionNumberDisclaimer",
+    { ns: "common" }
+  )
 
   return (
     <>
@@ -433,7 +435,11 @@ export const BrowseBallotQuestions = ({
       )}
 
       <SearchContainer>
-        <Controls aria-label="Filter ballot questions">
+        <Controls
+          aria-label={t("ballotQuestion.browse.filtersAriaLabel", {
+            ns: "common"
+          })}
+        >
           <ControlsToolbar>
             <SearchBoxShell className="ais-SearchBox">
               <div className="ais-SearchBox-form">
@@ -594,10 +600,15 @@ export const BrowseBallotQuestions = ({
                         >
                           <QuestionNumber>
                             {item.ballotQuestionNumber != null ? (
-                              `Question ${item.ballotQuestionNumber}`
+                              t("ballotQuestion.browse.questionWithNumber", {
+                                count: item.ballotQuestionNumber,
+                                ns: "common"
+                              })
                             ) : (
                               <>
-                                Question #
+                                {t("ballotQuestion.browse.questionUnassigned", {
+                                  ns: "common"
+                                })}
                                 <QuestionTooltip
                                   text={questionNumberDisclaimer}
                                 />

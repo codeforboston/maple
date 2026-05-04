@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import { KeyboardEvent, useRef } from "react"
 import { BallotQuestionTab } from "./types"
 import {
@@ -18,28 +19,37 @@ export const BallotQuestionNav = ({
   showCampaignFinancials?: boolean
   showForAndAgainst?: boolean
 }) => {
+  const { t } = useTranslation("common")
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const navItems: Array<BallotQuestionNavItem & { enabled: boolean }> = [
-    { id: "overview", label: "Overview", enabled: true },
+    {
+      id: "overview",
+      label: t("ballotQuestion.tabs.overview"),
+      enabled: true
+    },
     {
       id: "testimonies",
-      label: "Perspectives",
+      label: t("ballotQuestion.tabs.perspectives"),
       enabled: true,
       badge: testimonyCount
     },
     {
       id: "for_against",
-      label: "For & Against",
+      label: t("ballotQuestion.tabs.forAndAgainst"),
       enabled: showForAndAgainst ?? false
     },
-    { id: "news", label: "News & Media", enabled: false },
-    { id: "academia", label: "Academia", enabled: false },
+    { id: "news", label: t("ballotQuestion.tabs.news"), enabled: false },
+    {
+      id: "academia",
+      label: t("ballotQuestion.tabs.academia"),
+      enabled: false
+    },
     {
       id: "financials",
-      label: "Campaign Financials",
+      label: t("ballotQuestion.tabs.financials"),
       enabled: showCampaignFinancials ?? false
     },
-    { id: "map", label: "Map", enabled: false }
+    { id: "map", label: t("ballotQuestion.tabs.map"), enabled: false }
   ]
   const visibleItems = navItems.filter(item => item.enabled)
 
@@ -82,12 +92,14 @@ export const BallotQuestionNav = ({
 
   return (
     <div className="maple-surface rounded-4 p-3 p-lg-4">
-      <div className="maple-eyebrow mb-3">Explore</div>
+      <div className="maple-eyebrow mb-3">
+        {t("ballotQuestion.nav.explore")}
+      </div>
 
       <div
         role="tablist"
         className="d-flex flex-row flex-lg-column gap-2 overflow-x-auto overflow-lg-visible pb-1 pb-lg-0"
-        aria-label="Ballot question sections"
+        aria-label={t("ballotQuestion.nav.sectionsAriaLabel")}
       >
         {visibleItems.map((item, itemIndex) => {
           const isActive = activeTab === item.id

@@ -1,8 +1,10 @@
+import { useTranslation } from "next-i18next"
 import { DateTime } from "luxon"
 import { Image } from "components/bootstrap"
 import { Hearing } from "./types"
 
 export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
+  const { t } = useTranslation("common")
   const startsAt = new Date(hearing.startsAt)
   const hearingId = hearing.id.replace(/^hearing-/, "")
 
@@ -27,20 +29,18 @@ export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
           >
             <Image
               src="/speaker-podium.svg"
-              alt="Committee hearing"
+              alt={t("ballotQuestion.committeeHearing.imageAlt")}
               width={40}
               height={40}
             />
           </div>
 
           <div className="flex-grow-1">
-            <div className="fw-semibold mb-3 text-dark">Committee Hearing</div>
+            <div className="fw-semibold mb-3 text-dark">
+              {t("ballotQuestion.committeeHearing.title")}
+            </div>
             <div className="small text-body-secondary lh-lg mb-3">
-              Committee hearings are public meetings where legislators reviewed
-              the proposed ballot question, asked questions, and heard testimony
-              from the public and experts. At this stage, the Legislature had
-              the opportunity to pass the proposal into law instead of sending
-              it to voters.
+              {t("ballotQuestion.committeeHearing.description")}
             </div>
             <div className="small text-body-secondary">{dateStr}</div>
           </div>
@@ -60,7 +60,7 @@ export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
               whiteSpace: "nowrap"
             }}
           >
-            <span>Open hearing page</span>
+            <span>{t("ballotQuestion.committeeHearing.openPage")}</span>
             <span aria-hidden="true">↗</span>
           </a>
         ) : null}

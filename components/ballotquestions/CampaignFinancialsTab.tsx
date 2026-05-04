@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import type { ReactNode } from "react"
 import { BallotQuestion } from "../db"
 import { QuestionTooltip } from "../tooltip"
@@ -13,6 +14,7 @@ export const CampaignFinancialsTab = ({
 }: {
   ballotQuestion: BallotQuestion
 }) => {
+  const { t } = useTranslation("common")
   const support = ballotQuestion.campaignFinancials?.support ?? []
   const oppose = ballotQuestion.campaignFinancials?.oppose ?? []
 
@@ -20,12 +22,15 @@ export const CampaignFinancialsTab = ({
     <div className="d-grid gap-4">
       <SectionCard>
         <h2 className="h4 mb-1 text-secondary d-flex align-items-center gap-1">
-          Campaign Financials
-          <QuestionTooltip text="Committee receipts and expenditures are filed with the Office of Campaign and Political Finance." />
+          {t("ballotQuestion.campaignFinancials.title")}
+          <QuestionTooltip
+            text={t("ballotQuestion.campaignFinancials.titleTooltip")}
+          />
         </h2>
         <p className="text-body-secondary small mb-2">
-          Committee receipts and expenditures from the{" "}
-          {ballotQuestion.electionYear} ballot question filings.
+          {t("ballotQuestion.campaignFinancials.description", {
+            year: ballotQuestion.electionYear
+          })}
         </p>
         <a
           href="https://www.ocpf.us/Reports/ballotquestionreports"
@@ -38,7 +43,7 @@ export const CampaignFinancialsTab = ({
             color: "var(--maple-brand-primary)"
           }}
         >
-          <span>Reports for all ballot questions</span>
+          <span>{t("ballotQuestion.campaignFinancials.reportsLink")}</span>
           <span aria-hidden="true">↗</span>
         </a>
       </SectionCard>
@@ -46,14 +51,16 @@ export const CampaignFinancialsTab = ({
       {!ballotQuestion.campaignFinancials && (
         <SectionCard>
           <p className="text-body-secondary small mb-0">
-            Campaign finance information is not yet available.
+            {t("ballotQuestion.campaignFinancials.notAvailable")}
           </p>
         </SectionCard>
       )}
 
       {support.length > 0 && (
         <SectionCard>
-          <div className="maple-eyebrow mb-1">Support</div>
+          <div className="maple-eyebrow mb-1">
+            {t("ballotQuestion.campaignFinancials.support")}
+          </div>
           {ballotQuestion.supportCommittee && (
             <div className="fw-semibold text-dark mb-3">
               {ballotQuestion.supportCommittee}
@@ -69,7 +76,9 @@ export const CampaignFinancialsTab = ({
 
       {oppose.length > 0 && (
         <SectionCard>
-          <div className="maple-eyebrow mb-1">Oppose</div>
+          <div className="maple-eyebrow mb-1">
+            {t("ballotQuestion.campaignFinancials.oppose")}
+          </div>
           {ballotQuestion.opposeCommittee && (
             <div className="fw-semibold text-dark mb-3">
               {ballotQuestion.opposeCommittee}
@@ -90,41 +99,47 @@ const SectionCard = ({ children }: { children: ReactNode }) => (
   <section className="maple-surface rounded-4 p-4">{children}</section>
 )
 
-const FinanceCard = ({ entry }: { entry: CampaignFinanceEntry }) => (
-  <div className="maple-muted-surface rounded-4 p-3 p-lg-4">
-    <div className="d-flex flex-column flex-md-row gap-3 align-items-md-center">
-      <div className="flex-shrink-0">
-        <Metric
-          label="Receipts"
-          value={formatMoney(entry.cashRaised)}
-          tooltip="Contributions made in cash to the campaign"
-        />
-      </div>
-      <div className="finance-spending-group rounded-3 p-3 flex-grow-1">
-        <div className="row g-3">
+const FinanceCard = ({ entry }: { entry: CampaignFinanceEntry }) => {
+  const { t } = useTranslation("common")
+
+  return (
+    <div className="maple-muted-surface rounded-4 p-3 p-lg-4">
+      <div className="d-flex flex-column flex-md-row gap-3 align-items-md-center">
+        <div className="flex-shrink-0">
           <Metric
-            label="Expenditures"
-            value={formatMoney(entry.spent)}
-            tooltip="Cash spent by the campaign to support its objectives"
-            colClass="col-12 col-sm-4"
+            label={t("ballotQuestion.campaignFinancials.receipts")}
+            value={formatMoney(entry.cashRaised)}
+            tooltip={t("ballotQuestion.campaignFinancials.receiptsTooltip")}
           />
-          <Metric
-            label="Inkinds"
-            value={formatMoney(entry.inKind)}
-            tooltip="Cash value of contributions to the campaign made in goods, services, or commodities"
-            colClass="col-12 col-sm-4"
-          />
-          <Metric
-            label="Total"
-            value={formatMoney(entry.spent + entry.inKind)}
-            tooltip="Value of cash and in-kind expenditures made by the campaign"
-            colClass="col-12 col-sm-4"
-          />
+        </div>
+        <div className="finance-spending-group rounded-3 p-3 flex-grow-1">
+          <div className="row g-3">
+            <Metric
+              label={t("ballotQuestion.campaignFinancials.expenditures")}
+              value={formatMoney(entry.spent)}
+              tooltip={t(
+                "ballotQuestion.campaignFinancials.expendituresTooltip"
+              )}
+              colClass="col-12 col-sm-4"
+            />
+            <Metric
+              label={t("ballotQuestion.campaignFinancials.inKinds")}
+              value={formatMoney(entry.inKind)}
+              tooltip={t("ballotQuestion.campaignFinancials.inKindsTooltip")}
+              colClass="col-12 col-sm-4"
+            />
+            <Metric
+              label={t("ballotQuestion.campaignFinancials.total")}
+              value={formatMoney(entry.spent + entry.inKind)}
+              tooltip={t("ballotQuestion.campaignFinancials.totalTooltip")}
+              colClass="col-12 col-sm-4"
+            />
+          </div>
         </div>
       </div>
     </div>
-  </div>
-)
+  )
+}
 
 const Metric = ({
   label,

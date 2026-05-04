@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import type { ReactNode } from "react"
 import { useMemo } from "react"
 import { BallotQuestion } from "../db"
@@ -8,6 +9,8 @@ export const ForAndAgainstTab = ({
 }: {
   ballotQuestion: BallotQuestion
 }) => {
+  const { t } = useTranslation("common")
+
   return (
     <div className="d-grid gap-4">
       <SectionCard>
@@ -22,16 +25,11 @@ export const ForAndAgainstTab = ({
             <BalanceGlyph />
           </div>
           <div>
-            <h2 className="h4 mb-1 text-secondary">Arguments</h2>
+            <h2 className="h4 mb-1 text-secondary">
+              {t("ballotQuestion.forAndAgainst.argumentsTitle")}
+            </h2>
             <p className="text-body-secondary small mb-0 lh-lg">
-              As provided by law, the 150-word arguments are written by
-              proponents and opponents of each question, and reflect their
-              opinions. The Commonwealth of Massachusetts does not endorse these
-              arguments, and does not certify the truth or accuracy of any
-              statement made in these arguments. The names of the individuals
-              and organizations who wrote each argument, and any written
-              comments by others about each argument, are on file in the Office
-              of the Secretary of the Commonwealth.
+              {t("ballotQuestion.forAndAgainst.argumentsBody")}
             </p>
           </div>
         </div>
@@ -40,20 +38,24 @@ export const ForAndAgainstTab = ({
       {hasAnyData(ballotQuestion) ? (
         <>
           <ArgumentCard
-            title="Argument in favor"
+            title={t("ballotQuestion.forAndAgainst.inFavorTitle")}
             committee={ballotQuestion.supportCommittee}
             statement={ballotQuestion.inFavor}
+            noCommitteeText={t("ballotQuestion.forAndAgainst.noCommitteeText")}
+            noStatementText={t("ballotQuestion.forAndAgainst.noStatementText")}
           />
           <ArgumentCard
-            title="Argument against"
+            title={t("ballotQuestion.forAndAgainst.againstTitle")}
             committee={ballotQuestion.opposeCommittee}
             statement={ballotQuestion.against}
+            noCommitteeText={t("ballotQuestion.forAndAgainst.noCommitteeText")}
+            noStatementText={t("ballotQuestion.forAndAgainst.noStatementText")}
           />
         </>
       ) : (
         <SectionCard>
           <p className="text-body-secondary small mb-0">
-            Committee information is not yet available.
+            {t("ballotQuestion.forAndAgainst.noCommitteeText")}
           </p>
         </SectionCard>
       )}
@@ -67,27 +69,27 @@ const hasAnyData = (bq: BallotQuestion) =>
 const ArgumentCard = ({
   title,
   committee,
-  statement
+  statement,
+  noCommitteeText,
+  noStatementText
 }: {
   title: string
   committee: string | null
   statement: string | null
+  noCommitteeText: string
+  noStatementText: string
 }) => (
   <SectionCard>
     <h3 className="h5 mb-3 text-dark">{title}</h3>
     {committee ? (
       <div className="maple-eyebrow small mb-3">{committee}</div>
     ) : (
-      <p className="text-body-secondary small mb-3">
-        Committee information is not yet available.
-      </p>
+      <p className="text-body-secondary small mb-3">{noCommitteeText}</p>
     )}
     {statement ? (
       <BallotQuestionMarkdown content={statement} />
     ) : (
-      <p className="text-body-secondary small mb-0">
-        No official statement has been made.
-      </p>
+      <p className="text-body-secondary small mb-0">{noStatementText}</p>
     )}
   </SectionCard>
 )

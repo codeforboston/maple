@@ -69,6 +69,115 @@
     "view_bill": "View Bill Text",
     "view_full_summary": "View Full Summary"
   },
+  "ballotQuestion": {
+    "alert": {
+      "ariaLabel": "Important ballot question notice"
+    },
+    "campaignFinancials": {
+      "description": "Committee receipts and expenditures from the {{year}} ballot question filings.",
+      "expenditures": "Expenditures",
+      "expendituresTooltip": "Cash spent by the campaign to support its objectives",
+      "inKinds": "Inkinds",
+      "inKindsTooltip": "Cash value of contributions to the campaign made in goods, services, or commodities",
+      "notAvailable": "Campaign finance information is not yet available.",
+      "oppose": "Oppose",
+      "receipts": "Receipts",
+      "receiptsTooltip": "Contributions made in cash to the campaign",
+      "reportsLink": "Reports for all ballot questions",
+      "support": "Support",
+      "title": "Campaign Financials",
+      "titleTooltip": "Committee receipts and expenditures are filed with the Office of Campaign and Political Finance.",
+      "total": "Total",
+      "totalTooltip": "Value of cash and in-kind expenditures made by the campaign"
+    },
+    "browse": {
+      "filtersAriaLabel": "Filter ballot questions",
+      "questionUnassigned": "Question #",
+      "questionWithNumber": "Question {{count}}"
+    },
+    "committeeHearing": {
+      "description": "Committee hearings are public meetings where legislators reviewed the proposed ballot question, asked questions, and heard testimony from the public and experts. At this stage, the Legislature had the opportunity to pass the proposal into law instead of sending it to voters.",
+      "imageAlt": "Committee hearing",
+      "openPage": "Open hearing page",
+      "title": "Committee Hearing"
+    },
+    "fiscalConsequences": {
+      "title": "Statement of Fiscal Consequences",
+      "tooltip": "As required by law, statements of fiscal consequences are written by the Executive Office of Administration and Finance."
+    },
+    "forAndAgainst": {
+      "againstTitle": "Argument against",
+      "argumentsBody": "Official ballot argument information is provided by the Commonwealth of Massachusetts.",
+      "argumentsTitle": "Arguments",
+      "inFavorTitle": "Argument in favor",
+      "noCommitteeText": "Committee information is not yet available.",
+      "noStatementText": "No official statement has been made."
+    },
+    "header": {
+      "backLink": "Back to ballot questions",
+      "court": "Court",
+      "document": "Document",
+      "election": "Election",
+      "question": "Question",
+      "questionNumberDisclaimer": "Question numbers are assigned by the Secretary of State in the summer prior to an election",
+      "readPetitionPdf": "Read petition PDF",
+      "takePart": "Take part",
+      "type": "Type"
+    },
+    "nav": {
+      "explore": "Explore",
+      "sectionsAriaLabel": "Ballot question sections"
+    },
+    "overview": {
+      "description": "Understand the question, key details, and ballot context.",
+      "keyDetails": "Key Details",
+      "officialSummary": "Official summary by the Massachusetts Attorney General",
+      "officialSummaryTooltip": "As required by law, summaries are written by the State Attorney General.",
+      "title": "Overview"
+    },
+    "synthesis": {
+      "description": "Vote effects and fiscal consequences from the voter guide.",
+      "title": "Synthesis & Insights"
+    },
+    "tabs": {
+      "academia": "Academia",
+      "financials": "Campaign Financials",
+      "forAndAgainst": "For & Against",
+      "map": "Map",
+      "news": "News & Media",
+      "overview": "Overview",
+      "perspectives": "Perspectives"
+    },
+    "testimonies": {
+      "endorse": "Endorse",
+      "neutral": "Neutral",
+      "oppose": "Oppose",
+      "relatedBillLink": "here",
+      "relatedBillPrefix": "You can review testimony on the related bill",
+      "title": "Perspectives",
+      "total_one": "{{count}} perspective",
+      "total_other": "{{count}} perspectives"
+    },
+    "types": {
+      "advisoryQuestion": "Advisory Question",
+      "constitutionalAmendment": "Constitutional Amendment",
+      "constitutionalInitiative": "Constitutional Initiative",
+      "default": "Ballot Question",
+      "law": "Law",
+      "legislativeReferral": "Legislative Referral"
+    },
+    "voteEffects": {
+      "no": "Voting NO",
+      "title": "What your vote will do",
+      "tooltip": "As required by law, the statements describing the effect of a yes or no vote are written jointly by the State Attorney General and the Secretary of the Commonwealth.",
+      "yes": "Voting YES"
+    },
+    "yourPerspective": {
+      "closed": "Perspectives are no longer being accepted for this ballot question.",
+      "notAvailable": "Perspectives are not available for this ballot question yet.",
+      "title": "Your Perspective"
+    }
+  },
   "bill_updates": "Bill Updates",
   "browse_bills": "browse bills",
   "button": {

@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import type { ReactNode } from "react"
 import { BallotQuestion } from "../db"
 import { QuestionTooltip } from "../tooltip"
@@ -7,6 +8,7 @@ export const SynthesisTab = ({
 }: {
   ballotQuestion: BallotQuestion
 }) => {
+  const { t } = useTranslation("common")
   const yes = ballotQuestion.voteEffectYes
   const no = ballotQuestion.voteEffectNo
   const fiscal = ballotQuestion.fiscalConsequences
@@ -14,21 +16,30 @@ export const SynthesisTab = ({
   return (
     <div className="d-grid gap-4">
       <SectionCard>
-        <h2 className="h4 mb-1 text-secondary">Synthesis & Insights</h2>
+        <h2 className="h4 mb-1 text-secondary">
+          {t("ballotQuestion.synthesis.title")}
+        </h2>
         <p className="text-body-secondary small mb-0">
-          Vote effects and fiscal consequences from the voter guide.
+          {t("ballotQuestion.synthesis.description")}
         </p>
       </SectionCard>
 
       {(yes || no) && (
         <SectionCard>
           <div className="maple-eyebrow mb-3 d-flex align-items-center">
-            What your vote will do
-            <QuestionTooltip text="As required by law, the statements describing the effect of a “yes” or “no” vote are written jointly by the State Attorney General and the Secretary of the Commonwealth." />
+            {t("ballotQuestion.voteEffects.title")}
+            <QuestionTooltip text={t("ballotQuestion.voteEffects.tooltip")} />
           </div>
           <div className="d-grid gap-3">
-            {yes && <Callout label="Voting YES" value={yes} />}
-            {no && <Callout label="Voting NO" value={no} />}
+            {yes && (
+              <Callout
+                label={t("ballotQuestion.voteEffects.yes")}
+                value={yes}
+              />
+            )}
+            {no && (
+              <Callout label={t("ballotQuestion.voteEffects.no")} value={no} />
+            )}
           </div>
         </SectionCard>
       )}
@@ -36,8 +47,10 @@ export const SynthesisTab = ({
       {fiscal && (
         <SectionCard>
           <div className="maple-eyebrow mb-2 d-flex align-items-center">
-            Statement of Fiscal Consequences
-            <QuestionTooltip text="As required by law, statements of fiscal consequences are written by the Executive Office of Administration and Finance." />
+            {t("ballotQuestion.fiscalConsequences.title")}
+            <QuestionTooltip
+              text={t("ballotQuestion.fiscalConsequences.tooltip")}
+            />
           </div>
           <p className="mb-0 lh-lg" style={{ whiteSpace: "pre-wrap" }}>
             {fiscal}
