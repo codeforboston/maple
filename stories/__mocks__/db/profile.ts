@@ -49,7 +49,11 @@ export function useProfile() {
     updatingProfileImage: false,
     updatingOrgCategory: false,
     updatingBillsFollowing: false,
-    updatingContactInfo: { publicEmail: false, publicPhone: false, website: false },
+    updatingContactInfo: {
+      publicEmail: false,
+      publicPhone: false,
+      website: false
+    },
     updatingSocial: {
       linkedIn: false,
       twitter: false,
