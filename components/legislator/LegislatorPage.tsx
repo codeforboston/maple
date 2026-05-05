@@ -1,31 +1,16 @@
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { collectionGroup, getDocs, query, where } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
 import ErrorPage from "next/error"
-import { useEffect, useState } from "react"
 import styled from "styled-components"
 
-import { Role, useAuth } from "../auth"
 import { Col, Container, Row, Spinner } from "../bootstrap"
-import { usePublicProfile, usePublishedTestimonyListing } from "../db"
-import {
-  Back,
-  ButtonContainer,
-  FeatureCalloutButton
-} from "../shared/CommonComponents"
-import { Banner } from "../shared/StyledSharedComponents"
-import ViewTestimony from "../TestimonyCard/ViewTestimony"
+import { usePublicProfile } from "../db"
 
 import { LegislatorSidebar } from "./SidebarComponents/LegislatorSidebar"
 import { LegislatorTabs } from "./TabComponents/LegislatorTabs"
 
-import { useFlags } from "components/featureFlags"
-import { firestore } from "components/firebase"
 import { Internal } from "components/links"
-import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
-import { VerifyAccountSection } from "components/shared"
-import { FollowContext, OrgFollowStatus } from "components/shared/FollowContext"
 
 const DirectoryPath = styled.div`
   font-size: 12px;
