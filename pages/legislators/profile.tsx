@@ -21,7 +21,7 @@ export default createPage<{ court: string }>({
         ) : id ? (
           <LegislatorPage id={id} />
         ) : (
-          <div>{t("noUser")}</div>
+          <div>{t("noLegislator")}</div>
         )}
       </div>
     )
