@@ -6,12 +6,15 @@ import styled from "styled-components"
 
 import { Col, Container, Row, Spinner } from "../bootstrap"
 import { usePublicProfile } from "../db"
+import * as links from "../links"
 
+import { Bluesky, LinkedIn, Twitter } from "./LegislatorComponents"
 import { LegislatorSidebar } from "./SidebarComponents/LegislatorSidebar"
 import { LegislatorTabs } from "./TabComponents/LegislatorTabs"
 
 import { useFlags } from "components/featureFlags"
 import { Internal } from "components/links"
+import { CircleImage } from "components/shared/LabeledIcon"
 
 const DirectoryPath = styled.div.attrs(props => ({
   className: `align-items-center d-flex flex-nowrap ${props.className}`
@@ -25,6 +28,12 @@ const HeaderBlock = styled.div`
   border-radius: 5px;
   margin-top: 8px;
   padding: 16px;
+`
+
+const HeaderName = styled.div`
+  font-size: 26px;
+  font-weight: 700;
+  color: #0b0a3e;
 `
 
 const StatBlock = styled(Col).attrs(props => ({
@@ -58,7 +67,9 @@ export function LegislatorPage(props: { id: string }) {
   const { result: profile, loading } = usePublicProfile(props.id)
   const { legislators } = useFlags()
 
-  console.log("Pro: ", profile)
+  // eventually this should be replaced with a profile prop array that
+  // contains a list of courts the legislator served on
+  const viableCourts = "194"
 
   if (loading) {
     return (
@@ -74,8 +85,10 @@ export function LegislatorPage(props: { id: string }) {
     return <ErrorPage statusCode={404} withDarkMode={false} />
   }
 
+  console.log("Pro: ", profile)
+
   return (
-    <Container className="mt-3 mb-3">
+    <Container className="my-3">
       <DirectoryPath>
         <Internal className="text-decoration-none" href="/">
           {t("home")}
@@ -86,7 +99,60 @@ export function LegislatorPage(props: { id: string }) {
         <div style={{ color: "#6c757d" }}>{profile.fullName}</div>
       </DirectoryPath>
 
-      <HeaderBlock>Header Info Goes Here</HeaderBlock>
+      <HeaderBlock className="d-flex flex-wrap justify-content-between">
+        <CircleImage className="me-2">
+          <img
+            src={`https://malegislature.gov/Legislators/Profile/170/${profile.memberId}.jpg`}
+            alt={""}
+            className={`image`}
+          />
+        </CircleImage>
+        <Col>
+          <Col className="d-flex" xs="6" sm="12">
+            <links.External
+              href={`https://malegislature.gov/Legislators/Profile/${profile.memberId}`}
+              className="text-decoration-none"
+            >
+              <HeaderName>{profile.fullName}</HeaderName>
+            </links.External>
+          </Col>
+
+          <div>State ?</div>
+          <div>Democratic Party</div>
+          <div>
+            {/** fix mailto: on live **/}
+            <a href="mailto:#">{profile.email}</a>
+            <span className="px-2">·</span>
+            {/** need profile prop for personal webpage **/}
+            <a href="#" target="_blank">
+              janedoe.com
+            </a>
+            <span className="px-2">·</span>
+            <span>telephone #</span>
+            <span className="px-2">·</span>
+            <a
+              href={profile?.social?.twitter}
+              className="pe-2"
+              title="Twitter/X"
+            >
+              <Twitter />
+            </a>
+            <a
+              href={profile?.social?.linkedIn}
+              className="pe-2"
+              title="linkedIn"
+            >
+              <LinkedIn />
+            </a>
+            <a href={profile?.social?.blueSky} className="pe-2" title="Bluesky">
+              <Bluesky />
+            </a>
+          </div>
+        </Col>
+        <Col className="col-2">
+          <div className="">Buttons</div>
+        </Col>
+      </HeaderBlock>
 
       <div className="d-flex flex-wrap gap-2 justify-content-between mt-2">
         <StatBlock>
