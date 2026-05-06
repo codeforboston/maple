@@ -1,8 +1,12 @@
 import { isString } from "lodash"
+import { logger } from "firebase-functions"
 import { logFetchError } from "../common"
 import * as api from "../malegislature"
 import { createScraper } from "../scraper"
+import { getDocumentWithPdfTextFallback } from "./documentTextFallback"
 import { Bill, MISSING_TIMESTAMP } from "./types"
+
+export { getDocumentWithPdfTextFallback } from "./documentTextFallback"
 
 /**
  * There are around 8000 documents. With 8 batches per day, 20 parallel
@@ -18,7 +22,8 @@ export const { fetchBatch: fetchBillBatch, startBatches: startBillBatches } =
     fetchBatchTimeout: 240,
     startBatchTimeout: 240,
     fetchResource: async (court: number, id: string, current) => {
-      const content = await api.getDocument({ id, court })
+      const { content, pdfTextExtraction } =
+        await getDocumentWithPdfTextFallback(court, id)
       const history = await api
         .getBillHistory(court, id)
         .catch(logFetchError("bill history", id))
@@ -28,8 +33,11 @@ export const { fetchBatch: fetchBillBatch, startBatches: startBillBatches } =
         .getSimilarBills(court, id)
         .catch(logFetchError("similar bills", id))
         .then(bills => bills?.map(b => b.BillNumber).filter(isString) ?? [])
-      if (content.DocumentText == null) {
-        delete content.DocumentText
+
+      if (content.DocumentText == null && pdfTextExtraction) {
+        logger.info(
+          `No bill text extracted from PDF for ${court}/${id}: ${pdfTextExtraction.status}`
+        )
       }
 
       const resource: Partial<Bill> = {
