@@ -10,6 +10,7 @@ import { usePublicProfile } from "../db"
 import { LegislatorSidebar } from "./SidebarComponents/LegislatorSidebar"
 import { LegislatorTabs } from "./TabComponents/LegislatorTabs"
 
+import { useFlags } from "components/featureFlags"
 import { Internal } from "components/links"
 
 const DirectoryPath = styled.div.attrs(props => ({
@@ -55,6 +56,7 @@ const StatNum = styled.div.attrs(props => ({
 export function LegislatorPage(props: { id: string }) {
   const { t } = useTranslation("legislators")
   const { result: profile, loading } = usePublicProfile(props.id)
+  const { legislators } = useFlags()
 
   console.log("Pro: ", profile)
 
@@ -64,6 +66,9 @@ export function LegislatorPage(props: { id: string }) {
         <Spinner animation="border" className="mx-auto" />
       </Row>
     )
+  }
+  if (!legislators) {
+    return <ErrorPage statusCode={404} withDarkMode={false} />
   }
   if (!profile) {
     return <ErrorPage statusCode={404} withDarkMode={false} />
