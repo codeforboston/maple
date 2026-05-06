@@ -2,7 +2,6 @@ import { useTranslation } from "next-i18next"
 import { useEffect, useState } from "react"
 import { Spinner } from "react-bootstrap"
 
-import { useAuth } from "components/auth"
 import { LegislatorPage } from "components/legislator"
 import { createPage } from "components/page"
 import { createGetStaticTranslationProps } from "components/translations"
@@ -30,7 +29,6 @@ export default createPage<{ court: string }>({
 })
 
 const useProfileRouting = () => {
-  const { user } = useAuth()
   const [id, setId] = useState<string>("od")
   const [loading, setLoading] = useState<boolean>(true)
 
@@ -39,13 +37,6 @@ const useProfileRouting = () => {
       const urlParams = new URLSearchParams(window.location?.search)
       const urlid = urlParams.get("id")
 
-      if (urlid === null) {
-        if (user?.uid) {
-          setId(user.uid)
-          urlParams.set("id", user.uid)
-        }
-      }
-
       if (typeof urlid === "string") {
         setId(urlid)
       }
@@ -53,7 +44,7 @@ const useProfileRouting = () => {
         setLoading(false)
       }
     }
-  }, [id, user?.uid])
+  }, [id])
 
   return { id, loading }
 }
