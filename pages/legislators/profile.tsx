@@ -7,11 +7,10 @@ import { LegislatorPage } from "components/legislator"
 import { createPage } from "components/page"
 import { createGetStaticTranslationProps } from "components/translations"
 
-export default createPage({
+export default createPage<{ court: string }>({
   titleI18nKey: "navigation.legislator",
   Page: () => {
     const { id, loading } = useProfileRouting()
-    const { authenticated, user } = useAuth()
     const { t } = useTranslation("profile")
 
     return (
@@ -20,8 +19,6 @@ export default createPage({
           <div className={`d-grid place-content-center`}>
             <Spinner animation={"border"} />
           </div>
-        ) : !loading && !id && authenticated ? (
-          <LegislatorPage id={user!.uid} />
         ) : id ? (
           <LegislatorPage id={id} />
         ) : (
@@ -34,7 +31,6 @@ export default createPage({
 
 const useProfileRouting = () => {
   const { user } = useAuth()
-
   const [id, setId] = useState<string>("od")
   const [loading, setLoading] = useState<boolean>(true)
 
