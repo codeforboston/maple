@@ -12,7 +12,9 @@ import { LegislatorTabs } from "./TabComponents/LegislatorTabs"
 
 import { Internal } from "components/links"
 
-const DirectoryPath = styled.div`
+const DirectoryPath = styled.div.attrs(props => ({
+  className: `align-items-center d-flex flex-nowrap ${props.className}`
+}))`
   font-size: 12px;
 `
 
@@ -24,7 +26,10 @@ const HeaderBlock = styled.div`
   padding: 16px;
 `
 
-const StatBlock = styled(Col)`
+const StatBlock = styled(Col).attrs(props => ({
+  className: `d-flex col-4 flex-grow-1 ${props.className}`,
+  md: `2`
+}))`
   background-color: white;
   border: 1px #ced4da solid;
   border-radius: 5px;
@@ -32,11 +37,15 @@ const StatBlock = styled(Col)`
   padding: 16px;
 `
 
-const StatLine = styled(Row)`
+const StatLine = styled(Row).attrs(props => ({
+  className: `text-nowrap ${props.className}`
+}))`
   font-size: 12px;
 `
 
-const StatNum = styled.div`
+const StatNum = styled.div.attrs(props => ({
+  className: `mx-auto ${props.className}`
+}))`
   color: #1a3185;
   font-size: 22px;
   font-weight: 700;
@@ -62,7 +71,7 @@ export function LegislatorPage(props: { id: string }) {
 
   return (
     <Container className="mt-3 mb-3">
-      <DirectoryPath className="align-items-center d-flex flex-nowrap">
+      <DirectoryPath>
         <Internal className="text-decoration-none" href="/">
           {t("home")}
         </Internal>
@@ -72,31 +81,31 @@ export function LegislatorPage(props: { id: string }) {
         <div style={{ color: "#6c757d" }}>{profile.fullName}</div>
       </DirectoryPath>
 
-      <HeaderBlock className="">Header Info Goes Here</HeaderBlock>
+      <HeaderBlock>Header Info Goes Here</HeaderBlock>
 
       <div className="d-flex flex-wrap gap-2 justify-content-between mt-2">
-        <StatBlock className="d-flex col-4 flex-grow-1" md="2">
+        <StatBlock>
           <Col className="flex-grow-0 mx-auto">
-            <StatNum className="mx-auto">?</StatNum>
-            <StatLine className="text-nowrap">{t("termsServed")}</StatLine>
+            <StatNum>?</StatNum>
+            <StatLine>{t("termsServed")}</StatLine>
           </Col>
         </StatBlock>
-        <StatBlock className="d-flex col-4 flex-grow-1" md="2">
+        <StatBlock>
           <Col className="flex-grow-0 mx-auto">
-            <StatNum className="mx-auto">?</StatNum>
-            <StatLine className="text-nowrap">{t("billsSponsored")}</StatLine>
+            <StatNum>?</StatNum>
+            <StatLine>{t("billsSponsored")}</StatLine>
           </Col>
         </StatBlock>
-        <StatBlock className="d-flex col-4 flex-grow-1" md="2">
+        <StatBlock>
           <Col className="flex-grow-0 mx-auto">
-            <StatNum className="mx-auto">?</StatNum>
-            <StatLine className="text-nowrap">{t("cosponsored")}</StatLine>
+            <StatNum>?</StatNum>
+            <StatLine>{t("cosponsored")}</StatLine>
           </Col>
         </StatBlock>
-        <StatBlock className="d-flex col-4 flex-grow-1" md="2">
+        <StatBlock>
           <Col className="flex-grow-0 mx-auto">
-            <StatNum className="mx-auto">?</StatNum>
-            <StatLine className="text-nowrap">{t("fundsRaised")}</StatLine>
+            <StatNum>?</StatNum>
+            <StatLine>{t("fundsRaised")}</StatLine>
           </Col>
         </StatBlock>
       </div>
