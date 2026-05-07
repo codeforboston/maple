@@ -1,11 +1,14 @@
+import { doc, getDoc } from "firebase/firestore"
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useTranslation } from "next-i18next"
 import ErrorPage from "next/error"
+import { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
 
 import { Col, Container, Row, Spinner } from "../bootstrap"
 import { usePublicProfile } from "../db"
+import { firestore } from "../firebase"
 import * as links from "../links"
 
 import { Bluesky, LinkedIn, Twitter } from "./LegislatorComponents"
@@ -71,6 +74,28 @@ export function LegislatorPage(props: { id: string }) {
   // contains a list of courts the legislator served on
   const viableCourts = "194"
 
+  const [district, setDistrict] = useState<string>("")
+  const [party, setParty] = useState<string>("")
+  const [phoneNumber, setPhoneNumber] = useState<string>("")
+
+  const memberData = useCallback(async () => {
+    const member = await getDoc(
+      doc(
+        firestore,
+        `generalCourts/${viableCourts}/members/${profile?.memberId}`
+      )
+    )
+    const docData = member.data()
+
+    setDistrict(docData?.content.District)
+    setParty(docData?.content.Party)
+    setPhoneNumber(docData?.content.PhoneNumber)
+  }, [district, party, phoneNumber])
+
+  useEffect(() => {
+    profile ? memberData() : null
+  }, [memberData, profile])
+
   if (loading) {
     return (
       <Row>
@@ -85,7 +110,28 @@ export function LegislatorPage(props: { id: string }) {
     return <ErrorPage statusCode={404} withDarkMode={false} />
   }
 
+  const formatPhoneNumber = (value: string) => {
+    if (!value) return value
+
+    const phoneNumber = value.replace(/[^\d]/g, "")
+    const phoneNumberLength = phoneNumber.length
+
+    // Format as (XXX) XXX-XXXX
+    if (phoneNumberLength < 4) return phoneNumber
+    if (phoneNumberLength < 7) {
+      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`
+    }
+    return `
+      (${phoneNumber.slice(0, 3)})
+       ${phoneNumber.slice(3, 6)}-
+       ${phoneNumber.slice(6, 10)}
+    `
+  }
+
   console.log("Pro: ", profile)
+  console.log("District: ", district)
+  console.log("Party: ", party)
+  console.log("Phone #: ", phoneNumber)
 
   return (
     <Container className="my-3">
@@ -117,8 +163,11 @@ export function LegislatorPage(props: { id: string }) {
             </links.External>
           </Col>
 
-          <div>State ?</div>
-          <div>Democratic Party</div>
+          <div>
+            State ?<span className="px-2">·</span>
+            {district}
+          </div>
+          <div>{party}</div>
           <div>
             {/** fix mailto: on live **/}
             <a href="mailto:#">{profile.email}</a>
@@ -128,7 +177,7 @@ export function LegislatorPage(props: { id: string }) {
               janedoe.com
             </a>
             <span className="px-2">·</span>
-            <span>telephone #</span>
+            <span>{formatPhoneNumber(phoneNumber)}</span>
             <span className="px-2">·</span>
             <a
               href={profile?.social?.twitter}
