@@ -37,9 +37,7 @@ const BillHistoryActionRows = ({ billHistory }: HistoryProps) => {
         return (
           <tr key={index}>
             <td>
-              {Date
-                ? `${Date.substring(5, 10)}-${Date.substring(0, 4)}`
-                : ""}
+              {Date ? `${Date.substring(5, 10)}-${Date.substring(0, 4)}` : ""}
             </td>
             <td>
               <LinkConnectedBills action={Action} />
