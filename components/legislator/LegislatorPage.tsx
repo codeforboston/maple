@@ -1,5 +1,8 @@
 import { doc, getDoc } from "firebase/firestore"
-import { faChevronRight } from "@fortawesome/free-solid-svg-icons"
+import {
+  faAddressBook,
+  faChevronRight
+} from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useTranslation } from "next-i18next"
 import ErrorPage from "next/error"
@@ -39,6 +42,22 @@ const HeaderName = styled.div`
   color: #0b0a3e;
 `
 
+const RoleLine = styled.div`
+  font-size: 14px;
+  color: #6c757d;
+`
+
+const PhoneNum = styled.span`
+  color: #6c757d;
+`
+
+const SocialLine = styled.div.attrs(props => ({
+  className: `d-flex flex-wrap ${props.className}`
+}))`
+  font-size: 12px;
+  text-decoration: none;
+`
+
 const StatBlock = styled(Col).attrs(props => ({
   className: `d-flex col-4 flex-grow-1 ${props.className}`,
   md: `2`
@@ -74,9 +93,12 @@ export function LegislatorPage(props: { id: string }) {
   // contains a list of courts the legislator served on
   const viableCourts = "194"
 
+  const [branch, setBranch] = useState<string>("")
+  const [cosponsoredBills, setCosponsoredBills] = useState<Array<string>>([""])
   const [district, setDistrict] = useState<string>("")
   const [party, setParty] = useState<string>("")
   const [phoneNumber, setPhoneNumber] = useState<string>("")
+  const [sponsoredBills, setSponsoredBills] = useState<Array<string>>([""])
 
   const memberData = useCallback(async () => {
     const member = await getDoc(
@@ -87,9 +109,12 @@ export function LegislatorPage(props: { id: string }) {
     )
     const docData = member.data()
 
+    setBranch(docData?.content.Branch)
+    setCosponsoredBills(docData?.content.CoSponsoredBills)
     setDistrict(docData?.content.District)
     setParty(docData?.content.Party)
     setPhoneNumber(docData?.content.PhoneNumber)
+    setSponsoredBills(docData?.content.SponsoredBills)
   }, [district, party, phoneNumber])
 
   useEffect(() => {
@@ -129,9 +154,7 @@ export function LegislatorPage(props: { id: string }) {
   }
 
   console.log("Pro: ", profile)
-  console.log("District: ", district)
-  console.log("Party: ", party)
-  console.log("Phone #: ", phoneNumber)
+  console.log("SB: ", sponsoredBills)
 
   return (
     <Container className="my-3">
@@ -163,40 +186,105 @@ export function LegislatorPage(props: { id: string }) {
             </links.External>
           </Col>
 
-          <div>
-            State ?<span className="px-2">·</span>
+          <RoleLine>
+            {branch == "Senate" ? (
+              <span>{t("stateSenator")}</span>
+            ) : (
+              <span>{t("stateRepresentative")}</span>
+            )}
+            <span className="px-2">·</span>
             {district}
-          </div>
+          </RoleLine>
+
           <div>{party}</div>
-          <div>
-            {/** fix mailto: on live **/}
-            <a href="mailto:#">{profile.email}</a>
-            <span className="px-2">·</span>
-            {/** need profile prop for personal webpage **/}
-            <a href="#" target="_blank">
-              janedoe.com
-            </a>
-            <span className="px-2">·</span>
-            <span>{formatPhoneNumber(phoneNumber)}</span>
-            <span className="px-2">·</span>
-            <a
-              href={profile?.social?.twitter}
-              className="pe-2"
-              title="Twitter/X"
-            >
-              <Twitter />
-            </a>
-            <a
-              href={profile?.social?.linkedIn}
-              className="pe-2"
-              title="linkedIn"
-            >
-              <LinkedIn />
-            </a>
-            <a href={profile?.social?.blueSky} className="pe-2" title="Bluesky">
-              <Bluesky />
-            </a>
-          </div>
+
+          <SocialLine>
+            {profile.email ? (
+              <div>
+                {/** fix mailto: on live **/}
+                <links.External
+                  href="mailto:#"
+                  className="text-decoration-none"
+                >
+                  {profile.email}
+                </links.External>
+                <span className="px-2">·</span>
+              </div>
+            ) : (
+              <></>
+            )}
+
+            {/** need profile prop for personal webpage to replace email placeholder **/}
+            {profile.email ? (
+              <div>
+                <links.External href="#" className="text-decoration-none">
+                  {/** need profile prop for personal webpage **/}
+                  janedoe.com
+                </links.External>
+                <span className="px-2">·</span>
+              </div>
+            ) : (
+              <></>
+            )}
+
+            {phoneNumber ? (
+              <div>
+                <PhoneNum>{formatPhoneNumber(phoneNumber)}</PhoneNum>
+                <span className="px-2">·</span>
+              </div>
+            ) : (
+              <></>
+            )}
+
+            <div>
+              {profile?.social?.twitter ? (
+                <a
+                  href={profile.social.twitter}
+                  className="pe-2"
+                  rel="noreferrer"
+                  target="_blank"
+                  title="Twitter/X"
+                >
+                  <Twitter />
+                </a>
+              ) : (
+                <></>
+              )}
+
+              {profile?.social?.linkedIn ? (
+                <a
+                  href={profile.social.linkedIn}
+                  className="pe-2"
+                  rel="noreferrer"
+                  target="_blank"
+                  title="linkedIn"
+                >
+                  <LinkedIn />
+                </a>
+              ) : (
+                <></>
+              )}
+
+              {profile?.social?.blueSky ? (
+                <a
+                  href={profile?.social?.blueSky}
+                  className="pe-2"
+                  rel="noreferrer"
+                  target="_blank"
+                  title="Bluesky"
+                >
+                  <Bluesky />
+                </a>
+              ) : (
+                <></>
+              )}
+
+              <FontAwesomeIcon
+                icon={faAddressBook}
+                style={{ color: "#1a3185" }}
+              />
+            </div>
+          </SocialLine>
         </Col>
         <Col className="col-2">
           <div className="">Buttons</div>
@@ -212,13 +300,21 @@ export function LegislatorPage(props: { id: string }) {
         </StatBlock>
         <StatBlock>
           <Col className="flex-grow-0 mx-auto">
-            <StatNum>?</StatNum>
+            <StatNum>
+              {sponsoredBills?.length ? <>{sponsoredBills.length}</> : <>?</>}
+            </StatNum>
             <StatLine>{t("billsSponsored")}</StatLine>
           </Col>
         </StatBlock>
         <StatBlock>
           <Col className="flex-grow-0 mx-auto">
-            <StatNum>?</StatNum>
+            <StatNum>
+              {cosponsoredBills?.length ? (
+                <>{cosponsoredBills.length}</>
+              ) : (
+                <>?</>
+              )}
+            </StatNum>
             <StatLine>{t("cosponsored")}</StatLine>
           </Col>
         </StatBlock>

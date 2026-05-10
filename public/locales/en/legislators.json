@@ -4,6 +4,8 @@
   "fundsRaised": "Funds Raised",
   "home": "Home",
   "legislators": "Legislators",
+  "stateRepresentative": "State Representative",
+  "stateSenator": "State Senator",
   "tabs": {
     "bills": "Bills",
     "district": "District",
