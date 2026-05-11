@@ -9,6 +9,9 @@ import React, { Suspense } from "react"
 import { I18nextProvider } from "react-i18next"
 // import i18n from "i18next"
 import i18n from "./i18n"
+const { mockLoggedOutAuthState } = require("./firebase-guards/auth.guard.js")
+
+mockLoggedOutAuthState()
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
@@ -60,6 +63,12 @@ export const parameters = {
 
 export const decorators = [
   (Story, context) => {
+    if (typeof window !== "undefined") {
+      window.__MAPLE_STORYBOOK_ALLOW_FIREBASE__ = Boolean(
+        context?.parameters?.firebaseGuard?.allow
+      )
+    }
+
     return (
       <Suspense fallback="Loading...">
         <I18nextProvider i18n={i18n}>

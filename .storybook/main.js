@@ -1,6 +1,8 @@
 /**
  * @type {import('@storybook/react/types').StorybookConfig}
  */
+const path = require("path")
+
 module.exports = {
   stories: [
     "../stories/**/*.stories.mdx",
@@ -24,6 +26,17 @@ module.exports = {
       use: ["file-loader"]
     })
     config.resolve.fallback = { fs: false, path: false }
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      "firebase/firestore$": path.resolve(
+        __dirname,
+        "./firebase-guards/firestore.guard.js"
+      ),
+      "firebase/auth$": path.resolve(
+        __dirname,
+        "./firebase-guards/auth.guard.js"
+      )
+    }
     return config
   },
 
