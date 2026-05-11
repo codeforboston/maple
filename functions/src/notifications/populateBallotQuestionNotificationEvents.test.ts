@@ -51,7 +51,7 @@ beforeEach(() => {
 
 describe("populateBallotQuestionNotificationEventsHandler", () => {
   it("does nothing when after snapshot does not exist", async () => {
-    const snapshot = makeSnapshot(makeBqData("legislature"), null)
+    const snapshot = makeSnapshot(makeBqData("expectedOnBallot"), null)
     await populateBallotQuestionNotificationEventsHandler(
       snapshot as any,
       makeContext() as any
@@ -61,8 +61,8 @@ describe("populateBallotQuestionNotificationEventsHandler", () => {
 
   it("does nothing when ballotStatus is unchanged", async () => {
     const snapshot = makeSnapshot(
-      makeBqData("legislature"),
-      makeBqData("legislature")
+      makeBqData("expectedOnBallot"),
+      makeBqData("expectedOnBallot")
     )
     await populateBallotQuestionNotificationEventsHandler(
       snapshot as any,
@@ -75,8 +75,8 @@ describe("populateBallotQuestionNotificationEventsHandler", () => {
     setupCollection(true)
 
     const snapshot = makeSnapshot(
-      makeBqData("legislature"),
-      makeBqData("qualifying")
+      makeBqData("expectedOnBallot"),
+      makeBqData("accepted")
     )
     await populateBallotQuestionNotificationEventsHandler(
       snapshot as any,
@@ -88,7 +88,7 @@ describe("populateBallotQuestionNotificationEventsHandler", () => {
         type: "ballotQuestion",
         ballotQuestionId: "25-01",
         ballotQuestionCourt: 194,
-        ballotStatus: "qualifying",
+        ballotStatus: "accepted",
         description: "A test ballot question"
       })
     )
@@ -100,8 +100,8 @@ describe("populateBallotQuestionNotificationEventsHandler", () => {
     setupCollection(false, [{ id: existingDocId }])
 
     const snapshot = makeSnapshot(
-      makeBqData("qualifying"),
-      makeBqData("certified")
+      makeBqData("expectedOnBallot"),
+      makeBqData("rejected")
     )
     await populateBallotQuestionNotificationEventsHandler(
       snapshot as any,
@@ -111,7 +111,7 @@ describe("populateBallotQuestionNotificationEventsHandler", () => {
     expect(mockDoc).toHaveBeenCalledWith(existingDocId)
     expect(mockUpdate).toHaveBeenCalledWith(
       expect.objectContaining({
-        ballotStatus: "certified",
+        ballotStatus: "rejected",
         description: "A test ballot question"
       })
     )

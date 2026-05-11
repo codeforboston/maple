@@ -45,8 +45,8 @@ const StyledDropdown = styled(Dropdown.Toggle)`
   font-size: 1.5rem;
   color: white;
 
-  background-color: #1a3185;
-  border: 1px solid #1a3185;
+  background-color: var(--maple-brand-primary);
+  border: 1px solid var(--maple-brand-primary);
 
   &:active,
   &:focus,

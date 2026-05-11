@@ -21,6 +21,8 @@ it("syncs YAML files to Firestore", async () => {
   expect(snap.data()?.billId).toBe("H5099")
   expect(snap.data()?.electionYear).toBe(2099)
   expect(snap.data()?.description).toBeTruthy()
+  expect(snap.data()?.alertFlag).toContain("Legal challenge")
+  expect(snap.data()?.alertTip).toContain("appears on the ballot")
   expect(snap.data()?.atAGlance).toBeInstanceOf(Array)
   expect(snap.data()?.pdfUrl).toMatch(/^https?:\/\//)
   expect(snap.data()?.fullSummary).toBeTruthy()

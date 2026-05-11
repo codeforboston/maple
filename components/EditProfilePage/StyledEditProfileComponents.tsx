@@ -23,7 +23,7 @@ export const StyledTabNav = styled(Nav).attrs(props => ({
   color: var(--bs-dark);
 
   .nav-link.active {
-    color: #c71e32;
+    color: var(--maple-brand-danger);
   }
 
   .nav-link {
@@ -53,7 +53,7 @@ export const TabNavLink = styled(Nav.Link).attrs(props => ({
   className: `rounded-top m-0 p-0 ${props.className}`
 }))`
   &.active {
-    color: #c71e32;
+    color: var(--maple-brand-danger);
   }
 `
 

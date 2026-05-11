@@ -32,6 +32,11 @@ jest.mock("next-i18next", () => ({
         ballot_question_number: `Question ${params?.number ?? ""}`,
         ballot_question_court: `Court ${params?.court ?? ""}`,
         ballot_question_no_summary: "No summary available yet.",
+        "browse.filtersAriaLabel": "Filter ballot questions",
+        "browse.questionUnassigned": "Question #",
+        "browse.questionWithNumber": `Question ${params?.count ?? ""}`,
+        "header.questionNumberDisclaimer":
+          "Question numbers are assigned by the Secretary of State in the summer prior to an election",
         "counts.endorsements.alt": "Endorsements",
         "counts.neutral.alt": "Neutral",
         "counts.oppose.alt": "Oppositions"
@@ -97,15 +102,9 @@ const items = [
   }
 ]
 
-const showFilters = () => {
-  fireEvent.click(screen.getByRole("button", { name: "Show filters" }))
-}
-
 describe("BrowseBallotQuestions", () => {
   it("defaults to the current year and shows the result summary", () => {
     render(<BrowseBallotQuestions items={items} currentYear={2026} />)
-
-    showFilters()
 
     expect(screen.getByRole("combobox", { name: "Year" })).toHaveValue("2026")
     expect(screen.getByText("Showing 2 questions")).toBeInTheDocument()
@@ -121,8 +120,6 @@ describe("BrowseBallotQuestions", () => {
 
   it("can switch to another year and reset back to the default filters", () => {
     render(<BrowseBallotQuestions items={items} currentYear={2026} />)
-
-    showFilters()
 
     fireEvent.change(screen.getByRole("combobox", { name: "Year" }), {
       target: { value: "2024" }
@@ -143,8 +140,6 @@ describe("BrowseBallotQuestions", () => {
 
   it("filters by court and status and searches title and final summary", async () => {
     render(<BrowseBallotQuestions items={items} currentYear={2026} />)
-
-    showFilters()
 
     fireEvent.change(screen.getByRole("combobox", { name: "Status" }), {
       target: { value: "expectedOnBallot" }
@@ -177,8 +172,6 @@ describe("BrowseBallotQuestions", () => {
 
   it("can search across older years after widening the year filter", async () => {
     render(<BrowseBallotQuestions items={items} currentYear={2026} />)
-
-    showFilters()
 
     fireEvent.change(screen.getByRole("combobox", { name: "Year" }), {
       target: { value: "all" }

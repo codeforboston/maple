@@ -11,7 +11,7 @@ function TranscriptAnnouncement() {
           {t("announcement.headingBody")}
           <br />
           {t("announcement.description")}{" "}
-          <a href="/hearings" style={{ color: "white" }}>
+          <a href="/hearings" style={{ color: "var(--maple-text-inverse)" }}>
             {t("announcement.link")}
           </a>
         </span>

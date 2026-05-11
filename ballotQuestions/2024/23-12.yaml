@@ -10,22 +10,69 @@ ballotQuestionNumber: 5
 relatedBillIds: []
 description: null
 atAGlance: null
-fullSummary: |-
+voteEffectYes: "A YES VOTE would increase the minimum hourly wage an employer must pay a tipped worker to the full state minimum wage implemented over five years, at which point employers could pool all tips and distribute them to all non-management workers."
+voteEffectNo: "A NO VOTE would make no change in the law governing tip pooling or the minimum wage for tipped workers. "
+fiscalConsequences: "There are no direct fiscal consequences on the Commonwealth or municipalities because they generally do not employ tipped employees. Nevertheless, this measure will affect proposed state and municipal revenues and expenditures due to impacts on employee and business income and earnings. While those impacts are difficult to project due to the lack of reliable data, increasing the minimum hourly wage of tipped employees will likely increase state income tax collections because employees will earn more in hourly wages from which state income tax is withheld. The impacts on gratuity earnings and gratuity tax reporting are unknown."
+inFavor: |-
+  Vote Yes for FAIRNESS. It’s fair for Workers: Instead of being paid the
+  current tipped worker wage of just $6.75 an hour, Massachusetts tipped workers
+  deserve the full minimum wage with tips on top. Workers in 7 other states earn
+  a full wage plus tips, and they enjoy robust tips and growing restaurants where
+  menu prices are comparable to Massachusetts. This law would create greater
+  financial stability and predictability, acknowledging workers’ skills and
+  professionalism. It’s fair for Employers: Many Massachusetts small businesses
+  are already paying the full minimum wage plus tips. Big restaurant
+  corporations should do the same. This would reduce employee turnover and
+  improve service quality. It’s fair for Consumers: Big restaurant corporations
+  are not paying their fair share and are forcing consumers to cover their
+  employees’ wages through tips. Tips should be a reward for good service, not a
+  subsidy for low wages paid by large corporations. Estefania Galvis One Fair
+  Wage 11 Converse Ave Malden, MA 02148 813-898-9136 www.yeson5ma.com
+supportCommittee: "One Fair Wage Plus Tips MA Committee 95513"
+opposeCommittee: "Committee to Protect Tips 95521"
+against: |-
+  This question is funded by a radical group from California. Tipped employees
+  have made it abundantly clear the way they earn money does not need to be
+  changed. State and Federal law guarantee them the $15 hourly minimum wage
+  with many earning over $40/hr and 90% reporting at least $20/hr. A recent
+  survey also showed that 88% oppose ‘tip pools’ where tips are shared with
+  non-service employees and 90% believe that if tipped wages are eliminated,
+  they will earn less. Other attempts to implement this have seen catastrophic
+  results. In Washington, D.C., nearly 10% of tipped employees have lost or
+  left their jobs. This follows increases in menu prices, the implementation of
+  20% ‘service fees’ and a wave of closures. This would reduce overall wages
+  for servers, increase costs for restaurants and skyrocket the cost of eating
+  out. It will be disastrous with many neighborhood restaurants being forced to
+  close. Doug Bacon Former Server and Bartender, Current Restaurant Owner
+  Committee to Protect Tips 160 E Main St # 2 Westborough, MA 01581
+  www.ProtectTips.org
+campaignFinancials:
+  support:
+    - cashRaised: 889526.25
+      spent: 889526.25
+      inKind: 1036954.37
+  oppose:
+    - cashRaised: 2518234.24
+      spent: 2518234.24
+      inKind: 658123.44
+fullSummary: >-
   This proposed law would gradually increase the minimum hourly wage an
-  employer must pay a tipped worker, over the course of five years, on the following
-  schedule: - To 64% of the state minimum wage on January 1, 2025; - To 73% of
-  the state minimum wage on January 1, 2026; - To 82% of the state minimum wage
-  on January 1, 2027; - To 91% of the state minimum wage on January 1, 2028; and
-  - To 100% of the state minimum wage on January 1, 2029. The proposed law
-  would require employers to continue to pay tipped workers the difference between
-  the state minimum wage and the total amount a tipped worker receives in hourly
-  wages plus tips through the end of 2028. The proposed law would also permit
-  employers to calculate this difference over the entire weekly or bi-weekly payroll
-  period. The requirement to pay this difference would cease when the required
-  hourly wage for tipped workers would become 100% of the state minimum wage
-  on January 1, 2029. Under the proposed law, if an employer pays its workers an
-  hourly wage that is at least the state minimum wage, the employer would be
-  permitted to administer a “tip pool” that combines all the tips given by customers to
-  tipped workers and distributes them among all the workers, including non-tipped
-  workers.
+  employer must pay a tipped worker, over the course of five years, on the
+  following schedule:
+  • To 64% of the state minimum wage on January 1, 2025;
+  • To 73% of the state minimum wage on January 1, 2026;
+  • To 82% of the state minimum wage on January 1, 2027;
+  • To 91% of the state minimum wage on January 1, 2028; and
+  • To 100% of the state minimum wage on January 1, 2029.
+  The proposed law would require employers to continue to pay tipped workers
+  the difference between the state minimum wage and the total amount a tipped
+  worker receives in hourly wages plus tips through the end of 2028. The
+  proposed law would also permit employers to calculate this difference over the
+  entire weekly or bi-weekly payroll period. The requirement to pay this
+  difference would cease when the required hourly wage for tipped workers would
+  become 100% of the state minimum wage on January 1, 2029. Under the
+  proposed law, if an employer pays its workers an hourly wage that is at least
+  the state minimum wage, the employer would be permitted to administer a “tip
+  pool” that combines all the tips given by customers to tipped workers and
+  distributes them among all the workers, including non-tipped workers.
 pdfUrl: "https://malegislature.gov/Bills/193/H4254.pdf"

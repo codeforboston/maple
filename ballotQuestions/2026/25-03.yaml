@@ -9,7 +9,17 @@ ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null
+alertFlag: null
+alertTip: null
 atAGlance: null
+voteEffectYes: null
+voteEffectNo: null
+fiscalConsequences: null
+inFavor: null
+against: null
+supportCommittee: "Legalize Starter Homes (Pioneer Institute / Andrew Mikula)"
+opposeCommittee: null
+campaignFinancials: null
 fullSummary: |-
   This proposed law would allow single-family homes to be built in a residentially zoned
   area as long as the land on which it is to be constructed is at least 5,000 square feet, has at least

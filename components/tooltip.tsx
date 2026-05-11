@@ -10,7 +10,7 @@ export const QuestionTooltip = ({ text }: { text: string }) => {
       placement="auto"
       overlay={
         <Tooltip id="tooltip-text">
-          <p>{text}</p>
+          <div>{text}</div>
         </Tooltip>
       }
     >

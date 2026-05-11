@@ -2,7 +2,7 @@ const { demoProjectId, env, runOrExit } = require("./common")
 
 runOrExit("yarn", ["--cwd", "functions", "build"], { stdio: "inherit" })
 runOrExit(
-  "firebase",
+  "./node_modules/.bin/firebase",
   [
     "--project",
     demoProjectId,
