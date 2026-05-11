@@ -4,7 +4,7 @@ import { Form, Row, Col, Button } from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
 import Input from "../forms/Input"
 import { TitledSectionCard } from "../shared"
-import { YourLegislators } from "./YourLegislators"
+import { YourLegislators, YourLegislatorsProps } from "./YourLegislators"
 import { OrgCategory, OrgCategories } from "components/auth"
 import { TooltipButton } from "components/buttons"
 import { useTranslation } from "next-i18next"
@@ -34,6 +34,7 @@ type Props = {
   setFormUpdated?: any
   className?: string
   isOrg?: boolean
+  legislatorsProps?: YourLegislatorsProps
 }
 
 async function updateProfile(
@@ -68,7 +69,8 @@ export function PersonalInfoTab({
   uid,
   className,
   setFormUpdated,
-  isOrg
+  isOrg,
+  legislatorsProps
 }: Props) {
   const {
     register,
@@ -271,7 +273,7 @@ export function PersonalInfoTab({
       {!isOrg && (
         <TitledSectionCard>
           <h2>{t("legislator.yourLegislators")}</h2>
-          <YourLegislators />
+          <YourLegislators {...legislatorsProps} />
         </TitledSectionCard>
       )}
 
