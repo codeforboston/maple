@@ -24,6 +24,14 @@ module.exports = {
       use: ["file-loader"]
     })
     config.resolve.fallback = { fs: false, path: false }
+    const path = require("path")
+    const webpack = require("webpack")
+    config.plugins.push(
+      new webpack.NormalModuleReplacementPlugin(
+        /components\/db\/profile\/profile(\.tsx?)?$/,
+        path.resolve(__dirname, "../stories/__mocks__/db/profile.ts")
+      )
+    )
     return config
   },
 
