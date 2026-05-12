@@ -87,3 +87,5 @@ cert.txt
 
 # lets each user define their own vscode settings
 .vscode/settings.json
+
+.serena/
