@@ -40,10 +40,7 @@ export function Testimony({ legislatorId }: { legislatorId?: string }) {
 
     // Combine and sort by publishedAt (newest first), then take 4 most recent
     return [...repTestimonies, ...senTestimonies]
-      .sort(
-        (a, b) =>
-          b.publishedAt.toMillis() - a.publishedAt.toMillis()
-      )
+      .sort((a, b) => b.publishedAt.toMillis() - a.publishedAt.toMillis())
       .slice(0, 4)
   }, [representativeTestimony.items.result, senatorTestimony.items.result])
 
