@@ -1,3 +1,54 @@
+import styled from "styled-components"
+
+const DemocraticBubble = styled.div.attrs(props => ({
+  className: `${props.className}`
+}))`
+  background: #d1d6e7;
+  color: #1a3185;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 10px;
+  border-radius: 999px;
+  width: max-content;
+`
+
+const IndependantBubble = styled.div.attrs(props => ({
+  className: `${props.className}`
+}))`
+  background: #fff3cd;
+  color: #856404;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 10px;
+  border-radius: 999px;
+  width: max-content;
+`
+
+const RepublicanBubble = styled.div.attrs(props => ({
+  className: `${props.className}`
+}))`
+  background: #f29999;
+  color: #de0100;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 10px;
+  border-radius: 999px;
+  width: max-content;
+`
+
+export function PartyLabel(props: { party: string }) {
+  switch (props.party) {
+    case "Democrat":
+      return <DemocraticBubble>Democratic Party</DemocraticBubble>
+    case "Republican":
+      return <RepublicanBubble>Republican Party</RepublicanBubble>
+    default:
+      return <IndependantBubble>{props.party} Party</IndependantBubble>
+  }
+}
+
+/** Social Media components **/
+
 export function Bluesky() {
   return (
     <svg

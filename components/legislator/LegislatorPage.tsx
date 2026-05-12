@@ -22,6 +22,8 @@ import { useFlags } from "components/featureFlags"
 import { Internal } from "components/links"
 import { CircleImage } from "components/shared/LabeledIcon"
 
+import { PartyLabel } from "./LegislatorComponents"
+
 const DirectoryPath = styled.div.attrs(props => ({
   className: `align-items-center d-flex flex-nowrap ${props.className}`
 }))`
@@ -42,9 +44,11 @@ const HeaderName = styled.div`
   color: #0b0a3e;
 `
 
-const RoleLine = styled.div`
-  font-size: 14px;
+const RoleLine = styled.div.attrs(props => ({
+  className: `mb-2 ${props.className}`
+}))`
   color: #6c757d;
+  font-size: 14px;
 `
 
 const PhoneNum = styled.span`
@@ -154,7 +158,6 @@ export function LegislatorPage(props: { id: string }) {
   }
 
   console.log("Pro: ", profile)
-  console.log("SB: ", sponsoredBills)
 
   return (
     <Container className="my-3">
@@ -196,7 +199,10 @@ export function LegislatorPage(props: { id: string }) {
             {district}
           </RoleLine>
 
-          <div>{party}</div>
+          <div className="mb-2">
+            <PartyLabel party={party} />
+            {/* Additional Labels, such as Incumbent, to be implemented */}
+          </div>
 
           <SocialLine>
             {profile.email ? (
