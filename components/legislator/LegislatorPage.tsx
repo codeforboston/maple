@@ -14,15 +14,13 @@ import { usePublicProfile } from "../db"
 import { firestore } from "../firebase"
 import * as links from "../links"
 
-import { Bluesky, LinkedIn, Twitter } from "./LegislatorComponents"
+import { Bluesky, LinkedIn, PartyLabel, Twitter } from "./LegislatorComponents"
 import { LegislatorSidebar } from "./SidebarComponents/LegislatorSidebar"
 import { LegislatorTabs } from "./TabComponents/LegislatorTabs"
 
 import { useFlags } from "components/featureFlags"
 import { Internal } from "components/links"
 import { CircleImage } from "components/shared/LabeledIcon"
-
-import { PartyLabel } from "./LegislatorComponents"
 
 const DirectoryPath = styled.div.attrs(props => ({
   className: `align-items-center d-flex flex-nowrap ${props.className}`
@@ -157,8 +155,6 @@ export function LegislatorPage(props: { id: string }) {
     `
   }
 
-  console.log("Pro: ", profile)
-
   return (
     <Container className="my-3">
       <DirectoryPath>
@@ -201,7 +197,8 @@ export function LegislatorPage(props: { id: string }) {
 
           <div className="mb-2">
             <PartyLabel party={party} />
-            {/* Additional Labels, such as Incumbent, to be implemented */}
+            {/* Incumbent Label */}
+            {/* District Label */}
           </div>
 
           <SocialLine>

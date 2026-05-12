@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 
 const DemocraticBubble = styled.div.attrs(props => ({
@@ -37,13 +38,19 @@ const RepublicanBubble = styled.div.attrs(props => ({
 `
 
 export function PartyLabel(props: { party: string }) {
+  const { t } = useTranslation("legislators")
+
   switch (props.party) {
     case "Democrat":
-      return <DemocraticBubble>Democratic Party</DemocraticBubble>
+      return <DemocraticBubble>{t("party.democratic")}</DemocraticBubble>
     case "Republican":
-      return <RepublicanBubble>Republican Party</RepublicanBubble>
+      return <RepublicanBubble>{t("party.republican")}</RepublicanBubble>
     default:
-      return <IndependantBubble>{props.party} Party</IndependantBubble>
+      return (
+        <IndependantBubble>
+          {props.party} {t("party.party")}
+        </IndependantBubble>
+      )
   }
 }
 

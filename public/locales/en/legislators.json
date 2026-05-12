@@ -4,6 +4,11 @@
   "fundsRaised": "Funds Raised",
   "home": "Home",
   "legislators": "Legislators",
+  "party": {
+    "democratic": "Democratic Party",
+    "party": "Party",
+    "republican": "Republican Party"
+  },
   "stateRepresentative": "State Representative",
   "stateSenator": "State Senator",
   "tabs": {
