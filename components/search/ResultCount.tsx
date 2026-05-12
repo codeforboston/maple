@@ -3,7 +3,9 @@ import { useStats } from "react-instantsearch"
 import styled from "styled-components"
 
 const ResultContainer = styled.span`
-  font-size: 0.75rem;
+  color: var(--bs-gray-600);
+  font-size: 0.95rem;
+  font-weight: var(--maple-font-weight-semibold);
 `
 export function ResultCount(props: any) {
   const { hitsPerPage, nbHits, page } = useStats()

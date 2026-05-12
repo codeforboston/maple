@@ -9,7 +9,17 @@ ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null
+alertFlag: null
+alertTip: null
 atAGlance: null
+voteEffectYes: null
+voteEffectNo: null
+fiscalConsequences: null
+inFavor: null
+against: null
+supportCommittee: "SEIU Local 888"
+opposeCommittee: null
+campaignFinancials: null
 fullSummary: |-
   This proposed law would specify that employees of the Committee for Public Counsel
   Services (“CPCS”) are permitted to engage in collective bargaining with their employer. It would

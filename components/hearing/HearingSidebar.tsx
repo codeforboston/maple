@@ -85,7 +85,7 @@ const BillsBody = styled.div`
 `
 
 const ModalLine = styled.hr`
-  border-color: #000000;
+  border-color: currentColor;
   border-style: solid;
   border-width: 1px;
   opacity: 0.1;
@@ -103,10 +103,10 @@ const SidebarBottom = styled.div`
 `
 
 const SidebarHeader = styled.div`
-  background-color: #c0c4dc;
+  background-color: var(--maple-surface-hearing-header);
   border-top-left-radius: 0.75rem;
   border-top-right-radius: 0.75rem;
-  padding-top: 9px;
+  padding-top: var(--maple-space-sm);
 `
 
 const SidebarSubbody = styled.div`
@@ -547,7 +547,7 @@ function VotesModal({
 
 const VoteRow = styled.div`
   &:nth-child(even) {
-    background-color: #eae7e7;
+    background-color: var(--maple-surface-page);
   &:nth-child(odd) {
     background-color: white;
   }

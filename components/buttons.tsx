@@ -8,6 +8,28 @@ import styled from "styled-components"
 import { Button, Image, Overlay, OverlayTrigger, Spinner } from "./bootstrap"
 import { Internal } from "./links"
 
+const sharedInteractiveButtonStyles = `
+  transition: filter var(--maple-transition-fast),
+    outline-width var(--maple-transition-fast),
+    box-shadow var(--maple-transition-fast),
+    transform var(--maple-transition-fast);
+
+  &:hover {
+    filter: brightness(0.9);
+  }
+
+  &:active {
+    filter: brightness(0.82);
+  }
+
+  &:focus {
+    outline: 3px solid var(--maple-focus-ring);
+  }
+
+  border-radius: var(--maple-radius-sm);
+  padding: 1px;
+`
+
 export const TableButton = ({
   onclick,
   children
@@ -74,20 +96,7 @@ export const ImageButton = styled<
   )
 })`
   cursor: pointer;
-
-  transition: filter 0.15s ease-in-out, outline-width 0.1s ease-in-out;
-  &:hover {
-    filter: brightness(70%);
-  }
-  &:active {
-    filter: brightness(50%);
-  }
-  &:focus {
-    outline: 3px solid var(--bs-blue-300);
-  }
-  border-radius: 3px;
-
-  padding: 1px;
+  ${sharedInteractiveButtonStyles}
 `
 
 export const TextButton = ({
@@ -117,7 +126,7 @@ export const FillButton = ({
     <Button
       variant={variant}
       type="button"
-      className={`py-1 col-12 d-flex justify-content-center align-items-center text-decoration-none text-nowrap ${className}`}
+      className={`col-12 d-flex justify-content-center align-items-center text-decoration-none text-nowrap ${className}`}
       {...rest}
     >
       <div className={`d-flex align-items-center`}>{Icon && Icon}</div>
@@ -145,7 +154,7 @@ export const OutlineButton = ({
   return (
     <Button
       variant={variant}
-      className={`py-1 col-12 text-capitalize text-nowrap d-flex justify-content-center align-items-center ${hoverClass} ${activeClass} ${className}`}
+      className={`col-12 text-capitalize text-nowrap d-flex justify-content-center align-items-center ${hoverClass} ${activeClass} ${className}`}
       {...rest}
     >
       <div className={`d-flex align-items-center`}>{Icon && Icon}</div>
@@ -283,20 +292,7 @@ export const TooltipButton = styled<{
   )
 })`
   font-size: 14px;
-
-  transition: filter 0.15s ease-in-out, outline-width 0.1s ease-in-out;
-  &:hover {
-    filter: brightness(70%);
-  }
-  &:active {
-    filter: brightness(50%);
-  }
-  &:focus {
-    outline: 3px solid var(--bs-blue-300);
-  }
-  border-radius: 3px;
-
-  padding: 1px;
+  ${sharedInteractiveButtonStyles}
 `
 
 export const CopyButton = ({
@@ -372,7 +368,12 @@ export const ShareLinkButton = ({
           }
         }}
       >
-        <Button ref={target} style={{ color: "#737373" }} variant="" {...props}>
+        <Button
+          ref={target}
+          style={{ color: "var(--maple-text-muted)" }}
+          variant=""
+          {...props}
+        >
           {children}
         </Button>
       </CopyToClipboard>
@@ -420,5 +421,5 @@ export const GearButton = styled(
     )
   }
 )`
-  --bs-btn-bg: white; // override bootstrap button background transparency to match Figma
+  --bs-btn-bg: var(--maple-surface-base);
 `

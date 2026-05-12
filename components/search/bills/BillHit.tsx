@@ -34,29 +34,33 @@ type BillRecord = {
 }
 
 const StyledCard = styled(Card)`
-  border: none;
-  border-radius: 4px;
-  margin-bottom: 0.75rem;
+  background: var(--maple-surface-gradient);
+  border: 1px solid var(--maple-surface-border);
+  border-radius: var(--bs-border-radius-xl);
+  box-shadow: var(--maple-shadow-sm);
+  height: 100%;
   overflow: hidden;
-
   cursor: pointer;
-  outline-color: var(--bs-blue);
-  outline-style: solid;
-  outline-width: 0;
-  transition: outline-width 0.1s;
-
   font-size: 0.75rem;
+  transition: transform var(--maple-transition-fast),
+    box-shadow var(--maple-transition-fast),
+    border-color var(--maple-transition-fast);
 
   &:hover {
-    outline-width: 2px;
+    transform: translateY(-2px);
+    box-shadow: var(--maple-shadow-hover);
+    border-color: var(--maple-border-accent);
   }
 
   &:active {
-    outline-width: 4px;
+    transform: translateY(0);
   }
 
   .card-body {
-    padding: 0;
+    padding: var(--maple-space-md) var(--maple-space-lg);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   }
 
   .card-title {
@@ -88,8 +92,7 @@ const StyledCard = styled(Card)`
   }
 
   .left {
-    padding: 0.5rem;
-    padding-right: 1rem;
+    padding: 0;
   }
 
   .card-footer {
@@ -139,7 +142,7 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
     <Link href={url} legacyBehavior>
       <a style={{ all: "unset" }} className="w-100">
         <StyledCard>
-          <Card.Body className="bg-white">
+          <Card.Body>
             <div className="d-flex">
               <Col className="left">
                 <div className="d-flex justify-content-between">

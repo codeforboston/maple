@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import { BallotQuestion, Bill } from "../db"
 import { TestimonyFormPanel } from "../publish/panel/TestimonyFormPanel"
 import { EditTestimonyButton } from "../publish/panel/EditTestimonyButton"
@@ -14,6 +15,7 @@ export const YourTestimonyPanel = ({
   ballotQuestion: BallotQuestion
   bill: Bill | null
 }) => {
+  const { t } = useTranslation("ballotquestions")
   const isActivePhase = isActiveBallotQuestionPhase(ballotQuestion.ballotStatus)
   const isTerminalPhase = isTerminalBallotQuestionPhase(
     ballotQuestion.ballotStatus
@@ -31,12 +33,7 @@ export const YourTestimonyPanel = ({
   return (
     <div className="h-100">
       <div className="d-flex align-items-center justify-content-between mb-3">
-        <div
-          className="fw-semibold text-secondary"
-          style={{ letterSpacing: "0.01em", fontSize: "1.45rem" }}
-        >
-          Your Perspective
-        </div>
+        <div className="maple-panel-title">{t("yourPerspective.title")}</div>
         {showInlineEditButton && bill ? (
           <EditTestimonyButton
             billId={bill.id}
@@ -54,24 +51,12 @@ export const YourTestimonyPanel = ({
           />
         </>
       ) : isTerminalPhase ? (
-        <div
-          className="rounded border px-3 py-3 small text-body-secondary"
-          style={{
-            backgroundColor: "var(--bs-blue-100)",
-            borderColor: "var(--bs-blue-300)"
-          }}
-        >
-          Perspectives are no longer being accepted for this ballot question.
+        <div className="maple-info-note rounded px-3 py-3 small">
+          {t("yourPerspective.closed")}
         </div>
       ) : (
-        <div
-          className="rounded border px-3 py-3 small text-body-secondary"
-          style={{
-            backgroundColor: "var(--bs-blue-100)",
-            borderColor: "var(--bs-blue-300)"
-          }}
-        >
-          Perspectives are not available for this ballot question yet.
+        <div className="maple-info-note rounded px-3 py-3 small">
+          {t("yourPerspective.notAvailable")}
         </div>
       )}
     </div>

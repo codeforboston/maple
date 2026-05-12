@@ -43,7 +43,7 @@ Event types handled: sessions, hearings.
 const EventCardContainer = styled.div`
   border: 2px var(--bs-blue) solid;
   width: 20rem; /* width: 269px; */
-  margin-bottom: 2em;
+  margin-bottom: var(--maple-space-2xl);
   border-radius: 0.5rem;
   display: block;
   height: fit-content;
@@ -62,8 +62,8 @@ const EventCardContainer = styled.div`
 const EventCardHeader = styled.div`
   color: white;
   background: var(--bs-blue);
-  padding-top: 0.25em;
-  padding-left: 1em;
+  padding-top: var(--maple-space-xs);
+  padding-left: var(--maple-space-lg);
   height: 3.21em; /* 51.94px */
   border-radius: 0.3125em 0.3125em 0 0;
   display: grid;
@@ -144,7 +144,7 @@ export const EventCard = ({
 const EventSection = styled.section`
   min-width: fit-content;
   max-width: 43rem;
-  margin-bottom: 2em;
+  margin-bottom: var(--maple-space-2xl);
 `
 
 const HearingImage = styled.img`

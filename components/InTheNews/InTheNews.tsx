@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, Fragment } from "react"
 import { Col, Row, Container, Badge, Spinner } from "../bootstrap"
 import Tab from "react-bootstrap/Tab"
 import Nav from "react-bootstrap/Nav"
@@ -9,10 +9,11 @@ import { NewsCard } from "./NewsCard"
 import { NewsType, NewsItem, useNews } from "components/db/news"
 
 type NewsFeedProps = {
-  type: NewsType
+  type: NewsType | null
   newsItems: NewsItem[]
 }
 
+const newsTypePlurals: (keyof TabCounts)[] = ["media", "awards", "books"]
 type TabCounts = {
   media: number
   awards: number
@@ -23,7 +24,7 @@ const NewsFeed = ({ type, newsItems }: NewsFeedProps) => {
   return (
     <div className="d-flex flex-column align-items-left gap-1 w-100">
       {newsItems
-        .filter(item => item.type === type)
+        .filter(item => item.type === type || type === null)
         .map((item, index) => (
           <NewsCard key={index} newsItem={item} />
         ))}
@@ -50,21 +51,25 @@ export const InTheNews = () => {
         {t("title")}
       </h1>
       <div className="d-flex flex-column bg-white rounded-4 my-5 gap-4 p-4">
-        <Tab.Container defaultActiveKey="media">
-          {isMobile ? (
-            <TabDropdown counts={counts} />
-          ) : (
-            <TabGroup counts={counts} />
-          )}
-          <Row className="g-0">
-            <Col>
-              {loading ? (
-                <div className="d-flex justify-content-center p-5">
-                  <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </Spinner>
-                </div>
-              ) : (
+        {loading ? (
+          <div className="d-flex justify-content-center p-5">
+            <Spinner animation="border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </Spinner>
+          </div>
+        ) : newsItems &&
+          counts &&
+          newsItems.length > 10 &&
+          [counts.media, counts.awards, counts.books].filter(Boolean).length >
+            1 ? (
+          <Tab.Container defaultActiveKey="media">
+            {isMobile ? (
+              <TabDropdown counts={counts} />
+            ) : (
+              <TabGroup counts={counts} />
+            )}
+            <Row className="g-0">
+              <Col>
                 <Tab.Content>
                   <Tab.Pane eventKey="media">
                     <div className="d-flex flex-column align-items-center">
@@ -82,89 +87,58 @@ export const InTheNews = () => {
                     </div>
                   </Tab.Pane>
                 </Tab.Content>
-              )}
+              </Col>
+            </Row>
+          </Tab.Container>
+        ) : (
+          <Row className="g-0">
+            <Col>
+              <div className="d-flex flex-column align-items-center">
+                <NewsFeed type={null} newsItems={newsItems ?? []} />
+              </div>
             </Col>
           </Row>
-        </Tab.Container>
+        )}
       </div>
     </Container>
   )
 }
 
-const TabGroup = ({ counts }: { counts: TabCounts | null }) => {
+const TabGroup = ({ counts }: { counts: TabCounts }) => {
   const { t } = useTranslation("inTheNews")
   return (
     <Row className="g-0 fs-4 fw-semibold">
-      <Col md={4} className="text-center">
-        <Nav className="in-the-news flex-column">
-          <Nav.Item>
-            <Nav.Link eventKey="media">
-              <div className="d-flex justify-content-center align-items-center gap-3 p-4">
-                {t("media.title")}
-                <Badge
-                  bg="secondary"
-                  className="rounded-pill px-4 fw-bold"
-                  style={{
-                    fontSize: "20px",
-                    visibility: counts ? "visible" : "hidden"
-                  }}
-                >
-                  {counts ? counts.media : 0}
-                </Badge>
-              </div>
-            </Nav.Link>
-          </Nav.Item>
-        </Nav>
-      </Col>
-      <Col md={4} className="text-center">
-        <Nav className="in-the-news flex-column">
-          <Nav.Item>
-            <Nav.Link eventKey="awards">
-              <div className="d-flex justify-content-center align-items-center gap-3 p-4">
-                {t("awards.title")}
-                <Badge
-                  bg="secondary"
-                  className="rounded-pill px-4 fw-bold"
-                  style={{
-                    fontSize: "20px",
-                    visibility: counts ? "visible" : "hidden"
-                  }}
-                >
-                  {counts ? counts.awards : 0}
-                </Badge>
-              </div>
-            </Nav.Link>
-          </Nav.Item>
-        </Nav>
-      </Col>
-      <Col md={4} className="text-center">
-        <Nav className="in-the-news flex-column">
-          <Nav.Item>
-            <Nav.Link eventKey="books">
-              <div className="d-flex justify-content-center align-items-center gap-3 p-4">
-                {t("books.title")}
-                <Badge
-                  bg="secondary"
-                  className="rounded-pill px-4 fw-bold"
-                  style={{
-                    fontSize: "20px",
-                    visibility: counts ? "visible" : "hidden"
-                  }}
-                >
-                  {counts ? counts.books : 0}
-                </Badge>
-              </div>
-            </Nav.Link>
-          </Nav.Item>
-        </Nav>
-      </Col>
+      {newsTypePlurals
+        .filter(val => counts[val])
+        .map(val => (
+          <Col key={val} className="text-center">
+            <Nav className="in-the-news flex-column">
+              <Nav.Item>
+                <Nav.Link eventKey={val}>
+                  <div className="d-flex justify-content-center align-items-center gap-3 p-4">
+                    {t(`${val}.title`)}
+                    <Badge
+                      bg="secondary"
+                      className="rounded-pill px-4 fw-bold"
+                      style={{
+                        fontSize: "20px"
+                      }}
+                    >
+                      {counts[val]}
+                    </Badge>
+                  </div>
+                </Nav.Link>
+              </Nav.Item>
+            </Nav>
+          </Col>
+        ))}
     </Row>
   )
 }
 
-const TabDropdown = ({ counts }: { counts: TabCounts | null }) => {
+const TabDropdown = ({ counts }: { counts: TabCounts }) => {
   const { t } = useTranslation("inTheNews")
-  const [selectedTab, setSelectedTab] = useState<string>("Media")
+  const [selectedTab, setSelectedTab] = useState<string>(t("media.title"))
 
   const handleTabClick = (tabTitle: string) => {
     setSelectedTab(tabTitle)
@@ -178,29 +152,20 @@ const TabDropdown = ({ counts }: { counts: TabCounts | null }) => {
             <span style={{ float: "left" }}>{selectedTab}</span>
           </Dropdown.Toggle>
           <Dropdown.Menu className="p-2">
-            <Dropdown.Item
-              className="p-2"
-              eventKey="media"
-              onClick={() => handleTabClick("Media")}
-            >
-              {t("media.title")}
-            </Dropdown.Item>
-            <Dropdown.Divider />
-            <Dropdown.Item
-              className="p-2"
-              eventKey="awards"
-              onClick={() => handleTabClick("Awards")}
-            >
-              {t("awards.title")}
-            </Dropdown.Item>
-            <Dropdown.Divider />
-            <Dropdown.Item
-              className="p-2"
-              eventKey="books"
-              onClick={() => handleTabClick("Books")}
-            >
-              {t("books.title")}
-            </Dropdown.Item>
+            {newsTypePlurals
+              .filter(val => counts[val])
+              .map((val, i) => (
+                <Fragment key={val}>
+                  {i !== 0 && <Dropdown.Divider />}
+                  <Dropdown.Item
+                    className="p-2"
+                    eventKey={val}
+                    onClick={() => handleTabClick(t(`${val}.title`))}
+                  >
+                    {t(`${val}.title`)}
+                  </Dropdown.Item>
+                </Fragment>
+              ))}
           </Dropdown.Menu>
         </Dropdown>
       </Col>

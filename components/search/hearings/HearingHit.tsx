@@ -14,28 +14,34 @@ import {
 } from "react"
 
 const StyledCard = styled(Card)`
-  border: none;
-  border-radius: 4px;
-  margin-bottom: 0.75rem;
+  background: var(--maple-surface-gradient);
+  border: 1px solid var(--maple-surface-border);
+  border-radius: var(--bs-border-radius-xl);
+  box-shadow: var(--maple-shadow-sm);
+  height: 100%;
   overflow: hidden;
   cursor: pointer;
-  outline-color: var(--bs-blue);
-  outline-style: solid;
-  outline-width: 0;
-  transition: outline-width 0.1s;
-
   font-size: 0.85rem;
+  transition: transform var(--maple-transition-fast),
+    box-shadow var(--maple-transition-fast),
+    border-color var(--maple-transition-fast);
 
   &:hover {
-    outline-width: 2px;
+    transform: translateY(-2px);
+    box-shadow: var(--maple-shadow-hover);
+    border-color: var(--maple-border-accent);
   }
 
   &:active {
-    outline-width: 4px;
+    transform: translateY(0);
   }
 
   .card-body {
-    padding: 0.85rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: var(--maple-space-sm);
+    padding: var(--maple-space-lg);
+    height: 100%;
   }
 `
 
@@ -90,9 +96,9 @@ export const HearingHit = ({ hit }: { hit: HearingHitData }) => {
       onKeyDown={handleKeyDown}
       aria-label={hit.title}
     >
-      <Card.Body className="bg-white">
-        <div className="d-flex flex-column gap-2">
-          <div className="d-flex flex-wrap gap-2 align-items-center justify-content-between">
+      <Card.Body>
+        <div className="d-flex flex-column gap-2 h-100">
+          <div className="d-flex gap-2 align-items-start justify-content-between">
             <div className="d-flex flex-column">
               <span className="text-uppercase fw-semibold text-secondary">
                 {scheduleDate}
@@ -114,12 +120,20 @@ export const HearingHit = ({ hit }: { hit: HearingHitData }) => {
             )}
           </div>
 
-          <div>
+          <div style={{ flex: 1 }}>
             <Card.Title as="h6" className="mb-1">
               <Highlight attribute="title" hit={hit} />
             </Card.Title>
             {hit.description ? (
-              <p className="mb-0 text-muted">
+              <p
+                className="mb-0 text-muted"
+                style={{
+                  display: "-webkit-box",
+                  WebkitLineClamp: 3,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden"
+                }}
+              >
                 <Highlight attribute="description" hit={hit} />
               </p>
             ) : null}

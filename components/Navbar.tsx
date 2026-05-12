@@ -10,6 +10,7 @@ import { flags } from "./featureFlags"
 import {
   Avatar,
   NavbarLinkBallotQuestions,
+  DESKTOP_NAV_ITEM_CLASS,
   NavbarLinkAI,
   NavbarLinkBills,
   NavbarLinkHearings,
@@ -29,6 +30,10 @@ import {
   NavbarLinkWhyUse
 } from "./NavbarComponents"
 
+const MobileCollapse = styled(Navbar.Collapse)`
+  background-color: var(--maple-brand-primary);
+`
+
 export const MainNavbar: React.FC<React.PropsWithChildren<unknown>> = () => {
   const isMobile = useMediaQuery("(max-width: 768px)")
 
@@ -36,23 +41,6 @@ export const MainNavbar: React.FC<React.PropsWithChildren<unknown>> = () => {
 }
 
 const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
-  const BlackCollapse = styled(() => {
-    return (
-      <Navbar.Collapse id="basic-navbar-nav" className="bg-black mt-2 ps-4">
-        {/* while MAPLE is trying to do away with inline styling,   *
-         *  both styled-components and bootstrap classes have been  *
-         *  ignoring height properties for some reason              */}
-        <div style={{ height: "100vh" }}>
-          {whichMenu == "site" ? <SiteLinks /> : <ProfileLinks />}
-        </div>
-      </Navbar.Collapse>
-    )
-  })`
-    .bg-black {
-      background-color: black;
-    }
-  `
-
   const ProfileLinks = () => {
     return (
       <Nav className="my-4 d-flex align-items-start">
@@ -136,8 +124,8 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 
   return (
     <Navbar
-      bg="secondary"
-      className={`w-100 ${isExpanded ? "pb-0" : ""}`}
+      className={`main-navbar w-100 ${isExpanded ? "pb-0" : ""}`}
+      style={{ backgroundColor: "var(--maple-brand-primary)" }}
       data-bs-theme="dark"
       expand="lg"
       expanded={isExpanded}
@@ -156,14 +144,7 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           className="mobile-nav-trigger"
         >
           {isExpanded && whichMenu == "site" ? (
-            <Image
-              src="/Union.svg"
-              alt=""
-              aria-hidden="true"
-              width="35"
-              height="35"
-              className="ms-2"
-            />
+            <span className="mobile-nav-close-icon" aria-hidden="true" />
           ) : (
             <span className="navbar-toggler-icon" aria-hidden="true" />
           )}
@@ -186,15 +167,12 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             }
             className="mobile-nav-trigger"
           >
-            <span className="p-0 text-white d-inline-flex">
+            <span
+              className="p-0 d-inline-flex"
+              style={{ color: "var(--maple-brand-primary-strong)" }}
+            >
               {isExpanded && whichMenu == "profile" ? (
-                <Image
-                  src="/Union.svg"
-                  alt=""
-                  aria-hidden="true"
-                  width="35"
-                  height="35"
-                />
+                <span className="mobile-nav-close-icon" aria-hidden="true" />
               ) : (
                 <Avatar />
               )}
@@ -205,7 +183,14 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         )}
       </Col>
 
-      <BlackCollapse />
+      <MobileCollapse id="basic-navbar-nav" className="mt-2 ps-4">
+        {/* while MAPLE is trying to do away with inline styling,   *
+         *  both styled-components and bootstrap classes have been  *
+         *  ignoring height properties for some reason              */}
+        <div style={{ height: "100vh" }}>
+          {whichMenu == "site" ? <SiteLinks /> : <ProfileLinks />}
+        </div>
+      </MobileCollapse>
     </Navbar>
   )
 }
@@ -217,7 +202,8 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   return (
     <Container
       fluid
-      className={`desktop-navbar bg-secondary d-flex py-2 sticky-top justify-content-end gap-2`}
+      className={`main-navbar desktop-navbar d-flex py-2 sticky-top justify-content-end gap-2`}
+      style={{ backgroundColor: "var(--maple-brand-primary)" }}
     >
       <div className={`me-auto`}>
         <NavbarLinkLogo />
@@ -253,10 +239,11 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         <></>
       )}
 
-      <div className={`align-self-center px-2`}>
+      <div className={`align-self-center`}>
         <Dropdown>
           <Dropdown.Toggle
-            className={`desktop-navbar-dropdown btn-secondary text-white`}
+            variant="light"
+            className={`${DESKTOP_NAV_ITEM_CLASS}`}
           >
             {t("about")}
           </Dropdown.Toggle>
@@ -271,10 +258,11 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         </Dropdown>
       </div>
 
-      <div className={`align-self-center px-2`}>
+      <div className={`align-self-center`}>
         <Dropdown>
           <Dropdown.Toggle
-            className={`desktop-navbar-dropdown btn-secondary text-white`}
+            variant="light"
+            className={`${DESKTOP_NAV_ITEM_CLASS}`}
           >
             {t("learn")}
           </Dropdown.Toggle>
@@ -290,7 +278,8 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         <div className={`align-self-center`}>
           <Dropdown>
             <Dropdown.Toggle
-              className={`desktop-navbar-dropdown btn-secondary`}
+              variant="light"
+              className={`desktop-navbar-dropdown`}
             >
               <Avatar />
             </Dropdown.Toggle>

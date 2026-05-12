@@ -4,6 +4,37 @@ import { BallotQuestionNav } from "./BallotQuestionNav"
 import { OverviewTab } from "./OverviewTab"
 import { TestimoniesTab } from "./TestimoniesTab"
 
+jest.mock("next-i18next", () => ({
+  Trans: ({ i18nKey }: { i18nKey: string }) => <>{i18nKey}</>,
+  useTranslation: () => ({
+    t: (key: string, params?: Record<string, string | number>) => {
+      const messages: Record<string, string> = {
+        "nav.explore": "Explore",
+        "nav.sectionsAriaLabel": "Ballot question sections",
+        "tabs.overview": "Overview",
+        "tabs.perspectives": "Perspectives",
+        "tabs.forAndAgainst": "For & Against",
+        "tabs.news": "News & Media",
+        "tabs.academia": "Academia",
+        "tabs.financials": "Campaign Financials",
+        "tabs.map": "Map",
+        "overview.title": "Overview",
+        "overview.description":
+          "Understand the question, key details, and ballot context.",
+        "testimonies.title": "Perspectives",
+        "testimonies.total": `${params?.count ?? 0} perspectives`,
+        "testimonies.relatedBillPrefix":
+          "You can review testimony on the related bill",
+        "testimonies.relatedBillLink": "here",
+        "testimonies.endorse": "Endorse",
+        "testimonies.neutral": "Neutral",
+        "testimonies.oppose": "Oppose"
+      }
+      return messages[key] ?? key
+    }
+  })
+}))
+
 jest.mock("../TestimonyCard/ViewTestimony", () => {
   const MockViewTestimony = () => <div data-testid="view-testimony" />
 
@@ -54,14 +85,9 @@ describe("Ballot question tab links", () => {
       />
     )
 
-    const link = screen.getByRole("link", {
-      name: "related bill"
-    })
+    const link = screen.getByRole("link", { name: "here" })
 
-    expect(link).toHaveAttribute("href", "/bills/194/H5005")
-    expect(
-      screen.getByText(/This question is expected on the ballot\./)
-    ).toBeInTheDocument()
+    expect(link).toHaveAttribute("href", "/bills/194/H5005#testimonies")
     expect(
       screen.getByText(/You can review testimony on the related bill/)
     ).toBeInTheDocument()
@@ -85,9 +111,6 @@ describe("Ballot question tab links", () => {
     expect(screen.queryByRole("link", { name: "here" })).not.toBeInTheDocument()
     expect(
       screen.queryByText(/You can review testimony on the related bill/)
-    ).not.toBeInTheDocument()
-    expect(
-      screen.queryByText(/This question is expected on the ballot\./)
     ).not.toBeInTheDocument()
   })
 
@@ -139,6 +162,21 @@ describe("Ballot question tab links", () => {
       "aria-controls",
       "ballot-question-panel-testimonies"
     )
+  })
+
+  it("shows campaign financials only when ballot question financial data exists", () => {
+    render(
+      <BallotQuestionNav
+        activeTab="overview"
+        onTabChange={jest.fn()}
+        testimonyCount={5}
+        showCampaignFinancials
+      />
+    )
+
+    expect(
+      screen.getByRole("tab", { name: "Campaign Financials" })
+    ).toHaveAttribute("aria-controls", "ballot-question-panel-financials")
   })
 
   it("supports arrow-key navigation between ballot question tabs", () => {

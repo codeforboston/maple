@@ -146,10 +146,10 @@ const TabStyle = styled.div<{
   color: ${props =>
     props.variant === "ballotQuestion"
       ? props.active
-        ? "#c71e32"
-        : "#212529"
+        ? "var(--maple-brand-danger)"
+        : "var(--maple-text-strong)"
       : props.active
-      ? "#C71E32"
+      ? "var(--maple-brand-danger)"
       : "black"};
   border: none;
   font: inherit;
@@ -181,7 +181,7 @@ const TabSliderContainerStyle = styled.div`
 const TabSliderTrackStyle = styled.div<{
   variant: "default" | "ballotQuestion"
 }>`
-  background-color: #f1f1f1;
+  background-color: var(--maple-surface-muted);
   align-self: center;
   width: ${props => (props.variant === "ballotQuestion" ? "100%" : "75%")};
   height: 1px;
@@ -202,7 +202,7 @@ export const TabSliderStyle = styled.div<{
   transition: ${props => `${props.resizing ? "0s" : "all 0.4s"}`};
   width: ${props => `${props.width}px`};
   height: 3px;
-  background-color: #c71e32;
+  background-color: var(--maple-brand-danger);
   transform: ${props => `translateX(${props.position}px)`};
   position: absolute;
   z-index: 9;

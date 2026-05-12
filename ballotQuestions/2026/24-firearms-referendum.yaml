@@ -15,11 +15,21 @@ title: "Referendum on the 2024 firearms law (Chapter 135)"
 court: 193
 electionYear: 2026
 type: referendum
-ballotStatus: certified
+ballotStatus: "expectedOnBallot"
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null
+alertFlag: null
+alertTip: null
 atAGlance: null
+voteEffectYes: null
+voteEffectNo: null
+fiscalConsequences: null
+inFavor: null
+against: null
+supportCommittee: "The Civil Rights Coalition (Toby Leary, Chair; Gun Owners' Action League)"
+opposeCommittee: "MA Coalition to Prevent Gun Violence (Ruth Zakarin, Exec. Dir. & Committee Chair)"
+campaignFinancials: null
 fullSummary: |-
   This referendum asks voters whether to repeal Chapter 135 of the Acts of 2024,
   "An Act Modernizing Firearm Laws," an omnibus law passed by the Legislature

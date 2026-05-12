@@ -1,7 +1,8 @@
 import { Hit } from "instantsearch.js"
 import Link from "next/link"
 import { Trans, useTranslation } from "next-i18next"
-import { Image } from "react-bootstrap"
+import { Card, Image } from "react-bootstrap"
+import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 
 import { useAuth } from "components/auth"
@@ -12,6 +13,136 @@ import { formatBillId, truncateText } from "components/formatting"
 import { maple } from "components/links"
 import { FollowUserButton } from "components/shared/FollowButton"
 import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
+
+const StyledCard = styled(Card)`
+  background: var(--maple-surface-gradient);
+  border: 1px solid var(--maple-surface-border);
+  border-radius: var(--bs-border-radius-xl);
+  box-shadow: var(--maple-shadow-sm);
+  height: 100%;
+  overflow: hidden;
+  transition: transform var(--maple-transition-fast),
+    box-shadow var(--maple-transition-fast),
+    border-color var(--maple-transition-fast);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--maple-shadow-hover);
+    border-color: var(--maple-border-accent);
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--maple-space-sm);
+    padding: var(--maple-space-lg);
+    height: 100%;
+  }
+`
+
+const AuthorRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: var(--maple-space-sm);
+`
+
+const AuthorName = styled.span`
+  flex-grow: 1;
+  font-size: 0.875rem;
+  font-weight: var(--maple-font-weight-semibold);
+`
+
+const PositionRow = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: var(--maple-space-md);
+`
+
+const ThumbWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+`
+
+const ThumbIcon = styled.div<{ $position: string }>`
+  background-image: url(thumbs-${({ $position }) => $position}.svg);
+  height: 36px;
+  width: 36px;
+  background-size: cover;
+`
+
+const PositionLabel = styled.span`
+  font-size: 0.7rem;
+  color: var(--maple-text-muted);
+  text-transform: capitalize;
+`
+
+const BillBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+`
+
+const BillId = styled.span`
+  font-size: 0.8rem;
+  font-weight: var(--maple-font-weight-semibold);
+  color: var(--maple-text-strong);
+`
+
+const BillTitle = styled.p`
+  font-size: 0.78rem;
+  font-weight: var(--maple-font-weight-semibold);
+  color: var(--maple-brand-primary);
+  margin: 0;
+  line-height: var(--maple-line-height-tight);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+`
+
+const Quote = styled.p`
+  font-size: 0.8rem;
+  color: var(--maple-text-body);
+  margin: 0;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+`
+
+const FooterRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  gap: var(--maple-space-sm);
+  flex-wrap: wrap;
+`
+
+const DateLabel = styled.span`
+  font-size: 0.75rem;
+  color: var(--maple-text-muted);
+  margin-left: auto;
+`
+
+const CommitteePill = styled.span`
+  background: var(--bs-blue);
+  border-radius: var(--maple-radius-pill);
+  color: var(--maple-text-inverse);
+  font-size: 0.7rem;
+  padding: 3px var(--maple-space-sm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+`
 
 export const TestimonyHit = ({ hit }: { hit: Hit<Testimony> }) => {
   const url = maple.testimony({ publishedId: hit.id })
@@ -29,7 +160,7 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
     parseInt(hit.publishedAt.toString())
   ).toLocaleDateString("en-US", {
     year: "numeric",
-    month: "long",
+    month: "short",
     day: "numeric"
   })
   const { loading, error, result: bill } = useBill(hit.court, hit.billId)
@@ -41,30 +172,18 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
 
   return (
-    <div
-      style={{
-        background: "white",
-        padding: "1rem",
-        borderRadius: "4px",
-        marginBottom: "0.75rem"
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: "10px"
-        }}
-      >
-        <Image
-          src={isOrg ? "/profile-org-icon.svg" : "/profile-individual-icon.svg"}
-          alt={useTranslation("auth").t("profileIcon")}
-          height="30px"
-          width="30px"
-        />
-        <span style={{ flexGrow: 1 }}>
-          <b>
+    <StyledCard>
+      <Card.Body>
+        <AuthorRow>
+          <Image
+            src={
+              isOrg ? "/profile-org-icon.svg" : "/profile-individual-icon.svg"
+            }
+            alt={useTranslation("auth").t("profileIcon")}
+            height="28px"
+            width="28px"
+          />
+          <AuthorName>
             <Trans
               ns="testimony"
               i18nKey="testimonyHit.writtenBy"
@@ -77,61 +196,40 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
                 )
               ]}
             />
-          </b>
-        </span>
-        {hit.public && !isCurrentUser && followOrg && user && (
-          <FollowUserButton profileId={hit.authorUid} />
-        )}
-      </div>
-      <hr />
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <div style={{ marginRight: "10px" }}>
-          <div
-            style={{
-              backgroundImage: `url(thumbs-${hit.position}.svg)`,
-              height: "60px",
-              aspectRatio: "1",
-              backgroundSize: "60px 60px"
-            }}
-          ></div>
-          <span>{hit.position}</span>
-        </div>
-        <div style={{ width: "100%" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-            {/* <Link href={maple.bill({ court: hit.court, id: hit.billId })}> */}
-            {/* <a> */}
-            <h2>
+          </AuthorName>
+          {hit.public && !isCurrentUser && followOrg && user && (
+            <FollowUserButton profileId={hit.authorUid} />
+          )}
+        </AuthorRow>
+
+        <PositionRow>
+          <ThumbWrap>
+            <ThumbIcon $position={hit.position} />
+            <PositionLabel>{hit.position}</PositionLabel>
+          </ThumbWrap>
+          <BillBlock>
+            <BillId>
               {useTranslation("testimony").t("testimonyHit.bill", {
                 billId: formatBillId(hit.billId)
               })}
-            </h2>
-            {/* </a> */}
-            {/* </Link> */}
-            {committee && (
-              <span
-                style={{
-                  background: "var(--bs-blue)",
-                  borderRadius: "50px",
-                  color: "white",
-                  padding: "5px 10px"
-                }}
-              >
-                {isMobile ? truncateText(committee.name, 35) : committee.name}
-              </span>
-            )}
-          </div>
-          <h6 style={{ color: "var(--bs-blue)", fontWeight: 600 }}>
-            {bill?.content.Title}
-          </h6>
-          <p style={{ wordBreak: "break-all" }}>
-            "{trimContent(hit.content, 500)}"
-          </p>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            {/* {hit.content.trim().length > 0 && <a className="w-20">Read More</a>} */}
-            <span style={{ marginLeft: "auto" }}>{`Posted ${date}`}</span>
-          </div>
-        </div>
-      </div>
-    </div>
+            </BillId>
+            <BillTitle>{bill?.content.Title}</BillTitle>
+          </BillBlock>
+        </PositionRow>
+
+        <Quote>"{trimContent(hit.content, 220)}"</Quote>
+
+        <FooterRow>
+          {committee && (
+            <CommitteePill>
+              {isMobile
+                ? truncateText(committee.name, 30)
+                : truncateText(committee.name, 40)}
+            </CommitteePill>
+          )}
+          <DateLabel>{date}</DateLabel>
+        </FooterRow>
+      </Card.Body>
+    </StyledCard>
   )
 }
