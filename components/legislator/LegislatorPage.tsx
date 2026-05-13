@@ -1,8 +1,5 @@
 import { doc, getDoc } from "firebase/firestore"
-import {
-  faAddressBook,
-  faChevronRight
-} from "@fortawesome/free-solid-svg-icons"
+import { faChevronRight } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useTranslation } from "next-i18next"
 import ErrorPage from "next/error"
@@ -14,7 +11,13 @@ import { usePublicProfile } from "../db"
 import { firestore } from "../firebase"
 import * as links from "../links"
 
-import { Bluesky, LinkedIn, PartyLabel, Twitter } from "./LegislatorComponents"
+import {
+  Bluesky,
+  formatPhoneNumber,
+  LinkedIn,
+  PartyLabel,
+  Twitter
+} from "./LegislatorComponents"
 import { LegislatorSidebar } from "./SidebarComponents/LegislatorSidebar"
 import { LegislatorTabs } from "./TabComponents/LegislatorTabs"
 
@@ -98,6 +101,7 @@ export function LegislatorPage(props: { id: string }) {
   const [branch, setBranch] = useState<string>("")
   const [cosponsoredBills, setCosponsoredBills] = useState<Array<string>>([""])
   const [district, setDistrict] = useState<string>("")
+  const [email, setEmail] = useState<string>("")
   const [party, setParty] = useState<string>("")
   const [phoneNumber, setPhoneNumber] = useState<string>("")
   const [sponsoredBills, setSponsoredBills] = useState<Array<string>>([""])
@@ -114,6 +118,7 @@ export function LegislatorPage(props: { id: string }) {
     setBranch(docData?.content.Branch)
     setCosponsoredBills(docData?.content.CoSponsoredBills)
     setDistrict(docData?.content.District)
+    setEmail(docData?.content.EmailAddress)
     setParty(docData?.content.Party)
     setPhoneNumber(docData?.content.PhoneNumber)
     setSponsoredBills(docData?.content.SponsoredBills)
@@ -135,24 +140,6 @@ export function LegislatorPage(props: { id: string }) {
   }
   if (!profile) {
     return <ErrorPage statusCode={404} withDarkMode={false} />
-  }
-
-  const formatPhoneNumber = (value: string) => {
-    if (!value) return value
-
-    const phoneNumber = value.replace(/[^\d]/g, "")
-    const phoneNumberLength = phoneNumber.length
-
-    // Format as (XXX) XXX-XXXX
-    if (phoneNumberLength < 4) return phoneNumber
-    if (phoneNumberLength < 7) {
-      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`
-    }
-    return `
-      (${phoneNumber.slice(0, 3)})
-       ${phoneNumber.slice(3, 6)}-
-       ${phoneNumber.slice(6, 10)}
-    `
   }
 
   return (
@@ -202,44 +189,51 @@ export function LegislatorPage(props: { id: string }) {
           </div>
 
           <SocialLine>
-            {profile.email ? (
-              <div>
-                {/** fix mailto: on live **/}
-                <links.External
-                  href="mailto:#"
-                  className="text-decoration-none"
-                >
-                  {profile.email}
-                </links.External>
-                <span className="px-2">·</span>
-              </div>
-            ) : (
-              <></>
-            )}
+            <div>
+              <links.External
+                href={`mailto:${email}`}
+                className="text-decoration-none"
+              >
+                {email}
+              </links.External>
+            </div>
 
-            {/** need profile prop for personal webpage to replace email placeholder **/}
-            {profile.email ? (
+            {profile.website ? (
               <div>
-                <links.External href="#" className="text-decoration-none">
-                  {/** need profile prop for personal webpage **/}
-                  janedoe.com
-                </links.External>
                 <span className="px-2">·</span>
+                <links.External href="#" className="text-decoration-none">
+                  {profile.website}
+                </links.External>
               </div>
             ) : (
-              <></>
+              <div>
+                <span className="px-2">·</span>
+                <links.External
+                  href={`https://malegislature.gov/Legislators/Profile/${profile.memberId}`}
+                >
+                  {`malegislature.gov/Legislators/Profile/${profile.memberId}`}
+                </links.External>
+              </div>
             )}
 
             {phoneNumber ? (
               <div>
-                <PhoneNum>{formatPhoneNumber(phoneNumber)}</PhoneNum>
                 <span className="px-2">·</span>
+                <PhoneNum>{formatPhoneNumber(phoneNumber)}</PhoneNum>
               </div>
             ) : (
               <></>
             )}
 
             <div>
+              {profile?.social?.twitter ||
+              profile?.social?.linkedIn ||
+              profile?.social?.blueSky ? (
+                <span className="px-2">·</span>
+              ) : (
+                <></>
+              )}
+
               {profile?.social?.twitter ? (
                 <a
                   href={profile.social.twitter}
@@ -253,7 +247,6 @@ export function LegislatorPage(props: { id: string }) {
               ) : (
                 <></>
               )}
-
               {profile?.social?.linkedIn ? (
                 <a
                   href={profile.social.linkedIn}
@@ -267,7 +260,6 @@ export function LegislatorPage(props: { id: string }) {
               ) : (
                 <></>
               )}
-
               {profile?.social?.blueSky ? (
                 <a
                   href={profile?.social?.blueSky}
@@ -281,11 +273,6 @@ export function LegislatorPage(props: { id: string }) {
               ) : (
                 <></>
               )}
-
-              <FontAwesomeIcon
-                icon={faAddressBook}
-                style={{ color: "#1a3185" }}
-              />
             </div>
           </SocialLine>
         </Col>

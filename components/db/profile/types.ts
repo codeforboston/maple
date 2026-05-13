@@ -45,4 +45,5 @@ export type Profile = {
   orgCategories?: OrgCategory[] | ""
   phoneVerified?: boolean
   memberId?: string
+  website?: string
 }
