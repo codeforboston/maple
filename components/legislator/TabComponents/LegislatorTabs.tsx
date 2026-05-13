@@ -63,9 +63,11 @@ const TabNavItem = ({
 }
 
 export function LegislatorTabs({
-  tabCategory
+  tabCategory,
+  legislatorId
 }: {
   tabCategory?: TabCategories
+  legislatorId?: string
 }) {
   const { t } = useTranslation("legislators")
 
@@ -98,7 +100,7 @@ export function LegislatorTabs({
     {
       title: t("tabs.testimony"),
       eventKey: "testimony",
-      content: <Testimony />
+      content: <Testimony legislatorId={legislatorId} />
     },
     {
       title: t("tabs.votes"),
