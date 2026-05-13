@@ -262,7 +262,7 @@ export function LegislatorPage(props: { id: string }) {
               )}
               {profile?.social?.blueSky ? (
                 <a
-                  href={profile?.social?.blueSky}
+                  href={profile?.social.blueSky}
                   className="pe-2"
                   rel="noreferrer"
                   target="_blank"
