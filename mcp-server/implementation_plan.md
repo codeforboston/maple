@@ -17,6 +17,18 @@ graph TD
     MCP --> M3[Authorized Users]
 ```
 
+## Environments
+- **DEV**: Project `digital-testimony-dev`. All initial development, backfilling, and prototype testing will occur here.
+- **PROD**: Project `digital-testimony-prod`. Final deployment only after successful verification in DEV.
+
+## Development Flow
+
+1. **Infrastructure**: Create `agentKeys` in Firestore (DEV) and deploy vector indexes via `firebase deploy --only firestore:indexes`.
+2. **Indexing**: Implement and run `backfill-embeddings.ts` against the DEV project to populate `vector_embedding` fields.
+3. **MCP Core**: Initialize `mcp-server` package and implement `tools.ts` with Vertex AI + Firestore `findNearest` logic.
+4. **Auth & Local Test**: Implement Hybrid Auth and verify the prototype locally using Stdio transport and the MCP Inspector.
+5. **Remote Deployment**: Deploy to Cloud Run (DEV) using SSE transport and verify with a remote agent.
+
 ## Proposed Changes
 
 ### Firestore Vector Search Setup
@@ -29,8 +41,20 @@ We need to prepare Firestore to support vector queries.
 #### [NEW] `scripts/backfill-embeddings.ts`
 - A script to iterate through all bills, testimony, and ballot questions, generate embeddings using **Vertex AI**, and save them to a new `vector_embedding` field in Firestore.
 
-#### [MODIFY] `llm/bill_on_document_created.py` (and similar triggers)
+#### [MODIFY] [bill_on_document_created.py](../llm/bill_on_document_created.py) (and similar triggers)
 - Update existing LLM triggers to generate embeddings using Vertex AI whenever a new bill, testimony, or ballot question is added/updated.
+
+### Continuous Synchronization
+
+To keep the vector database updated in real-time, we will implement **Firestore Triggers** (Vector Indexers) for the following paths:
+
+| Data Type | Firestore Path | Logic Location |
+| :--- | :--- | :--- |
+| **Bills** | `generalCourts/{court}/bills/{id}` | `functions/src/bills/vector.ts` |
+| **Testimony** | `users/{uid}/publishedTestimony/{id}` | `functions/src/testimony/vector.ts` |
+| **Ballot Qs** | `ballotQuestions/{id}` | `functions/src/ballotQuestions/vector.ts` |
+
+- **Pattern**: Create a `createVectorIndexer` utility in TypeScript (mirroring the existing `createSearchIndexer`) to standardize embedding generation across all collections.
 
 ---
 
@@ -61,7 +85,7 @@ Initialize a new Node.js package with the following structure:
 - Containerize the MCP server for Cloud Run deployment.
 
 #### [NEW] `infra/deploy-mcp.sh`
-- Script to build and deploy the container to Google Cloud Run.
+- Script to build and deploy the container to Google Cloud Run, supporting `--env dev` and `--env prod` targets.
 
 ## Scalability & Cost Estimates
 
@@ -103,12 +127,12 @@ Initialize a new Node.js package with the following structure:
 - Add a script to start the MCP server: `"mcp:start": "ts-node mcp-server/index.ts"`.
 
 #### [NEW] `mcp-server/.env.example`
-- Template for required environment variables: `FIREBASE_PROJECT_ID`, `OPENAI_API_KEY`, `MCP_API_KEY`.
+- Template for required environment variables: `FIREBASE_PROJECT_ID`, `GOOGLE_APPLICATION_CREDENTIALS`, `MCP_API_KEY`.
 
 ## Verification Plan
 
 ### Automated Tests
-- Unit tests for `mcp-server` tools using mocked Firestore and OpenAI.
+- Unit tests for `mcp-server` tools using mocked Firestore and Vertex AI.
 - Integration tests using the Firebase Emulator (if it supports vector search, otherwise against a dev project).
 
 ### Manual Verification
