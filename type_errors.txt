@@ -1,0 +1,28 @@
+error Command failed with exit code 1.
+
+ERROR conda.cli.main_run:execute(47): `conda run yarn check-types` failed. (See above for error)
+yarn run v1.22.19
+$ tsc --noEmit
+functions/src/search/createVectorIndexer.ts(68,13): error TS2488: Type 'Promise<[IPredictResponse, IPredictRequest | undefined, {} | undefined]> & void' must have a '[Symbol.iterator]()' method that returns an iterator.
+functions/src/search/createVectorIndexer.ts(70,21): error TS2322: Type 'object | IValue | null | undefined' is not assignable to type 'IValue'.
+  Type 'undefined' is not assignable to type 'IValue'.
+mcp-server/tools.ts(26,9): error TS2488: Type 'Promise<[IPredictResponse, IPredictRequest | undefined, {} | undefined]> & void' must have a '[Symbol.iterator]()' method that returns an iterator.
+mcp-server/tools.ts(28,17): error TS2322: Type 'object | IValue | null | undefined' is not assignable to type 'IValue'.
+mcp-server/tools.ts(49,5): error TS2769: No overload matches this call.
+  Overload 2 of 6, '(name: string, paramsSchema: ZodRawShapeCompat, annotations: { title?: string | undefined; readOnlyHint?: boolean | undefined; destructiveHint?: boolean | undefined; idempotentHint?: boolean | undefined; openWorldHint?: boolean | undefined; }, cb: (args: ShapeOutput<...>, extra: RequestHandlerExtra<...>) => { ...; } | Promise<...>): RegisteredTool', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'ZodRawShapeCompat'.
+mcp-server/tools.ts(82,5): error TS2769: No overload matches this call.
+  Overload 2 of 6, '(name: string, paramsSchema: ZodRawShapeCompat, annotations: { title?: string | undefined; readOnlyHint?: boolean | undefined; destructiveHint?: boolean | undefined; idempotentHint?: boolean | undefined; openWorldHint?: boolean | undefined; }, cb: (args: ShapeOutput<...>, extra: RequestHandlerExtra<...>) => { ...; } | Promise<...>): RegisteredTool', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'ZodRawShapeCompat'.
+mcp-server/tools.ts(123,5): error TS2769: No overload matches this call.
+  Overload 2 of 6, '(name: string, paramsSchema: ZodRawShapeCompat, annotations: { title?: string | undefined; readOnlyHint?: boolean | undefined; destructiveHint?: boolean | undefined; idempotentHint?: boolean | undefined; openWorldHint?: boolean | undefined; }, cb: (args: ShapeOutput<...>, extra: RequestHandlerExtra<...>) => { ...; } | Promise<...>): RegisteredTool', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'ZodRawShapeCompat'.
+mcp-server/tools.ts(156,5): error TS2769: No overload matches this call.
+  Overload 2 of 6, '(name: string, paramsSchema: ZodRawShapeCompat, annotations: { title?: string | undefined; readOnlyHint?: boolean | undefined; destructiveHint?: boolean | undefined; idempotentHint?: boolean | undefined; openWorldHint?: boolean | undefined; }, cb: (args: ShapeOutput<...>, extra: RequestHandlerExtra<...>) => { ...; } | Promise<...>): RegisteredTool', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'ZodRawShapeCompat'.
+scripts/firebase-admin/backfill-embeddings.ts(11,9): error TS2488: Type 'Promise<[IPredictResponse, IPredictRequest | undefined, {} | undefined]> & void' must have a '[Symbol.iterator]()' method that returns an iterator.
+scripts/firebase-admin/backfill-embeddings.ts(13,17): error TS2322: Type 'object | IValue | null | undefined' is not assignable to type 'IValue'.
+scripts/firebase-admin/backfill-embeddings.ts(26,28): error TS2339: Property 'app' does not exist on type 'App'.
+scripts/firebase-admin/syncBallotQuestions.ts(13,3): error TS2578: Unused '@ts-expect-error' directive.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+

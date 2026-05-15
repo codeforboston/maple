@@ -7,12 +7,18 @@ const model = "gemini-embedding-2";
 
 async function getEmbedding(client: PredictionServiceClient, endpoint: string, text: string, title?: string): Promise<number[]> {
   const formattedText = `title: ${title || "none"} | text: ${text}`;
-  const instance = helpers.toValue({ content: formattedText });
-  const [response] = await client.predict({
+  const instance = helpers.toValue({ content: formattedText })!;
+  const responseArray = (await client.predict({
     endpoint,
     instances: [instance],
-  });
-  const prediction = helpers.fromValue(response.predictions![0] as any) as any;
+  })) as any;
+  const response = responseArray[0];
+  
+  if (!response.predictions || response.predictions.length === 0) {
+    throw new Error("No predictions returned from Vertex AI");
+  }
+  
+  const prediction = helpers.fromValue(response.predictions[0] as any) as any;
   const embedding = prediction.embeddings?.values || prediction.embedding?.values;
   
   if (!embedding) {
@@ -23,7 +29,7 @@ async function getEmbedding(client: PredictionServiceClient, endpoint: string, t
 }
 
 export const script: Script = async ({ db, firebase, args }) => {
-  const project = firebase.app().options.projectId;
+  const project = firebase.options.projectId;
   const endpoint = `projects/${project}/locations/${location}/publishers/${publisher}/models/${model}`;
   const client = new PredictionServiceClient({
     apiEndpoint: `${location}-aiplatform.googleapis.com`,

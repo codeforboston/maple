@@ -64,13 +64,18 @@ export function createVectorIndexer(config: VectorIndexerConfig) {
 
       // Get embedding with multimodal/task prefix
       const formattedText = `title: ${title} | text: ${textToEmbed}`;
-      const instance = helpers.toValue({ content: formattedText });
-      const [response] = await client.predict({
+      const instance = helpers.toValue({ content: formattedText })!;
+      const responseArray = (await client.predict({
         endpoint,
         instances: [instance],
-      });
+      })) as any;
+      const response = responseArray[0];
       
-      const prediction = helpers.fromValue(response.predictions![0] as any) as any;
+      if (!response.predictions || response.predictions.length === 0) {
+        throw new Error("No predictions returned from Vertex AI");
+      }
+
+      const prediction = helpers.fromValue(response.predictions[0] as any) as any;
       const embedding = prediction.embeddings?.values || prediction.embedding?.values;
       
       if (!embedding) {
