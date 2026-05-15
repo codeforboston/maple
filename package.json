@@ -166,7 +166,7 @@
     "@types/luxon": "^2.0.9",
     "@types/marked": "^4.0.8",
     "@types/mustache": "^4.2.1",
-    "@types/node": "^17.0.36",
+    "@types/node": "^20.0.0",
     "@types/papaparse": "^5.3.5",
     "@types/react": "^18.2.43",
     "@types/react-copy-to-clipboard": "^5.0.4",
