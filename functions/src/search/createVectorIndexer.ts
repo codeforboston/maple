@@ -1,4 +1,4 @@
-import { runWith, Change } from "firebase-functions"
+import { runWith } from "firebase-functions"
 import * as admin from "firebase-admin"
 import { PredictionServiceClient, helpers } from "@google-cloud/aiplatform"
 import hash from "object-hash"
