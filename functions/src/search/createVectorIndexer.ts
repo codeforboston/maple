@@ -57,7 +57,7 @@ export function createVectorIndexer(config: VectorIndexerConfig) {
       }
 
       // Initialize Vertex AI client
-      const project = admin.instanceId().app.options.projectId;
+      const project = admin.app().options.projectId;
       const endpoint = `projects/${project}/locations/${location}/publishers/${publisher}/models/${model}`;
       const client = new PredictionServiceClient({
         apiEndpoint: `${location}-aiplatform.googleapis.com`,

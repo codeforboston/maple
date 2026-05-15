@@ -15,8 +15,8 @@ async function getEmbedding(client: PredictionServiceClient, endpoint: string, t
   return (prediction as any).embeddings.values;
 }
 
-export const script: Script = async ({ db, args }) => {
-  const project = db.app.options.projectId;
+export const script: Script = async ({ db, firebase, args }) => {
+  const project = firebase.app().options.projectId;
   const endpoint = `projects/${project}/locations/${location}/publishers/${publisher}/models/${model}`;
   const client = new PredictionServiceClient({
     apiEndpoint: `${location}-aiplatform.googleapis.com`,

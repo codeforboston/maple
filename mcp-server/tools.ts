@@ -42,11 +42,11 @@ export function registerTools(server: McpServer) {
       query: z.string().describe("The search query (e.g., 'bills about clean energy')"),
       limit: z.number().optional().default(5).describe("Maximum number of results to return"),
     },
-    async ({ query, limit }) => {
+    async ({ query, limit }: { query: string; limit: number }) => {
       const embedding = await getEmbedding(query);
       const billsRef = db.collectionGroup("bills");
       
-      const results = await billsRef
+      const results = await (billsRef as any)
         .findNearest({
           vectorField: "vector_embedding",
           queryVector: embedding,
@@ -55,7 +55,7 @@ export function registerTools(server: McpServer) {
         })
         .get();
 
-      const bills = results.docs.map(doc => ({
+      const bills = results.docs.map((doc: any) => ({
         id: doc.id,
         path: doc.ref.path,
         ...doc.data(),
@@ -77,7 +77,7 @@ export function registerTools(server: McpServer) {
       policyId: z.string().optional().describe("Filter by specific policy ID"),
       limit: z.number().optional().default(5),
     },
-    async ({ query, policyType, policyId, limit }) => {
+    async ({ query, policyType, policyId, limit }: { query: string; policyType?: "bill" | "ballot"; policyId?: string; limit: number }) => {
       const embedding = await getEmbedding(query);
       let testimonyRef: any = db.collectionGroup("publishedTestimony");
 
@@ -96,7 +96,7 @@ export function registerTools(server: McpServer) {
         })
         .get();
 
-      const testimony = results.docs.map(doc => ({
+      const testimony = results.docs.map((doc: any) => ({
         id: doc.id,
         path: doc.ref.path,
         ...doc.data(),
@@ -116,11 +116,11 @@ export function registerTools(server: McpServer) {
       query: z.string().describe("The search query"),
       limit: z.number().optional().default(5),
     },
-    async ({ query, limit }) => {
+    async ({ query, limit }: { query: string; limit: number }) => {
       const embedding = await getEmbedding(query);
       const bqRef = db.collection("ballotQuestions");
 
-      const results = await bqRef
+      const results = await (bqRef as any)
         .findNearest({
           vectorField: "vector_embedding",
           queryVector: embedding,
@@ -129,7 +129,7 @@ export function registerTools(server: McpServer) {
         })
         .get();
 
-      const questions = results.docs.map(doc => ({
+      const questions = results.docs.map((doc: any) => ({
         id: doc.id,
         path: doc.ref.path,
         ...doc.data(),
@@ -149,10 +149,10 @@ export function registerTools(server: McpServer) {
       query: z.string().describe("The search query"),
       limit: z.number().optional().default(5),
     },
-    async ({ query, limit }) => {
+    async ({ query, limit }: { query: string; limit: number }) => {
       const embedding = await getEmbedding(query);
       
-      const billsPromise = db.collectionGroup("bills")
+      const billsPromise = (db.collectionGroup("bills") as any)
         .findNearest({
           vectorField: "vector_embedding",
           queryVector: embedding,
@@ -161,7 +161,7 @@ export function registerTools(server: McpServer) {
         })
         .get();
 
-      const bqPromise = db.collection("ballotQuestions")
+      const bqPromise = (db.collection("ballotQuestions") as any)
         .findNearest({
           vectorField: "vector_embedding",
           queryVector: embedding,
@@ -173,8 +173,8 @@ export function registerTools(server: McpServer) {
       const [billsResults, bqResults] = await Promise.all([billsPromise, bqPromise]);
 
       const results = [
-        ...billsResults.docs.map(doc => ({ type: "bill", id: doc.id, ...doc.data(), vector_embedding: undefined })),
-        ...bqResults.docs.map(doc => ({ type: "ballot_question", id: doc.id, ...doc.data(), vector_embedding: undefined })),
+        ...(billsResults as any).docs.map((doc: any) => ({ type: "bill", id: doc.id, ...doc.data(), vector_embedding: undefined })),
+        ...(bqResults as any).docs.map((doc: any) => ({ type: "ballot_question", id: doc.id, ...doc.data(), vector_embedding: undefined })),
       ];
 
       // Re-sort by distance if needed, but for now just return combined
