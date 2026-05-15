@@ -3,10 +3,11 @@ import { PredictionServiceClient, helpers } from "@google-cloud/aiplatform";
 
 const location = "us-central1";
 const publisher = "google";
-const model = "text-embedding-004";
+const model = "gemini-embedding-2";
 
-async function getEmbedding(client: PredictionServiceClient, endpoint: string, text: string): Promise<number[]> {
-  const instance = helpers.toValue({ content: text });
+async function getEmbedding(client: PredictionServiceClient, endpoint: string, text: string, title?: string): Promise<number[]> {
+  const formattedText = `title: ${title || "none"} | text: ${text}`;
+  const instance = helpers.toValue({ content: formattedText });
   const [response] = await client.predict({
     endpoint,
     instances: [instance],
@@ -59,9 +60,15 @@ export const script: Script = async ({ db, firebase, args }) => {
         continue;
       }
 
+      // Extract title for gemini-embedding-2 prefixing
+      let title = "none";
+      if (col.name === "bills") title = data.content?.Title || "none";
+      else if (col.name === "ballotQuestions") title = data.title || "none";
+      else if (col.name === "publishedTestimony") title = data.billTitle || "none";
+
       try {
         console.log(`Generating embedding for ${doc.id}...`);
-        const embedding = await getEmbedding(client, endpoint, textToEmbed);
+        const embedding = await getEmbedding(client, endpoint, textToEmbed, title);
         await doc.ref.update({ vector_embedding: embedding });
         console.log(`Updated ${doc.id}`);
       } catch (e) {

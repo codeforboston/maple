@@ -923,6 +923,45 @@
           "queryScope": "COLLECTION_GROUP"
         }
       ]
+    },
+    {
+      "collectionGroup": "bills",
+      "fieldPath": "vector_embedding",
+      "indexes": [
+        {
+          "queryScope": "COLLECTION_GROUP",
+          "vectorConfig": {
+            "dimension": 3072,
+            "flat": {}
+          }
+        }
+      ]
+    },
+    {
+      "collectionGroup": "publishedTestimony",
+      "fieldPath": "vector_embedding",
+      "indexes": [
+        {
+          "queryScope": "COLLECTION_GROUP",
+          "vectorConfig": {
+            "dimension": 3072,
+            "flat": {}
+          }
+        }
+      ]
+    },
+    {
+      "collectionGroup": "ballotQuestions",
+      "fieldPath": "vector_embedding",
+      "indexes": [
+        {
+          "queryScope": "COLLECTION",
+          "vectorConfig": {
+            "dimension": 3072,
+            "flat": {}
+          }
+        }
+      ]
     }
   ]
 }

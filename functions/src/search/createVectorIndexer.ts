@@ -7,12 +7,13 @@ export interface VectorIndexerConfig {
   documentTrigger: string;
   textFields: string[]; // Fields to combine for the embedding
   vectorField: string; // Destination field for the embedding (e.g., 'vector_embedding')
+  titleField?: string; // Optional field to use as the title for prefixing
 }
 
 export function createVectorIndexer(config: VectorIndexerConfig) {
   const location = "us-central1";
   const publisher = "google";
-  const model = "text-embedding-004";
+  const model = "gemini-embedding-2";
   
   return runWith({
     timeoutSeconds: 60,
@@ -37,20 +38,18 @@ export function createVectorIndexer(config: VectorIndexerConfig) {
 
       if (!textToEmbed) return;
 
+      // Extract title for gemini-embedding-2 prefixing
+      let title = "none";
+      if (config.titleField) {
+        const parts = config.titleField.split(".");
+        let val: any = data;
+        for (const part of parts) val = val?.[part];
+        title = val || "none";
+      }
+
       // Check if text has changed to avoid redundant API calls
-      const textHash = hash(textToEmbed);
-      const previousData = change.before.exists ? change.before.data() : null;
-      const previousText = previousData ? config.textFields
-        .map(field => {
-          const parts = field.split(".");
-          let val: any = previousData;
-          for (const part of parts) val = val?.[part];
-          return val;
-        })
-        .filter(Boolean)
-        .join("\n\n") : null;
-      
-      const previousHash = previousText ? hash(previousText) : null;
+      const textHash = hash({ textToEmbed, title });
+      const previousHash = (change.before.exists ? change.before.data() : null)?.[`${config.vectorField}_hash`];
       
       if (textHash === previousHash && data[config.vectorField]) {
         return; // Nothing changed
@@ -63,8 +62,9 @@ export function createVectorIndexer(config: VectorIndexerConfig) {
         apiEndpoint: `${location}-aiplatform.googleapis.com`,
       });
 
-      // Get embedding
-      const instance = helpers.toValue({ content: textToEmbed });
+      // Get embedding with multimodal/task prefix
+      const formattedText = `title: ${title} | text: ${textToEmbed}`;
+      const instance = helpers.toValue({ content: formattedText });
       const [response] = await client.predict({
         endpoint,
         instances: [instance],

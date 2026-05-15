@@ -10,19 +10,22 @@ const db = admin.firestore();
 const project = process.env.FIREBASE_PROJECT_ID;
 const location = "us-central1";
 const publisher = "google";
-const model = "text-embedding-004";
+const model = "gemini-embedding-2";
 const endpoint = `projects/${project}/locations/${location}/publishers/${publisher}/models/${model}`;
 
 const client = new PredictionServiceClient({
   apiEndpoint: `${location}-aiplatform.googleapis.com`,
 });
 
-async function getEmbedding(text: string): Promise<number[]> {
-  const instance = helpers.toValue({ content: text });
-  const instances = [instance];
+async function getEmbedding(text: string, isQuery: boolean, title?: string): Promise<number[]> {
+  const formattedText = isQuery 
+    ? `task: search result | query: ${text}`
+    : `title: ${title || "none"} | text: ${text}`;
+
+  const instance = helpers.toValue({ content: formattedText });
   const [response] = await client.predict({
     endpoint,
-    instances,
+    instances: [instance],
   });
   
   if (!response.predictions || response.predictions.length === 0) {
@@ -43,7 +46,7 @@ export function registerTools(server: McpServer) {
       limit: z.number().optional().default(5).describe("Maximum number of results to return"),
     },
     async ({ query, limit }: { query: string; limit: number }) => {
-      const embedding = await getEmbedding(query);
+      const embedding = await getEmbedding(query, true);
       const billsRef = db.collectionGroup("bills");
       
       const results = await (billsRef as any)
@@ -78,7 +81,7 @@ export function registerTools(server: McpServer) {
       limit: z.number().optional().default(5),
     },
     async ({ query, policyType, policyId, limit }: { query: string; policyType?: "bill" | "ballot"; policyId?: string; limit: number }) => {
-      const embedding = await getEmbedding(query);
+      const embedding = await getEmbedding(query, true);
       let testimonyRef: any = db.collectionGroup("publishedTestimony");
 
       if (policyType === "bill" && policyId) {
@@ -117,7 +120,7 @@ export function registerTools(server: McpServer) {
       limit: z.number().optional().default(5),
     },
     async ({ query, limit }: { query: string; limit: number }) => {
-      const embedding = await getEmbedding(query);
+      const embedding = await getEmbedding(query, true);
       const bqRef = db.collection("ballotQuestions");
 
       const results = await (bqRef as any)
@@ -150,7 +153,7 @@ export function registerTools(server: McpServer) {
       limit: z.number().optional().default(5),
     },
     async ({ query, limit }: { query: string; limit: number }) => {
-      const embedding = await getEmbedding(query);
+      const embedding = await getEmbedding(query, true);
       
       const billsPromise = (db.collectionGroup("bills") as any)
         .findNearest({

@@ -36,7 +36,7 @@ graph TD
 We need to prepare Firestore to support vector queries.
 
 #### [MODIFY] [firestore.indexes.json](../firestore.indexes.json)
-- Add vector indexes for `bills`, `publishedTestimony`, and `ballotQuestions` collections (dimension 768 for Vertex AI).
+- Add vector indexes for `bills`, `publishedTestimony`, and `ballotQuestions` collections (dimension 3072 for Gemini Embedding 2).
 
 #### [NEW] `scripts/backfill-embeddings.ts`
 - A script to iterate through all bills, testimony, and ballot questions, generate embeddings using **Vertex AI**, and save them to a new `vector_embedding` field in Firestore.
