@@ -19,6 +19,40 @@
       ]
     },
     {
+      "collectionGroup": "publishedTestimony",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "billId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "vector_embedding",
+          "vectorConfig": {
+            "dimension": 3072,
+            "flat": {}
+          }
+        }
+      ]
+    },
+    {
+      "collectionGroup": "publishedTestimony",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "ballotQuestionId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "vector_embedding",
+          "vectorConfig": {
+            "dimension": 3072,
+            "flat": {}
+          }
+        }
+      ]
+    },
+    {
       "collectionGroup": "archivedTestimony",
       "queryScope": "COLLECTION",
       "fields": [

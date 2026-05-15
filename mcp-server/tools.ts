@@ -32,9 +32,15 @@ async function getEmbedding(text: string, isQuery: boolean, title?: string): Pro
     throw new Error("No predictions returned from Vertex AI");
   }
 
-  // text-embedding-004 returns { embeddings: { values: [0.1, ...] } }
-  const prediction = helpers.fromValue(response.predictions[0] as any);
-  return (prediction as any).embeddings.values;
+  // gemini-embedding-2 returns { embedding: { values: [0.1, ...] } }
+  const prediction = helpers.fromValue(response.predictions[0] as any) as any;
+  const embedding = prediction.embeddings?.values || prediction.embedding?.values;
+  
+  if (!embedding) {
+    throw new Error(`Unexpected prediction format: ${JSON.stringify(prediction)}`);
+  }
+  
+  return embedding;
 }
 
 export function registerTools(server: McpServer) {

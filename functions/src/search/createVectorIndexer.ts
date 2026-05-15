@@ -70,8 +70,12 @@ export function createVectorIndexer(config: VectorIndexerConfig) {
         instances: [instance],
       });
       
-      const prediction = helpers.fromValue(response.predictions![0] as any);
-      const embedding = (prediction as any).embeddings.values;
+      const prediction = helpers.fromValue(response.predictions![0] as any) as any;
+      const embedding = prediction.embeddings?.values || prediction.embedding?.values;
+      
+      if (!embedding) {
+        throw new Error(`Unexpected prediction format: ${JSON.stringify(prediction)}`);
+      }
 
       // Update document
       await change.after.ref.update({

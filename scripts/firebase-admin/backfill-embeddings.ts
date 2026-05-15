@@ -12,8 +12,14 @@ async function getEmbedding(client: PredictionServiceClient, endpoint: string, t
     endpoint,
     instances: [instance],
   });
-  const prediction = helpers.fromValue(response.predictions![0] as any);
-  return (prediction as any).embeddings.values;
+  const prediction = helpers.fromValue(response.predictions![0] as any) as any;
+  const embedding = prediction.embeddings?.values || prediction.embedding?.values;
+  
+  if (!embedding) {
+    throw new Error(`Unexpected prediction format: ${JSON.stringify(prediction)}`);
+  }
+  
+  return embedding;
 }
 
 export const script: Script = async ({ db, firebase, args }) => {
