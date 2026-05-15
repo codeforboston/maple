@@ -3,14 +3,14 @@ This document outlines the implementation for a Model Context Protocol (MCP) ser
 | Category | Description |
 | :--- | :--- |
 | **Goals** | • Inform and empower constituents for policy change<br>• Increase engagement between legislature and constituents<br>• Grow MAPLE usage by organizations, advocates, and journalists |
-| **Jobs** | • "Tell me about bills that would..." (RAG over bills)<br>• "Tell me what people are saying about..." (RAG over testimony)<br>• "Tell me what other states are doing..." or "if it is true that..." (RAG over MAPLE + Web) |
+| **Jobs** | • "Tell me about bills that would..." (RAG over bills)<br>• "Tell me what people are saying about..." (RAG over testimony)<br>• "Tell me about the 2026 ballot questions regarding..." (RAG over ballot questions)<br>• "Tell me what other states are doing..." or "if it is true that..." (RAG over MAPLE + Web) |
 | **Mechanisms** | • Deploy AI features on MAPLE<br>• Enable 3rd parties (sites, Agent Skills)<br>• Enable individual authorized users to leverage MAPLE data |
 
 ## Architecture
 
 ```mermaid
 graph TD
-    FB[(Firebase: Bills & Testimony)] --> FV[Firebase Vector DB]
+    FB[(Firebase: Bills, Testimony, Ballot Qs)] --> FV[Firebase Vector DB]
     FV --> MCP[MCP Server]
     MCP --> M1[MAPLE App]
     MCP --> M2[3rd Party Apps / Agent Skills]
@@ -23,14 +23,14 @@ graph TD
 
 We need to prepare Firestore to support vector queries.
 
-#### [MODIFY] [firestore.indexes.json](file:///home/nes/Documents/HLS_BKC_Fellowship/maple/firestore.indexes.json)
-- Add vector indexes for `bills` and `publishedTestimony` collections (dimension 768 for Vertex AI).
+#### [MODIFY] [firestore.indexes.json](../firestore.indexes.json)
+- Add vector indexes for `bills`, `publishedTestimony`, and `ballotQuestions` collections (dimension 768 for Vertex AI).
 
 #### [NEW] `scripts/backfill-embeddings.ts`
-- A script to iterate through all bills and testimony, generate embeddings using **Vertex AI**, and save them to a new `vector_embedding` field in Firestore.
+- A script to iterate through all bills, testimony, and ballot questions, generate embeddings using **Vertex AI**, and save them to a new `vector_embedding` field in Firestore.
 
 #### [MODIFY] `llm/bill_on_document_created.py` (and similar triggers)
-- Update existing LLM triggers to generate embeddings using Vertex AI whenever a new bill or testimony is added/updated.
+- Update existing LLM triggers to generate embeddings using Vertex AI whenever a new bill, testimony, or ballot question is added/updated.
 
 ---
 
@@ -41,10 +41,13 @@ Initialize a new Node.js package with the following structure:
 - `package.json`: Include `@modelcontextprotocol/sdk`, `firebase-admin`, `@google-cloud/aiplatform`.
 - `index.ts`: Main entry point implementing the MCP server with **SSE transport**.
 - `tools.ts`: Implementation of RAG tools:
-    - `search_bills`: Vector search on bills.
-    - `search_testimony`: Vector search on testimony.
+    - `search_policies`: Unified vector search across both **bills** and **ballot questions**.
+    - `search_bills`: Focused vector search on legislative bills.
+    - `search_ballot_questions`: Focused vector search on ballot questions.
+    - `search_testimony`: Vector search on testimony, with optional `policyType` (bill/ballot) and `policyId` filters.
     - `get_bill_details`: Fetch full bill content.
     - `get_testimony_details`: Fetch testimony content.
+    - `get_ballot_question_details`: Fetch ballot question content.
 - `auth.ts`: Middleware for **Hybrid Auth**:
     1.  Check for `Authorization: Bearer <token>`.
     2.  If token is a Firebase ID Token, verify via `admin.auth()`.
@@ -96,7 +99,7 @@ Initialize a new Node.js package with the following structure:
 
 # Integration and Configuration
 
-#### [MODIFY] [package.json](file:///home/nes/Documents/HLS_BKC_Fellowship/maple/package.json)
+#### [MODIFY] [package.json](../package.json)
 - Add a script to start the MCP server: `"mcp:start": "ts-node mcp-server/index.ts"`.
 
 #### [NEW] `mcp-server/.env.example`
