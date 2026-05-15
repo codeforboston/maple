@@ -19,7 +19,7 @@ graph TD
 
 ## Environments
 - **DEV**: Project `digital-testimony-dev`. All initial development, backfilling, and prototype testing will occur here.
-- **PROD**: Project `digital-testimony-prod`. Final deployment only after successful verification in DEV.
+- **PROD**: Project `digital-testimony-prod`. Final deployment only after successful verification in DEV. **DO NOT MODIFY PROD DURING INITIAL PROTOTYPING.**
 
 ## Development Flow
 
