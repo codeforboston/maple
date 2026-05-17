@@ -12,8 +12,6 @@ export const FeatureFlags = z.object({
   followOrg: z.boolean().default(false),
   /** Lobbying Table */
   lobbyingTable: z.boolean().default(false),
-  /** LLM Bill Summary and Tags **/
-  showLLMFeatures: z.boolean().default(false),
   /** Hearings and Transcriptions **/
   hearingsAndTranscriptions: z.boolean().default(false),
   /** Phone Verification UI changes **/
@@ -40,7 +38,6 @@ const defaults: Record<Env, FeatureFlags> = {
     billTracker: true,
     followOrg: true,
     lobbyingTable: false,
-    showLLMFeatures: true,
     hearingsAndTranscriptions: true,
     phoneVerificationUI: true,
     ballotQuestions: true,
@@ -52,7 +49,6 @@ const defaults: Record<Env, FeatureFlags> = {
     billTracker: false,
     followOrg: true,
     lobbyingTable: false,
-    showLLMFeatures: true,
     hearingsAndTranscriptions: true,
     phoneVerificationUI: false,
     ballotQuestions: false,
@@ -64,7 +60,6 @@ const defaults: Record<Env, FeatureFlags> = {
     billTracker: false,
     followOrg: true,
     lobbyingTable: false,
-    showLLMFeatures: true,
     hearingsAndTranscriptions: true,
     phoneVerificationUI: true,
     ballotQuestions: false,
