@@ -13,6 +13,7 @@ import * as links from "../links"
 
 import {
   Bluesky,
+  DistrictLabel,
   formatPhoneNumber,
   LinkedIn,
   PartyLabel,
@@ -179,13 +180,13 @@ export function LegislatorPage(props: { id: string }) {
               <span>{t("stateRepresentative")}</span>
             )}
             <span className="px-2">·</span>
-            {district}
+            <span>Town</span>
           </RoleLine>
 
-          <div className="mb-2">
+          <div className="d-flex mb-2">
             <PartyLabel party={party} />
             {/* Incumbent Label */}
-            {/* District Label */}
+            <DistrictLabel district={district} />
           </div>
 
           <SocialLine>

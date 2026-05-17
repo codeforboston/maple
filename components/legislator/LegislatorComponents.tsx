@@ -33,11 +33,23 @@ const DemocraticBubble = styled.div.attrs(props => ({
   width: max-content;
 `
 
-const IndependantBubble = styled.div.attrs(props => ({
-  className: `${props.className}`
+const DistrictBubble = styled.div.attrs(props => ({
+  className: `ms-1 ${props.className}`
 }))`
   background: #fff3cd;
   color: #856404;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 10px;
+  border-radius: 999px;
+  width: max-content;
+`
+
+const IndependantBubble = styled.div.attrs(props => ({
+  className: `${props.className}`
+}))`
+  background: #efbbff;
+  color: #be29ec;
   font-size: 11px;
   font-weight: 700;
   padding: 1px 10px;
@@ -56,6 +68,10 @@ const RepublicanBubble = styled.div.attrs(props => ({
   border-radius: 999px;
   width: max-content;
 `
+
+export function DistrictLabel(props: { district: string }) {
+  return <DistrictBubble>{props.district}</DistrictBubble>
+}
 
 export function PartyLabel(props: { party: string }) {
   const { t } = useTranslation("legislators")
