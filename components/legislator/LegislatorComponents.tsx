@@ -1,17 +1,5 @@
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
-import * as links from "../links"
-
-export function ContactButton(props: { email: string }) {
-  return (
-    <links.External
-      href={`mailto:${props.email}`}
-      className=" border border-2 border-secondary btn btn-lg py-1 text-decoration-none text-secondary w-100"
-    >
-      Contact
-    </links.External>
-  )
-}
 
 export const formatPhoneNumber = (value: string) => {
   if (!value) return value
