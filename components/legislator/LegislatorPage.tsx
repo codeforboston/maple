@@ -140,8 +140,6 @@ export function LegislatorPage(props: { id: string }) {
     profile ? memberData() : null
   }, [memberData, profile])
 
-  console.log("email: ", profile?.website)
-
   if (loading) {
     return (
       <Row>
