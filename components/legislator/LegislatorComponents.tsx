@@ -1,5 +1,17 @@
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
+import * as links from "../links"
+
+export function ContactButton(props: { email: string }) {
+  return (
+    <links.External
+      href={`mailto:${props.email}`}
+      className=" border border-2 border-secondary btn btn-lg py-1 text-decoration-none text-secondary w-100"
+    >
+      Contact
+    </links.External>
+  )
+}
 
 export const formatPhoneNumber = (value: string) => {
   if (!value) return value
@@ -48,8 +60,8 @@ const DistrictBubble = styled.div.attrs(props => ({
 const IndependantBubble = styled.div.attrs(props => ({
   className: `${props.className}`
 }))`
-  background: #efbbff;
-  color: #be29ec;
+  background: #bca0dc;
+  color: #3c1361;
   font-size: 11px;
   font-weight: 700;
   padding: 1px 10px;

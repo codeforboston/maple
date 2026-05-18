@@ -22,14 +22,24 @@ import {
 import { LegislatorSidebar } from "./SidebarComponents/LegislatorSidebar"
 import { LegislatorTabs } from "./TabComponents/LegislatorTabs"
 
+import { useAuth } from "components/auth"
 import { useFlags } from "components/featureFlags"
 import { Internal } from "components/links"
+import { FollowUserButton } from "components/shared/FollowButton"
 import { CircleImage } from "components/shared/LabeledIcon"
 
 const DirectoryPath = styled.div.attrs(props => ({
   className: `align-items-center d-flex flex-nowrap ${props.className}`
 }))`
   font-size: 12px;
+`
+
+const ButtonContainer = styled(Col).attrs(props => ({
+  className: `col-12 justify-content-md-end ${props.className}`,
+  md: `3`,
+  sm: `4`
+}))`
+  width: max-content;
 `
 
 const HeaderBlock = styled.div`
@@ -58,7 +68,7 @@ const PhoneNum = styled.span`
 `
 
 const SocialLine = styled.div.attrs(props => ({
-  className: `d-flex flex-wrap ${props.className}`
+  className: `d-flex flex-wrap mb-2 ${props.className}`
 }))`
   font-size: 12px;
   text-decoration: none;
@@ -94,6 +104,7 @@ export function LegislatorPage(props: { id: string }) {
   const { t } = useTranslation("legislators")
   const { result: profile, loading } = usePublicProfile(props.id)
   const { legislators } = useFlags()
+  const { user } = useAuth()
 
   // eventually this should be replaced with a profile prop array that
   // contains a list of courts the legislator served on
@@ -128,6 +139,8 @@ export function LegislatorPage(props: { id: string }) {
   useEffect(() => {
     profile ? memberData() : null
   }, [memberData, profile])
+
+  console.log("email: ", profile?.website)
 
   if (loading) {
     return (
@@ -202,7 +215,10 @@ export function LegislatorPage(props: { id: string }) {
             {profile.website ? (
               <div>
                 <span className="px-2">·</span>
-                <links.External href="#" className="text-decoration-none">
+                <links.External
+                  href={`https://${profile.website}`}
+                  className="text-decoration-none"
+                >
                   {profile.website}
                 </links.External>
               </div>
@@ -277,9 +293,22 @@ export function LegislatorPage(props: { id: string }) {
             </div>
           </SocialLine>
         </Col>
-        <Col className="col-2">
-          <div className="">Buttons</div>
-        </Col>
+
+        <ButtonContainer>
+          {user ? (
+            <div className="mb-2">
+              <FollowUserButton profileId={props.id} />
+            </div>
+          ) : (
+            <></>
+          )}
+          <links.External
+            href={`mailto:${email}`}
+            className="border border-2 border-secondary btn btn-lg fw-bold py-1 text-decoration-none text-secondary w-100"
+          >
+            {t("contact")}
+          </links.External>
+        </ButtonContainer>
       </HeaderBlock>
 
       <div className="d-flex flex-wrap gap-2 justify-content-between mt-2">
