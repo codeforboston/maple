@@ -11,8 +11,13 @@ type ParseOptions = {
 function cleanText(text: string) {
   return text
     .replace(/\u00a0/g, " ")
+    .replace(/\s*▲?\s*Top of page\s*/gi, "")
     .replace(/\s+/g, " ")
     .trim()
+}
+
+function stripIgnoredTags(html: string) {
+  return html.replace(/<style[\s\S]*?<\/style>/gi, "")
 }
 
 function isHouseCountyHeading(element: Element) {
@@ -67,7 +72,7 @@ export function parseSecDistricts(
   html: string,
   options: ParseOptions
 ): ParsedDistrict[] {
-  const dom = new JSDOM(html)
+  const dom = new JSDOM(stripIgnoredTags(html))
   const document = dom.window.document
   const title = Array.from(document.querySelectorAll("h1")).find(heading =>
     /massachusetts .* districts/i.test(heading.textContent ?? "")
