@@ -17,11 +17,9 @@ export async function runUpdateCommitteeRosters(court: number | string) {
     const update: DocUpdate<Committee> = {
       members: roster.map(m => ({ id: m.id, name: m.content.Name }))
     }
-    writer.set(
-      db.doc(`/generalCourts/${court}/committees/${id}`),
-      update,
-      { merge: true }
-    )
+    writer.set(db.doc(`/generalCourts/${court}/committees/${id}`), update, {
+      merge: true
+    })
   })
   await writer.close()
 }

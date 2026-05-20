@@ -67,7 +67,11 @@ abstract class EventScraper<ListItem, Event extends BaseEvent> {
         event = await this.getEvent(item).catch(logFetchError("event", id))
 
       if (!event) continue
-      if (!skipCutoff && event.startsAt.toMillis() < upcomingOrRecentCutoff.toMillis()) break
+      if (
+        !skipCutoff &&
+        event.startsAt.toMillis() < upcomingOrRecentCutoff.toMillis()
+      )
+        break
 
       writer.set(db.doc(`/events/${event.id}`), event, { merge: true })
 

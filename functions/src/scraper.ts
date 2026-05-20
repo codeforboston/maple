@@ -147,10 +147,7 @@ export function createScraper<T>({
                 )
               }
             } else {
-              logger.error(
-                `Unexpected error fetching ${resourceName}/${id}`,
-                e
-              )
+              logger.error(`Unexpected error fetching ${resourceName}/${id}`, e)
             }
           }
         }
@@ -167,9 +164,7 @@ export function createScraper<T>({
         await snap.ref
           .delete()
           .then(() =>
-            logger.info(
-              `Deleted ${resourceName} batch doc ${snap.ref.path}`
-            )
+            logger.info(`Deleted ${resourceName} batch doc ${snap.ref.path}`)
           )
           .catch(e =>
             logger.warn(
