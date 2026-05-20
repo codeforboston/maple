@@ -10,5 +10,22 @@ ballotQuestionNumber: 1
 relatedBillIds: []
 description: null
 atAGlance: null
-fullSummary: "This proposed law would specify that the State Auditor has the authority to audit the Legislature."
+voteEffectYes: "A YES VOTE would specify that the State Auditor has the authority to audit the Legislature. "
+voteEffectNo: "A NO VOTE would make no change in the law relative to the State Auditor’s authority."
+fiscalConsequences: "The proposed law has no discernible material fiscal consequences for state and municipal government finances."
+inFavor: |-
+  A YES vote expressly authorizes the State Auditor to audit the Legislature.
+supportCommittee: "Committee for Transparent Democracy 95510"
+opposeCommittee: null
+against: |-
+  A NO vote would make no change in the law relative to the State Auditor’s authority.
+campaignFinancials:
+  support:
+    - cashRaised: 419213.7
+      spent: 419213.7
+      inKind: 42248.44
+  oppose: []
+fullSummary: >-
+  This proposed law would specify that the State Auditor has the authority to
+  audit the Legislature.
 pdfUrl: "https://malegislature.gov/Bills/193/H4251.pdf"

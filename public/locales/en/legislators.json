@@ -1,0 +1,17 @@
+{
+  "billsSponsored": "Bills Sponsored",
+  "cosponsored": "Cosponsored",
+  "fundsRaised": "Funds Raised",
+  "home": "Home",
+  "legislators": "Legislators",
+  "tabs": {
+    "bills": "Bills",
+    "district": "District",
+    "elections": "Elections",
+    "finance": "Finance",
+    "priorities": "Priorities",
+    "testimony": "Testimony",
+    "votes": "Votes"
+  },
+  "termsServed": "Terms Served"
+}

@@ -1,28 +1,30 @@
-.navbar-dark .navbar-toggler {
+.main-navbar .navbar-toggler {
   border: none;
 }
 
-.navbar-dark .navbar-toggler-icon {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+.main-navbar .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
 .navbar-text.navbar-section-header {
-  color: rgba(255, 255, 255, 1);
+  color: var(--maple-text-inverse);
   font-weight: bold;
 }
 
-:root {
-  --mobile-nav-link-color: rgba(255, 255, 255, 0.92);
-  --mobile-nav-link-color-active: rgba(255, 255, 255, 1);
-}
+/* Design tokens (--maple-*) are defined in styles/bootstrap.scss as SCSS
+   variables and emitted to :root there. This keeps Bootstrap's compile-time
+   Sass and runtime CSS custom properties structurally linked — edit the SCSS
+   variable, not the custom property. */
 
 .navLink-primary {
-  color: var(--mobile-nav-link-color) !important;
+  color: var(--maple-text-inverse) !important;
   font-weight: bold;
 }
 
 .navLink-primary .dropdown-toggle {
-  color: var(--mobile-nav-link-color) !important;
+  color: var(--maple-text-inverse) !important;
+  border-color: transparent !important;
+  background: transparent !important;
   font-weight: bold;
 }
 
@@ -31,21 +33,23 @@
 .navLink-primary:active,
 .navLink-primary.active,
 .navLink-primary.show {
-  color: var(--mobile-nav-link-color-active) !important;
+  color: var(--maple-text-inverse) !important;
 }
 
 .navLink-primary .dropdown-toggle:hover,
 .navLink-primary .dropdown-toggle:focus,
 .navLink-primary .dropdown-toggle:active,
 .navLink-primary.show .dropdown-toggle {
-  color: var(--mobile-nav-link-color-active) !important;
+  color: var(--maple-text-inverse) !important;
+  border-color: transparent !important;
+  background: rgba(255, 255, 255, 0.12) !important;
 }
 
 .skip-link {
-  background: #ffffff;
-  border: 2px solid #12266f;
-  border-radius: 999px;
-  color: #12266f;
+  background: var(--maple-surface-base);
+  border: 2px solid var(--maple-brand-primary-strong);
+  border-radius: var(--maple-radius-pill);
+  color: var(--maple-brand-primary-strong);
   font-weight: 700;
   left: 1rem;
   padding: 0.75rem 1rem;
@@ -62,21 +66,173 @@
   align-items: center;
   background: transparent;
   border: 0;
-  color: white;
+  color: var(--maple-text-inverse);
   display: inline-flex;
   justify-content: center;
   padding: 0;
 }
 
 .mobile-nav-trigger:focus-visible {
-  border-radius: 999px;
-  outline: 2px solid white;
+  border-radius: var(--maple-radius-pill);
+  outline: 2px solid var(--maple-text-inverse);
   outline-offset: 4px;
+}
+
+.mobile-nav-close-icon {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  position: relative;
+}
+
+.mobile-nav-close-icon::before,
+.mobile-nav-close-icon::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1.6rem;
+  height: 2px;
+  background-color: var(--maple-text-inverse);
+  border-radius: 999px;
+  transform-origin: center;
+}
+
+.mobile-nav-close-icon::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.mobile-nav-close-icon::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.desktop-navbar-link {
+  color: var(--maple-text-inverse) !important;
+  border-radius: var(--maple-radius-md);
+  border: 0 !important;
+  background: transparent !important;
+  font-weight: normal;
+  transition: background-color var(--maple-transition-fast),
+    color var(--maple-transition-fast);
+}
+
+.desktop-navbar-link.btn {
+  --bs-btn-border-width: 0;
+  --bs-btn-border-color: transparent;
+  --bs-btn-hover-border-color: transparent;
+  --bs-btn-active-border-color: transparent;
+}
+
+.desktop-navbar-link:hover,
+.desktop-navbar-link:focus-visible {
+  color: var(--maple-text-inverse) !important;
+  background-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.desktop-navbar-dropdown {
+  border-radius: var(--maple-radius-md) !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.desktop-navbar-dropdown.btn {
+  --bs-btn-bg: transparent;
+  --bs-btn-border-width: 0;
+  --bs-btn-border-color: transparent;
+  --bs-btn-hover-bg: rgba(255, 255, 255, 0.12);
+  --bs-btn-hover-border-color: transparent;
+  --bs-btn-active-bg: rgba(255, 255, 255, 0.12);
+  --bs-btn-active-border-color: transparent;
+  --bs-btn-color: var(--maple-text-inverse);
+  --bs-btn-hover-color: var(--maple-text-inverse);
+  --bs-btn-active-color: var(--maple-text-inverse);
+  --bs-btn-focus-box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.2);
+  background: transparent !important;
+  border-color: transparent !important;
+  color: var(--maple-text-inverse) !important;
+}
+
+.desktop-navbar-dropdown.btn:hover,
+.desktop-navbar-dropdown.btn:focus,
+.desktop-navbar-dropdown.btn:active,
+.desktop-navbar-dropdown.btn.show {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: transparent !important;
+  color: var(--maple-text-inverse) !important;
+}
+
+.desktop-navbar-dropdown.btn:focus-visible {
+  outline: 2px solid var(--maple-text-inverse);
+  outline-offset: 3px;
+}
+
+.ballot-question-markdown p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  overflow-wrap: break-word;
+}
+
+.ballot-question-markdown p:last-child {
+  margin-bottom: 0;
+}
+
+.ballot-question-markdown a {
+  color: var(--maple-brand-primary);
+  font-weight: 600;
+}
+
+.ballot-question-markdown strong {
+  color: var(--maple-text-strong);
+}
+
+.ballot-question-alert {
+  width: fit-content;
+  color: var(--maple-color-blue-subtle-text);
+  background: var(--maple-color-blue-subtle-bg);
+  border: 1px solid var(--maple-color-blue-subtle-border);
+  box-shadow: var(--maple-shadow-md);
+}
+
+.ballot-question-alert-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 1.65rem;
+  height: 1.65rem;
+  color: var(--maple-color-blue-subtle-text);
+  background: var(--maple-color-blue-subtle-border);
+  border-radius: var(--maple-radius-pill);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.ballot-question-alert-content {
+  font-size: 0.95rem;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.ballot-question-alert-content p {
+  margin-top: 0;
+  margin-bottom: 0.65rem;
+  overflow-wrap: break-word;
+}
+
+.ballot-question-alert-content p:last-child {
+  margin-bottom: 0;
+}
+
+.ballot-question-alert-content a {
+  color: var(--maple-color-blue-subtle-text);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
 }
 
 @media (min-width: 766px) and (max-width: 1020px) {
   .desktop-navbar {
-    gap: 0.25rem !important;
+    gap: var(--maple-space-xs) !important;
   }
 
   .desktop-navbar .me-auto img {
@@ -86,15 +242,15 @@
 
   .desktop-navbar-link {
     font-size: 0.95rem;
-    padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important;
+    padding-left: var(--maple-space-sm) !important;
+    padding-right: var(--maple-space-sm) !important;
     white-space: nowrap;
   }
 
   .desktop-navbar-dropdown {
     font-size: 0.95rem;
-    padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important;
+    padding-left: var(--maple-space-sm) !important;
+    padding-right: var(--maple-space-sm) !important;
   }
 }
 
@@ -106,14 +262,11 @@
 }
 
 #basic-navbar-nav .dropdown-menu {
+  background-color: var(--maple-surface-base);
   box-sizing: border-box;
   max-width: calc(100vw - 3rem);
   min-width: 0;
   width: fit-content;
-}
-
-.btn {
-  padding: 1rem;
 }
 
 .offcanvas {
@@ -121,14 +274,14 @@
 }
 
 .btn-disabled {
-  background-color: #c3bebe;
-  color: black;
+  background-color: var(--maple-surface-page);
+  color: var(--maple-text-body);
   border: none;
 }
 
 .modal-header {
   background-color: var(--bs-blue);
-  color: white;
+  color: var(--maple-text-inverse);
 }
 
 .modal-content {
@@ -136,7 +289,7 @@
 }
 
 .whitebackground {
-  background-color: white;
+  background-color: var(--maple-surface-base);
 }
 
 .bg-endorse {
@@ -154,7 +307,7 @@
 .form-navigation-btn {
   min-width: 10rem;
   line-height: 2.5rem;
-  padding: 0 0.5rem 0 0.5rem;
+  padding: 0 var(--maple-space-sm);
 }
 
 .tooltip-inner {
@@ -163,7 +316,7 @@
 
 @keyframes fadeOut {
   0% {
-    background-color: lightblue;
+    background-color: var(--maple-color-blue-subtle-bg);
   }
   100% {
     background-color: inherit;
@@ -172,26 +325,26 @@
 
 /* Custom style in "Our Team" Page */
 .our-team-tab .nav-item .nav-link {
-  color: black;
+  color: var(--maple-text-strong);
   font-weight: 600;
   border-bottom: 3px solid;
-  border-color: #0000001a;
+  border-color: var(--maple-surface-border);
 }
-.our-team-tab .nav-item .nav-link:hover {
-  color: #c71e32;
+.our-team-tab .nav-item .nav-link:hover,
+.our-team-tab .nav-item .nav-link.active {
+  color: var(--maple-brand-danger);
 }
 .our-team-tab .nav-item .nav-link.active {
-  color: #c71e32;
-  border-color: #c71e32;
+  border-color: var(--maple-brand-danger);
 }
 
 .our-team-dropdown-button {
   width: 100%;
-  padding: 7px, 8px, 7px, 8px;
-  border-radius: 8px;
-  background: #12266f;
+  padding: 7px 8px;
+  border-radius: var(--maple-radius-md);
+  background: var(--maple-brand-primary-strong);
   color: white;
-  border-color: #12266f;
+  border-color: var(--maple-brand-primary-strong);
   font-family: Nunito;
   font-size: 16px;
   font-weight: 500;
@@ -199,179 +352,220 @@
   letter-spacing: 0.015em;
   text-align: right;
 }
-/* .our-team-dropdown-button::after {
-  display: none !important; 
-} */
-.our-team-dropdown-button.btn-primary:focus {
-  width: 100%;
-  padding: 7px, 8px, 7px, 8px;
-  border-radius: 8px;
-  background: #12266f;
-  color: white;
-  border-color: #12266f;
-  box-shadow: none;
-}
 
-.our-team-dropdown-button.btn-primary:checked {
-  width: 100%;
-  padding: 7px, 8px, 7px, 8px;
-  border-radius: 8px;
-  background: #12266f;
-  color: white;
-  border-color: #12266f;
-}
-.our-team-dropdown-button.btn-primary:active {
-  width: 100%;
-  padding: 7px, 8px, 7px, 8px;
-  border-radius: 8px;
-  background: #12266f;
-  color: white;
-  border-color: #12266f;
-}
+.our-team-dropdown-button.btn-primary:focus,
+.our-team-dropdown-button.btn-primary:checked,
+.our-team-dropdown-button.btn-primary:active,
 .our-team-dropdown-button.btn-primary:hover {
   width: 100%;
-  padding: 7px, 8px, 7px, 8px;
-  border-radius: 8px;
-  background: #12266f;
+  padding: 7px 8px;
+  border-radius: var(--maple-radius-md);
+  background: var(--maple-brand-primary-strong);
   color: white;
-  border-color: #12266f;
+  border-color: var(--maple-brand-primary-strong);
+}
+
+.our-team-dropdown-button.btn-primary:focus {
+  box-shadow: none;
 }
 
 .our-team-dropdown .dropdown-menu {
   width: 100%;
-  border-radius: 8px;
-  background: #12266f;
+  border-radius: var(--maple-radius-md);
+  background: var(--maple-brand-primary-strong);
   color: white;
 }
 
 .our-team-dropdown .dropdown-item {
   width: 100%;
-  border-radius: 8px;
-  background: #12266f;
+  border-radius: var(--maple-radius-md);
+  background: var(--maple-brand-primary-strong);
   color: white;
   font-family: Nunito;
   font-size: 16px;
   font-weight: 500;
   line-height: 20px;
   letter-spacing: 0.015em;
-  padding: 7px, 8px, 7px, 8px;
+  padding: 7px 8px;
 }
 
-<.ballot-question-back-link {
-  color: #475569;
-  transition: color 0.15s ease, transform 0.15s ease;
+.maple-surface {
+  background-color: var(--maple-surface-base);
+  border: 1px solid var(--maple-surface-border);
+  box-shadow: var(--maple-shadow-md);
 }
 
-.ballot-question-back-link:hover {
+.maple-surface-gradient {
+  background: var(--maple-surface-gradient);
+  border: 1px solid var(--maple-surface-border);
+  box-shadow: var(--maple-shadow-md);
+}
+
+.maple-muted-surface {
+  background-color: var(--maple-surface-muted);
+  border: 1px solid var(--maple-surface-border);
+}
+
+.maple-accent-surface {
+  background: var(--maple-accent-gradient);
+  border: 1px solid var(--maple-border-accent);
+}
+
+.maple-icon-chip {
+  background-color: var(--maple-surface-accent-strong);
+  border: 1px solid var(--maple-border-accent);
+  color: var(--maple-brand-primary);
+}
+
+.maple-eyebrow {
+  color: var(--maple-text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.maple-panel-title {
+  color: var(--bs-secondary);
+  font-size: 1.45rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+}
+
+.maple-info-note {
+  background-color: var(--bs-blue-100);
+  border: 1px solid var(--bs-blue-300);
+  color: var(--bs-secondary-color);
+}
+
+.maple-back-link {
+  color: var(--maple-text-muted);
+  transition: color var(--maple-transition-fast),
+    transform var(--maple-transition-fast);
+}
+
+.maple-back-link:hover {
   color: var(--bs-secondary);
   transform: translateX(-2px);
 }
 
-.ballot-question-back-link:focus-visible {
-  outline: 3px solid rgba(94, 114, 228, 0.35);
+.maple-back-link:focus-visible {
+  outline: 3px solid var(--maple-focus-ring);
   outline-offset: 3px;
-  border-radius: 999px;
+  border-radius: var(--maple-radius-pill);
 }
 
-.ballot-question-pdf-link {
-  transition: transform 0.15s ease, box-shadow 0.15s ease,
-    border-color 0.15s ease, background-color 0.15s ease;
+.maple-pill-link {
+  transition: transform var(--maple-transition-fast),
+    box-shadow var(--maple-transition-fast),
+    border-color var(--maple-transition-fast),
+    background-color var(--maple-transition-fast);
 }
 
-.ballot-question-pdf-link:hover {
+.maple-pill-link:hover {
   transform: translateY(-1px);
-  border-color: rgba(94, 114, 228, 0.32) !important;
-  background-color: rgba(255, 255, 255, 1) !important;
-  box-shadow: 0 0.5rem 1.25rem rgba(94, 114, 228, 0.12);
+  border-color: var(--maple-border-accent-strong) !important;
+  background-color: var(--maple-surface-base) !important;
+  box-shadow: var(--maple-shadow-md);
 }
 
-.ballot-question-pdf-link:focus-visible {
-  outline: 3px solid rgba(94, 114, 228, 0.35);
+.maple-pill-link:focus-visible {
+  outline: 3px solid var(--maple-focus-ring);
   outline-offset: 3px;
 }
 
-.ballot-question-info-alert {
+.maple-info-alert {
   --bs-btn-close-color: var(--bs-secondary);
 }
 
-.ballot-question-info-alert .btn-close {
+.maple-info-alert .btn-close {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%231a3185'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e");
   opacity: 1;
-  transition: transform 0.15s ease, opacity 0.15s ease;
+  transition: transform var(--maple-transition-fast),
+    opacity var(--maple-transition-fast);
 }
 
-.ballot-question-info-alert .btn-close:hover {
+.maple-info-alert .btn-close:hover {
   transform: rotate(90deg);
 }
 
-.ballot-question-info-alert .btn-close:hover,
-.ballot-question-info-alert .btn-close:focus {
+.maple-info-alert .btn-close:hover,
+.maple-info-alert .btn-close:focus {
   opacity: 1;
 }
 
-.ballot-question-nav-link {
+.maple-nav-link {
   cursor: pointer;
-  background-color: #f8fafc;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  color: #334155;
-  transition: transform 0.15s ease, box-shadow 0.15s ease,
-    border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  background-color: var(--maple-surface-muted);
+  border: 1px solid var(--maple-surface-border);
+  color: var(--maple-text-body);
+  transition: transform var(--maple-transition-fast),
+    box-shadow var(--maple-transition-fast),
+    border-color var(--maple-transition-fast),
+    background-color var(--maple-transition-fast),
+    color var(--maple-transition-fast);
 }
 
-.ballot-question-nav-link:hover {
+.maple-nav-link:hover {
   transform: translateY(-1px);
-  border-color: rgba(94, 114, 228, 0.24) !important;
-  background-color: rgba(94, 114, 228, 0.04) !important;
+  border-color: var(--maple-border-accent-strong) !important;
+  background-color: var(--maple-surface-accent) !important;
   color: var(--bs-secondary);
-  box-shadow: 0 0.5rem 1.25rem rgba(15, 23, 42, 0.08);
+  box-shadow: var(--maple-shadow-md);
 }
 
-.ballot-question-nav-link:focus-visible {
-  outline: 3px solid rgba(94, 114, 228, 0.35);
+.maple-nav-link:focus-visible {
+  outline: 3px solid var(--maple-focus-ring);
   outline-offset: 3px;
 }
 
-.ballot-question-nav-link.is-active {
-  background-color: rgba(94, 114, 228, 0.08);
-  border-color: rgba(94, 114, 228, 0.35);
+.maple-nav-link.is-active {
+  background-color: var(--maple-surface-accent);
+  border-color: var(--maple-focus-ring);
   color: var(--bs-secondary);
 }
 
-.ballot-question-nav-link.is-active:hover {
-  background-color: rgba(94, 114, 228, 0.12) !important;
-  border-color: rgba(94, 114, 228, 0.42) !important;
+.maple-nav-link.is-active:hover {
+  background-color: var(--maple-surface-accent-strong) !important;
+  border-color: var(--maple-focus-ring) !important;
 }
 
-.ballot-question-nav-badge {
+.maple-nav-badge {
   min-width: 1.5rem;
   font-weight: 600;
-  background-color: rgba(15, 23, 42, 0.08);
-  color: #334155;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  background-color: var(--maple-surface-border);
+  color: var(--maple-text-body);
+  transition: background-color var(--maple-transition-fast),
+    color var(--maple-transition-fast);
 }
 
-.ballot-question-nav-link:hover .ballot-question-nav-badge {
-  background-color: rgba(94, 114, 228, 0.14);
+.maple-nav-link:hover .maple-nav-badge {
+  background-color: var(--maple-surface-accent-strong);
   color: var(--bs-secondary);
 }
 
-.ballot-question-nav-badge.is-active {
+.maple-nav-badge.is-active {
   background-color: var(--bs-secondary);
-  color: white;
+  color: var(--maple-text-inverse);
 }
 
 /* Custom style in "In The News" Page */
 .in-the-news .nav-item .nav-link {
-  color: black;
+  color: var(--maple-text-strong);
   font-weight: 600;
   border-bottom: 2px solid;
-  border-color: #0000001a;
+  border-color: var(--maple-surface-border);
 }
 .in-the-news .nav-item .nav-link:hover {
-  color: #15276a;
+  color: var(--maple-brand-primary-strong);
 }
 .in-the-news .nav-item .nav-link.active {
-  color: #15276a;
+  color: var(--maple-brand-primary-strong);
   border-bottom: 4px solid;
-  border-color: #15276a;
+  border-color: var(--maple-brand-primary-strong);
+}
+
+.finance-spending-group {
+  background-color: var(--maple-surface-page, #f4f5f7);
 }

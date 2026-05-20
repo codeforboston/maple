@@ -56,7 +56,7 @@ const SmartTag = ({ topic }: { topic: BillTopic }) => {
 }
 
 const SmartTagButton = styled.button`
-  border-radius: 12px;
+  border-radius: var(--maple-radius-xl);
   font-size: 12px;
 `
 
@@ -69,9 +69,11 @@ const StyledButton = styled(Button)`
 `
 
 const SummaryContainer = styled(Container)`
-  background-color: white;
+  background-color: var(--maple-surface-base);
+  border: 1px solid var(--maple-surface-border);
+  box-shadow: var(--maple-shadow-sm);
   border-radius: 0.75rem;
-  padding: 1rem;
+  padding: var(--maple-space-lg);
   background-image: url("/quote-left.svg");
   background-repeat: no-repeat;
   background-size: 4rem;
@@ -85,14 +87,14 @@ const TitleFormat = styled(Col)`
 `
 
 export const ViewButton = styled.button`
-  border-radius: 4px;
+  border-radius: var(--maple-radius-sm);
   border-width: 2px;
   height: fit-content;
-  margin-top: 16px;
+  margin-top: var(--maple-space-xl);
   width: fit-content;
 
   @media (max-width: 425px) {
-    margin-top: 32px;
+    margin-top: var(--maple-space-2xl);
   }
 `
 
@@ -367,9 +369,9 @@ function HearingsModal({
 
 const HearingRow = styled.div`
   &:nth-child(odd) {
-    background-color: #eae7e7;
+    background-color: var(--maple-surface-page);
   &:nth-child(even) {
-    background-color: white;
+    background-color: var(--maple-surface-base);
   }
 `
 

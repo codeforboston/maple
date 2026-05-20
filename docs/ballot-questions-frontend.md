@@ -60,12 +60,19 @@ interface BallotQuestion {
   // ... existing fields ...
   description: string | null // "What this question would do" — header card + DescriptionBox
   atAGlance: { label: string; value: string }[] | null // Key Details bullet list in Overview
+  voteEffectYes: string | null // Yes vote explanation in Overview
+  voteEffectNo: string | null // No vote explanation in Overview
+  fiscalConsequences: string | null // Fiscal impact in Overview
+  inFavor: string | null // Arguments in favor in Overview
+  against: string | null // Arguments against in Overview
   fullSummary: string | null // Final Summary section in Overview
   pdfUrl: string | null // Link to the initiative petition PDF
+  alertFlag: string | null // Header alert notice; may include Markdown links
+  alertTip: string | null // Optional plain-text tooltip for the alert
 }
 ```
 
-`billId` (already in the schema) provides the bill link in the header. `pdfUrl` is manually set in the YAML file for each petition. All four fields are nullable — render their sections only when the value is non-null.
+`billId` provides the bill link in the header. `pdfUrl` is manually set in the YAML file for each petition. All voter-facing fields are nullable — render their sections only when the value is non-null. `alertFlag` renders as a bright header banner above the title; `alertTip` appears as a tooltip icon next to the alert.
 
 ---
 
@@ -110,6 +117,8 @@ The header always shows:
 
 - Back link ("Return to ballot questions")
 - Follow button
+- Alert banner (`ballotQuestion.alertFlag`) — bright notice with Markdown link support; hidden if null
+- Alert tooltip (`ballotQuestion.alertTip`) — appears as icon next to alert; hidden if null
 - Question number + short name (from `ballotQuestion.id` + type label)
 - Full title (from `bill.Title`, or a standalone title field if `billId` is null)
 - "What this question would do" description box (`ballotQuestion.description`)
@@ -193,6 +202,7 @@ components/
   ballotquestions/
     BallotQuestionDetails.tsx     ← top-level layout, receives { ballotQuestion, bill, hearings }
     BallotQuestionHeader.tsx      ← header card: title, description box, testimony panel, PDF/bill links
+    BallotQuestionAlert.tsx       ← optional header notice from alertFlag/alertTip
     BallotQuestionNav.tsx         ← vertical left nav (Overview, Testimonies, + placeholder items)
     DescriptionBox.tsx            ← "What this question would do" card
     OverviewTab.tsx               ← Key Details + Final Summary + CommitteeHearing

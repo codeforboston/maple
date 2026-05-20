@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
-import { requireAuth } from "../components/auth"
+import { requireAuth, useAuth } from "../components/auth"
 import { isActiveBallotQuestionPhase } from "../components/ballotquestions/status"
 import { dbService } from "../components/db"
 import { createPage } from "../components/page"
@@ -18,10 +18,16 @@ export default createPage({
 
 function SubmitTestimonyPage() {
   const router = useRouter()
+  const { user } = useAuth()
   const [isAllowed, setIsAllowed] = useState(false)
 
   useEffect(() => {
     if (!router.isReady) return
+
+    if (user && !user.emailVerified) {
+      void router.replace(`/profile?id=${user.uid}`)
+      return
+    }
 
     const ballotQuestionId =
       typeof router.query.ballotQuestionId === "string"
@@ -62,7 +68,7 @@ function SubmitTestimonyPage() {
     return () => {
       active = false
     }
-  }, [router])
+  }, [router, user])
 
   if (!isAllowed) return null
 
