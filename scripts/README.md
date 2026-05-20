@@ -251,6 +251,10 @@ yarn firebase-admin run-script backfillBallotQuestionTestimonyCounts --env prod
 
 <!-- TODO: document -->
 
+#### `runScrapersByCourt`
+
+<!-- TODO: document -->
+
 #### `seedActiveTopicSubscriptions`
 
 <!-- TODO: document -->
