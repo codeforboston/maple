@@ -1,3 +1,5 @@
+import { readFileSync } from "fs"
+import path from "path"
 import {
   displayDistrictName,
   districtId,
@@ -6,6 +8,13 @@ import {
 import { parseSecDistricts } from "./parseSecDistricts"
 
 const sourceUrl = "https://example.test/districts"
+
+function readDistrictSnapshot(fileName: string) {
+  return readFileSync(
+    path.resolve(__dirname, "../../../districts", fileName),
+    "utf8"
+  )
+}
 
 describe("district normalization", () => {
   it("normalizes district names across ordinal and punctuation variants", () => {
@@ -38,6 +47,21 @@ describe("district normalization", () => {
 })
 
 describe("parseSecDistricts", () => {
+  it("parses the checked-in SEC snapshots", () => {
+    expect(
+      parseSecDistricts(readDistrictSnapshot("senatorial.html"), {
+        branch: "Senate",
+        sourceUrl
+      })
+    ).toHaveLength(40)
+    expect(
+      parseSecDistricts(readDistrictSnapshot("representative.html"), {
+        branch: "House",
+        sourceUrl
+      })
+    ).toHaveLength(160)
+  })
+
   it("parses Senate h2 district sections and preserves split municipalities", () => {
     const html = `
       <h1>Massachusetts Senatorial Districts</h1>
