@@ -62,7 +62,7 @@ const courtRunnableScrapers: { [k: string]: CourtRunnableFn } = {
 const batchableScrapers: { [k: string]: BatchableScraper } = {
   startBillBatches: {
     resourceName: "bills",
-    resourcesPerBatch: 150,
+    resourcesPerBatch: 75,
     listIds: court =>
       api.listDocuments({ court }).then(docs => docs.map(d => d.BillNumber))
   },
@@ -74,12 +74,12 @@ const batchableScrapers: { [k: string]: BatchableScraper } = {
   },
   startCityBatches: {
     resourceName: "cities",
-    resourcesPerBatch: 200,
+    resourcesPerBatch: 100,
     listIds: court => api.listCities(court)
   },
   startCommitteeBatches: {
     resourceName: "committees",
-    resourcesPerBatch: 200,
+    resourcesPerBatch: 100,
     listIds: court =>
       api.listCommittees(court).then(cs => cs.map(c => c.CommitteeCode))
   }
