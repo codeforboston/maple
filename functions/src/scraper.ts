@@ -8,6 +8,11 @@ import { currentGeneralCourt } from "./shared"
 type Batch = {
   court: number
   ids: string[]
+  /** When true, unexpected (non-Axios) errors are logged and the batch
+   * continues with the next id instead of failing the whole invocation.
+   * Used by the per-court backfill script so one bad id doesn't sink a
+   * historical-court run. Defaults to false for the scheduled prod path. */
+  resilient?: boolean
 }
 
 /** List all ids of the resources to scrape. Falsey values will be filtered out.
@@ -146,8 +151,10 @@ export function createScraper<T>({
                   `Could not fetch resource ${resourceName}/${id}: ${e.message}`
                 )
               }
-            } else {
+            } else if (batch.resilient) {
               logger.error(`Unexpected error fetching ${resourceName}/${id}`, e)
+            } else {
+              throw e
             }
           }
         }

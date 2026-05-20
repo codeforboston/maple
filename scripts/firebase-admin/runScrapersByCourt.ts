@@ -123,7 +123,7 @@ async function processQueue(
     // otherwise fetchBatch could finish and delete the doc before we record it.
     const ref = batches.doc()
     ours.add(ref.id)
-    await ref.set({ court, ids })
+    await ref.set({ court, ids, resilient: true })
   }
 
   return new Promise<void>((resolve, reject) => {
