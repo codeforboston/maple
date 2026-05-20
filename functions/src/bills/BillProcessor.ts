@@ -12,11 +12,21 @@ export type BillUpdates = Map<string, DocUpdate<Bill>>
 
 /** Base class for jobs that need to process all bills. */
 export default abstract class BillProcessor {
+  protected court: number | string = currentGeneralCourt
   protected bills!: any[]
   protected billIds!: string[]
   protected committees!: Committee[]
   protected members!: Member[]
   protected cities!: City[]
+
+  static async runForCourt(
+    ProcessorClass: { new (): BillProcessor },
+    court: number | string
+  ): Promise<void> {
+    const p = new ProcessorClass()
+    p.court = court
+    await p.run()
+  }
 
   static pubsub(
     Processor: { new (args?: any): BillProcessor },
@@ -56,7 +66,7 @@ export default abstract class BillProcessor {
   abstract process(): Promise<void>
 
   billPath(id?: string) {
-    return `/generalCourts/${currentGeneralCourt}/bills${id ? `/${id}` : ""}`
+    return `/generalCourts/${this.court}/bills${id ? `/${id}` : ""}`
   }
 
   protected async writeBills(updates: BillUpdates) {
@@ -77,15 +87,15 @@ export default abstract class BillProcessor {
       .then(snap => snap.docs.map(d => d.data()))
     this.billIds = this.bills.map(b => b.id)
     this.cities = await db
-      .collection(`/generalCourts/${currentGeneralCourt}/cities`)
+      .collection(`/generalCourts/${this.court}/cities`)
       .get()
       .then(this.load(City))
     this.committees = await db
-      .collection(`/generalCourts/${currentGeneralCourt}/committees`)
+      .collection(`/generalCourts/${this.court}/committees`)
       .get()
       .then(this.load(Committee))
     this.members = await db
-      .collection(`/generalCourts/${currentGeneralCourt}/members`)
+      .collection(`/generalCourts/${this.court}/members`)
       .get()
       .then(this.load(Member))
   }

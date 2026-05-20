@@ -117,41 +117,67 @@ export function createScraper<T>({
   const fetchBatch = runWith({ timeoutSeconds: fetchBatchTimeout })
     .firestore.document(`/scrapers/${resourceName}/batches/{batchId}`)
     .onCreate(async snap => {
-      const batch = snap.data() as Batch,
-        court = batch.court,
-        writer = db.bulkWriter()
+      try {
+        const batch = snap.data() as Batch,
+          court = batch.court,
+          writer = db.bulkWriter()
 
-      for (const id of batch.ids) {
-        try {
-          const path = `/generalCourts/${court}/${resourceName}/${id}`
-          const current = await db.doc(path).get()
-          const resource = await fetchResource(court, id, current.data())
+        for (const id of batch.ids) {
+          try {
+            const path = `/generalCourts/${court}/${resourceName}/${id}`
+            const current = await db.doc(path).get()
+            const resource = await fetchResource(court, id, current.data())
 
-          writer.set(
-            db.doc(path),
-            {
-              ...resource,
-              fetchedAt: Timestamp.now(),
-              lastFetch: FieldValue.delete(),
-              id,
-              court
-            },
-            { merge: true }
-          )
-        } catch (e) {
-          if (axios.isAxiosError(e)) {
-            if (!missingResource(e)) {
-              logger.warn(
-                `Could not fetch resource ${resourceName}/${id}: ${e.message}`
+            writer.set(
+              db.doc(path),
+              {
+                ...resource,
+                fetchedAt: Timestamp.now(),
+                lastFetch: FieldValue.delete(),
+                id,
+                court
+              },
+              { merge: true }
+            )
+          } catch (e) {
+            if (axios.isAxiosError(e)) {
+              if (!missingResource(e)) {
+                logger.warn(
+                  `Could not fetch resource ${resourceName}/${id}: ${e.message}`
+                )
+              }
+            } else {
+              logger.error(
+                `Unexpected error fetching ${resourceName}/${id}`,
+                e
               )
             }
-          } else {
-            throw e
           }
         }
-      }
 
-      await writer.close()
+        try {
+          await writer.close()
+        } catch (e) {
+          logger.error(`bulkWriter.close failed for ${resourceName} batch`, e)
+        }
+      } finally {
+        logger.info(
+          `Attempting to delete ${resourceName} batch doc ${snap.ref.path}`
+        )
+        await snap.ref
+          .delete()
+          .then(() =>
+            logger.info(
+              `Deleted ${resourceName} batch doc ${snap.ref.path}`
+            )
+          )
+          .catch(e =>
+            logger.warn(
+              `Failed to delete ${resourceName} batch doc ${snap.ref.path}`,
+              e
+            )
+          )
+      }
     })
 
   return { startBatches, fetchBatch }

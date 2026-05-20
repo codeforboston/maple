@@ -5,29 +5,31 @@ import { Member } from "../members/types"
 import { Committee } from "./types"
 import { currentGeneralCourt } from "../shared"
 
+export async function runUpdateCommitteeRosters(court: number | string) {
+  const members = await db
+    .collection(`/generalCourts/${court}/members`)
+    .get()
+    .then(c => c.docs.map(d => d.data()).filter(Member.guard))
+  const rosters = computeRosters(members)
+
+  const writer = db.bulkWriter()
+  rosters.forEach((roster, id) => {
+    const update: DocUpdate<Committee> = {
+      members: roster.map(m => ({ id: m.id, name: m.content.Name }))
+    }
+    writer.set(
+      db.doc(`/generalCourts/${court}/committees/${id}`),
+      update,
+      { merge: true }
+    )
+  })
+  await writer.close()
+}
+
 /** Updates the list of members in each committee.  */
 export const updateCommitteeRosters = runWith({ timeoutSeconds: 120 })
   .pubsub.schedule("every 24 hours")
-  .onRun(async () => {
-    const members = await db
-      .collection(`/generalCourts/${currentGeneralCourt}/members`)
-      .get()
-      .then(c => c.docs.map(d => d.data()).filter(Member.guard))
-    const rosters = computeRosters(members)
-
-    const writer = db.bulkWriter()
-    rosters.forEach((roster, id) => {
-      const update: DocUpdate<Committee> = {
-        members: roster.map(m => ({ id: m.id, name: m.content.Name }))
-      }
-      writer.set(
-        db.doc(`/generalCourts/${currentGeneralCourt}/committees/${id}`),
-        update,
-        { merge: true }
-      )
-    })
-    await writer.close()
-  })
+  .onRun(() => runUpdateCommitteeRosters(currentGeneralCourt))
 
 function computeRosters(members: Member[]) {
   const rosters = new Map<string, Member[]>()
