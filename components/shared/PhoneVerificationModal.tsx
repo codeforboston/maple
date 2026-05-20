@@ -31,13 +31,17 @@ const AUTH_ERROR_CODE_TO_KEY: Record<string, string> = {
 export function PhoneVerificationModal({
   show,
   onHide,
-  onVerified
-}: Pick<ModalProps, "show" | "onHide"> & { onVerified?: () => void }) {
+  onVerified,
+  initialStep = "phone"
+}: Pick<ModalProps, "show" | "onHide"> & {
+  onVerified?: () => void
+  initialStep?: "phone" | "code" | "success"
+}) {
   const { t } = useTranslation("auth")
   const { user } = useAuth()
   const completePhoneVerification = useCompletePhoneVerification()
 
-  const [step, setStep] = useState<"phone" | "code" | "success">("phone")
+  const [step, setStep] = useState<"phone" | "code" | "success">(initialStep)
   const [phone, setPhone] = useState("")
   const [code, setCode] = useState("")
   const [error, setError] = useState<string | null>(null)
