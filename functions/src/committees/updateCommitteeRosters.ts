@@ -1,9 +1,26 @@
-import { runWith } from "firebase-functions"
+import { logger, runWith } from "firebase-functions"
 import { DocUpdate } from "../common"
 import { db } from "../firebase"
 import { Member } from "../members/types"
 import { Committee } from "./types"
 import { currentGeneralCourt } from "../shared"
+
+export class MissingCommitteeDocsError extends Error {
+  constructor(
+    public readonly court: number | string,
+    public readonly missingIds: string[]
+  ) {
+    super(
+      `updateCommitteeRosters: ${
+        missingIds.length
+      } committee doc(s) missing for court ${court}: ${missingIds.join(
+        ", "
+      )}. ` +
+        `Run startCommitteeBatches first, or investigate stale member->committee references.`
+    )
+    this.name = "MissingCommitteeDocsError"
+  }
+}
 
 export async function runUpdateCommitteeRosters(court: number | string) {
   const members = await db
@@ -12,12 +29,25 @@ export async function runUpdateCommitteeRosters(court: number | string) {
     .then(c => c.docs.map(d => d.data()).filter(Member.guard))
   const rosters = computeRosters(members)
 
+  const committeesRef = db.collection(`/generalCourts/${court}/committees`)
+  const existingIds = new Set(
+    (await committeesRef.listDocuments()).map(ref => ref.id)
+  )
+  const missing = Array.from(rosters.keys())
+    .filter(id => !existingIds.has(id))
+    .sort()
+  if (missing.length > 0) {
+    const err = new MissingCommitteeDocsError(court, missing)
+    logger.error(err.message)
+    throw err
+  }
+
   const writer = db.bulkWriter()
   rosters.forEach((roster, id) => {
     const update: DocUpdate<Committee> = {
       members: roster.map(m => ({ id: m.id, name: m.content.Name }))
     }
-    writer.set(db.doc(`/generalCourts/${court}/committees/${id}`), update, {
+    writer.set(committeesRef.doc(id), update, {
       merge: true
     })
   })
