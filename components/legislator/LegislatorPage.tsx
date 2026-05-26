@@ -190,8 +190,7 @@ export function LegislatorPage(props: { id: string }) {
             ) : (
               <span>{t("stateRepresentative")}</span>
             )}
-            <span className="px-2">·</span>
-            <span>Town</span>
+            {/* <span className="px-2">· Town</span> */}
           </RoleLine>
 
           <div className="d-flex mb-2">
