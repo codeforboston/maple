@@ -1,5 +1,5 @@
 import * as functions from "firebase-functions"
-import { AssemblyAI } from "assemblyai"
+import { assemblyAI } from "../events/AssemblyAIHandler"
 import { db, Timestamp } from "../firebase"
 import { sha256 } from "js-sha256"
 
@@ -10,22 +10,15 @@ export const transcription = functions
       if (req.body.status === "completed") {
         // If we get a request with the right header and status, get the
         // transcription from the assembly API.
-        const assembly = new AssemblyAI({
-          apiKey: process.env.ASSEMBLY_API_KEY
-            ? process.env.ASSEMBLY_API_KEY
-            : ""
-        })
 
-        const transcript = await assembly.transcripts.get(
-          req.body.transcript_id
-        )
+        const transcript = await assemblyAI.getTranscript(req.body.id)
 
         if (transcript && transcript.webhook_auth) {
           // If there is a transcript and the transcript has an auth property,
           // look for an event (aka Hearing) in the DB with a matching ID.
           const maybeEventsInDb = await db
             .collection("events")
-            .where("videoTranscriptionId", "==", transcript.id)
+            .where("transcriptionIds", "array-contains", transcript.id)
             .get()
 
           if (maybeEventsInDb.docs.length) {
@@ -43,7 +36,7 @@ export const transcription = functions
                 .collection("events")
                 .doc(doc.id)
                 .collection("private")
-                .doc("webhookAuth")
+                .doc(transcript.id)
                 .get()
 
               const tokenDataInDb =
@@ -69,12 +62,12 @@ export const transcription = functions
               // If there is one authenticated event, pull out the parts we want to
               // save and try to save them in the db.
 
-              const { paragraphs } = await assembly.transcripts.paragraphs(
+              const paragraphs = await assemblyAI.fetchParagraphs(
                 transcript.id
               )
               const { id, text, audio_url, utterances } = transcript
               try {
-                const transcriptionInDb = await db
+                const transcriptionInDb = db
                   .collection("transcriptions")
                   .doc(id)
 

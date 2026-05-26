@@ -1,3 +1,5 @@
 export * from "./scrapeEvents"
 export { scrapeSingleHearing } from "./scrapeEvents"
 export { scrapeSingleHearingv2 } from "./scrapeEvents"
+export { assemblyAI } from "./AssemblyAIHandler"
+export { HearingScraper, HearingPostProcessor } from "./HearingScraper"
