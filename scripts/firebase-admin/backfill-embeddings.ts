@@ -63,10 +63,19 @@ export const script: Script = async ({ db, firebase, args }) => {
 
   for (const col of collections) {
     console.log(`Processing collection: ${col.name}`)
-    const ref = col.group
+    let query: any = col.group
       ? db.collectionGroup(col.name)
       : db.collection(col.name)
-    const snapshot = await ref.get()
+
+    const limitVal = (args as any).limit ?? ((args as any).l ?? undefined)
+    const limit = typeof limitVal === "number" ? limitVal : (typeof limitVal === "string" ? parseInt(limitVal, 10) : undefined)
+
+    if (limit) {
+      console.log(`Limiting retrieval to ${limit} documents`)
+      query = query.limit(limit)
+    }
+
+    const snapshot = await query.get()
 
     console.log(`Found ${snapshot.size} documents in ${col.name}`)
 
