@@ -5,7 +5,6 @@ import type { ModalProps } from "react-bootstrap"
 import styled, { ThemeConsumer } from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { Button, Col, Container, Image, Modal, Row, Stack } from "../bootstrap"
-import { useFlags } from "../featureFlags"
 import { firestore } from "../firebase"
 import * as links from "../links"
 import {
@@ -121,8 +120,6 @@ export const Summary = ({
   const isBallotMeasure =
     bill?.currentCommittee?.id === currentBallotInitiativeCommittee
 
-  const { showLLMFeatures } = useFlags()
-
   const { t } = useTranslation("common")
   const isMobile = useMediaQuery("(max-width: 991px)")
 
@@ -210,65 +207,57 @@ export const Summary = ({
           <></>
         )}
       </Row>
-      {showLLMFeatures ? (
+      {bill.summary !== undefined && bill.topics !== undefined ? (
         <>
-          {bill.summary !== undefined && bill.topics !== undefined ? (
-            <>
-              <hr className={`m-0 border-bottom border-2`} />
-              <SmartDisclaimer />
-            </>
-          ) : bill.summary !== undefined && isBallotMeasure ? (
-            <>
-              <hr className={`m-0 mb-3 border-bottom border-2`} />
-            </>
-          ) : (
-            <></>
-          )}
-          {bill.summary !== undefined && isBallotMeasure ? (
-            <BallotSummaryRow className={`mx-1 mb-3`}>
-              {bill.summary.length > BALLOT_SUMMARY_CHAR_LIMIT ? (
-                <>
-                  {bill.summary.slice(0, BALLOT_SUMMARY_CHAR_LIMIT)}…{" "}
-                  <StyledButton
-                    variant="link"
-                    onClick={() => setShowFullSummary(true)}
-                  >
-                    {t("bill.view_full_summary")}
-                  </StyledButton>
-                  <Modal
-                    show={showFullSummary}
-                    onHide={() => setShowFullSummary(false)}
-                    size="lg"
-                  >
-                    <Modal.Header
-                      closeButton
-                      onClick={() => setShowFullSummary(false)}
-                    >
-                      <Modal.Title>{bill?.id}</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body className="bg-white">
-                      <FormattedBillDetails>
-                        {bill.summary}
-                      </FormattedBillDetails>
-                    </Modal.Body>
-                  </Modal>
-                </>
-              ) : (
-                bill.summary
-              )}
-            </BallotSummaryRow>
-          ) : (
-            <Row className="mx-1 mb-3">{bill.summary}</Row>
-          )}
-          <Row className={`d-flex mx-0 my-1`} xs="auto">
-            {bill.topics?.map(t => (
-              <SmartTag key={t.topic} topic={t} />
-            ))}
-          </Row>
+          <hr className={`m-0 border-bottom border-2`} />
+          <SmartDisclaimer />
+        </>
+      ) : bill.summary !== undefined && isBallotMeasure ? (
+        <>
+          <hr className={`m-0 mb-3 border-bottom border-2`} />
         </>
       ) : (
         <></>
       )}
+      {bill.summary !== undefined && isBallotMeasure ? (
+        <BallotSummaryRow className={`mx-1 mb-3`}>
+          {bill.summary.length > BALLOT_SUMMARY_CHAR_LIMIT ? (
+            <>
+              {bill.summary.slice(0, BALLOT_SUMMARY_CHAR_LIMIT)}…{" "}
+              <StyledButton
+                variant="link"
+                onClick={() => setShowFullSummary(true)}
+              >
+                {t("bill.view_full_summary")}
+              </StyledButton>
+              <Modal
+                show={showFullSummary}
+                onHide={() => setShowFullSummary(false)}
+                size="lg"
+              >
+                <Modal.Header
+                  closeButton
+                  onClick={() => setShowFullSummary(false)}
+                >
+                  <Modal.Title>{bill?.id}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="bg-white">
+                  <FormattedBillDetails>{bill.summary}</FormattedBillDetails>
+                </Modal.Body>
+              </Modal>
+            </>
+          ) : (
+            bill.summary
+          )}
+        </BallotSummaryRow>
+      ) : (
+        <Row className="mx-1 mb-3">{bill.summary}</Row>
+      )}
+      <Row className={`d-flex mx-0 my-1`} xs="auto">
+        {bill.topics?.map(t => (
+          <SmartTag key={t.topic} topic={t} />
+        ))}
+      </Row>
     </SummaryContainer>
   )
 }
