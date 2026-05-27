@@ -1,10 +1,8 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
-import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js"
-import express from "express"
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import * as admin from "firebase-admin"
 import dotenv from "dotenv"
 import { registerTools } from "./tools"
-import { hybridAuthMiddleware } from "./auth"
 
 dotenv.config()
 
@@ -20,31 +18,55 @@ const server = new McpServer({
   version: "0.1.0"
 })
 
-// Register all RAG tools
-registerTools(server)
+// Register all tools
+try {
+  console.error("Registering tools...")
+  registerTools(server)
+  console.error("Tools registered successfully")
+} catch (err) {
+  console.error("Error registering tools:", err)
+  process.exit(1)
+}
 
-const app = express()
-app.use(express.json())
+// Connect via stdio transport (Claude Code will launch this as a subprocess)
+const transport = new StdioServerTransport()
 
-let transport: SSEServerTransport | null = null
-
-// SSE Endpoint - requires authentication
-app.get("/sse", hybridAuthMiddleware, async (req, res) => {
-  console.log("New SSE connection established")
-  transport = new SSEServerTransport("/message", res)
-  await server.connect(transport)
-})
-
-// Message Endpoint - handles incoming MCP messages
-app.post("/message", async (req, res) => {
-  if (!transport) {
-    return res.status(400).json({ error: "No active SSE transport" })
+async function main() {
+  try {
+    console.error("Connecting server...")
+    await server.connect(transport)
+    console.error("Server connected successfully")
+  } catch (err) {
+    console.error("Error during server operation:", err)
+    process.exit(1)
   }
-  await transport.handlePostMessage(req, res)
+}
+
+// Log startup to stderr so it doesn't interfere with protocol
+console.error("MAPLE MCP Server started on stdio")
+
+main().catch(err => {
+  console.error("Fatal error:", err)
+  process.exit(1)
 })
 
-const PORT = process.env.PORT || 3000
-app.listen(PORT, () => {
-  console.log(`MAPLE MCP Server running on http://localhost:${PORT}`)
-  console.log(`SSE endpoint: http://localhost:${PORT}/sse`)
+// Handle any uncaught errors
+process.on("uncaughtException", err => {
+  console.error("Uncaught exception:", err)
+  process.exit(1)
 })
+
+process.on("unhandledRejection", err => {
+  console.error("Unhandled rejection:", err)
+  process.exit(1)
+})
+
+// Keep process alive
+process.on("SIGINT", () => {
+  console.error("Shutting down...")
+  process.exit(0)
+})
+
+
+
+

@@ -1,10 +1,10 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
-import { z } from "zod"
 import * as admin from "firebase-admin"
 import { PredictionServiceClient, helpers } from "@google-cloud/aiplatform"
+import { z } from "zod"
 
-// Initialize Firebase Admin (assume it's already initialized or will be in index.ts)
-const db = admin.firestore()
+// Lazily initialize db so we don't call admin.firestore() before initializeApp() runs in index.ts
+const getDb = () => admin.firestore()
 
 // Vertex AI Configuration
 const project = process.env.FIREBASE_PROJECT_ID
@@ -13,9 +13,21 @@ const publisher = "google"
 const model = "text-embedding-005"
 const endpoint = `projects/${project}/locations/${location}/publishers/${publisher}/models/${model}`
 
-const client = new PredictionServiceClient({
-  apiEndpoint: `${location}-aiplatform.googleapis.com`
-})
+let client: PredictionServiceClient | null = null
+
+function getClient() {
+  if (!client) {
+    try {
+      client = new PredictionServiceClient({
+        apiEndpoint: `${location}-aiplatform.googleapis.com`
+      })
+    } catch (err) {
+      console.error("Failed to initialize PredictionServiceClient:", err)
+      throw err
+    }
+  }
+  return client
+}
 
 async function getEmbedding(
   text: string,
@@ -28,7 +40,7 @@ async function getEmbedding(
 
   const instance = helpers.toValue({ content: formattedText })!
   const parameters = helpers.toValue({ outputDimensionality: 768 })!
-  const responseArray = (await client.predict({
+  const responseArray = (await getClient().predict({
     endpoint,
     instances: [instance],
     parameters
@@ -68,7 +80,11 @@ const TestimonySearchSchema = {
     .optional()
     .describe("Filter by policy type"),
   policyId: z.string().optional().describe("Filter by specific policy ID"),
-  limit: z.number().optional().default(5)
+  limit: z
+    .number()
+    .optional()
+    .default(5)
+    .describe("Maximum number of results to return")
 }
 
 export function registerTools(server: McpServer) {
@@ -76,11 +92,11 @@ export function registerTools(server: McpServer) {
     "search_bills",
     {
       description: "Search legislative bills using natural language",
-      inputSchema: SearchSchema as any
+      inputSchema: SearchSchema
     },
     async ({ query, limit }: any) => {
       const embedding = await getEmbedding(query as string, true)
-      const billsRef = db.collectionGroup("bills")
+      const billsRef = getDb().collectionGroup("bills")
 
       const results = await (billsRef as any)
         .findNearest({
@@ -110,11 +126,11 @@ export function registerTools(server: McpServer) {
     "search_testimony",
     {
       description: "Search testimony using natural language",
-      inputSchema: TestimonySearchSchema as any
+      inputSchema: TestimonySearchSchema
     },
     async ({ query, policyType, policyId, limit }: any) => {
       const embedding = await getEmbedding(query as string, true)
-      let testimonyRef: any = db.collectionGroup("publishedTestimony")
+      let testimonyRef: any = getDb().collectionGroup("publishedTestimony")
 
       if (policyType === "bill" && policyId) {
         testimonyRef = testimonyRef.where("billId", "==", policyId)
@@ -150,11 +166,11 @@ export function registerTools(server: McpServer) {
     "search_ballot_questions",
     {
       description: "Search ballot questions using natural language",
-      inputSchema: SearchSchema as any
+      inputSchema: SearchSchema
     },
     async ({ query, limit }: any) => {
       const embedding = await getEmbedding(query as string, true)
-      const bqRef = db.collection("ballotQuestions")
+      const bqRef = getDb().collection("ballotQuestions")
 
       const results = await (bqRef as any)
         .findNearest({
@@ -184,12 +200,12 @@ export function registerTools(server: McpServer) {
     "search_policies",
     {
       description: "Unified search across bills and ballot questions",
-      inputSchema: SearchSchema as any
+      inputSchema: SearchSchema
     },
     async ({ query, limit }: any) => {
       const embedding = await getEmbedding(query as string, true)
 
-      const billsPromise = (db.collectionGroup("bills") as any)
+      const billsPromise = (getDb().collectionGroup("bills") as any)
         .findNearest({
           vectorField: "vector_embedding",
           queryVector: embedding,
@@ -198,7 +214,7 @@ export function registerTools(server: McpServer) {
         })
         .get()
 
-      const bqPromise = (db.collection("ballotQuestions") as any)
+      const bqPromise = (getDb().collection("ballotQuestions") as any)
         .findNearest({
           vectorField: "vector_embedding",
           queryVector: embedding,

@@ -1,4 +1,5 @@
 import { Script } from "./types"
+import { FieldValue } from "functions/src/firebase"
 import { PredictionServiceClient, helpers } from "@google-cloud/aiplatform"
 
 const location = "us-central1"
@@ -81,7 +82,11 @@ export const script: Script = async ({ db, firebase, args }) => {
 
     for (const doc of snapshot.docs) {
       const data = doc.data()
-      if (data.vector_embedding) {
+      // Only skip docs that already hold a real VectorValue. A plain array
+      // (the old, broken format) is NOT picked up by the vector index, so it
+      // must be regenerated. A VectorValue exposes a toArray() method.
+      const existing = data.vector_embedding
+      if (existing && typeof (existing as any).toArray === "function") {
         console.log(`Skipping ${doc.id} (already indexed)`)
         continue
       }
@@ -116,7 +121,9 @@ export const script: Script = async ({ db, firebase, args }) => {
           textToEmbed,
           title
         )
-        await doc.ref.update({ vector_embedding: embedding })
+        await doc.ref.update({
+          vector_embedding: FieldValue.vector(embedding)
+        })
         console.log(`Updated ${doc.id}`)
       } catch (e) {
         console.error(`Failed to index ${doc.id}:`, e)

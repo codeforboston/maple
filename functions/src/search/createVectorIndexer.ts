@@ -1,5 +1,6 @@
 import { runWith } from "firebase-functions"
 import * as admin from "firebase-admin"
+import { FieldValue } from "firebase-admin/firestore"
 import { PredictionServiceClient, helpers } from "@google-cloud/aiplatform"
 import hash from "object-hash"
 
@@ -91,9 +92,16 @@ export function createVectorIndexer(config: VectorIndexerConfig) {
         )
       }
 
-      // Update document
+      // Update document. The embedding must be stored as a Firestore
+      // VectorValue (not a plain array) for the vector index / findNearest to
+      // pick it up. The direct @google-cloud/firestore dep is pinned at v5,
+      // whose typings predate vector(); at runtime the firebase-admin v12
+      // bundled firestore (v7) provides it. Cast to bridge the type gap.
+      const fieldValue = FieldValue as unknown as {
+        vector(values: number[]): unknown
+      }
       await change.after.ref.update({
-        [config.vectorField]: embedding,
+        [config.vectorField]: fieldValue.vector(embedding),
         [`${config.vectorField}_hash`]: textHash // Store hash to track changes
       })
     })
