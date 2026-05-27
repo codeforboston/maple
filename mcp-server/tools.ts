@@ -64,13 +64,103 @@ async function getEmbedding(
   return embedding
 }
 
+/**
+ * Shape a raw Firestore bill document into a compact, model-friendly object.
+ *
+ * Strips: DocumentText, Cosponsors[], CommitteeRecommendations[], RollCalls[],
+ *         Attachments[], BillHistory URL, full history[], vector_embedding.
+ * Keeps:  id, court, billNumber, legislationType, title, primarySponsor,
+ *         summary, pinslip, topics, engagement counts, latestAction,
+ *         similar[], relevanceScore.
+ */
+function shapeBill(doc: any, includeFullText: boolean): object {
+  const data = doc.data()
+  const content = data.content ?? {}
+  const history: any[] = data.history ?? []
+
+  const shaped: Record<string, any> = {
+    relevanceScore:
+      typeof doc.get === "function" && doc.get("distance") != null
+        ? Math.round((1 - doc.get("distance")) * 1000) / 1000
+        : null,
+    id: doc.id,
+    path: doc.ref.path,
+    court: data.court ?? null,
+    billNumber: content.BillNumber ?? null,
+    legislationType: content.LegislationTypeName ?? null,
+    title: content.Title ?? null,
+    primarySponsor: content.PrimarySponsor?.Name ?? null,
+    summary: data.summary ?? null,
+    pinslip: content.Pinslip ?? null,
+    topics: data.topics ?? [],
+    cosponsorCount: data.cosponsorCount ?? 0,
+    endorseCount: data.endorseCount ?? 0,
+    opposeCount: data.opposeCount ?? 0,
+    neutralCount: data.neutralCount ?? 0,
+    testimonyCount: data.testimonyCount ?? 0,
+    latestAction: history.length > 0 ? history[history.length - 1] : null,
+    similar: data.similar ?? [],
+    nextHearingAt: data.nextHearingAt ?? null
+  }
+
+  if (includeFullText) {
+    shaped.documentText = content.DocumentText ?? null
+  }
+
+  return shaped
+}
+
+/**
+ * Shape a raw Firestore ballot question document into a compact object.
+ * Strips vector_embedding and any large nested arrays.
+ */
+function shapeBallotQuestion(doc: any, includeFullText: boolean): object {
+  const data = doc.data()
+
+  const shaped: Record<string, any> = {
+    relevanceScore:
+      typeof doc.get === "function" && doc.get("distance") != null
+        ? Math.round((1 - doc.get("distance")) * 1000) / 1000
+        : null,
+    id: doc.id,
+    path: doc.ref.path,
+    type: "ballot_question",
+    title: data.title ?? null,
+    summary: data.summary ?? null,
+    topics: data.topics ?? [],
+    endorseCount: data.endorseCount ?? 0,
+    opposeCount: data.opposeCount ?? 0,
+    neutralCount: data.neutralCount ?? 0,
+    testimonyCount: data.testimonyCount ?? 0
+  }
+
+  if (includeFullText) {
+    shaped.fullText = data.fullText ?? data.text ?? null
+  }
+
+  return shaped
+}
+
 const SearchSchema = {
   query: z.string().describe("The search query"),
   limit: z
     .number()
     .optional()
     .default(5)
-    .describe("Maximum number of results to return")
+    .describe("Maximum number of results to return"),
+  legislationType: z
+    .enum(["Bill", "Order", "Resolution"])
+    .optional()
+    .describe(
+      "Filter by legislation type. Use 'Bill' to exclude committee study orders and procedural items."
+    ),
+  includeFullText: z
+    .boolean()
+    .optional()
+    .default(false)
+    .describe(
+      "Include full DocumentText in results. Omit unless you need the bill's complete statutory language — it greatly increases response size."
+    )
 }
 
 const TestimonySearchSchema = {
@@ -91,10 +181,11 @@ export function registerTools(server: McpServer) {
   server.registerTool(
     "search_bills",
     {
-      description: "Search legislative bills using natural language",
+      description:
+        "Search legislative bills using natural language. Returns compact summaries by default; use includeFullText for statutory language. Filter by legislationType='Bill' to exclude committee study orders.",
       inputSchema: SearchSchema
     },
-    async ({ query, limit }: any) => {
+    async ({ query, limit, legislationType, includeFullText }: any) => {
       const embedding = await getEmbedding(query as string, true)
       const billsRef = getDb().collectionGroup("bills")
 
@@ -103,16 +194,23 @@ export function registerTools(server: McpServer) {
           vectorField: "vector_embedding",
           queryVector: embedding,
           distanceMeasure: "COSINE",
+          distanceResultField: "distance",
           limit: limit as number
         })
         .get()
 
-      const bills = results.docs.map((doc: any) => ({
-        id: doc.id,
-        path: doc.ref.path,
-        ...doc.data(),
-        vector_embedding: undefined // Hide embedding from output
-      }))
+      let docs: any[] = results.docs
+
+      if (legislationType) {
+        docs = docs.filter(
+          (doc: any) =>
+            (doc.data().content?.LegislationTypeName ?? "") === legislationType
+        )
+      }
+
+      const bills = docs.map((doc: any) =>
+        shapeBill(doc, includeFullText as boolean)
+      )
 
       return {
         content: [
@@ -143,6 +241,7 @@ export function registerTools(server: McpServer) {
           vectorField: "vector_embedding",
           queryVector: embedding,
           distanceMeasure: "COSINE",
+          distanceResultField: "distance",
           limit: limit as number
         })
         .get()
@@ -165,10 +264,11 @@ export function registerTools(server: McpServer) {
   server.registerTool(
     "search_ballot_questions",
     {
-      description: "Search ballot questions using natural language",
+      description:
+        "Search ballot questions using natural language. Returns compact summaries by default; use includeFullText for full question text.",
       inputSchema: SearchSchema
     },
-    async ({ query, limit }: any) => {
+    async ({ query, limit, includeFullText }: any) => {
       const embedding = await getEmbedding(query as string, true)
       const bqRef = getDb().collection("ballotQuestions")
 
@@ -177,16 +277,14 @@ export function registerTools(server: McpServer) {
           vectorField: "vector_embedding",
           queryVector: embedding,
           distanceMeasure: "COSINE",
+          distanceResultField: "distance",
           limit: limit as number
         })
         .get()
 
-      const questions = results.docs.map((doc: any) => ({
-        id: doc.id,
-        path: doc.ref.path,
-        ...doc.data(),
-        vector_embedding: undefined
-      }))
+      const questions = results.docs.map((doc: any) =>
+        shapeBallotQuestion(doc, includeFullText as boolean)
+      )
 
       return {
         content: [
@@ -199,10 +297,11 @@ export function registerTools(server: McpServer) {
   server.registerTool(
     "search_policies",
     {
-      description: "Unified search across bills and ballot questions",
+      description:
+        "Unified search across bills and ballot questions, deduplicated and sorted by relevance. Returns compact summaries by default; use includeFullText for full statutory/question text.",
       inputSchema: SearchSchema
     },
-    async ({ query, limit }: any) => {
+    async ({ query, limit, legislationType, includeFullText }: any) => {
       const embedding = await getEmbedding(query as string, true)
 
       const billsPromise = (getDb().collectionGroup("bills") as any)
@@ -210,6 +309,7 @@ export function registerTools(server: McpServer) {
           vectorField: "vector_embedding",
           queryVector: embedding,
           distanceMeasure: "COSINE",
+          distanceResultField: "distance",
           limit: limit as number
         })
         .get()
@@ -219,6 +319,7 @@ export function registerTools(server: McpServer) {
           vectorField: "vector_embedding",
           queryVector: embedding,
           distanceMeasure: "COSINE",
+          distanceResultField: "distance",
           limit: limit as number
         })
         .get()
@@ -228,30 +329,42 @@ export function registerTools(server: McpServer) {
         bqPromise
       ])
 
-      const results = [
-        ...(billsResults as any).docs.map((doc: any) => ({
-          type: "bill",
-          id: doc.id,
-          ...doc.data(),
-          vector_embedding: undefined
-        })),
-        ...(bqResults as any).docs.map((doc: any) => ({
-          type: "ballot_question",
-          id: doc.id,
-          ...doc.data(),
-          vector_embedding: undefined
-        }))
-      ]
+      let billDocs: any[] = (billsResults as any).docs
+      if (legislationType) {
+        billDocs = billDocs.filter(
+          (doc: any) =>
+            (doc.data().content?.LegislationTypeName ?? "") === legislationType
+        )
+      }
+
+      const shapedBills = billDocs.map((doc: any) => ({
+        type: "bill" as const,
+        ...shapeBill(doc, includeFullText as boolean)
+      }))
+
+      const shapedBallotQuestions = (bqResults as any).docs.map((doc: any) =>
+        shapeBallotQuestion(doc, includeFullText as boolean)
+      )
+
+      // Merge, deduplicate by id, sort by relevanceScore descending
+      const seen = new Set<string>()
+      const merged = [...shapedBills, ...shapedBallotQuestions]
+        .filter((item: any) => {
+          if (seen.has(item.id)) return false
+          seen.add(item.id)
+          return true
+        })
+        .sort(
+          (a: any, b: any) =>
+            (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0)
+        )
+        .slice(0, (limit as number) * 2)
 
       return {
         content: [
           {
             type: "text" as const,
-            text: JSON.stringify(
-              results.slice(0, (limit as number) * 2),
-              null,
-              2
-            )
+            text: JSON.stringify(merged, null, 2)
           }
         ]
       }
