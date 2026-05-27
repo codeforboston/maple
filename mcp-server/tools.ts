@@ -10,7 +10,7 @@ const db = admin.firestore()
 const project = process.env.FIREBASE_PROJECT_ID
 const location = "us-central1"
 const publisher = "google"
-const model = "gemini-embedding-2-preview"
+const model = "text-embedding-005"
 const endpoint = `projects/${project}/locations/${location}/publishers/${publisher}/models/${model}`
 
 const client = new PredictionServiceClient({

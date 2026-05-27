@@ -3,7 +3,7 @@ import { PredictionServiceClient, helpers } from "@google-cloud/aiplatform"
 
 const location = "us-central1"
 const publisher = "google"
-const model = "gemini-embedding-2-preview"
+const model = "text-embedding-005"
 
 async function getEmbedding(
   client: PredictionServiceClient,
