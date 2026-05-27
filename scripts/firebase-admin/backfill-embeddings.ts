@@ -39,7 +39,8 @@ async function getEmbedding(
 }
 
 export const script: Script = async ({ db, firebase, args }) => {
-  const project = firebase.options.projectId
+  const fb = firebase as any
+  const project = fb.app ? fb.app.options.projectId : fb.options.projectId
   const endpoint = `projects/${project}/locations/${location}/publishers/${publisher}/models/${model}`
   const client = new PredictionServiceClient({
     apiEndpoint: `${location}-aiplatform.googleapis.com`
