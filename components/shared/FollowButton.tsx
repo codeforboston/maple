@@ -114,11 +114,10 @@ export const BaseFollowButton = ({
 
   const isFollowing = followStatus[topicName]
   const onClick = !uid
-    ? () =>
-        router.push(`/login?redirect=${encodeURIComponent(router.asPath)}`)
+    ? () => router.push(`/login?redirect=${encodeURIComponent(router.asPath)}`)
     : isFollowing
-      ? () => (confirmUnfollow ? setModalAction("unfollow") : UnfollowClick())
-      : () => (confirmFollow ? setModalAction("follow") : FollowClick())
+    ? () => (confirmUnfollow ? setModalAction("unfollow") : UnfollowClick())
+    : () => (confirmFollow ? setModalAction("follow") : FollowClick())
 
   return (
     <>
