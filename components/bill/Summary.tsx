@@ -242,9 +242,7 @@ export const Summary = ({
                   <Modal.Title>{bill?.id}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="bg-white">
-                  <FormattedBillDetails>
-                    {bill.summary}
-                  </FormattedBillDetails>
+                  <FormattedBillDetails>{bill.summary}</FormattedBillDetails>
                 </Modal.Body>
               </Modal>
             </>
