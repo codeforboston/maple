@@ -13,7 +13,7 @@ export interface VectorIndexerConfig {
 export function createVectorIndexer(config: VectorIndexerConfig) {
   const location = "us-central1"
   const publisher = "google"
-  const model = "gemini-embedding-2"
+  const model = "gemini-embedding-2-preview"
 
   return runWith({
     timeoutSeconds: 60,
