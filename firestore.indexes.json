@@ -29,7 +29,7 @@
         {
           "fieldPath": "vector_embedding",
           "vectorConfig": {
-            "dimension": 3072,
+            "dimension": 768,
             "flat": {}
           }
         }
@@ -46,7 +46,7 @@
         {
           "fieldPath": "vector_embedding",
           "vectorConfig": {
-            "dimension": 3072,
+            "dimension": 768,
             "flat": {}
           }
         }
@@ -808,6 +808,45 @@
         { "fieldPath": "court", "order": "ASCENDING" },
         { "fieldPath": "ballotQuestionId", "order": "ASCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "vector_embedding",
+          "vectorConfig": {
+            "dimension": 768,
+            "flat": {}
+          }
+        }
+      ]
+    },
+    {
+      "collectionGroup": "publishedTestimony",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "vector_embedding",
+          "vectorConfig": {
+            "dimension": 768,
+            "flat": {}
+          }
+        }
+      ]
+    },
+    {
+      "collectionGroup": "ballotQuestions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "vector_embedding",
+          "vectorConfig": {
+            "dimension": 768,
+            "flat": {}
+          }
+        }
+      ]
     }
   ],
   "fieldOverrides": [
@@ -955,45 +994,6 @@
         {
           "order": "ASCENDING",
           "queryScope": "COLLECTION_GROUP"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "bills",
-      "fieldPath": "vector_embedding",
-      "indexes": [
-        {
-          "queryScope": "COLLECTION_GROUP",
-          "vectorConfig": {
-            "dimension": 3072,
-            "flat": {}
-          }
-        }
-      ]
-    },
-    {
-      "collectionGroup": "publishedTestimony",
-      "fieldPath": "vector_embedding",
-      "indexes": [
-        {
-          "queryScope": "COLLECTION_GROUP",
-          "vectorConfig": {
-            "dimension": 3072,
-            "flat": {}
-          }
-        }
-      ]
-    },
-    {
-      "collectionGroup": "ballotQuestions",
-      "fieldPath": "vector_embedding",
-      "indexes": [
-        {
-          "queryScope": "COLLECTION",
-          "vectorConfig": {
-            "dimension": 3072,
-            "flat": {}
-          }
         }
       ]
     }

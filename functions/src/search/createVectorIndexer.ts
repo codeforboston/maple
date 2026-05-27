@@ -67,9 +67,11 @@ export function createVectorIndexer(config: VectorIndexerConfig) {
       // Get embedding with multimodal/task prefix
       const formattedText = `title: ${title} | text: ${textToEmbed}`
       const instance = helpers.toValue({ content: formattedText })!
+      const parameters = helpers.toValue({ outputDimensionality: 768 })!
       const responseArray = (await client.predict({
         endpoint,
-        instances: [instance]
+        instances: [instance],
+        parameters
       })) as any
       const response = responseArray[0]
 
