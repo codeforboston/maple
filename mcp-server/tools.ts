@@ -111,6 +111,44 @@ function shapeBill(doc: any, includeFullText: boolean): object {
 }
 
 /**
+ * Shape a raw Firestore publishedTestimony document into a compact object.
+ * Strips vector_embedding and the raw distance field.
+ * Keeps: id, path, relevanceScore, author info, billId/billTitle,
+ *        ballotQuestionId, court, position, publishedAt, content (or truncated).
+ */
+function shapeTestimony(doc: any, includeFullText: boolean): object {
+  const data = doc.data()
+
+  const shaped: Record<string, any> = {
+    relevanceScore:
+      typeof doc.get === "function" && doc.get("distance") != null
+        ? Math.round((1 - doc.get("distance")) * 1000) / 1000
+        : null,
+    id: doc.id,
+    path: doc.ref.path,
+    authorDisplayName: data.authorDisplayName ?? null,
+    authorRole: data.authorRole ?? null,
+    billId: data.billId ?? null,
+    billTitle: data.billTitle ?? null,
+    ballotQuestionId: data.ballotQuestionId ?? null,
+    court: data.court ?? null,
+    position: data.position ?? null,
+    publishedAt: data.publishedAt ?? null,
+    public: data.public ?? null
+  }
+
+  if (includeFullText) {
+    shaped.content = data.content ?? null
+  } else {
+    shaped.contentPreview = data.content
+      ? data.content.slice(0, 300) + (data.content.length > 300 ? "…" : "")
+      : null
+  }
+
+  return shaped
+}
+
+/**
  * Shape a raw Firestore ballot question document into a compact object.
  * Strips vector_embedding and any large nested arrays.
  */
@@ -174,7 +212,14 @@ const TestimonySearchSchema = {
     .number()
     .optional()
     .default(5)
-    .describe("Maximum number of results to return")
+    .describe("Maximum number of results to return"),
+  includeFullText: z
+    .boolean()
+    .optional()
+    .default(false)
+    .describe(
+      "Include full testimony text in results. Omit to receive a 300-character preview instead."
+    )
 }
 
 export function registerTools(server: McpServer) {
@@ -223,10 +268,11 @@ export function registerTools(server: McpServer) {
   server.registerTool(
     "search_testimony",
     {
-      description: "Search testimony using natural language",
+      description:
+        "Search testimony using natural language. Returns relevanceScore, author info, position, and a content preview by default; use includeFullText for the full testimony text. Optionally filter to a specific bill or ballot question with policyType + policyId.",
       inputSchema: TestimonySearchSchema
     },
-    async ({ query, policyType, policyId, limit }: any) => {
+    async ({ query, policyType, policyId, limit, includeFullText }: any) => {
       const embedding = await getEmbedding(query as string, true)
       let testimonyRef: any = getDb().collectionGroup("publishedTestimony")
 
@@ -246,12 +292,9 @@ export function registerTools(server: McpServer) {
         })
         .get()
 
-      const testimony = results.docs.map((doc: any) => ({
-        id: doc.id,
-        path: doc.ref.path,
-        ...doc.data(),
-        vector_embedding: undefined
-      }))
+      const testimony = results.docs.map((doc: any) =>
+        shapeTestimony(doc, includeFullText as boolean)
+      )
 
       return {
         content: [
