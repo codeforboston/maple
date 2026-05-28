@@ -135,8 +135,8 @@ function TokenPage() {
       </div>
 
       <p style={styles.devNote}>
-        🔒 Do not share your token. It grants access to the MAPLE MCP server
-        on behalf of your account.
+        🔒 Do not share your token. It grants access to the MAPLE MCP server on
+        behalf of your account.
       </p>
     </div>
   )

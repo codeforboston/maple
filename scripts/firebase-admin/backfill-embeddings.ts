@@ -68,8 +68,13 @@ export const script: Script = async ({ db, firebase, args }) => {
       ? db.collectionGroup(col.name)
       : db.collection(col.name)
 
-    const limitVal = (args as any).limit ?? ((args as any).l ?? undefined)
-    const limit = typeof limitVal === "number" ? limitVal : (typeof limitVal === "string" ? parseInt(limitVal, 10) : undefined)
+    const limitVal = (args as any).limit ?? (args as any).l ?? undefined
+    const limit =
+      typeof limitVal === "number"
+        ? limitVal
+        : typeof limitVal === "string"
+        ? parseInt(limitVal, 10)
+        : undefined
 
     if (limit) {
       console.log(`Limiting retrieval to ${limit} documents`)

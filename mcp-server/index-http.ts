@@ -63,9 +63,7 @@ const authMiddleware = DISABLE_AUTH
   : hybridAuthMiddleware
 
 if (DISABLE_AUTH) {
-  console.warn(
-    "⚠️  DISABLE_AUTH=true — authentication is OFF. Local dev only."
-  )
+  console.warn("⚠️  DISABLE_AUTH=true — authentication is OFF. Local dev only.")
 }
 
 // ── Express app ───────────────────────────────────────────────────────────────
@@ -86,9 +84,9 @@ app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
 
   // Clean up when the response finishes
   res.on("finish", () => {
-    transport.close().catch(err =>
-      console.error("Error closing transport:", err)
-    )
+    transport
+      .close()
+      .catch(err => console.error("Error closing transport:", err))
   })
 
   try {
@@ -116,5 +114,9 @@ app.listen(PORT, HOST, () => {
   console.log(`MAPLE MCP HTTP server listening on http://${HOST}:${PORT}`)
   console.log(`  Health: http://${HOST}:${PORT}/health`)
   console.log(`  MCP:    http://${HOST}:${PORT}/mcp`)
-  console.log(`  Auth:   ${DISABLE_AUTH ? "DISABLED" : "enabled (Firebase ID Token or Agent Key)"}`)
+  console.log(
+    `  Auth:   ${
+      DISABLE_AUTH ? "DISABLED" : "enabled (Firebase ID Token or Agent Key)"
+    }`
+  )
 })

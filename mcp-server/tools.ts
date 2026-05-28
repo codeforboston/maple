@@ -398,8 +398,7 @@ export function registerTools(server: McpServer) {
           return true
         })
         .sort(
-          (a: any, b: any) =>
-            (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0)
+          (a: any, b: any) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0)
         )
         .slice(0, (limit as number) * 2)
 
