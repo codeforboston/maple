@@ -7,12 +7,9 @@ export async function hybridAuthMiddleware(
   next: NextFunction
 ) {
   const authHeader = req.headers.authorization
-
-  // Allow the initial SSE connection if configured via query param for ease of use in some clients
-  // but strictly prefer Bearer header.
   const token = authHeader?.startsWith("Bearer ")
     ? authHeader.split(" ")[1]
-    : (req.query.token as string)
+    : undefined
 
   if (!token) {
     return res.status(401).json({ error: "Unauthorized: Missing token" })

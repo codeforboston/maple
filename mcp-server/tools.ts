@@ -73,7 +73,7 @@ async function getEmbedding(
  *         summary, pinslip, topics, engagement counts, latestAction,
  *         similar[], relevanceScore.
  */
-function shapeBill(doc: any, includeFullText: boolean): object {
+export function shapeBill(doc: any, includeFullText: boolean): object {
   const data = doc.data()
   const content = data.content ?? {}
   const history: any[] = data.history ?? []
@@ -116,7 +116,7 @@ function shapeBill(doc: any, includeFullText: boolean): object {
  * Keeps: id, path, relevanceScore, author info, billId/billTitle,
  *        ballotQuestionId, court, position, publishedAt, content (or truncated).
  */
-function shapeTestimony(doc: any, includeFullText: boolean): object {
+export function shapeTestimony(doc: any, includeFullText: boolean): object {
   const data = doc.data()
 
   const shaped: Record<string, any> = {
@@ -152,7 +152,10 @@ function shapeTestimony(doc: any, includeFullText: boolean): object {
  * Shape a raw Firestore ballot question document into a compact object.
  * Strips vector_embedding and any large nested arrays.
  */
-function shapeBallotQuestion(doc: any, includeFullText: boolean): object {
+export function shapeBallotQuestion(
+  doc: any,
+  includeFullText: boolean
+): object {
   const data = doc.data()
 
   const shaped: Record<string, any> = {

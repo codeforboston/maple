@@ -18,8 +18,7 @@ export function createVectorIndexer(config: VectorIndexerConfig) {
 
   return runWith({
     timeoutSeconds: 60,
-    memory: "512MB",
-    secrets: ["GOOGLE_APPLICATION_CREDENTIALS"] // If needed, though usually automatic on GCP
+    memory: "512MB"
   })
     .firestore.document(config.documentTrigger)
     .onWrite(async change => {
