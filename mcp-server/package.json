@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node index.ts",
+    "start:http": "ts-node index-http.ts",
     "dev": "ts-node-dev --respawn index.ts",
+    "dev:http": "ts-node-dev --respawn index-http.ts",
     "build": "tsc"
   },
   "dependencies": {
