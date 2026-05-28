@@ -43,7 +43,8 @@ export const script: Script = async ({ db }) => {
       // Plain array (the broken format) → re-wrap as a VectorValue.
       if (Array.isArray(value)) {
         bulkWriter.update(doc.ref, {
-          vector_embedding: FieldValue.vector(value)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          vector_embedding: (FieldValue as any).vector(value)
         })
         migrated++
       }

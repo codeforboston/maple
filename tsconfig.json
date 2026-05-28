@@ -26,5 +26,5 @@
     "**/*.ts",
     "**/*.tsx"
   ],
-  "exclude": ["node_modules", "analysis"]
+  "exclude": ["node_modules", "analysis", "mcp-server"]
 }

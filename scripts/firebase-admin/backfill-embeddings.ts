@@ -122,7 +122,8 @@ export const script: Script = async ({ db, firebase, args }) => {
           title
         )
         await doc.ref.update({
-          vector_embedding: FieldValue.vector(embedding)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          vector_embedding: (FieldValue as any).vector(embedding)
         })
         console.log(`Updated ${doc.id}`)
       } catch (e) {
