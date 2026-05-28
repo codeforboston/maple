@@ -114,6 +114,25 @@ describe("shapeBill", () => {
     expect(result.topics).toEqual([])
     expect(result.cosponsorCount).toBe(0)
     expect(result.similar).toEqual([])
+    expect(result.currentCommittee).toBeNull()
+  })
+
+  it("exposes currentCommittee id and name", () => {
+    const data = {
+      ...billData,
+      currentCommittee: {
+        id: "com-env",
+        name: "Joint Committee on Environment",
+        houseChair: null,
+        senateChair: null
+      }
+    }
+    const doc = makeDoc("H.1234", data)
+    const result = shapeBill(doc, false) as any
+    expect(result.currentCommittee).toEqual({
+      id: "com-env",
+      name: "Joint Committee on Environment"
+    })
   })
 })
 
@@ -174,6 +193,34 @@ describe("shapeTestimony", () => {
     const doc = makeDoc("t1", { ...testimonyData, vector_embedding: [0.1] })
     const result = shapeTestimony(doc, false) as any
     expect(result.vector_embedding).toBeUndefined()
+  })
+
+  it("does not expose the public flag in output", () => {
+    const doc = makeDoc("t1", testimonyData)
+    const result = shapeTestimony(doc, false) as any
+    expect(result.public).toBeUndefined()
+  })
+
+  it("anonymizes author info when public === false", () => {
+    const privateData = { ...testimonyData, public: false }
+    const doc = makeDoc("t2", privateData)
+    const result = shapeTestimony(doc, false) as any
+    expect(result.authorDisplayName).toBe("Anonymous")
+    expect(result.authorRole).toBeNull()
+  })
+
+  it("preserves author info when public === true", () => {
+    const doc = makeDoc("t1", testimonyData)
+    const result = shapeTestimony(doc, false) as any
+    expect(result.authorDisplayName).toBe("Alice Advocate")
+    expect(result.authorRole).toBe("org")
+  })
+
+  it("preserves content for private-profile testimony (public record)", () => {
+    const privateData = { ...testimonyData, public: false }
+    const doc = makeDoc("t2", privateData)
+    const result = shapeTestimony(doc, true) as any
+    expect(result.content).toBe(privateData.content)
   })
 
   it("computes relevanceScore correctly", () => {
