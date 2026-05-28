@@ -70,15 +70,24 @@ function TokenPage() {
       </p>
 
       <p style={styles.instructions}>
-        Use this token to authenticate against the local MCP HTTP server:
+        Use this token to connect an MCP client (e.g. Claude Code) to the MAPLE
+        MCP server. Paste it into your client config as shown below, then
+        reconnect.
       </p>
 
+      <h3 style={styles.subheading}>Claude Code / .mcp.json</h3>
       <pre style={styles.code}>
-        {`curl -X POST http://127.0.0.1:3001/mcp \\
-  -H "Authorization: Bearer <token>" \\
-  -H "Content-Type: application/json" \\
-  -H "Accept: application/json, text/event-stream" \\
-  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'`}
+        {`{
+  "mcpServers": {
+    "maple": {
+      "type": "http",
+      "url": "https://maple-mcp.run.app/mcp",
+      "headers": {
+        "Authorization": "Bearer <paste-token-here>"
+      }
+    }
+  }
+}`}
       </pre>
 
       <div style={styles.buttonRow}>
@@ -104,14 +113,30 @@ function TokenPage() {
             onClick={e => (e.target as HTMLTextAreaElement).select()}
           />
           <p style={styles.expiry}>
-            ⏱ Expires: <strong>{expiry}</strong> &nbsp;(tokens are valid for 1
-            hour; click Refresh to get a new one)
+            ⏱ Expires: <strong>{expiry}</strong>
           </p>
         </>
       )}
 
+      <div style={styles.infoBox}>
+        <p style={styles.infoText}>
+          <strong>⏱ Tokens expire after 1 hour.</strong> Return here and click
+          &ldquo;Refresh Token&rdquo; when yours expires, then update your
+          client config with the new value.
+        </p>
+        <p style={styles.infoText}>
+          <strong>🔑 Need a long-lived token?</strong> Organisations and
+          persistent integrations can request an <em>agent key</em> — a
+          non-expiring credential stored in Firestore — from the MAPLE team.
+          Agent keys work in the same{" "}
+          <code style={styles.inlineCode}>Authorization: Bearer</code> header
+          and never need refreshing.
+        </p>
+      </div>
+
       <p style={styles.devNote}>
-        🔒 This page is for local development only. Do not share your token.
+        🔒 Do not share your token. It grants access to the MAPLE MCP server
+        on behalf of your account.
       </p>
     </div>
   )
@@ -214,5 +239,28 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#6b7280",
     fontSize: "0.8rem",
     marginTop: "0.5rem"
+  },
+  subheading: {
+    fontSize: "1rem",
+    marginBottom: "0.4rem",
+    marginTop: "1rem"
+  },
+  infoBox: {
+    background: "#eff6ff",
+    border: "1px solid #bfdbfe",
+    borderRadius: 4,
+    padding: "0.75rem 1rem",
+    marginBottom: "1rem"
+  },
+  infoText: {
+    margin: "0.4rem 0",
+    fontSize: "0.875rem",
+    color: "#1e3a5f"
+  },
+  inlineCode: {
+    fontFamily: "monospace",
+    background: "#dbeafe",
+    padding: "0 3px",
+    borderRadius: 2
   }
 }
