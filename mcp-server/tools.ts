@@ -6,6 +6,13 @@ import { z } from "zod"
 // Lazily initialize db so we don't call admin.firestore() before initializeApp() runs in index.ts
 const getDb = () => admin.firestore()
 
+// Current General Court session.
+// Source of truth: functions/src/shared/constants.ts → currentGeneralCourt
+// Override at deploy time via CURRENT_COURT env var; fallback keeps local dev working.
+const CURRENT_COURT = process.env.CURRENT_COURT
+  ? parseInt(process.env.CURRENT_COURT, 10)
+  : 194
+
 // Vertex AI Configuration
 const project = process.env.FIREBASE_PROJECT_ID
 const location = "us-central1"
@@ -228,6 +235,13 @@ const SearchSchema = {
     .describe(
       "Filter by primary sponsor name (e.g. 'Cynthia Creem'). Use list_sponsors to see valid values."
     ),
+  court: z
+    .number()
+    .optional()
+    .default(CURRENT_COURT)
+    .describe(
+      `Legislature session (General Court) number. Defaults to the current ${CURRENT_COURT}th session. Pass an older number (e.g. 193) to search a prior session.`
+    ),
   includeFullText: z
     .boolean()
     .optional()
@@ -255,6 +269,13 @@ const TestimonySearchSchema = {
     .optional()
     .default(5)
     .describe("Maximum number of results to return"),
+  court: z
+    .number()
+    .optional()
+    .default(CURRENT_COURT)
+    .describe(
+      `Legislature session (General Court) number. Defaults to the current ${CURRENT_COURT}th session. Pass an older number (e.g. 193) to search a prior session.`
+    ),
   includeFullText: z
     .boolean()
     .optional()
@@ -268,8 +289,9 @@ const ListSchema = {
   court: z
     .number()
     .optional()
+    .default(CURRENT_COURT)
     .describe(
-      "Legislature court session number (e.g. 193 for the current 2023-2024 session). Omit to search across all sessions."
+      `Legislature session (General Court) number. Defaults to the current ${CURRENT_COURT}th session.`
     )
 }
 
@@ -331,12 +353,13 @@ export function registerTools(server: McpServer) {
     "search_bills",
     {
       description:
-        "Search legislative bills using natural language. Returns compact summaries by default; use includeFullText for statutory language. Narrow results with legislationType, topic, committee, or primarySponsor filters.",
+        "Search legislative bills using natural language. Returns compact summaries by default; use includeFullText for statutory language. Defaults to the current General Court session. Narrow results with legislationType, topic, committee, or primarySponsor filters.",
       inputSchema: SearchSchema
     },
     async ({
       query,
       limit,
+      court,
       legislationType,
       topic,
       committee,
@@ -344,12 +367,22 @@ export function registerTools(server: McpServer) {
       includeFullText
     }: any) => {
       const embedding = await getEmbedding(query as string, true)
-      const hasPostFilters = !!(topic || committee || primarySponsor)
+      const hasPostFilters = !!(
+        legislationType ||
+        topic ||
+        committee ||
+        primarySponsor
+      )
       const fetchLimit = hasPostFilters
         ? Math.min((limit as number) * 4, 100)
         : (limit as number)
 
-      const results = await (getDb().collectionGroup("bills") as any)
+      // Scope to a specific court by querying the collection path directly —
+      // bills live at generalCourts/{court}/bills/{id}, so this is a true
+      // pre-filter with no composite index required.
+      const billsRef = getDb().collection(`generalCourts/${court}/bills`)
+
+      const results = await (billsRef as any)
         .findNearest({
           vectorField: "vector_embedding",
           queryVector: embedding,
@@ -388,11 +421,12 @@ export function registerTools(server: McpServer) {
     "search_testimony",
     {
       description:
-        "Search testimony using natural language. Returns relevanceScore, author info (anonymized for private-profile users), position, and a content preview by default; use includeFullText for the full text. Filter to a specific bill or ballot question with policyType + policyId. Filter by authorDisplayName to find testimony from a specific public user.",
+        "Search testimony using natural language. Returns relevanceScore, author info (anonymized for private-profile users), position, and a content preview by default; use includeFullText for the full text. Defaults to the current General Court session. Filter to a specific bill or ballot question with policyType + policyId. Filter by authorDisplayName to find testimony from a specific public user.",
       inputSchema: TestimonySearchSchema
     },
     async ({
       query,
+      court,
       policyType,
       policyId,
       authorDisplayName,
@@ -401,19 +435,31 @@ export function registerTools(server: McpServer) {
     }: any) => {
       const embedding = await getEmbedding(query as string, true)
       let testimonyRef: any = getDb().collectionGroup("publishedTestimony")
+      let courtPostFilter = false
 
       if (policyType === "bill" && policyId) {
+        // Uses existing billId + vector composite index; add court as post-filter
         testimonyRef = testimonyRef.where("billId", "==", policyId)
+        courtPostFilter = true
       } else if (policyType === "ballot" && policyId) {
+        // Uses existing ballotQuestionId + vector composite index; add court as post-filter
         testimonyRef = testimonyRef.where("ballotQuestionId", "==", policyId)
-      }
-
-      // Author filter is gated on public === true to respect privacy preferences
-      if (authorDisplayName) {
+        courtPostFilter = true
+      } else if (authorDisplayName) {
+        // Author filter is gated on public === true to respect privacy preferences;
+        // court added as post-filter to avoid a 3-field composite index
         testimonyRef = testimonyRef
           .where("authorDisplayName", "==", authorDisplayName)
           .where("public", "==", true)
+        courtPostFilter = true
+      } else {
+        // General search: pre-filter by court using the court + vector composite index
+        testimonyRef = testimonyRef.where("court", "==", court as number)
       }
+
+      const fetchLimit = courtPostFilter
+        ? Math.min((limit as number) * 3, 100)
+        : (limit as number)
 
       const results = await testimonyRef
         .findNearest({
@@ -421,11 +467,18 @@ export function registerTools(server: McpServer) {
           queryVector: embedding,
           distanceMeasure: "COSINE",
           distanceResultField: "distance",
-          limit: limit as number
+          limit: fetchLimit
         })
         .get()
 
-      const testimony = results.docs.map((doc: any) =>
+      let docs: any[] = results.docs
+      if (courtPostFilter) {
+        docs = docs
+          .filter((doc: any) => doc.data().court === (court as number))
+          .slice(0, limit as number)
+      }
+
+      const testimony = docs.map((doc: any) =>
         shapeTestimony(doc, includeFullText as boolean)
       )
 
@@ -494,12 +547,13 @@ export function registerTools(server: McpServer) {
     "search_policies",
     {
       description:
-        "Unified search across bills and ballot questions, deduplicated and sorted by relevance. Returns compact summaries by default; use includeFullText for full statutory/question text. Supports the same topic, committee, and primarySponsor filters as search_bills.",
+        "Unified search across bills and ballot questions, sorted by relevance. Returns compact summaries by default; use includeFullText for full statutory/question text. Defaults to the current General Court session for bills. Supports the same topic, committee, and primarySponsor filters as search_bills.",
       inputSchema: SearchSchema
     },
     async ({
       query,
       limit,
+      court,
       legislationType,
       topic,
       committee,
@@ -507,12 +561,20 @@ export function registerTools(server: McpServer) {
       includeFullText
     }: any) => {
       const embedding = await getEmbedding(query as string, true)
-      const hasPostFilters = !!(topic || committee || primarySponsor)
+      const hasPostFilters = !!(
+        legislationType ||
+        topic ||
+        committee ||
+        primarySponsor
+      )
       const fetchLimit = hasPostFilters
         ? Math.min((limit as number) * 4, 100)
         : (limit as number)
 
-      const billsPromise = (getDb().collectionGroup("bills") as any)
+      // Bills: scope to specific court via collection path (no composite index needed)
+      const billsPromise = (
+        getDb().collection(`generalCourts/${court}/bills`) as any
+      )
         .findNearest({
           vectorField: "vector_embedding",
           queryVector: embedding,
@@ -522,6 +584,7 @@ export function registerTools(server: McpServer) {
         })
         .get()
 
+      // Ballot questions are not organised by GC court — search across all
       const bqPromise = (getDb().collection("ballotQuestions") as any)
         .findNearest({
           vectorField: "vector_embedding",
@@ -551,13 +614,9 @@ export function registerTools(server: McpServer) {
         shapeBallotQuestion(doc, includeFullText as boolean)
       )
 
-      const seen = new Set<string>()
+      // Bills (H1234) and ballot questions (25-12) have structurally distinct IDs —
+      // no deduplication needed; just merge and sort by relevance.
       const merged = [...shapedBills, ...shapedBallotQuestions]
-        .filter((item: any) => {
-          if (seen.has(item.id)) return false
-          seen.add(item.id)
-          return true
-        })
         .sort(
           (a: any, b: any) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0)
         )
@@ -607,9 +666,10 @@ export function registerTools(server: McpServer) {
       inputSchema: ListSchema
     },
     async ({ court }: any) => {
-      let query: any = getDb().collectionGroup("bills")
-      if (court) query = query.where("court", "==", court)
-      const snapshot = await query.limit(1000).get()
+      const snapshot = await getDb()
+        .collection(`generalCourts/${court}/bills`)
+        .limit(1000)
+        .get()
 
       const committees = new Set<string>()
       snapshot.docs.forEach((doc: any) => {
@@ -639,9 +699,10 @@ export function registerTools(server: McpServer) {
       inputSchema: ListSchema
     },
     async ({ court }: any) => {
-      let query: any = getDb().collectionGroup("bills")
-      if (court) query = query.where("court", "==", court)
-      const snapshot = await query.limit(1000).get()
+      const snapshot = await getDb()
+        .collection(`generalCourts/${court}/bills`)
+        .limit(1000)
+        .get()
 
       const sponsors = new Set<string>()
       snapshot.docs.forEach((doc: any) => {
