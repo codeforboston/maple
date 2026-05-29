@@ -1,5 +1,6 @@
 import { useTranslation } from "next-i18next"
 import { Container, Row, Col } from "../../bootstrap"
+import { Internal } from "../../links"
 import {
   MemberItem,
   Divider,
@@ -180,6 +181,26 @@ const MapleAI = () => {
                   <b>{t("section5.desc4Bold")}</b> {t("section5.desc4Main")}
                 </li>
               </ul>
+            </DescrContainer>
+          </SectionContainer>
+        </Col>
+      </Row>
+      <Row>
+        <Col className="py-3">
+          <SectionContainer>
+            <SectionTitle className="p-2">
+              Use AI to research MAPLE data
+            </SectionTitle>
+            <DescrContainer className="py-3 px-4">
+              You can connect AI chat tools like Claude directly to MAPLE's
+              database of bills, testimony, and ballot questions. Ask questions
+              in plain English and get real-time answers drawn from the full
+              legislative record.
+            </DescrContainer>
+            <DescrContainer className="pb-3 px-4">
+              <Internal href="/learn/ai-tools">
+                Learn how to set up AI research tools with your MAPLE account →
+              </Internal>
             </DescrContainer>
           </SectionContainer>
         </Col>

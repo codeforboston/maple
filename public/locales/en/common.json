@@ -136,6 +136,7 @@
     "signOut": "Sign Out",
     "supportMaple": "Support MAPLE",
     "aboutTestimony": "About Testimony",
+    "aiTools": "AI Research Tools",
     "testimony": "Testimony",
     "viewProfile": "View Profile",
     "whyUseMaple": "Why Use MAPLE",
@@ -197,7 +198,8 @@
     "testimony": "Testimony",
     "policies": "Policies",
     "unsubscribe": "Unsubscribe",
-    "why_use_maple": "Why Use Maple?"
+    "why_use_maple": "Why Use Maple?",
+    "ai_tools": "AI Research Tools"
   },
   "user_updates": "User Updates",
   "view": "View",
