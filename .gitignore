@@ -87,3 +87,7 @@ cert.txt
 
 # lets each user define their own vscode settings
 .vscode/settings.json
+
+# local MCP server config (contains auth tokens)
+.mcp.json
+mcp-server/create-agent-key.ts
