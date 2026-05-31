@@ -6,7 +6,12 @@ export async function hybridAuthMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  const authHeader = req.headers.authorization
+  // When routed through the Next.js proxy, the Google identity token occupies
+  // Authorization and the MAPLE token arrives in X-Maple-Authorization.
+  // For direct connections (local dev, testing), Authorization holds the MAPLE token.
+  const authHeader =
+    (req.headers["x-maple-authorization"] as string | undefined) ??
+    req.headers.authorization
   const token = authHeader?.startsWith("Bearer ")
     ? authHeader.split(" ")[1]
     : undefined

@@ -20,23 +20,12 @@ module.exports = {
     return [redirectFirebaseAuthHandlers()]
   },
   async rewrites() {
-    const rewrites = [
+    return [
       {
         source: "/policies",
         destination: "/policies/privacy-policy"
       }
     ]
-
-    // Proxy MCP API requests to the Cloud Run service.
-    // Set MCP_SERVER_URL to the Cloud Run service URL at deploy time.
-    if (process.env.MCP_SERVER_URL) {
-      rewrites.push({
-        source: "/api/mcp",
-        destination: `${process.env.MCP_SERVER_URL}/mcp`
-      })
-    }
-
-    return rewrites
   }
 }
 
