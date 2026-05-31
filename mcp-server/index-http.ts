@@ -33,6 +33,7 @@ import { Request, Response, NextFunction } from "express"
 import dotenv from "dotenv"
 import { registerTools } from "./tools"
 import { hybridAuthMiddleware } from "./auth"
+import { rateLimitMiddleware } from "./rateLimit"
 
 dotenv.config()
 
@@ -74,8 +75,8 @@ app.get("/health", (_req, res) => {
   res.json({ status: "ok", server: "maple-mcp-server", version: "0.1.0" })
 })
 
-// MCP endpoint — auth required, new transport per request (stateless)
-app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
+// MCP endpoint — auth then rate limit, new transport per request (stateless)
+app.post("/mcp", authMiddleware, rateLimitMiddleware, async (req: Request, res: Response) => {
   const transport = new StreamableHTTPServerTransport({
     sessionIdGenerator: undefined // stateless: no session tracking
   })
