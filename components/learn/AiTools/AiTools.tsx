@@ -1,3 +1,7 @@
+// TODO(mcp-server-deploy): Update the connection config snippet below once the
+// Firebase Function proxy is deployed and the public endpoint
+// (mapletestimony.org/api/mcp) is live. Also verify the token page URL
+// is accessible to end users before this page goes public.
 import styled from "styled-components"
 import { Container, Row, Col } from "../../bootstrap"
 import {
