@@ -6,18 +6,23 @@ export async function hybridAuthMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  // When routed through the Next.js proxy, the Google identity token occupies
-  // Authorization and the MAPLE token arrives in X-Maple-Authorization.
-  // For direct connections (local dev, testing), Authorization holds the MAPLE token.
+  // Header precedence (highest to lowest):
+  //   X-Maple-Authorization — set by the Firebase Function proxy
+  //   X-Maple-Token         — set by MCP clients (Firebase strips Authorization on allUsers functions)
+  //   Authorization         — direct connections (local stdio, curl testing)
   const authHeader =
     (req.headers["x-maple-authorization"] as string | undefined) ??
+    (req.headers["x-maple-token"] as string | undefined) ??
     req.headers.authorization
   const token = authHeader?.startsWith("Bearer ")
     ? authHeader.split(" ")[1]
     : undefined
 
   if (!token) {
-    return res.status(401).json({ error: "Unauthorized: Missing token" })
+    return res.status(401).json({
+      error: "Unauthorized: Missing token",
+      help: "A MAPLE account and API token are required. Visit https://mapletestimony.org/learn/ai-tools for setup instructions."
+    })
   }
 
   try {
@@ -49,7 +54,10 @@ export async function hybridAuthMiddleware(
       return next()
     }
 
-    return res.status(401).json({ error: "Unauthorized: Invalid token" })
+    return res.status(401).json({
+      error: "Unauthorized: Invalid token",
+      help: "Visit https://mapletestimony.org/learn/ai-tools to get a valid MAPLE API token."
+    })
   } catch (error) {
     console.error("Auth middleware error:", error)
     return res.status(500).json({ error: "Internal Server Error" })

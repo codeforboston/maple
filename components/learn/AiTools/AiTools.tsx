@@ -298,7 +298,7 @@ export const AiTools = () => {
       "type": "http",
       "url": "https://mapletestimony.org/api/mcp",
       "headers": {
-        "Authorization": "Bearer YOUR_TOKEN_HERE"
+        "X-Maple-Token": "Bearer YOUR_TOKEN_HERE"
       }
     }
   }

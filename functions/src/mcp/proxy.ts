@@ -1,7 +1,4 @@
 import * as functions from "firebase-functions"
-import { GoogleAuth } from "google-auth-library"
-
-const auth = new GoogleAuth()
 
 /**
  * Firebase Function proxy for the MAPLE MCP server on Cloud Run.
@@ -28,33 +25,57 @@ export const mcpProxy = functions
       return
     }
 
-    const mapleAuth = req.headers.authorization
+    // Firebase Functions strips the Authorization header from allUsers-accessible
+    // functions before the code runs. Clients must use X-Maple-Token instead.
+    const mapleAuth =
+      (req.headers["x-maple-token"] as string | undefined) ??
+      req.headers.authorization
     if (!mapleAuth) {
-      res.status(401).json({ error: "Unauthorized: Missing token" })
+      res.status(401).json({
+        error: "Unauthorized: Missing token",
+        help: "Visit https://mapletestimony.org/learn/ai-tools for setup instructions."
+      })
       return
     }
 
     try {
-      const client = await auth.getIdTokenClient(mcpUrl)
-      const idTokenHeaders = await client.getRequestHeaders() as unknown as Record<string, string>
+      // Use GCP metadata server to get an identity token for Cloud Run IAM.
+      // This is the most reliable approach in any GCP-hosted environment.
+      const metadataUrl = `http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity?audience=${encodeURIComponent(mcpUrl)}&format=full`
+      const tokenRes = await fetch(metadataUrl, {
+        headers: { "Metadata-Flavor": "Google" }
+      })
+      const idToken = await tokenRes.text()
+      functions.logger.info("Forwarding to Cloud Run", { audience: mcpUrl, tokenOk: tokenRes.ok })
 
       const body = JSON.stringify(req.body)
 
       const upstream = await fetch(`${mcpUrl}/mcp`, {
         method: "POST",
         headers: {
-          Authorization: idTokenHeaders["Authorization"],
-          "X-Maple-Authorization": mapleAuth,
-          "Content-Type": "application/json"
+          Authorization: `Bearer ${idToken}`,
+          "X-Maple-Authorization": mapleAuth.startsWith("Bearer ")
+            ? mapleAuth
+            : `Bearer ${mapleAuth}`,
+          "Content-Type": req.headers["content-type"] ?? "application/json",
+          ...(req.headers["accept"] && { Accept: req.headers["accept"] as string }),
+          ...(req.headers["mcp-protocol-version"] && {
+            "MCP-Protocol-Version": req.headers["mcp-protocol-version"] as string
+          })
         },
         body
       })
 
+      const responseBody = await upstream.arrayBuffer()
+      if (upstream.status !== 200) {
+        functions.logger.warn("Cloud Run non-200", {
+          status: upstream.status,
+          body: Buffer.from(responseBody).toString("utf8").slice(0, 300)
+        })
+      }
       res.status(upstream.status)
       const ct = upstream.headers.get("content-type")
       if (ct) res.setHeader("Content-Type", ct)
-
-      const responseBody = await upstream.arrayBuffer()
       res.end(Buffer.from(responseBody))
     } catch (err) {
       functions.logger.error("MCP proxy error", err)
