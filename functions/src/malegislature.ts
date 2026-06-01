@@ -106,14 +106,17 @@ export async function getDocumentPdf({
 }: {
   id: string
   court: number
-}) {
+}): Promise<Buffer> {
   const response = await request({
     baseURL: "https://malegislature.gov",
     url: `/Bills/${court}/${id}.pdf`,
     method: "GET",
+    responseType: "arraybuffer",
     timeout: 30_000
   })
-  return response as any
+  return Buffer.isBuffer(response)
+    ? response
+    : Buffer.from(response as ArrayBuffer)
 }
 
 export async function listMembers({
