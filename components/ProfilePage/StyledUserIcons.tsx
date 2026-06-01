@@ -21,11 +21,11 @@ export const BaseProfileIcon = ({
   let iconSrc
   switch (role) {
     case "organization": {
-      iconSrc = "/profile-org-icon.svg"
+      iconSrc = "/profile-org-blue.svg"
       break
     }
     default:
-      iconSrc = "/profile-individual-icon.svg"
+      iconSrc = "/profile-individual-blue.svg"
       break
   }
   return (
