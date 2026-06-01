@@ -46,7 +46,6 @@ export const mcpProxy = functions
         headers: { "Metadata-Flavor": "Google" }
       })
       const idToken = await tokenRes.text()
-      functions.logger.info("Forwarding to Cloud Run", { audience: mcpUrl, tokenOk: tokenRes.ok })
 
       const body = JSON.stringify(req.body)
 
@@ -67,12 +66,6 @@ export const mcpProxy = functions
       })
 
       const responseBody = await upstream.arrayBuffer()
-      if (upstream.status !== 200) {
-        functions.logger.warn("Cloud Run non-200", {
-          status: upstream.status,
-          body: Buffer.from(responseBody).toString("utf8").slice(0, 300)
-        })
-      }
       res.status(upstream.status)
       const ct = upstream.headers.get("content-type")
       if (ct) res.setHeader("Content-Type", ct)
