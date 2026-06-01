@@ -38,14 +38,8 @@ export const Status = ({ bill }: BillProps) => {
     hearingCheck = true
   }
 
-  let hearingDate = ""
-  if (history?.Date) {
-    hearingDate = history.Date
-  }
-  let dateCheck = false
-  if (hearingDate < today) {
-    dateCheck = true
-  }
+  const hearingDate = history?.Date ?? ""
+  const dateCheck = !!hearingDate && hearingDate < today
 
   if (!history) return null
   return (

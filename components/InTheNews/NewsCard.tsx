@@ -12,7 +12,7 @@ export const NewsCard = ({ newsItem }: NewsCardProps) => {
     <div
       className="d-flex flex-row flex-fill gap-5 p-4"
       style={{
-        backgroundColor: "#F6F7FF",
+        backgroundColor: "var(--maple-color-blue-subtle-bg)",
         borderTop: "6px solid var(--bs-secondary)"
       }}
     >
@@ -33,7 +33,7 @@ export const NewsCard = ({ newsItem }: NewsCardProps) => {
             style={{
               width: "1px",
               height: "1em",
-              backgroundColor: "black",
+              backgroundColor: "var(--maple-border-default)",
               alignSelf: "center"
             }}
           />
@@ -57,7 +57,7 @@ export const NewsCard = ({ newsItem }: NewsCardProps) => {
           href={newsItem.url}
           target="_blank"
           rel="noopener noreferrer"
-          style={{ color: "#1587D3", fontWeight: 800 }}
+          style={{ color: "var(--maple-brand-primary)", fontWeight: 800 }}
         >
           {t("readMoreButton")}
           <ArrowForward />

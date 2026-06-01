@@ -89,3 +89,6 @@ cert.txt
 .vscode/settings.json
 
 .serena/
+# local MCP server config (contains auth tokens)
+.mcp.json
+mcp-server/create-agent-key.ts

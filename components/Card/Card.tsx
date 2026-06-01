@@ -1,8 +1,17 @@
 import { ReactElement, useState } from "react"
 import CardBootstrap from "react-bootstrap/Card"
+import styled from "styled-components"
 import { CardListItems, ListItem } from "./CardListItem"
 import { CardTitle } from "./CardTitle"
 import { SeeMore } from "./SeeMore"
+
+const SurfaceCard = styled(CardBootstrap)`
+  background-color: var(--maple-surface-base);
+  border: 1px solid var(--maple-surface-border);
+  border-radius: var(--maple-radius-lg);
+  box-shadow: var(--maple-shadow-sm);
+  overflow: hidden;
+`
 
 interface CardItem {
   billName: string
@@ -92,13 +101,13 @@ export const Card = (CardProps: CardProps) => {
   const shown = showAll ? allItems : allItems.slice(0, initialRowCount)
 
   return (
-    <CardBootstrap className={`bg-white overflow-hidden rounded-3`}>
+    <SurfaceCard className={className}>
       {headerContent}
       {<CardListItems items={shown} />}
       {bodyContent}
       {allItems.length > initialRowCount && (
         <SeeMore onClick={handleSeeMoreClick} />
       )}
-    </CardBootstrap>
+    </SurfaceCard>
   )
 }

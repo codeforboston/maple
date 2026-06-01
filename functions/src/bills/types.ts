@@ -19,7 +19,7 @@ export const BillReference = Record({
 
 export type BillHistoryAction = Static<typeof BillHistoryAction>
 export const BillHistoryAction = Record({
-  Date: String,
+  Date: Nullable(String),
   Branch: String,
   Action: String
 })

@@ -129,7 +129,10 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
     setFollowStatus(prev => ({ ...prev, [topicName]: false }))
   }
 
+  const { t } = useTranslation("testimony")
+
   const isFollowing = followStatus[topicName]
+  const isUnverified = !!user && !isUser && !user.emailVerified
   const text = isFollowing ? "Unfollow" : "Follow"
   const checkmark = isFollowing ? (
     <StyledImage src="/check-white.svg" alt="" />
@@ -159,12 +162,18 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
     items.push(
       <PolicyActionItem
         key="add-testimony"
-        billName={`${isUser ? "Edit" : "Add"} Testimony for ${policyLabel}`}
-        href={formUrl(bill.id, bill.court, "position", ballotQuestionId)}
+        billName={
+          isUnverified
+            ? t("panel.unverifiedEmail.title")
+            : `${isUser ? "Edit" : "Add"} Testimony for ${policyLabel}`
+        }
+        href={
+          isUnverified
+            ? `/profile?id=${uid}`
+            : formUrl(bill.id, bill.court, "position", ballotQuestionId)
+        }
       />
     )
-
-  const { t } = useTranslation("testimony")
 
   return (
     <Card

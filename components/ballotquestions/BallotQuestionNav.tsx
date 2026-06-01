@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import { KeyboardEvent, useRef } from "react"
 import { BallotQuestionTab } from "./types"
 import {
@@ -8,27 +9,47 @@ import {
 export const BallotQuestionNav = ({
   activeTab,
   onTabChange,
-  testimonyCount
+  testimonyCount,
+  showCampaignFinancials,
+  showForAndAgainst
 }: {
   activeTab: BallotQuestionTab | string
   onTabChange: (tab: BallotQuestionTab) => void
   testimonyCount?: number
+  showCampaignFinancials?: boolean
+  showForAndAgainst?: boolean
 }) => {
+  const { t } = useTranslation("ballotquestions")
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const navItems: Array<BallotQuestionNavItem & { enabled: boolean }> = [
-    { id: "overview", label: "Overview", enabled: true },
+    {
+      id: "overview",
+      label: t("tabs.overview"),
+      enabled: true
+    },
     {
       id: "testimonies",
-      label: "Perspectives",
+      label: t("tabs.perspectives"),
       enabled: true,
       badge: testimonyCount
     },
-    { id: "synthesis", label: "Synthesis & Insights", enabled: false },
-    { id: "for_against", label: "For & Against", enabled: false },
-    { id: "news", label: "News & Media", enabled: false },
-    { id: "academia", label: "Academia", enabled: false },
-    { id: "financials", label: "Campaign Financials", enabled: false },
-    { id: "map", label: "Map", enabled: false }
+    {
+      id: "for_against",
+      label: t("tabs.forAndAgainst"),
+      enabled: showForAndAgainst ?? false
+    },
+    { id: "news", label: t("tabs.news"), enabled: false },
+    {
+      id: "academia",
+      label: t("tabs.academia"),
+      enabled: false
+    },
+    {
+      id: "financials",
+      label: t("tabs.financials"),
+      enabled: showCampaignFinancials ?? false
+    },
+    { id: "map", label: t("tabs.map"), enabled: false }
   ]
   const visibleItems = navItems.filter(item => item.enabled)
 
@@ -70,38 +91,18 @@ export const BallotQuestionNav = ({
   }
 
   return (
-    <div
-      className="rounded-4 border bg-white p-3 p-lg-4 shadow-sm"
-      style={{
-        borderColor: "rgba(15, 23, 42, 0.08)",
-        boxShadow: "0 0.5rem 1.5rem rgba(15, 23, 42, 0.06)"
-      }}
-    >
-      <div className="mb-3 mb-lg-4">
-        <div
-          className="text-uppercase fw-semibold mb-1"
-          style={{
-            fontSize: "0.75rem",
-            letterSpacing: "0.08em",
-            color: "#64748b"
-          }}
-        >
-          Explore
-        </div>
-        <p className="mb-0 small text-body-secondary">
-          Move between the question overview and public perspectives.
-        </p>
-      </div>
+    <div className="maple-surface rounded-4 p-3 p-lg-4">
+      <div className="maple-eyebrow mb-3">{t("nav.explore")}</div>
 
       <div
         role="tablist"
-        className="d-flex flex-row flex-lg-column gap-2"
-        aria-label="Ballot question sections"
+        className="d-flex flex-row flex-lg-column gap-2 overflow-x-auto overflow-lg-visible pb-1 pb-lg-0"
+        aria-label={t("nav.sectionsAriaLabel")}
       >
         {visibleItems.map((item, itemIndex) => {
           const isActive = activeTab === item.id
           return (
-            <div key={item.id} className="flex-fill">
+            <div key={item.id} className="flex-shrink-0 flex-lg-fill">
               <BallotQuestionTabButton
                 ref={element => {
                   tabRefs.current[itemIndex] = element

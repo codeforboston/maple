@@ -62,6 +62,117 @@ yarn firebase-admin run-script syncBallotQuestions --env dev -- --dir /path/to/y
 
 YAML files must export a document whose shape matches the `BallotQuestion` type defined in `functions/src/ballotQuestions/types.ts`, including a top-level `id` field used as the Firestore document ID.
 
+For phase 1, ballot-question YAML should include these fields when available:
+
+```yaml
+id: "23-36"
+billId: "H4252"
+title: "Elimination of MCAS as High School Graduation Requirement"
+court: 193
+electionYear: 2024
+type: initiative_statute
+ballotStatus: accepted
+ballotQuestionNumber: 2
+relatedBillIds: []
+description: "Would replace the MCAS graduation requirement with district-certified coursework mastery."
+alertFlag: |-
+  Legal challenge pending. [Read more](https://example.com/legal-challenge).
+alertTip: "This may affect whether the question appears on the ballot."
+atAGlance:
+  - label: "What it does"
+    value: "Removes MCAS as a graduation requirement."
+voteEffectYes: "A YES vote would replace the MCAS graduation requirement with district-certified coursework mastery."
+voteEffectNo: "A NO vote would make no change in the law governing the MCAS graduation requirement."
+fiscalConsequences: "The proposed law has no discernible material fiscal consequences for state and municipal government finances."
+inFavor: "..."
+against: "..."
+campaignFinancials:
+  support:
+    - committee: "Committee name"
+      cashRaised: 950000
+      spent: 950000
+      inKind: 15604360.49
+  oppose: []
+fullSummary: "Official summary text from the voter guide."
+pdfUrl: "https://..."
+```
+
+Notes:
+
+- `description`, `alertFlag`, `alertTip`, `atAGlance`, `voteEffectYes`, `voteEffectNo`, `fiscalConsequences`, `inFavor`, `against`, `campaignFinancials`, and `pdfUrl` are optional in the schema and may be `null`.
+- `alertFlag` supports sanitized Markdown links. Keep `alertTip` plain text.
+- `campaignFinancials` is only shown in the UI when present.
+
+### Field Reference
+
+**Core fields** (required):
+
+- `id` - Unique identifier for the ballot question (e.g., `"23-36"`)
+- `court` - General Court number where the question originated (e.g., `193`)
+- `electionYear` - Year the question appears on the ballot (e.g., `2024`)
+- `type` - Category of question: `initiative_statute`, `initiative_constitutional`, `legislative_referral`, `constitutional_amendment`, or `advisory`
+- `ballotStatus` - Status of the question: `expectedOnBallot`, `failedToAppear`, `rejected`, or `accepted`
+
+**Linking fields** (optional):
+
+- `billId` - Associated bill identifier if the question relates to legislation (e.g., `"H4252"`)
+- `relatedBillIds` - Array of other related bill IDs
+
+**Position fields** (optional):
+
+- `ballotQuestionNumber` - Position on the ballot (e.g., `2`)
+
+**Title and summary** (optional):
+
+- `title` - Short title of the question displayed to users
+- `description` - Brief context or summary of what the question is about
+- `fullSummary` - Official summary text from the Massachusetts Attorney General (voter guide text)
+
+**Information cards** (optional):
+
+- `atAGlance` - Array of key detail cards shown in the Overview tab. Each card has `label` and `value` fields to highlight important facts
+
+**Vote effects** (optional):
+
+- `voteEffectYes` - Plain text describing what a YES vote would accomplish
+- `voteEffectNo` - Plain text describing what a NO vote would accomplish
+
+**Fiscal impact** (optional):
+
+- `fiscalConsequences` - Plain text explaining expected budget or financial impact on state/municipalities
+
+**Arguments** (optional):
+
+- `inFavor` - Argument written by proponents of the question (supports markdown formatting)
+- `against` - Argument written by opponents of the question (supports markdown formatting)
+- `supportCommittee` - Name of the committee/organization sponsoring the yes argument (e.g., `"Committee for High Standards Not High Stakes 95507"`)
+- `opposeCommittee` - Name of the committee/organization sponsoring the no argument (e.g., `"Protect Our Kids' Future: Vote No on 2 95518"`)
+
+**Campaign financials** (optional):
+
+- `campaignFinancials` - Committee receipts and expenditures for the election. Structure:
+  ```yaml
+  campaignFinancials:
+    support:
+      - cashRaised: 950000 # Contributions in cash
+        spent: 950000 # Cash expenditures
+        inKind: 15604360.49 # In-kind contributions (goods/services)
+    oppose:
+      - cashRaised: 5318307.02
+        spent: 5318307.02
+        inKind: 93763.81
+  ```
+
+**Notices and links** (optional):
+
+- `alertFlag` - Important notice to display to users (supports Markdown links for external resources, e.g., legal challenge info)
+- `alertTip` - Plain text tooltip to provide context for the alert (displayed as a help icon)
+- `pdfUrl` - Link to the full text of the bill (if applicable)
+
+**Counters** (auto-managed):
+
+- `testimonyCount`, `endorseCount`, `neutralCount`, `opposeCount` - Live testimony counts on the ballot question page. Managed by the system; don't edit manually in YAML. Preserved during sync refreshes.
+
 ---
 
 #### `backfillBallotQuestionTestimonyCounts`

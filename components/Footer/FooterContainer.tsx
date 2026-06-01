@@ -15,17 +15,17 @@ export const FooterContainer = styled(Container)`
     display: flex;
     flex-grow: 1;
     justify-content: space-between;
-    color: (var(--bs-white));
+    color: var(--maple-text-inverse);
   }
 
   .navbar-dark .navbar-nav .nav-link {
-    color: rgba(255, 255, 255, 0.55);
+    color: var(--maple-text-inverse-muted);
   }
 
   .navbar-dark .navbar-nav,
   .navbar-dark .navbar-nav .nav-link.active,
   .navbar-dark .navbar-nav .nav-link:hover {
-    color: rgba(255, 255, 255, 1);
+    color: var(--maple-text-inverse);
   }
 
   .dropdown-toggle::after,

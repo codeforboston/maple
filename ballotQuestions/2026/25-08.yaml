@@ -9,7 +9,17 @@ ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null
+alertFlag: null
+alertTip: null
 atAGlance: null
+voteEffectYes: null
+voteEffectNo: null
+fiscalConsequences: null
+inFavor: null
+against: null
+supportCommittee: "Sec. of State Bill Galvin's office campaign"
+opposeCommittee: null
+campaignFinancials: null
 fullSummary: |-
   This proposed law would permit eligible individuals to register to vote or update their
   voter registration address on Election Day.

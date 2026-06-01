@@ -1,30 +1,29 @@
 {
   "aboutMe": "About {{firstName}}",
   "aboutUs": "About Us",
-  "user": "User",
-  "noUser": "no user",
   "anonymousUser": "Anonymous User",
-  "joinDate": "Joined in {{date}}",
   "button":{
     "editProfile": "Edit\u00A0Profile",    
-    "notficationFrequencyDropdown": "open envelope with letter, toggles update frequency options",
     "follow" : "Follow",
     "followedContent": "Followed Content",
     "following" : "Following",
+    "notficationFrequencyDropdown": "open envelope with letter, toggles update frequency options",
     "yourTestimonies": "Your Testimonies"
   },
   "content": {
-    "viewingProfile": "Currently viewing your profile",
-    "publicProfile": "Your profile is currently public. You can change this in \"settings\"",
+    "noLegislatorInfo": "No legislator information given",
     "privateProfile": "Your profile is currently private. You can change this in \"settings\"",
-    "noLegislatorInfo": "No legislator information given"
+    "publicProfile": "Your profile is currently public. You can change this in \"settings\"",
+    "viewingProfile": "Currently viewing your profile"
   },
-    "verifyAccountSection":{
-    "verifyAccount": "We sent a link to your email to verify your account, but you haven't\nclicked it yet. If you don't see it, be sure to check your spam\nfolder.",
-    "checkEmail": "Check your email!",
-    "sendAnotherLink": "Send Another Link"
-  },
+  "joinDate": "Joined in {{date}}",
   "legislators": "Legislators",
+  "noLegislator": "No legislator",
+  "noUser": "no user",
+  "orgIcon": {
+    "large": "Large Organization Icon",
+    "small": "Small Organization Icon"
+  },
   "position": {
     "endorse":"The author of the submitted testimony endorses the bill.",
     "neutral":"The author of the submitted testimony is neutral towards the bill.",
@@ -33,12 +32,14 @@
   "profileMenu": "Open/Close Profile Menu",
   "representative": "Representative",
   "senator": "Senator",
-  "orgIcon": {
-    "large": "Large Organization Icon",
-    "small": "Small Organization Icon"
-  },
+  "user": "User",
   "userIcon": {
     "large": "Large User Icon",
     "small": "Small User Icon"
+  },
+  "verifyAccountSection": {
+    "checkEmail": "Check your email!",
+    "sendAnotherLink": "Send Another Link",
+    "verifyAccount": "We sent a link to your email to verify your account, but you haven't\nclicked it yet. If you don't see it, be sure to check your spam\nfolder."
   }
 }
