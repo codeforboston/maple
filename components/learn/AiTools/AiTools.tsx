@@ -1,7 +1,3 @@
-// TODO(mcp-server-deploy): Update the connection config snippet below once the
-// Firebase Function proxy is deployed and the public endpoint
-// (mapletestimony.org/api/mcp) is live. Also verify the token page URL
-// is accessible to end users before this page goes public.
 import styled from "styled-components"
 import { Container, Row, Col } from "../../bootstrap"
 import {
@@ -229,7 +225,7 @@ export const AiTools = () => {
                       target="_blank"
                       rel="noreferrer"
                     >
-                      Download for Mac, Windows, or mobile
+                      Download for Mac or Windows
                     </a>
                     , then follow the{" "}
                     <a
@@ -245,7 +241,7 @@ export const AiTools = () => {
                     <b>ChatGPT</b> (OpenAI) — available for Pro, Team, and
                     Enterprise subscribers via{" "}
                     <a
-                      href="https://modelcontextprotocol.io/docs/develop/connect-remote-servers"
+                      href="https://help.openai.com/en/articles/11487775-connectors-in-chatgpt"
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -266,11 +262,11 @@ export const AiTools = () => {
             <StepRow>
               <StepNumber>3</StepNumber>
               <StepText>
-                <b>Get your MAPLE API token.</b> After logging in to your MAPLE
-                account, visit{" "}
-                <Internal href="/dev/token">your token page</Internal> to
-                generate a personal access token. This lets your AI assistant
-                authenticate as you when accessing MAPLE data.
+                <b>Get your MAPLE access token.</b> After logging in, visit{" "}
+                <Internal href="/dev/token">your token page</Internal> and
+                click &ldquo;Get Token&rdquo; to generate a short-lived access
+                token. Copy it — you&apos;ll paste it into your AI tool in the
+                next step.
               </StepText>
             </StepRow>
             <Divider />
