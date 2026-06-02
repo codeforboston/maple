@@ -226,16 +226,26 @@ export class HearingPostProcessor extends EventPostProcessor<HearingListItem> {
     return { EventId: data.content.EventId }
   }
 
-  async getUpdate({ EventId }: HearingListItem): Promise<{
+  async getUpdate({ EventId }: HearingListItem, existingVideos?: Video[]): Promise<{
     transcriptionIds: string[]
     videos: Video[]
     videosFetchedAt: Timestamp
   }> {
     const videos = await this.getHearingVideos(EventId)
-    const transcriptionIds = await assemblyAI().submitTranscriptions({
-      videoUrls: videos.map(item => item.url),
-      EventId
-    })
+
+    const prevURLs = existingVideos ?
+      Object.fromEntries(existingVideos.map(({ url, transcriptionId }) => 
+        [url, transcriptionId]
+      )) : {}
+
+    const transcriptionIds = await Promise.all(
+      videos.map(item => {
+        return prevURLs[item.url] !== undefined ? prevURLs[item.url] : assemblyAI().submitTranscription({
+          EventId, videoUrl: item.url
+        })
+      })
+    )
+
     const videosWithTranscriptions = videos.map((item, index) => {
       return {
         transcriptionId: transcriptionIds[index],

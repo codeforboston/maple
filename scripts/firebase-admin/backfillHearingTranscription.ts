@@ -1,14 +1,15 @@
-import { Record, Number, String } from "runtypes"
+import { Record, Number, String, Boolean } from "runtypes"
 import { Script } from "./types"
 import { HearingPostProcessor } from "functions/src/events"
 
 const Args = Record({
   eventId: Number.optional(),
-  bucketName: String.optional()
+  bucketName: String.optional(),
+  recreateTranscripts: Boolean.optional()
 })
 
 export const script: Script = async ({ db, args }) => {
-  const { eventId, bucketName } = Args.check(args)
+  const { eventId, bucketName, recreateTranscripts } = Args.check(args)
 
   // Process a single event by eventId
   if (eventId) {
@@ -21,9 +22,9 @@ export const script: Script = async ({ db, args }) => {
     const data = doc.data()
     if (!data) return
     try {
-      const update = await new HearingPostProcessor().getUpdate({
-        EventId: eventId
-      })
+      const update = recreateTranscripts ?
+        await new HearingPostProcessor().getUpdate({ EventId: eventId }) :
+        await new HearingPostProcessor().getUpdate({ EventId: eventId }, data.videos)
       if (update !== null) {
         await docRef.update(update)
 
@@ -54,7 +55,9 @@ export const script: Script = async ({ db, args }) => {
       if (data.empty) continue
 
       try {
-        const update = await new HearingPostProcessor().getUpdate({ EventId })
+        const update = recreateTranscripts ?
+          await new HearingPostProcessor().getUpdate({ EventId }) :
+          await new HearingPostProcessor().getUpdate({ EventId }, data.videos)
         if (update.videos.length > data.videos.length) {
           await doc.ref.update(update)
 

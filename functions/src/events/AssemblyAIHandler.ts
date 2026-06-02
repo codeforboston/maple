@@ -22,24 +22,6 @@ abstract class AssemblyAIHandlerBase {
     bucketName?: string
   }): Promise<string>
 
-  async submitTranscriptions({
-    EventId,
-    videoUrls,
-    bucketName
-  }: {
-    EventId: number
-    videoUrls: string[]
-    bucketName?: string
-  }): Promise<string[]> {
-    const transcriptionIds = await Promise.all(
-      videoUrls.map(item => {
-        return this.submitTranscription({ videoUrl: item, EventId, bucketName })
-      })
-    )
-
-    return transcriptionIds
-  }
-
   abstract getTranscript(transcript_id: string): Promise<Transcript>
   abstract fetchParagraphs(
     transcript_id: string
@@ -306,9 +288,7 @@ function loremParagraph(length: number) {
   return Array.from({ length }, () => loremSentence(randomInt(3, 10)))
 }
 
-/**
- * paragraphs -> sentences -> words
- */
+// paragraphs -> sentences -> words
 function loremTranscriptStructure() {
   return Array.from({ length: randomInt(10, 20) }, () =>
     loremParagraph(randomInt(3, 8))
