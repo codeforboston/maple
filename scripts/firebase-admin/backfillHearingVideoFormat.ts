@@ -93,7 +93,6 @@ export const script: Script = async ({ db, args }) => {
       console.log(doc.data().id)
       const modify = migrateVideo(doc.data())
       if (modify) {
-        // syncHearingToSearchIndex will temporarily complain due to the multiple updates of bulkWriter
         bulkWriter.update(doc.ref, modify)
       }
     }

@@ -75,6 +75,43 @@ export class HearingScraper extends EventScraper<HearingListItem, Hearing> {
   }
 }
 
+function removeCommonWords(strings: string[]) {
+  if (!strings.length) return [];
+
+  // Normalize whitespace and split into words
+  const wordLists = strings.map(s =>
+    s.trim().replace(/\s+/g, " ").split(" ")
+  );
+
+  let prefixLen = 0;
+  while (
+    wordLists.every(words =>
+      prefixLen < words.length &&
+      words[prefixLen].toLowerCase() ===
+        wordLists[0][prefixLen].toLowerCase()
+    )
+  ) {
+    prefixLen++;
+  }
+
+  let suffixLen = 0;
+  while (
+    wordLists.every(words =>
+      suffixLen < words.length - prefixLen &&
+      words[words.length - 1 - suffixLen].toLowerCase() ===
+        wordLists[0][wordLists[0].length - 1 - suffixLen].toLowerCase()
+    )
+  ) {
+    suffixLen++;
+  }
+
+  return wordLists.map(words =>
+    words
+      .slice(prefixLen, words.length - suffixLen)
+      .join(" ")
+  );
+}
+
 export class HearingPostProcessor extends EventPostProcessor<HearingListItem> {
   constructor() {
     super("every 60 minutes", 480, "hearing", { memory: "4GB" })
@@ -168,9 +205,15 @@ export class HearingPostProcessor extends EventPostProcessor<HearingListItem> {
           return item
         })
       } else {
-        console.log(
-          `While scraping hearing videos, the titles ${titles} could not be mapped to a numeric order`
-        )
+        let shortTitles = removeCommonWords(titles)
+        if (shortTitles[0].length === 0) {
+          shortTitles = shortTitles.map((_, i) => `Part ${i+1}`)
+        }
+        videos = videos.map((item, index) => {
+          item.title = shortTitles[index]
+          return item
+        })
+        console.log(`Ordering not possible for hearing ${EventId} - fallback titles are ${JSON.stringify(shortTitles)}`)
       }
     } else {
       videos[0].title = `hearing-${EventId}`
