@@ -101,9 +101,8 @@ export type Video = Static<typeof Video>
 export const Video = Record({
   url: String,
   title: String,
-  transcriptionId: String,
+  transcriptionId: String
 })
-
 
 export type Hearing = Static<typeof Hearing>
 export const Hearing = BaseEvent.extend({

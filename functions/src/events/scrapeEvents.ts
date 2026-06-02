@@ -34,8 +34,8 @@ export const scrapeSingleHearing = functions
 
     try {
       const hearing = {
-        ...await new HearingScraper().getEvent({ EventId: eventId }),
-        ...await new HearingPostProcessor().getUpdate({ EventId: eventId }) // Videos
+        ...(await new HearingScraper().getEvent({ EventId: eventId })),
+        ...(await new HearingPostProcessor().getUpdate({ EventId: eventId })) // Videos
       }
 
       // Save the hearing to Firestore
@@ -77,8 +77,8 @@ export const scrapeSingleHearingv2 = onCall(
 
     try {
       const hearing = {
-        ...await new HearingScraper().getEvent({ EventId: eventId }),
-        ...await new HearingPostProcessor().getUpdate({ EventId: eventId }) // Videos
+        ...(await new HearingScraper().getEvent({ EventId: eventId })),
+        ...(await new HearingPostProcessor().getUpdate({ EventId: eventId })) // Videos
       }
 
       // Save the hearing to Firestore

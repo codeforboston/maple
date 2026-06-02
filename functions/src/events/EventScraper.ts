@@ -197,7 +197,8 @@ export abstract class EventPostProcessor<ListItem> {
     const begin = now.minus(this.pastEventBeginProcessing).toJSDate()
     const cutoff = now.minus(this.pastEventCutoff).toJSDate()
 
-    const snapshot = await db.collection("events")
+    const snapshot = await db
+      .collection("events")
       .where("type", "==", this.eventType)
       .where("startsAt", "<=", begin)
       .where("startsAt", ">=", cutoff)

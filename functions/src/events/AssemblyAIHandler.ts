@@ -1,4 +1,10 @@
-import { AssemblyAI, Transcript, TranscriptParagraph, TranscriptUtterance, TranscriptWord } from "assemblyai"
+import {
+  AssemblyAI,
+  Transcript,
+  TranscriptParagraph,
+  TranscriptUtterance,
+  TranscriptWord
+} from "assemblyai"
 import { db, storage } from "../firebase"
 import { randomBytes } from "node:crypto"
 import { sha256 } from "js-sha256"
@@ -14,7 +20,7 @@ abstract class AssemblyAIHandlerBase {
     EventId: number
     videoUrl: string
     bucketName?: string
-  }): Promise<string>;
+  }): Promise<string>
 
   async submitTranscriptions({
     EventId,
@@ -25,30 +31,29 @@ abstract class AssemblyAIHandlerBase {
     videoUrls: string[]
     bucketName?: string
   }): Promise<string[]> {
-    const transcriptionIds = await Promise.all(videoUrls.map(item => {
-      return this.submitTranscription({videoUrl: item, EventId, bucketName})
-    }));
+    const transcriptionIds = await Promise.all(
+      videoUrls.map(item => {
+        return this.submitTranscription({ videoUrl: item, EventId, bucketName })
+      })
+    )
 
     return transcriptionIds
   }
 
-  abstract getTranscript(transcript_id: string): Promise<Transcript>;
-  abstract fetchParagraphs(transcript_id: string): Promise<TranscriptParagraph[]>;
+  abstract getTranscript(transcript_id: string): Promise<Transcript>
+  abstract fetchParagraphs(
+    transcript_id: string
+  ): Promise<TranscriptParagraph[]>
 }
 
-
 export class AssemblyAIHandler extends AssemblyAIHandlerBase {
-  assembly: AssemblyAI;
+  assembly: AssemblyAI
 
-  constructor({
-    apiKey
-  }: {
-    apiKey: string
-  }) {
-    super();
+  constructor({ apiKey }: { apiKey: string }) {
+    super()
     this.assembly = new AssemblyAI({
       apiKey
-    });
+    })
   }
 
   async submitTranscription({
@@ -61,11 +66,7 @@ export class AssemblyAIHandler extends AssemblyAIHandlerBase {
     bucketName?: string
   }): Promise<string> {
     const newToken = randomBytes(16).toString("hex")
-    const audioUrl = await extractAudioFromVideo(
-      EventId,
-      videoUrl,
-      bucketName
-    )
+    const audioUrl = await extractAudioFromVideo(EventId, videoUrl, bucketName)
 
     const transcript = await this.assembly.transcripts.submit({
       audio:
@@ -95,11 +96,12 @@ export class AssemblyAIHandler extends AssemblyAIHandlerBase {
   }
 
   async getTranscript(transcript_id: string): Promise<Transcript> {
-    return (await this.assembly.transcripts.get(transcript_id));
+    return await this.assembly.transcripts.get(transcript_id)
   }
 
   async fetchParagraphs(transcript_id: string): Promise<TranscriptParagraph[]> {
-    return (await this.assembly.transcripts.paragraphs(transcript_id)).paragraphs;
+    return (await this.assembly.transcripts.paragraphs(transcript_id))
+      .paragraphs
   }
 }
 
@@ -135,19 +137,18 @@ export class AssemblyAIHandlerDummy extends AssemblyAIHandlerBase {
       .set({
         videoAssemblyWebhookToken: sha256(token)
       })
-    
-    return transcriptionId;
+
+    return transcriptionId
   }
 
   async getTranscript(transcriptId: string): Promise<Transcript> {
-    return getTranscript(transcriptId).transcript;
+    return getTranscript(transcriptId).transcript
   }
 
   async fetchParagraphs(transcriptId: string): Promise<TranscriptParagraph[]> {
-    return getTranscript(transcriptId).paragraphs;
+    return getTranscript(transcriptId).paragraphs
   }
 }
-
 
 const extractAudioFromVideo = async (
   EventId: number,
@@ -279,68 +280,63 @@ const WORD_BANK = [
   "dolore",
   "magna",
   "aliqua"
-];
+]
 
-const SPEAKERS = ["A", "B", "C"];
+const SPEAKERS = ["A", "B", "C"]
 
 function randomInt(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 function randomFloat(min: number, max: number, precision = 2) {
-  return Number((Math.random() * (max - min) + min).toFixed(precision));
+  return Number((Math.random() * (max - min) + min).toFixed(precision))
 }
 
 function mean(values: number[]) {
-  return values.reduce((a, b) => a + b, 0) / values.length;
+  return values.reduce((a, b) => a + b, 0) / values.length
 }
 
 function loremSentence(length: number) {
   return Array.from({ length }, () => {
-    return WORD_BANK[randomInt(0, WORD_BANK.length - 1)];
-  });
+    return WORD_BANK[randomInt(0, WORD_BANK.length - 1)]
+  })
 }
 
 function loremParagraph(length: number) {
-  return Array.from({ length }, () =>
-    loremSentence(randomInt(3, 10))
-  );
+  return Array.from({ length }, () => loremSentence(randomInt(3, 10)))
 }
 
 /**
  * paragraphs -> sentences -> words
  */
 function loremTranscriptStructure() {
-  return Array.from(
-    { length: randomInt(10, 20) },
-    () => loremParagraph(randomInt(3, 8))
-  );
+  return Array.from({ length: randomInt(10, 20) }, () =>
+    loremParagraph(randomInt(3, 8))
+  )
 }
 
-export function getTranscript(
-  transcript_id: string
-): {
-  transcript: Transcript;
-  paragraphs: TranscriptParagraph[];
+export function getTranscript(transcript_id: string): {
+  transcript: Transcript
+  paragraphs: TranscriptParagraph[]
 } {
-  const structure = loremTranscriptStructure();
+  const structure = loremTranscriptStructure()
 
-  const utterances: TranscriptUtterance[] = [];
-  const paragraphs: TranscriptParagraph[] = [];
-  const allWords: TranscriptWord[] = [];
+  const utterances: TranscriptUtterance[] = []
+  const paragraphs: TranscriptParagraph[] = []
+  const allWords: TranscriptWord[] = []
 
-  let currentTime = 0;
+  let currentTime = 0
 
   for (const paragraph of structure) {
-    const speaker = SPEAKERS[randomInt(0, SPEAKERS.length - 1)];
+    const speaker = SPEAKERS[randomInt(0, SPEAKERS.length - 1)]
 
-    const paragraphWords: TranscriptWord[] = [];
+    const paragraphWords: TranscriptWord[] = []
 
     for (const sentence of paragraph) {
-      const sentenceWords: TranscriptWord[] = [];
+      const sentenceWords: TranscriptWord[] = []
 
       for (const token of sentence) {
-        const confidence = randomFloat(0.5, 0.99);
+        const confidence = randomFloat(0.5, 0.99)
 
         const word: TranscriptWord = {
           confidence,
@@ -348,13 +344,13 @@ export function getTranscript(
           end: Number((currentTime + 1).toFixed(2)),
           speaker,
           text: token
-        };
+        }
 
-        sentenceWords.push(word);
-        paragraphWords.push(word);
-        allWords.push(word);
+        sentenceWords.push(word)
+        paragraphWords.push(word)
+        allWords.push(word)
 
-        currentTime += 1;
+        currentTime += 1
       }
 
       const utterance: TranscriptUtterance = {
@@ -366,12 +362,12 @@ export function getTranscript(
         speaker,
         text: sentenceWords.map(w => w.text).join(" "),
         words: sentenceWords
-      };
+      }
 
-      utterances.push(utterance);
+      utterances.push(utterance)
 
       // pause between sentences
-      currentTime += randomFloat(0.2, 1.2);
+      currentTime += randomFloat(0.2, 1.2)
     }
 
     // paragraph object
@@ -383,12 +379,12 @@ export function getTranscript(
       end: paragraphWords[paragraphWords.length - 1].end,
       text: paragraphWords.map(w => w.text).join(" "),
       words: paragraphWords
-    };
+    }
 
-    paragraphs.push(transcriptParagraph);
+    paragraphs.push(transcriptParagraph)
 
     // longer pause between paragraphs
-    currentTime += randomFloat(1, 3);
+    currentTime += randomFloat(1, 3)
   }
 
   const transcript: Transcript = {
@@ -407,27 +403,25 @@ export function getTranscript(
     webhook_auth_header_name: "x-maple-webhook",
 
     text: utterances.map(u => u.text).join(". "),
-    confidence: Number(
-      mean(allWords.map(w => w.confidence)).toFixed(2)
-    ),
+    confidence: Number(mean(allWords.map(w => w.confidence)).toFixed(2)),
 
     utterances,
     words: allWords
-  };
+  }
 
   return {
     transcript,
     paragraphs
-  };
+  }
 }
 
 export const assemblyAI: AssemblyAIHandler | AssemblyAIHandlerDummy = (() => {
-  const apiKey = process.env.ASSEMBLY_API_KEY;
+  const apiKey = process.env.ASSEMBLY_API_KEY
   if (!apiKey || apiKey === "test-api-key") {
-    console.log("AssemblyAI is faked for this emulator");
-    return new AssemblyAIHandlerDummy();
+    console.log("AssemblyAI is faked for this emulator")
+    return new AssemblyAIHandlerDummy()
   } else {
-    console.log("AssemblyAI is real for this emulator");
-    return new AssemblyAIHandler({ apiKey });
+    console.log("AssemblyAI is real for this emulator")
+    return new AssemblyAIHandler({ apiKey })
   }
-})();
+})()

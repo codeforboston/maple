@@ -62,9 +62,7 @@ export const transcription = functions
               // If there is one authenticated event, pull out the parts we want to
               // save and try to save them in the db.
 
-              const paragraphs = await assemblyAI.fetchParagraphs(
-                transcript.id
-              )
+              const paragraphs = await assemblyAI.fetchParagraphs(transcript.id)
               const { id, text, audio_url, utterances } = transcript
               try {
                 const transcriptionInDb = db

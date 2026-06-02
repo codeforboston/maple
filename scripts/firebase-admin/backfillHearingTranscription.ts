@@ -21,7 +21,9 @@ export const script: Script = async ({ db, args }) => {
     const data = doc.data()
     if (!data) return
     try {
-      const update = await new HearingPostProcessor().getUpdate({ EventId: eventId })
+      const update = await new HearingPostProcessor().getUpdate({
+        EventId: eventId
+      })
       if (update !== null) {
         await docRef.update(update)
 
@@ -61,7 +63,9 @@ export const script: Script = async ({ db, args }) => {
           )
           count++
         } else {
-          console.log(`No additional videos to be processed for hearing ${EventId}`)
+          console.log(
+            `No additional videos to be processed for hearing ${EventId}`
+          )
         }
       } catch (error) {
         console.error(`Failed to process hearing ${EventId}:`, error)
