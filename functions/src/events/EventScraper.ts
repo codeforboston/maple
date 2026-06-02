@@ -212,7 +212,7 @@ export abstract class EventPostProcessor<ListItem> {
       const item = this.updateIf(data)
       if (!item) continue
 
-      writer.update(doc.ref, this.getUpdate(item))
+      writer.update(doc.ref, await this.getUpdate(item))
 
       console.log("event in run()", data)
     }

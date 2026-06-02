@@ -350,7 +350,7 @@ export function getTranscript(transcript_id: string): {
         paragraphWords.push(word)
         allWords.push(word)
 
-        currentTime += 1
+        currentTime += 300
       }
 
       const utterance: TranscriptUtterance = {
@@ -366,11 +366,9 @@ export function getTranscript(transcript_id: string): {
 
       utterances.push(utterance)
 
-      // pause between sentences
-      currentTime += randomFloat(0.2, 1.2)
+      currentTime += randomInt(100, 3000)
     }
 
-    // paragraph object
     const transcriptParagraph: TranscriptParagraph = {
       confidence: Number(
         mean(paragraphWords.map(w => w.confidence)).toFixed(2)
@@ -383,8 +381,7 @@ export function getTranscript(transcript_id: string): {
 
     paragraphs.push(transcriptParagraph)
 
-    // longer pause between paragraphs
-    currentTime += randomFloat(1, 3)
+    currentTime += randomInt(500, 7000)
   }
 
   const transcript: Transcript = {
@@ -415,13 +412,17 @@ export function getTranscript(transcript_id: string): {
   }
 }
 
-export const assemblyAI: AssemblyAIHandler | AssemblyAIHandlerDummy = (() => {
-  const apiKey = process.env.ASSEMBLY_API_KEY
-  if (!apiKey || apiKey === "test-api-key") {
-    console.log("AssemblyAI is faked for this emulator")
-    return new AssemblyAIHandlerDummy()
-  } else {
-    console.log("AssemblyAI is real for this emulator")
-    return new AssemblyAIHandler({ apiKey })
+let assemblyInstance: AssemblyAIHandler | AssemblyAIHandlerDummy | undefined
+
+export function assemblyAI(): AssemblyAIHandler | AssemblyAIHandlerDummy {
+  if (!assemblyInstance) {
+    const apiKey = process.env.ASSEMBLY_API_KEY
+    if (!apiKey || apiKey === "test-api-key") {
+      console.log("AssemblyAI is faked for this emulator")
+      assemblyInstance = new AssemblyAIHandlerDummy()
+    } else {
+      assemblyInstance = new AssemblyAIHandler({ apiKey })
+    }
   }
-})()
+  return assemblyInstance
+}

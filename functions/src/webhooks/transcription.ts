@@ -11,7 +11,7 @@ export const transcription = functions
         // If we get a request with the right header and status, get the
         // transcription from the assembly API.
 
-        const transcript = await assemblyAI.getTranscript(req.body.id)
+        const transcript = await assemblyAI().getTranscript(req.body.id)
 
         if (transcript && transcript.webhook_auth) {
           // If there is a transcript and the transcript has an auth property,
@@ -62,7 +62,9 @@ export const transcription = functions
               // If there is one authenticated event, pull out the parts we want to
               // save and try to save them in the db.
 
-              const paragraphs = await assemblyAI.fetchParagraphs(transcript.id)
+              const paragraphs = await assemblyAI().fetchParagraphs(
+                transcript.id
+              )
               const { id, text, audio_url, utterances } = transcript
               try {
                 const transcriptionInDb = db

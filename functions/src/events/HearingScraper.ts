@@ -180,7 +180,7 @@ export class HearingPostProcessor extends EventPostProcessor<HearingListItem> {
 
   updateIf(data: FirebaseFirestore.DocumentData): null | HearingListItem {
     if (data.videos.length) return null
-    return { EventId: data.id }
+    return { EventId: data.content.EventId }
   }
 
   async getUpdate({ EventId }: HearingListItem): Promise<{
@@ -189,7 +189,7 @@ export class HearingPostProcessor extends EventPostProcessor<HearingListItem> {
     videosFetchedAt: Timestamp
   }> {
     const videos = await this.getHearingVideos(EventId)
-    const transcriptionIds = await assemblyAI.submitTranscriptions({
+    const transcriptionIds = await assemblyAI().submitTranscriptions({
       videoUrls: videos.map(item => item.url),
       EventId
     })
