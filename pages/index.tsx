@@ -1,6 +1,7 @@
 import { createPage } from "components/page"
 import { createGetStaticTranslationProps } from "components/translations"
 import HeroSection from "components/homepage/HeroSection"
+import TestimonyCalloutSection from "components/TestimonyCallout/TestimonyCalloutSection"
 import DidYouKnowSection from "components/homepage/DidYouKnowSection"
 import ExplainerSection from "components/homepage/ExplainerSection"
 import FeaturesSection from "components/homepage/FeaturesSection"
@@ -11,6 +12,7 @@ export default createPage({
   Page: () => (
     <main className={styles.page}>
       <HeroSection />
+      <TestimonyCalloutSection />
       <DidYouKnowSection />
       <ExplainerSection />
       <FeaturesSection />

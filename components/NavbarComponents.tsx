@@ -64,14 +64,14 @@ export const Avatar = () => {
     <>
       {isOrg ? (
         <Image
-          src="/profile-org-icon.svg"
+          src="/profile-org-white.svg"
           alt={t("profileMenu")}
           width="35"
           height="35"
         />
       ) : (
         <Image
-          src="/profile-individual-icon.svg"
+          src="/profile-individual-white.svg"
           alt={t("profileMenu")}
           width="35"
           height="35"
