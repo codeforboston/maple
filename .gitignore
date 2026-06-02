@@ -92,3 +92,4 @@ cert.txt
 .mcp.json
 mcp-server/create-agent-key.ts
 .gcloudignore
+CLAUDE.md
