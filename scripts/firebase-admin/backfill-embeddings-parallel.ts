@@ -32,7 +32,9 @@ async function getEmbeddingWithRetry(
         throw new Error("No predictions returned from Vertex AI")
       }
 
-      const prediction = helpers.fromValue(response.predictions[0] as any) as any
+      const prediction = helpers.fromValue(
+        response.predictions[0] as any
+      ) as any
       const embedding =
         prediction.embeddings?.values || prediction.embedding?.values
 
@@ -44,9 +46,13 @@ async function getEmbeddingWithRetry(
 
       return embedding
     } catch (e: any) {
-      const isQuotaError = e?.code === 8 || e?.details?.includes("RESOURCE_EXHAUSTED") || e?.message?.includes("RESOURCE_EXHAUSTED")
+      const isQuotaError =
+        e?.code === 8 ||
+        e?.details?.includes("RESOURCE_EXHAUSTED") ||
+        e?.message?.includes("RESOURCE_EXHAUSTED")
       if (isQuotaError && attempt < MAX_RETRIES) {
-        const delay = BACKOFF_BASE_MS * Math.pow(2, attempt) + Math.random() * 500
+        const delay =
+          BACKOFF_BASE_MS * Math.pow(2, attempt) + Math.random() * 500
         await new Promise(r => setTimeout(r, delay))
         continue
       }
@@ -124,7 +130,9 @@ export const script: Script = async ({ db, args }) => {
     })
 
     console.log(
-      `${docsToProcess.length} need embeddings, ${snapshot.size - docsToProcess.length} already indexed`
+      `${docsToProcess.length} need embeddings, ${
+        snapshot.size - docsToProcess.length
+      } already indexed`
     )
 
     const bulkWriter = db.bulkWriter()
@@ -157,7 +165,12 @@ export const script: Script = async ({ db, args }) => {
         title = data.billTitle || "none"
 
       try {
-        const embedding = await getEmbeddingWithRetry(client, endpoint, textToEmbed, title)
+        const embedding = await getEmbeddingWithRetry(
+          client,
+          endpoint,
+          textToEmbed,
+          title
+        )
         bulkWriter.update(doc.ref, {
           vector_embedding: (FieldValue as any).vector(embedding)
         })
@@ -166,7 +179,9 @@ export const script: Script = async ({ db, args }) => {
         if (done % 100 === 0 || done === docsToProcess.length) {
           const elapsed = ((Date.now() - startTime) / 1000).toFixed(0)
           const rate = (done / ((Date.now() - startTime) / 1000)).toFixed(1)
-          const eta = Math.round((docsToProcess.length - done) / parseFloat(rate))
+          const eta = Math.round(
+            (docsToProcess.length - done) / parseFloat(rate)
+          )
           console.log(
             `  ${done}/${docsToProcess.length} done | ${failed} failed | ${rate} docs/s | ETA ${eta}s | elapsed ${elapsed}s`
           )
@@ -183,7 +198,9 @@ export const script: Script = async ({ db, args }) => {
 
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(1)
     console.log(
-      `Done with ${col.name}: ${done - failed} updated, ${failed} failed, in ${elapsed}s`
+      `Done with ${col.name}: ${
+        done - failed
+      } updated, ${failed} failed, in ${elapsed}s`
     )
   }
 

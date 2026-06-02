@@ -76,30 +76,35 @@ app.get("/health", (_req, res) => {
 })
 
 // MCP endpoint — auth then rate limit, new transport per request (stateless)
-app.post("/mcp", authMiddleware, rateLimitMiddleware, async (req: Request, res: Response) => {
-  const transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: undefined // stateless: no session tracking
-  })
+app.post(
+  "/mcp",
+  authMiddleware,
+  rateLimitMiddleware,
+  async (req: Request, res: Response) => {
+    const transport = new StreamableHTTPServerTransport({
+      sessionIdGenerator: undefined // stateless: no session tracking
+    })
 
-  const server = createMcpServer()
+    const server = createMcpServer()
 
-  // Clean up when the response finishes
-  res.on("finish", () => {
-    transport
-      .close()
-      .catch(err => console.error("Error closing transport:", err))
-  })
+    // Clean up when the response finishes
+    res.on("finish", () => {
+      transport
+        .close()
+        .catch(err => console.error("Error closing transport:", err))
+    })
 
-  try {
-    await server.connect(transport)
-    await transport.handleRequest(req, res, req.body)
-  } catch (err) {
-    console.error("Error handling MCP request:", err)
-    if (!res.headersSent) {
-      res.status(500).json({ error: "Internal Server Error" })
+    try {
+      await server.connect(transport)
+      await transport.handleRequest(req, res, req.body)
+    } catch (err) {
+      console.error("Error handling MCP request:", err)
+      if (!res.headersSent) {
+        res.status(500).json({ error: "Internal Server Error" })
+      }
     }
   }
-})
+)
 
 // Reject GET /mcp — we're stateless, no persistent SSE stream
 app.get("/mcp", (_req, res) => {

@@ -41,7 +41,9 @@ export const mcpProxy = functions
     try {
       // Use GCP metadata server to get an identity token for Cloud Run IAM.
       // This is the most reliable approach in any GCP-hosted environment.
-      const metadataUrl = `http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity?audience=${encodeURIComponent(mcpUrl)}&format=full`
+      const metadataUrl = `http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity?audience=${encodeURIComponent(
+        mcpUrl
+      )}&format=full`
       const tokenRes = await fetch(metadataUrl, {
         headers: { "Metadata-Flavor": "Google" }
       })
@@ -57,9 +59,13 @@ export const mcpProxy = functions
             ? mapleAuth
             : `Bearer ${mapleAuth}`,
           "Content-Type": req.headers["content-type"] ?? "application/json",
-          ...(req.headers["accept"] && { Accept: req.headers["accept"] as string }),
+          ...(req.headers["accept"] && {
+            Accept: req.headers["accept"] as string
+          }),
           ...(req.headers["mcp-protocol-version"] && {
-            "MCP-Protocol-Version": req.headers["mcp-protocol-version"] as string
+            "MCP-Protocol-Version": req.headers[
+              "mcp-protocol-version"
+            ] as string
           })
         },
         body

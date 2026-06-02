@@ -85,7 +85,8 @@ export const AiTools = () => {
               ChatGPT—directly to its database. This means you can ask your AI
               assistant questions about Massachusetts legislation in plain
               language, and it will search MAPLE&apos;s data on bills, ballot
-              questions, and testimony to answer questions or help with research.
+              questions, and testimony to answer questions or help with
+              research.
             </DescrContainer>
             <DescrContainer className="pb-3 px-4">
               This works through a standard called{" "}
@@ -157,7 +158,9 @@ export const AiTools = () => {
       <Row>
         <Col className="py-3">
           <SectionContainer>
-            <SectionTitle className="p-2">Example questions to try</SectionTitle>
+            <SectionTitle className="p-2">
+              Example questions to try
+            </SectionTitle>
             <DescrContainer className="py-3 px-4">
               Here are some examples of how advocates have used this feature:
             </DescrContainer>
@@ -214,8 +217,8 @@ export const AiTools = () => {
             <StepRow>
               <StepNumber>2</StepNumber>
               <StepText>
-                <b>Choose an AI tool that supports MCP.</b> Several options
-                work with MAPLE:
+                <b>Choose an AI tool that supports MCP.</b> Several options work
+                with MAPLE:
                 <ul style={{ marginTop: "0.5rem" }}>
                   <li className="pb-2">
                     <b>Claude Desktop</b> (Anthropic) — the easiest option for
@@ -263,10 +266,10 @@ export const AiTools = () => {
               <StepNumber>3</StepNumber>
               <StepText>
                 <b>Get your MAPLE access token.</b> After logging in, visit{" "}
-                <Internal href="/dev/token">your token page</Internal> and
-                click &ldquo;Get Token&rdquo; to generate a short-lived access
-                token. Copy it — you&apos;ll paste it into your AI tool in the
-                next step.
+                <Internal href="/dev/token">your token page</Internal> and click
+                &ldquo;Get Token&rdquo; to generate a short-lived access token.
+                Copy it — you&apos;ll paste it into your AI tool in the next
+                step.
               </StepText>
             </StepRow>
             <Divider />
