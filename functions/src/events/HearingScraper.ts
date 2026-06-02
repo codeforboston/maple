@@ -76,40 +76,37 @@ export class HearingScraper extends EventScraper<HearingListItem, Hearing> {
 }
 
 function removeCommonWords(strings: string[]) {
-  if (!strings.length) return [];
+  if (!strings.length) return []
 
   // Normalize whitespace and split into words
-  const wordLists = strings.map(s =>
-    s.trim().replace(/\s+/g, " ").split(" ")
-  );
+  const wordLists = strings.map(s => s.trim().replace(/\s+/g, " ").split(" "))
 
-  let prefixLen = 0;
+  let prefixLen = 0
   while (
-    wordLists.every(words =>
-      prefixLen < words.length &&
-      words[prefixLen].toLowerCase() ===
-        wordLists[0][prefixLen].toLowerCase()
+    wordLists.every(
+      words =>
+        prefixLen < words.length &&
+        words[prefixLen].toLowerCase() === wordLists[0][prefixLen].toLowerCase()
     )
   ) {
-    prefixLen++;
+    prefixLen++
   }
 
-  let suffixLen = 0;
+  let suffixLen = 0
   while (
-    wordLists.every(words =>
-      suffixLen < words.length - prefixLen &&
-      words[words.length - 1 - suffixLen].toLowerCase() ===
-        wordLists[0][wordLists[0].length - 1 - suffixLen].toLowerCase()
+    wordLists.every(
+      words =>
+        suffixLen < words.length - prefixLen &&
+        words[words.length - 1 - suffixLen].toLowerCase() ===
+          wordLists[0][wordLists[0].length - 1 - suffixLen].toLowerCase()
     )
   ) {
-    suffixLen++;
+    suffixLen++
   }
 
   return wordLists.map(words =>
-    words
-      .slice(prefixLen, words.length - suffixLen)
-      .join(" ")
-  );
+    words.slice(prefixLen, words.length - suffixLen).join(" ")
+  )
 }
 
 export class HearingPostProcessor extends EventPostProcessor<HearingListItem> {
@@ -207,13 +204,17 @@ export class HearingPostProcessor extends EventPostProcessor<HearingListItem> {
       } else {
         let shortTitles = removeCommonWords(titles)
         if (shortTitles[0].length === 0) {
-          shortTitles = shortTitles.map((_, i) => `Part ${i+1}`)
+          shortTitles = shortTitles.map((_, i) => `Part ${i + 1}`)
         }
         videos = videos.map((item, index) => {
           item.title = shortTitles[index]
           return item
         })
-        console.log(`Ordering not possible for hearing ${EventId} - fallback titles are ${JSON.stringify(shortTitles)}`)
+        console.log(
+          `Ordering not possible for hearing ${EventId} - fallback titles are ${JSON.stringify(
+            shortTitles
+          )}`
+        )
       }
     } else {
       videos[0].title = `hearing-${EventId}`
@@ -226,23 +227,33 @@ export class HearingPostProcessor extends EventPostProcessor<HearingListItem> {
     return { EventId: data.content.EventId }
   }
 
-  async getUpdate({ EventId }: HearingListItem, existingVideos?: Video[]): Promise<{
+  async getUpdate(
+    { EventId }: HearingListItem,
+    existingVideos?: Video[]
+  ): Promise<{
     transcriptionIds: string[]
     videos: Video[]
     videosFetchedAt: Timestamp
   }> {
     const videos = await this.getHearingVideos(EventId)
 
-    const prevURLs = existingVideos ?
-      Object.fromEntries(existingVideos.map(({ url, transcriptionId }) => 
-        [url, transcriptionId]
-      )) : {}
+    const prevURLs = existingVideos
+      ? Object.fromEntries(
+          existingVideos.map(({ url, transcriptionId }) => [
+            url,
+            transcriptionId
+          ])
+        )
+      : {}
 
     const transcriptionIds = await Promise.all(
       videos.map(item => {
-        return prevURLs[item.url] !== undefined ? prevURLs[item.url] : assemblyAI().submitTranscription({
-          EventId, videoUrl: item.url
-        })
+        return prevURLs[item.url] !== undefined
+          ? prevURLs[item.url]
+          : assemblyAI().submitTranscription({
+              EventId,
+              videoUrl: item.url
+            })
       })
     )
 

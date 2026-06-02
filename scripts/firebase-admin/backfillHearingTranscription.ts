@@ -22,9 +22,12 @@ export const script: Script = async ({ db, args }) => {
     const data = doc.data()
     if (!data) return
     try {
-      const update = recreateTranscripts ?
-        await new HearingPostProcessor().getUpdate({ EventId: eventId }) :
-        await new HearingPostProcessor().getUpdate({ EventId: eventId }, data.videos)
+      const update = recreateTranscripts
+        ? await new HearingPostProcessor().getUpdate({ EventId: eventId })
+        : await new HearingPostProcessor().getUpdate(
+            { EventId: eventId },
+            data.videos
+          )
       if (update !== null) {
         await docRef.update(update)
 
@@ -55,9 +58,9 @@ export const script: Script = async ({ db, args }) => {
       if (data.empty) continue
 
       try {
-        const update = recreateTranscripts ?
-          await new HearingPostProcessor().getUpdate({ EventId }) :
-          await new HearingPostProcessor().getUpdate({ EventId }, data.videos)
+        const update = recreateTranscripts
+          ? await new HearingPostProcessor().getUpdate({ EventId })
+          : await new HearingPostProcessor().getUpdate({ EventId }, data.videos)
         if (update.videos.length > data.videos.length) {
           await doc.ref.update(update)
 
