@@ -5,7 +5,6 @@ import { useRecentTestimony } from "../db"
 import TestimonyCallout from "./TestimonyCallout"
 import { useTranslation } from "next-i18next"
 import { Internal } from "components/links"
-
 import styles from "components/homepage/Homepage.module.css"
 
 export default function TestimonyCalloutSection() {
