@@ -6,6 +6,8 @@ import TestimonyCallout from "./TestimonyCallout"
 import { useTranslation } from "next-i18next"
 import { Internal } from "components/links"
 
+import styles from "components/homepage/Homepage.module.css"
+
 export default function TestimonyCalloutSection() {
   const recentTestimony = useRecentTestimony(4)
   const isMobile = useMediaQuery("(max-width: 768px)")
@@ -13,10 +15,10 @@ export default function TestimonyCalloutSection() {
   const { t } = useTranslation("testimony")
 
   return (
-    <Container fluid>
-      <Row className="mt-5 justify-content-center">
-        <Col xs={10} md={6}>
-          <h1>{t("testimonyCalloutSection.peopleSaying")}</h1>
+    <section className={styles.sectionShell}>
+      <Row className={styles.peopleSaying}>
+        <Col xs={10} md={6} className={styles.sectionTitle}>
+          <h2>{t("testimonyCalloutSection.peopleSaying")}</h2>
         </Col>
         <Col xs={10} md={3}>
           <div>
@@ -66,6 +68,6 @@ export default function TestimonyCalloutSection() {
           </Col>
         </Row>
       )}
-    </Container>
+    </section>
   )
 }
