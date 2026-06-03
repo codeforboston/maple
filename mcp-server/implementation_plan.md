@@ -1,10 +1,10 @@
 This document describes the implemented MCP server enabling AI-powered RAG over MAPLE legislative data.
 
-| Category       | Description                                                                                                                                                                                                                                                                                                        |
-| :------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Goals**      | • Inform and empower constituents for policy change<br>• Increase engagement between legislature and constituents<br>• Grow MAPLE usage by organizations, advocates, and journalists                                                                                                                               |
+| Category       | Description                                                                                                                                                                                                        |
+| :------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Goals**      | • Inform and empower constituents for policy change<br>• Increase engagement between legislature and constituents<br>• Grow MAPLE usage by organizations, advocates, and journalists                               |
 | **Jobs**       | • "Tell me about bills that would..." (RAG over bills)<br>• "Tell me what people are saying about..." (RAG over testimony)<br>• "Tell me about the 2026 ballot questions regarding..." (RAG over ballot questions) |
-| **Mechanisms** | • Deploy AI features on MAPLE<br>• Enable 3rd parties (sites, Agent Skills)<br>• Enable individual authorized users to leverage MAPLE data                                                                                                                                                                         |
+| **Mechanisms** | • Deploy AI features on MAPLE<br>• Enable 3rd parties (sites, Agent Skills)<br>• Enable individual authorized users to leverage MAPLE data                                                                         |
 
 ## Architecture
 
@@ -68,15 +68,15 @@ sequenceDiagram
 
 7 tools implemented in `tools.ts`:
 
-| Tool | Description |
-|:-----|:------------|
-| `search_bills` | Vector search on bills. Filters: `legislationType`, `topic`, `committee`, `primarySponsor`, `court`, `includeFullText` |
-| `search_testimony` | Vector search on testimony. Filters: `policyType`, `policyId`, `authorDisplayName`, `court` |
-| `search_ballot_questions` | Vector search on ballot questions |
-| `search_policies` | Unified search across bills + ballot questions, sorted by relevance |
-| `list_topics` | Returns all valid AI-assigned topic tags by category |
-| `list_committees` | Returns active committee names for use as filters |
-| `list_sponsors` | Returns primary sponsor names for use as filters |
+| Tool                      | Description                                                                                                            |
+| :------------------------ | :--------------------------------------------------------------------------------------------------------------------- |
+| `search_bills`            | Vector search on bills. Filters: `legislationType`, `topic`, `committee`, `primarySponsor`, `court`, `includeFullText` |
+| `search_testimony`        | Vector search on testimony. Filters: `policyType`, `policyId`, `authorDisplayName`, `court`                            |
+| `search_ballot_questions` | Vector search on ballot questions                                                                                      |
+| `search_policies`         | Unified search across bills + ballot questions, sorted by relevance                                                    |
+| `list_topics`             | Returns all valid AI-assigned topic tags by category                                                                   |
+| `list_committees`         | Returns active committee names for use as filters                                                                      |
+| `list_sponsors`           | Returns primary sponsor names for use as filters                                                                       |
 
 Auth (`auth.ts`): checks `X-Maple-Authorization` → `X-Maple-Token` → `Authorization` in that order. Accepts Firebase ID Token or agent key.
 
@@ -102,11 +102,11 @@ New page at `/learn/ai-tools` (Learn nav menu) explaining setup for non-technica
 
 ## Cost estimates
 
-| Component | 25 queries/day | 500 queries/day |
-|:----------|:--------------|:----------------|
-| Vertex AI Embeddings | ~$0.00 | ~$0.08/month |
-| Firestore Reads | $0.00 (free tier) | $0.00 (free tier) |
-| Cloud Run Compute | $0.00 (free tier) | $0.00 (free tier) |
-| **Total** | **~$0.00** | **~$0.08/month** |
+| Component            | 25 queries/day    | 500 queries/day   |
+| :------------------- | :---------------- | :---------------- |
+| Vertex AI Embeddings | ~$0.00            | ~$0.08/month      |
+| Firestore Reads      | $0.00 (free tier) | $0.00 (free tier) |
+| Cloud Run Compute    | $0.00 (free tier) | $0.00 (free tier) |
+| **Total**            | **~$0.00**        | **~$0.08/month**  |
 
 One-time backfill cost (dev + prod, ~27k docs): ~$3.
