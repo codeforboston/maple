@@ -102,7 +102,7 @@ async function migrateHearing(
 ): Promise<"migrate" | "skip" | "fail"> {
   const devData = devDoc.data()
 
-  if (!devData || !devData.transcriptionIds.length) {
+  if (!devData || !devData?.transcriptionIds?.length) {
     console.log(`Hearing ${devDoc.id} has no transcription to migrate.`)
     return "skip"
   }
@@ -114,14 +114,10 @@ async function migrateHearing(
     return "skip"
   }
 
-  // Only migrate if hearing in target environment has less transcriptions than dev
-  if (devData.transcriptionIds.length <= targetData.transcriptionIds.length) {
-    console.log(`${devDoc.id} already has a transcription, skipping.`)
-    return "skip"
-  }
-
+  let found = false
   for (const transcriptionId of devData.transcriptionIds) {
     if (!targetData.transcriptionIds.includes(transcriptionId)) {
+      found = true
       try {
         await migrateTranscription(db, devDb, transcriptionId, bulkWriter)
       } catch (err) {
@@ -129,6 +125,10 @@ async function migrateHearing(
         return "fail"
       }
     }
+  }
+  if (!found) {
+    console.log(`${devDoc.id} has no new transcriptions.`)
+    return "skip"
   }
 
   console.log(`Updating hearing ${devDoc.id}...`)

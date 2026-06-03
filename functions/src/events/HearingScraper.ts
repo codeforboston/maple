@@ -52,8 +52,6 @@ export class HearingScraper extends EventScraper<HearingListItem, Hearing> {
     const data = await api.getHearing(EventId)
     const content = HearingContent.check(data)
 
-    console.log("content in getEvent()", content)
-
     const host = content.HearingHost
     const committeeChairs =
       host?.CommitteeCode && host?.GeneralCourtNumber

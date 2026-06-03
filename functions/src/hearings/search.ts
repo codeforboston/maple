@@ -33,7 +33,7 @@ export const {
   documentTrigger: "events/{eventId}",
   alias: "hearings",
   idField: "id",
-  filter: data => data.type === "hearing",
+  filter: data => data.type === "hearing" && "transcriptionIds" in data,
   schema: {
     fields: [
       { name: "eventId", type: "int32", facet: false },
