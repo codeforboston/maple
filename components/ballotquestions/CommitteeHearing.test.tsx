@@ -31,7 +31,11 @@ describe("CommitteeHearing", () => {
   })
 
   it("shows hearing context copy", () => {
-    render(<CommitteeHearing hearing={{ id: "1", startsAt: FUTURE_MS }} />)
+    render(
+      <CommitteeHearing
+        hearing={{ id: "1", startsAt: FUTURE_MS, videoURLs: [] }}
+      />
+    )
     expect(screen.getByText("Committee Hearing")).toBeInTheDocument()
     expect(
       screen.getByText("Committee hearings are public meetings.")
@@ -39,13 +43,19 @@ describe("CommitteeHearing", () => {
   })
 
   it("formats the hearing date", () => {
-    render(<CommitteeHearing hearing={{ id: "1", startsAt: PAST_MS }} />)
+    render(
+      <CommitteeHearing
+        hearing={{ id: "1", startsAt: PAST_MS, videoURLs: [] }}
+      />
+    )
     expect(screen.getByText(/December 14, 2025/)).toBeInTheDocument()
   })
 
   it("shows a hearing page link when an id is present", () => {
     render(
-      <CommitteeHearing hearing={{ id: "hearing-1", startsAt: PAST_MS }} />
+      <CommitteeHearing
+        hearing={{ id: "hearing-1", startsAt: PAST_MS, videoURLs: [] }}
+      />
     )
     expect(
       screen.getByRole("link", { name: /Open hearing page/i })
@@ -53,7 +63,11 @@ describe("CommitteeHearing", () => {
   })
 
   it("hides the hearing page link when no hearing id is available", () => {
-    render(<CommitteeHearing hearing={{ id: "", startsAt: PAST_MS }} />)
+    render(
+      <CommitteeHearing
+        hearing={{ id: "", startsAt: PAST_MS, videoURLs: [] }}
+      />
+    )
     expect(screen.queryByRole("link")).not.toBeInTheDocument()
   })
 })

@@ -27,12 +27,6 @@ function migrateVideo(
   const fetchedAt = data?.videoFetchedAt
   const transcriptionId = data?.videoTranscriptionId
 
-  if (!fetchedAt) {
-    throw new Error(
-      `If videoURL is present for the video, it is expected that videoFetchedAt is also present (id: ${data.id})`
-    )
-  }
-
   const transcriptionIds = transcriptionId ? [transcriptionId] : []
 
   const videos = [
@@ -40,8 +34,7 @@ function migrateVideo(
       // Default; not shown
       title: data.id,
       url,
-      transcriptionId,
-      fetchedAt
+      transcriptionId
     }
   ]
 

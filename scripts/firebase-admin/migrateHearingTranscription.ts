@@ -39,6 +39,119 @@ function convertTimestamps(obj: any): any {
   return obj
 }
 
+async function migrateTranscription(
+  db: admin.firestore.Firestore,
+  devDb: admin.firestore.Firestore,
+  transcriptionId: string,
+  bulkWriter?: FirebaseFirestore.BulkWriter
+) {
+  const devTranscriptionDoc = await devDb
+    .collection("transcriptions")
+    .doc(transcriptionId)
+    .get()
+
+  const devTranscriptionData = devTranscriptionDoc.exists
+    ? devTranscriptionDoc.data()
+    : null
+
+  if (!devTranscriptionData) {
+    throw new Error(
+      `Transcription ${transcriptionId} not found in dev project.`
+    )
+  }
+
+  // Create transcription in target project instead of setting, in case it already exists, which will throw an error
+  const convertedData = convertTimestamps(devTranscriptionData)
+  console.log(`Creating transcription ${transcriptionId}...`)
+  if (bulkWriter) {
+    bulkWriter.create(
+      db.collection("transcriptions").doc(transcriptionId),
+      convertedData
+    )
+  } else {
+    await db
+      .collection("transcriptions")
+      .doc(transcriptionId)
+      .create(convertedData)
+  }
+
+  const subcollections = await devTranscriptionDoc.ref.listCollections()
+  for (const subcol of subcollections) {
+    const docs = await subcol.get()
+    for (const doc of docs.docs) {
+      const ref = db
+        .collection("transcriptions")
+        .doc(transcriptionId)
+        .collection(subcol.id)
+        .doc(doc.id)
+      if (bulkWriter) {
+        bulkWriter.set(ref, doc.data())
+      }
+      await ref.set(doc.data())
+    }
+  }
+}
+
+async function migrateHearing(
+  db: admin.firestore.Firestore,
+  devDb: admin.firestore.Firestore,
+  devDoc:
+    | admin.firestore.DocumentSnapshot<admin.firestore.DocumentData>
+    | admin.firestore.QueryDocumentSnapshot<admin.firestore.DocumentData>,
+  bulkWriter?: FirebaseFirestore.BulkWriter
+): Promise<"migrate" | "skip" | "fail"> {
+  const devData = devDoc.data()
+
+  if (!devData || !devData.transcriptionIds.length) {
+    console.log(`Hearing ${devDoc.id} has no transcription to migrate.`)
+    return "skip"
+  }
+  const targetDoc = await db.collection("events").doc(devDoc.id).get()
+  const targetData = targetDoc.exists ? targetDoc.data() : null
+
+  if (!targetData) {
+    console.log(`${devDoc.id} not found in target project.`)
+    return "skip"
+  }
+
+  // Only migrate if hearing in target environment has less transcriptions than dev
+  if (devData.transcriptionIds.length <= targetData.transcriptionIds.length) {
+    console.log(`${devDoc.id} already has a transcription, skipping.`)
+    return "skip"
+  }
+
+  for (const transcriptionId of devData.transcriptionIds) {
+    if (!targetData.transcriptionIds.includes(transcriptionId)) {
+      try {
+        await migrateTranscription(db, devDb, transcriptionId, bulkWriter)
+      } catch (err) {
+        console.error(`Error creating transcription ${transcriptionId}:`, err)
+        return "fail"
+      }
+    }
+  }
+
+  console.log(`Updating hearing ${devDoc.id}...`)
+  if (bulkWriter) {
+    bulkWriter.update(db.collection("events").doc(devDoc.id), {
+      videos: devData.videos,
+      videosFetchedAt: convertTimestamps(devData.videosFetchedAt),
+      transcriptionIds: devData.transcriptionIds
+    })
+  } else {
+    await db
+      .collection("events")
+      .doc(devDoc.id)
+      .update({
+        videos: devData.videos,
+        videosFetchedAt: convertTimestamps(devData.videosFetchedAt),
+        transcriptionIds: devData.transcriptionIds
+      })
+  }
+
+  return "migrate"
+}
+
 const Args = Record({
   sourceProject: String,
   hearing: Number.optional()
@@ -66,78 +179,15 @@ export const script: Script = async ({ db, args }) => {
   if (hearing) {
     const hearingId = "hearing-" + hearing
     console.log(`Processing single hearing: ${hearingId}`)
-    const devHearingsSnapshot = await devDb
-      .collection("events")
-      .doc(hearingId)
-      .get()
+    const devDoc = await devDb.collection("events").doc(hearingId).get()
 
-    if (!devHearingsSnapshot.exists) {
+    if (!devDoc.exists) {
       console.error(`Hearing ${hearingId} not found in dev project.`)
       return
     }
-    const devData = devHearingsSnapshot.data()
 
-    if (!devData?.videoTranscriptionId) {
-      console.log(`Hearing ${hearingId} has no transcription to migrate.`)
-      return
-    }
-    const targetDoc = await db.collection("events").doc(hearingId).get()
-    const targetData = targetDoc.exists ? targetDoc.data() : null
-
-    // Only migrate if hearing in target environment does not have a transcription yet
-    if (!targetData?.videoTranscriptionId) {
-      const transcriptionId = devData.videoTranscriptionId
-      const devTranscriptionDoc = await devDb
-        .collection("transcriptions")
-        .doc(transcriptionId)
-        .get()
-
-      const devTranscriptionData = devTranscriptionDoc.exists
-        ? devTranscriptionDoc.data()
-        : null
-
-      if (devTranscriptionData) {
-        // Create transcription in target project instead of setting, in case it already exists, which will throw an error
-        const convertedData = convertTimestamps(devTranscriptionData)
-        try {
-          console.log(`Creating transcription ${transcriptionId}...`)
-          await db
-            .collection("transcriptions")
-            .doc(transcriptionId)
-            .create(convertedData)
-        } catch (err) {
-          console.error(`Error creating transcription ${transcriptionId}:`, err)
-          return
-        }
-
-        const subcollections = await devTranscriptionDoc.ref.listCollections()
-        for (const subcol of subcollections) {
-          const docs = await subcol.get()
-          for (const doc of docs.docs) {
-            await db
-              .collection("transcriptions")
-              .doc(transcriptionId)
-              .collection(subcol.id)
-              .doc(doc.id)
-              .set(doc.data())
-          }
-        }
-      } else {
-        console.error(
-          `Transcription ${transcriptionId} not found in dev project.`
-        )
-      }
-
-      await db
-        .collection("events")
-        .doc(hearingId)
-        .update({
-          videoURL: devData.videoURL,
-          videoFetchedAt: convertTimestamps(devData.videoFetchedAt),
-          videoTranscriptionId: devData.videoTranscriptionId
-        })
-      console.log(`Migration complete for hearing ${hearingId}.`)
-    }
+    await migrateHearing(db, devDb, devDoc)
+    console.log(`Migration complete for hearing ${hearingId}.`)
   } else {
     // For full migration
     const devHearingsSnapshot = await devDb
@@ -157,83 +207,14 @@ export const script: Script = async ({ db, args }) => {
         console.log(`Migration limit of ${limit} reached. Stopping.`)
         break
       }
-      const devData = devDoc.data()
-      if (!devData.videoTranscriptionId) {
-        skipped++
-        console.log(`${devDoc.id} has no transcription to migrate.`)
-        continue
-      }
 
-      const targetDoc = await db.collection("events").doc(devDoc.id).get()
-      const targetData = targetDoc.exists ? targetDoc.data() : null
-
-      if (!targetData) {
-        skipped++
-        console.log(`${devDoc.id} not found in target project.`)
-        continue
-      }
-
-      // Only migrate if hearing in target environment does not have a transcription yet
-      if (!targetData?.videoTranscriptionId) {
-        console.log(`Migrating ${devDoc.id}...`)
-        const transcriptionId = devData.videoTranscriptionId
-        const devTranscriptionDoc = await devDb
-          .collection("transcriptions")
-          .doc(transcriptionId)
-          .get()
-
-        const devTranscriptionData = devTranscriptionDoc.exists
-          ? devTranscriptionDoc.data()
-          : null
-
-        if (devTranscriptionData) {
-          // Create transcription in target project instead of setting, in case it already exists, which will throw an error
-          const convertedData = convertTimestamps(devTranscriptionData)
-          try {
-            console.log(`Creating transcription ${transcriptionId}...`)
-            bulkWriter.create(
-              db.collection("transcriptions").doc(transcriptionId),
-              convertedData
-            )
-          } catch (err) {
-            failed++
-            console.error(
-              `Error creating transcription ${transcriptionId}:`,
-              err
-            )
-            continue
-          }
-
-          const subcollections = await devTranscriptionDoc.ref.listCollections()
-          for (const subcol of subcollections) {
-            const docs = await subcol.get()
-            for (const doc of docs.docs) {
-              await db
-                .collection("transcriptions")
-                .doc(transcriptionId)
-                .collection(subcol.id)
-                .doc(doc.id)
-                .set(doc.data())
-            }
-          }
-        } else {
-          failed++
-          console.error(
-            `Transcription ${transcriptionId} not found in dev project.`
-          )
-          continue
-        }
-
-        console.log(`Updating ${devDoc.id}...`)
-        bulkWriter.update(db.collection("events").doc(devDoc.id), {
-          videoURL: devData.videoURL,
-          videoFetchedAt: convertTimestamps(devData.videoFetchedAt),
-          videoTranscriptionId: devData.videoTranscriptionId
-        })
-        migrated++
+      const result = await migrateHearing(db, devDb, devDoc, bulkWriter)
+      if (result === "migrate") {
+        migrated += 1
+      } else if (result === "skip") {
+        skipped += 1
       } else {
-        console.log(`${devDoc.id} already has a transcription, skipping.`)
-        skipped++
+        failed += 1
       }
     }
 
