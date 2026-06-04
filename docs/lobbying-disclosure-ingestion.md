@@ -346,6 +346,246 @@ export { scrapeLobbying } from "./lobbying"
 
 ---
 
+## Implementation Status
+
+| File                                         | Status  |
+| -------------------------------------------- | ------- |
+| `functions/src/lobbying/types.ts`            | ✅ Done |
+| `functions/src/lobbying/normalize.ts`        | ✅ Done |
+| `functions/src/lobbying/portal.ts`           | ✅ Done |
+| `functions/src/lobbying/scrapeLobbying.ts`   | ✅ Done |
+| `functions/src/lobbying/index.ts`            | ✅ Done |
+| `scripts/firebase-admin/backfillLobbying.ts` | ✅ Done |
+| `functions/src/index.ts` (export)            | ✅ Done |
+| `firestore.rules`                            | ✅ Done |
+| `firestore.indexes.json`                     | ✅ Done |
+
+### Document ID scheme
+
+Both `registrantId` and `filingId` are SHA-256 hashes (first 40 hex chars) of
+their respective logical keys. Hashes are used rather than slugified strings
+because entity names and client names contain arbitrary Unicode and punctuation
+that would require aggressive sanitization to fit Firestore ID constraints. The
+hash is stable across runs for the same logical record.
+
+---
+
+## Future Work (Subsequent PRs)
+
+### Frontend
+
+- **Dedicated lobbying pages**
+
+  - `/lobbyists` index: searchable list of registrants with total compensation,
+    client count, and year filter
+  - `/lobbyists/{registrantId}` profile: full client list, all bills lobbied,
+    compensation over time
+  - `/clients/{clientNameNorm}` profile: registrants hired, bills lobbied,
+    total spend per year
+
+- **Bill page integration** (`/bills/{court}/{billId}`)
+
+  - "Lobbying activity" section listing registrants + clients that lobbied this
+    bill, with position (Support / Oppose / Neutral) and compensation where
+    available
+  - Link to registrant profile pages
+
+- **Organization profile page integration**
+  - If an organization's normalized name matches a `clientNameNorm` in
+    `lobbyingFilings`, surface a "Lobbying history" panel showing which bills
+    they lobbied and which registrants they hired
+
+### MCP Tools
+
+Expose lobbying data via the MAPLE MCP server so that AI agents and Claude can
+answer questions like "who lobbied bill H1234?" or "what did Acme Corp lobby
+for in 2024?".
+
+- **`get_lobbying_filings_for_bill`** — given `generalCourt` + `billId`, return
+  all `lobbyingFilings` for that bill with registrant, client, position, and
+  amount
+- **`get_lobbying_registrant`** — given `registrantId`, return the registrant
+  document with client list and disclosure URLs
+- **`search_lobbying_by_client`** — given a client name (raw or normalized),
+  return matching filings across all courts
+- **`get_lobbying_summary_for_bill`** — aggregate view: unique registrant count,
+  unique client count, total compensation (where non-null), position breakdown
+
+---
+
+## Incremental Test Plan
+
+Testing proceeds from the inside out: unit logic first, then live portal
+fetches against the real site, then a small Firestore write, then a full
+backfill year, then steady-state function operation.
+
+### Step 1 — Unit test: normalization
+
+Run the normalization pipeline against known inputs and verify the outputs match
+the reference implementation.
+
+```bash
+# In a Node REPL or ts-node session:
+conda run -n maple-2025 ts-node -P tsconfig.script.json -e "
+const { normalizeEntityName } = require('./functions/src/lobbying/normalize')
+console.log(normalizeEntityName('Acme Corp., Inc. d/b/a Acme Consulting'))
+// Expected: 'ACME'
+console.log(normalizeEntityName('LAN-TEL COMMUNICATIONS, INC.'))
+// Expected: 'LAN TEL COMMUNICATIONS'
+console.log(normalizeEntityName('Law Office of Jane Smith, LLC'))
+// Expected: 'JANE SMITH'
+"
+```
+
+### Step 2 — Unit test: chamber normalization and billId construction
+
+```bash
+conda run -n maple-2025 ts-node -P tsconfig.script.json -e "
+const { normalizeChamber, constructBillId } = require('./functions/src/lobbying/portal')
+console.log(normalizeChamber('HB'))           // House Bill
+console.log(normalizeChamber('SB'))           // Senate Bill
+console.log(normalizeChamber('Executive'))    // Executive
+console.log(normalizeChamber('FY2024'))       // Other
+console.log(constructBillId('House Bill', '1234'))   // H1234
+console.log(constructBillId('Senate Bill', '567'))   // S567
+console.log(constructBillId('House Docket', '89'))   // HD89
+console.log(constructBillId('Executive', 'EOEEA'))   // null
+"
+```
+
+### Step 3 — Live portal fetch: summary links
+
+Verify the portal is reachable and returns results for the current year. Use
+`--limit 1` to minimize requests.
+
+```bash
+conda run -n maple-2025 ts-node -P tsconfig.script.json -e "
+const { makePortalClient, fetchSummaryLinks } = require('./functions/src/lobbying/portal')
+const client = makePortalClient()
+fetchSummaryLinks(client, 2024).then(urls => {
+  console.log('Summary links for 2024:', urls.length)
+  console.log('First URL:', urls[0])
+}).catch(console.error)
+"
+```
+
+Expected: ~400–600 URLs, each containing `Summary.aspx`.
+
+### Step 4 — Live portal fetch: summary meta + one disclosure
+
+Pick the first summary URL from Step 3 and fetch its meta and first disclosure.
+
+```bash
+conda run -n maple-2025 ts-node -P tsconfig.script.json -e "
+const { makePortalClient, fetchSummaryLinks, fetchDisclosureMeta, fetchDisclosureDetail } = require('./functions/src/lobbying/portal')
+async function main() {
+  const client = makePortalClient()
+  const [summaryUrl] = await fetchSummaryLinks(client, 2024)
+  const meta = await fetchDisclosureMeta(client, summaryUrl)
+  console.log('Meta:', JSON.stringify(meta, null, 2))
+  if (meta.disclosureUrls[0]) {
+    const detail = await fetchDisclosureDetail(client, meta.disclosureUrls[0], 2024)
+    console.log('Compensation rows:', detail.compensation.length)
+    console.log('Bill rows:', detail.bills.length)
+    console.log('First bill:', detail.bills[0])
+  }
+}
+main().catch(console.error)
+"
+```
+
+Verify: `meta.entityName` is non-empty, `meta.regType` is `"Lobbyist"` or
+`"Employer"`, bill rows have `billId` set correctly for legislative chambers.
+
+### Step 5 — Backfill: single year, small limit against dev Firestore
+
+Write a small batch to the dev Firestore emulator or dev project.
+
+```bash
+# Against local emulator:
+conda run -n maple-2025 yarn firebase-admin run-script backfillLobbying \
+  --env local -- --year 2024 --limit 3
+
+# Against dev project (writes real Firestore):
+GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json \
+  conda run -n maple-2025 yarn firebase-admin run-script backfillLobbying \
+  --env dev -- --year 2024 --limit 3
+```
+
+Verify in Firestore console or emulator UI:
+
+- `lobbyingRegistrants` has 3 documents with `entityName`, `entityNameNorm`,
+  `regType`, `clients`, `generalCourt`
+- `lobbyingFilings` has documents with `billId` non-null for legislative rows
+  and null for Executive rows
+- `/scrapers/lobbyingBackfill/processedUrls` has entries with `url` and
+  `processedAt` fields
+- Re-running the same command skips already-processed URLs (output shows 0 new
+  disclosures)
+
+### Step 6 — Spot-check: bill join
+
+Pick a `lobbyingFiling` document with a non-null `billId` and a `generalCourt`
+≥ 192. Verify the bill exists in MAPLE:
+
+```
+/generalCourts/{filing.generalCourt}/bills/{filing.billId}
+```
+
+If the bill is found, the join key is correct. If not found, check: (a) whether
+MAPLE has data for that court, (b) whether the bill number format matches
+(prefix + integer, no leading zeros).
+
+### Step 7 — Backfill: full current year
+
+Once Step 5 passes, run without `--limit` for the current year:
+
+```bash
+GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json \
+  conda run -n maple-2025 yarn firebase-admin run-script backfillLobbying \
+  --env dev -- --year 2024
+```
+
+Monitor progress via console output. Expected: ~500–600 registrants, ~1,000
+disclosure pages, several thousand filing documents written.
+
+### Step 8 — Backfill: full history (2005–present)
+
+Run without `--year` to process all years. Can be interrupted and resumed:
+
+```bash
+GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json \
+  conda run -n maple-2025 yarn firebase-admin run-script backfillLobbying \
+  --env dev
+```
+
+Expected runtime: several hours at 1s/request. The subcollection cursor at
+`/scrapers/lobbyingBackfill/processedUrls` allows safe interruption and
+resumption.
+
+### Step 9 — Deploy and verify Cloud Function
+
+Deploy the function to the dev project:
+
+```bash
+conda run -n maple-2025 firebase deploy \
+  --only functions:maple:scrapeLobbying \
+  --project digital-testimony-dev
+```
+
+Trigger a manual run via the Firebase console or:
+
+```bash
+conda run -n maple-2025 yarn firebase-admin run-script runScrapers \
+  --env local --targets scrapeLobbying
+```
+
+Verify: Cloud Function logs show the expected number of new disclosures (should
+be near zero if backfill completed, since current+prior year are already
+processed).
+
+---
+
 ## Design Decisions
 
 | Decision                    | Choice                                                                       | Rationale                                                                                                                                                                |
