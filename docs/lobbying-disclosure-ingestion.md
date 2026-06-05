@@ -233,43 +233,57 @@ executive and legislative null rows.
 
 ## Scraper Architecture
 
-The lobbying portal is an HTML scraper, not a REST API. It does not fit the
-`createScraper` factory (which assumes list-IDs → fetch-per-ID against the MA
-Legislature API). Instead, we use a custom scheduled function following the
-`scrapeEvents` pattern.
+### Why a standalone Cloud Run container
 
-### Cloud Function: `scrapeLobbying`
+The MA SoS portal is protected by Imperva WAF, which uses TLS fingerprinting to
+classify HTTP clients at the network layer before examining any headers. Node.js
+produces a TLS fingerprint that Imperva challenges with a JavaScript
+verification page; Python's `requests` library produces a fingerprint that
+Imperva allows through without challenge. This is a runtime-level constraint
+that cannot be addressed by header configuration or cipher reordering alone.
 
-**File:** `functions/src/lobbying/scrapeLobbying.ts`
+The scraper therefore runs as a standalone **Cloud Run container** written in
+Python, deployed alongside the existing MCP server container. All data modeling,
+Firestore collection/field names, and normalization logic are documented here and
+kept consistent between the Python container and the TypeScript type definitions
+in `functions/src/lobbying/types.ts`.
 
-- Schedule: `every 24 hours`
-- Scrapes the current year and prior year (new filers arrive semi-annually)
+### Cloud Run container: `lobbying-scraper/`
+
+**Files:** `lobbying-scraper/{scrape,portal,normalize,writer}.py`
+
+- Scheduled weekly by Cloud Scheduler
+- Runs an incremental check: fetches the current and prior year's summary links
+  (one POST), compares disc URLs against the Firestore cursor, and **exits
+  immediately if nothing is new** (fast path, typically seconds)
+- When new or updated disclosures are found, fetches and processes them
 - Persists a cursor in `/scrapers/lobbying`:
-  - `lastFetchedAt: Timestamp`
-  - `processedDiscUrls: string[]` — already-fetched disclosure URLs (skipped on
-    re-runs)
+  - `processedDiscUrls: string[]` — disc URLs already written; skipped on
+    re-runs
+  - `summaryDiscCache: {[summaryUrl]: string[]}` — maps summary page URLs to
+    their disc URLs so summary page GETs are skipped for prior-year registrants
+    whose disclosures are all already processed
 - For each new disclosure URL:
   - Parse registrant + client compensation rows → upsert `lobbyingRegistrants`
-    doc
-  - Parse bill activity rows → batch-write `lobbyingFilings` docs
-- Uses `axios` (existing dependency) with an iPad `User-Agent` header to match
-  portal expectations
-- Uses `jsdom` for HTML table parsing (already a dependency; used by events scraper)
-- 1s delay between requests; exponential backoff on failure (matching existing
-  scraper retry pattern)
-- Function timeout: 540s
+  - Parse bill activity rows → batch-write `lobbyingFilings`
+- 1s delay between requests; exponential backoff on transient failures
 
-### Incremental Strategy
+### Incremental strategy
 
-Processed disclosure URLs are stored in `/scrapers/lobbying.processedDiscUrls`.
-At ~2 disclosure URLs per registrant × ~500 registrants per year, the
-current+prior year window stays well within Firestore document limits.
-Historical years beyond current-1 are stable (filings are frozen after year
-closes) and are handled by the backfill script only.
+In steady state (after the initial backfill), each weekly run:
 
-The backfill script uses a separate Firestore document
-(`/scrapers/lobbyingBackfill`) for its own cursor so it does not interfere with
-the live scraper.
+1. One POST to fetch all summary links for current + prior year
+2. For prior-year registrants with all disc URLs in the cursor: zero GETs
+3. For current-year registrants: one GET per summary page to check for new
+   disclosure periods
+4. For any new disc URLs: one GET per disclosure page
+
+New filings arrive twice a year (semi-annual reporting periods). Between
+periods, the run completes in under a minute.
+
+The backfill script (`--mode backfill`) uses a separate subcollection cursor at
+`/scrapers/lobbyingBackfill/processedUrls/{urlHash}` so it does not interfere
+with the live scraper state.
 
 ### Legacy Format (pre-2013)
 
@@ -284,26 +298,64 @@ them. No bill-level compensation amount is available for these years.
 
 ```
 functions/src/lobbying/
-  types.ts            — Runtypes definitions for LobbyingRegistrant, LobbyingFiling
-  scrapeLobbying.ts   — Scheduled Cloud Function + shared parsing/normalization logic
-  index.ts            — Re-exports
+  types.ts          — Runtypes definitions for LobbyingRegistrant, LobbyingFiling
+  normalize.ts      — Entity name normalization pipeline
+  portal.ts         — Reference implementation (HTTP layer not used in production)
+  scrapeLobbying.ts — Reference implementation (superseded by Cloud Run container)
+  index.ts          — Re-exports
+
+lobbying-scraper/
+  scrape.py         — Entry point: --mode weekly (incremental) | --mode backfill
+  portal.py         — HTTP + HTML parsing
+  normalize.py      — Port of normalize.ts
+  writer.py         — Firestore document construction + writes
+  requirements.txt  — requests, beautifulsoup4, google-cloud-firestore
+  Dockerfile        — Python 3.12-slim image
 ```
 
 ---
 
-## Firebase Admin Script
+## Deploying the Cloud Run Container
 
-**File:** `scripts/firebase-admin/backfillLobbying.ts`
+Follows the same pattern as the MCP server. Requires the
+`maple-lobbying-scraper` Artifact Registry repository to exist.
 
-Ingests all historical filings from 2005 to the present. This is the primary
-path for all data before the current and prior year. Accepts `--year` and
-`--limit` CLI args for targeted re-runs or testing. Calls the same parsing
-logic exported from `functions/src/lobbying/scrapeLobbying.ts` and writes
-directly to Firestore via the firebase-admin SDK.
+```bash
+cd lobbying-scraper
+IMAGE=us-central1-docker.pkg.dev/digital-testimony-dev/maple-lobbying/scraper:latest
+docker build -t $IMAGE . && docker push $IMAGE
+
+gcloud run jobs create maple-lobbying-scraper \
+  --image=$IMAGE \
+  --project=digital-testimony-dev \
+  --region=us-central1 \
+  --service-account=<scraper-sa>@digital-testimony-dev.iam.gserviceaccount.com
+
+# Schedule weekly via Cloud Scheduler
+gcloud scheduler jobs create http maple-lobbying-weekly \
+  --schedule="0 6 * * 1" \
+  --uri="https://us-central1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/digital-testimony-dev/jobs/maple-lobbying-scraper:run" \
+  --http-method=POST \
+  --oauth-service-account-email=<scheduler-sa>@digital-testimony-dev.iam.gserviceaccount.com \
+  --location=us-central1
+```
+
+## Historical Backfill (Admin Script)
+
+Ingests all historical filings from 2005 to the present. Delegates to
+`scrape.py --mode backfill` via subprocess. Resumable — the subcollection
+cursor at `/scrapers/lobbyingBackfill/processedUrls` tracks what has been
+processed. Run directly on the machine (requires `lobbying-scraper/` deps
+installed or the `maple-2025` conda environment).
 
 ```bash
 GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json \
   yarn firebase-admin run-script backfillLobbying --env dev
+
+# Or call scrape.py directly for more control:
+cd lobbying-scraper
+python3 scrape.py --mode backfill --year 2024 --limit 3 --dry-run
+python3 scrape.py --mode backfill --year 2024
 ```
 
 ---
@@ -348,17 +400,22 @@ export { scrapeLobbying } from "./lobbying"
 
 ## Implementation Status
 
-| File                                         | Status  |
-| -------------------------------------------- | ------- |
-| `functions/src/lobbying/types.ts`            | ✅ Done |
-| `functions/src/lobbying/normalize.ts`        | ✅ Done |
-| `functions/src/lobbying/portal.ts`           | ✅ Done |
-| `functions/src/lobbying/scrapeLobbying.ts`   | ✅ Done |
-| `functions/src/lobbying/index.ts`            | ✅ Done |
-| `scripts/firebase-admin/backfillLobbying.ts` | ✅ Done |
-| `functions/src/index.ts` (export)            | ✅ Done |
-| `firestore.rules`                            | ✅ Done |
-| `firestore.indexes.json`                     | ✅ Done |
+| File                                         | Status  | Notes                                                      |
+| -------------------------------------------- | ------- | ---------------------------------------------------------- |
+| `functions/src/lobbying/types.ts`            | ✅ Done | TypeScript type definitions; source of truth for schema    |
+| `functions/src/lobbying/normalize.ts`        | ✅ Done | Normalization pipeline (also ported to `normalize.py`)     |
+| `functions/src/lobbying/portal.ts`           | ✅ Done | Kept for reference; HTTP layer not used (see architecture) |
+| `functions/src/lobbying/scrapeLobbying.ts`   | ✅ Done | Not deployed; superseded by Cloud Run container            |
+| `functions/src/lobbying/index.ts`            | ✅ Done |                                                            |
+| `functions/src/index.ts` (export)            | ✅ Done |                                                            |
+| `firestore.rules`                            | ✅ Done |                                                            |
+| `firestore.indexes.json`                     | ✅ Done |                                                            |
+| `lobbying-scraper/normalize.py`              | ✅ Done | Port of normalize.ts                                       |
+| `lobbying-scraper/portal.py`                 | ✅ Done | HTTP + HTML parsing                                        |
+| `lobbying-scraper/writer.py`                 | ✅ Done | Firestore document construction                            |
+| `lobbying-scraper/scrape.py`                 | ✅ Done | Entry point; `--mode weekly` and `--mode backfill`         |
+| `lobbying-scraper/Dockerfile`                | ✅ Done | Python 3.12 slim                                           |
+| `scripts/firebase-admin/backfillLobbying.ts` | ✅ Done | Calls `scrape.py --mode backfill` as subprocess            |
 
 ### Document ID scheme
 

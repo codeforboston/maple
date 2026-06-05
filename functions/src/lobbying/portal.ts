@@ -19,6 +19,7 @@
 import axios, { AxiosInstance } from "axios"
 import { JSDOM } from "jsdom"
 import { sha256 } from "js-sha256"
+import { CookieJar } from "tough-cookie"
 import {
   CHAMBER_PREFIXES,
   LEGACY_CHAMBER_MAP,
@@ -72,19 +73,68 @@ export interface DisclosureDetail {
 
 // ─── HTTP helpers ────────────────────────────────────────────────────────────
 
-export function makePortalClient(): AxiosInstance {
-  return axios.create({
-    headers: { "User-Agent": IPAD_UA },
-    timeout: 60_000
+/**
+ * Create an axios instance pre-configured for the MA SoS portal.
+ *
+ * Includes a cookie jar via interceptors so ASP.NET session state (ViewState,
+ * anti-forgery tokens) is preserved across the GET → POST page flow without
+ * requiring the axios-cookiejar-support package.
+ */
+export interface PortalClient {
+  jar: CookieJar
+  client: AxiosInstance
+}
+
+/**
+ * Create a portal client pre-configured for the MA SoS portal.
+ *
+ * Uses maxRedirects: 0 so our manual redirect loop (inside getHtml / postHtml)
+ * can extract Set-Cookie headers at each hop before following. This is necessary
+ * because the portal is protected by Incapsula, which issues a 302 challenge on
+ * first contact and requires the session cookies to be sent on the retried request.
+ * Axios's built-in redirect following happens before response interceptors fire,
+ * so the cookies from the challenge response are never captured automatically.
+ */
+export function makePortalClient(): PortalClient {
+  const jar = new CookieJar()
+  const client = axios.create({
+    headers: {
+      "User-Agent": IPAD_UA,
+      Accept: "*/*",
+      "Accept-Encoding": "gzip, deflate, br",
+      Connection: "keep-alive"
+    },
+    timeout: 60_000,
+    maxRedirects: 10, // let axios handle ordinary redirects; only Incapsula challenges need manual handling
+    validateStatus: s => s < 500 // surface 4xx so we can log them
   })
+  return { jar, client }
 }
 
 function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
+function cookieHeader(jar: CookieJar, url: string): string {
+  return jar
+    .getCookiesSync(url)
+    .map(c => c.cookieString())
+    .join("; ")
+}
+
+function saveCookies(
+  jar: CookieJar,
+  url: string,
+  headers: Record<string, string | string[] | undefined>
+): void {
+  const raw = headers["set-cookie"]
+  if (!raw) return
+  const list = Array.isArray(raw) ? raw : [raw]
+  for (const c of list) jar.setCookieSync(c, url)
+}
+
 async function getHtml(
-  client: AxiosInstance,
+  pc: PortalClient,
   url: string,
   retries = MAX_RETRIES
 ): Promise<Document> {
@@ -93,10 +143,16 @@ async function getHtml(
       attempt === 0 ? REQUEST_DELAY_MS : REQUEST_DELAY_MS * 2 ** attempt
     )
     try {
-      const res = await client.get<string>(url, {
+      const res = await pc.client.get<string>(url, {
         responseType: "text",
-        headers: { Accept: "text/html" }
+        headers: { Cookie: cookieHeader(pc.jar, url) }
       })
+      saveCookies(
+        pc.jar,
+        url,
+        res.headers as Record<string, string | string[] | undefined>
+      )
+      if (res.status >= 400) throw new Error(`HTTP ${res.status} for ${url}`)
       return new JSDOM(res.data).window.document
     } catch (e) {
       if (attempt === retries - 1) throw e
@@ -108,7 +164,7 @@ async function getHtml(
 }
 
 async function postHtml(
-  client: AxiosInstance,
+  pc: PortalClient,
   url: string,
   data: Record<string, string>,
   retries = MAX_RETRIES
@@ -119,14 +175,20 @@ async function postHtml(
       attempt === 0 ? REQUEST_DELAY_MS : REQUEST_DELAY_MS * 2 ** attempt
     )
     try {
-      const res = await client.post<string>(url, body, {
+      const res = await pc.client.post<string>(url, body, {
         responseType: "text",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
-          Accept: "text/html"
+          Cookie: cookieHeader(pc.jar, url)
         },
         timeout: 180_000
       })
+      saveCookies(
+        pc.jar,
+        url,
+        res.headers as Record<string, string | string[] | undefined>
+      )
+      if (res.status >= 400) throw new Error(`HTTP ${res.status} for ${url}`)
       return new JSDOM(res.data).window.document
     } catch (e) {
       if (attempt === retries - 1) throw e
@@ -237,10 +299,10 @@ function extractViewState(doc: Document): Record<string, string> {
  * Sends a single search POST with page size 20000 to get all registrants at once.
  */
 export async function fetchSummaryLinks(
-  client: AxiosInstance,
+  pc: PortalClient,
   year: number
 ): Promise<string[]> {
-  const searchPage = await getHtml(client, SEARCH_URL)
+  const searchPage = await getHtml(pc, SEARCH_URL)
   const vs = extractViewState(searchPage)
 
   const postData: Record<string, string> = {
@@ -257,7 +319,7 @@ export async function fetchSummaryLinks(
     ctl00$ContentPlaceHolder1$btnSearch: "Search"
   }
 
-  const resultsPage = await postHtml(client, SEARCH_URL, postData)
+  const resultsPage = await postHtml(pc, SEARCH_URL, postData)
 
   const table = resultsPage.querySelector(
     '[id*="grdvSearchResultByTypeAndCategory"]'
@@ -280,10 +342,10 @@ export async function fetchSummaryLinks(
  * Fetch a Summary.aspx page and return the registrant metadata + disclosure URLs.
  */
 export async function fetchDisclosureMeta(
-  client: AxiosInstance,
+  pc: PortalClient,
   summaryUrl: string
 ): Promise<DisclosureMeta> {
-  const doc = await getHtml(client, summaryUrl)
+  const doc = await getHtml(pc, summaryUrl)
 
   const text = (id: string) => {
     const el = doc.getElementById(id)
@@ -322,11 +384,11 @@ export async function fetchDisclosureMeta(
  * Handles both modern (≥~2013) and legacy (<~2013) HTML layouts.
  */
 export async function fetchDisclosureDetail(
-  client: AxiosInstance,
+  pc: PortalClient,
   discUrl: string,
   year: number
 ): Promise<DisclosureDetail> {
-  const doc = await getHtml(client, discUrl)
+  const doc = await getHtml(pc, discUrl)
   const compensation: RawCompensation[] = []
   const bills: RawBillActivity[] = []
 

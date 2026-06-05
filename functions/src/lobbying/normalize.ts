@@ -5,8 +5,7 @@
  * registrant may appear as "Acme Corp.", "ACME CORPORATION", "Acme, Inc. d/b/a
  * Acme Consulting", etc. across filings and years.
  *
- * This pipeline is a direct port of the reference implementation used in the
- * companion data analysis project. The steps must be applied in the exact order
+ *  The steps must be applied in the exact order
  * listed here; changing the order produces different (incorrect) output.
  */
 
