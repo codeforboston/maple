@@ -49,7 +49,7 @@
   },
   "hearings": {
     "title": "Upcoming Hearings",
-    "action": "Browse Policies",
+    "action": "Browse Hearings",
     "loading": "Loading upcoming hearings...",
     "topic": "Massachusetts Legislature",
     "appPreviewAlt": "MAPLE platform preview",
