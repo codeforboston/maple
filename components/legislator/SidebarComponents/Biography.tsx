@@ -37,9 +37,8 @@ const BioTitle = styled.div`
 export function Biography({ pageId }: { pageId: string }) {
   const { user } = useAuth()
   const uid = user?.uid
-  // `useProfile` ought to be replaced with a function that uses the pageId
-  // instead of the current user's id but not strictly neccessary
-  // since the display conditions should only occur when (pageOwner = true)
+  // `useProfile` needs to be replaced with a function that uses
+  //  the pageId instead of the current user's id
   const result = useProfile()
 
   let pageOwner = false
@@ -70,16 +69,16 @@ export function Biography({ pageId }: { pageId: string }) {
 }
 
 function LegislatorBiography({ profile }: { profile: Profile }) {
-  // `about` should be replaced with a property along the lines of legislatorBio
-  // or whatever is appropriate
+  // `about` should be replaced with a property such as
+  // legislatorBio or whatever is appropriate
   const { about }: Profile = profile
   const { t } = useTranslation("legislators")
 
   return (
     <BioBlock>
       <BioTitle className={`my-1`}>{t("biography")}</BioTitle>
-      {/* `about` should be replaced with a property along the lines of *
-       * legislatorBio // or whatever is appropriate                   */}
+      {/* `about` should be replaced with a property such as *
+       * legislatorBio or whatever is appropriate            */}
       <div style={{ whiteSpace: "pre-wrap" }}>{about}</div>
     </BioBlock>
   )
@@ -98,8 +97,8 @@ function SelfBiography({
     handleSubmit
   } = useForm<UpdateProfileData>()
 
-  // `about` should be replaced with a property along the lines of legislatorBio
-  // or whatever is appropriate
+  // `about` should be replaced with a property such as
+  // legislatorBio or whatever is appropriate
   const { about }: Profile = profile
 
   const onSubmit = handleSubmit(async update => {
@@ -136,8 +135,8 @@ function SelfBiography({
           style={{ height: "10rem" }}
           className="mt-3"
           label={t("editBio")}
-          // `about` should be replaced with a property along the lines of legislatorBio
-          // or whatever is appropriate
+          // `about` should be replaced with a property such as
+          // legislatorBio or whatever is appropriate
           defaultValue={about}
         />
       </Form>
