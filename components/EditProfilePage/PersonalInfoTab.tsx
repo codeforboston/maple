@@ -10,7 +10,7 @@ import { TooltipButton } from "components/buttons"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 
-type UpdateProfileData = {
+export type UpdateProfileData = {
   fullName: string
   aboutYou: string
   twitter: string
@@ -37,7 +37,7 @@ type Props = {
   legislatorsProps?: YourLegislatorsProps
 }
 
-async function updateProfile(
+export async function updateProfile(
   { profile, actions, uid }: Props,
   data: UpdateProfileData
 ) {

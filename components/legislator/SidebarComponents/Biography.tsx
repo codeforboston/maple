@@ -4,14 +4,14 @@ import { useForm } from "react-hook-form"
 import styled from "styled-components"
 
 import { Form, Row, Spinner } from "../../bootstrap"
-import { Profile, useProfile } from "../../db"
+import { Profile, ProfileHook, useProfile } from "../../db"
 import Input from "../../forms/Input"
 
 import { useAuth } from "components/auth"
-
-type UpdateProfileData = {
-  legislatorBio: string
-}
+import {
+  updateProfile,
+  UpdateProfileData
+} from "components/EditProfilePage/PersonalInfoTab"
 
 const BioBlock = styled.div`
   background-color: white;
@@ -34,12 +34,16 @@ const BioTitle = styled.div`
   margin-bottom: 10px;
 `
 
-export function Biography({ pageId }: { pageId: string }) {
+export function Biography({
+  pageId,
+  publicProfile
+}: {
+  pageId: string
+  publicProfile: Profile | undefined
+}) {
   const { user } = useAuth()
   const uid = user?.uid
-  // `useProfile` needs to be replaced with a function that uses
-  //  the pageId instead of the current user's id
-  const result = useProfile()
+  const pageOwnerResult = useProfile()
 
   let pageOwner = false
 
@@ -47,7 +51,7 @@ export function Biography({ pageId }: { pageId: string }) {
     pageOwner = true
   }
 
-  if (result.loading) {
+  if (pageOwnerResult.loading) {
     return (
       <Row>
         <Spinner animation="border" className="mx-auto" />
@@ -55,39 +59,43 @@ export function Biography({ pageId }: { pageId: string }) {
     )
   }
 
-  if (result?.profile && pageOwner) {
+  if (pageOwnerResult.profile && pageOwner) {
     // the user is the legislator whose page this is
     // therefore they get edit privledges
-    return <SelfBiography pageId={pageId} profile={result.profile} />
+    return (
+      <SelfBiography
+        actions={pageOwnerResult}
+        pageId={pageId}
+        profile={pageOwnerResult.profile}
+      />
+    )
   }
 
-  if (result?.profile) {
+  if (publicProfile) {
     // the user is not the legislator whose page this is
     // therefore they get read-only privledges
-    return <LegislatorBiography profile={result.profile} />
+    return <LegislatorBiography profile={publicProfile} />
   }
 }
 
 function LegislatorBiography({ profile }: { profile: Profile }) {
-  // `about` should be replaced with a property such as
-  // legislatorBio or whatever is appropriate
   const { about }: Profile = profile
   const { t } = useTranslation("legislators")
 
   return (
     <BioBlock>
       <BioTitle className={`my-1`}>{t("biography")}</BioTitle>
-      {/* `about` should be replaced with a property such as *
-       * legislatorBio or whatever is appropriate            */}
       <div style={{ whiteSpace: "pre-wrap" }}>{about}</div>
     </BioBlock>
   )
 }
 
 function SelfBiography({
+  actions,
   pageId,
   profile
 }: {
+  actions: ProfileHook
   pageId: string
   profile: Profile
 }) {
@@ -97,12 +105,10 @@ function SelfBiography({
     handleSubmit
   } = useForm<UpdateProfileData>()
 
-  // `about` should be replaced with a property such as
-  // legislatorBio or whatever is appropriate
   const { about }: Profile = profile
 
   const onSubmit = handleSubmit(async update => {
-    // await updateProfile({ actions }, update)
+    await updateProfile({ profile, actions }, update)
     location.assign(`/legislators/profile?id=${pageId}`)
     setFormUpdated(false)
   })
@@ -131,12 +137,10 @@ function SelfBiography({
         </div>
         <Input
           as="textarea"
-          {...register("legislatorBio")}
+          {...register("aboutYou")}
           style={{ height: "10rem" }}
           className="mt-3"
           label={t("editBio")}
-          // `about` should be replaced with a property such as
-          // legislatorBio or whatever is appropriate
           defaultValue={about}
         />
       </Form>
