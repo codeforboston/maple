@@ -12,7 +12,6 @@ export function LegislatorSidebar({
 }) {
   return (
     <>
-      Sidebar Components
       <OtherTestimony />
       <UpcomingHearings />
       <Biography pageId={pageId} publicProfile={publicProfile} />
