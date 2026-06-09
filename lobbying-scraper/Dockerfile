@@ -11,4 +11,6 @@ COPY normalize.py portal.py writer.py scrape.py ./
 # Cloud Scheduler invokes the container via HTTP POST to /; handle it minimally.
 ENV PYTHONUNBUFFERED=1
 
-CMD ["python3", "scrape.py", "--mode", "weekly"]
+# ENTRYPOINT is the fixed executable; CMD provides default args that --args overrides.
+ENTRYPOINT ["python3", "scrape.py"]
+CMD ["--mode", "weekly"]

@@ -60,8 +60,6 @@ export {
 
 export { transcription } from "./webhooks"
 
-export { scrapeLobbying } from "./lobbying"
-
 export * from "./triggerPubsubFunction"
 
 // Export the health check last so it is loaded last.

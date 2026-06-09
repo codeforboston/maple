@@ -298,64 +298,86 @@ them. No bill-level compensation amount is available for these years.
 
 ```
 functions/src/lobbying/
-  types.ts          — Runtypes definitions for LobbyingRegistrant, LobbyingFiling
-  normalize.ts      — Entity name normalization pipeline
-  portal.ts         — Reference implementation (HTTP layer not used in production)
-  scrapeLobbying.ts — Reference implementation (superseded by Cloud Run container)
-  index.ts          — Re-exports
+  types.ts     — Runtypes schema definitions for LobbyingRegistrant, LobbyingFiling
+  normalize.ts — Entity name normalization pipeline (also used client-side)
+  index.ts     — Re-exports
 
 lobbying-scraper/
-  scrape.py         — Entry point: --mode weekly (incremental) | --mode backfill
-  portal.py         — HTTP + HTML parsing
-  normalize.py      — Port of normalize.ts
-  writer.py         — Firestore document construction + writes
-  requirements.txt  — requests, beautifulsoup4, google-cloud-firestore
-  Dockerfile        — Python 3.12-slim image
+  scrape.py        — Entry point: --mode weekly (incremental) | --mode backfill
+  portal.py        — HTTP + HTML parsing
+  normalize.py     — Port of normalize.ts
+  writer.py        — Firestore document construction + writes
+  requirements.txt — requests, beautifulsoup4, google-cloud-firestore
+  Dockerfile       — Python 3.12-slim image
 ```
+
+The TypeScript lobbying module (`functions/src/lobbying/`) contains only the
+schema types and normalization logic. There is no TypeScript scraper or
+Firebase Function — ingestion is handled entirely by the Cloud Run container.
+This follows the same pattern as the MCP server and avoids the complexity of
+running multiple language runtimes in the same Firebase Functions deployment.
 
 ---
 
 ## Deploying the Cloud Run Container
 
-Follows the same pattern as the MCP server. Requires the
-`maple-lobbying-scraper` Artifact Registry repository to exist.
+Follows the same pattern as the MCP server. The Artifact Registry repo
+(`maple-lobbying`) and Cloud Run job (`maple-lobbying-scraper`) are already
+created in `digital-testimony-dev`.
 
 ```bash
 cd lobbying-scraper
 IMAGE=us-central1-docker.pkg.dev/digital-testimony-dev/maple-lobbying/scraper:latest
 docker build -t $IMAGE . && docker push $IMAGE
 
-gcloud run jobs create maple-lobbying-scraper \
+gcloud run jobs update maple-lobbying-scraper \
   --image=$IMAGE \
   --project=digital-testimony-dev \
-  --region=us-central1 \
-  --service-account=<scraper-sa>@digital-testimony-dev.iam.gserviceaccount.com
+  --region=us-central1
+```
 
-# Schedule weekly via Cloud Scheduler
+For a new project (prod), create the job first:
+
+```bash
+gcloud artifacts repositories create maple-lobbying \
+  --repository-format=docker --location=us-central1 --project=<project>
+
+gcloud run jobs create maple-lobbying-scraper \
+  --image=$IMAGE \
+  --project=<project> \
+  --region=us-central1 \
+  --task-timeout=30m \
+  --max-retries=0
+
+# Schedule weekly (Mondays 6am UTC)
 gcloud scheduler jobs create http maple-lobbying-weekly \
   --schedule="0 6 * * 1" \
-  --uri="https://us-central1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/digital-testimony-dev/jobs/maple-lobbying-scraper:run" \
+  --uri="https://us-central1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/<project>/jobs/maple-lobbying-scraper:run" \
   --http-method=POST \
-  --oauth-service-account-email=<scheduler-sa>@digital-testimony-dev.iam.gserviceaccount.com \
+  --oauth-service-account-email=<scheduler-sa>@<project>.iam.gserviceaccount.com \
   --location=us-central1
 ```
 
-## Historical Backfill (Admin Script)
+## Historical Backfill
 
-Ingests all historical filings from 2005 to the present. Delegates to
-`scrape.py --mode backfill` via subprocess. Resumable — the subcollection
-cursor at `/scrapers/lobbyingBackfill/processedUrls` tracks what has been
-processed. Run directly on the machine (requires `lobbying-scraper/` deps
-installed or the `maple-2025` conda environment).
+Runs `scrape.py --mode backfill` directly. Resumable — the subcollection
+cursor at `/scrapers/lobbyingBackfill/processedUrls` tracks progress.
+Requires `lobbying-scraper/` deps or the `maple-2025` conda environment.
 
 ```bash
-GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json \
-  yarn firebase-admin run-script backfillLobbying --env dev
-
-# Or call scrape.py directly for more control:
 cd lobbying-scraper
-python3 scrape.py --mode backfill --year 2024 --limit 3 --dry-run
-python3 scrape.py --mode backfill --year 2024
+
+# Test a single year with no writes
+GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json \
+  python3 scrape.py --mode backfill --year 2024 --limit 3 --dry-run
+
+# Run a single year for real
+GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json \
+  python3 scrape.py --mode backfill --year 2024
+
+# Full history (2005-present, resumable)
+GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json \
+  python3 scrape.py --mode backfill
 ```
 
 ---
@@ -400,22 +422,18 @@ export { scrapeLobbying } from "./lobbying"
 
 ## Implementation Status
 
-| File                                         | Status  | Notes                                                      |
-| -------------------------------------------- | ------- | ---------------------------------------------------------- |
-| `functions/src/lobbying/types.ts`            | ✅ Done | TypeScript type definitions; source of truth for schema    |
-| `functions/src/lobbying/normalize.ts`        | ✅ Done | Normalization pipeline (also ported to `normalize.py`)     |
-| `functions/src/lobbying/portal.ts`           | ✅ Done | Kept for reference; HTTP layer not used (see architecture) |
-| `functions/src/lobbying/scrapeLobbying.ts`   | ✅ Done | Not deployed; superseded by Cloud Run container            |
-| `functions/src/lobbying/index.ts`            | ✅ Done |                                                            |
-| `functions/src/index.ts` (export)            | ✅ Done |                                                            |
-| `firestore.rules`                            | ✅ Done |                                                            |
-| `firestore.indexes.json`                     | ✅ Done |                                                            |
-| `lobbying-scraper/normalize.py`              | ✅ Done | Port of normalize.ts                                       |
-| `lobbying-scraper/portal.py`                 | ✅ Done | HTTP + HTML parsing                                        |
-| `lobbying-scraper/writer.py`                 | ✅ Done | Firestore document construction                            |
-| `lobbying-scraper/scrape.py`                 | ✅ Done | Entry point; `--mode weekly` and `--mode backfill`         |
-| `lobbying-scraper/Dockerfile`                | ✅ Done | Python 3.12 slim                                           |
-| `scripts/firebase-admin/backfillLobbying.ts` | ✅ Done | Calls `scrape.py --mode backfill` as subprocess            |
+| File                                  | Status  | Notes                                                    |
+| ------------------------------------- | ------- | -------------------------------------------------------- |
+| `functions/src/lobbying/types.ts`     | ✅ Done | Firestore schema types; imported by future frontend code |
+| `functions/src/lobbying/normalize.ts` | ✅ Done | Normalization pipeline; also ported to `normalize.py`    |
+| `functions/src/lobbying/index.ts`     | ✅ Done | Re-exports types and normalize                           |
+| `firestore.rules`                     | ✅ Done |                                                          |
+| `firestore.indexes.json`              | ✅ Done |                                                          |
+| `lobbying-scraper/normalize.py`       | ✅ Done | Port of normalize.ts                                     |
+| `lobbying-scraper/portal.py`          | ✅ Done | HTTP + HTML parsing                                      |
+| `lobbying-scraper/writer.py`          | ✅ Done | Firestore document construction                          |
+| `lobbying-scraper/scrape.py`          | ✅ Done | Entry point; `--mode weekly` and `--mode backfill`       |
+| `lobbying-scraper/Dockerfile`         | ✅ Done | Python 3.12-slim; deployed to Cloud Run                  |
 
 ### Document ID scheme
 
