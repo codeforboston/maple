@@ -85,7 +85,11 @@ function LegislatorBiography({ profile }: { profile: Profile }) {
   return (
     <BioBlock>
       <BioTitle className={`my-1`}>{t("biography")}</BioTitle>
-      <div style={{ whiteSpace: "pre-wrap" }}>{about}</div>
+      {!about ? (
+        <div style={{ whiteSpace: "pre-wrap" }}>{about}</div>
+      ) : (
+        <div style={{ whiteSpace: "pre-wrap" }}>{t("notClaimed")}</div>
+      )}
     </BioBlock>
   )
 }
