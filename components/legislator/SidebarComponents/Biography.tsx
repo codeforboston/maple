@@ -130,7 +130,7 @@ function EditableBiography({
           style={{ fontSize: "11px", height: "10rem" }}
           className="mt-3"
           label={t("editBio")}
-          defaultValue={about}
+          defaultValue={about ? about : t("addBio")}
         />
       </Form>
     </BioBlock>
@@ -144,11 +144,9 @@ function ReadonlyBiography({ profile }: { profile: Profile }) {
   return (
     <BioBlock>
       <BioTitle className={`my-1`}>{t("biography")}</BioTitle>
-      {about ? (
-        <div style={{ whiteSpace: "pre-wrap" }}>{about}</div>
-      ) : (
-        <div style={{ whiteSpace: "pre-wrap" }}>{t("notClaimed")}</div>
-      )}
+      <div style={{ whiteSpace: "pre-wrap" }}>
+        {about ? about : t("notClaimed")}
+      </div>
     </BioBlock>
   )
 }
