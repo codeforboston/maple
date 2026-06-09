@@ -17,16 +17,17 @@ const BioBlock = styled.div`
   background-color: white;
   border: "1px #ced4da solid";
   border-radius: 5px;
+  font-size: 11px;
   margin-top: 8px;
   padding: 8px 16px;
 `
 
 const BioButton = styled.button`
-  font-size: 11px;
+  font-size: 9px;
+  padding: 2px;
 `
 
 const BioTitle = styled.div`
-  font-size: 11px;
   font-weight: 700;
   color: #0b0a3e;
   text-transform: uppercase;
@@ -85,7 +86,7 @@ function LegislatorBiography({ profile }: { profile: Profile }) {
   return (
     <BioBlock>
       <BioTitle className={`my-1`}>{t("biography")}</BioTitle>
-      {!about ? (
+      {about ? (
         <div style={{ whiteSpace: "pre-wrap" }}>{about}</div>
       ) : (
         <div style={{ whiteSpace: "pre-wrap" }}>{t("notClaimed")}</div>
@@ -133,7 +134,7 @@ function SelfBiography({
           </BioTitle>
           <BioButton
             type="submit"
-            className={`btn btn-primary d-inline m-1 p-1 w-auto`}
+            className={`btn btn-primary d-inline m-1 w-auto`}
             disabled={!formUpdated}
           >
             {t("submit")}
@@ -142,7 +143,7 @@ function SelfBiography({
         <Input
           as="textarea"
           {...register("aboutYou")}
-          style={{ height: "10rem" }}
+          style={{ fontSize: "11px", height: "10rem" }}
           className="mt-3"
           label={t("editBio")}
           defaultValue={about}
