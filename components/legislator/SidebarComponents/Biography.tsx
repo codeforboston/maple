@@ -64,7 +64,7 @@ export function Biography({
     // the user is the legislator whose page this is
     // therefore they get edit privledges
     return (
-      <SelfBiography
+      <EditableBiography
         actions={pageOwnerResult}
         pageId={pageId}
         profile={pageOwnerResult.profile}
@@ -75,11 +75,11 @@ export function Biography({
   if (publicProfile) {
     // the user is not the legislator whose page this is
     // therefore they get read-only privledges
-    return <LegislatorBiography profile={publicProfile} />
+    return <ReadonlyBiography profile={publicProfile} />
   }
 }
 
-function LegislatorBiography({ profile }: { profile: Profile }) {
+function ReadonlyBiography({ profile }: { profile: Profile }) {
   const { about }: Profile = profile
   const { t } = useTranslation("legislators")
 
@@ -95,7 +95,7 @@ function LegislatorBiography({ profile }: { profile: Profile }) {
   )
 }
 
-function SelfBiography({
+function EditableBiography({
   actions,
   pageId,
   profile

@@ -1,7 +1,7 @@
+import { Profile } from "../../db"
 import { Biography } from "./Biography"
 import { OtherTestimony } from "./OtherTestimony"
 import { UpcomingHearings } from "./UpcomingHearings"
-import { Profile } from "../../db"
 
 export function LegislatorSidebar({
   pageId,
