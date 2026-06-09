@@ -1,10 +1,12 @@
 {
   "billsSponsored": "Bills Sponsored",
+  "biography": "Biography",
   "cosponsored": "Cosponsored",
   "editBio": "Edit your biography",
   "fundsRaised": "Funds Raised",
   "home": "Home",
   "legislators": "Legislators",
+  "submit": "Submit",
   "tabs": {
     "bills": "Bills",
     "district": "District",

@@ -13,11 +13,33 @@ type UpdateProfileData = {
   legislatorBio: string
 }
 
+const BioBlock = styled.div`
+  background-color: white;
+  border: "1px #ced4da solid";
+  border-radius: 5px;
+  margin-top: 8px;
+  padding: 8px 16px;
+`
+
+const BioButton = styled.button`
+  font-size: 11px;
+`
+
+const BioTitle = styled.div`
+  font-size: 11px;
+  font-weight: 700;
+  color: #0b0a3e;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+`
+
 export function Biography({ pageId }: { pageId: string }) {
   const { user } = useAuth()
   const uid = user?.uid
-  // `useProfile` needs to be replaced with a function that uses the pageId
-  // instead of the current user's id
+  // `useProfile` ought to be replaced with a function that uses the pageId
+  // instead of the current user's id but not strictly neccessary
+  // since the display conditions should only occur when (pageOwner = true)
   const result = useProfile()
 
   let pageOwner = false
@@ -40,35 +62,28 @@ export function Biography({ pageId }: { pageId: string }) {
     return <SelfBiography pageId={pageId} profile={result.profile} />
   }
 
-  // the user is not the legislator whose page this is
-  // therefore they get read-only privledges
-  return <LegislatorBiography />
+  if (result?.profile) {
+    // the user is not the legislator whose page this is
+    // therefore they get read-only privledges
+    return <LegislatorBiography profile={result.profile} />
+  }
 }
 
-function LegislatorBiography() {
-  return <div>Sample Biography</div>
+function LegislatorBiography({ profile }: { profile: Profile }) {
+  // `about` should be replaced with a property along the lines of legislatorBio
+  // or whatever is appropriate
+  const { about }: Profile = profile
+  const { t } = useTranslation("legislators")
+
+  return (
+    <BioBlock>
+      <BioTitle className={`my-1`}>{t("biography")}</BioTitle>
+      {/* `about` should be replaced with a property along the lines of *
+       * legislatorBio // or whatever is appropriate                   */}
+      <div style={{ whiteSpace: "pre-wrap" }}>{about}</div>
+    </BioBlock>
+  )
 }
-
-const BioBlock = styled.div`
-  background-color: white;
-  border: "1px #ced4da solid";
-  border-radius: 5px;
-  margin-top: 8px;
-  padding: 8px 16px;
-`
-
-const BioButton = styled.button`
-  font-size: 11px;
-`
-
-const BioTitle = styled.div`
-  font-size: 11px;
-  font-weight: 700;
-  color: #0b0a3e;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 10px;
-`
 
 function SelfBiography({
   pageId,
@@ -105,14 +120,14 @@ function SelfBiography({
       <Form onSubmit={onSubmit}>
         <div className={`d-flex justify-content-between`}>
           <BioTitle className={`align-self-center d-inline my-1`}>
-            Biography
+            {t("biography")}
           </BioTitle>
           <BioButton
             type="submit"
             className={`btn btn-primary d-inline m-1 p-1 w-auto`}
             disabled={!formUpdated}
           >
-            Submit
+            {t("submit")}
           </BioButton>
         </div>
         <Input
