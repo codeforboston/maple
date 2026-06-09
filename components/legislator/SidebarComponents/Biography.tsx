@@ -79,22 +79,6 @@ export function Biography({
   }
 }
 
-function ReadonlyBiography({ profile }: { profile: Profile }) {
-  const { about }: Profile = profile
-  const { t } = useTranslation("legislators")
-
-  return (
-    <BioBlock>
-      <BioTitle className={`my-1`}>{t("biography")}</BioTitle>
-      {about ? (
-        <div style={{ whiteSpace: "pre-wrap" }}>{about}</div>
-      ) : (
-        <div style={{ whiteSpace: "pre-wrap" }}>{t("notClaimed")}</div>
-      )}
-    </BioBlock>
-  )
-}
-
 function EditableBiography({
   actions,
   pageId,
@@ -149,6 +133,22 @@ function EditableBiography({
           defaultValue={about}
         />
       </Form>
+    </BioBlock>
+  )
+}
+
+function ReadonlyBiography({ profile }: { profile: Profile }) {
+  const { about }: Profile = profile
+  const { t } = useTranslation("legislators")
+
+  return (
+    <BioBlock>
+      <BioTitle className={`my-1`}>{t("biography")}</BioTitle>
+      {about ? (
+        <div style={{ whiteSpace: "pre-wrap" }}>{about}</div>
+      ) : (
+        <div style={{ whiteSpace: "pre-wrap" }}>{t("notClaimed")}</div>
+      )}
     </BioBlock>
   )
 }
