@@ -103,6 +103,14 @@ service cloud.firestore {
       allow read: if true;
       allow write: if false;
     }
+    match /lobbyingRegistrants/{id} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /lobbyingFilings/{id} {
+      allow read: if true;
+      allow write: if false;
+    }
     match /transcriptions/{tid} {
       // public, read-only
       allow read: if true
