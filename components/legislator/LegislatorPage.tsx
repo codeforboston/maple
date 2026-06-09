@@ -120,7 +120,7 @@ export function LegislatorPage(props: { id: string }) {
           <LegislatorTabs />
         </Col>
         <Col className={`mt-4`} md="3">
-          <LegislatorSidebar />
+          <LegislatorSidebar pageId={props.id} />
         </Col>
       </Row>
     </Container>
