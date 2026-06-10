@@ -63,8 +63,12 @@ const TabNavItem = ({
 }
 
 export function LegislatorTabs({
+  fullname,
+  pageId,
   tabCategory
 }: {
+  fullname?: string
+  pageId?: string
   tabCategory?: TabCategories
 }) {
   const { t } = useTranslation("legislators")
@@ -98,7 +102,7 @@ export function LegislatorTabs({
     {
       title: t("tabs.testimony"),
       eventKey: "testimony",
-      content: <Testimony />
+      content: <Testimony fullname={fullname} pageId={pageId} />
     },
     {
       title: t("tabs.votes"),
