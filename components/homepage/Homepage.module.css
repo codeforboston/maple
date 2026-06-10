@@ -10,10 +10,13 @@
 
 .hero,
 .didYouKnow,
-.peopleSaying,
 .features,
 .hearings {
   padding: 5rem 0;
+}
+
+.peopleSaying {
+  padding: 5rem 0 1rem 0;
 }
 
 .heroSection {
