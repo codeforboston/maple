@@ -11,7 +11,9 @@ export const transcription = functions
         // If we get a request with the right header and status, get the
         // transcription from the assembly API.
 
-        const transcript = await assemblyAI().getTranscript(req.body.transcript_id)
+        const transcript = await assemblyAI().getTranscript(
+          req.body.transcript_id
+        )
 
         if (transcript && transcript.webhook_auth) {
           // If there is a transcript and the transcript has an auth property,
