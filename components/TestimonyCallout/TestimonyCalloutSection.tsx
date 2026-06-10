@@ -16,11 +16,15 @@ export default function TestimonyCalloutSection() {
   return (
     <section className={styles.sectionShell}>
       <Row className={styles.peopleSaying}>
-        <Col xs={10} md={6} className={styles.sectionTitle}>
+        <Col xs={12} sm={12} md={7} className={styles.sectionTitle}>
           <h2>{t("testimonyCalloutSection.peopleSaying")}</h2>
         </Col>
-        <Col xs={10} md={3}>
-          <div>
+        <Col xs={12} sm={12} md={5}>
+          <div
+            className={`d-flex ${
+              isMobile ? "justify-content-center" : "justify-content-end"
+            }  me-2`}
+          >
             <Internal href="/testimony">
               <Button className={`btn btn-lg py-1`}>
                 {t("testimonyCalloutSection.browseTestimony")}
