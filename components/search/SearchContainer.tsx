@@ -116,15 +116,6 @@ export const SearchContainer = styled.div`
     display: none;
   }
 
-  .ais-Hits-list {
-    columns: 2;
-    column-gap: 1.15rem;
-
-    @media (max-width: 768px) {
-      columns: 1;
-    }
-  }
-
   .ais-Hits-item {
     background: none;
     break-inside: avoid;

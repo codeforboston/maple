@@ -177,7 +177,7 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
         <AuthorRow>
           <Image
             src={
-              isOrg ? "/profile-org-icon.svg" : "/profile-individual-icon.svg"
+              isOrg ? "/profile-org-blue.svg" : "/profile-individual-blue.svg"
             }
             alt={useTranslation("auth").t("profileIcon")}
             height="28px"

@@ -39,7 +39,7 @@ export function HearingsSectionContent({
           <h2 id="homepage-upcoming-hearings" className={styles.hearingsTitle}>
             {t("hearings.title")}
           </h2>
-          <Internal href="/bills" className={styles.hearingsActionDesktop}>
+          <Internal href="/hearings" className={styles.hearingsActionDesktop}>
             {t("hearings.action")}
           </Internal>
         </div>
@@ -78,7 +78,7 @@ export function HearingsSectionContent({
             {t("hearingsScheduled.noEvents")}
           </p>
         )}
-        <Internal href="/bills" className={styles.hearingsActionMobile}>
+        <Internal href="/hearings" className={styles.hearingsActionMobile}>
           {t("hearings.action")}
         </Internal>
       </div>
