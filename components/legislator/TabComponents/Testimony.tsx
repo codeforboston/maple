@@ -13,33 +13,38 @@ export function Testimony({ legislatorId }: { legislatorId?: string }) {
 
   // Query testimonies where legislator is a representative
   const representativeTestimony = usePublishedTestimonyListing({
-    court: CURRENT_COURT_NUMBER
+    uid: legislatorId
+    // court: CURRENT_COURT_NUMBER
   })
+
+  console.log(representativeTestimony)
 
   // Query testimonies where legislator is a senator
   const senatorTestimony = usePublishedTestimonyListing({
-    court: CURRENT_COURT_NUMBER
+    uid: legislatorId
+    // court: CURRENT_COURT_NUMBER
   })
 
   // Apply legislator filters
-  useEffect(() => {
-    if (legislatorId) {
-      representativeTestimony.setFilter({ representativeId: legislatorId })
-    }
-  }, [legislatorId, representativeTestimony])
+  // useEffect(() => {
+  //   if (legislatorId) {
+  //     representativeTestimony.items.setFilter({ authorUid: legislatorId })
+  //   }
+  // }, [legislatorId])
 
-  useEffect(() => {
-    if (legislatorId) {
-      senatorTestimony.setFilter({ senatorId: legislatorId })
-    }
-  }, [legislatorId, senatorTestimony])
+  // useEffect(() => {
+  //   if (legislatorId) {
+  //     senatorTestimony.setFilter({ authorUid: legislatorId })
+  //   }
+  // }, [legislatorId])
 
   const allTestimonies = useMemo(() => {
     const repTestimonies = representativeTestimony.items.result ?? []
     const senTestimonies = senatorTestimony.items.result ?? []
 
     // Combine and sort by publishedAt (newest first), then take 4 most recent
-    return [...repTestimonies, ...senTestimonies]
+    // return [...repTestimonies, ...senTestimonies]
+    return [...repTestimonies]
       .sort((a, b) => b.publishedAt.toMillis() - a.publishedAt.toMillis())
       .slice(0, 4)
   }, [representativeTestimony.items.result, senatorTestimony.items.result])
