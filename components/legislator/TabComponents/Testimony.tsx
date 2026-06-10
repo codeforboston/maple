@@ -86,9 +86,8 @@ export function Testimony({
       {allTestimonies.length > 0 ? (
         <div>
           {allTestimonies.map(testimony => (
-            <TestimonyBlock>
+            <TestimonyBlock key={testimony.id}>
               <TestimonyItem
-                key={testimony.id}
                 testimony={testimony}
                 isUser={testimony.authorUid === user?.uid}
                 onProfilePage={true}
