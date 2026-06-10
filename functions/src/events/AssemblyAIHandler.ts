@@ -101,13 +101,15 @@ export class AssemblyAIHandlerDummy extends AssemblyAIHandlerBase {
     const transcriptionId = `mock_${Math.random().toString(36).slice(2)}`
 
     setTimeout(async () => {
+      const transcript: any = await this.getTranscript(transcriptionId)
+      transcript["transcript_id"] = transcript.id
       await fetch("http://localhost:5001/demo-dtp/us-central1/transcription", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "x-maple-webhook": token
         },
-        body: JSON.stringify(await this.getTranscript(transcriptionId))
+        body: JSON.stringify(transcript)
       })
     }, 10000)
 
