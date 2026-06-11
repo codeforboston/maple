@@ -54,7 +54,7 @@ abstract class EventScraper<ListItem, Event extends BaseEvent> {
   abstract listEvents(): Promise<ListItem[]>
   abstract getEvent(item: ListItem): Promise<Event>
 
-  private async run() {
+  private async run(skipCutoff = false) {
     const list = await this.listEvents().catch(logFetchError("event list"))
 
     if (!list) return
@@ -67,7 +67,11 @@ abstract class EventScraper<ListItem, Event extends BaseEvent> {
         event = await this.getEvent(item).catch(logFetchError("event", id))
 
       if (!event) continue
-      if (event.startsAt.toMillis() < upcomingOrRecentCutoff.toMillis()) break
+      if (
+        !skipCutoff &&
+        event.startsAt.toMillis() < upcomingOrRecentCutoff.toMillis()
+      )
+        break
 
       writer.set(db.doc(`/events/${event.id}`), event, { merge: true })
 
@@ -75,6 +79,10 @@ abstract class EventScraper<ListItem, Event extends BaseEvent> {
     }
 
     await writer.close()
+  }
+
+  async runForBackfill() {
+    return this.run(true)
   }
 
   /** Parse the event start time in the time zone of the API. */
@@ -128,10 +136,11 @@ class SpecialEventsScraper extends EventScraper<
 }
 
 class SessionScraper extends EventScraper<SessionContent, Session> {
-  private court = currentGeneralCourt
+  private court: number
 
-  constructor() {
+  constructor(court: number = currentGeneralCourt) {
     super("every 60 minutes", 120)
+    this.court = court
   }
 
   async listEvents() {
@@ -517,4 +526,6 @@ export const scrapeSingleHearingv2 = onCall(
 
 export const scrapeSpecialEvents = new SpecialEventsScraper().function
 export const scrapeSessions = new SessionScraper().function
+export const scrapeSessionsForCourt = (court: number) =>
+  new SessionScraper(court).runForBackfill()
 export const scrapeHearings = new HearingScraper().function
