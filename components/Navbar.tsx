@@ -12,6 +12,7 @@ import {
   NavbarLinkBallotQuestions,
   DESKTOP_NAV_ITEM_CLASS,
   NavbarLinkAI,
+  NavbarLinkAiTools,
   NavbarLinkBills,
   NavbarLinkHearings,
   NavbarLinkEditProfile,
@@ -92,6 +93,7 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           <NavbarLinkEffective handleClick={closeNav} />
           <NavbarLinkProcess handleClick={closeNav} />
           <NavbarLinkWhyUse handleClick={closeNav} />
+          <NavbarLinkAiTools handleClick={closeNav} />
         </NavDropdown>
       </Nav>
     )
@@ -270,6 +272,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             <NavbarLinkEffective />
             <NavbarLinkProcess />
             <NavbarLinkWhyUse />
+            <NavbarLinkAiTools />
           </Dropdown.Menu>
         </Dropdown>
       </div>

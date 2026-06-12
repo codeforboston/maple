@@ -1,0 +1,8 @@
+node_modules
+dist
+*.test.ts
+jest.config.js
+implementation_plan.md
+.env
+.env.*
+create-agent-key.ts

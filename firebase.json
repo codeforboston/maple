@@ -2,7 +2,14 @@
   "hosting": {
     "public": "out",
     "cleanUrls": true,
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "/api/mcp",
+        "function": "mcpProxy",
+        "region": "us-central1"
+      }
+    ]
   },
   "functions": [
     {
