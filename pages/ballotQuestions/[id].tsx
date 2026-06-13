@@ -10,6 +10,7 @@ import {
   Hearing
 } from "../../components/ballotquestions/types"
 import { BallotQuestion, Bill } from "../../components/db"
+import { Video } from "../../components/hearing/hearing"
 import { createPage } from "../../components/page"
 import { usePublishService } from "../../components/publish/hooks"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
@@ -22,7 +23,7 @@ async function getHearing(id: string): Promise<Hearing | null> {
   const data = snap.data()
   return {
     id,
-    videoURL: data.videoURL ?? undefined,
+    videoURLs: data.videos.map((item: Video) => item.url),
     startsAt: data.startsAt?.toMillis() ?? 0
   }
 }

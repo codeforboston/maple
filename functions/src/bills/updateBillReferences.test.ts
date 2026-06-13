@@ -13,6 +13,8 @@ function createHearing(
     type: "hearing",
     startsAt,
     fetchedAt: Timestamp.fromMillis(Date.now()),
+    videos: [],
+    transcriptionIds: [],
     content: {
       EventId: 1,
       EventDate: "2026-02-01T10:00:00",
