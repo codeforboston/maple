@@ -2,6 +2,7 @@ import type { ModalProps } from "react-bootstrap"
 import { Button, Col, Modal, Row, Stack, Image } from "../bootstrap"
 import styled from "styled-components"
 import { useTranslation } from "next-i18next"
+import { useFlags } from "../featureFlags"
 
 export const StyledButton = styled(Button)`
   width: 100%;
@@ -24,13 +25,16 @@ export default function ProfileTypeModal({
   show,
   onHide,
   onIndividualUserClick,
-  onOrgUserClick
+  onOrgUserClick,
+  onLegislatorUserClick
 }: Pick<ModalProps, "show" | "onHide"> & {
   onHide: () => void
   onIndividualUserClick: () => void
   onOrgUserClick: () => void
+  onLegislatorUserClick: () => void
 }) {
   const { t } = useTranslation("auth")
+  const { legislators } = useFlags()
 
   return (
     <Modal
@@ -85,6 +89,32 @@ export default function ProfileTypeModal({
                   </Col>
                 </Row>
               </StyledButton>
+
+              {legislators && (
+                <StyledButton
+                  type="button"
+                  variant="secondary"
+                  onClick={onLegislatorUserClick}
+                >
+                  <Row>
+                    <Col xs="auto" className="d-flex align-items-center">
+                      <Image alt="" src="/profile-individual-white.svg" />
+                    </Col>
+
+                    <Col>
+                      <p>
+                        <b>
+                          {t("legislator") ?? "Legislator"}
+                        </b>
+                      </p>
+                      <p>
+                        {t("legislatorDescription") ??
+                          "I am an elected MA legislator"}
+                      </p>
+                    </Col>
+                  </Row>
+                </StyledButton>
+              )}
             </Stack>
             <p>{t("orgVetting")}</p>
             <hr />
