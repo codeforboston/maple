@@ -103,9 +103,7 @@ export default function ProfileTypeModal({
 
                     <Col>
                       <p>
-                        <b>
-                          {t("legislator") ?? "Legislator"}
-                        </b>
+                        <b>{t("legislator") ?? "Legislator"}</b>
                       </p>
                       <p>
                         {t("legislatorDescription") ??

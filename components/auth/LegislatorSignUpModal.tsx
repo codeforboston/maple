@@ -2,15 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import clsx from "clsx"
 import type { ModalProps } from "react-bootstrap"
 import { useForm } from "react-hook-form"
-import {
-  Alert,
-  Button,
-  Col,
-  Form,
-  Modal,
-  Row,
-  Stack
-} from "../bootstrap"
+import { Alert, Button, Col, Form, Modal, Row, Stack } from "../bootstrap"
 import { LoadingButton } from "../buttons"
 import Input from "../forms/Input"
 import PasswordInput from "../forms/PasswordInput"
@@ -58,10 +50,7 @@ export default function LegislatorSignUpModal({
   const { claimedCodes } = useClaimedMemberCodes()
 
   const memberIndex = useMemo(() => {
-    const all = [
-      ...(index?.representatives ?? []),
-      ...(index?.senators ?? [])
-    ]
+    const all = [...(index?.representatives ?? []), ...(index?.senators ?? [])]
     if (!claimedCodes) return all
     return all.filter(m => !claimedCodes.has(m.MemberCode))
   }, [index, claimedCodes])
@@ -182,7 +171,9 @@ export default function LegislatorSignUpModal({
                       t("searchLegislators") ?? "Search by name or district..."
                     }
                     menuPortalTarget={document.body}
-                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                    styles={{
+                      menuPortal: (base: any) => ({ ...base, zIndex: 9999 })
+                    }}
                   />
                   {memberError && (
                     <Form.Text className="text-danger">{memberError}</Form.Text>

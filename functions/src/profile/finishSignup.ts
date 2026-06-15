@@ -5,7 +5,12 @@ import { checkRequestZod, checkAuth } from "../common"
 import { setRole } from "../auth"
 
 const CreateProfileRequest = z.object({
-  requestedRole: z.enum(["user", "organization", "pendingUpgrade", "pendingLegislator"])
+  requestedRole: z.enum([
+    "user",
+    "organization",
+    "pendingUpgrade",
+    "pendingLegislator"
+  ])
 })
 
 export const finishSignup = functions.https.onCall(async (data, context) => {

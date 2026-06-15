@@ -43,9 +43,9 @@ const UserRoleToolBar = () => {
   }
 
   const pendingCount =
-    (data?.filter(
+    data?.filter(
       d => d.role === "pendingUpgrade" || d.role === "pendingLegislator"
-    ).length ?? 0)
+    ).length ?? 0
 
   const fakeOrgRequest = useCallback(async () => {
     const uid = nanoid(8)
@@ -64,7 +64,12 @@ const UserRoleToolBar = () => {
     <Toolbar sx={{ width: "100%", justifyContent: "space-between" }}>
       <div>Upgrade Requests: {pendingCount} pending upgrades</div>
       <ButtonGroup title="Show only: ">
-        {["pendingUpgrade", "organization", "pendingLegislator", "legislator"].map(role => {
+        {[
+          "pendingUpgrade",
+          "organization",
+          "pendingLegislator",
+          "legislator"
+        ].map(role => {
           return (
             <Button
               key={role}
