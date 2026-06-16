@@ -84,7 +84,7 @@ export const matchOcpfMembers = functions.https.onRequest(async (req, res) => {
     } else if (candidates.length === 1 && firstNameMatches.length === 0) {
       ambiguous.push({ memberCode: member.MemberCode, name: member.Name })
       functions.logger.warn(
-        "Single last-name match but first name did not align",
+        "Ambiguous OCPF match. Single last-name match but first name did not align.",
         {
           memberCode: member.MemberCode,
           name: member.Name,
@@ -98,7 +98,7 @@ export const matchOcpfMembers = functions.https.onRequest(async (req, res) => {
       )
     } else if (candidates.length === 0) {
       unmatched.push({ memberCode: member.MemberCode, name: member.Name })
-      functions.logger.warn("No OCPF match", {
+      functions.logger.warn("No OCPF match.", {
         memberCode: member.MemberCode,
         name: member.Name,
         district: member.District,
@@ -106,7 +106,7 @@ export const matchOcpfMembers = functions.https.onRequest(async (req, res) => {
       })
     } else {
       ambiguous.push({ memberCode: member.MemberCode, name: member.Name })
-      functions.logger.warn("Ambiguous OCPF match", {
+      functions.logger.warn("Ambiguous OCPF match.", {
         memberCode: member.MemberCode,
         name: member.Name,
         district: member.District,
