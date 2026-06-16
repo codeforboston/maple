@@ -7,7 +7,7 @@ import { faFilter } from "@fortawesome/free-solid-svg-icons"
 import styled from "styled-components"
 
 const FilterSection = styled.div`
-  background: var(--maple-surface-gradient);
+  background: white;
   border: 1px solid var(--maple-surface-border);
   border-radius: var(--maple-radius-md);
   box-shadow: var(--maple-shadow-sm);
