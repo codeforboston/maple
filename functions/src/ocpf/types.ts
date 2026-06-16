@@ -1,5 +1,3 @@
-import { Timestamp } from "../firebase"
-
 // One active filer row parsed from ocpf-filers.txt
 export interface OcpfFilerRow {
   cpfId: number
