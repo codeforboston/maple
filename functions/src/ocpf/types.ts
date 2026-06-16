@@ -41,36 +41,3 @@ export interface MembersFinanceBreakdown {
   union: FinanceBreakdownEntry
   unitemized: { amount: number }
 }
-
-// Firestore: /generalCourts/{court}/membersFinance/{memberCode}
-export interface MembersFinance {
-  ocpfCpfId: number
-  totalRaised: number
-  totalSpent: number
-  cashOnHand: number
-  contributorCount: number
-  lastUpdated: Timestamp
-  breakdown: MembersFinanceBreakdown
-  candidateFunds: {
-    loans: FinanceBreakdownEntry
-    contributions: FinanceBreakdownEntry
-  }
-  inKind: {
-    individual: FinanceBreakdownEntry
-    committee: FinanceBreakdownEntry
-    union: FinanceBreakdownEntry
-    unitemized: { amount: number }
-  }
-  otherReceipts: {
-    nonContribution: FinanceBreakdownEntry
-  }
-  years: Record<
-    string,
-    {
-      totalRaised: number
-      totalSpent: number
-      breakdown: MembersFinanceBreakdown
-      finalized: boolean
-    }
-  >
-}

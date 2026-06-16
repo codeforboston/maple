@@ -37,6 +37,9 @@ export const matchOcpfMembers = functions.https.onRequest(async (req, res) => {
   const filers = await downloadAndParseFilers()
   const members = await loadMembers()
 
+  const existingMappingDoc = await db.doc("/config/ocpfMemberMapping").get()
+  const existingMapping = (existingMappingDoc.data() ?? {}) as OcpfMemberMapping
+
   const mapping: OcpfMemberMapping = {}
   const unmatched: OcpfMemberMappingFlagsEntry[] = []
   const ambiguous: OcpfMemberMappingFlagsEntry[] = []
@@ -79,6 +82,7 @@ export const matchOcpfMembers = functions.https.onRequest(async (req, res) => {
       }
       mapping[member.MemberCode] = entry
     } else if (candidates.length === 0) {
+      if (member.MemberCode in existingMapping) continue
       unmatched.push({ memberCode: member.MemberCode, name: member.Name })
       functions.logger.warn("No OCPF match", {
         memberCode: member.MemberCode,
@@ -87,6 +91,7 @@ export const matchOcpfMembers = functions.https.onRequest(async (req, res) => {
         branch
       })
     } else {
+      if (member.MemberCode in existingMapping) continue
       ambiguous.push({ memberCode: member.MemberCode, name: member.Name })
       functions.logger.warn("Ambiguous OCPF match", {
         memberCode: member.MemberCode,
@@ -105,7 +110,7 @@ export const matchOcpfMembers = functions.https.onRequest(async (req, res) => {
 
   const flags: OcpfMemberMappingFlags = { unmatched, ambiguous }
 
-  await db.doc("/config/ocpfMemberMapping").set(mapping)
+  await db.doc("/config/ocpfMemberMapping").set(mapping, { merge: true })
   await db.doc("/config/ocpfMemberMappingFlags").set(flags)
 
   functions.logger.info("matchOcpfMembers complete", {
