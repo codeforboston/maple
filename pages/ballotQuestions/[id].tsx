@@ -97,6 +97,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
       testimonySummary,
       ...(await serverSideTranslations(locale, [
         "auth",
+        "ballotquestions",
         "common",
         "footer",
         "testimony",

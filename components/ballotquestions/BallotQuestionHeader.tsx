@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import Link from "next/link"
 import { Container, Row, Col } from "react-bootstrap"
 import { useAuth } from "../auth"
@@ -5,6 +6,7 @@ import { BallotQuestion, Bill } from "../db"
 import { useFlags } from "../featureFlags"
 import { FollowBallotQuestionButton } from "../shared/FollowButton"
 import { QuestionTooltip } from "../tooltip"
+import { BallotQuestionAlert } from "./BallotQuestionAlert"
 import { DescriptionBox } from "./DescriptionBox"
 import { getBallotQuestionStatusLabel } from "./status"
 import { YourTestimonyPanel } from "./YourTestimonyPanel"
@@ -16,57 +18,51 @@ export const BallotQuestionHeader = ({
   ballotQuestion: BallotQuestion
   bill: Bill | null
 }) => {
+  const { t } = useTranslation(["ballotquestions"])
   const { notifications } = useFlags()
   const { user } = useAuth()
   const statusLabel = getBallotQuestionStatusLabel(ballotQuestion.ballotStatus)
-  const questionNumberDisclaimer =
-    "Question numbers are assigned by the Secretary of State in the summer prior to an election"
+  const questionNumberDisclaimer = t("header.questionNumberDisclaimer")
   const description = ballotQuestion.description
   const hasDescription = Boolean(description)
 
   const getTypeLabel = () => {
     switch (ballotQuestion.type) {
       case "initiative_statute":
-        return "Law"
+        return t("types.law")
       case "initiative_constitutional":
-        return "Constitutional Initiative"
+        return t("types.constitutionalInitiative")
       case "legislative_referral":
-        return "Legislative Referral"
+        return t("types.legislativeReferral")
       case "constitutional_amendment":
-        return "Constitutional Amendment"
+        return t("types.constitutionalAmendment")
       case "advisory":
-        return "Advisory Question"
+        return t("types.advisoryQuestion")
+      case "referendum":
+        return t("ballot_question_type.referendum")
       default:
-        return "Ballot Question"
+        return t("types.default")
     }
   }
 
   return (
     <Container fluid="xl" className="mt-4">
-      <div
-        className="rounded-4 border px-4 py-4 px-lg-5 py-lg-5 shadow-sm"
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(248, 250, 255, 1) 100%)",
-          borderColor: "rgba(15, 23, 42, 0.08)",
-          boxShadow: "0 0.75rem 2rem rgba(15, 23, 42, 0.07)"
-        }}
-      >
+      <div className="maple-surface-gradient rounded-4 px-4 py-4 px-lg-5 py-lg-5">
         <Row className="g-4 align-items-start">
           <Col lg={8}>
             <Link
               href="/ballotQuestions"
-              className="ballot-question-back-link text-decoration-none small fw-semibold d-inline-flex align-items-center gap-2 mb-4"
+              className="maple-back-link text-decoration-none small fw-semibold d-inline-flex align-items-center gap-2 mb-4"
             >
               <span aria-hidden="true">←</span>
-              <span>Back to ballot questions</span>
+              <span>{t("header.backLink")}</span>
             </Link>
 
             <div className="d-flex flex-wrap align-items-center gap-2 gap-lg-3 mb-3">
               <span
                 className="d-inline-flex align-items-center gap-2 fw-semibold"
                 style={{
-                  color: "var(--bs-secondary)",
+                  color: "var(--maple-brand-primary)",
                   fontSize: "0.95rem",
                   lineHeight: 1.2
                 }}
@@ -76,9 +72,9 @@ export const BallotQuestionHeader = ({
                   style={{
                     width: "0.6rem",
                     height: "0.6rem",
-                    borderRadius: "999px",
-                    backgroundColor: "var(--bs-secondary)",
-                    boxShadow: "0 0 0 4px rgba(94, 114, 228, 0.12)"
+                    borderRadius: "var(--maple-radius-pill)",
+                    backgroundColor: "var(--maple-brand-primary)",
+                    boxShadow: "0 0 0 4px var(--maple-surface-accent-strong)"
                   }}
                 />
                 {statusLabel}
@@ -94,7 +90,7 @@ export const BallotQuestionHeader = ({
                 letterSpacing: "-0.02em"
               }}
             >
-              Question{" "}
+              {t("header.question")}{" "}
               {ballotQuestion.ballotQuestionNumber != null ? (
                 ballotQuestion.ballotQuestionNumber
               ) : (
@@ -116,38 +112,34 @@ export const BallotQuestionHeader = ({
               {ballotQuestion.title || bill?.content.Title || ballotQuestion.id}
             </p>
 
+            <BallotQuestionAlert
+              alertFlag={ballotQuestion.alertFlag}
+              alertTip={ballotQuestion.alertTip}
+            />
+
             <div
-              className="d-flex flex-wrap gap-2 gap-lg-3 mb-4"
+              className="d-flex flex-wrap gap-2 gap-lg-3 mb-4 mt-3"
               style={{ maxWidth: "42rem" }}
             >
-              <MetaFact label="Type" value={getTypeLabel()} />
+              <MetaFact label={t("header.type")} value={getTypeLabel()} />
               <MetaFact
-                label="Election"
+                label={t("header.election")}
                 value={ballotQuestion.electionYear.toString()}
               />
-              <MetaFact label="Court" value={ballotQuestion.court.toString()} />
-              <MetaFact label="Document" value={ballotQuestion.id} />
+              <MetaFact
+                label={t("header.court")}
+                value={ballotQuestion.court.toString()}
+              />
+              <MetaFact
+                label={t("header.document")}
+                value={ballotQuestion.id}
+              />
             </div>
           </Col>
 
           <Col lg={4}>
-            <div
-              className="h-100 rounded-4 border p-4"
-              style={{
-                backgroundColor: "rgba(248, 250, 252, 0.92)",
-                borderColor: "rgba(15, 23, 42, 0.08)"
-              }}
-            >
-              <div
-                className="text-uppercase fw-semibold mb-3"
-                style={{
-                  fontSize: "0.75rem",
-                  letterSpacing: "0.08em",
-                  color: "#64748b"
-                }}
-              >
-                Take part
-              </div>
+            <div className="h-100 maple-muted-surface rounded-4 p-4">
+              <div className="maple-eyebrow mb-3">{t("header.takePart")}</div>
               <div className="mb-3">
                 {notifications && user && (
                   <FollowBallotQuestionButton ballotQuestion={ballotQuestion} />
@@ -159,23 +151,27 @@ export const BallotQuestionHeader = ({
         </Row>
 
         {(hasDescription || ballotQuestion.pdfUrl) && (
-          <div>
-            {description && <DescriptionBox description={description} />}
+          <div className="mt-4">
+            {description && (
+              <div className="mb-3">
+                <DescriptionBox description={description} />
+              </div>
+            )}
 
             {ballotQuestion.pdfUrl && (
               <a
                 href={ballotQuestion.pdfUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ballot-question-pdf-link d-inline-flex align-items-center gap-2 rounded-pill border px-3 py-2 small text-decoration-none fw-semibold mt-3 mt-lg-0"
+                className="maple-pill-link d-inline-flex align-items-center gap-2 rounded-pill border px-3 py-2 small text-decoration-none fw-semibold"
                 style={{
-                  color: "var(--bs-secondary)",
-                  borderColor: "rgba(94, 114, 228, 0.18)",
-                  backgroundColor: "rgba(255, 255, 255, 0.85)"
+                  color: "var(--maple-brand-primary)",
+                  borderColor: "var(--maple-border-accent)",
+                  backgroundColor: "var(--maple-surface-base)"
                 }}
               >
                 <span aria-hidden="true">↗</span>
-                <span>Read petition PDF</span>
+                <span>{t("header.readPetitionPdf")}</span>
               </a>
             )}
           </div>
@@ -193,19 +189,10 @@ function MetaFact({ label, value }: { label: string; value: string }) {
         minWidth: "6.5rem"
       }}
     >
-      <span
-        className="text-uppercase fw-semibold"
-        style={{
-          fontSize: "0.72rem",
-          letterSpacing: "0.08em",
-          color: "#64748b"
-        }}
-      >
-        {label}
-      </span>
+      <span className="maple-eyebrow">{label}</span>
       <span
         style={{
-          color: "#334155",
+          color: "var(--maple-text-body)",
           fontSize: "1.05rem",
           fontWeight: 650,
           lineHeight: 1.3

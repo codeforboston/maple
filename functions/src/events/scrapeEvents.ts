@@ -44,7 +44,8 @@ abstract class EventScraper<ListItem, Event extends BaseEvent> {
     return runWith({
       timeoutSeconds: this.timeout,
       secrets: ["ASSEMBLY_API_KEY"],
-      memory: this.memory
+      memory: this.memory,
+      maxInstances: 1
     })
       .pubsub.schedule(this.schedule)
       .onRun(() => this.run())
@@ -164,15 +165,6 @@ const extractAudioFromVideo = async (
       .format("mp4")
       .on("start", commandLine => {
         console.log(`Spawned FFmpeg with command: ${commandLine}`)
-      })
-      .on("progress", progress => {
-        if (
-          progress &&
-          progress.percent &&
-          Math.round(progress.percent) % 10 === 0
-        ) {
-          console.log(`Processing: ${progress.percent}% done`)
-        }
       })
       .on("end", () => {
         console.log("FFmpeg processing finished successfully")

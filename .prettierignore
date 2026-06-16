@@ -15,3 +15,5 @@ coverage
 storybook-static
 llm
 playwright-report
+CLAUDE.md
+.cursor/

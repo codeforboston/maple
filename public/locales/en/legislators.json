@@ -1,0 +1,26 @@
+{
+  "billsSponsored": "Bills Sponsored",
+  "canSubmit": "can submit testimony on any bill or ballot question, just like any constituent. Her stance and reasoning are shown exactly as submitted — MAPLE does not edit or editorialize.",
+  "contact": "Contact",
+  "cosponsored": "Cosponsored",
+  "fundsRaised": "Funds Raised",
+  "home": "Home",
+  "legislators": "Legislators",
+  "party": {
+    "democratic": "Democratic Party",
+    "party": "Party",
+    "republican": "Republican Party"
+  },
+  "stateRepresentative": "State Representative",
+  "stateSenator": "State Senator",
+  "tabs": {
+    "bills": "Bills",
+    "district": "District",
+    "elections": "Elections",
+    "finance": "Finance",
+    "priorities": "Priorities",
+    "testimony": "Testimony",
+    "votes": "Votes"
+  },
+  "termsServed": "Terms Served"
+}

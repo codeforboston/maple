@@ -24,6 +24,22 @@ export const Status = ({ bill }: BillProps) => {
   const handleShowBillHistory = () => setShowBillHistory(true)
   const handleCloseBillHistory = () => setShowBillHistory(false)
   const history = last(bill.history)
+  const today = new Date().toISOString()
+
+  // revisit this when we revisit translations for the backend
+  const target1 = "Hearing scheduled for "
+  const target2 = "Hearing rescheduled to "
+
+  let hearingCheck = false
+  if (
+    history?.Action.startsWith(target1) ||
+    history?.Action.startsWith(target2)
+  ) {
+    hearingCheck = true
+  }
+
+  const hearingDate = history?.Date ?? ""
+  const dateCheck = !!hearingDate && hearingDate < today
 
   if (!history) return null
   return (
@@ -34,7 +50,7 @@ export const Status = ({ bill }: BillProps) => {
           className="text-truncate ps-4"
           onClick={handleShowBillHistory}
         >
-          {history.Action}
+          {hearingCheck && dateCheck ? t("bill.hearing_held") : history.Action}
         </StyledButton>
         <Modal show={showBillHistory} onHide={handleCloseBillHistory} size="lg">
           <Modal.Header closeButton onClick={handleCloseBillHistory}>

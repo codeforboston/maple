@@ -179,10 +179,10 @@ export const TestimonyPreview = styled<{ type: "draft" | "published" }>(
 
     ::-webkit-scrollbar-thumb {
       border-radius: 1rem;
-      background: rgba(0, 0, 0, 0.3);
+      background: var(--maple-overlay-backdrop-subtle);
 
       :hover {
-        background: rgba(0, 0, 0, 0.6);
+        background: var(--maple-overlay-backdrop);
       }
     }
   }

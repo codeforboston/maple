@@ -23,5 +23,36 @@
   "what": {
     "title": "What",
     "bodytext": "MAPLE makes it easy to submit testimony and see testimony submitted by others."
+  },
+  "hero": {
+    "title": "Your Voice Matters",
+    "body": "MAPLE makes it easy for anyone to submit and see testimony to the Massachusetts Legislature about the bills that will shape our future.",
+    "primaryAction": "Get Started",
+    "secondaryAction": "Learn More"
+  },
+  "didYouKnow": {
+    "title": "Did You Know?",
+    "submit": "Anyone can submit testimony to the MA legislature.",
+    "deadline": "Testimony can be generally be submitted up until the hearing date.",
+    "legislators": "Legislators value personal stories and information regarding their constituents."
+  },
+  "explainer": {
+    "title": "What does MAPLE do?",
+    "body": "MAPLE makes it easy to engage with the Massachusetts Legislature. Research bills, read diverse perspectives, and submit your own testimony to ensure your voice is heard.",
+    "action": "Get Started"
+  },
+  "features": {
+    "title": "Features",
+    "research": "Explore bills and policy changes on topics that matter to you. Search by keyword, committee, or legislator.",
+    "publish": "Share your perspective directly with the State House. Submit written testimony to make your voice part of the legislative process.",
+    "share": "Read testimony from organizations and constituents across the Commonwealth to get informed on the issues of the day."
+  },
+  "hearings": {
+    "title": "Upcoming Hearings",
+    "action": "Browse Hearings",
+    "loading": "Loading upcoming hearings...",
+    "topic": "Massachusetts Legislature",
+    "appPreviewAlt": "MAPLE platform preview",
+    "logoAlt": "MAPLE Massachusetts Platform for Legislative Engagement logo"
   }
 }

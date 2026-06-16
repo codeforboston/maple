@@ -25,12 +25,26 @@ import { ResultsPane } from "./ResultsPane"
 import { getServerConfig } from "../common"
 import { SearchErrorBoundary } from "../SearchErrorBoundary"
 
+const EMPTY_MENU_ATTRIBUTES: string[] = []
+
+const ControlsBar = styled.div`
+  background: white;
+  border: 1px solid var(--maple-surface-border);
+  border-radius: var(--bs-border-radius-xl);
+  box-shadow: var(--maple-shadow-sm);
+  padding: var(--maple-space-lg);
+  margin-bottom: var(--maple-space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--maple-space-sm);
+`
+
 const RefinementToolbar = styled.div`
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--maple-space-sm);
 `
 
 export type SearchType = "bill" | "testimony" | "hearing"
@@ -92,7 +106,7 @@ export const SearchPage = <TRecord extends Hit>({
       })),
     [filters, searchType, t]
   )
-  const menuAttributes = menuProps?.attributes ?? []
+  const menuAttributes = menuProps?.attributes ?? EMPTY_MENU_ATTRIBUTES
   const virtualFilters = useMemo(() => {
     const items = new Set<string>()
     filtersWithDefaults.forEach(({ attribute }) => items.add(attribute))
@@ -134,30 +148,24 @@ export const SearchPage = <TRecord extends Hit>({
         <RefinementPanel menuProps={menuProps} filters={filtersWithDefaults}>
           {({ filterPanel, filterToggle }) => (
             <SearchContainer>
-              <Row>
-                <Col xs={12}>
-                  <SearchBox
-                    placeholder={t(`search_box.placeholder.${searchType}`)}
-                    className="mt-2 mb-3"
-                  />
-                </Col>
-              </Row>
+              <ControlsBar>
+                <SearchBox
+                  placeholder={t(`search_box.placeholder.${searchType}`)}
+                />
+                <RefinementToolbar>
+                  <ResultCount className="flex-grow-1" />
+                  <SortBy items={sortByItems} />
+                  {filterToggle}
+                </RefinementToolbar>
+                <CurrentRefinements {...currentRefinementsProps} />
+              </ControlsBar>
               <Row>
                 <Col xs={12} lg={3} className="mb-3 mb-lg-0">
                   {filterPanel}
                 </Col>
                 <Col className="d-flex flex-column">
-                  <RefinementToolbar>
-                    <ResultCount className="flex-grow-1 m-1" />
-                    <SortBy items={sortByItems} />
-                    {filterToggle}
-                  </RefinementToolbar>
-                  <CurrentRefinements
-                    className="mt-2 mb-2"
-                    {...currentRefinementsProps}
-                  />
                   <ResultsPane hitComponent={hitComponent} />
-                  <Pagination className="mx-auto mt-2 mb-3" />
+                  <Pagination className="mx-auto mt-4 mb-3" />
                 </Col>
               </Row>
             </SearchContainer>

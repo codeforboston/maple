@@ -1,11 +1,11 @@
 {
   "about": "About",
   "announcement": {
-    "headingBold": "New on MAPLE:", 
-    "headingBody": "Looking to learn about the latest action in a committee?", 
-    "description": "MAPLE now has searchable transcripts for all legislative hearings.", 
+    "headingBold": "New on MAPLE:",
+    "headingBody": "Looking to learn about the latest action in a committee?",
+    "description": "MAPLE now has searchable transcripts for all legislative hearings.",
     "link": "Try it out!"
-  }, 
+  },
   "back_to_bills": "back to list of bills",
   "back_to_hearings": "back to list of hearings",
   "bill": {
@@ -23,8 +23,9 @@
     "disclosure_date": "Disclosure Date",
     "download_pdf": "Download PDF",
     "example_name": "Example Name",
+    "hearing_held": "Hearing Held",
     "hearing_scheduled_for": "Hearing Scheduled for {{date, datetime(year: 'numeric'; month: 'long'; day: 'numeric'; hour: 'numeric'; minute: 'numeric')}}",
-    "hearing_video_and_transcript" : "Hearing Video + Transcript", 
+    "hearing_video_and_transcript": "Hearing Video + Transcript",
     "history": "History",
     "icon": {
       "commerce": "Commerce",
@@ -118,10 +119,12 @@
     "editProfile": "Edit Profile",
     "faq": "FAQ",
     "followingTab": "Followed Content",
+    "hearing": "Hearing",
     "hearings": "Hearings",
     "home": "Home",
     "learnAboutTestimony": "Learn About Testimony",
     "legislativeProcess": "About the MA Legislative Process",
+    "legislator": "Legislator",
     "logo": "Massachusetts Platform for Legislative Engagement home",
     "main": "Main navigation",
     "missionAndGoals": "Mission & Goals",
@@ -198,6 +201,6 @@
   },
   "user_updates": "User Updates",
   "view": "View",
-  "view_the_hearing" : "View the hearing for this bill, complete with a generative AI transcript.",
+  "view_the_hearing": "View the hearing for this bill, complete with a generative AI transcript.",
   "yes": "Yes"
 }

@@ -68,6 +68,23 @@ git pull upstream main
 - `yarn dev:down`: Stop the application.
 - `yarn dev:update`: Update the application images. Run this whenever dependencies in `package.json` change.
 
+### Storybook Firebase Guard
+
+Storybook blocks real Firebase Auth and Firestore calls by default to prevent accidental network access from stories.
+
+If a story triggers a blocked call, Storybook throws an error with guidance about what to mock.
+
+Use these patterns when building stories:
+
+- Prefer passing mock props/data to components instead of rendering hook-driven containers.
+- If a component supports injection (for example, mock `profile`/`index` props), use that in the story args.
+- For auth-driven stories, use the helpers in [stories/utils/storybookFirebaseAuth.ts](stories/utils/storybookFirebaseAuth.ts) to switch between logged-out and logged-in user mocks.
+
+Opt-out options:
+
+- Per story: set `parameters.firebaseGuard.allow = true`.
+- Globally: run Storybook with `STORYBOOK_ALLOW_FIREBASE_CALLS=1`.
+
 Install the [Redux DevTools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd) and [React DevTools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi) browser extensions if you're developing frontend
 
 ## Contributing Backend Features to Dev/Prod:

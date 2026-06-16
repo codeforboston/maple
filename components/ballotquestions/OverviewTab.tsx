@@ -1,3 +1,4 @@
+import { Trans, useTranslation } from "next-i18next"
 import type { ReactNode } from "react"
 import { Col, Row } from "react-bootstrap"
 import { BallotQuestion, Bill } from "../db"
@@ -14,9 +15,10 @@ export const OverviewTab = ({
   bill: Bill | null
   hearings: Hearing[]
 }) => {
+  const { t } = useTranslation(["ballotquestions"])
   const sortedHearings = [...hearings].sort((a, b) => b.startsAt - a.startsAt)
   const sectionCopyStyle = {
-    color: "#334155",
+    color: "var(--maple-text-body)",
     fontSize: "0.98rem",
     lineHeight: 1.8,
     maxWidth: "75ch"
@@ -27,52 +29,49 @@ export const OverviewTab = ({
       <SectionCard>
         <div className="d-flex align-items-start gap-3 mb-0">
           <div
-            className="rounded-4 border d-flex align-items-center justify-content-center flex-shrink-0"
+            className="maple-icon-chip rounded-4 d-flex align-items-center justify-content-center flex-shrink-0"
             style={{
               width: "3rem",
-              height: "3rem",
-              borderColor: "rgba(94, 114, 228, 0.16)",
-              background:
-                "linear-gradient(180deg, rgba(94, 114, 228, 0.16) 0%, rgba(226, 232, 240, 0.55) 100%)"
+              height: "3rem"
             }}
           >
             <BallotGlyph />
           </div>
           <div>
-            <h2 className="h4 mb-1 text-secondary">Overview</h2>
+            <h2 className="h4 mb-1 text-secondary">{t("overview.title")}</h2>
             <p className="text-body-secondary small mb-0">
-              Understand the question, key details, and ballot context.
+              {t("overview.description")}
             </p>
           </div>
         </div>
       </SectionCard>
 
+      {ballotQuestion.type === "referendum" && (
+        <SectionCard>
+          <h3 className="h5 mb-2 text-dark">
+            {t("ballot_question_referendum_how_vote_works.title")}
+          </h3>
+          <p className="mb-0" style={sectionCopyStyle}>
+            <Trans
+              i18nKey="ballot_question_referendum_how_vote_works.body"
+              ns="ballotquestions"
+              components={[<strong key="yes" />, <strong key="no" />]}
+            />
+          </p>
+        </SectionCard>
+      )}
+
       {ballotQuestion.atAGlance && ballotQuestion.atAGlance.length > 0 && (
         <SectionCard>
-          <h3 className="h5 mb-3 text-dark">Key Details</h3>
+          <h3 className="h5 mb-3 text-dark">{t("overview.keyDetails")}</h3>
           <Row className="g-3">
             {ballotQuestion.atAGlance.map((item, idx) => (
               <Col key={idx} md={6}>
-                <div
-                  className="rounded-4 border h-100 px-3 py-3"
-                  style={{
-                    backgroundColor: "rgba(248, 250, 252, 0.9)",
-                    borderColor: "rgba(15, 23, 42, 0.08)"
-                  }}
-                >
-                  <div
-                    className="text-uppercase fw-semibold mb-2"
-                    style={{
-                      fontSize: "0.72rem",
-                      letterSpacing: "0.08em",
-                      color: "#64748b"
-                    }}
-                  >
-                    {item.label}
-                  </div>
+                <div className="maple-muted-surface rounded-4 h-100 px-3 py-3">
+                  <div className="maple-eyebrow mb-2">{item.label}</div>
                   <div
                     style={{
-                      color: "#1e293b",
+                      color: "var(--maple-text-strong)",
                       fontSize: "0.98rem",
                       lineHeight: 1.5
                     }}
@@ -88,9 +87,9 @@ export const OverviewTab = ({
 
       {ballotQuestion.fullSummary && (
         <SectionCard>
-          <h3 className="h5 mb-3 text-dark d-flex align-items-center">
-            Official summary by the Massachusetts Attorney General
-            <QuestionTooltip text="Prepared as required by state law. This summary may be revised through the legal process before the election" />
+          <h3 className="h5 mb-3 text-dark d-flex align-items-center gap-1">
+            {t("overview.officialSummary")}
+            <QuestionTooltip text={t("overview.officialSummaryTooltip")} />
           </h3>
           <div
             style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
@@ -108,11 +107,46 @@ export const OverviewTab = ({
         </SectionCard>
       )}
 
+      {(ballotQuestion.voteEffectYes || ballotQuestion.voteEffectNo) && (
+        <SectionCard>
+          <h3 className="h5 mb-3 text-dark d-flex align-items-center gap-1">
+            {t("voteEffects.title")}
+            <QuestionTooltip text={t("voteEffects.tooltip")} />
+          </h3>
+          <div className="d-grid gap-3">
+            {ballotQuestion.voteEffectYes && (
+              <Callout
+                label={t("voteEffects.yes")}
+                value={ballotQuestion.voteEffectYes}
+              />
+            )}
+            {ballotQuestion.voteEffectNo && (
+              <Callout
+                label={t("voteEffects.no")}
+                value={ballotQuestion.voteEffectNo}
+              />
+            )}
+          </div>
+        </SectionCard>
+      )}
+
+      {ballotQuestion.fiscalConsequences && (
+        <SectionCard>
+          <h3 className="h5 mb-3 text-dark d-flex align-items-center gap-1">
+            {t("fiscalConsequences.title")}
+            <QuestionTooltip text={t("fiscalConsequences.tooltip")} />
+          </h3>
+          <p className="mb-0 lh-lg" style={{ whiteSpace: "pre-wrap" }}>
+            {ballotQuestion.fiscalConsequences}
+          </p>
+        </SectionCard>
+      )}
+
       {bill &&
         sortedHearings.length > 0 &&
         sortedHearings.some(h => new Date(h.startsAt) < new Date()) && (
           <SectionCard>
-            <h3 className="h5 mb-4 text-dark">Committee Hearing</h3>
+            <h3 className="h5 mb-4 text-dark">{t("committeeHearing.title")}</h3>
             <div className="d-grid gap-3">
               {sortedHearings
                 .filter(h => new Date(h.startsAt) < new Date())
@@ -122,6 +156,15 @@ export const OverviewTab = ({
             </div>
           </SectionCard>
         )}
+    </div>
+  )
+}
+
+function Callout({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="maple-muted-surface rounded-4 px-3 py-3">
+      <div className="maple-eyebrow mb-1">{label}</div>
+      <div className="lh-lg">{value}</div>
     </div>
   )
 }
@@ -141,13 +184,13 @@ function BallotGlyph() {
     >
       <path
         d="M8 4.75H14.4L18.25 8.6V17.75C18.25 18.9926 17.2426 20 16 20H8C6.75736 20 5.75 18.9926 5.75 17.75V7C5.75 5.75736 6.75736 4.75 8 4.75Z"
-        fill="rgba(255, 255, 255, 0.94)"
-        stroke="rgba(50, 73, 179, 0.24)"
+        fill="var(--maple-surface-base)"
+        stroke="var(--maple-border-accent)"
         strokeWidth="1.5"
       />
       <path
         d="M14.25 4.75V7.85C14.25 8.49015 14.7598 9 15.4 9H18.25"
-        stroke="rgba(50, 73, 179, 0.24)"
+        stroke="var(--maple-border-accent)"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -158,26 +201,26 @@ function BallotGlyph() {
         width="2.7"
         height="2.7"
         rx="0.7"
-        fill="rgba(94, 114, 228, 0.14)"
-        stroke="#3249b3"
+        fill="var(--maple-surface-accent)"
+        stroke="var(--maple-brand-primary)"
         strokeWidth="1.2"
       />
       <path
         d="M9.1 11.45L9.8 12.15L10.95 10.95"
-        stroke="#3249b3"
+        stroke="var(--maple-brand-primary)"
         strokeWidth="1.25"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M12.6 10.9H15.95"
-        stroke="#3249b3"
+        stroke="var(--maple-brand-primary)"
         strokeWidth="1.35"
         strokeLinecap="round"
       />
       <path
         d="M8.3 15.2H15.95"
-        stroke="#94A3B8"
+        stroke="var(--maple-text-muted)"
         strokeWidth="1.35"
         strokeLinecap="round"
       />
@@ -187,14 +230,6 @@ function BallotGlyph() {
 
 function SectionCard({ children }: { children: ReactNode }) {
   return (
-    <section
-      className="rounded-4 border bg-white px-4 py-4 shadow-sm"
-      style={{
-        borderColor: "rgba(15, 23, 42, 0.08)",
-        boxShadow: "0 0.5rem 1.5rem rgba(15, 23, 42, 0.06)"
-      }}
-    >
-      {children}
-    </section>
+    <section className="maple-surface rounded-4 px-4 py-4">{children}</section>
   )
 }

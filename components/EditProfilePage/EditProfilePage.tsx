@@ -17,8 +17,8 @@ import {
 import { EditProfileHeader } from "./EditProfileHeader"
 import { FollowingTab } from "./FollowingTab"
 import { PersonalInfoTab } from "./PersonalInfoTab"
-import PhoneVerificationModal from "./PhoneVerificationModal"
 import ProfileSettingsModal from "./ProfileSettingsModal"
+import { VerifyAccountSection } from "components/shared"
 import {
   StyledTabContent,
   TabNavItem,
@@ -88,8 +88,6 @@ export function EditProfileForm({
 
   const [formUpdated, setFormUpdated] = useState(false)
   const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
-  const [showPhoneVerificationModal, setShowPhoneVerificationModal] =
-    useState(false)
   const [notifications, setNotifications] = useState<Frequency>(
     notificationFrequency || "Weekly"
   )
@@ -114,7 +112,8 @@ export function EditProfileForm({
 
   let isOrg = profile.role === "organization"
 
-  const isPendingUpgrade = useAuth().claims?.role === "pendingUpgrade"
+  const { claims, user } = useAuth()
+  const isPendingUpgrade = claims?.role === "pendingUpgrade"
 
   isOrg = isOrg || isPendingUpgrade
 
@@ -167,7 +166,7 @@ export function EditProfileForm({
     }
   ]
 
-  const { followOrg } = useFlags()
+  const { followOrg, phoneVerificationUI } = useFlags()
 
   if (followOrg === false) {
     tabs.splice(2, 1)
@@ -181,11 +180,20 @@ export function EditProfileForm({
         <EditProfileHeader
           formUpdated={formUpdated}
           onSettingsModalOpen={onSettingsModalOpen}
-          onGetVerifiedClick={() => setShowPhoneVerificationModal(true)}
           uid={uid}
           role={profile.role}
-          phoneVerified={profile.phoneVerified}
         />
+        {phoneVerificationUI &&
+          user &&
+          (!user.emailVerified || !profile.phoneVerified) && (
+            <div style={{ marginBottom: "3.5rem" }}>
+              <VerifyAccountSection
+                user={user}
+                profile={profile}
+                className=""
+              />
+            </div>
+          )}
         <TabContainer
           defaultActiveKey="about-you"
           activeKey={tabTitle}
@@ -215,10 +223,6 @@ export function EditProfileForm({
         onHide={close}
         onSettingsModalClose={() => setSettingsModal(null)}
         show={settingsModal === "show"}
-      />
-      <PhoneVerificationModal
-        show={showPhoneVerificationModal}
-        onHide={() => setShowPhoneVerificationModal(false)}
       />
     </>
   )

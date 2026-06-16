@@ -55,9 +55,7 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
               <a href="#main-content" className="skip-link">
                 Skip to main content
               </a>
-              <header>
-                <MainNavbar />
-              </header>
+              <MainNavbar />
               <AuthModal />
               <main id="main-content" className="col" tabIndex={-1}>
                 {children}
