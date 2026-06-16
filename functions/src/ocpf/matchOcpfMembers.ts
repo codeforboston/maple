@@ -13,9 +13,11 @@ import {
   OcpfMemberMappingFlagsEntry
 } from "./types"
 
-// TODO: Convert to onCall once tested. Use checkAuth(context) + checkAdmin(context)
-// from ../common.ts — both utilities handle admin role checking automatically.
 export const matchOcpfMembers = functions.https.onRequest(async (req, res) => {
+  if (req.method !== "POST") {
+    res.status(405).send("Method Not Allowed. Use POST.")
+    return
+  }
   if (process.env.FUNCTIONS_EMULATOR !== "true") {
     const authHeader = req.headers.authorization
     if (!authHeader?.startsWith("Bearer ")) {
@@ -50,39 +52,51 @@ export const matchOcpfMembers = functions.https.onRequest(async (req, res) => {
 
     if (!branch || (branch !== "Senate" && branch !== "House")) continue
 
-    const lastNameMatches = filers.filter(
+    const lastNameAndBranchMatches = filers.filter(
       f =>
         f.lastName.toLowerCase() === lastName.toLowerCase() &&
         f.officeSought === branch
     )
 
     // Narrow by first name: compare first word of each (e.g. "Daniel" from "Daniel J. Ryan"
-    // vs "Daniel" from "Daniel Joseph"). Falls back to all last-name matches if none align.
+    // vs "Daniel" from "Daniel Joseph"). If none align, falls back to matches by last name and branch.
     const mapleFirstName = member.Name.trim().split(/\s+/)[0].toLowerCase()
-    const firstNameMatches = lastNameMatches.filter(
+    const firstNameMatches = lastNameAndBranchMatches.filter(
       f => f.firstName.trim().split(/\s+/)[0].toLowerCase() === mapleFirstName
     )
     const candidates =
-      firstNameMatches.length > 0 ? firstNameMatches : lastNameMatches
+      firstNameMatches.length > 0 ? firstNameMatches : lastNameAndBranchMatches
 
-    if (candidates.length === 1) {
-      if (firstNameMatches.length === 0) {
-        functions.logger.warn("Last name matched but first name did not align", {
-          memberCode: member.MemberCode,
-          name: member.Name,
-          district: member.District,
-          branch,
-          ocpfFirstName: candidates[0].firstName,
-          ocpfLastName: candidates[0].lastName
-        })
-      }
+    if (firstNameMatches.length === 1) {
       const entry: OcpfMemberMappingEntry = {
         cpfId: candidates[0].cpfId,
         name: member.Name
       }
       mapping[member.MemberCode] = entry
+
+      // Matching was likley fixed manually
+    } else if (member.MemberCode in existingMapping) {
+      continue
+
+      // Single last name match but first name didn't align. Flag rather than auto-match,
+      // since the OCPF filer may be a different person (e.g. original member changed office sought,
+      // and another person with same last name is running for original office).
+    } else if (candidates.length === 1 && firstNameMatches.length === 0) {
+      ambiguous.push({ memberCode: member.MemberCode, name: member.Name })
+      functions.logger.warn(
+        "Single last-name match but first name did not align",
+        {
+          memberCode: member.MemberCode,
+          name: member.Name,
+          district: member.District,
+          branch,
+          ocpfFirstName: candidates[0].firstName,
+          ocpfLastName: candidates[0].lastName,
+          ocpfDistrict: candidates[0].district,
+          ocpfOfficeSought: candidates[0].officeSought
+        }
+      )
     } else if (candidates.length === 0) {
-      if (member.MemberCode in existingMapping) continue
       unmatched.push({ memberCode: member.MemberCode, name: member.Name })
       functions.logger.warn("No OCPF match", {
         memberCode: member.MemberCode,
@@ -91,7 +105,6 @@ export const matchOcpfMembers = functions.https.onRequest(async (req, res) => {
         branch
       })
     } else {
-      if (member.MemberCode in existingMapping) continue
       ambiguous.push({ memberCode: member.MemberCode, name: member.Name })
       functions.logger.warn("Ambiguous OCPF match", {
         memberCode: member.MemberCode,
@@ -102,7 +115,8 @@ export const matchOcpfMembers = functions.https.onRequest(async (req, res) => {
           cpfId: c.cpfId,
           firstName: c.firstName,
           lastName: c.lastName,
-          district: c.district
+          district: c.district,
+          officeSought: c.officeSought
         }))
       })
     }
@@ -164,7 +178,6 @@ async function downloadAndParseFilers(): Promise<OcpfFilerRow[]> {
     "district",
     "closedDate"
   ])
-
 
   // Values in the file are wrapped in double quotes — strip them after splitting
   const col = (cols: string[], idx: number) =>
