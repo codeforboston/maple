@@ -2,6 +2,7 @@ import { GetServerSideProps } from "next"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import { z } from "zod"
 import { LegislatorProfilePage } from "components/LegislatorProfile"
+import { flags } from "components/featureFlags"
 import { createPage } from "components/page"
 
 const Query = z.object({
@@ -20,6 +21,10 @@ export default createPage<{
 })
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
+  if (!flags().legislators) {
+    return { redirect: { destination: "/404", permanent: false } }
+  }
+
   ctx.res.setHeader(
     "Cache-Control",
     "public, s-maxage=60, stale-while-revalidate=300"
