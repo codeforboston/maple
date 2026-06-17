@@ -1,12 +1,12 @@
 import { FieldValue, Timestamp } from "../../functions/src/firebase"
-import { Record, Number } from "runtypes"
+import { Record, String } from "runtypes"
 import { Script } from "./types"
 
 const Args = Record({
-  eventId: Number.optional()
+  eventId: String.optional()
 })
 
-function migrateVideo(
+function getVideoFormatUpdate(
   data: FirebaseFirestore.DocumentData
 ): FirebaseFirestore.DocumentData | null {
   if ("videos" in data) {
@@ -66,9 +66,9 @@ export const script: Script = async ({ db, args }) => {
     }
 
     const doc = snapshot.docs[0]
-    const modify = migrateVideo(doc.data())
+    const modify = getVideoFormatUpdate(doc.data())
     if (modify) {
-      doc.ref.update(modify)
+      await doc.ref.update(modify)
     }
   } else {
     const snapshot = await db
@@ -84,7 +84,7 @@ export const script: Script = async ({ db, args }) => {
 
     for (const doc of snapshot.docs) {
       console.log(doc.data().id)
-      const modify = migrateVideo(doc.data())
+      const modify = getVideoFormatUpdate(doc.data())
       if (modify) {
         bulkWriter.update(doc.ref, modify)
       }

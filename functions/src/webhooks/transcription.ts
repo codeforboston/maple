@@ -92,7 +92,7 @@ export const transcription = functions
                     writer.set(
                       db
                         .collection("transcriptions")
-                        .doc(`${transcript.id}`)
+                        .doc(transcript.id)
                         .collection("utterances")
                         .doc(),
                       { speaker, confidence, start, end, text }
@@ -110,7 +110,7 @@ export const transcription = functions
                     writer.set(
                       db
                         .collection("transcriptions")
-                        .doc(`${transcript.id}`)
+                        .doc(transcript.id)
                         .collection("paragraphs")
                         .doc(),
                       { confidence, start, end, text }
@@ -127,7 +127,7 @@ export const transcription = functions
                     .collection("events")
                     .doc(authenticatedEventIds[index])
                     .collection("private")
-                    .doc("webhookAuth")
+                    .doc(transcript.id)
                     .set({
                       videoAssemblyWebhookToken: null
                     })

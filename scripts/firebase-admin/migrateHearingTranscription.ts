@@ -86,8 +86,9 @@ async function migrateTranscription(
         .doc(doc.id)
       if (bulkWriter) {
         bulkWriter.set(ref, doc.data())
+      } else {
+        await ref.set(doc.data())
       }
-      await ref.set(doc.data())
     }
   }
 }
