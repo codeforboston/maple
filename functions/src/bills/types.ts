@@ -46,6 +46,9 @@ export const BillContent = Record({
   Title: String,
   PrimarySponsor: Nullable(Record({ Name: String })),
   DocumentText: Maybe(String),
+  // Set only when DocumentText is too large to store inline and is instead
+  // chunked into the bill's `contentBlocks` subcollection. See contentBlocks.ts.
+  DocumentTextBlockCount: Maybe(Number),
   Cosponsors: Array(Record({ Name: Maybe(String) }))
 })
 
