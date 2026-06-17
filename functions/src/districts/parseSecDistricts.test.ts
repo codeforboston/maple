@@ -1,5 +1,3 @@
-import { readFileSync } from "fs"
-import path from "path"
 import {
   displayDistrictName,
   districtId,
@@ -9,11 +7,28 @@ import { parseSecDistricts } from "./parseSecDistricts"
 
 const sourceUrl = "https://example.test/districts"
 
-function readDistrictSnapshot(fileName: string) {
-  return readFileSync(
-    path.resolve(__dirname, "../../../districts", fileName),
-    "utf8"
-  )
+function buildSenateSnapshotHtml(districtCount: number) {
+  const sections = Array.from({ length: districtCount }, (_, index) => {
+    const districtNumber = index + 1
+    return `<h2>Example Senate District ${districtNumber}</h2>
+      <ul><li>Example Town ${districtNumber}</li></ul>
+      <hr>`
+  }).join("\n")
+
+  return `<h1>Massachusetts Senatorial Districts</h1>${sections}`
+}
+
+function buildHouseSnapshotHtml(districtCount: number) {
+  const sections = Array.from({ length: districtCount }, (_, index) => {
+    const districtNumber = index + 1
+    return `<h3>Example House District ${districtNumber}</h3>
+      <ul><li>Example Town ${districtNumber}</li></ul>
+      <hr>`
+  }).join("\n")
+
+  return `<h1>Massachusetts Representative Districts</h1>
+    <h2>Example County</h2>
+    ${sections}`
 }
 
 describe("district normalization", () => {
@@ -47,15 +62,15 @@ describe("district normalization", () => {
 })
 
 describe("parseSecDistricts", () => {
-  it("parses the checked-in SEC snapshots", () => {
+  it("parses the expected number of Senate and House districts", () => {
     expect(
-      parseSecDistricts(readDistrictSnapshot("senatorial.html"), {
+      parseSecDistricts(buildSenateSnapshotHtml(40), {
         branch: "Senate",
         sourceUrl
       })
     ).toHaveLength(40)
     expect(
-      parseSecDistricts(readDistrictSnapshot("representative.html"), {
+      parseSecDistricts(buildHouseSnapshotHtml(160), {
         branch: "House",
         sourceUrl
       })

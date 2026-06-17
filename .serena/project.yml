@@ -1,7 +1,6 @@
 # the name by which the project can be referenced within Serena
 project_name: "maple"
 
-
 # list of languages for which language servers are started; choose from:
 #   al                  angular             ansible             bash                clojure
 #   cpp                 cpp_ccls            crystal             csharp              csharp_omnisharp
@@ -32,7 +31,7 @@ project_name: "maple"
 # The first language is the default language and the respective language server will be used as a fallback.
 # Note that when using the JetBrains backend, language servers are not used and this list is correspondingly ignored.
 languages:
-- typescript
+  - typescript
 
 # the encoding used by text files in the project
 # For a list of possible encodings, see https://docs.python.org/3.11/library/codecs.html#standard-encodings
