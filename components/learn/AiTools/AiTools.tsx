@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { Container, Row, Col } from "../../bootstrap"
 import {
@@ -59,19 +60,18 @@ const ExampleLabel = styled.div`
 `
 
 export const AiTools = () => {
+  const { t } = useTranslation("aiTools")
+
   return (
     <Container>
       <Row>
         <Col>
-          <PageTitle>AI Research Tools</PageTitle>
+          <PageTitle>{t("title")}</PageTitle>
         </Col>
       </Row>
       <Row>
         <Col className="py-3">
-          <PageDescr>
-            Search MAPLE&apos;s full database of bills, testimony, and ballot
-            questions by having a conversation with an AI assistant.
-          </PageDescr>
+          <PageDescr>{t("description")}</PageDescr>
         </Col>
       </Row>
 
@@ -79,29 +79,22 @@ export const AiTools = () => {
       <Row>
         <Col className="py-3">
           <SectionContainer>
-            <SectionTitle className="p-2">What is this feature?</SectionTitle>
+            <SectionTitle className="p-2">{t("section1.title")}</SectionTitle>
             <DescrContainer className="py-3 px-4">
-              MAPLE now lets you connect AI chat tools—like Claude or
-              ChatGPT—directly to its database. This means you can ask your AI
-              assistant questions about Massachusetts legislation in plain
-              language, and it will search MAPLE&apos;s data on bills, ballot
-              questions, and testimony to answer questions or help with
-              research.
+              {t("section1.desc1")}
             </DescrContainer>
             <DescrContainer className="pb-3 px-4">
-              This works through a standard called{" "}
+              {t("section1.desc2Pre")}{" "}
               <b>
                 <a
                   href="https://modelcontextprotocol.io/introduction"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  MCP (Model Context Protocol)
+                  {t("section1.desc2LinkText")}
                 </a>
               </b>
-              , which allows AI tools to securely retrieve live data from
-              services like MAPLE. Think of it as giving your AI assistant a
-              direct line to MAPLE&apos;s research library.
+              {t("section1.desc2Post")}
             </DescrContainer>
           </SectionContainer>
         </Col>
@@ -111,42 +104,32 @@ export const AiTools = () => {
       <Row>
         <Col className="py-3">
           <SectionContainer>
-            <SectionTitle className="p-2">What can you ask?</SectionTitle>
+            <SectionTitle className="p-2">{t("section2.title")}</SectionTitle>
             <DescrContainer className="py-3 px-4">
-              Once connected, you can ask your AI assistant to:
+              {t("section2.intro")}
             </DescrContainer>
             <DescrContainer className="pb-1 px-4">
               <ul>
                 <li className="pb-3">
-                  <b>Find bills by topic</b> — search the full text and
-                  summaries of all bills across legislative sessions
+                  <b>{t("section2.item1Bold")}</b> {t("section2.item1Main")}
                 </li>
                 <li className="pb-3">
-                  <b>Map a policy area</b> — get a comprehensive view of all
-                  bills under a topic, how they relate, and which have the most
-                  public support
+                  <b>{t("section2.item2Bold")}</b> {t("section2.item2Main")}
                 </li>
                 <li className="pb-3">
-                  <b>Track policy evolution</b> — compare how proposals on a
-                  topic have changed across General Court sessions, and identify
-                  which ideas have gained or lost traction over time
+                  <b>{t("section2.item3Bold")}</b> {t("section2.item3Main")}
                 </li>
                 <li className="pb-3">
-                  <b>Synthesize public testimony</b> — surface the main
-                  arguments, common themes, and organizational voices in
-                  testimony on a bill or policy area
+                  <b>{t("section2.item4Bold")}</b> {t("section2.item4Main")}
                 </li>
                 <li className="pb-3">
-                  <b>Read public testimony</b> — see what advocates,
-                  organizations, and constituents have said about specific bills
+                  <b>{t("section2.item5Bold")}</b> {t("section2.item5Main")}
                 </li>
                 <li className="pb-3">
-                  <b>Filter and compare</b> — narrow results by committee,
-                  primary sponsor, legislation type, or session
+                  <b>{t("section2.item6Bold")}</b> {t("section2.item6Main")}
                 </li>
                 <li>
-                  <b>Search ballot questions</b> — find and understand statewide
-                  ballot measures alongside legislative bills
+                  <b>{t("section2.item7Bold")}</b> {t("section2.item7Main")}
                 </li>
               </ul>
             </DescrContainer>
@@ -158,38 +141,29 @@ export const AiTools = () => {
       <Row>
         <Col className="py-3">
           <SectionContainer>
-            <SectionTitle className="p-2">
-              Example questions to try
-            </SectionTitle>
+            <SectionTitle className="p-2">{t("section3.title")}</SectionTitle>
             <DescrContainer className="py-3 px-4">
-              Here are some examples of how advocates have used this feature:
+              {t("section3.intro")}
             </DescrContainer>
             <div className="px-4 pb-4">
-              <ExampleLabel>Research by topic</ExampleLabel>
+              <ExampleLabel>{t("section3.example1Label")}</ExampleLabel>
               <ExampleBox>
-                &ldquo;Find bills about housing affordability that are currently
-                in committee. Summarize what each one proposes.&rdquo;
+                &ldquo;{t("section3.example1Text")}&rdquo;
               </ExampleBox>
 
-              <ExampleLabel>Understand a specific bill</ExampleLabel>
+              <ExampleLabel>{t("section3.example2Label")}</ExampleLabel>
               <ExampleBox>
-                &ldquo;What does H.1234 propose, and what has public testimony
-                said about it? Are there more people who support or oppose
-                it?&rdquo;
+                &ldquo;{t("section3.example2Text")}&rdquo;
               </ExampleBox>
 
-              <ExampleLabel>Explore a policy area</ExampleLabel>
+              <ExampleLabel>{t("section3.example3Label")}</ExampleLabel>
               <ExampleBox>
-                &ldquo;What bills related to clean water or sewage have been
-                filed in Massachusetts in the last two sessions? Which ones got
-                the most public engagement?&rdquo;
+                &ldquo;{t("section3.example3Text")}&rdquo;
               </ExampleBox>
 
-              <ExampleLabel>Prepare to testify</ExampleLabel>
+              <ExampleLabel>{t("section3.example4Label")}</ExampleLabel>
               <ExampleBox>
-                &ldquo;I want to testify in favor of expanding paid family
-                leave. What are the relevant bills this session, and what
-                arguments have other supporters already made?&rdquo;
+                &ldquo;{t("section3.example4Text")}&rdquo;
               </ExampleBox>
             </div>
           </SectionContainer>
@@ -200,63 +174,59 @@ export const AiTools = () => {
       <Row>
         <Col className="py-3">
           <SectionContainer>
-            <SectionTitle className="p-2">How to get started</SectionTitle>
+            <SectionTitle className="p-2">{t("section4.title")}</SectionTitle>
             <DescrContainer className="py-3 px-4">
-              Follow these steps to connect an AI assistant to MAPLE:
+              {t("section4.intro")}
             </DescrContainer>
             <StepRow>
               <StepNumber>1</StepNumber>
               <StepText>
-                <b>Create a free MAPLE account</b> at{" "}
-                <Internal href="/login">mapletestimony.org</Internal>. A MAPLE
-                account is required to authenticate your AI assistant&apos;s
-                access to the database.
+                <b>{t("section4.step1Bold")}</b> {t("section4.step1Pre")}{" "}
+                <Internal href="/login">{t("section4.step1LinkText")}</Internal>
+                {t("section4.step1Post")}
               </StepText>
             </StepRow>
             <Divider />
             <StepRow>
               <StepNumber>2</StepNumber>
               <StepText>
-                <b>Choose an AI tool that supports MCP.</b> Several options work
-                with MAPLE:
+                <b>{t("section4.step2Bold")}</b> {t("section4.step2Intro")}
                 <ul style={{ marginTop: "0.5rem" }}>
                   <li className="pb-2">
-                    <b>Claude Desktop</b> (Anthropic) — the easiest option for
-                    most users.{" "}
+                    <b>{t("section4.step2item1Bold")}</b>{" "}
+                    {t("section4.step2item1Tag")} {t("section4.step2item1Pre")}{" "}
                     <a
                       href="https://claude.ai/download"
                       target="_blank"
                       rel="noreferrer"
                     >
-                      Download for Mac or Windows
+                      {t("section4.step2item1Link1")}
                     </a>
-                    , then follow the{" "}
+                    {t("section4.step2item1Mid")}{" "}
                     <a
                       href="https://modelcontextprotocol.io/quickstart/user"
                       target="_blank"
                       rel="noreferrer"
                     >
-                      MCP setup guide
+                      {t("section4.step2item1Link2")}
                     </a>
-                    .
+                    {t("section4.step2item1Post")}
                   </li>
                   <li className="pb-2">
-                    <b>ChatGPT</b> (OpenAI) — available for Pro, Team, and
-                    Enterprise subscribers via{" "}
+                    <b>{t("section4.step2item2Bold")}</b>{" "}
+                    {t("section4.step2item2Tag")} {t("section4.step2item2Pre")}{" "}
                     <a
                       href="https://help.openai.com/en/articles/11487775-connectors-in-chatgpt"
                       target="_blank"
                       rel="noreferrer"
                     >
-                      Apps &amp; Connectors
+                      {t("section4.step2item2LinkText")}
                     </a>{" "}
-                    with Developer Mode enabled in settings.
+                    {t("section4.step2item2Post")}
                   </li>
                   <li>
-                    <b>Other tools</b> — MCP is an open standard and support is
-                    growing rapidly across AI products. Check your AI
-                    tool&apos;s documentation for current MCP connection
-                    instructions.
+                    <b>{t("section4.step2item3Bold")}</b>{" "}
+                    {t("section4.step2item3Main")}
                   </li>
                 </ul>
               </StepText>
@@ -265,21 +235,19 @@ export const AiTools = () => {
             <StepRow>
               <StepNumber>3</StepNumber>
               <StepText>
-                <b>Get your MAPLE access token.</b> After logging in, visit{" "}
-                <Internal href="/dev/token">your token page</Internal> and click
-                &ldquo;Get Token&rdquo; to generate a short-lived access token.
-                Copy it — you&apos;ll paste it into your AI tool in the next
-                step.
+                <b>{t("section4.step3Bold")}</b> {t("section4.step3Pre")}{" "}
+                <Internal href="/dev/token">
+                  {t("section4.step3LinkText")}
+                </Internal>{" "}
+                {t("section4.step3Post")}
               </StepText>
             </StepRow>
             <Divider />
             <StepRow>
               <StepNumber>4</StepNumber>
               <StepText>
-                <b>Add MAPLE as a connected source in your AI tool.</b> Most
-                tools use a configuration file or settings panel. Add the
-                following connection details, replacing{" "}
-                <code>YOUR_TOKEN_HERE</code> with the token from step 3:
+                <b>{t("section4.step4Bold")}</b> {t("section4.step4Pre")}{" "}
+                <code>YOUR_TOKEN_HERE</code> {t("section4.step4Post")}
               </StepText>
             </StepRow>
             <div className="px-4 pb-4">
@@ -307,13 +275,11 @@ export const AiTools = () => {
             <StepRow>
               <StepNumber>5</StepNumber>
               <StepText>
-                <b>Start a new conversation</b> and try one of the example
-                questions above. Your AI assistant will automatically search
-                MAPLE when you ask about Massachusetts legislation.
+                <b>{t("section4.step5Bold")}</b> {t("section4.step5Post")}
               </StepText>
             </StepRow>
             <DescrContainer className="py-3 px-4">
-              <b>Need help?</b> Email us at{" "}
+              <b>{t("section4.needHelp")}</b> {t("section4.needHelpPost")}{" "}
               <a href="mailto:info@mapletestimony.org">
                 info@mapletestimony.org
               </a>
@@ -327,20 +293,14 @@ export const AiTools = () => {
       <Row>
         <Col className="py-3">
           <SectionContainer>
-            <SectionTitle className="p-2">Privacy & data use</SectionTitle>
+            <SectionTitle className="p-2">{t("section5.title")}</SectionTitle>
             <DescrContainer className="py-3 px-4">
-              When you use this feature, your AI assistant retrieves only
-              publicly available MAPLE data—the same bills and testimony anyone
-              can read on this site. Your MAPLE token identifies you so that
-              your access is logged, but no private account information is
-              shared with the AI.
+              {t("section5.desc1")}
             </DescrContainer>
             <DescrContainer className="pb-3 px-4">
-              Your conversations are governed by your AI provider&apos;s privacy
-              policy, not MAPLE&apos;s. We recommend reviewing it before
-              discussing sensitive advocacy work.{" "}
+              {t("section5.desc2Pre")}{" "}
               <Internal href="/about/how-maple-uses-ai">
-                Learn more about how MAPLE uses AI →
+                {t("section5.desc2LinkText")}
               </Internal>
             </DescrContainer>
           </SectionContainer>

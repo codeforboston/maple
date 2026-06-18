@@ -188,18 +188,13 @@ const MapleAI = () => {
       <Row>
         <Col className="py-3">
           <SectionContainer>
-            <SectionTitle className="p-2">
-              Use AI to research MAPLE data
-            </SectionTitle>
+            <SectionTitle className="p-2">{t("aiResearch.title")}</SectionTitle>
             <DescrContainer className="py-3 px-4">
-              You can connect AI chat tools like Claude directly to MAPLE's
-              database of bills, testimony, and ballot questions, ask questions
-              in plain English, and get real-time answers drawn from the full
-              legislative record.
+              {t("aiResearch.desc")}
             </DescrContainer>
             <DescrContainer className="pb-3 px-4">
               <Internal href="/learn/ai-tools">
-                Learn how to set up AI research tools with your MAPLE account →
+                {t("aiResearch.linkText")}
               </Internal>
             </DescrContainer>
           </SectionContainer>
