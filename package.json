@@ -97,7 +97,6 @@
     "firebase": "9.6.10",
     "firebase-admin": "^12.0.0",
     "fuse.js": "6.5.3",
-    "google-auth-library": "^10.6.2",
     "handlebars": "^4.7.8",
     "i18next": "^23.10.0",
     "i18next-http-backend": "^2.2.2",
