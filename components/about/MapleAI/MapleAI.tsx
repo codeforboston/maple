@@ -193,8 +193,8 @@ const MapleAI = () => {
             </SectionTitle>
             <DescrContainer className="py-3 px-4">
               You can connect AI chat tools like Claude directly to MAPLE's
-              database of bills, testimony, and ballot questions. Ask questions
-              in plain English and get real-time answers drawn from the full
+              database of bills, testimony, and ballot questions, ask questions
+              in plain English, and get real-time answers drawn from the full
               legislative record.
             </DescrContainer>
             <DescrContainer className="pb-3 px-4">

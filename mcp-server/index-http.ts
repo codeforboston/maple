@@ -45,7 +45,8 @@ if (!admin.apps.length) {
 // ── Config ────────────────────────────────────────────────────────────────────
 const PORT = parseInt(process.env.PORT ?? "3001", 10)
 const HOST = process.env.HOST ?? "127.0.0.1"
-const DISABLE_AUTH = process.env.DISABLE_AUTH === "true"
+const DISABLE_AUTH =
+  process.env.NODE_ENV !== "production" && process.env.DISABLE_AUTH === "true"
 
 // ── MCP server factory ────────────────────────────────────────────────────────
 // We create a fresh McpServer per request (stateless mode).
