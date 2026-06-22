@@ -171,7 +171,7 @@ const extractAudioFromVideo = async (
         resolve()
       })
       .on("error", err => {
-        console.error("FFmpeg error:", err)
+        functions.logger.error("FFmpeg error:", err)
         reject(err)
       })
       .save(tmpFilePath)
@@ -394,7 +394,10 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
           } as Hearing
         }
       } catch (error) {
-        console.error(`Failed to process audio for hearing ${EventId}:`, error)
+        functions.logger.error(
+          `Failed to process audio for hearing ${EventId}:`,
+          error
+        )
         return {
           id: `hearing-${EventId}`,
           type: "hearing",
@@ -460,7 +463,7 @@ export const scrapeSingleHearing = functions
         hearingId: hearing.id
       }
     } catch (error: any) {
-      console.error(`Failed to scrape hearing ${eventId}:`, error)
+      functions.logger.error(`Failed to scrape hearing ${eventId}:`, error)
       throw new functions.https.HttpsError(
         "internal",
         `Failed to scrape hearing ${eventId}`,
@@ -505,7 +508,7 @@ export const scrapeSingleHearingv2 = onCall(
         hearingId: hearing.id
       }
     } catch (error: any) {
-      console.error(`Failed to scrape hearing ${eventId}:`, error)
+      functions.logger.error(`Failed to scrape hearing ${eventId}:`, error)
       throw new functions.https.HttpsError(
         "internal",
         `Failed to scrape hearing ${eventId}`,
