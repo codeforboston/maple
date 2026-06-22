@@ -30,3 +30,36 @@ export const isValidVideoUrl = (url: string | null | undefined) => {
 
   return true
 }
+export function removeCommonWords(strings: string[]) {
+  if (!strings.length) return []
+
+  // Normalize whitespace and split into words
+  const wordLists = strings.map(s => s.trim().replace(/\s+/g, " ").split(" "))
+
+  let prefixLen = 0
+  while (
+    wordLists.every(
+      words =>
+        prefixLen < words.length &&
+        words[prefixLen].toLowerCase() === wordLists[0][prefixLen].toLowerCase()
+    )
+  ) {
+    prefixLen++
+  }
+
+  let suffixLen = 0
+  while (
+    wordLists.every(
+      words =>
+        suffixLen < words.length - prefixLen &&
+        words[words.length - 1 - suffixLen].toLowerCase() ===
+          wordLists[0][wordLists[0].length - 1 - suffixLen].toLowerCase()
+    )
+  ) {
+    suffixLen++
+  }
+
+  return wordLists.map(words =>
+    words.slice(prefixLen, words.length - suffixLen).join(" ")
+  )
+}
