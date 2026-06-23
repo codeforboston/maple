@@ -157,9 +157,7 @@ export default function LegislatorSignUpModal({
                 />
 
                 <Form.Group controlId="legislatorSearch">
-                  <Form.Label>
-                    {t("selectLegislatorHeader")}
-                  </Form.Label>
+                  <Form.Label>{t("selectLegislatorHeader")}</Form.Label>
                   <Search
                     index={memberIndex}
                     update={member => {
@@ -167,9 +165,7 @@ export default function LegislatorSignUpModal({
                       if (member) setMemberError(undefined)
                     }}
                     memberId={selectedMember?.id}
-                    placeholder={
-                      t("searchLegislatorsPlaceholder")
-                    }
+                    placeholder={t("searchLegislatorsPlaceholder")}
                     menuPortalTarget={document.body}
                     styles={{
                       menuPortal: (base: any) => ({ ...base, zIndex: 9999 })

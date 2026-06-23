@@ -57,7 +57,11 @@ export default function ProfileTypeModal({
         <Col md={12} className="mx-auto">
           <Stack gap={4} direction="vertical">
             <h2>{t("registerAs")}</h2>
-            <Stack gap={4} direction="horizontal" className="align-items-stretch">
+            <Stack
+              gap={4}
+              direction="horizontal"
+              className="align-items-stretch"
+            >
               <StyledButton
                 type="button"
                 variant="secondary"
@@ -104,7 +108,7 @@ export default function ProfileTypeModal({
             </Stack>
             <p>{t("orgVetting")}</p>
           </Stack>
-          <hr/>
+          <hr />
           <Button type="button" className="w-100" onClick={onHide}>
             {t("cancel")}
           </Button>
