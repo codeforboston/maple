@@ -158,10 +158,14 @@ async function downloadAndParseFilers(): Promise<OcpfFilerRow[]> {
     firstBytes: buffer.subarray(0, 4).toString("hex") // should be 504b0304 for a valid ZIP
   })
   const directory = await unzipper.Open.buffer(buffer)
+
+  // Using all_filers.txt to catch more edge cases. If want to filter out more ambiguity,
+  // such as not including Z account types, we can switch to candidates.txt
   const entry = directory.files.find(
-    f => f.type === "File" && f.path.toLowerCase().endsWith(".txt")
+    f => f.type === "File" && f.path.toLowerCase() === "all_filers.txt"
   )
-  if (!entry) throw new Error("No .txt file found inside ocpf-filers.zip")
+  if (!entry)
+    throw new Error("No all_filers.txt file found inside ocpf-filers.zip")
 
   const content = await entry.buffer()
   const text = content.toString("utf8")
