@@ -1,23 +1,29 @@
 import type { ModalProps } from "react-bootstrap"
-import { Button, Col, Modal, Row, Stack, Image } from "../bootstrap"
+import { Button, Col, Row, Modal, Stack, Image } from "../bootstrap"
 import styled from "styled-components"
 import { useTranslation } from "next-i18next"
 import { useFlags } from "../featureFlags"
 
 export const StyledButton = styled(Button)`
-  width: 100%;
-  height: 15rem;
+  flex: 1;
+  min-height: 8rem;
   margin: 0;
-  margin-bottom: 1rem;
   text-align: left;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  gap: 2rem;
 
   p {
     font-size: 16px;
     margin: 0;
+    text-align: left;
   }
 
-  Image {
-    margin: 0;
+  img {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
   }
 `
 
@@ -42,33 +48,28 @@ export default function ProfileTypeModal({
       onHide={onHide}
       aria-labelledby="sign-up-modal"
       centered
-      size="lg"
+      size="xl"
     >
       <Modal.Header closeButton>
         <Modal.Title id="sign-up-modal">{t("signUp")}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Col md={12} className="mx-auto">
-          <Stack gap={2} direction="vertical">
+          <Stack gap={4} direction="vertical">
             <h2>{t("registerAs")}</h2>
-            <Stack gap={4} direction="horizontal">
+            <Stack gap={4} direction="horizontal" className="align-items-stretch">
               <StyledButton
                 type="button"
                 variant="secondary"
                 onClick={onIndividualUserClick}
               >
-                <Row>
-                  <Col xs="auto" className="d-flex align-items-center">
-                    <Image alt="" src="/profile-individual-white.svg" />
-                  </Col>
-
-                  <Col>
-                    <p>
-                      <b>{t("individualUser")}</b>
-                    </p>
-                    <p>{t("individualDescription")}</p>
-                  </Col>
-                </Row>
+                <div className="d-flex align-items-center gap-4 flex-nowrap">
+                  <Image alt="" src="/profile-individual-white.svg" />
+                  <p>
+                    <b>{t("individualUser")}</b>
+                  </p>
+                </div>
+                <p>{t("individualDescription")}</p>
               </StyledButton>
 
               <StyledButton
@@ -76,18 +77,13 @@ export default function ProfileTypeModal({
                 variant="secondary"
                 onClick={onOrgUserClick}
               >
-                <Row>
-                  <Col xs="auto" className="d-flex align-items-center">
-                    <Image alt="" src="/profile-org-white.svg" />
-                  </Col>
-
-                  <Col>
-                    <p>
-                      <b>{t("org")}</b>
-                    </p>
-                    <p>{t("orgDescription")}</p>
-                  </Col>
-                </Row>
+                <div className="d-flex align-items-center gap-4 flex-nowrap">
+                  <Image alt="" src="/profile-org-white.svg" />
+                  <p>
+                    <b>{t("org")}</b>
+                  </p>
+                </div>
+                <p>{t("orgDescription")}</p>
               </StyledButton>
 
               {legislators && (
@@ -96,30 +92,22 @@ export default function ProfileTypeModal({
                   variant="secondary"
                   onClick={onLegislatorUserClick}
                 >
-                  <Row>
-                    <Col xs="auto" className="d-flex align-items-center">
-                      <Image alt="" src="/profile-individual-white.svg" />
-                    </Col>
-
-                    <Col>
-                      <p>
-                        <b>{t("legislator") ?? "Legislator"}</b>
-                      </p>
-                      <p>
-                        {t("legislatorDescription") ??
-                          "I am an elected MA legislator"}
-                      </p>
-                    </Col>
-                  </Row>
+                  <div className="d-flex align-items-center gap-4 flex-nowrap">
+                    <Image alt="" src="/profile-legislator-white.svg" />
+                    <p>
+                      <b>{t("legislator")}</b>
+                    </p>
+                  </div>
+                  <p>{t("legislatorDescription")}</p>
                 </StyledButton>
               )}
             </Stack>
             <p>{t("orgVetting")}</p>
-            <hr />
-            <Button type="button" onClick={onHide}>
-              {t("cancel")}
-            </Button>
           </Stack>
+          <hr/>
+          <Button type="button" className="w-100" onClick={onHide}>
+            {t("cancel")}
+          </Button>
         </Col>
       </Modal.Body>
     </Modal>
