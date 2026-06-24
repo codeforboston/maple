@@ -66,8 +66,6 @@ export class HearingScraper extends EventScraper<HearingListItem, Hearing> {
       type: "hearing",
       content,
       committeeChairs,
-      videos: [],
-      transcriptionIds: [],
       ...this.timestamps(content)
     } as Hearing
   }
@@ -187,7 +185,7 @@ export class HearingPostProcessor extends EventPostProcessor<HearingListItem> {
   }
 
   updateIf(data: FirebaseFirestore.DocumentData): null | HearingListItem {
-    if (data.videos.length) return null
+    if (data.videos?.length) return null
     return { EventId: data.content.EventId }
   }
 
@@ -201,36 +199,35 @@ export class HearingPostProcessor extends EventPostProcessor<HearingListItem> {
   }> {
     const videos = await this.getHearingVideos(EventId)
 
-    const prevURLs = existingVideos
-      ? Object.fromEntries(
-          existingVideos.map(({ url, transcriptionId }) => [
-            url,
-            transcriptionId
-          ])
-        )
-      : {}
-
-    const transcriptionIds = await Promise.all(
-      videos.map(item => {
-        return prevURLs[item.url] !== undefined
-          ? prevURLs[item.url]
-          : assemblyAI().submitTranscription({
-              EventId,
-              videoUrl: item.url
-            })
+    const videoResults = await Promise.all(
+      videos.map(async video => {
+        const existing = existingVideos?.find(item => item.url === video.url)
+        if (existing) {
+          return {
+            transcriptionId: existing.transcriptionId,
+            ...video
+          }
+        }
+        const result = await assemblyAI().submitTranscription({
+          EventId,
+          videoUrl: video.url
+        })
+        if (result.status === "error" as const) {
+          console.error(`Error during ${result.type}: ${result.error}`)
+          return null
+        }
+        return {
+          transcriptionId: result.id,
+          ...video
+        }
       })
     )
 
-    const videosWithTranscriptions = videos.map((item, index) => {
-      return {
-        transcriptionId: transcriptionIds[index],
-        ...item
-      }
-    })
+    const filteredResults = videoResults.filter((item): item is Video => item !== null)
 
     return {
-      transcriptionIds,
-      videos: videosWithTranscriptions,
+      transcriptionIds: filteredResults.map(item => item.transcriptionId),
+      videos: filteredResults,
       videosFetchedAt: Timestamp.now()
     }
   }

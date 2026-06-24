@@ -30,6 +30,7 @@ export const isValidVideoUrl = (url: string | null | undefined) => {
 
   return true
 }
+
 export function removeCommonWords(strings: string[]) {
   if (!strings.length) return []
 
@@ -63,3 +64,4 @@ export function removeCommonWords(strings: string[]) {
     words.slice(prefixLen, words.length - suffixLen).join(" ")
   )
 }
+

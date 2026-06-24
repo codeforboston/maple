@@ -103,7 +103,7 @@ async function migrateHearing(
 ): Promise<"migrate" | "skip" | "fail"> {
   const devData = devDoc.data()
 
-  if (!devData || !devData?.transcriptionIds?.length) {
+  if (!devData?.transcriptionIds?.length) {
     console.log(`Hearing ${devDoc.id} has no transcription to migrate.`)
     return "skip"
   }

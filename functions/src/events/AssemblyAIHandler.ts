@@ -20,7 +20,13 @@ abstract class AssemblyAIHandlerBase {
     EventId: number
     videoUrl: string
     bucketName?: string
-  }): Promise<string>
+  }): Promise<{
+    status: "ok"
+    id: string
+  } | {
+    status: "error"
+    type: string
+  }>
 
   abstract getTranscript(transcript_id: string): Promise<Transcript>
   abstract fetchParagraphs(
@@ -46,9 +52,28 @@ export class AssemblyAIHandler extends AssemblyAIHandlerBase {
     EventId: number
     videoUrl: string
     bucketName?: string
-  }): Promise<string> {
+  }): Promise<{
+    status: "ok"
+    id: string
+  } | {
+    status: "error"
+    type: string
+    error: any
+  }> {
     const newToken = randomBytes(16).toString("hex")
-    const audioUrl = await extractAudioFromVideo(EventId, videoUrl, bucketName)
+    let error;
+    const audioUrl = await extractAudioFromVideo(EventId, videoUrl, bucketName).catch(e => {
+      error = e;
+      return null;
+    })
+
+    if (!audioUrl) {
+      return {
+        status: "error",
+        type: "audio extraction",
+        error
+      }
+    }
 
     const transcript = await this.assembly.transcripts.submit({
       audio:
@@ -63,18 +88,43 @@ export class AssemblyAIHandler extends AssemblyAIHandlerBase {
       speaker_labels: true,
       webhook_auth_header_name: "x-maple-webhook",
       webhook_auth_header_value: newToken
+    }).catch(e => {
+      error = e;
+      return null;
     })
 
-    await db
+    if (!transcript) {
+      return {
+        status: "error",
+        type: "assembly submission",
+        error
+      }
+    }
+
+    const result = await db
       .collection("events")
       .doc(`hearing-${String(EventId)}`)
       .collection("private")
       .doc(transcript.id)
       .set({
         videoAssemblyWebhookToken: sha256(newToken)
+      }).catch(e => {
+        error = e;
+        return null;
       })
-
-    return transcript.id
+    
+    if (!result) {
+      return {
+        status: "error",
+        type: "db token set",
+        error
+      }
+    }
+    
+    return {
+      status: "ok",
+      id: transcript.id
+    }
   }
 
   async getTranscript(transcript_id: string): Promise<Transcript> {
@@ -96,7 +146,15 @@ export class AssemblyAIHandlerDummy extends AssemblyAIHandlerBase {
     EventId: number
     videoUrl: string
     bucketName?: string
-  }): Promise<string> {
+  }): Promise<{
+    status: "ok"
+    id: string
+  } | {
+    status: "error"
+    type: string
+    error: any
+  }> {
+    let error;
     const token = randomBytes(16).toString("hex")
     const transcriptionId = `mock_${Math.random().toString(36).slice(2)}`
 
@@ -113,16 +171,30 @@ export class AssemblyAIHandlerDummy extends AssemblyAIHandlerBase {
       })
     }, 10000)
 
-    await db
+    const result = await db
       .collection("events")
       .doc(`hearing-${String(EventId)}`)
       .collection("private")
       .doc(transcriptionId)
       .set({
         videoAssemblyWebhookToken: sha256(token)
+      }).catch(e => {
+        error = e;
+        return null;
       })
-
-    return transcriptionId
+    
+    if (!result) {
+      return {
+        status: "error",
+        type: "db token set",
+        error
+      }
+    }
+    
+    return {
+      status: "ok",
+      id: transcriptionId
+    }
   }
 
   async getTranscript(transcriptId: string): Promise<Transcript> {
@@ -195,53 +267,6 @@ const extractAudioFromVideo = async (
 
   // Return the new audio url
   return url
-}
-
-export const submitTranscription = async ({
-  EventId,
-  maybeVideoUrl,
-  bucketName
-}: {
-  EventId: number
-  maybeVideoUrl: string
-  bucketName?: string
-}) => {
-  const assembly = new AssemblyAI({
-    apiKey: process.env.ASSEMBLY_API_KEY ? process.env.ASSEMBLY_API_KEY : ""
-  })
-
-  const newToken = randomBytes(16).toString("hex")
-  const audioUrl = await extractAudioFromVideo(
-    EventId,
-    maybeVideoUrl,
-    bucketName
-  )
-
-  const transcript = await assembly.transcripts.submit({
-    audio:
-      // test with: "https://assemblyaiusercontent.com/playground/aKUqpEtmYmI.flac",
-      audioUrl,
-    webhook_url:
-      // make sure process.env.FUNCTIONS_API_BASE equals
-      // https://us-central1-digital-testimony-prod.cloudfunctions.net
-      // on prod. test with:
-      // "https://ngrokid.ngrok-free.app/demo-dtp/us-central1/transcription",
-      `${process.env.FUNCTIONS_API_BASE}/transcription`,
-    speaker_labels: true,
-    webhook_auth_header_name: "x-maple-webhook",
-    webhook_auth_header_value: newToken
-  })
-
-  await db
-    .collection("events")
-    .doc(`hearing-${String(EventId)}`)
-    .collection("private")
-    .doc("webhookAuth")
-    .set({
-      videoAssemblyWebhookToken: sha256(newToken)
-    })
-
-  return transcript.id
 }
 
 const WORD_BANK = [

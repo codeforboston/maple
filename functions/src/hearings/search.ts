@@ -33,7 +33,7 @@ export const {
   documentTrigger: "events/{eventId}",
   alias: "hearings",
   idField: "id",
-  filter: data => data.type === "hearing" && "transcriptionIds" in data,
+  filter: data => data.type === "hearing",
   schema: {
     fields: [
       { name: "eventId", type: "int32", facet: false },
@@ -115,7 +115,7 @@ export const {
         bill => bill.slug || `${courtNumber}/${bill.number}`
       ),
       court: courtNumber,
-      hasVideo: videos.length > 0
+      hasVideo: (videos?.length ?? 0) > 0
     }
   }
 })

@@ -23,7 +23,7 @@ async function getHearing(id: string): Promise<Hearing | null> {
   const data = snap.data()
   return {
     id,
-    videoURLs: data.videos.map((item: Video) => item.url),
+    videoURLs: data.videos ? data.videos.map((item: Video) => item.url) : [],
     startsAt: data.startsAt?.toMillis() ?? 0
   }
 }
