@@ -17,21 +17,21 @@
 
 .peopleSaying {
   padding: 5rem 0 1rem 0;
+  width: 100vw;
 }
 
 .heroSection {
   position: relative;
   width: 100%;
-  padding-top: 5rem;
-  background: var(--maple-surface-base);
+  background: var(--maple-brand-primary);
   overflow: hidden;
 }
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(23rem, 1.05fr) minmax(24rem, 1.15fr);
+  grid-template-columns: minmax(30rem, 1.05fr) minmax(30rem, 2fr);
   align-items: center;
-  gap: clamp(1.8rem, 4vw, 3.4rem);
+  gap: clamp(1.8rem, 4vw, 10rem);
   min-height: 38rem;
   padding-top: 0rem;
   padding-bottom: 1rem;
@@ -43,7 +43,7 @@
   right: 0;
   bottom: 0;
   height: 100%;
-  background-image: url("/skyline_blue.svg");
+  background-image: url("/skyline.svg");
   background-repeat: no-repeat;
   background-position: bottom center;
   background-size: 100% auto;
@@ -55,6 +55,7 @@
 .heroVisual {
   position: relative;
   height: 100%;
+  width: 100%;
   min-height: 24rem;
   display: flex;
   align-items: flex-end;
@@ -78,18 +79,18 @@
 }
 
 .heroTitle {
-  color: var(--maple-brand-primary-strong);
-  font-size: clamp(2.5rem, 3.5vw, 3.8rem);
+  color: white;
+  font-size: clamp(2.5rem, 3vw, 3rem);
   line-height: 1.08;
   margin: 0 0 1.35rem;
 }
 
 .heroBody {
-  color: var(--maple-text-body);
+  color: white;
   font-size: 1.125rem;
   line-height: 1.62;
   margin: 0 0 1.9rem;
-  max-width: 42rem;
+  max-width: 50rem;
 }
 
 .heroActions {
@@ -440,6 +441,7 @@
 
   .heroVisual {
     min-height: 20rem;
+    width: 100%;
     order: 1;
     margin-bottom: 1.5rem;
     display: flex;
