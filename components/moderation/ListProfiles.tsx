@@ -16,6 +16,10 @@ import {
   rejectOrganizationRequest,
   acceptOrganizationRequest
 } from "components/api/upgrade-org"
+import {
+  acceptLegislatorRequest,
+  rejectLegislatorRequest
+} from "components/api/upgrade-legislator"
 import { Profile } from "components/db"
 import { Internal } from "components/links"
 
@@ -39,7 +43,9 @@ const UserRoleToolBar = () => {
   }
 
   const pendingCount =
-    data?.filter(d => d.role === "pendingUpgrade").length ?? 0
+    data?.filter(
+      d => d.role === "pendingUpgrade" || d.role === "pendingLegislator"
+    ).length ?? 0
 
   const fakeOrgRequest = useCallback(async () => {
     const uid = nanoid(8)
@@ -58,7 +64,12 @@ const UserRoleToolBar = () => {
     <Toolbar sx={{ width: "100%", justifyContent: "space-between" }}>
       <div>Upgrade Requests: {pendingCount} pending upgrades</div>
       <ButtonGroup title="Show only: ">
-        {["pendingUpgrade", "organization"].map(role => {
+        {[
+          "pendingUpgrade",
+          "organization",
+          "pendingLegislator",
+          "legislator"
+        ].map(role => {
           return (
             <Button
               key={role}
@@ -139,6 +150,7 @@ export function InnerListProfiles({
 
   const getBGHighlight = (record: RaRecord) => {
     if (record.role === "pendingUpgrade") return "lightyellow"
+    if (record.role === "pendingLegislator") return "lavender"
     if (record.id === getJustUpdated()) return "lightblue"
     return ""
   }
@@ -160,6 +172,23 @@ export function InnerListProfiles({
     refresh()
   }
 
+  async function handleAcceptLegislator(record: any) {
+    setIsJustUpdated(record.id)
+    await acceptLegislatorRequest(record.id)
+    clearUpdating()
+    filterValues["role"] === "pendingLegislator" &&
+      setFilters({ role: "legislator" }, [])
+    refresh()
+  }
+
+  async function handleRejectLegislator(record: any) {
+    setIsJustUpdated(record.id)
+    await rejectLegislatorRequest(record.id)
+    clearUpdating()
+    filterValues["role"] === "pendingLegislator" && setFilters({}, [])
+    refresh()
+  }
+
   return (
     <Datagrid
       bulkActionButtons={false}
@@ -171,11 +200,11 @@ export function InnerListProfiles({
         animationFillMode: "forwards"
       })}
     >
-      <TextField source="fullName" label="Organization" />
+      <TextField source="fullName" label="Name" />
       <TextField source="contactInfo.publicEmail" label="email" />
       <TextField source="contactInfo.publicPhone" label="phone" />
-
       <TextField source="contactInfo.website" label="website" />
+      <TextField source="memberCode" label="memberCode" />
       <WithRecord
         render={(record: Profile & RaRecord) => {
           return (
@@ -191,22 +220,39 @@ export function InnerListProfiles({
       <TextField source="role" />
       <WithRecord
         render={record => {
-          return record.role === "pendingUpgrade" ? (
-            <div className="d-flex gap-2">
-              <Button
-                label="upgrade"
-                variant="outlined"
-                onClick={async () => await handleAccept(record)}
-              />
-              <Button
-                label="reject"
-                variant="outlined"
-                onClick={async () => await handleReject(record)}
-              />
-            </div>
-          ) : (
-            <div></div>
-          )
+          if (record.role === "pendingUpgrade") {
+            return (
+              <div className="d-flex gap-2">
+                <Button
+                  label="upgrade"
+                  variant="outlined"
+                  onClick={async () => await handleAccept(record)}
+                />
+                <Button
+                  label="reject"
+                  variant="outlined"
+                  onClick={async () => await handleReject(record)}
+                />
+              </div>
+            )
+          }
+          if (record.role === "pendingLegislator") {
+            return (
+              <div className="d-flex gap-2">
+                <Button
+                  label="approve"
+                  variant="outlined"
+                  onClick={async () => await handleAcceptLegislator(record)}
+                />
+                <Button
+                  label="reject"
+                  variant="outlined"
+                  onClick={async () => await handleRejectLegislator(record)}
+                />
+              </div>
+            )
+          }
+          return <div></div>
         }}
       />
     </Datagrid>

@@ -34,7 +34,9 @@ export const Profile = Record({
   billsFollowing: Optional(Array(String)),
   contactInfo: Optional(Dictionary(String)),
   location: Optional(String),
-  phoneVerified: Optional(Boolean)
+  phoneVerified: Optional(Boolean),
+  memberCode: Optional(String),
+  legislatorBiography: Optional(String)
 })
 
 export type Profile = Static<typeof Profile>
