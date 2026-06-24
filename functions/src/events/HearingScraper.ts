@@ -213,7 +213,7 @@ export class HearingPostProcessor extends EventPostProcessor<HearingListItem> {
           EventId,
           videoUrl: video.url
         })
-        if (result.status === "error" as const) {
+        if (result.status === ("error" as const)) {
           functions.logger.error(`Error during ${result.type}: ${result.error}`)
           return null
         }
@@ -224,7 +224,9 @@ export class HearingPostProcessor extends EventPostProcessor<HearingListItem> {
       })
     )
 
-    const filteredResults = videoResults.filter((item): item is Video => item !== null)
+    const filteredResults = videoResults.filter(
+      (item): item is Video => item !== null
+    )
 
     return {
       transcriptionIds: filteredResults.map(item => item.transcriptionId),

@@ -64,4 +64,3 @@ export function removeCommonWords(strings: string[]) {
     words.slice(prefixLen, words.length - suffixLen).join(" ")
   )
 }
-

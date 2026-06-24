@@ -21,13 +21,16 @@ abstract class AssemblyAIHandlerBase {
     EventId: number
     videoUrl: string
     bucketName?: string
-  }): Promise<{
-    status: "ok"
-    id: string
-  } | {
-    status: "error"
-    type: string
-  }>
+  }): Promise<
+    | {
+        status: "ok"
+        id: string
+      }
+    | {
+        status: "error"
+        type: string
+      }
+  >
 
   abstract getTranscript(transcript_id: string): Promise<Transcript>
   abstract fetchParagraphs(
@@ -53,19 +56,26 @@ export class AssemblyAIHandler extends AssemblyAIHandlerBase {
     EventId: number
     videoUrl: string
     bucketName?: string
-  }): Promise<{
-    status: "ok"
-    id: string
-  } | {
-    status: "error"
-    type: string
-    error: any
-  }> {
+  }): Promise<
+    | {
+        status: "ok"
+        id: string
+      }
+    | {
+        status: "error"
+        type: string
+        error: any
+      }
+  > {
     const newToken = randomBytes(16).toString("hex")
-    let error;
-    const audioUrl = await extractAudioFromVideo(EventId, videoUrl, bucketName).catch(e => {
-      error = e;
-      return null;
+    let error
+    const audioUrl = await extractAudioFromVideo(
+      EventId,
+      videoUrl,
+      bucketName
+    ).catch(e => {
+      error = e
+      return null
     })
 
     if (!audioUrl) {
@@ -76,23 +86,25 @@ export class AssemblyAIHandler extends AssemblyAIHandlerBase {
       }
     }
 
-    const transcript = await this.assembly.transcripts.submit({
-      audio:
-        // test with: "https://assemblyaiusercontent.com/playground/aKUqpEtmYmI.flac",
-        audioUrl,
-      webhook_url:
-        // make sure process.env.FUNCTIONS_API_BASE equals
-        // https://us-central1-digital-testimony-prod.cloudfunctions.net
-        // on prod. test with:
-        // "https://ngrokid.ngrok-free.app/demo-dtp/us-central1/transcription",
-        `${process.env.FUNCTIONS_API_BASE}/transcription`,
-      speaker_labels: true,
-      webhook_auth_header_name: "x-maple-webhook",
-      webhook_auth_header_value: newToken
-    }).catch(e => {
-      error = e;
-      return null;
-    })
+    const transcript = await this.assembly.transcripts
+      .submit({
+        audio:
+          // test with: "https://assemblyaiusercontent.com/playground/aKUqpEtmYmI.flac",
+          audioUrl,
+        webhook_url:
+          // make sure process.env.FUNCTIONS_API_BASE equals
+          // https://us-central1-digital-testimony-prod.cloudfunctions.net
+          // on prod. test with:
+          // "https://ngrokid.ngrok-free.app/demo-dtp/us-central1/transcription",
+          `${process.env.FUNCTIONS_API_BASE}/transcription`,
+        speaker_labels: true,
+        webhook_auth_header_name: "x-maple-webhook",
+        webhook_auth_header_value: newToken
+      })
+      .catch(e => {
+        error = e
+        return null
+      })
 
     if (!transcript) {
       return {
@@ -109,11 +121,12 @@ export class AssemblyAIHandler extends AssemblyAIHandlerBase {
       .doc(transcript.id)
       .set({
         videoAssemblyWebhookToken: sha256(newToken)
-      }).catch(e => {
-        error = e;
-        return null;
       })
-    
+      .catch(e => {
+        error = e
+        return null
+      })
+
     if (!result) {
       return {
         status: "error",
@@ -121,7 +134,7 @@ export class AssemblyAIHandler extends AssemblyAIHandlerBase {
         error
       }
     }
-    
+
     return {
       status: "ok",
       id: transcript.id
@@ -147,15 +160,18 @@ export class AssemblyAIHandlerDummy extends AssemblyAIHandlerBase {
     EventId: number
     videoUrl: string
     bucketName?: string
-  }): Promise<{
-    status: "ok"
-    id: string
-  } | {
-    status: "error"
-    type: string
-    error: any
-  }> {
-    let error;
+  }): Promise<
+    | {
+        status: "ok"
+        id: string
+      }
+    | {
+        status: "error"
+        type: string
+        error: any
+      }
+  > {
+    let error
     const token = randomBytes(16).toString("hex")
     const transcriptionId = `mock_${Math.random().toString(36).slice(2)}`
 
@@ -179,11 +195,12 @@ export class AssemblyAIHandlerDummy extends AssemblyAIHandlerBase {
       .doc(transcriptionId)
       .set({
         videoAssemblyWebhookToken: sha256(token)
-      }).catch(e => {
-        error = e;
-        return null;
       })
-    
+      .catch(e => {
+        error = e
+        return null
+      })
+
     if (!result) {
       return {
         status: "error",
@@ -191,7 +208,7 @@ export class AssemblyAIHandlerDummy extends AssemblyAIHandlerBase {
         error
       }
     }
-    
+
     return {
       status: "ok",
       id: transcriptionId
