@@ -1,5 +1,5 @@
 import type { ModalProps } from "react-bootstrap"
-import { Button, Col, Row, Modal, Stack, Image } from "../bootstrap"
+import { Button, Col, Modal, Stack, Image } from "../bootstrap"
 import styled from "styled-components"
 import { useTranslation } from "next-i18next"
 import { useFlags } from "../featureFlags"
@@ -57,11 +57,7 @@ export default function ProfileTypeModal({
         <Col md={12} className="mx-auto">
           <Stack gap={4} direction="vertical">
             <h2>{t("registerAs")}</h2>
-            <Stack
-              gap={4}
-              direction="horizontal"
-              className="align-items-stretch"
-            >
+            <div className="d-flex flex-column flex-md-row align-items-stretch gap-4">
               <StyledButton
                 type="button"
                 variant="secondary"
@@ -105,7 +101,7 @@ export default function ProfileTypeModal({
                   <p>{t("legislatorDescription")}</p>
                 </StyledButton>
               )}
-            </Stack>
+            </div>
             <p>{t("orgVetting")}</p>
           </Stack>
           <hr />
