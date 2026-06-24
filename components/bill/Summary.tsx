@@ -4,7 +4,17 @@ import { useCallback, useEffect, useState } from "react"
 import type { ModalProps } from "react-bootstrap"
 import styled, { ThemeConsumer } from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
-import { Button, Col, Container, Image, Modal, Row, Stack } from "../bootstrap"
+import {
+  Button,
+  Col,
+  Container,
+  Image,
+  Modal,
+  Row,
+  Spinner,
+  Stack
+} from "../bootstrap"
+import { getBillDocumentText } from "../db"
 import { firestore } from "../firebase"
 import * as links from "../links"
 import {
@@ -113,9 +123,30 @@ export const Summary = ({
 }: BillProps & { className?: string }) => {
   const [showBillDetails, setShowBillDetails] = useState(false)
   const [showFullSummary, setShowFullSummary] = useState(false)
-  const handleShowBillDetails = () => setShowBillDetails(true)
+  // Long bills store their text in a `contentBlocks` subcollection rather than
+  // inline; reassemble it lazily when the modal opens.
+  const [billText, setBillText] = useState<string | undefined>(
+    bill?.content?.DocumentText
+  )
+  const [loadingBillText, setLoadingBillText] = useState(false)
+  const hasBillText =
+    !!bill?.content?.DocumentText ||
+    (bill?.content?.DocumentTextBlockCount ?? 0) > 0
+
+  const handleShowBillDetails = useCallback(async () => {
+    setShowBillDetails(true)
+    if (billText === undefined && bill) {
+      setLoadingBillText(true)
+      try {
+        setBillText(
+          await getBillDocumentText(bill.court, bill.id, bill.content)
+        )
+      } finally {
+        setLoadingBillText(false)
+      }
+    }
+  }, [bill, billText])
   const handleHideBillDetails = () => setShowBillDetails(false)
-  const billText = bill?.content?.DocumentText
   const hearingIds = bill?.hearingIds
   const isBallotMeasure =
     bill?.currentCommittee?.id === currentBallotInitiativeCommittee
@@ -129,7 +160,7 @@ export const Summary = ({
         <TitleFormat>
           {bill.content.Title}
           <div className="d-flex justify-content-end">
-            {billText ? (
+            {hasBillText ? (
               <StyledButton
                 variant="link"
                 className="m-1"
@@ -156,9 +187,13 @@ export const Summary = ({
               <Modal.Title>{bill?.id}</Modal.Title>
             </Modal.Header>
             <Modal.Body className="bg-white">
-              <FormattedBillDetails>
-                {bill?.content?.DocumentText}
-              </FormattedBillDetails>
+              {loadingBillText ? (
+                <div className="d-flex justify-content-center">
+                  <Spinner animation="border" role="status" />
+                </div>
+              ) : (
+                <FormattedBillDetails>{billText}</FormattedBillDetails>
+              )}
             </Modal.Body>
           </Modal>
         </TitleFormat>
