@@ -15,7 +15,7 @@ import { FollowUserButton } from "components/shared/FollowButton"
 import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
 
 const StyledCard = styled(Card)`
-  background: var(--maple-surface-gradient);
+  background: white;
   border: 1px solid var(--maple-surface-border);
   border-radius: var(--bs-border-radius-xl);
   box-shadow: var(--maple-shadow-sm);
@@ -177,7 +177,7 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
         <AuthorRow>
           <Image
             src={
-              isOrg ? "/profile-org-icon.svg" : "/profile-individual-icon.svg"
+              isOrg ? "/profile-org-blue.svg" : "/profile-individual-blue.svg"
             }
             alt={useTranslation("auth").t("profileIcon")}
             height="28px"

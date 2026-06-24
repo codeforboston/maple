@@ -1,4 +1,5 @@
 import { JSDOM } from "jsdom"
+import * as functions from "firebase-functions/v1"
 import { db, Timestamp } from "../firebase"
 import * as api from "../malegislature"
 import { Hearing, HearingContent, HearingListItem, Video } from "./types"
@@ -213,7 +214,7 @@ export class HearingPostProcessor extends EventPostProcessor<HearingListItem> {
           videoUrl: video.url
         })
         if (result.status === "error" as const) {
-          console.error(`Error during ${result.type}: ${result.error}`)
+          functions.logger.error(`Error during ${result.type}: ${result.error}`)
           return null
         }
         return {

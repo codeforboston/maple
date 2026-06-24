@@ -2,13 +2,11 @@ import { FieldValue } from "../../functions/src/firebase"
 import { reformatFactory } from "./updateHearingVideoFormat"
 import { Script } from "./types"
 
-function getVideoFormatCleanup(
-  data: FirebaseFirestore.DocumentData
-): any {
+function getVideoFormatCleanup(data: FirebaseFirestore.DocumentData): any {
   if (!("videoURL" in data)) {
-    return {}
+    return null
   }
-  
+
   return {
     videoTranscriptionId: FieldValue.delete(),
     videoFetchedAt: FieldValue.delete(),

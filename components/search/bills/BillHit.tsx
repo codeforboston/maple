@@ -34,7 +34,7 @@ type BillRecord = {
 }
 
 const StyledCard = styled(Card)`
-  background: var(--maple-surface-gradient);
+  background: white;
   border: 1px solid var(--maple-surface-border);
   border-radius: var(--bs-border-radius-xl);
   box-shadow: var(--maple-shadow-sm);

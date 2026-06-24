@@ -61,6 +61,8 @@ export {
 
 export { transcription } from "./webhooks"
 
+export { matchOcpfMembers } from "./ocpf/matchOcpfMembers"
+
 export * from "./triggerPubsubFunction"
 
 // Export the health check last so it is loaded last.

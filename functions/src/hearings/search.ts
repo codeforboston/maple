@@ -57,7 +57,13 @@ export const {
   },
   convert: data => {
     const hearing = Hearing.check(data)
-    const { content, startsAt: startsAtTimestamp, id, videos } = hearing
+    const {
+      content,
+      startsAt: startsAtTimestamp,
+      id,
+      videoURL,
+      videos
+    } = hearing
     const startsAt = startsAtTimestamp.toMillis()
     const schedule = DateTime.fromMillis(startsAt, { zone: timeZone })
 
@@ -115,7 +121,7 @@ export const {
         bill => bill.slug || `${courtNumber}/${bill.number}`
       ),
       court: courtNumber,
-      hasVideo: (videos?.length ?? 0) > 0
+      hasVideo: Boolean(videoURL || videos?.length)
     }
   }
 })

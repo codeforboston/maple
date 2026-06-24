@@ -5,6 +5,7 @@ import {
   TranscriptUtterance,
   TranscriptWord
 } from "assemblyai"
+import * as functions from "firebase-functions/v1"
 import { db, storage } from "../firebase"
 import { randomBytes } from "node:crypto"
 import { sha256 } from "js-sha256"
@@ -227,7 +228,7 @@ const extractAudioFromVideo = async (
         resolve()
       })
       .on("error", err => {
-        console.error("FFmpeg error:", err)
+        functions.logger.error("FFmpeg error:", err)
         reject(err)
       })
       .save(tmpFilePath)

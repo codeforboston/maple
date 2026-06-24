@@ -49,7 +49,7 @@ export const scrapeSingleHearing = functions
         hearingId: hearing.id
       }
     } catch (error: any) {
-      console.error(`Failed to scrape hearing ${eventId}:`, error)
+      functions.logger.error(`Failed to scrape hearing ${eventId}:`, error)
       throw new functions.https.HttpsError(
         "internal",
         `Failed to scrape hearing ${eventId}`,
@@ -92,7 +92,7 @@ export const scrapeSingleHearingv2 = onCall(
         hearingId: hearing.id
       }
     } catch (error: any) {
-      console.error(`Failed to scrape hearing ${eventId}:`, error)
+      functions.logger.error(`Failed to scrape hearing ${eventId}:`, error)
       throw new functions.https.HttpsError(
         "internal",
         `Failed to scrape hearing ${eventId}`,

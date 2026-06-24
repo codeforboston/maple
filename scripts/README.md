@@ -195,6 +195,21 @@ yarn firebase-admin run-script backfillBallotQuestionTestimonyCounts --env prod
 
 <!-- TODO: document -->
 
+#### `backfillBillPdfText`
+
+Fills missing `content.DocumentText` on bill documents by checking the MA
+Legislature Document API and then falling back to embedded text in the official
+bill PDF. The script is dry-run by default; pass `--commit true` to write
+updates.
+
+```sh
+yarn firebase-admin run-script backfillBillPdfText --env dev -- --court 194 --bills "H1 H18 H4787 H5008 S2539" --output ./bill-pdf-text-dry-run.csv
+yarn firebase-admin run-script backfillBillPdfText --env dev -- --court 194 --commit true --output ./bill-pdf-text-dev.csv
+```
+
+See `docs/bill-pdf-text-extraction.md` for extraction categories and the LLM
+summary/topic follow-up.
+
 #### `backfillBillNotificationEvents`
 
 <!-- TODO: document -->

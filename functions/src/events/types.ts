@@ -108,8 +108,11 @@ export type Hearing = Static<typeof Hearing>
 export const Hearing = BaseEvent.extend({
   type: L("hearing"),
   content: HearingContent,
-  videos: Optional(Array(Video)),
+  videoURL: Optional(String),
+  videoTranscriptionId: Optional(String),
+  videoFetchedAt: Optional(InstanceOf(Timestamp)),
   transcriptionIds: Optional(Array(String)),
+  videos: Optional(Array(Video)),
   videosFetchedAt: Optional(InstanceOf(Timestamp)),
   committeeChairs: Optional(Array(String))
 })

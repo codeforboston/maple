@@ -2,24 +2,32 @@ import { Record, String } from "runtypes"
 import { Script } from "./types"
 
 const Args = Record({
-  eventId: String.optional()
+  hearingId: String.optional()
 })
 
-export function reformatFactory(fn: (data: FirebaseFirestore.DocumentData) => any) {
-  return async ({ db, args }: { db: FirebaseFirestore.Firestore, args: any }) => {
-    const { eventId } = Args.check(args)
+export function reformatFactory(
+  fn: (data: FirebaseFirestore.DocumentData) => any
+) {
+  return async ({
+    db,
+    args
+  }: {
+    db: FirebaseFirestore.Firestore
+    args: any
+  }) => {
+    const { hearingId } = Args.check(args)
 
     // Process a single event by eventId
-    if (eventId) {
+    if (hearingId) {
       const snapshot = await db
         .collection("events")
         .where("type", "==", "hearing")
-        .where("id", "==", eventId)
+        .where("id", "==", hearingId)
         .get()
 
       if (snapshot.empty || snapshot.docs.length !== 1) {
         throw new Error(
-          `The number of documents matching the event id ${eventId} must be exactly one`
+          `The number of documents matching the event id ${hearingId} must be exactly one`
         )
       }
 
@@ -54,11 +62,9 @@ export function reformatFactory(fn: (data: FirebaseFirestore.DocumentData) => an
   }
 }
 
-function getVideoFormatUpdate(
-  data: FirebaseFirestore.DocumentData
-): any {
+function getVideoFormatUpdate(data: FirebaseFirestore.DocumentData): any {
   if ("videos" in data || !("videoURL" in data)) {
-    return {}
+    return null
   }
 
   const url = data.videoURL
@@ -66,7 +72,9 @@ function getVideoFormatUpdate(
   const transcriptionId = data.videoTranscriptionId
 
   if (!url || !fetchedAt || !transcriptionId) {
-    throw new Error(`In the data for ${data.id}, it is expected that if videoURL exists videoFetchedAt and videoTranscriptionId also exist`)
+    throw new Error(
+      `In the data for ${data.id}, it is expected that if videoURL exists videoFetchedAt and videoTranscriptionId also exist`
+    )
   }
 
   const transcriptionIds = [transcriptionId]
@@ -83,7 +91,7 @@ function getVideoFormatUpdate(
   return {
     videos,
     transcriptionIds,
-    videosFetchedAt: fetchedAt,
+    videosFetchedAt: fetchedAt
   }
 }
 
