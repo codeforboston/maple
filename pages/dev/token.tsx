@@ -81,9 +81,9 @@ function TokenPage() {
   "mcpServers": {
     "maple": {
       "type": "http",
-      "url": "https://maple-mcp.run.app/mcp",
+      "url": "https://mapletestimony.org/api/mcp",
       "headers": {
-        "Authorization": "Bearer <paste-token-here>"
+        "X-Maple-Token": "Bearer <paste-token-here>"
       }
     }
   }

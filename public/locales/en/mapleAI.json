@@ -59,6 +59,11 @@
       "desc3Main": "Summaries, tags, and hearing transcripts are stored in our backend, timestamped, and linked to specific bills, hearings, and legislative sessions. We may regenerate them periodically as modeling capabilities evolve."
     }
   },
+  "aiResearch": {
+    "title": "Use AI to research MAPLE data",
+    "desc": "You can connect AI chat tools like Claude directly to MAPLE's database of bills, testimony, and ballot questions, ask questions in plain English, and get real-time answers drawn from the full legislative record.",
+    "linkText": "Learn how to set up AI research tools with your MAPLE account →"
+  },
   "section5": {
     "title": "Future Deployments of AI",
     "desc1": "We are continually exploring new ways to leverage AI to improve your experience on MAPLE. Future enhancements may include more personalized recommendations, deeper insights into legislative trends, and interactive tools to engage with legislative data more effectively. Here are some projects we are considering:",

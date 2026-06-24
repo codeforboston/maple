@@ -20,12 +20,19 @@ module.exports = {
     return [redirectFirebaseAuthHandlers()]
   },
   async rewrites() {
-    return [
+    const rewrites = [
       {
         source: "/policies",
         destination: "/policies/privacy-policy"
       }
     ]
+    if (process.env.MCP_PROXY_URL) {
+      rewrites.push({
+        source: "/api/mcp/:path*",
+        destination: `${process.env.MCP_PROXY_URL}/:path*`
+      })
+    }
+    return rewrites
   }
 }
 
