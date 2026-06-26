@@ -60,7 +60,11 @@ export {
 
 export { transcription } from "./webhooks"
 
+export { matchOcpfMembers } from "./ocpf/matchOcpfMembers"
+
 export * from "./triggerPubsubFunction"
+
+export { mcpProxy } from "./mcp/proxy"
 
 // Export the health check last so it is loaded last.
 export * from "./healthCheck"

@@ -5,6 +5,7 @@ import { useRecentTestimony } from "../db"
 import TestimonyCallout from "./TestimonyCallout"
 import { useTranslation } from "next-i18next"
 import { Internal } from "components/links"
+import styles from "components/homepage/Homepage.module.css"
 
 export default function TestimonyCalloutSection() {
   const recentTestimony = useRecentTestimony(4)
@@ -13,13 +14,17 @@ export default function TestimonyCalloutSection() {
   const { t } = useTranslation("testimony")
 
   return (
-    <Container fluid>
-      <Row className="mt-5 justify-content-center">
-        <Col xs={10} md={6}>
-          <h1>{t("testimonyCalloutSection.peopleSaying")}</h1>
+    <section className={styles.sectionShell}>
+      <Row className={styles.peopleSaying}>
+        <Col xs={12} sm={12} md={7} className={styles.sectionTitle}>
+          <h2>{t("testimonyCalloutSection.peopleSaying")}</h2>
         </Col>
-        <Col xs={10} md={3}>
-          <div>
+        <Col xs={12} sm={12} md={5}>
+          <div
+            className={`d-flex ${
+              isMobile ? "justify-content-center" : "justify-content-end"
+            }  me-2`}
+          >
             <Internal href="/testimony">
               <Button className={`btn btn-lg py-1`}>
                 {t("testimonyCalloutSection.browseTestimony")}
@@ -50,12 +55,8 @@ export default function TestimonyCalloutSection() {
         </Carousel>
       ) : (
         <Row className="justify-content-center">
-          <Col xs={10} xl={9} xxl={8}>
-            <Row
-              xs={1}
-              lg={2}
-              className={`g-2 justify-content-center py-2 mt-4`}
-            >
+          <Col xs={11} xl={11} xxl={11}>
+            <Row xs={1} lg={2} className={`g-3 justify-content-between py-2`}>
               {recentTestimony?.map(testimony => (
                 <TestimonyCallout
                   key={testimony.authorUid + testimony.billId}
@@ -66,6 +67,6 @@ export default function TestimonyCalloutSection() {
           </Col>
         </Row>
       )}
-    </Container>
+    </section>
   )
 }

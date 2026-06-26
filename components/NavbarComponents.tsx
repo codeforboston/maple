@@ -81,6 +81,26 @@ export const Avatar = () => {
   )
 }
 
+export const NavbarLinkAiTools: React.FC<
+  React.PropsWithChildren<{
+    handleClick?: any
+    other?: any
+  }>
+> = ({ handleClick, other }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  const { t } = useTranslation(["common", "auth"])
+  return (
+    <NavbarDropdownLink
+      className={isMobile ? "navLink-primary" : ""}
+      href="/learn/ai-tools"
+      handleClick={handleClick}
+      other={other}
+    >
+      {t("navigation.aiTools")}
+    </NavbarDropdownLink>
+  )
+}
+
 export const NavbarLinkAI: React.FC<
   React.PropsWithChildren<{
     handleClick?: any
