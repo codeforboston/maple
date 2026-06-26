@@ -13,6 +13,7 @@
 
 import { useAuth } from "components/auth"
 import { createPage } from "components/page"
+import { createGetStaticTranslationProps } from "components/translations"
 import React, { useState, useCallback } from "react"
 
 function TokenPage() {
@@ -145,6 +146,12 @@ function TokenPage() {
 export default createPage({
   Page: TokenPage
 })
+
+export const getStaticProps = createGetStaticTranslationProps([
+  "auth",
+  "common",
+  "footer"
+])
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 
