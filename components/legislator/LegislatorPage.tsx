@@ -348,7 +348,7 @@ export function LegislatorPage(props: { id: string }) {
           <LegislatorTabs fullname={profile.fullName} pageId={props.id} />
         </Col>
         <Col className={`mt-4`} md="3">
-          <LegislatorSidebar />
+          <LegislatorSidebar pageId={props.id} publicProfile={profile} />
         </Col>
       </Row>
     </Container>
