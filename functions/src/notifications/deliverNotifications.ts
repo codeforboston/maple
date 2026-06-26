@@ -37,7 +37,7 @@ const getVerifiedUserEmail = async (uid: string) => {
       return null
     }
   } catch (error) {
-    console.error(`Error getting user email for UID ${uid}:`, error)
+    functions.logger.error(`Error getting user email for UID ${uid}:`, error)
     return null
   }
 }
@@ -191,7 +191,7 @@ export const buildDigestData = async (
             bill.opposeCount++
             break
           default:
-            console.error(`Unknown position: ${notification.position}`)
+            functions.logger.error(`Unknown position: ${notification.position}`)
             break
         }
       } else {
@@ -241,7 +241,7 @@ export const buildDigestData = async (
             bq.opposeCount++
             break
           default:
-            console.error(`Unknown position: ${notification.position}`)
+            functions.logger.error(`Unknown position: ${notification.position}`)
             break
         }
       } else {

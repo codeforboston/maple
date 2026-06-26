@@ -11,6 +11,7 @@ import {
 } from "date-fns"
 
 import { JSDOM } from "jsdom"
+import { logger } from "firebase-functions"
 
 export const getNextDigestAt = (notificationFrequency: Frequency) => {
   const now = startOfDay(new Date())
@@ -31,7 +32,7 @@ export const getNextDigestAt = (notificationFrequency: Frequency) => {
       nextDigestAt = null
       break
     default:
-      console.error(`Unknown notification frequency: ${notificationFrequency}`)
+      logger.error(`Unknown notification frequency: ${notificationFrequency}`)
       break
   }
 

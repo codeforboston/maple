@@ -1,6 +1,7 @@
 import { db } from "../firebase"
 import { createSearchIndexer } from "../search"
 import { Testimony, TestimonySearchRecord } from "./types"
+import { logger } from "firebase-functions"
 
 export const {
   syncToSearchIndex: syncTestimonyToSearchIndex,
@@ -31,7 +32,7 @@ export const {
   convert: data => {
     const validation = Testimony.validateWithDefaults(data)
     if (!validation.success) {
-      console.error(data, validation.message, validation.details)
+      logger.error(data, validation.message, validation.details)
       throw new Error("Invalid testimony")
     }
     const testimony = validation.value

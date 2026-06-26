@@ -17,7 +17,7 @@ export const populateTestimonySubmissionNotificationEvents = functions.firestore
   .document("/users/{userId}/publishedTestimony/{testimonyId}")
   .onWrite(async (snapshot, context) => {
     if (!snapshot.after.exists) {
-      console.error("New snapshot does not exist")
+      functions.logger.error("New snapshot does not exist")
       return
     }
 

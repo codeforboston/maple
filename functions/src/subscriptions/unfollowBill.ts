@@ -20,7 +20,7 @@ export const unfollowBill = functions.https.onCall(async (data, context) => {
     await unsubscribeToBillTopic({ user, billLookup, db })
     return { status: "success", message: "Bill subscription removed" }
   } catch (error: any) {
-    console.error(
+    functions.logger.error(
       `Error in unfollowBill for user ${context.auth.uid}:`,
       error.stack
     )
