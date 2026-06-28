@@ -303,12 +303,14 @@ functions/src/lobbying/
   index.ts     — Re-exports
 
 lobbying-scraper/
-  scrape.py        — Entry point: --mode weekly (incremental) | --mode backfill
-  portal.py        — HTTP + HTML parsing
-  normalize.py     — Port of normalize.ts
-  writer.py        — Firestore document construction + writes
-  requirements.txt — requests, beautifulsoup4, google-cloud-firestore
-  Dockerfile       — Python 3.12-slim image
+  scrape.py           — Entry point: --mode weekly (incremental) | --mode backfill
+  portal.py           — HTTP fetch wrappers + pure HTML parsers for all 4 format eras
+  normalize.py        — Port of normalize.ts
+  writer.py           — Firestore document construction + writes
+  archive.py          — GCS raw-HTML archive (write-only; enabled by ARCHIVE_RAW=1)
+  reparse_archive.py  — Offline driver to re-ingest archived HTML into Firestore
+  requirements.txt    — requests, beautifulsoup4, google-cloud-firestore, google-cloud-storage
+  Dockerfile          — Python 3.12-slim image
 ```
 
 The TypeScript lobbying module (`functions/src/lobbying/`) contains only the
@@ -422,18 +424,20 @@ export { scrapeLobbying } from "./lobbying"
 
 ## Implementation Status
 
-| File                                  | Status  | Notes                                                    |
-| ------------------------------------- | ------- | -------------------------------------------------------- |
-| `functions/src/lobbying/types.ts`     | ✅ Done | Firestore schema types; imported by future frontend code |
-| `functions/src/lobbying/normalize.ts` | ✅ Done | Normalization pipeline; also ported to `normalize.py`    |
-| `functions/src/lobbying/index.ts`     | ✅ Done | Re-exports types and normalize                           |
-| `firestore.rules`                     | ✅ Done |                                                          |
-| `firestore.indexes.json`              | ✅ Done |                                                          |
-| `lobbying-scraper/normalize.py`       | ✅ Done | Port of normalize.ts                                     |
-| `lobbying-scraper/portal.py`          | ✅ Done | HTTP + HTML parsing                                      |
-| `lobbying-scraper/writer.py`          | ✅ Done | Firestore document construction                          |
-| `lobbying-scraper/scrape.py`          | ✅ Done | Entry point; `--mode weekly` and `--mode backfill`       |
-| `lobbying-scraper/Dockerfile`         | ✅ Done | Python 3.12-slim; deployed to Cloud Run                  |
+| File                                  | Status     | Notes                                                            |
+| ------------------------------------- | ---------- | ---------------------------------------------------------------- |
+| `functions/src/lobbying/types.ts`     | ✅ Done    | Firestore schema types; imported by future frontend code         |
+| `functions/src/lobbying/normalize.ts` | ✅ Done    | Normalization pipeline; also ported to `normalize.py`            |
+| `functions/src/lobbying/index.ts`     | ✅ Done    | Re-exports types and normalize                                   |
+| `firestore.rules`                     | ✅ Done    |                                                                  |
+| `firestore.indexes.json`              | ✅ Done    |                                                                  |
+| `lobbying-scraper/normalize.py`       | ✅ Done    | Port of normalize.ts                                             |
+| `lobbying-scraper/portal.py`          | ✅ Done    | All 4 format eras; pure parsers separated from fetch wrappers    |
+| `lobbying-scraper/writer.py`          | ✅ Done    | Firestore document construction                                  |
+| `lobbying-scraper/scrape.py`          | ✅ Done    | Entry point; `--mode weekly` and `--mode backfill`               |
+| `lobbying-scraper/archive.py`         | ✅ Done    | GCS write-only archive; enabled via `ARCHIVE_RAW=1`              |
+| `lobbying-scraper/reparse_archive.py` | ✅ Done    | Offline reparse driver; looks up registrant meta from Firestore  |
+| `lobbying-scraper/Dockerfile`         | ⚠️ Rebuild | Needs rebuild after `google-cloud-storage` added to requirements |
 
 ### Document ID scheme
 
@@ -676,3 +680,291 @@ processed).
 | Incremental strategy        | Skip already-processed disclosure URLs; write docs by logical key (upsert)   | Survives function restarts and re-runs without re-fetching already-scraped pages; natural upsert prevents duplicates without an explicit dedup pass                      |
 | Legacy format (pre-2013)    | Store with `clientName: "_total_salary_"` sentinel                           | Preserves data completeness; callers can filter on this value                                                                                                            |
 | Historical data             | Admin backfill script (2005 → present)                                       | Full history is ingested once; Cloud Function maintains current+prior year going forward                                                                                 |
+
+---
+
+## Appendix: Phase 2 — OCPF Contribution Ingestion
+
+This appendix tracks planned additions to the lobbying pipeline in a subsequent
+PR. The changes link OCPF (Office of Campaign and Political Finance) campaign
+contribution records to lobbying registrants, enabling questions like "how much
+did this firm contribute to politicians while lobbying on this bill?"
+
+### Background
+
+The MA Secretary of State portal (Phase 1, implemented) covers who lobbied which
+bills and for how much compensation. OCPF covers who donated to which political
+candidates. Linking the two surfaces the intersection: lobbying firms that also
+made political contributions.
+
+OCPF publishes bulk data files at
+`ocpf2.blob.core.windows.net/downloads/data2/` (the same host used by
+`matchOcpfMembers.ts` for the filers file). The contribution records file URL
+needs to be confirmed before implementation begins.
+
+### New Data
+
+#### `/lobbyingContributionRecipients/{recipientId}`
+
+One document per deduplicated contribution recipient (politician/PAC). The
+deduplication pipeline is described below.
+
+```typescript
+interface LobbyingContributionRecipient {
+  recipientId: string // SHA-256(recipientName + officeSought)[:40]
+  recipientName: string // canonical display name after dedup
+  recipientSlug: string // slugify("{recipientName} {officeSought}")
+  officeSought: string // canonical office value (see normalization below)
+  totalReceived: number
+  nContributions: number
+  years: number[]
+  nameVariants: string[] // all raw names that resolved to this record
+  manuallyMerged: boolean // true if recipient_merges.json was applied
+  topFirms: [string, string, number][] // [entityName, entityNameNorm, amount]
+  fetchedAt: Timestamp
+}
+```
+
+#### New fields on `LobbyingRegistrant` (optional, written by contribution run)
+
+```typescript
+nBills?: number             // total filing rows across all clients and years
+nContributions?: number     // total OCPF contribution records from this registrant
+totalContributions?: number // total dollar amount contributed
+```
+
+`nBills` is computed during the disclosure scrape (bill rows are already in
+memory) and written as a side effect of `--mode weekly` and `--mode backfill`.
+`nContributions` and `totalContributions` are written by `--mode contributions`.
+
+#### Pure-contribution firms (new registrant subtype)
+
+Firms that made OCPF contributions but have zero lobbying activity (no filings)
+are written as `LobbyingRegistrant` documents with `nBills: 0`, `clients: []`,
+`totalContributions ≥ 500`. These were previously invisible. The $500 threshold
+filters noise; adjust after reviewing the data.
+
+### Contribution Recipient Deduplication
+
+The same politician may appear under many name variants in OCPF data ("Joe
+Curtatone", "Joseph Curtatone", "Curtatone"). The dedup pipeline runs in five
+passes in-memory after loading all contribution records.
+
+All rules are systemic (handle a class of inputs); individual special cases are
+handled via `recipient_merges.json` only.
+
+#### New file: `lobbying-scraper/recipient_normalize.py`
+
+**Step 1 — `_extract_recipient_name(raw)`**
+
+Strips committee wrapper names using 14 regex patterns (e.g. "Cte. to Elect Ron
+Mariano" → "Ron Mariano"). Then applies in order:
+
+- Last-first flip: `"Mariano, Ronald"` → `"Ronald Mariano"`
+- Honorific strip: `"Sen. Marc Rodrigues"` → `"Marc Rodrigues"`
+- Party label strip: `"Ron Mariano Democrat"` → `"Ron Mariano"`
+- Initial-dot prefix strip: `"R.Mariano"` → `"Mariano"`
+
+**Step 2 — `_recipient_dedup_key(name, office)` → `(first, last, office)`**
+
+Key is a `(first_token, last_token, canonical_office)` tuple. Before keying,
+`first_token` is passed through `_NICKNAME_MAP`:
+
+| Raw              | Canonical |
+| ---------------- | --------- |
+| joe              | joseph    |
+| mike             | michael   |
+| bob              | robert    |
+| bill             | william   |
+| jim              | james     |
+| tom              | thomas    |
+| dan              | daniel    |
+| dave             | david     |
+| steve            | steven    |
+| ron              | ronald    |
+| tim              | timothy   |
+| rick, rich, dick | richard   |
+| charlie, chuck   | charles   |
+| ben              | benjamin  |
+| tony             | anthony   |
+| marty            | martin    |
+| don              | donald    |
+| ken              | kenneth   |
+| ed               | edward    |
+| ray              | raymond   |
+| nick             | nicholas  |
+
+If either token is a generic word (`the`, `comm`, `committee`, `democratic`,
+`republican`, `house`, `senate`, `friends`, `cte`, `pac`), the key falls back
+to the full canonical text.
+
+**Step 3 — Manual merges (`recipient_merges.json`)**
+
+JSON file maps `(name, office)` alias pairs to a canonical record. Start as an
+empty object `{}`; populate incrementally as data review finds misses. Applied
+after key assignment.
+
+**Step 4 — `_merge_bare_surnames(groups)`**
+
+Single-name entries where `first == last` (e.g. `"Curtatone"`) are merged into
+the highest-total multi-token peer with the same `(last, office)`.
+
+**Step 5 — `_fuzzy_merge_keys(groups)`**
+
+Groups keys by `(first, office)`. Pairs where last tokens differ by Levenshtein
+distance ≤ 1 are merged into the higher-total key. Minimum 6 chars on both last
+tokens (protects short surnames: Walsh, Jones, etc.).
+
+### Office Normalization — `_normalize_office(raw)` in `recipient_normalize.py`
+
+Canonical office values:
+
+`State Representative` · `State Senator` · `Governor` · `Lt. Governor` ·
+`Attorney General` · `Treasurer` · `Auditor` · `Secretary of State` · `Mayor` ·
+`City Council` · `District Attorney` · `Sheriff` · `PAC`
+
+Normalization pipeline (applied in order):
+
+1. Strip `"Candidate for [Massachusetts] X"` prefix → `"X"`
+2. Strip leading `MA` / `Mass.` / `Massachusetts`
+3. Strip trailing junk punctuation (`:;/`)
+4. Strip parenthetical suffixes
+5. Strip `"of the …"` / `"from the …"` suffixes
+6. Strip after dash or slash
+7. Strip after comma
+8. Strip ordinal suffixes (e.g. `" 3rd Norfolk …"`)
+9. Re-strip trailing junk (ordinal strip can leave dangling colons)
+10. `OFFICE_MAP` lookup (canonical string → canonical value)
+11. Fallback — district lookup: ordinal + MA county → `State Representative`
+12. Fallback — county suffix: `"Representative Suffolk"` → strip county → retry map
+13. Fallback — location qualifier: strip `"of <city>"`, trailing word, or leading
+    word → retry map (handles `"Mayor of Somerville"`, `"Somerville Mayor"`,
+    `"Mayor Somerville"` → `"Mayor"`)
+
+### New Files
+
+```
+lobbying-scraper/
+  ocpf_contributions.py   — OCPF bulk data download, parse, match to registrants
+  recipient_normalize.py  — office normalization + 5-step recipient dedup pipeline
+  recipient_merges.json   — manual merge overrides (start as {})
+```
+
+### Infrastructure Changes
+
+**`firestore.rules`** — add:
+
+```
+match /lobbyingContributionRecipients/{id} { allow read: if true; allow write: if false; }
+```
+
+**`firestore.indexes.json`** — add:
+
+| Collection                       | Fields                                 | Use case                    |
+| -------------------------------- | -------------------------------------- | --------------------------- |
+| `lobbyingContributionRecipients` | `officeSought ASC, totalReceived DESC` | Office-filtered leaderboard |
+| `lobbyingContributionRecipients` | `officeSought ASC, recipientName ASC`  | Alphabetical browse         |
+
+### What Is Not Implemented (Phase 2)
+
+**AI bill topics (`tags.json` equivalent)** — requires a bill embeddings parquet
+file. MAPLE does not produce this file. The topics feature is deferred; MAPLE's
+existing bill search index could be used as a substitute in a future PR.
+
+**`recipient_merges.json`** — starts empty. Requires domain review of the
+deduplicated output to find cases the automated rules miss. Populate
+incrementally.
+
+### Order of Work
+
+1. Confirm OCPF bulk contribution file URL and column schema
+2. Confirm or incorporate HTML archiving pattern (see open question below)
+3. Implement `recipient_normalize.py` (self-contained, testable in isolation)
+4. Implement `ocpf_contributions.py`
+5. Update `functions/src/lobbying/types.ts` schema
+6. Update `writer.py` and `scrape.py`
+7. Update `firestore.rules` and `firestore.indexes.json`
+
+### HTML Archiving for Fast Reparsing
+
+The current scraper fetches and immediately parses SoS portal HTML, storing
+nothing but the parsed Firestore documents. If parsing logic changes, the full
+portal must be re-scraped — slow and fragile given the Imperva TLS constraint.
+Phase 2 adds GCS archiving of raw HTML as a side effect of every portal fetch.
+
+#### Design principles (from the AMEND reference implementation)
+
+The archive is **write-only cold storage**, not a cache. It is fully decoupled
+from both the incremental cursor (which stays Firestore-only) and the parse
+path. Fetching from the portal is always driven by the Firestore cursor; the
+archive is a downstream side effect of a successful fetch.
+
+Parsers must be **pure functions with no I/O** — `parse_summary(soup)`,
+`parse_disclosure_detail(soup, year)` — so the identical code runs in the live
+scrape and in the offline reparse script without modification.
+
+#### GCS key scheme
+
+One object per fetched page: `raw_html/{sha1(url)}.html`. URL-hash is
+collision-free without modeling the ASP.NET URL key space. Individual `.html`
+objects (not batch tarballs) are appropriate here because our scraper runs
+weekly in small increments rather than in large historical sweeps; per-object
+GCS is simpler and makes the reparse path a flat list + get.
+
+Bucket: `gs://<project>-lobbying-archive/raw_html/`
+Storage class: Archive (written once, read rarely).
+
+#### Write timing
+
+Archived immediately after `raise_for_status()` passes, before parsing, and
+**not gated on parse success**:
+
+```python
+def _get(session, url):
+    r = session.get(url, ...)
+    r.raise_for_status()
+    if "Summary.aspx" in url or "CompleteDisclosure" in url:
+        _archive_page(url, r.text)   # side effect; never blocks parse
+    return BeautifulSoup(r.text, "html.parser")
+```
+
+Gating on parse success would defeat the purpose: the archive exists precisely
+to recover from parser gaps later, so we want the bytes even when the current
+parser does not fully understand them. The search/results page is excluded
+(same URL across all years, trivially regenerable).
+
+#### Reparse path
+
+A dedicated offline script `lobbying-scraper/reparse_archive.py`:
+
+```
+python3 reparse_archive.py [--limit N] [--dry-run]
+```
+
+Lists `raw_html/*.html` objects from GCS, downloads them, resolves each
+`sha1.html` back to its original URL (stored as object metadata at write time),
+and runs the pure parser functions against the archived soup. Tracks completed
+objects via a `processed_archive.txt` marker so reparse is resumable.
+
+#### Cursor interaction
+
+No change to the Firestore cursor. The archive is never consulted to skip a
+portal fetch. "Have I processed this disclosure?" is still answered by the
+Firestore cursor; the archive is a consequence of fetching, not an input to the
+decision.
+
+#### New infrastructure required
+
+- GCS bucket `<project>-lobbying-archive` (Archive class, no public access)
+- `google-cloud-storage` added to `lobbying-scraper/requirements.txt`
+- `GOOGLE_CLOUD_PROJECT` env var (already available on Cloud Run) used to
+  derive bucket name
+- IAM: Cloud Run service account needs `storage.objects.create` on the bucket
+- New file: `lobbying-scraper/reparse_archive.py`
+
+#### Order of work within Phase 2
+
+This is a prerequisite for `ocpf_contributions.py` only in the sense that we
+want the archive in place before running the full historical backfill so we do
+not have to re-scrape. It is otherwise independent and can be implemented
+alongside the contribution pipeline rather than before it.

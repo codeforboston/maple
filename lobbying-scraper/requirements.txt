@@ -1,3 +1,4 @@
 requests>=2.28
 beautifulsoup4>=4.12
 google-cloud-firestore>=2.14
+google-cloud-storage>=2.10
