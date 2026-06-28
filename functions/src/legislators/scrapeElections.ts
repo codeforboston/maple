@@ -332,5 +332,7 @@ export async function fetchElectionsData(
     console.error(error)
   })
   const dom = new JSDOM(text, { virtualConsole })
-  return (await electionsPageInfo(dom)).filter((item): item is ElectionInfo => item !== null)
+  return (await electionsPageInfo(dom)).filter(
+    (item): item is ElectionInfo => item !== null
+  )
 }
