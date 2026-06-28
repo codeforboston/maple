@@ -255,55 +255,60 @@ async function parseElectionTable(
   ]
 }
 
-async function electionsPageInfo(dom: JSDOM): Promise<ElectionInfo[]> {
+async function electionsPageInfo(dom: JSDOM): Promise<(ElectionInfo | null)[]> {
   const elements = Array.from(
     dom.window.document.querySelectorAll('[id^="election-id-"]')
   )
   const info = elements.map(async electionElem => {
-    const electTDs = Array.from(electionElem.children).filter(
-      child => child.tagName === "TD"
-    )
-    const yearText = electTDs[0].textContent
-    if (!yearText) {
-      throw new Error(`Year not present in ${electionElem.outerHTML}`)
-    }
-    const year = parseInt(yearText, 10)
-    const office = electTDs[1].textContent?.trim()
-    const districts = electTDs[2].textContent?.trim()
-    if (!year || !office || !districts) {
-      throw new Error(
-        `Year, office, or districts not present in ${electionElem.outerHTML}`
+    try {
+      const electTDs = Array.from(electionElem.children).filter(
+        child => child.tagName === "TD"
       )
-    }
-    const stage = parseElectionStage(electTDs[3].textContent?.trim() ?? "")
-    if (!stage) {
-      throw new Error(
-        `${stage} is not a recognized election stage: ${electTDs[3].outerHTML}`
-      )
-    }
-    if (electTDs[4].querySelector(":scope > .no_candidates")) {
+      const yearText = electTDs[0].textContent
+      if (!yearText) {
+        throw new Error(`Year not present in ${electionElem.outerHTML}`)
+      }
+      const year = parseInt(yearText, 10)
+      const office = electTDs[1].textContent?.trim()
+      const districts = electTDs[2].textContent?.trim()
+      if (!year || !office || !districts) {
+        throw new Error(
+          `Year, office, or districts not present in ${electionElem.outerHTML}`
+        )
+      }
+      const stage = parseElectionStage(electTDs[3].textContent?.trim() ?? "")
+      if (!stage) {
+        throw new Error(
+          `${stage} is not a recognized election stage: ${electTDs[3].outerHTML}`
+        )
+      }
+      if (electTDs[4].querySelector(":scope > .no_candidates")) {
+        return ElectionInfo.check({
+          year,
+          office,
+          districts,
+          candidateUrls: [],
+          ...stage
+        })
+      }
+      const candidateTable = electTDs[4].querySelector(":scope tbody")
+      if (!candidateTable) {
+        throw new Error(`No candidate table in ${electionElem.outerHTML}`)
+      }
+      const [result, candidateUrls] = await parseElectionTable(candidateTable)
+
       return ElectionInfo.check({
         year,
         office,
         districts,
-        candidateUrls: [],
-        ...stage
+        ...stage,
+        candidateUrls,
+        result
       })
+    } catch (error) {
+      console.error(error)
+      return null
     }
-    const candidateTable = electTDs[4].querySelector(":scope tbody")
-    if (!candidateTable) {
-      throw new Error(`No candidate table in ${electionElem.outerHTML}`)
-    }
-    const [result, candidateUrls] = await parseElectionTable(candidateTable)
-
-    return ElectionInfo.check({
-      year,
-      office,
-      districts,
-      ...stage,
-      candidateUrls,
-      result
-    })
   })
   return Promise.all(info)
 }
@@ -327,5 +332,5 @@ export async function fetchElectionsData(
     console.error(error)
   })
   const dom = new JSDOM(text, { virtualConsole })
-  return electionsPageInfo(dom)
+  return (await electionsPageInfo(dom)).filter((item): item is ElectionInfo => item !== null)
 }
