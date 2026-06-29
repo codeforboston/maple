@@ -257,7 +257,7 @@ in `functions/src/lobbying/types.ts`.
   (one POST), compares disc URLs against the Firestore cursor, and **exits
   immediately if nothing is new** (fast path, typically seconds)
 - When new or updated disclosures are found, fetches and processes them
-- Persists a cursor in `/scrapers/lobbying`:
+- Persists a cursor in `scrapers/lobbying`:
   - `processedDiscUrls: string[]` — disc URLs already written; skipped on
     re-runs
   - `summaryDiscCache: {[summaryUrl]: string[]}` — maps summary page URLs to
@@ -282,15 +282,29 @@ New filings arrive twice a year (semi-annual reporting periods). Between
 periods, the run completes in under a minute.
 
 The backfill script (`--mode backfill`) uses a separate subcollection cursor at
-`/scrapers/lobbyingBackfill/processedUrls/{urlHash}` so it does not interfere
+`scrapers/lobbyingBackfill/processedUrls/{urlHash}` so it does not interfere
 with the live scraper state.
 
-### Legacy Format (pre-2013)
+### Portal HTML format eras
 
-The portal uses a different HTML layout for filings before ~2013: total salary
-is not broken down by client, and all bill activity is in a single table. These
-are stored with `clientName: "_total_salary_"` so callers can detect and filter
-them. No bill-level compensation amount is available for these years.
+The `CompleteDisclosure.aspx` page has changed layout several times. The parser
+handles all four eras:
+
+| Era      | Years        | Compensation source                                   | Notes                                                                                               |
+| -------- | ------------ | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Modern   | 2019–present | `grdvClientPaidToEntity` grid                         | Per-client rows; both employer and individual registrant variants                                   |
+| Hybrid   | 2014–2018    | `Panel1_N` div blocks                                 | Compensation in collapsible panels; bill activity in a separate grid                                |
+| Legacy B | 2009–2013    | "Compensation received" column in bill-activity table | Per-client amounts; deduplication required (same (client, amount) pair can appear in multiple rows) |
+| Legacy A | 2005–2008    | `grdvSalaryPaid` entity-total row                     | No per-client breakdown; stored under sentinel `clientName: "_total_salary_"`                       |
+
+Pre-2009 **individual** lobbyist summary pages link to `RegVersionLobbyist.aspx`
+rather than `CompleteDisclosure.aspx`. These produce no disclosure detail and are
+skipped — expected portal behavior. Employer/entity registrants use
+`CompleteDisclosure.aspx` correctly across all years.
+
+For Legacy A filings (2005–2008), `clientName: "_total_salary_"` signals to
+callers that per-client compensation is unavailable. No bill-level compensation
+amount is available for these years.
 
 ---
 
@@ -363,22 +377,30 @@ gcloud scheduler jobs create http maple-lobbying-weekly \
 ## Historical Backfill
 
 Runs `scrape.py --mode backfill` directly. Resumable — the subcollection
-cursor at `/scrapers/lobbyingBackfill/processedUrls` tracks progress.
-Requires `lobbying-scraper/` deps or the `maple-2025` conda environment.
+cursor at `scrapers/lobbyingBackfill/processedUrls` tracks progress.
+
+Always set `ARCHIVE_RAW=1` for real runs so every fetched page is preserved
+for offline reparsing. Create the GCS archive bucket first if it does not
+exist (see Step 7 of the test plan).
 
 ```bash
 cd lobbying-scraper
 
 # Test a single year with no writes
-GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json \
+GOOGLE_CLOUD_PROJECT=digital-testimony-dev \
+  GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json \
   python3 scrape.py --mode backfill --year 2024 --limit 3 --dry-run
 
-# Run a single year for real
-GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json \
+# Run a single year for real (with archiving)
+GOOGLE_CLOUD_PROJECT=digital-testimony-dev \
+  GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json \
+  ARCHIVE_RAW=1 \
   python3 scrape.py --mode backfill --year 2024
 
-# Full history (2005-present, resumable)
-GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json \
+# Full history (2005–present, resumable, with archiving)
+GOOGLE_CLOUD_PROJECT=digital-testimony-dev \
+  GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json \
+  ARCHIVE_RAW=1 \
   python3 scrape.py --mode backfill
 ```
 
@@ -409,16 +431,6 @@ Add composite indexes for common query patterns:
 Note: bill-join queries should always filter on `chamber` (or check
 `billId !== null`) to exclude `Executive` and `Other` rows before treating
 `billId` as a MAPLE bill reference.
-
----
-
-## Function Export
-
-Add to `functions/src/index.ts`:
-
-```typescript
-export { scrapeLobbying } from "./lobbying"
-```
 
 ---
 
@@ -498,111 +510,58 @@ Testing proceeds from the inside out: unit logic first, then live portal
 fetches against the real site, then a small Firestore write, then a full
 backfill year, then steady-state function operation.
 
-### Step 1 — Unit test: normalization
+### Step 1 — Unit tests: parser, normalization, bill construction
 
-Run the normalization pipeline against known inputs and verify the outputs match
-the reference implementation.
-
-```bash
-# In a Node REPL or ts-node session:
-conda run -n maple-2025 ts-node -P tsconfig.script.json -e "
-const { normalizeEntityName } = require('./functions/src/lobbying/normalize')
-console.log(normalizeEntityName('Acme Corp., Inc. d/b/a Acme Consulting'))
-// Expected: 'ACME'
-console.log(normalizeEntityName('LAN-TEL COMMUNICATIONS, INC.'))
-// Expected: 'LAN TEL COMMUNICATIONS'
-console.log(normalizeEntityName('Law Office of Jane Smith, LLC'))
-// Expected: 'JANE SMITH'
-"
-```
-
-### Step 2 — Unit test: chamber normalization and billId construction
+Run the pytest suite against all 4 HTML format eras using committed fixture
+pages:
 
 ```bash
-conda run -n maple-2025 ts-node -P tsconfig.script.json -e "
-const { normalizeChamber, constructBillId } = require('./functions/src/lobbying/portal')
-console.log(normalizeChamber('HB'))           // House Bill
-console.log(normalizeChamber('SB'))           // Senate Bill
-console.log(normalizeChamber('Executive'))    // Executive
-console.log(normalizeChamber('FY2024'))       // Other
-console.log(constructBillId('House Bill', '1234'))   // H1234
-console.log(constructBillId('Senate Bill', '567'))   // S567
-console.log(constructBillId('House Docket', '89'))   // HD89
-console.log(constructBillId('Executive', 'EOEEA'))   // null
-"
+cd lobbying-scraper
+python -m pytest tests/ -v
 ```
 
-### Step 3 — Live portal fetch: summary links
+Expected: 26 tests pass. Covers compensation totals and client/bill counts for
+all eras (2007, 2011, 2016, 2024 — employer and individual), normalization edge
+cases, bill ID construction, and specific bug regressions (semicolon bill
+separator, "Total amount" artifact row, null billId for executive rows).
 
-Verify the portal is reachable and returns results for the current year. Use
-`--limit 1` to minimize requests.
+### Step 2 — Live portal fetch: dry run
+
+Verify the portal is reachable and the parser returns valid data without writing
+to Firestore:
 
 ```bash
-conda run -n maple-2025 ts-node -P tsconfig.script.json -e "
-const { makePortalClient, fetchSummaryLinks } = require('./functions/src/lobbying/portal')
-const client = makePortalClient()
-fetchSummaryLinks(client, 2024).then(urls => {
-  console.log('Summary links for 2024:', urls.length)
-  console.log('First URL:', urls[0])
-}).catch(console.error)
-"
+cd lobbying-scraper
+GOOGLE_CLOUD_PROJECT=digital-testimony-dev \
+  GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json \
+  python3 scrape.py --mode backfill --year 2024 --limit 3 --dry-run
 ```
 
-Expected: ~400–600 URLs, each containing `Summary.aspx`.
+Expected: 3 registrants fetched, compensation and bill rows printed, no
+Firestore writes.
 
-### Step 4 — Live portal fetch: summary meta + one disclosure
+### Step 3 — Firestore write: single year, small limit
 
-Pick the first summary URL from Step 3 and fetch its meta and first disclosure.
+Write a small batch to the dev project and verify results:
 
 ```bash
-conda run -n maple-2025 ts-node -P tsconfig.script.json -e "
-const { makePortalClient, fetchSummaryLinks, fetchDisclosureMeta, fetchDisclosureDetail } = require('./functions/src/lobbying/portal')
-async function main() {
-  const client = makePortalClient()
-  const [summaryUrl] = await fetchSummaryLinks(client, 2024)
-  const meta = await fetchDisclosureMeta(client, summaryUrl)
-  console.log('Meta:', JSON.stringify(meta, null, 2))
-  if (meta.disclosureUrls[0]) {
-    const detail = await fetchDisclosureDetail(client, meta.disclosureUrls[0], 2024)
-    console.log('Compensation rows:', detail.compensation.length)
-    console.log('Bill rows:', detail.bills.length)
-    console.log('First bill:', detail.bills[0])
-  }
-}
-main().catch(console.error)
-"
+cd lobbying-scraper
+GOOGLE_CLOUD_PROJECT=digital-testimony-dev \
+  GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json \
+  python3 scrape.py --mode backfill --year 2024 --limit 3
 ```
 
-Verify: `meta.entityName` is non-empty, `meta.regType` is `"Lobbyist"` or
-`"Employer"`, bill rows have `billId` set correctly for legislative chambers.
-
-### Step 5 — Backfill: single year, small limit against dev Firestore
-
-Write a small batch to the dev Firestore emulator or dev project.
-
-```bash
-# Against local emulator:
-conda run -n maple-2025 yarn firebase-admin run-script backfillLobbying \
-  --env local -- --year 2024 --limit 3
-
-# Against dev project (writes real Firestore):
-GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json \
-  conda run -n maple-2025 yarn firebase-admin run-script backfillLobbying \
-  --env dev -- --year 2024 --limit 3
-```
-
-Verify in Firestore console or emulator UI:
+Verify in Firestore console:
 
 - `lobbyingRegistrants` has 3 documents with `entityName`, `entityNameNorm`,
   `regType`, `clients`, `generalCourt`
 - `lobbyingFilings` has documents with `billId` non-null for legislative rows
-  and null for Executive rows
-- `/scrapers/lobbyingBackfill/processedUrls` has entries with `url` and
+  and `null` for Executive rows
+- `scrapers/lobbyingBackfill/processedUrls` has entries with `url` and
   `processedAt` fields
-- Re-running the same command skips already-processed URLs (output shows 0 new
-  disclosures)
+- Re-running skips already-processed URLs (output shows 0 new disclosures)
 
-### Step 6 — Spot-check: bill join
+### Step 4 — Spot-check: bill join
 
 Pick a `lobbyingFiling` document with a non-null `billId` and a `generalCourt`
 ≥ 192. Verify the bill exists in MAPLE:
@@ -615,53 +574,91 @@ If the bill is found, the join key is correct. If not found, check: (a) whether
 MAPLE has data for that court, (b) whether the bill number format matches
 (prefix + integer, no leading zeros).
 
-### Step 7 — Backfill: full current year
+### Step 5 — Create GCS archive bucket (once per project)
 
-Once Step 5 passes, run without `--limit` for the current year:
+The archive bucket name is derived from `GOOGLE_CLOUD_PROJECT`. Create it once
+with the Archive storage class (written once, read rarely):
 
 ```bash
-GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json \
-  conda run -n maple-2025 yarn firebase-admin run-script backfillLobbying \
-  --env dev -- --year 2024
+gsutil mb -p digital-testimony-dev -l us-central1 \
+  -c archive gs://digital-testimony-dev-lobbying-archive
 ```
 
-Monitor progress via console output. Expected: ~500–600 registrants, ~1,000
-disclosure pages, several thousand filing documents written.
+Repeat for prod when running the prod backfill:
 
-### Step 8 — Backfill: full history (2005–present)
+```bash
+gsutil mb -p digital-testimony-prod -l us-central1 \
+  -c archive gs://digital-testimony-prod-lobbying-archive
+```
+
+Each project uses its own bucket. Dev and prod data are isolated; the Cloud Run
+service account for each project only needs access to its own bucket.
+
+### Step 6 — Backfill: full current year (or partial across all years)
+
+Always run with `ARCHIVE_RAW=1` so every fetched page is preserved for offline
+reparsing. For a large-scale dev test before a full prod run, `--limit N` is
+applied per year — e.g. `--limit 50` across all years fetches ~10% of history:
+
+```bash
+cd lobbying-scraper
+
+# Full current year
+GOOGLE_CLOUD_PROJECT=digital-testimony-dev \
+  GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json \
+  ARCHIVE_RAW=1 \
+  python3 scrape.py --mode backfill --year 2024
+
+# ~10% partial across all years (good large-scale dev validation)
+GOOGLE_CLOUD_PROJECT=digital-testimony-dev \
+  GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json \
+  ARCHIVE_RAW=1 \
+  python3 scrape.py --mode backfill --limit 50
+```
+
+Expected for full year: ~500–600 registrants, ~1,000 disclosure pages, several
+thousand filing documents written.
+
+### Step 7 — Backfill: full history (2005–present)
 
 Run without `--year` to process all years. Can be interrupted and resumed:
 
 ```bash
-GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json \
-  conda run -n maple-2025 yarn firebase-admin run-script backfillLobbying \
-  --env dev
+GOOGLE_CLOUD_PROJECT=digital-testimony-dev \
+  GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json \
+  ARCHIVE_RAW=1 \
+  python3 scrape.py --mode backfill
 ```
 
-Expected runtime: several hours at 1s/request. The subcollection cursor at
-`/scrapers/lobbyingBackfill/processedUrls` allows safe interruption and
+Expected runtime: several hours at ~1s/request. The subcollection cursor at
+`scrapers/lobbyingBackfill/processedUrls` allows safe interruption and
 resumption.
 
-### Step 9 — Deploy and verify Cloud Function
+### Step 8 — Deploy and verify Cloud Run scraper
 
-Deploy the function to the dev project:
-
-```bash
-conda run -n maple-2025 firebase deploy \
-  --only functions:maple:scrapeLobbying \
-  --project digital-testimony-dev
-```
-
-Trigger a manual run via the Firebase console or:
+Build and push the container image, then update the Cloud Run job:
 
 ```bash
-conda run -n maple-2025 yarn firebase-admin run-script runScrapers \
-  --env local --targets scrapeLobbying
+cd lobbying-scraper
+IMAGE=us-central1-docker.pkg.dev/digital-testimony-dev/maple-lobbying/scraper:latest
+docker build -t $IMAGE . && docker push $IMAGE
+
+gcloud run jobs update maple-lobbying-scraper \
+  --image=$IMAGE \
+  --project=digital-testimony-dev \
+  --region=us-central1
 ```
 
-Verify: Cloud Function logs show the expected number of new disclosures (should
-be near zero if backfill completed, since current+prior year are already
-processed).
+Trigger a manual run via the Cloud Run console or:
+
+```bash
+gcloud run jobs execute maple-lobbying-scraper \
+  --project=digital-testimony-dev \
+  --region=us-central1
+```
+
+Verify via Cloud Run logs: the run should find near-zero new disclosures if the
+backfill already completed, confirming the weekly fast-path works correctly.
 
 ---
 
@@ -674,7 +671,7 @@ processed).
 | `billId` construction       | `{chamberPrefix}{billNumber}` at ingest time                                 | Raw portal data stores chamber and integer separately; the composite is what matches MAPLE's `Bill.id`                                                                   |
 | `billId` null for Executive | `null` instead of agency name                                                | Prevents accidental bill lookups; makes join guard explicit at the type level                                                                                            |
 | Normalized name fields      | Store both raw and `*Norm` fields                                            | Raw names preserved for provenance; normalized names used for grouping and matching                                                                                      |
-| HTML parser                 | `jsdom`                                                                      | Already in `functions/package.json` (used by events scraper); no need to add cheerio                                                                                     |
+| HTML parser                 | `beautifulsoup4` (Python)                                                    | Runs in the Cloud Run container alongside the scraper; no JavaScript runtime needed                                                                                      |
 | Live scraper cursor         | Array in `/scrapers/lobbying` doc                                            | ~1,000 URLs/year fits well within the 1 MB Firestore doc limit; simple and atomic with other scraper state                                                               |
 | Backfill cursor             | Firestore subcollection `/scrapers/lobbyingBackfill/processedUrls/{urlHash}` | Full 2005-present history (~50,000 URLs) would exceed the 1 MB doc limit; subcollection scales without bound and is durable, inspectable, and resumable from any machine |
 | Incremental strategy        | Skip already-processed disclosure URLs; write docs by logical key (upsert)   | Survives function restarts and re-runs without re-fetching already-scraped pages; natural upsert prevents duplicates without an explicit dedup pass                      |
@@ -892,7 +889,7 @@ nothing but the parsed Firestore documents. If parsing logic changes, the full
 portal must be re-scraped — slow and fragile given the Imperva TLS constraint.
 Phase 2 adds GCS archiving of raw HTML as a side effect of every portal fetch.
 
-#### Design principles (from the AMEND reference implementation)
+#### Design principles
 
 The archive is **write-only cold storage**, not a cache. It is fully decoupled
 from both the incremental cursor (which stays Firestore-only) and the parse
