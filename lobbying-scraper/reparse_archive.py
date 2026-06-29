@@ -29,7 +29,7 @@ import archive
 from portal import DisclosureMeta, parse_disclosure_detail, year_from_disc_url
 from writer import REGISTRANTS_COLLECTION, write_filings
 
-REPARSE_DOC = "/scrapers/lobbyingReparse"
+REPARSE_DOC = "scrapers/lobbyingReparse"
 
 
 def _meta_for_disc_url(db: firestore.Client, disc_url: str) -> DisclosureMeta | None:

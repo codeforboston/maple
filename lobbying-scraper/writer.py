@@ -7,8 +7,8 @@ names and field names must stay in sync with that file.
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING
 
+from google.cloud import firestore
 from normalize import normalize_entity_name
 from portal import (
     BillActivity,
@@ -20,13 +20,10 @@ from portal import (
     year_to_general_court,
 )
 
-if TYPE_CHECKING:
-    from google.cloud import firestore
-
 REGISTRANTS_COLLECTION = "lobbyingRegistrants"
 FILINGS_COLLECTION = "lobbyingFilings"
-SCRAPER_DOC = "/scrapers/lobbying"
-BACKFILL_DOC = "/scrapers/lobbyingBackfill"
+SCRAPER_DOC = "scrapers/lobbying"
+BACKFILL_DOC = "scrapers/lobbyingBackfill"
 BACKFILL_URLS_COLLECTION = "processedUrls"
 
 

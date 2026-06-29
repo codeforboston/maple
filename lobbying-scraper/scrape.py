@@ -22,6 +22,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import sys
 from datetime import datetime, timezone
 
@@ -249,7 +250,8 @@ def main() -> None:
     else:
         years = list(range(FIRST_YEAR, current_year + 1))
 
-    db = firestore.Client() if not args.dry_run else None
+    project = os.environ.get("GOOGLE_CLOUD_PROJECT")
+    db = firestore.Client(project=project) if not args.dry_run else None
 
     if args.mode == "weekly":
         n = run_weekly(db, years, limit=args.limit, dry_run=args.dry_run)
