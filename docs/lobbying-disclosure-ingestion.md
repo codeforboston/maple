@@ -42,7 +42,10 @@ record.
 
 ### `/lobbyingRegistrants/{registrantId}`
 
-`registrantId` is a slugified `{entityName}_{year}` (stable, dedup-safe).
+`registrantId` is a SHA-256 hash (first 40 hex chars) of
+`{entityName}_{year}`. Hashing avoids sanitizing arbitrary Unicode and
+punctuation in entity names to fit Firestore ID constraints while remaining
+stable and dedup-safe across runs.
 
 One model covers both individual lobbyists and lobbying firms. A separate model
 is not needed because the portal search returns both under the same schema, and
@@ -51,7 +54,7 @@ worked on which bill.
 
 ```typescript
 interface LobbyingRegistrant {
-  registrantId: string // "{entityName}_{year}" slugified
+  registrantId: string // SHA-256 hash of "{entityName}_{year}"
   entityName: string // firm name or individual lobbyist name (raw portal value)
   entityNameNorm: string // normalized form; see Normalization section
   year: number
@@ -69,9 +72,42 @@ interface LobbyingClient {
 }
 ```
 
+**Example document** (`lobbyingRegistrants/0f11970cc6f17e35cc02685b794cb63a655c13b3`):
+
+```json
+{
+  "registrantId": "0f11970cc6f17e35cc02685b794cb63a655c13b3",
+  "entityName": "27 South Strategies, LLC",
+  "entityNameNorm": "27 SOUTH STRATEGIES",
+  "year": 2024,
+  "generalCourt": 193,
+  "regType": "Employer",
+  "clients": [
+    {
+      "clientName": "The Massachusetts International Festival of the Arts, Inc.",
+      "clientNameNorm": "MASSACHUSETTS INTERNATIONAL FESTIVAL OF ARTS",
+      "compensation": 24000.0
+    },
+    {
+      "clientName": "Veterinary Emergency Group, LLC",
+      "clientNameNorm": "VETERINARY EMERGENCY GROUP",
+      "compensation": 33000.0
+    },
+    {
+      "clientName": "Gobrands, Inc",
+      "clientNameNorm": "GOBRANDS",
+      "compensation": 60000.0
+    }
+  ],
+  "disclosureUrls": [
+    "https://www.sec.state.ma.us/LobbyistPublicSearch/CompleteDisclosure.aspx?sysvalue=hTpfuAXM..."
+  ]
+}
+```
+
 ### `/lobbyingFilings/{filingId}`
 
-`filingId` is a slugified
+`filingId` is a SHA-256 hash (first 40 hex chars) of the logical key
 `{entityName}_{clientName}_{chamber}_{activityRef}_{generalCourt}`.
 
 ```typescript
@@ -100,6 +136,41 @@ interface LobbyingFiling {
   amount: number | null // compensation allocated to this activity
   fetchedAt: Timestamp
 }
+```
+
+**Example documents** — query: `lobbyingFilings` where `generalCourt == 193` and `billId == "H1"`:
+
+```json
+[
+  {
+    "filingId": "0bac34faf2f624083daaaea57ee55f5364d2be29",
+    "entityName": "Christina Ascolillo",
+    "entityNameNorm": "CHRISTINA ASCOLILLO",
+    "clientName": "American Council of Engineering Companies of Massachusetts",
+    "clientNameNorm": "AMERICAN COUNCIL OF ENGINEERING COMPANIES OF MASSACHUSETTS",
+    "year": 2023,
+    "generalCourt": 193,
+    "chamber": "House Bill",
+    "billId": "H1",
+    "activityTitle": "An Act making appropriations for the Fiscal Year 2024...",
+    "position": "Neutral",
+    "amount": 0.0
+  },
+  {
+    "filingId": "109600251ca8fd279e8bb7562bc9d234c39f63a8",
+    "entityName": "Christina Ascolillo",
+    "entityNameNorm": "CHRISTINA ASCOLILLO",
+    "clientName": "St. Mary's Center for Women and Children, Inc.",
+    "clientNameNorm": "ST MARY S CENTER FOR WOMEN AND CHILDREN",
+    "year": 2023,
+    "generalCourt": 193,
+    "chamber": "House Bill",
+    "billId": "H1",
+    "activityTitle": "An Act making appropriations for the Fiscal Year 2024...",
+    "position": "Neutral",
+    "amount": 0.0
+  }
+]
 ```
 
 ### Constructing `billId` from Raw Portal Data
