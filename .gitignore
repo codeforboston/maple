@@ -92,5 +92,10 @@ cert.txt
 # local MCP server config (contains auth tokens)
 .mcp.json
 mcp-server/create-agent-key.ts
-.gcloudignore
+
+# Claude
 CLAUDE.md
+
+#gcloud
+.gcloudignore
+
