@@ -28,7 +28,10 @@ export const script: Script = async ({ db, args }) => {
             { EventId: eventId },
             data.videos
           )
-      if (update.videos.length > (data.videos?.length ?? 0)) {
+      if (
+        recreateTranscripts ||
+        update.videos.length > (data.videos?.length ?? 0)
+      ) {
         await docRef.update(update)
 
         console.log(
@@ -61,7 +64,10 @@ export const script: Script = async ({ db, args }) => {
         const update = recreateTranscripts
           ? await new HearingPostProcessor().getUpdate({ EventId })
           : await new HearingPostProcessor().getUpdate({ EventId }, data.videos)
-        if (update.videos.length > (data.videos?.length ?? 0)) {
+        if (
+          recreateTranscripts ||
+          update.videos.length > (data.videos?.length ?? 0)
+        ) {
           await doc.ref.update(update)
 
           console.log(
