@@ -117,7 +117,7 @@ async function migrateHearing(
 
   let found = false
   for (const transcriptionId of devData.transcriptionIds) {
-    if (!targetData.transcriptionIds.includes(transcriptionId)) {
+    if (!targetData.trancriptionIds || !targetData.transcriptionIds.includes(transcriptionId)) {
       found = true
       try {
         await migrateTranscription(db, devDb, transcriptionId, bulkWriter)
