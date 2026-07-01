@@ -200,37 +200,32 @@ export class HearingPostProcessor extends EventPostProcessor<HearingListItem> {
   }> {
     const videos = await this.getHearingVideos(EventId)
 
-    const videoResults = await Promise.all(
-      videos.map(async video => {
-        const existing = existingVideos?.find(item => item.url === video.url)
-        if (existing) {
-          return {
-            transcriptionId: existing.transcriptionId,
-            ...video
-          }
-        }
-        const result = await assemblyAI().submitTranscription({
-          EventId,
-          videoUrl: video.url
-        })
-        if (result.status === ("error" as const)) {
-          functions.logger.error(`Error during ${result.type}: ${result.error}`)
-          return null
-        }
-        return {
-          transcriptionId: result.id,
+    const videoResults: Video[] = []
+    for (const video of videos) {
+      const existing = existingVideos?.find(item => item.url === video.url)
+      if (existing) {
+        videoResults.push({
+          transcriptionId: existing.transcriptionId,
           ...video
-        }
+        })
+      }
+      const result = await assemblyAI().submitTranscription({
+        EventId,
+        videoUrl: video.url
       })
-    )
-
-    const filteredResults = videoResults.filter(
-      (item): item is Video => item !== null
-    )
+      if (result.status === ("error" as const)) {
+        functions.logger.error(`Error during ${result.type}: ${result.error}`)
+        continue
+      }
+      videoResults.push({
+        transcriptionId: result.id,
+        ...video
+      })
+    }
 
     return {
-      transcriptionIds: filteredResults.map(item => item.transcriptionId),
-      videos: filteredResults,
+      transcriptionIds: videoResults.map(item => item.transcriptionId),
+      videos: videoResults,
       videosFetchedAt: Timestamp.now()
     }
   }
