@@ -1,7 +1,10 @@
 import { useTranslation } from "next-i18next"
 import Image from "react-bootstrap/Image"
-import { Internal } from "components/links"
+
 import styles from "./Homepage.module.css"
+
+import { NEWSLETTER_SIGNUP_URL, TRAINING_CALENDAR_URL } from "components/common"
+import { Internal } from "components/links"
 
 export default function HeroSection() {
   const { t } = useTranslation("homepage")
@@ -22,6 +25,28 @@ export default function HeroSection() {
           <div className={styles.heroContent}>
             <h1 className={styles.heroTitle}>{t("hero.title")}</h1>
             <p className={styles.heroBody}>{t("hero.body")}</p>
+            <p className={styles.heroBody}>
+              {t("hero.body2a")}{" "}
+              <a
+                href={TRAINING_CALENDAR_URL}
+                style={{ color: "white" }}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t("hero.calendar")}
+              </a>{" "}
+              {t("hero.body2b")}
+            </p>
+            <p className={styles.heroBody}>
+              <a
+                href={NEWSLETTER_SIGNUP_URL}
+                style={{ color: "white" }}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t("hero.newsletter")}
+              </a>
+            </p>
             <div className={styles.heroActions}>
               <Internal href="/bills" className={styles.primaryAction}>
                 {t("hero.primaryAction")}
