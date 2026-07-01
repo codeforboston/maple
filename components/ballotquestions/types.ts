@@ -1,6 +1,6 @@
 export type Hearing = {
   id: string
-  videoURL?: string
+  videoURLs: string[]
   startsAt: number // milliseconds since epoch, converted from Firestore Timestamp server-side
 }
 

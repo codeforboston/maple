@@ -17,6 +17,7 @@ export {
 } from "./committees"
 export {
   scrapeHearings,
+  scrapeVideos,
   scrapeSessions,
   scrapeSpecialEvents,
   scrapeSingleHearing,
