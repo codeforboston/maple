@@ -1,9 +1,10 @@
 import { useTranslation } from "next-i18next"
 import Image from "react-bootstrap/Image"
-import { Internal } from "components/links"
+
 import styles from "./Homepage.module.css"
 
 import { NEWSLETTER_SIGNUP_URL, TRAINING_CALENDAR_URL } from "components/common"
+import { Internal } from "components/links"
 
 export default function HeroSection() {
   const { t } = useTranslation("homepage")
