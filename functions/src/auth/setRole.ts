@@ -75,10 +75,9 @@ const updateTestimony = async (
 const isPublic = (profile: Profile | undefined, role: Role) => {
   switch (role) {
     case "pendingUpgrade":
+    case "pendingLegislator":
     case "admin":
-      return false
     case "legislator":
-    case "pendingUpgrade":
       return false
     case "organization":
       return true
