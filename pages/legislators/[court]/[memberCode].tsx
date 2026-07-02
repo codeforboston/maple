@@ -16,9 +16,9 @@ export default createPage<{
   memberCode: string
 }>({
   titleI18nKey: "navigation.legislator",
-  Page: ({ court, memberCode }) => {
-    return <LegislatorProfilePage court={court} memberCode={memberCode} />
-  }
+  Page: ({ court, memberCode }) => (
+    <LegislatorProfilePage court={court} memberCode={memberCode} />
+  )
 })
 
 export const getServerSideProps: GetServerSideProps = async ctx => {

@@ -1,8 +1,14 @@
+import { faChevronRight } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import ErrorPage from "next/error"
+import { useTranslation } from "next-i18next"
 import styled from "styled-components"
+
+import { DistrictTab } from "./DistrictTab"
+
 import { Col, Container, Row, Spinner } from "components/bootstrap"
 import { useDistrict, useMember } from "components/db"
-import { DistrictTab } from "./DistrictTab"
+import { Internal } from "components/links"
 
 const tabs = [
   "Priorities",
@@ -13,6 +19,12 @@ const tabs = [
   "Her testimony",
   "Votes"
 ]
+
+const DirectoryPath = styled.div.attrs(props => ({
+  className: `align-items-center d-flex flex-nowrap ${props.className}`
+}))`
+  font-size: 12px;
+`
 
 const TabButton = styled.button`
   background: transparent;
@@ -42,6 +54,7 @@ export function LegislatorProfilePage({
     member?.Branch,
     member?.District
   )
+  const { t } = useTranslation("legislators")
 
   if (memberLoading) {
     return (
@@ -55,8 +68,24 @@ export function LegislatorProfilePage({
     return <ErrorPage statusCode={404} withDarkMode={false} />
   }
 
+  console.log("member: ", member)
+
   return (
-    <Container fluid="xl" className="pb-5">
+    <Container className="my-3">
+      <DirectoryPath>
+        <Internal className="text-decoration-none" href="/">
+          {t("home")}
+        </Internal>
+        <FontAwesomeIcon className="fa-2xs px-2 " icon={faChevronRight} />
+
+        {/* update with link to legistators search page when online */}
+        <div style={{ color: "#6c757d" }}>{t("legislators")}</div>
+        {/* */}
+
+        <FontAwesomeIcon className="fa-2xs px-2 " icon={faChevronRight} />
+        <div style={{ color: "#6c757d" }}>{member.Name}</div>
+      </DirectoryPath>
+
       <Row className="mt-4 mb-3">
         <Col>
           <h1 className="fw-bold mb-1">{member.Name}</h1>
