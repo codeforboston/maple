@@ -14,7 +14,7 @@ import {
   PartyLabel,
   Twitter
 } from "./LegislatorComponents"
-// import { LegislatorSidebar } from "./SidebarComponents/LegislatorSidebar"
+import { LegislatorSidebar } from "./LegislatorSidebar"
 import { LegislatorTabs } from "./LegislatorTabs"
 
 import { useAuth } from "components/auth"
@@ -374,32 +374,9 @@ export function LegislatorProfilePage({
           />
         </Col>
         <Col className={`mt-4`} md="3">
-          {/* <LegislatorSidebar /> */}
-          <div>Sidebar</div>
+          <LegislatorSidebar />
         </Col>
       </Row>
-
-      {/* <div
-        className="d-flex justify-content-between border-bottom mb-4 overflow-auto"
-        role="tablist"
-        aria-label="Legislator profile sections"
-      >
-        {tabs.map(label => (
-          <TabButton
-            key={label}
-            type="button"
-            role="tab"
-            aria-selected={label === "District"}
-            className={label === "District" ? "active" : undefined}
-            disabled={label !== "District"}
-          >
-            {label}
-          </TabButton>
-        ))}
-      </div>
-      <div role="tabpanel">
-        <DistrictTab district={district} loading={districtLoading} />
-      </div> */}
     </Container>
   )
 }
