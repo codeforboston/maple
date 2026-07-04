@@ -349,14 +349,14 @@ export function LegislatorProfilePage({
         </StatBlock>
       </div>
 
-      <Row>
-        <Col className={`mt-4`} md="9">
+      <Row className={`mt-4`}>
+        <Col md="9">
           <LegislatorTabs
             district={district}
             districtLoading={districtLoading}
           />
         </Col>
-        <Col className={`mt-4`} md="3">
+        <Col md="3">
           <LegislatorSidebar />
         </Col>
       </Row>

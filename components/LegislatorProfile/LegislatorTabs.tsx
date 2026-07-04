@@ -113,7 +113,7 @@ export function LegislatorTabs({
   ]
 
   return (
-    <Container>
+    <Container className={`p-0`}>
       <TabContainer defaultActiveKey="priorities" activeKey={tabCategory}>
         <TabNavWrapper>
           {tabs.map((t, i) => (
