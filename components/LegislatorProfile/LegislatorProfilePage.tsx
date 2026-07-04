@@ -6,7 +6,6 @@ import styled from "styled-components"
 
 import * as links from "../links"
 
-import { DistrictTab } from "./DistrictTab"
 import {
   Bluesky,
   DistrictLabel,
@@ -15,24 +14,15 @@ import {
   PartyLabel,
   Twitter
 } from "./LegislatorComponents"
+// import { LegislatorSidebar } from "./SidebarComponents/LegislatorSidebar"
+import { LegislatorTabs } from "./LegislatorTabs"
 
+import { useAuth } from "components/auth"
 import { Col, Container, Row, Spinner } from "components/bootstrap"
 import { useDistrict, useMember } from "components/db"
 import { Internal } from "components/links"
-import { CircleImage } from "components/shared/LabeledIcon"
-
-import { doc, getDoc } from "firebase/firestore"
-import { useCallback, useEffect, useState } from "react"
-
-import { usePublicProfile } from "../db"
-import { firestore } from "../firebase"
-
-// import { LegislatorSidebar } from "./SidebarComponents/LegislatorSidebar"
-// import { LegislatorTabs } from "./TabComponents/LegislatorTabs"
-
-import { useAuth } from "components/auth"
-import { useFlags } from "components/featureFlags"
 import { FollowUserButton } from "components/shared/FollowButton"
+import { CircleImage } from "components/shared/LabeledIcon"
 
 type ProfilePlaceholder = {
   social?: {
@@ -127,20 +117,20 @@ const StatNum = styled.div.attrs(props => ({
   width: max-content;
 `
 
-const TabButton = styled.button`
-  background: transparent;
-  border: 0;
-  border-bottom: 5px solid transparent;
-  color: #68707a;
-  font-size: 1.35rem;
-  font-weight: 700;
-  padding: 1.35rem 1.9rem 1.15rem;
+// const TabButton = styled.button`
+//   background: transparent;
+//   border: 0;
+//   border-bottom: 5px solid transparent;
+//   color: #68707a;
+//   font-size: 1.35rem;
+//   font-weight: 700;
+//   padding: 1.35rem 1.9rem 1.15rem;
 
-  &.active {
-    border-bottom-color: #18358f;
-    color: #18358f;
-  }
-`
+//   &.active {
+//     border-bottom-color: #18358f;
+//     color: #18358f;
+//   }
+// `
 
 export function LegislatorProfilePage({
   court,
@@ -156,7 +146,7 @@ export function LegislatorProfilePage({
     member?.District
   )
   const { t } = useTranslation("legislators")
-  const { user } = useAuth()
+  // const { user } = useAuth() **uncomment when Following Button in enabled**
 
   /* replace with profile info for legislators with Maple accounts */
   let profile: ProfilePlaceholder = {
@@ -186,7 +176,7 @@ export function LegislatorProfilePage({
     return <ErrorPage statusCode={404} withDarkMode={false} />
   }
 
-  console.log("member: ", member)
+  console.log("district: ", district)
 
   return (
     <Container className="my-3">
@@ -196,7 +186,7 @@ export function LegislatorProfilePage({
         </Internal>
         <FontAwesomeIcon className="fa-2xs px-2 " icon={faChevronRight} />
 
-        {/* update with link to legistators search page when online */}
+        {/* update with link to legistators search page when that is created */}
         <div style={{ color: "#6c757d" }}>{t("legislators")}</div>
         {/* */}
 
@@ -358,25 +348,13 @@ export function LegislatorProfilePage({
         </StatBlock>
         <StatBlock>
           <Col className="flex-grow-0 mx-auto">
-            <StatNum>
-              {member.SponsoredBills.length ? (
-                <>{member.SponsoredBills.length}</>
-              ) : (
-                <>?</>
-              )}
-            </StatNum>
+            <StatNum>{member.SponsoredBills.length}</StatNum>
             <StatLine>{t("billsSponsored")}</StatLine>
           </Col>
         </StatBlock>
         <StatBlock>
           <Col className="flex-grow-0 mx-auto">
-            <StatNum>
-              {member.CoSponsoredBills.length ? (
-                <>{member.CoSponsoredBills.length}</>
-              ) : (
-                <>?</>
-              )}
-            </StatNum>
+            <StatNum>{member.CoSponsoredBills.length}</StatNum>
             <StatLine>{t("cosponsored")}</StatLine>
           </Col>
         </StatBlock>
@@ -388,7 +366,20 @@ export function LegislatorProfilePage({
         </StatBlock>
       </div>
 
-      <div
+      <Row>
+        <Col className={`mt-4`} md="9">
+          <LegislatorTabs
+            district={district}
+            districtLoading={districtLoading}
+          />
+        </Col>
+        <Col className={`mt-4`} md="3">
+          {/* <LegislatorSidebar /> */}
+          <div>Sidebar</div>
+        </Col>
+      </Row>
+
+      {/* <div
         className="d-flex justify-content-between border-bottom mb-4 overflow-auto"
         role="tablist"
         aria-label="Legislator profile sections"
@@ -408,7 +399,7 @@ export function LegislatorProfilePage({
       </div>
       <div role="tabpanel">
         <DistrictTab district={district} loading={districtLoading} />
-      </div>
+      </div> */}
     </Container>
   )
 }
