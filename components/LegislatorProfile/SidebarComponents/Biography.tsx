@@ -1,3 +1,5 @@
+import { TabBlock } from "../LegislatorComponents"
+
 export function Biography() {
-  return <div>- Biography</div>
+  return <TabBlock>- Biography</TabBlock>
 }

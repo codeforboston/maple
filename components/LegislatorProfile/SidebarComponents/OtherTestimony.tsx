@@ -1,3 +1,5 @@
+import { TabBlock } from "../LegislatorComponents"
+
 export function OtherTestimony() {
-  return <div>- Other Testimony</div>
+  return <TabBlock>- Other Testimony</TabBlock>
 }

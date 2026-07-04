@@ -1,3 +1,5 @@
+import { TabBlock } from "../LegislatorComponents"
+
 export function UpcomingHearings() {
-  return <div>- Upcoming Hearings</div>
+  return <TabBlock>- Upcoming Hearings</TabBlock>
 }

@@ -61,7 +61,7 @@ const HeaderBlock = styled.div.attrs(props => ({
   className: `d-flex flex-wrap justify-content-between ${props.className}`
 }))`
   background-color: white;
-  border: "1px #ced4da solid";
+  border: 1px #b8c0c9 solid;
   border-radius: 5px;
   margin-top: 8px;
   padding: 16px;
@@ -96,7 +96,7 @@ const StatBlock = styled(Col).attrs(props => ({
   md: `2`
 }))`
   background-color: white;
-  border: 1px #ced4da solid;
+  border: 1px #b8c0c9 solid;
   border-radius: 5px;
   margin-top: 4px;
   padding: 16px;
@@ -116,21 +116,6 @@ const StatNum = styled.div.attrs(props => ({
   font-weight: 700;
   width: max-content;
 `
-
-// const TabButton = styled.button`
-//   background: transparent;
-//   border: 0;
-//   border-bottom: 5px solid transparent;
-//   color: #68707a;
-//   font-size: 1.35rem;
-//   font-weight: 700;
-//   padding: 1.35rem 1.9rem 1.15rem;
-
-//   &.active {
-//     border-bottom-color: #18358f;
-//     color: #18358f;
-//   }
-// `
 
 export function LegislatorProfilePage({
   court,
@@ -175,8 +160,6 @@ export function LegislatorProfilePage({
   if (!member) {
     return <ErrorPage statusCode={404} withDarkMode={false} />
   }
-
-  console.log("district: ", district)
 
   return (
     <Container className="my-3">

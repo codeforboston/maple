@@ -1,3 +1,5 @@
+import { TabBlock } from "../LegislatorComponents"
+
 export function ElectionsTab() {
-  return <div>- Elections</div>
+  return <TabBlock>- Elections</TabBlock>
 }

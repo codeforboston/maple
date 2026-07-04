@@ -1,3 +1,5 @@
+import { TabBlock } from "../LegislatorComponents"
+
 export function FinanceTab() {
-  return <div>- Finance</div>
+  return <TabBlock>- Finance</TabBlock>
 }

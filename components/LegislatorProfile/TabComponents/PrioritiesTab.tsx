@@ -1,3 +1,5 @@
+import { TabBlock } from "../LegislatorComponents"
+
 export function PrioritiesTab() {
-  return <div>- Priorities</div>
+  return <TabBlock>- Priorities</TabBlock>
 }

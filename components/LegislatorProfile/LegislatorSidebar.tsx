@@ -5,7 +5,6 @@ import { UpcomingHearings } from "./SidebarComponents/UpcomingHearings"
 export function LegislatorSidebar() {
   return (
     <>
-      Sidebar Components
       <OtherTestimony />
       <UpcomingHearings />
       <Biography />

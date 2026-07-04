@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons"
 import styled from "styled-components"
+import { TabBlock } from "../LegislatorComponents"
 import type { District } from "components/db"
 
 const MapPreview = styled.div`
@@ -12,8 +13,8 @@ const MapPreview = styled.div`
 `
 
 const DistrictCard = styled.section`
-  border: 1px solid #d9dee5;
-  border-radius: 8px;
+  border: 1px #b8c0c9 solid;
+  border-radius: 5px;
   overflow: hidden;
 `
 
@@ -55,15 +56,11 @@ export function DistrictTab({
   loading?: boolean
 }) {
   if (loading) {
-    return <div className="text-body-secondary">Loading district...</div>
+    return <TabBlock>Loading district...</TabBlock>
   }
 
   if (!district) {
-    return (
-      <div className="rounded border bg-white p-4 text-body-secondary">
-        District details are not available yet.
-      </div>
-    )
+    return <TabBlock>District details are not available yet.</TabBlock>
   }
 
   const chips = subdivisionChips(district)
@@ -71,7 +68,7 @@ export function DistrictTab({
   return (
     <>
       <DistrictCard className="bg-white">
-        <MapPreview className="d-flex flex-column align-items-center justify-content-center text-center p-4">
+        <MapPreview className="d-flex flex-column align-items-center justify-content-center text-center p-3">
           <FontAwesomeIcon icon={faLocationDot} size="2x" className="mb-4" />
           <h2 className="h4 fw-bold mb-2">{district.district} District</h2>
           <p className="fs-5 mb-0" style={{ color: "#5e74b6" }}>
