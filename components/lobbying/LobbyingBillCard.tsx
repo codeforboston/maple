@@ -17,9 +17,13 @@ export const LobbyingBillCard: React.FC<LobbyingBillCardProps> = ({
   className
 }) => {
   const { t } = useTranslation(["lobbying", "common"])
-  const { result: filings, status } = useLobbyingFilingsForBill(court, billId)
+  const {
+    result: filings,
+    status,
+    error
+  } = useLobbyingFilingsForBill(court, billId)
 
-  if (status === "loading") {
+  if (status === "loading" || status === "not-requested") {
     return (
       <div style={cardStyle} className={className}>
         <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 14, margin: 0 }}>
@@ -27,6 +31,19 @@ export const LobbyingBillCard: React.FC<LobbyingBillCardProps> = ({
         </p>
       </div>
     )
+  }
+
+  if (status === "error") {
+    if (process.env.NODE_ENV === "development") {
+      return (
+        <div style={cardStyle} className={className}>
+          <p style={{ color: MAPLE_COLORS.danger, fontSize: 13, margin: 0 }}>
+            Lobbying data error: {error?.message}
+          </p>
+        </div>
+      )
+    }
+    return null
   }
 
   if (!filings || filings.length === 0) return null

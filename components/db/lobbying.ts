@@ -15,14 +15,15 @@ import type {
   LobbyingRegistrant,
   LobbyingStats
 } from "functions/src/lobbying/types"
-import {
-  CLIENTS_COLLECTION,
-  FILINGS_COLLECTION,
-  LOBBYING_STATS_COLLECTION,
-  LOBBYING_STATS_DOC_ID,
-  REGISTRANTS_COLLECTION
-} from "functions/src/lobbying/types"
 import { firestore } from "../firebase"
+
+// Mirror of constants in functions/src/lobbying/types.ts — kept here to avoid
+// pulling firebase-admin (a Node-only package) into the browser bundle.
+const FILINGS_COLLECTION = "lobbyingFilings"
+const REGISTRANTS_COLLECTION = "lobbyingRegistrants"
+const CLIENTS_COLLECTION = "lobbyingClients"
+const LOBBYING_STATS_COLLECTION = "lobbyingMeta"
+const LOBBYING_STATS_DOC_ID = "stats"
 
 // ── Internal fetchers ─────────────────────────────────────────────────────────
 
@@ -110,6 +111,16 @@ async function fetchClient(
   return snap.exists() ? (snap.data() as LobbyingClientSummary) : undefined
 }
 
+async function fetchFilingsForCourt(court: number): Promise<LobbyingFiling[]> {
+  const snap = await getDocs(
+    query(
+      collection(firestore, FILINGS_COLLECTION),
+      where("generalCourt", "==", court)
+    )
+  )
+  return snap.docs.map(d => d.data() as LobbyingFiling)
+}
+
 async function fetchFilingsForClient(
   clientNameNorm: string
 ): Promise<LobbyingFiling[]> {
@@ -124,6 +135,10 @@ async function fetchFilingsForClient(
 }
 
 // ── Public hooks ──────────────────────────────────────────────────────────────
+
+export function useLobbyingFilingsForCourt(court: number) {
+  return useAsync(fetchFilingsForCourt, [court])
+}
 
 export function useLobbyingStats() {
   return useAsync(fetchLobbyingStats, [])

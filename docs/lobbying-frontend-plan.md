@@ -96,7 +96,7 @@ efficient browse, search, and pagination.
 
 ```ts
 export const LobbyingClientSummary = Record({
-  clientSlug: String, // derived from clientNameNorm — strip residual non-URL chars
+  clientSlug: String, // URL-safe slug for routing
   clientName: String,
   clientNameNorm: String,
   totalFilings: Number,
@@ -375,20 +375,20 @@ link. The bill page is not the primary place for lobbying exploration.
 
 ## Implementation Phases
 
-### Phase 1 — Foundation (complete)
+### Phase 1 — Foundation (current)
 
-- [x] Add Firestore schema additions (`registrantId` on filings, `lobbyingStats`, `lobbyingClients`)
-- [x] Add Firestore indexes to `firestore.indexes.json`
-- [x] Add data hooks (`components/db/lobbying.ts`)
-- [x] Add `lobbying.json` locale file
-- [x] Add `NavbarLinkLobbying` to navbar
-- [x] Build `LobbyingBillCard` (replaces dummy `LobbyingTable` in bill detail)
-- [x] Enable `lobbyingTable` feature flag in dev
-- [x] Build `LobbyingPositionChip` and `LobbyingFilingsTable` shared components
+- [ ] Add Firestore schema additions (`registrantId` on filings, `lobbyingStats`, `lobbyingClients`)
+- [ ] Add Firestore indexes to `firestore.indexes.json`
+- [ ] Add data hooks (`components/db/lobbying.ts`)
+- [ ] Add `lobbying.json` locale file
+- [ ] Add `NavbarLinkLobbying` to navbar
+- [ ] Build `LobbyingBillCard` (replaces dummy `LobbyingTable` in bill detail)
+- [ ] Enable `lobbyingTable` feature flag in dev
+- [ ] Build `LobbyingPositionChip` and `LobbyingFilingsTable` shared components
 
 ### Phase 2 — Browse pages (after design)
 
-- [x] Install Recharts
+- [ ] Install Recharts
 - [ ] Overview page with stats and search
 - [ ] Bills browse page
 - [ ] Clients browse + detail pages
@@ -405,12 +405,10 @@ link. The bill page is not the primary place for lobbying exploration.
 
 ---
 
-## Decisions
+## Open Questions
 
-| Decision              | Resolution                                                                                  |
-| --------------------- | ------------------------------------------------------------------------------------------- |
-| Navbar label          | "Lobbying" (short); full page title "Lobbying Explorer"                                     |
-| Bill page flag        | Enable in dev in Phase 1; no design sign-off gate required                                  |
-| Charting library      | **Recharts** — pure React/SVG, no canvas lifecycle management needed                        |
-| Client slug           | Derived from `clientNameNorm` (strip any residual non-URL chars)                            |
-| SoS attribution links | Use `disclosureUrls[]` from `LobbyingRegistrant` for direct deep-links on firm detail pages |
+1. **Navbar label**: "Lobbying" or "Lobbying Explorer"? Keep short for nav.
+2. **Bill page flag**: Enable `lobbyingTable` in prod when Phase 1 is ready, or wait for design sign-off?
+3. **Client slug generation**: Use `clientNameNorm` directly (already normalized in pipeline) or generate a separate URL slug? Recommend reusing `clientNameNorm` with any remaining non-URL chars stripped.
+4. **Recharts vs react-chartjs-2**: Recharts is recommended (pure React, no canvas imperative API). Confirm with team before adding dependency.
+5. **SoS attribution link format**: The `LobbyingRegistrant` stores `disclosureUrls[]` which are direct SoS filing URLs. Use these for deep-linking from firm detail pages.
