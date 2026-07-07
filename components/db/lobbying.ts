@@ -111,6 +111,43 @@ async function fetchClient(
   return snap.exists() ? (snap.data() as LobbyingClientSummary) : undefined
 }
 
+async function fetchAllRegistrants(): Promise<LobbyingRegistrant[]> {
+  const snap = await getDocs(
+    query(
+      collection(firestore, REGISTRANTS_COLLECTION),
+      orderBy("entityNameNorm"),
+      limit(2000)
+    )
+  )
+  return snap.docs.map(d => d.data() as LobbyingRegistrant)
+}
+
+async function fetchRegistrantsByEntityName(
+  entityNameNorm: string
+): Promise<LobbyingRegistrant[]> {
+  const snap = await getDocs(
+    query(
+      collection(firestore, REGISTRANTS_COLLECTION),
+      where("entityNameNorm", "==", entityNameNorm),
+      orderBy("year", "desc")
+    )
+  )
+  return snap.docs.map(d => d.data() as LobbyingRegistrant)
+}
+
+async function fetchFilingsForEntityName(
+  entityNameNorm: string
+): Promise<LobbyingFiling[]> {
+  const snap = await getDocs(
+    query(
+      collection(firestore, FILINGS_COLLECTION),
+      where("entityNameNorm", "==", entityNameNorm),
+      orderBy("year", "desc")
+    )
+  )
+  return snap.docs.map(d => d.data() as LobbyingFiling)
+}
+
 async function fetchFilingsForCourt(court: number): Promise<LobbyingFiling[]> {
   const snap = await getDocs(
     query(
@@ -138,6 +175,18 @@ async function fetchFilingsForClient(
 
 export function useLobbyingFilingsForCourt(court: number) {
   return useAsync(fetchFilingsForCourt, [court])
+}
+
+export function useLobbyingAllRegistrants() {
+  return useAsync(fetchAllRegistrants, [])
+}
+
+export function useLobbyingRegistrantsByEntityName(entityNameNorm: string) {
+  return useAsync(fetchRegistrantsByEntityName, [entityNameNorm])
+}
+
+export function useLobbyingFilingsForEntityName(entityNameNorm: string) {
+  return useAsync(fetchFilingsForEntityName, [entityNameNorm])
 }
 
 export function useLobbyingStats() {
