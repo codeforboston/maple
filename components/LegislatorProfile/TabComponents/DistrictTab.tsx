@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons"
+import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { TabBlock } from "../LegislatorComponents"
 import type { District } from "components/db"
@@ -55,12 +56,14 @@ export function DistrictTab({
   district?: District
   loading?: boolean
 }) {
+  const { t } = useTranslation("legislators")
+
   if (loading) {
-    return <TabBlock>Loading district...</TabBlock>
+    return <TabBlock>{t("loading")}</TabBlock>
   }
 
   if (!district) {
-    return <TabBlock>District details are not available yet.</TabBlock>
+    return <TabBlock>{t("districtDetails")}</TabBlock>
   }
 
   const chips = subdivisionChips(district)
