@@ -14,7 +14,7 @@ import { HearingScraper, HearingPostProcessor } from "./HearingScraper"
  */
 export const scrapeSingleHearing = functions
   .runWith({
-    timeoutSeconds: 480,
+    timeoutSeconds: 540,
     secrets: ["ASSEMBLY_API_KEY"],
     memory: "4GB"
   })
@@ -33,10 +33,10 @@ export const scrapeSingleHearing = functions
     }
 
     try {
-      const hearing = {
-        ...(await new HearingScraper().getEvent({ EventId: eventId })),
-        ...(await new HearingPostProcessor().getUpdate({ EventId: eventId })) // Videos
-      }
+      const hearing = await new HearingScraper().getEvent({ EventId: eventId })
+      const doc = await db.doc(`/events/${hearing.id}`).get()
+      await doc.ref.set(hearing, { merge: true })
+      await new HearingPostProcessor().addVideosToHearing(doc)
 
       // Save the hearing to Firestore
       await db.doc(`/events/${hearing.id}`).set(hearing, { merge: true })
@@ -59,7 +59,7 @@ export const scrapeSingleHearing = functions
   })
 
 export const scrapeSingleHearingv2 = onCall(
-  { timeoutSeconds: 480, memory: "4GiB", secrets: ["ASSEMBLY_API_KEY"] },
+  { timeoutSeconds: 540, memory: "4GiB", secrets: ["ASSEMBLY_API_KEY"] },
   async (request: CallableRequest) => {
     // Require admin authentication
     // Check how to integrate the new object with these helper functions
@@ -76,13 +76,12 @@ export const scrapeSingleHearingv2 = onCall(
     }
 
     try {
-      const hearing = {
-        ...(await new HearingScraper().getEvent({ EventId: eventId })),
-        ...(await new HearingPostProcessor().getUpdate({ EventId: eventId }))
-      }
+      const hearing = await new HearingScraper().getEvent({ EventId: eventId })
+      const doc = await db.doc(`/events/${hearing.id}`).get()
+      await doc.ref.set(hearing, { merge: true })
+      await new HearingPostProcessor().addVideosToHearing(doc)
 
       // Save the hearing to Firestore
-      await db.doc(`/events/${hearing.id}`).set(hearing, { merge: true })
 
       console.log(`Successfully scraped hearing ${eventId}`, hearing)
 

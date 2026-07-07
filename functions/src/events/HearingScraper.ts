@@ -1,11 +1,12 @@
 import { JSDOM } from "jsdom"
 import * as functions from "firebase-functions/v1"
 import { db, Timestamp } from "../firebase"
+import { DateTime } from "luxon"
 import * as api from "../malegislature"
 import { Hearing, HearingContent, HearingListItem, Video } from "./types"
 import { isValidVideoUrl, removeCommonWords } from "./helpers"
 import { Committee } from "../committees/types"
-import { EventPostProcessor, EventScraper } from "./EventScraper"
+import { EventScraper } from "./EventScraper"
 import { assemblyAI } from "./AssemblyAIHandler"
 
 const loadCommitteeChairNames = async (
@@ -41,7 +42,7 @@ const loadCommitteeChairNames = async (
 
 export class HearingScraper extends EventScraper<HearingListItem, Hearing> {
   constructor() {
-    super("every 60 minutes", 480)
+    super("every 60 minutes", 120)
   }
 
   async listEvents() {
@@ -72,14 +73,159 @@ export class HearingScraper extends EventScraper<HearingListItem, Hearing> {
   }
 }
 
-export class HearingPostProcessor extends EventPostProcessor<HearingListItem> {
-  constructor() {
-    super("every 60 minutes", 480, "hearing", { memory: "4GB" })
+export class HearingPostProcessor {
+  private schedule
+  private timeout
+  private memory
+  private pastEventBeginProcessing
+  private pastEventCutoff
+
+  constructor(
+    schedule: string = "every 60 minutes",
+    timeout: number = 540,
+    {
+      memory = "4GB",
+      pastEventBeginProcessing = {},
+      pastEventCutoff = { days: 8 }
+    }: {
+      memory?: functions.RuntimeOptions["memory"]
+      pastEventBeginProcessing?: Duration
+      pastEventCutoff?: Duration
+    } = {}
+  ) {
+    this.schedule = schedule
+    this.timeout = timeout
+    this.memory = memory
+    this.pastEventBeginProcessing = pastEventBeginProcessing
+    this.pastEventCutoff = pastEventCutoff
   }
 
-  async getHearingVideos(
-    EventId: number
-  ): Promise<Omit<Video, "transcriptionId">[]> {
+  get function() {
+    return functions
+      .runWith({
+        timeoutSeconds: this.timeout,
+        secrets: ["ASSEMBLY_API_KEY"],
+        memory: this.memory,
+        maxInstances: 1
+      })
+      .pubsub.schedule(this.schedule)
+      .onRun(() => this.run())
+  }
+
+  private async run() {
+    const writer = db.bulkWriter()
+
+    const now = DateTime.now()
+    const begin = now.minus(this.pastEventBeginProcessing).toJSDate()
+    const cutoff = now.minus(this.pastEventCutoff).toJSDate()
+
+    const snapshot = await db
+      .collection("events")
+      .where("type", "==", "hearing")
+      .where("startsAt", "<=", begin)
+      .where("startsAt", ">=", cutoff)
+      .get()
+
+    if (snapshot.empty) return
+
+    for (const doc of snapshot.docs) {
+      await this.addVideosToHearing(doc, writer)
+    }
+
+    await writer.close()
+  }
+
+  async addVideosToHearing(
+    doc:
+      | FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>
+      | FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData>,
+    writer?: FirebaseFirestore.BulkWriter,
+    refetch = false
+  ): Promise<boolean> {
+    const data = doc.data()
+    const eventId = data?.content?.EventId
+    if (!data || !eventId) return false
+    let videos: Video[]
+    if (!data.videos) {
+      videos = await this.getHearingVideos(eventId)
+      if (writer) {
+        await writer.update(doc.ref, {
+          videos,
+          transcriptionIds: this.transcriptionIds(videos),
+          videosFetchedAt: Timestamp.now()
+        })
+      } else {
+        await doc.ref.update({
+          videos,
+          transcriptionIds: this.transcriptionIds(videos),
+          videosFetchedAt: Timestamp.now()
+        })
+      }
+    } else if (refetch) {
+      const oldVideos = data.videos
+      videos = await this.getHearingVideos(eventId)
+      for (const oldVideo of oldVideos) {
+        if (!oldVideo.transcriptionId) continue
+        const index = videos.findIndex(video => video.url === oldVideo.url)
+        if (index < 0) {
+          functions.logger.error(
+            `A refetch of hearing ${eventId} somehow lost a video ${oldVideo.url}`
+          )
+          videos.push(oldVideo)
+        } else {
+          videos[index].transcriptionId = oldVideo.transcriptionId
+        }
+      }
+    } else {
+      videos = data.videos
+    }
+
+    let nextVideos = await this.submitNextTranscription(eventId, videos)
+    if (!nextVideos) return false
+    while (nextVideos) {
+      if (writer) {
+        await writer.update(doc.ref, {
+          videos: nextVideos,
+          transcriptionIds: this.transcriptionIds(nextVideos)
+        })
+      } else {
+        await doc.ref.update({
+          videos: nextVideos,
+          transcriptionIds: this.transcriptionIds(nextVideos)
+        })
+      }
+      nextVideos = await this.submitNextTranscription(eventId, videos)
+    }
+    return true
+  }
+
+  async submitNextTranscription(
+    eventId: number,
+    videos: Video[]
+  ): Promise<Video[] | null> {
+    const nextTranscription = videos.findIndex(item => !item.transcriptionId)
+    if (nextTranscription < 0) {
+      return null
+    }
+    const result = await assemblyAI().submitTranscription({
+      EventId: eventId,
+      videoUrl: videos[nextTranscription].url
+    })
+    if (result.status === ("error" as const)) {
+      functions.logger.error(`Error during ${result.type}: ${result.error}`)
+      return null
+    }
+    videos[nextTranscription].transcriptionId = result.id
+    return videos
+  }
+
+  transcriptionIds(videos: Video[]) {
+    return videos
+      .map(video => video.transcriptionId)
+      .filter(item => Boolean(item))
+  }
+
+  async getHearingVideos(EventId: number): Promise<Video[]> {
     const hearingErr = `An error collecting videos for hearing ${EventId} (webpage format changed?)`
 
     const req = await fetch(
@@ -124,7 +270,8 @@ export class HearingPostProcessor extends EventPostProcessor<HearingListItem> {
     let videos = videoURLs.map((url, i) => {
       return {
         url: url,
-        title: titles[i]
+        title: titles[i],
+        transcriptionId: null
       }
     })
 
@@ -183,50 +330,5 @@ export class HearingPostProcessor extends EventPostProcessor<HearingListItem> {
       videos[0].title = `hearing-${EventId}`
     }
     return videos
-  }
-
-  updateIf(data: FirebaseFirestore.DocumentData): null | HearingListItem {
-    if (data.videos?.length) return null
-    return { EventId: data.content.EventId }
-  }
-
-  async getUpdate(
-    { EventId }: HearingListItem,
-    existingVideos?: Video[]
-  ): Promise<{
-    transcriptionIds: string[]
-    videos: Video[]
-    videosFetchedAt: Timestamp
-  }> {
-    const videos = await this.getHearingVideos(EventId)
-
-    const videoResults: Video[] = []
-    for (const video of videos) {
-      const existing = existingVideos?.find(item => item.url === video.url)
-      if (existing) {
-        videoResults.push({
-          transcriptionId: existing.transcriptionId,
-          ...video
-        })
-      }
-      const result = await assemblyAI().submitTranscription({
-        EventId,
-        videoUrl: video.url
-      })
-      if (result.status === ("error" as const)) {
-        functions.logger.error(`Error during ${result.type}: ${result.error}`)
-        continue
-      }
-      videoResults.push({
-        transcriptionId: result.id,
-        ...video
-      })
-    }
-
-    return {
-      transcriptionIds: videoResults.map(item => item.transcriptionId),
-      videos: videoResults,
-      videosFetchedAt: Timestamp.now()
-    }
   }
 }

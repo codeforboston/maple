@@ -5,11 +5,11 @@ import { HearingPostProcessor } from "functions/src/events"
 const Args = Record({
   eventId: Number.optional(),
   bucketName: String.optional(),
-  recreateTranscripts: Boolean.optional()
+  refetchVideos: Boolean.optional()
 })
 
 export const script: Script = async ({ db, args }) => {
-  const { eventId, bucketName, recreateTranscripts } = Args.check(args)
+  const { eventId, bucketName, refetchVideos } = Args.check(args)
 
   // Process a single event by eventId
   if (eventId) {
@@ -22,23 +22,10 @@ export const script: Script = async ({ db, args }) => {
     const data = doc.data()
     if (!data) return
     try {
-      const update = recreateTranscripts
-        ? await new HearingPostProcessor().getUpdate({ EventId: eventId })
-        : await new HearingPostProcessor().getUpdate(
-            { EventId: eventId },
-            data.videos
-          )
-      if (
-        recreateTranscripts ||
-        update.videos.length > (data.videos?.length ?? 0)
-      ) {
-        await docRef.update(update)
-
-        console.log(
-          `Transcriptions submitted for hearing ${eventId}: ${update.transcriptionIds}`
-        )
-      } else {
-        console.log(`No additional videos to be processed for ${eventId}`)
+      const hearingProcessor = new HearingPostProcessor()
+      const changed = await hearingProcessor.addVideosToHearing(doc, undefined, refetchVideos)
+      if (changed) {
+        console.log(`Transcriptions submitted for hearing ${eventId}`)
       }
     } catch (error) {
       console.error(`Failed to process hearing ${eventId}:`, error)
@@ -61,23 +48,16 @@ export const script: Script = async ({ db, args }) => {
       if (data.empty) continue
 
       try {
-        const update = recreateTranscripts
-          ? await new HearingPostProcessor().getUpdate({ EventId })
-          : await new HearingPostProcessor().getUpdate({ EventId }, data.videos)
-        if (
-          recreateTranscripts ||
-          update.videos.length > (data.videos?.length ?? 0)
-        ) {
-          await doc.ref.update(update)
+        const hearingProcessor = new HearingPostProcessor()
+        const changed = await hearingProcessor.addVideosToHearing(
+          doc,
+          undefined,
+          refetchVideos
+        )
 
-          console.log(
-            `Transcriptions submitted for hearing ${EventId}: ${update.transcriptionIds}`
-          )
+        if (changed) {
+          console.log(`New transcriptions submitted for hearing ${EventId}`)
           count++
-        } else {
-          console.log(
-            `No additional videos to be processed for hearing ${EventId}`
-          )
         }
       } catch (error) {
         console.error(`Failed to process hearing ${EventId}:`, error)
