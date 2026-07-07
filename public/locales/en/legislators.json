@@ -3,9 +3,11 @@
   "canSubmit": "can submit testimony on any bill or ballot question, just like any constituent. Her stance and reasoning are shown exactly as submitted — MAPLE does not edit or editorialize.",
   "contact": "Contact",
   "cosponsored": "Cosponsored",
+  "districtDetails": "District details are not available yet.",
   "fundsRaised": "Funds Raised",
   "home": "Home",
   "legislators": "Legislators",
+  "loading": "Loading district...",
   "party": {
     "democratic": "Democratic Party",
     "party": "Party",

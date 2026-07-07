@@ -2,8 +2,9 @@ import { useMemo } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 
+import { TabBlock } from "../LegislatorComponents"
+
 import { useAuth } from "components/auth"
-import { SmartDisclaimer } from "components/bill/SmartDisclaimer"
 import { usePublishedTestimonyListing } from "components/db/testimony/usePublishedTestimonyListing"
 import { NoResults } from "components/search/NoResults"
 import { TestimonyItem } from "components/TestimonyCard/TestimonyItem"
@@ -21,15 +22,6 @@ const DisclaimerBlock = styled.div`
   margin-top: 14px;
   margin-bottom: 14px;
   padding: 12px 16px;
-`
-
-const TestimonyBlock = styled.div`
-  background-color: white;
-  border: "1px #ced4da solid";
-  border-radius: 5px;
-  font-size: 11px;
-  margin-bottom: 14px;
-  padding: 0px 16px;
 `
 
 function Disclaimer({ fullname }: { fullname?: string }) {
@@ -86,13 +78,13 @@ export function Testimony({
       {allTestimonies.length > 0 ? (
         <div>
           {allTestimonies.map(testimony => (
-            <TestimonyBlock key={testimony.id}>
+            <TabBlock key={testimony.id}>
               <TestimonyItem
                 testimony={testimony}
                 isUser={testimony.authorUid === user?.uid}
                 onProfilePage={true}
               />
-            </TestimonyBlock>
+            </TabBlock>
           ))}
         </div>
       ) : (
