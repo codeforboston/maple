@@ -15,6 +15,7 @@ import {
   NavbarLinkAiTools,
   NavbarLinkBills,
   NavbarLinkHearings,
+  NavbarLinkLobbying,
   NavbarLinkEditProfile,
   NavbarLinkEffective,
   NavbarLinkFAQ,
@@ -72,6 +73,9 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
     return (
       <Nav className="my-4">
         <NavbarLinkBills handleClick={closeNav} />
+        {flags().lobbyingTable ? (
+          <NavbarLinkLobbying handleClick={closeNav} />
+        ) : null}
         {flags().ballotQuestions ? (
           <NavbarLinkBallotQuestions handleClick={closeNav} />
         ) : null}
@@ -214,6 +218,12 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
       <div className={`align-self-center`}>
         <NavbarLinkBills />
       </div>
+
+      {flags().lobbyingTable ? (
+        <div className={`align-self-center`}>
+          <NavbarLinkLobbying />
+        </div>
+      ) : null}
 
       {flags().ballotQuestions ? (
         <div className={`align-self-center`}>

@@ -1,5 +1,6 @@
 import {
   Array,
+  Dictionary,
   InstanceOf,
   Literal,
   Number,
@@ -44,6 +45,9 @@ export const LobbyingRegistrant = Record({
 export type LobbyingFiling = Static<typeof LobbyingFiling>
 export const LobbyingFiling = Record({
   filingId: String,
+  // ID of the parent lobbyingRegistrants document — enables indexed queries
+  // by firm without a string-equality scan on entityName.
+  registrantId: String,
   entityName: String,
   entityNameNorm: String,
   clientName: String,
@@ -59,6 +63,56 @@ export const LobbyingFiling = Record({
   amount: Null.Or(Number),
   fetchedAt: InstanceOf(Timestamp)
 })
+
+// ── Pre-computed aggregates ───────────────────────────────────────────────────
+
+export type LobbyingPositionCounts = Static<typeof LobbyingPositionCounts>
+export const LobbyingPositionCounts = Record({
+  support: Number,
+  oppose: Number,
+  neutral: Number,
+  none: Number
+})
+
+/**
+ * Singleton document written by the ingest pipeline after each scrape run.
+ * Stored at /lobbyingStats (top-level document, no collection).
+ * Avoids expensive client-side fan-out on the Lobbying Explorer overview page.
+ */
+export type LobbyingStats = Static<typeof LobbyingStats>
+export const LobbyingStats = Record({
+  totalFilings: Number,
+  totalRegistrants: Number,
+  totalClients: Number,
+  totalBillsWithFilings: Number,
+  courtsWithData: Array(Number),
+  spendByYear: Dictionary(Number),
+  filingsByYear: Dictionary(Number)
+})
+
+/**
+ * One document per unique client/sponsor in the lobbyingClients collection.
+ * Written by the ingest pipeline; enables paginated client browse without
+ * scanning the full lobbyingFilings collection.
+ */
+export type LobbyingClientSummary = Static<typeof LobbyingClientSummary>
+export const LobbyingClientSummary = Record({
+  clientSlug: String,
+  clientName: String,
+  clientNameNorm: String,
+  totalFilings: Number,
+  totalAmount: Null.Or(Number),
+  years: Array(Number),
+  generalCourts: Array(Number),
+  positionCounts: LobbyingPositionCounts,
+  registrantIds: Array(String)
+})
+
+/** Firestore path for the pre-computed stats singleton: collection/docId */
+export const LOBBYING_STATS_COLLECTION = "lobbyingMeta"
+export const LOBBYING_STATS_DOC_ID = "stats"
+
+export const CLIENTS_COLLECTION = "lobbyingClients"
 
 /** Firestore path for lobbying registrant documents */
 export const REGISTRANTS_COLLECTION = "lobbyingRegistrants"

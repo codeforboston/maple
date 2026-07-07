@@ -975,6 +975,34 @@
           "order": "ASCENDING"
         }
       ]
+    },
+    {
+      "collectionGroup": "lobbyingFilings",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "registrantId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "year",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "lobbyingFilings",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "clientNameNorm",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "year",
+          "order": "DESCENDING"
+        }
+      ]
     }
   ],
   "fieldOverrides": [

@@ -1,0 +1,54 @@
+{
+  "title": "Lobbying Explorer",
+  "subtitle": "Browse Massachusetts lobbying disclosures filed with the Secretary of State.",
+  "stats": {
+    "totalBills": "Lobbied bills",
+    "totalClients": "Clients",
+    "sessionsCovered": "Sessions covered",
+    "totalSpend": "Total compensation reported"
+  },
+  "sections": {
+    "bills": "Bills",
+    "clients": "Clients",
+    "firms": "Lobbying Firms"
+  },
+  "filters": {
+    "session": "Session",
+    "year": "Year",
+    "position": "Position",
+    "allSessions": "All sessions",
+    "allPositions": "All positions",
+    "search": "Search…"
+  },
+  "position": {
+    "support": "Support",
+    "oppose": "Oppose",
+    "neutral": "Neutral",
+    "none": "No position"
+  },
+  "fields": {
+    "clientName": "Client",
+    "firmName": "Lobbying Firm",
+    "amount": "Compensation",
+    "year": "Year",
+    "filings": "Filings",
+    "bills": "Bills lobbied",
+    "clients": "Clients represented"
+  },
+  "attribution": "Data from the <0>MA Secretary of State Lobbyist Public Search</0>.",
+  "noData": "No lobbying filings found.",
+  "loading": "Loading lobbying data…",
+  "titles": {
+    "overview": "Lobbying Explorer",
+    "bills": "Lobbied Bills",
+    "clients": "Clients & Sponsors",
+    "firms": "Lobbying Firms",
+    "client": "Client Profile",
+    "firm": "Firm Profile"
+  },
+  "billCard": {
+    "filingCount_one": "{{count}} lobbying filing",
+    "filingCount_other": "{{count}} lobbying filings",
+    "viewAll": "View all lobbying activity →"
+  }
+}
