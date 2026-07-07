@@ -7,6 +7,8 @@ import { useLobbyingAllRegistrants } from "components/db/lobbying"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
 import type { LobbyingRegistrant } from "functions/src/lobbying/types"
 
+const LEGACY_TOTAL_CLIENT = "_total_salary_"
+
 type ClientRow = {
   clientName: string
   clientNameNorm: string
@@ -21,6 +23,8 @@ function deriveClients(
   const map = new Map<string, ClientRow>()
   for (const r of registrants) {
     for (const c of r.clients) {
+      if (!c.clientNameNorm || c.clientNameNorm === LEGACY_TOTAL_CLIENT)
+        continue
       if (!map.has(c.clientNameNorm)) {
         map.set(c.clientNameNorm, {
           clientName: c.clientName,
