@@ -138,14 +138,13 @@ export function LegislatorProfilePage({
   }
 
   useEffect(() => {
-    if (member?.MemberCode) getLegislatorUID(member.MemberCode)
-  }, [member?.MemberCode])
+    getLegislatorUID(memberCode)
+  }, [memberCode])
 
-  console.log("member: ", member?.MemberCode)
+  console.log("member: ", memberCode)
   console.log("legisId", legislatorId)
   console.log("data", legislatorData)
   console.log("about", legislatorData[0]?.about)
-  console.log("social", legislatorData[0]?.social)
 
   if (memberLoading) {
     return (
@@ -370,7 +369,12 @@ export function LegislatorProfilePage({
           />
         </Col>
         <Col md="3">
-          <LegislatorSidebar />
+          <LegislatorSidebar
+            court={court}
+            legislatorData={legislatorData}
+            legislatorId={legislatorId}
+            memberCode={memberCode}
+          />
         </Col>
       </Row>
     </Container>
