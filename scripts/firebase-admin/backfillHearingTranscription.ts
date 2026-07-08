@@ -23,7 +23,9 @@ export const script: Script = async ({ db, args }) => {
     if (!data) return
     try {
       const hearingProcessor = new HearingPostProcessor()
-      const changed = await hearingProcessor.addVideosToHearing(doc, undefined, refetchVideos)
+      const changed = await hearingProcessor.addVideosToHearing(doc, {
+        refetch: refetchVideos
+      })
       if (changed) {
         console.log(`Transcriptions submitted for hearing ${eventId}`)
       }
@@ -49,11 +51,9 @@ export const script: Script = async ({ db, args }) => {
 
       try {
         const hearingProcessor = new HearingPostProcessor()
-        const changed = await hearingProcessor.addVideosToHearing(
-          doc,
-          undefined,
-          refetchVideos
-        )
+        const changed = await hearingProcessor.addVideosToHearing(doc, {
+          refetch: refetchVideos
+        })
 
         if (changed) {
           console.log(`New transcriptions submitted for hearing ${EventId}`)

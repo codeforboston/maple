@@ -36,7 +36,7 @@ export const scrapeSingleHearing = functions
       const hearing = await new HearingScraper().getEvent({ EventId: eventId })
       const doc = await db.doc(`/events/${hearing.id}`).get()
       await doc.ref.set(hearing, { merge: true })
-      await new HearingPostProcessor().addVideosToHearing(doc)
+      await new HearingPostProcessor().addVideosToHearing(doc, {})
 
       // Save the hearing to Firestore
       await db.doc(`/events/${hearing.id}`).set(hearing, { merge: true })
@@ -79,7 +79,7 @@ export const scrapeSingleHearingv2 = onCall(
       const hearing = await new HearingScraper().getEvent({ EventId: eventId })
       const doc = await db.doc(`/events/${hearing.id}`).get()
       await doc.ref.set(hearing, { merge: true })
-      await new HearingPostProcessor().addVideosToHearing(doc)
+      await new HearingPostProcessor().addVideosToHearing(doc, {})
 
       // Save the hearing to Firestore
 

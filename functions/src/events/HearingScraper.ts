@@ -129,7 +129,7 @@ export class HearingPostProcessor {
     if (snapshot.empty) return
 
     for (const doc of snapshot.docs) {
-      await this.addVideosToHearing(doc, writer)
+      await this.addVideosToHearing(doc, { writer, limit: 1 })
     }
 
     await writer.close()
@@ -139,9 +139,17 @@ export class HearingPostProcessor {
     doc:
       | FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>
       | FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData>,
-    writer?: FirebaseFirestore.BulkWriter,
-    refetch = false
+    {
+      writer,
+      limit,
+      refetch = false
+    }: {
+      writer?: FirebaseFirestore.BulkWriter
+      limit?: number
+      refetch?: boolean
+    }
   ): Promise<boolean> {
+    let count = 0
     const data = doc.data()
     const eventId = data?.content?.EventId
     if (!data || !eventId) return false
@@ -176,13 +184,30 @@ export class HearingPostProcessor {
           videos[index].transcriptionId = oldVideo.transcriptionId
         }
       }
+      if (writer) {
+        await writer.update(doc.ref, {
+          videos,
+          transcriptionIds: this.transcriptionIds(videos),
+          videosFetchedAt: Timestamp.now()
+        })
+      } else {
+        await doc.ref.update({
+          videos,
+          transcriptionIds: this.transcriptionIds(videos),
+          videosFetchedAt: Timestamp.now()
+        })
+      }
     } else {
       videos = data.videos
     }
 
     let nextVideos = await this.submitNextTranscription(eventId, videos)
+    count += 1
     if (!nextVideos) return false
     while (nextVideos) {
+      if (limit && count >= limit) {
+        return true
+      }
       if (writer) {
         await writer.update(doc.ref, {
           videos: nextVideos,
@@ -195,6 +220,7 @@ export class HearingPostProcessor {
         })
       }
       nextVideos = await this.submitNextTranscription(eventId, videos)
+      count += 1
     }
     return true
   }
