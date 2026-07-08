@@ -1,14 +1,9 @@
-import { doc, getDoc } from "firebase/firestore"
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useTranslation } from "next-i18next"
 import ErrorPage from "next/error"
-import { useCallback, useEffect, useState } from "react"
+import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 
-import { Col, Container, Row, Spinner } from "../bootstrap"
-import { usePublicProfile } from "../db"
-import { firestore } from "../firebase"
 import * as links from "../links"
 
 import {
@@ -19,20 +14,34 @@ import {
   PartyLabel,
   Twitter
 } from "./LegislatorComponents"
-import { LegislatorSidebar } from "./SidebarComponents/LegislatorSidebar"
-import { LegislatorTabs } from "./TabComponents/LegislatorTabs"
+import { LegislatorSidebar } from "./LegislatorSidebar"
+import { LegislatorTabs } from "./LegislatorTabs"
 
 import { useAuth } from "components/auth"
-import { useFlags } from "components/featureFlags"
+import { Col, Container, Row, Spinner } from "components/bootstrap"
+import { useDistrict, useMember } from "components/db"
 import { Internal } from "components/links"
 import { FollowUserButton } from "components/shared/FollowButton"
 import { CircleImage } from "components/shared/LabeledIcon"
 
-const DirectoryPath = styled.div.attrs(props => ({
-  className: `align-items-center d-flex flex-nowrap ${props.className}`
-}))`
-  font-size: 12px;
-`
+type ProfilePlaceholder = {
+  social?: {
+    blueSky?: string
+    linkedIn?: string
+    twitter?: string
+  }
+  website?: string
+}
+
+const tabs = [
+  "Priorities",
+  "Bills",
+  "Elections",
+  "Finance",
+  "District",
+  "Her testimony",
+  "Votes"
+]
 
 const ButtonContainer = styled(Col).attrs(props => ({
   className: `col-12 justify-content-md-end ${props.className}`,
@@ -42,9 +51,17 @@ const ButtonContainer = styled(Col).attrs(props => ({
   width: max-content;
 `
 
-const HeaderBlock = styled.div`
+const DirectoryPath = styled.div.attrs(props => ({
+  className: `align-items-center d-flex flex-nowrap ${props.className}`
+}))`
+  font-size: 12px;
+`
+
+const HeaderBlock = styled.div.attrs(props => ({
+  className: `d-flex flex-wrap justify-content-between ${props.className}`
+}))`
   background-color: white;
-  border: "1px #ced4da solid";
+  border: 1px #b8c0c9 solid;
   border-radius: 5px;
   margin-top: 8px;
   padding: 16px;
@@ -79,7 +96,7 @@ const StatBlock = styled(Col).attrs(props => ({
   md: `2`
 }))`
   background-color: white;
-  border: 1px #ced4da solid;
+  border: 1px #b8c0c9 solid;
   border-radius: 5px;
   margin-top: 4px;
   padding: 16px;
@@ -100,57 +117,47 @@ const StatNum = styled.div.attrs(props => ({
   width: max-content;
 `
 
-export function LegislatorPage(props: { id: string }) {
+export function LegislatorProfilePage({
+  court,
+  memberCode
+}: {
+  court: number
+  memberCode: string
+}) {
+  const { member, loading: memberLoading } = useMember(court, memberCode)
+  const { district, loading: districtLoading } = useDistrict(
+    court,
+    member?.Branch,
+    member?.District
+  )
   const { t } = useTranslation("legislators")
-  const { result: profile, loading } = usePublicProfile(props.id)
-  const { legislators } = useFlags()
-  const { user } = useAuth()
+  // const { user } = useAuth() **uncomment when Following Button in enabled**
 
-  // eventually this should be replaced with a profile prop array that
-  // contains a list of courts the legislator served on
-  const viableCourts = "194"
+  /* replace with profile info for legislators with Maple accounts */
+  let profile: ProfilePlaceholder = {
+    // social: {
+    //   blueSky: "blueskyTest",
+    //   linkedIn: "linkedinTest",
+    //   twitter: "twitterTest"
+    // },
+    // website: "test.com"
+    social: {
+      blueSky: "",
+      linkedIn: "",
+      twitter: ""
+    },
+    website: ""
+  }
 
-  const [branch, setBranch] = useState<string>("")
-  const [cosponsoredBills, setCosponsoredBills] = useState<Array<string>>([""])
-  const [district, setDistrict] = useState<string>("")
-  const [email, setEmail] = useState<string>("")
-  const [party, setParty] = useState<string>("")
-  const [phoneNumber, setPhoneNumber] = useState<string>("")
-  const [sponsoredBills, setSponsoredBills] = useState<Array<string>>([""])
-
-  const memberData = useCallback(async () => {
-    const member = await getDoc(
-      doc(
-        firestore,
-        `generalCourts/${viableCourts}/members/${profile?.memberId}`
-      )
-    )
-    const docData = member.data()
-
-    setBranch(docData?.content.Branch)
-    setCosponsoredBills(docData?.content.CoSponsoredBills)
-    setDistrict(docData?.content.District)
-    setEmail(docData?.content.EmailAddress)
-    setParty(docData?.content.Party)
-    setPhoneNumber(docData?.content.PhoneNumber)
-    setSponsoredBills(docData?.content.SponsoredBills)
-  }, [district, party, phoneNumber])
-
-  useEffect(() => {
-    profile ? memberData() : null
-  }, [memberData, profile])
-
-  if (loading) {
+  if (memberLoading) {
     return (
       <Row>
         <Spinner animation="border" className="mx-auto" />
       </Row>
     )
   }
-  if (!legislators) {
-    return <ErrorPage statusCode={404} withDarkMode={false} />
-  }
-  if (!profile) {
+
+  if (!member) {
     return <ErrorPage statusCode={404} withDarkMode={false} />
   }
 
@@ -161,31 +168,36 @@ export function LegislatorPage(props: { id: string }) {
           {t("home")}
         </Internal>
         <FontAwesomeIcon className="fa-2xs px-2 " icon={faChevronRight} />
+
+        {/* update with link to legistators search page when that is created */}
         <div style={{ color: "#6c757d" }}>{t("legislators")}</div>
+        {/* */}
+
         <FontAwesomeIcon className="fa-2xs px-2 " icon={faChevronRight} />
-        <div style={{ color: "#6c757d" }}>{profile.fullName}</div>
+        <div style={{ color: "#6c757d" }}>{member.Name}</div>
       </DirectoryPath>
 
-      <HeaderBlock className="d-flex flex-wrap justify-content-between">
+      <HeaderBlock>
         <CircleImage className="me-2">
           <img
-            src={`https://malegislature.gov/Legislators/Profile/170/${profile.memberId}.jpg`}
+            src={`https://malegislature.gov/Legislators/Profile/170/${member.MemberCode}.jpg`}
             alt={""}
             className={`image`}
           />
         </CircleImage>
+
         <Col>
           <Col className="d-flex" xs="6" sm="12">
             <links.External
-              href={`https://malegislature.gov/Legislators/Profile/${profile.memberId}`}
+              href={`https://malegislature.gov/Legislators/Profile/${member.MemberCode}`}
               className="text-decoration-none"
             >
-              <HeaderName>{profile.fullName}</HeaderName>
+              <HeaderName>{member.Name}</HeaderName>
             </links.External>
           </Col>
 
           <RoleLine>
-            {branch == "Senate" ? (
+            {member.Branch == "Senate" ? (
               <span>{t("stateSenator")}</span>
             ) : (
               <span>{t("stateRepresentative")}</span>
@@ -194,18 +206,18 @@ export function LegislatorPage(props: { id: string }) {
           </RoleLine>
 
           <div className="d-flex mb-2">
-            <PartyLabel party={party} />
+            <PartyLabel party={member.Party} />
             {/* Incumbent Label */}
-            <DistrictLabel district={district} />
+            <DistrictLabel district={member.District} />
           </div>
 
           <SocialLine>
             <div>
               <links.External
-                href={`mailto:${email}`}
+                href={`mailto:${member.EmailAddress}`}
                 className="text-decoration-none"
               >
-                {email}
+                {member.EmailAddress}
               </links.External>
             </div>
 
@@ -223,17 +235,17 @@ export function LegislatorPage(props: { id: string }) {
               <div>
                 <span className="px-2">·</span>
                 <links.External
-                  href={`https://malegislature.gov/Legislators/Profile/${profile.memberId}`}
+                  href={`https://malegislature.gov/Legislators/Profile/${member.MemberCode}`}
                 >
-                  {`malegislature.gov/Legislators/Profile/${profile.memberId}`}
+                  {`malegislature.gov/Legislators/Profile/${member.MemberCode}`}
                 </links.External>
               </div>
             )}
 
-            {phoneNumber ? (
+            {member.PhoneNumber ? (
               <div>
                 <span className="px-2">·</span>
-                <PhoneNum>{formatPhoneNumber(phoneNumber)}</PhoneNum>
+                <PhoneNum>{formatPhoneNumber(member.PhoneNumber)}</PhoneNum>
               </div>
             ) : (
               <></>
@@ -292,15 +304,17 @@ export function LegislatorPage(props: { id: string }) {
         </Col>
 
         <ButtonContainer>
-          {user ? (
+          {/* uncomment when legislator Maple accounts are linked to this page 
+          
+          {user && legislatorAccountId ? (
             <div className="mb-2">
               <FollowUserButton profileId={props.id} />
             </div>
           ) : (
             <></>
-          )}
+          )} */}
           <links.External
-            href={`mailto:${email}`}
+            href={`mailto:${member.EmailAddress}`}
             className="border border-2 border-secondary btn btn-lg fw-bold py-1 text-decoration-none text-secondary w-100"
           >
             {t("contact")}
@@ -317,21 +331,13 @@ export function LegislatorPage(props: { id: string }) {
         </StatBlock>
         <StatBlock>
           <Col className="flex-grow-0 mx-auto">
-            <StatNum>
-              {sponsoredBills?.length ? <>{sponsoredBills.length}</> : <>?</>}
-            </StatNum>
+            <StatNum>{member.SponsoredBills.length}</StatNum>
             <StatLine>{t("billsSponsored")}</StatLine>
           </Col>
         </StatBlock>
         <StatBlock>
           <Col className="flex-grow-0 mx-auto">
-            <StatNum>
-              {cosponsoredBills?.length ? (
-                <>{cosponsoredBills.length}</>
-              ) : (
-                <>?</>
-              )}
-            </StatNum>
+            <StatNum>{member.CoSponsoredBills.length}</StatNum>
             <StatLine>{t("cosponsored")}</StatLine>
           </Col>
         </StatBlock>
@@ -343,11 +349,14 @@ export function LegislatorPage(props: { id: string }) {
         </StatBlock>
       </div>
 
-      <Row>
-        <Col className={`mt-4`} md="9">
-          <LegislatorTabs fullname={profile.fullName} pageId={props.id} />
+      <Row className={`mt-4`}>
+        <Col md="9">
+          <LegislatorTabs
+            district={district}
+            districtLoading={districtLoading}
+          />
         </Col>
-        <Col className={`mt-4`} md="3">
+        <Col md="3">
           <LegislatorSidebar />
         </Col>
       </Row>

@@ -33,6 +33,7 @@ import { Request, Response, NextFunction } from "express"
 import dotenv from "dotenv"
 import { registerTools } from "./tools"
 import { hybridAuthMiddleware } from "./auth"
+import { rateLimitMiddleware } from "./rateLimit"
 
 dotenv.config()
 
@@ -44,7 +45,8 @@ if (!admin.apps.length) {
 // ── Config ────────────────────────────────────────────────────────────────────
 const PORT = parseInt(process.env.PORT ?? "3001", 10)
 const HOST = process.env.HOST ?? "127.0.0.1"
-const DISABLE_AUTH = process.env.DISABLE_AUTH === "true"
+const DISABLE_AUTH =
+  process.env.NODE_ENV !== "production" && process.env.DISABLE_AUTH === "true"
 
 // ── MCP server factory ────────────────────────────────────────────────────────
 // We create a fresh McpServer per request (stateless mode).
@@ -74,31 +76,36 @@ app.get("/health", (_req, res) => {
   res.json({ status: "ok", server: "maple-mcp-server", version: "0.1.0" })
 })
 
-// MCP endpoint — auth required, new transport per request (stateless)
-app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
-  const transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: undefined // stateless: no session tracking
-  })
+// MCP endpoint — auth then rate limit, new transport per request (stateless)
+app.post(
+  "/mcp",
+  authMiddleware,
+  rateLimitMiddleware,
+  async (req: Request, res: Response) => {
+    const transport = new StreamableHTTPServerTransport({
+      sessionIdGenerator: undefined // stateless: no session tracking
+    })
 
-  const server = createMcpServer()
+    const server = createMcpServer()
 
-  // Clean up when the response finishes
-  res.on("finish", () => {
-    transport
-      .close()
-      .catch(err => console.error("Error closing transport:", err))
-  })
+    // Clean up when the response finishes
+    res.on("finish", () => {
+      transport
+        .close()
+        .catch(err => console.error("Error closing transport:", err))
+    })
 
-  try {
-    await server.connect(transport)
-    await transport.handleRequest(req, res, req.body)
-  } catch (err) {
-    console.error("Error handling MCP request:", err)
-    if (!res.headersSent) {
-      res.status(500).json({ error: "Internal Server Error" })
+    try {
+      await server.connect(transport)
+      await transport.handleRequest(req, res, req.body)
+    } catch (err) {
+      console.error("Error handling MCP request:", err)
+      if (!res.headersSent) {
+        res.status(500).json({ error: "Internal Server Error" })
+      }
     }
   }
-})
+)
 
 // Reject GET /mcp — we're stateless, no persistent SSE stream
 app.get("/mcp", (_req, res) => {

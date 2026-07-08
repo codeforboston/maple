@@ -1,5 +1,6 @@
 import { useTranslation } from "next-i18next"
 import { Container, Row, Col } from "../../bootstrap"
+import { Internal } from "../../links"
 import {
   MemberItem,
   Divider,
@@ -180,6 +181,21 @@ const MapleAI = () => {
                   <b>{t("section5.desc4Bold")}</b> {t("section5.desc4Main")}
                 </li>
               </ul>
+            </DescrContainer>
+          </SectionContainer>
+        </Col>
+      </Row>
+      <Row>
+        <Col className="py-3">
+          <SectionContainer>
+            <SectionTitle className="p-2">{t("aiResearch.title")}</SectionTitle>
+            <DescrContainer className="py-3 px-4">
+              {t("aiResearch.desc")}
+            </DescrContainer>
+            <DescrContainer className="pb-3 px-4">
+              <Internal href="/learn/ai-tools">
+                {t("aiResearch.linkText")}
+              </Internal>
             </DescrContainer>
           </SectionContainer>
         </Col>
