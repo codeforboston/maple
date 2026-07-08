@@ -41,8 +41,10 @@ def _comp_total(detail) -> float:
 # ── Disclosure parsing ────────────────────────────────────────────────────────
 
 # (fixture, year, expected_comp, n_clients, n_bills, era_label)
+# expected_comp is the sum of detail.compensation (per-client entries only).
+# 2005-2008 era has no per-client breakdown; see test_legacy_2007_total_compensation.
 DISCLOSURE_CASES = [
-    ("2007e", 2007, 112_500.00,   1,    2, "legacy 2005-2008: entity total under _total_salary_"),
+    ("2007e", 2007,         0.0,   0,    2, "legacy 2005-2008: entity total in legacy_total_compensation"),
     ("2011e", 2011, 641_243.00,  23,    4, "legacy 2009-2013: per-client Compensation received column"),
     ("2016e", 2016, 990_474.00,  30, 1357, "hybrid 2014-2018: Panel1 div totals"),
     ("2024e", 2024, 115_000.00,   5,   22, "modern 2019+: grdvClientPaidToEntity"),
@@ -71,11 +73,19 @@ def test_no_total_amount_artifact(fix, year, _c, _n, _b, _e):
     assert not bad, f"{fix} produced summary-row artifacts: {bad}"
 
 
-def test_legacy_2007_uses_total_salary_placeholder():
-    """2005-2008 has no per-client comp column; comp falls back to the entity
-    salary total stored under the _total_salary_ placeholder client."""
+def test_legacy_2007_total_compensation():
+    """2005-2008 has no per-client comp column; the entity salary total is stored
+    in legacy_total_compensation with an empty per-client compensation list."""
     detail = parse_disclosure_detail(_soup("2007e_disc"), 2007)
-    assert [c.client_name for c in detail.compensation] == ["_total_salary_"]
+    assert detail.compensation == []
+    assert detail.legacy_total_compensation == pytest.approx(112_500.00, abs=1.0)
+
+
+def test_non_legacy_has_no_legacy_total_compensation():
+    """Only 2005-2008 filings set legacy_total_compensation; all other eras leave it None."""
+    for fix, year in [("2011e", 2011), ("2016e", 2016), ("2024e", 2024)]:
+        detail = parse_disclosure_detail(_soup(f"{fix}_disc"), year)
+        assert detail.legacy_total_compensation is None, f"{fix} should not set legacy_total_compensation"
 
 
 def test_legacy_2011_is_per_client_not_placeholder():

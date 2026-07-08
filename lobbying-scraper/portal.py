@@ -98,6 +98,7 @@ class DisclosureMeta:
 class DisclosureDetail:
     compensation: list[Compensation] = field(default_factory=list)
     bills: list[BillActivity] = field(default_factory=list)
+    legacy_total_compensation: Optional[float] = None
 
 
 # ── Derived-value helpers ─────────────────────────────────────────────────────
@@ -493,8 +494,10 @@ def parse_disclosure_detail(soup: BeautifulSoup, year: int) -> DisclosureDetail:
                     if amt:
                         total += amt
             if total:
-                compensation.append(
-                    Compensation(client_name=LEGACY_TOTAL_CLIENT, amount=total)
+                return DisclosureDetail(
+                    compensation=compensation,
+                    bills=bills,
+                    legacy_total_compensation=total,
                 )
 
     return DisclosureDetail(compensation=compensation, bills=bills)
