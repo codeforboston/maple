@@ -9,6 +9,7 @@ import {
   normalizePosition
 } from "components/lobbying/LobbyingPositionChip"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
+import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 
 // General courts with lobbying data, newest first
 const COURTS = [194, 193, 192, 191, 190, 189, 188, 187, 186, 185, 184]
@@ -229,12 +230,7 @@ function LobbyingBillsTable() {
         </>
       )}
 
-      {/* Attribution */}
-      <p style={attributionStyle}>
-        {t("attribution", {
-          0: "MA Secretary of State Lobbyist Public Search"
-        })}
-      </p>
+      <LobbyingAttribution />
     </>
   )
 }
@@ -330,10 +326,4 @@ const trStyle: React.CSSProperties = {
 const tdStyle: React.CSSProperties = {
   padding: "0.45rem 0.75rem",
   verticalAlign: "middle"
-}
-
-const attributionStyle: React.CSSProperties = {
-  marginTop: "1.5rem",
-  fontSize: 12,
-  color: MAPLE_COLORS.textMuted
 }
