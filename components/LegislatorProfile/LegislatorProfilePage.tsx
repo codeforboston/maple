@@ -1,9 +1,12 @@
+import { collection, getDocs, query, where } from "firebase/firestore"
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import ErrorPage from "next/error"
 import { useTranslation } from "next-i18next"
+import { useEffect, useState } from "react"
 import styled from "styled-components"
 
+import { firestore } from "../firebase"
 import * as links from "../links"
 
 import {
@@ -11,6 +14,7 @@ import {
   DistrictLabel,
   formatPhoneNumber,
   LinkedIn,
+  Mastodon,
   PartyLabel,
   Twitter
 } from "./LegislatorComponents"
@@ -23,36 +27,6 @@ import { useDistrict, useMember } from "components/db"
 import { Internal } from "components/links"
 import { FollowUserButton } from "components/shared/FollowButton"
 import { CircleImage } from "components/shared/LabeledIcon"
-
-import {
-  collection,
-  collectionGroup,
-  getDocs,
-  query,
-  where
-} from "firebase/firestore"
-import { firestore } from "../firebase"
-
-import { useEffect, useState } from "react"
-
-type ProfilePlaceholder = {
-  social?: {
-    blueSky?: string
-    linkedIn?: string
-    twitter?: string
-  }
-  website?: string
-}
-
-const tabs = [
-  "Priorities",
-  "Bills",
-  "Elections",
-  "Finance",
-  "District",
-  "Her testimony",
-  "Votes"
-]
 
 const ButtonContainer = styled(Col).attrs(props => ({
   className: `col-12 justify-content-md-end ${props.className}`,
@@ -146,22 +120,6 @@ export function LegislatorProfilePage({
 
   const [legislatorId, setLegislatorId] = useState("")
   const [legislatorData, setLegislatorData] = useState<any[]>([])
-
-  /* replace with profile info for legislators with Maple accounts */
-  let profile: ProfilePlaceholder = {
-    // social: {
-    //   blueSky: "blueskyTest",
-    //   linkedIn: "linkedinTest",
-    //   twitter: "twitterTest"
-    // },
-    // website: "test.com"
-    social: {
-      blueSky: "",
-      linkedIn: "",
-      twitter: ""
-    },
-    website: ""
-  }
 
   async function getLegislatorUID(memberCode: string) {
     let docList: any[] = []
@@ -261,14 +219,14 @@ export function LegislatorProfilePage({
               </links.External>
             </div>
 
-            {profile.website ? (
+            {legislatorData[0]?.website ? (
               <div>
                 <span className="px-2">·</span>
                 <links.External
-                  href={`https://${profile.website}`}
+                  href={`https://${legislatorData[0].website}`}
                   className="text-decoration-none"
                 >
-                  {profile.website}
+                  {legislatorData[0].website}
                 </links.External>
               </div>
             ) : (
@@ -292,17 +250,18 @@ export function LegislatorProfilePage({
             )}
 
             <div>
-              {profile?.social?.twitter ||
+              {legislatorData[0]?.social.twitter ||
               legislatorData[0]?.social.linkedIn ||
-              profile?.social?.blueSky ? (
+              legislatorData[0]?.social.blueSky ||
+              legislatorData[0]?.social.mastodon ? (
                 <span className="px-2">·</span>
               ) : (
                 <></>
               )}
 
-              {profile?.social?.twitter ? (
+              {legislatorData[0]?.social.twitter ? (
                 <a
-                  href={profile.social.twitter}
+                  href={legislatorData[0].social.twitter}
                   className="pe-2"
                   rel="noreferrer"
                   target="_blank"
@@ -328,15 +287,29 @@ export function LegislatorProfilePage({
                 <></>
               )}
 
-              {profile?.social?.blueSky ? (
+              {legislatorData[0]?.social.blueSky ? (
                 <a
-                  href={profile?.social.blueSky}
+                  href={legislatorData[0].social.blueSky}
                   className="pe-2"
                   rel="noreferrer"
                   target="_blank"
                   title="Bluesky"
                 >
                   <Bluesky />
+                </a>
+              ) : (
+                <></>
+              )}
+
+              {legislatorData[0]?.social.mastodon ? (
+                <a
+                  href={legislatorData[0].social.mastodon}
+                  className="pe-2"
+                  rel="noreferrer"
+                  target="_blank"
+                  title="Mastodon"
+                >
+                  <Mastodon />
                 </a>
               ) : (
                 <></>
