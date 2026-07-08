@@ -113,8 +113,6 @@ export class HearingPostProcessor {
   }
 
   private async run() {
-    const writer = db.bulkWriter()
-
     const now = DateTime.now()
     const begin = now.minus(this.pastEventBeginProcessing).toJSDate()
     const cutoff = now.minus(this.pastEventCutoff).toJSDate()
@@ -129,10 +127,9 @@ export class HearingPostProcessor {
     if (snapshot.empty) return
 
     for (const doc of snapshot.docs) {
-      await this.addVideosToHearing(doc, { limit: 1 })
+      const changed = await this.addVideosToHearing(doc, { limit: 1 })
+      if (changed) return
     }
-
-    await writer.close()
   }
 
   async addVideosToHearing(
@@ -154,6 +151,9 @@ export class HearingPostProcessor {
     let videos: Video[]
     if (!data.videos) {
       videos = await this.getHearingVideos(eventId)
+      // We need to retry until videos become available (if ever)
+      if (videos.length === 0) return false
+      console.log(`Adding ${videos.length} videos to ${eventId}`)
       await doc.ref.update({
         videos,
         transcriptionIds: this.transcriptionIds(videos),
@@ -162,6 +162,7 @@ export class HearingPostProcessor {
     } else if (refetch) {
       const oldVideos = data.videos
       videos = await this.getHearingVideos(eventId)
+      if (videos.length === 0) return false
       for (const oldVideo of oldVideos) {
         if (!oldVideo.transcriptionId) continue
         const index = videos.findIndex(video => video.url === oldVideo.url)
@@ -174,6 +175,7 @@ export class HearingPostProcessor {
           videos[index].transcriptionId = oldVideo.transcriptionId
         }
       }
+      console.log(`Refetching ${videos.length} videos to ${eventId}`)
       await doc.ref.update({
         videos,
         transcriptionIds: this.transcriptionIds(videos),
@@ -216,6 +218,9 @@ export class HearingPostProcessor {
       functions.logger.error(`Error during ${result.type}: ${result.error}`)
       return null
     }
+    console.log(
+      `Adding new transcription to ${eventId}: ${videos[nextTranscription].url} with id ${result.id}`
+    )
     videos[nextTranscription].transcriptionId = result.id
     return videos
   }
