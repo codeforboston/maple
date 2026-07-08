@@ -129,7 +129,7 @@ export class HearingPostProcessor {
     if (snapshot.empty) return
 
     for (const doc of snapshot.docs) {
-      await this.addVideosToHearing(doc, { writer, limit: 1 })
+      await this.addVideosToHearing(doc, { limit: 1 })
     }
 
     await writer.close()
@@ -140,11 +140,9 @@ export class HearingPostProcessor {
       | FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>
       | FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData>,
     {
-      writer,
       limit,
       refetch = false
     }: {
-      writer?: FirebaseFirestore.BulkWriter
       limit?: number
       refetch?: boolean
     }
@@ -156,19 +154,11 @@ export class HearingPostProcessor {
     let videos: Video[]
     if (!data.videos) {
       videos = await this.getHearingVideos(eventId)
-      if (writer) {
-        await writer.update(doc.ref, {
-          videos,
-          transcriptionIds: this.transcriptionIds(videos),
-          videosFetchedAt: Timestamp.now()
-        })
-      } else {
-        await doc.ref.update({
-          videos,
-          transcriptionIds: this.transcriptionIds(videos),
-          videosFetchedAt: Timestamp.now()
-        })
-      }
+      await doc.ref.update({
+        videos,
+        transcriptionIds: this.transcriptionIds(videos),
+        videosFetchedAt: Timestamp.now()
+      })
     } else if (refetch) {
       const oldVideos = data.videos
       videos = await this.getHearingVideos(eventId)
@@ -184,19 +174,11 @@ export class HearingPostProcessor {
           videos[index].transcriptionId = oldVideo.transcriptionId
         }
       }
-      if (writer) {
-        await writer.update(doc.ref, {
-          videos,
-          transcriptionIds: this.transcriptionIds(videos),
-          videosFetchedAt: Timestamp.now()
-        })
-      } else {
-        await doc.ref.update({
-          videos,
-          transcriptionIds: this.transcriptionIds(videos),
-          videosFetchedAt: Timestamp.now()
-        })
-      }
+      await doc.ref.update({
+        videos,
+        transcriptionIds: this.transcriptionIds(videos),
+        videosFetchedAt: Timestamp.now()
+      })
     } else {
       videos = data.videos
     }
@@ -205,19 +187,12 @@ export class HearingPostProcessor {
     count += 1
     if (!nextVideos) return false
     while (nextVideos) {
+      await doc.ref.update({
+        videos: nextVideos,
+        transcriptionIds: this.transcriptionIds(nextVideos)
+      })
       if (limit && count >= limit) {
         return true
-      }
-      if (writer) {
-        await writer.update(doc.ref, {
-          videos: nextVideos,
-          transcriptionIds: this.transcriptionIds(nextVideos)
-        })
-      } else {
-        await doc.ref.update({
-          videos: nextVideos,
-          transcriptionIds: this.transcriptionIds(nextVideos)
-        })
       }
       nextVideos = await this.submitNextTranscription(eventId, videos)
       count += 1
@@ -245,10 +220,10 @@ export class HearingPostProcessor {
     return videos
   }
 
-  transcriptionIds(videos: Video[]) {
+  transcriptionIds(videos: Video[]): string[] {
     return videos
       .map(video => video.transcriptionId)
-      .filter(item => Boolean(item))
+      .filter((item): item is string => item !== null)
   }
 
   async getHearingVideos(EventId: number): Promise<Video[]> {
