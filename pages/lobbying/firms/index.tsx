@@ -5,6 +5,7 @@ import { createPage } from "components/page"
 import { createGetStaticTranslationProps } from "components/translations"
 import { useLobbyingAllRegistrants } from "components/db/lobbying"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
+import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import type { LobbyingRegistrant } from "functions/src/lobbying/types"
 
 type FirmRow = {
@@ -166,6 +167,11 @@ function LobbyingFirmsPage() {
       <Row>
         <Col>
           <LobbyingFirmsTable />
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <LobbyingAttribution />
         </Col>
       </Row>
     </Container>

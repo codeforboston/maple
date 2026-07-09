@@ -14,6 +14,7 @@ import {
   normalizePosition
 } from "components/lobbying/LobbyingPositionChip"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
+import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import type { LobbyingRegistrant } from "functions/src/lobbying/types"
 
 function findFirmsForClient(
@@ -231,6 +232,7 @@ function ClientDetail() {
           </Col>
         </Row>
       )}
+      <LobbyingAttribution className="mt-3" />
     </Container>
   )
 }

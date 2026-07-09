@@ -14,6 +14,7 @@ import {
   normalizePosition
 } from "components/lobbying/LobbyingPositionChip"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
+import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 
 function FirmDetail() {
   const { t } = useTranslation("lobbying")
@@ -201,6 +202,7 @@ function FirmDetail() {
           </Col>
         </Row>
       )}
+      <LobbyingAttribution className="mt-3" />
     </Container>
   )
 }
