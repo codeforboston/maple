@@ -54,22 +54,22 @@ export function Biography({
     pageOwner = true
   }
 
-  const pageOwnerResult = useProfile()
+  const userResult = useProfile()
 
-  if (pageOwnerResult.profile && pageOwner) {
-    // the user is the legislator whose page this is
+  if (userResult.profile && pageOwner) {
+    // the user is the legislator who owns this page
     // therefore they get edit privledges
     return (
       <EditableBiography
-        actions={pageOwnerResult}
+        actions={userResult}
         court={court}
         memberCode={memberCode}
-        profile={pageOwnerResult.profile}
+        profile={userResult.profile}
       />
     )
   }
 
-  // the user is not the legislator whose page this is
+  // the user is not the legislator who owns this page
   // therefore they get read-only privledges
   return <ReadonlyBiography legislatorData={legislatorData} />
 }
