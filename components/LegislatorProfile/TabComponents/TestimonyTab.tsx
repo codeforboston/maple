@@ -62,10 +62,10 @@ export function TestimonyTab({
     uid: legislatorId
   })
 
-  const allTestimonies = useMemo(() => {
+  const testimonies = useMemo(() => {
     const legislatorTestimonies = testimony.items.result ?? []
 
-    // Combine and sort by publishedAt (newest first), then take 4 most recent
+    // Sort by publishedAt (newest first), then take 4 most recent
     return [...legislatorTestimonies]
       .sort((a, b) => b.publishedAt.toMillis() - a.publishedAt.toMillis())
       .slice(0, 4)
@@ -74,9 +74,9 @@ export function TestimonyTab({
   return (
     <>
       <Disclaimer fullname={name} />
-      {allTestimonies.length > 0 && legislatorId ? (
+      {testimonies.length > 0 && legislatorId ? (
         <div>
-          {allTestimonies.map(testimony => (
+          {testimonies.map(testimony => (
             <TabBlock key={testimony.id}>
               <TestimonyItem
                 testimony={testimony}
