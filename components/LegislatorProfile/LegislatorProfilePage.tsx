@@ -269,7 +269,7 @@ export function LegislatorProfilePage({
 
               {legislatorData[0]?.social.linkedIn ? (
                 <a
-                  href={legislatorData[0]?.social.linkedIn}
+                  href={legislatorData[0].social.linkedIn}
                   className="pe-2"
                   rel="noreferrer"
                   target="_blank"
