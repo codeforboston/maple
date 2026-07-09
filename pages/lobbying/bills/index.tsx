@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "next-i18next"
 import { Col, Container, Row } from "components/bootstrap"
 import { createPage } from "components/page"
@@ -10,9 +10,52 @@ import {
 } from "components/lobbying/LobbyingPositionChip"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
+import { usePagination } from "components/lobbying/usePagination"
+import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
+import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 
-// General courts with lobbying data, newest first
 const COURTS = [194, 193, 192, 191, 190, 189, 188, 187, 186, 185, 184]
+const PAGE_SIZE = 50
+
+type BillSortKey = "id" | "filings" | "support" | "oppose" | "neutral"
+type SortDir = "asc" | "desc"
+
+function SortTh({
+  label,
+  sortKey,
+  current,
+  dir,
+  onSort,
+  style
+}: {
+  label: string
+  sortKey: BillSortKey
+  current: BillSortKey
+  dir: SortDir
+  onSort: (k: BillSortKey) => void
+  style?: React.CSSProperties
+}) {
+  const active = sortKey === current
+  return (
+    <th
+      onClick={() => onSort(sortKey)}
+      style={{
+        ...thStyle,
+        ...style,
+        cursor: "pointer",
+        color: active ? MAPLE_COLORS.primary : MAPLE_COLORS.textMuted,
+        userSelect: "none"
+      }}
+    >
+      {label}
+      {active && (
+        <span style={{ fontSize: 10, marginLeft: 3 }}>
+          {dir === "asc" ? "↑" : "↓"}
+        </span>
+      )}
+    </th>
+  )
+}
 
 type BillRow = {
   billId: string
@@ -46,7 +89,7 @@ function groupByBill(
     row[normalizePosition(f.position)]++
     row.total++
   }
-  return [...map.values()].sort((a, b) => b.total - a.total)
+  return [...map.values()]
 }
 
 function PositionMiniBar({ row }: { row: BillRow }) {
@@ -92,6 +135,17 @@ function LobbyingBillsTable() {
     "all" | "support" | "oppose" | "neutral"
   >("all")
   const [search, setSearch] = useState("")
+  const [sortKey, setSortKey] = useState<BillSortKey>("filings")
+  const [sortDir, setSortDir] = useState<SortDir>("desc")
+
+  function handleSort(key: BillSortKey) {
+    if (key === sortKey) {
+      setSortDir(d => (d === "asc" ? "desc" : "asc"))
+    } else {
+      setSortKey(key)
+      setSortDir(key === "id" ? "asc" : "desc")
+    }
+  }
 
   const { result: filings, status, error } = useLobbyingFilingsForCourt(court)
 
@@ -106,9 +160,35 @@ function LobbyingBillsTable() {
     })
   }, [bills, posFilter, search])
 
+  const sorted = useMemo(() => {
+    const mul = sortDir === "asc" ? 1 : -1
+    return [...filtered].sort((a, b) => {
+      switch (sortKey) {
+        case "id":
+          return mul * a.billId.localeCompare(b.billId)
+        case "support":
+          return mul * (a.support - b.support)
+        case "oppose":
+          return mul * (a.oppose - b.oppose)
+        case "neutral":
+          return mul * (a.neutral - b.neutral)
+        default:
+          return mul * (a.total - b.total)
+      }
+    })
+  }, [filtered, sortKey, sortDir])
+
+  const { page, setPage, pageItems, totalPages, totalItems } = usePagination(
+    sorted,
+    PAGE_SIZE
+  )
+
+  useEffect(() => {
+    setPage(1)
+  }, [court, posFilter, search, sortKey, sortDir, setPage])
+
   return (
     <>
-      {/* Filters */}
       <div style={filterRowStyle}>
         <select
           value={court}
@@ -145,7 +225,6 @@ function LobbyingBillsTable() {
         />
       </div>
 
-      {/* Status */}
       {status === "loading" || status === "not-requested" ? (
         <p style={{ color: MAPLE_COLORS.textMuted, padding: "2rem 0" }}>
           {t("loading")}
@@ -154,7 +233,7 @@ function LobbyingBillsTable() {
         <p style={{ color: MAPLE_COLORS.danger, padding: "1rem 0" }}>
           Error: {error?.message}
         </p>
-      ) : filtered.length === 0 ? (
+      ) : sorted.length === 0 ? (
         <p style={{ color: MAPLE_COLORS.textMuted, padding: "2rem 0" }}>
           {t("noData")}
         </p>
@@ -167,27 +246,57 @@ function LobbyingBillsTable() {
               marginBottom: "0.5rem"
             }}
           >
-            {filtered.length} {t("sections.bills").toLowerCase()}
+            {totalItems} {t("sections.bills").toLowerCase()}
           </p>
           <div style={{ overflowX: "auto" }}>
             <table style={tableStyle}>
               <thead>
                 <tr style={theadStyle}>
-                  <th style={thStyle}>Bill</th>
+                  <SortTh
+                    label="Bill"
+                    sortKey="id"
+                    current={sortKey}
+                    dir={sortDir}
+                    onSort={handleSort}
+                  />
                   <th style={thStyle}>{t("filters.session")}</th>
-                  <th style={thStyle}>{t("fields.filings")}</th>
-                  <th style={thStyle}>{t("position.support")}</th>
-                  <th style={thStyle}>{t("position.oppose")}</th>
-                  <th style={thStyle}>{t("position.neutral")}</th>
+                  <SortTh
+                    label={t("fields.filings")}
+                    sortKey="filings"
+                    current={sortKey}
+                    dir={sortDir}
+                    onSort={handleSort}
+                  />
+                  <SortTh
+                    label={t("position.support")}
+                    sortKey="support"
+                    current={sortKey}
+                    dir={sortDir}
+                    onSort={handleSort}
+                  />
+                  <SortTh
+                    label={t("position.oppose")}
+                    sortKey="oppose"
+                    current={sortKey}
+                    dir={sortDir}
+                    onSort={handleSort}
+                  />
+                  <SortTh
+                    label={t("position.neutral")}
+                    sortKey="neutral"
+                    current={sortKey}
+                    dir={sortDir}
+                    onSort={handleSort}
+                  />
                   <th style={thStyle}>Positions</th>
                 </tr>
               </thead>
               <tbody>
-                {filtered.map(b => (
+                {pageItems.map(b => (
                   <tr key={b.billId} style={trStyle}>
                     <td style={tdStyle}>
                       <a
-                        href={`/bills/${b.court}/${b.billId}`}
+                        href={`/lobbying/bills/${b.court}/${b.billId}`}
                         style={{ color: MAPLE_COLORS.primary, fontWeight: 600 }}
                       >
                         {b.billId}
@@ -227,6 +336,13 @@ function LobbyingBillsTable() {
               </tbody>
             </table>
           </div>
+          <LobbyingPaginationBar
+            page={page}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            pageSize={PAGE_SIZE}
+            onPage={setPage}
+          />
         </>
       )}
 
@@ -238,24 +354,21 @@ function LobbyingBillsTable() {
 function LobbyingBillsPage() {
   const { t } = useTranslation("lobbying")
   return (
-    <Container>
-      <Row className="mt-4 mb-3">
-        <Col>
-          <a
-            href="/lobbying"
-            style={{ color: MAPLE_COLORS.textMuted, fontSize: 13 }}
-          >
-            ← {t("titles.overview")}
-          </a>
-          <h1 className="mt-2">{t("titles.bills")}</h1>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <LobbyingBillsTable />
-        </Col>
-      </Row>
-    </Container>
+    <>
+      <LobbyingSubnav />
+      <Container>
+        <Row className="mt-4 mb-3">
+          <Col>
+            <h1>{t("titles.bills")}</h1>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <LobbyingBillsTable />
+          </Col>
+        </Row>
+      </Container>
+    </>
   )
 }
 

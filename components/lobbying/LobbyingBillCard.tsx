@@ -55,7 +55,7 @@ export const LobbyingBillCard: React.FC<LobbyingBillCardProps> = ({
   }
   const total = filings.length
 
-  const explorerHref = `/lobbying/bills?bill=${billId}&gc=${court}`
+  const explorerHref = `/lobbying/bills/${court}/${billId}`
 
   return (
     <div style={cardStyle} className={className}>
@@ -93,7 +93,6 @@ export const LobbyingBillCard: React.FC<LobbyingBillCardProps> = ({
         showFirm
         showAmount={false}
         maxRows={5}
-        onViewAll={() => window.open(explorerHref, "_self")}
       />
 
       <a href={explorerHref} style={viewAllLinkStyle}>

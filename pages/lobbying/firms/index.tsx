@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "next-i18next"
 import { Col, Container, Row } from "components/bootstrap"
 import { createPage } from "components/page"
@@ -6,7 +6,52 @@ import { createGetStaticTranslationProps } from "components/translations"
 import { useLobbyingAllRegistrants } from "components/db/lobbying"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
+import { usePagination } from "components/lobbying/usePagination"
+import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
+import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 import type { LobbyingRegistrant } from "functions/src/lobbying/types"
+
+const PAGE_SIZE = 50
+
+type FirmSortKey = "name" | "clients" | "sessions"
+type SortDir = "asc" | "desc"
+
+function SortTh({
+  label,
+  sortKey,
+  current,
+  dir,
+  onSort,
+  style
+}: {
+  label: string
+  sortKey: FirmSortKey
+  current: FirmSortKey
+  dir: SortDir
+  onSort: (k: FirmSortKey) => void
+  style?: React.CSSProperties
+}) {
+  const active = sortKey === current
+  return (
+    <th
+      onClick={() => onSort(sortKey)}
+      style={{
+        ...thStyle,
+        ...style,
+        cursor: "pointer",
+        color: active ? MAPLE_COLORS.primary : MAPLE_COLORS.textMuted,
+        userSelect: "none"
+      }}
+    >
+      {label}
+      {active && (
+        <span style={{ fontSize: 10, marginLeft: 3 }}>
+          {dir === "asc" ? "↑" : "↓"}
+        </span>
+      )}
+    </th>
+  )
+}
 
 type FirmRow = {
   entityName: string
@@ -36,9 +81,7 @@ function groupByFirm(registrants: LobbyingRegistrant[] | undefined): FirmRow[] {
     row.clientCount += r.clients.length
   }
   for (const row of map.values()) row.years.sort((a, b) => b - a)
-  return [...map.values()].sort((a, b) =>
-    a.entityNameNorm.localeCompare(b.entityNameNorm)
-  )
+  return [...map.values()]
 }
 
 function LobbyingFirmsTable() {
@@ -47,6 +90,17 @@ function LobbyingFirmsTable() {
     "all" | "Lobbyist" | "Employer"
   >("all")
   const [search, setSearch] = useState("")
+  const [sortKey, setSortKey] = useState<FirmSortKey>("name")
+  const [sortDir, setSortDir] = useState<SortDir>("asc")
+
+  function handleSort(key: FirmSortKey) {
+    if (key === sortKey) {
+      setSortDir(d => (d === "asc" ? "desc" : "asc"))
+    } else {
+      setSortKey(key)
+      setSortDir(key === "name" ? "asc" : "desc")
+    }
+  }
 
   const { result: registrants, status, error } = useLobbyingAllRegistrants()
   const firms = useMemo(() => groupByFirm(registrants), [registrants])
@@ -60,6 +114,29 @@ function LobbyingFirmsTable() {
     })
   }, [firms, regTypeFilter, search])
 
+  const sorted = useMemo(() => {
+    const mul = sortDir === "asc" ? 1 : -1
+    return [...filtered].sort((a, b) => {
+      switch (sortKey) {
+        case "clients":
+          return mul * (a.clientCount - b.clientCount)
+        case "sessions":
+          return mul * (a.years.length - b.years.length)
+        default:
+          return mul * a.entityNameNorm.localeCompare(b.entityNameNorm)
+      }
+    })
+  }, [filtered, sortKey, sortDir])
+
+  const { page, setPage, pageItems, totalPages, totalItems } = usePagination(
+    sorted,
+    PAGE_SIZE
+  )
+
+  useEffect(() => {
+    setPage(1)
+  }, [regTypeFilter, search, sortKey, sortDir, setPage])
+
   return (
     <>
       <div style={filterRowStyle}>
@@ -69,17 +146,20 @@ function LobbyingFirmsTable() {
             setRegTypeFilter(e.target.value as typeof regTypeFilter)
           }
           style={selectStyle}
+          aria-label="Registrant type"
         >
           <option value="all">All types</option>
           <option value="Lobbyist">Lobbyist</option>
           <option value="Employer">Employer</option>
         </select>
+
         <input
           type="search"
           placeholder={t("filters.search")}
           value={search}
           onChange={e => setSearch(e.target.value)}
           style={{ ...selectStyle, minWidth: 220, cursor: "text" }}
+          aria-label={t("filters.search")}
         />
       </div>
 
@@ -100,20 +180,38 @@ function LobbyingFirmsTable() {
               marginBottom: "0.5rem"
             }}
           >
-            {filtered.length} {t("sections.firms").toLowerCase()}
+            {totalItems} {t("sections.firms").toLowerCase()}
           </p>
           <div style={{ overflowX: "auto" }}>
             <table style={tableStyle}>
               <thead>
                 <tr style={theadStyle}>
-                  <th style={thStyle}>{t("fields.firmName")}</th>
+                  <SortTh
+                    label={t("fields.firmName")}
+                    sortKey="name"
+                    current={sortKey}
+                    dir={sortDir}
+                    onSort={handleSort}
+                  />
                   <th style={thStyle}>Type</th>
-                  <th style={thStyle}>Sessions</th>
-                  <th style={thStyle}>{t("fields.clients")}</th>
+                  <SortTh
+                    label="Sessions"
+                    sortKey="sessions"
+                    current={sortKey}
+                    dir={sortDir}
+                    onSort={handleSort}
+                  />
+                  <SortTh
+                    label={t("fields.clients")}
+                    sortKey="clients"
+                    current={sortKey}
+                    dir={sortDir}
+                    onSort={handleSort}
+                  />
                 </tr>
               </thead>
               <tbody>
-                {filtered.map(f => (
+                {pageItems.map(f => (
                   <tr key={f.entityNameNorm} style={trStyle}>
                     <td style={tdStyle}>
                       <a
@@ -143,6 +241,13 @@ function LobbyingFirmsTable() {
               </tbody>
             </table>
           </div>
+          <LobbyingPaginationBar
+            page={page}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            pageSize={PAGE_SIZE}
+            onPage={setPage}
+          />
         </>
       )}
     </>
@@ -152,29 +257,26 @@ function LobbyingFirmsTable() {
 function LobbyingFirmsPage() {
   const { t } = useTranslation("lobbying")
   return (
-    <Container>
-      <Row className="mt-4 mb-3">
-        <Col>
-          <a
-            href="/lobbying"
-            style={{ color: MAPLE_COLORS.textMuted, fontSize: 13 }}
-          >
-            ← {t("titles.overview")}
-          </a>
-          <h1 className="mt-2">{t("titles.firms")}</h1>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <LobbyingFirmsTable />
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <LobbyingAttribution />
-        </Col>
-      </Row>
-    </Container>
+    <>
+      <LobbyingSubnav />
+      <Container>
+        <Row className="mt-4 mb-3">
+          <Col>
+            <h1>{t("titles.firms")}</h1>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <LobbyingFirmsTable />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <LobbyingAttribution />
+          </Col>
+        </Row>
+      </Container>
+    </>
   )
 }
 
@@ -203,7 +305,8 @@ const selectStyle: React.CSSProperties = {
   borderRadius: 6,
   fontSize: 14,
   color: MAPLE_COLORS.textBody,
-  background: MAPLE_COLORS.surfaceBase
+  background: MAPLE_COLORS.surfaceBase,
+  cursor: "pointer"
 }
 const tableStyle: React.CSSProperties = {
   width: "100%",

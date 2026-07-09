@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "next-i18next"
 import { Col, Container, Row } from "components/bootstrap"
 import { createPage } from "components/page"
@@ -6,9 +6,53 @@ import { createGetStaticTranslationProps } from "components/translations"
 import { useLobbyingAllRegistrants } from "components/db/lobbying"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
+import { usePagination } from "components/lobbying/usePagination"
+import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
 import type { LobbyingRegistrant } from "functions/src/lobbying/types"
+import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 
 const LEGACY_TOTAL_CLIENT = "_total_salary_"
+const PAGE_SIZE = 50
+
+type ClientSortKey = "name" | "compensation" | "firms"
+type SortDir = "asc" | "desc"
+
+function SortTh({
+  label,
+  sortKey,
+  current,
+  dir,
+  onSort,
+  style
+}: {
+  label: string
+  sortKey: ClientSortKey
+  current: ClientSortKey
+  dir: SortDir
+  onSort: (k: ClientSortKey) => void
+  style?: React.CSSProperties
+}) {
+  const active = sortKey === current
+  return (
+    <th
+      onClick={() => onSort(sortKey)}
+      style={{
+        ...thStyle,
+        ...style,
+        cursor: "pointer",
+        color: active ? MAPLE_COLORS.primary : MAPLE_COLORS.textMuted,
+        userSelect: "none"
+      }}
+    >
+      {label}
+      {active && (
+        <span style={{ fontSize: 10, marginLeft: 3 }}>
+          {dir === "asc" ? "↑" : "↓"}
+        </span>
+      )}
+    </th>
+  )
+}
 
 type ClientRow = {
   clientName: string
@@ -24,7 +68,11 @@ function deriveClients(
   const map = new Map<string, ClientRow>()
   for (const r of registrants) {
     for (const c of r.clients) {
-      if (!c.clientNameNorm || c.clientNameNorm === LEGACY_TOTAL_CLIENT)
+      if (
+        !c.clientNameNorm ||
+        c.clientNameNorm === LEGACY_TOTAL_CLIENT ||
+        c.clientName === LEGACY_TOTAL_CLIENT
+      )
         continue
       if (!map.has(c.clientNameNorm)) {
         map.set(c.clientNameNorm, {
@@ -41,14 +89,23 @@ function deriveClients(
       }
     }
   }
-  return [...map.values()].sort((a, b) =>
-    a.clientNameNorm.localeCompare(b.clientNameNorm)
-  )
+  return [...map.values()]
 }
 
 function LobbyingClientsTable() {
   const { t } = useTranslation("lobbying")
   const [search, setSearch] = useState("")
+  const [sortKey, setSortKey] = useState<ClientSortKey>("name")
+  const [sortDir, setSortDir] = useState<SortDir>("asc")
+
+  function handleSort(key: ClientSortKey) {
+    if (key === sortKey) {
+      setSortDir(d => (d === "asc" ? "desc" : "asc"))
+    } else {
+      setSortKey(key)
+      setSortDir(key === "name" ? "asc" : "desc")
+    }
+  }
 
   const { result: registrants, status, error } = useLobbyingAllRegistrants()
   const clients = useMemo(() => deriveClients(registrants), [registrants])
@@ -63,9 +120,34 @@ function LobbyingClientsTable() {
     [clients, search]
   )
 
+  const sorted = useMemo(() => {
+    const mul = sortDir === "asc" ? 1 : -1
+    return [...filtered].sort((a, b) => {
+      switch (sortKey) {
+        case "compensation":
+          return (
+            mul * ((a.totalCompensation ?? -1) - (b.totalCompensation ?? -1))
+          )
+        case "firms":
+          return mul * (a.registrantCount - b.registrantCount)
+        default:
+          return mul * a.clientNameNorm.localeCompare(b.clientNameNorm)
+      }
+    })
+  }, [filtered, sortKey, sortDir])
+
+  const { page, setPage, pageItems, totalPages, totalItems } = usePagination(
+    sorted,
+    PAGE_SIZE
+  )
+
+  useEffect(() => {
+    setPage(1)
+  }, [search, sortKey, sortDir, setPage])
+
   return (
     <>
-      <div style={{ marginBottom: "1rem" }}>
+      <div style={filterRowStyle}>
         <input
           type="search"
           placeholder={t("filters.search")}
@@ -90,21 +172,38 @@ function LobbyingClientsTable() {
               marginBottom: "0.5rem"
             }}
           >
-            {filtered.length} {t("sections.clients").toLowerCase()}
+            {totalItems} {t("sections.clients").toLowerCase()}
           </p>
           <div style={{ overflowX: "auto" }}>
             <table style={tableStyle}>
               <thead>
                 <tr style={theadStyle}>
-                  <th style={thStyle}>{t("fields.clientName")}</th>
-                  <th style={thStyle}>Firms</th>
-                  <th style={{ ...thStyle, textAlign: "right" }}>
-                    {t("fields.amount")}
-                  </th>
+                  <SortTh
+                    label={t("fields.clientName")}
+                    sortKey="name"
+                    current={sortKey}
+                    dir={sortDir}
+                    onSort={handleSort}
+                  />
+                  <SortTh
+                    label="Firms"
+                    sortKey="firms"
+                    current={sortKey}
+                    dir={sortDir}
+                    onSort={handleSort}
+                  />
+                  <SortTh
+                    label={t("fields.amount")}
+                    sortKey="compensation"
+                    current={sortKey}
+                    dir={sortDir}
+                    onSort={handleSort}
+                    style={{ textAlign: "right" }}
+                  />
                 </tr>
               </thead>
               <tbody>
-                {filtered.map(c => (
+                {pageItems.map(c => (
                   <tr key={c.clientNameNorm} style={trStyle}>
                     <td style={tdStyle}>
                       <a
@@ -139,6 +238,13 @@ function LobbyingClientsTable() {
               </tbody>
             </table>
           </div>
+          <LobbyingPaginationBar
+            page={page}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            pageSize={PAGE_SIZE}
+            onPage={setPage}
+          />
         </>
       )}
     </>
@@ -148,29 +254,26 @@ function LobbyingClientsTable() {
 function LobbyingClientsPage() {
   const { t } = useTranslation("lobbying")
   return (
-    <Container>
-      <Row className="mt-4 mb-3">
-        <Col>
-          <a
-            href="/lobbying"
-            style={{ color: MAPLE_COLORS.textMuted, fontSize: 13 }}
-          >
-            ← {t("titles.overview")}
-          </a>
-          <h1 className="mt-2">{t("titles.clients")}</h1>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <LobbyingClientsTable />
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <LobbyingAttribution />
-        </Col>
-      </Row>
-    </Container>
+    <>
+      <LobbyingSubnav />
+      <Container>
+        <Row className="mt-4 mb-3">
+          <Col>
+            <h1>{t("titles.clients")}</h1>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <LobbyingClientsTable />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <LobbyingAttribution />
+          </Col>
+        </Row>
+      </Container>
+    </>
   )
 }
 
@@ -186,14 +289,26 @@ export const getStaticProps = createGetStaticTranslationProps([
   "lobbying"
 ])
 
-const searchStyle: React.CSSProperties = {
+const filterRowStyle: React.CSSProperties = {
+  display: "flex",
+  gap: "0.75rem",
+  flexWrap: "wrap",
+  marginBottom: "1rem",
+  alignItems: "center"
+}
+const selectStyle: React.CSSProperties = {
   padding: "0.35rem 0.65rem",
   border: `1px solid ${MAPLE_COLORS.borderDefault}`,
   borderRadius: 6,
   fontSize: 14,
   color: MAPLE_COLORS.textBody,
   background: MAPLE_COLORS.surfaceBase,
-  minWidth: 260
+  cursor: "pointer"
+}
+const searchStyle: React.CSSProperties = {
+  ...selectStyle,
+  minWidth: 260,
+  cursor: "text"
 }
 const tableStyle: React.CSSProperties = {
   width: "100%",

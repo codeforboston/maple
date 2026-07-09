@@ -1003,6 +1003,34 @@
           "order": "DESCENDING"
         }
       ]
+    },
+    {
+      "collectionGroup": "lobbyingFilings",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "entityNameNorm",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "year",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "lobbyingRegistrants",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "entityNameNorm",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "year",
+          "order": "DESCENDING"
+        }
+      ]
     }
   ],
   "fieldOverrides": [

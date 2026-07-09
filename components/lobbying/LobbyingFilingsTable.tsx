@@ -11,6 +11,7 @@ interface LobbyingFilingsTableProps {
   showClient?: boolean
   showFirm?: boolean
   showAmount?: boolean
+  showActivity?: boolean
   maxRows?: number
   onViewAll?: () => void
 }
@@ -21,6 +22,7 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
   showClient = true,
   showFirm = true,
   showAmount = true,
+  showActivity = false,
   maxRows,
   onViewAll
 }) => {
@@ -44,6 +46,7 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
             {showBill && <th>{t("fields.bills")}</th>}
             {showClient && <th>{t("fields.clientName")}</th>}
             {showFirm && <th>{t("fields.firmName")}</th>}
+            {showActivity && <th>Activity</th>}
             <th>{t("filters.position")}</th>
             {showAmount && (
               <th style={{ textAlign: "right" }}>{t("fields.amount")}</th>
@@ -67,6 +70,11 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
               )}
               {showClient && <td style={cellStyle}>{f.clientName}</td>}
               {showFirm && <td style={cellStyle}>{f.entityName}</td>}
+              {showActivity && (
+                <td style={{ ...cellStyle, color: MAPLE_COLORS.textMuted }}>
+                  {f.activityTitle || "—"}
+                </td>
+              )}
               <td style={cellStyle}>
                 <LobbyingPositionChip position={f.position} />
               </td>

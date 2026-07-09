@@ -15,6 +15,7 @@ import {
 } from "components/lobbying/LobbyingPositionChip"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
+import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 import type { LobbyingRegistrant } from "functions/src/lobbying/types"
 
 function findFirmsForClient(
@@ -101,139 +102,147 @@ function ClientDetail() {
   if (!clientNameNorm) return null
 
   return (
-    <Container>
-      <Row className="mt-4 mb-1">
-        <Col>
-          <a
-            href="/lobbying/clients"
-            style={{ color: MAPLE_COLORS.textMuted, fontSize: 13 }}
-          >
-            ← {t("titles.clients")}
-          </a>
-          <h1 className="mt-2">{displayName}</h1>
-          <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 14 }}>
-            {years.length > 0 &&
-              (years.length === 1
-                ? years[0]
-                : `${years[years.length - 1]}–${years[0]}`)}
-            {filings && filings.length > 0 && (
-              <>
-                &nbsp;·&nbsp; {filings.length}{" "}
-                {t("fields.filings").toLowerCase()}
-              </>
-            )}
-            {totalCompensation > 0 && (
-              <>
-                &nbsp;·&nbsp;{" "}
-                {totalCompensation.toLocaleString("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                  maximumFractionDigits: 0
-                })}{" "}
-                total
-              </>
-            )}
-          </p>
-        </Col>
-      </Row>
-
-      {loading && (
-        <p style={{ color: MAPLE_COLORS.textMuted }}>{t("loading")}</p>
-      )}
-      {filStatus === "error" && (
-        <p style={{ color: MAPLE_COLORS.danger }}>Error: {filError?.message}</p>
-      )}
-
-      {!loading && (
-        <Row className="mt-2">
-          <Col md={8}>
-            <h5 style={sectionHeadStyle}>{t("sections.bills")}</h5>
-            <LobbyingFilingsTable
-              filings={filings ?? []}
-              showBill
-              showClient={false}
-              showFirm
-              showAmount
-            />
-          </Col>
-
-          <Col md={4}>
-            <h5 style={sectionHeadStyle}>Firms</h5>
-            {firms.length === 0 ? (
-              <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 13 }}>—</p>
-            ) : (
-              <ul style={{ paddingLeft: "1.25rem", fontSize: 13 }}>
-                {firms.map(f => (
-                  <li
-                    key={f.entityNameNorm}
-                    style={{ marginBottom: "0.35rem" }}
-                  >
-                    <a
-                      href={`/lobbying/firms/${encodeURIComponent(
-                        f.entityNameNorm
-                      )}`}
-                      style={{ color: MAPLE_COLORS.primary }}
-                    >
-                      {f.entityName}
-                    </a>
-                    {f.compensation != null && (
-                      <span
-                        style={{ color: MAPLE_COLORS.textMuted, fontSize: 12 }}
-                      >
-                        {" "}
-                        (
-                        {f.compensation.toLocaleString("en-US", {
-                          style: "currency",
-                          currency: "USD",
-                          maximumFractionDigits: 0
-                        })}
-                        )
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            {(filings?.length ?? 0) > 0 && (
-              <>
-                <h5 style={{ ...sectionHeadStyle, marginTop: "1.5rem" }}>
-                  {t("filters.position")}
-                </h5>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "0.4rem",
-                    fontSize: 13
-                  }}
-                >
-                  {(["support", "oppose", "neutral"] as const).map(
-                    pos =>
-                      positionCounts[pos] > 0 && (
-                        <div
-                          key={pos}
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.5rem"
-                          }}
-                        >
-                          <LobbyingPositionChip position={pos} />
-                          <span style={{ color: MAPLE_COLORS.textMuted }}>
-                            {positionCounts[pos]}
-                          </span>
-                        </div>
-                      )
-                  )}
-                </div>
-              </>
-            )}
+    <>
+      <LobbyingSubnav />
+      <Container>
+        <Row className="mt-4 mb-1">
+          <Col>
+            <a
+              href="/lobbying/clients"
+              style={{ color: MAPLE_COLORS.textMuted, fontSize: 13 }}
+            >
+              ← {t("titles.clients")}
+            </a>
+            <h1 className="mt-2">{displayName}</h1>
+            <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 14 }}>
+              {years.length > 0 &&
+                (years.length === 1
+                  ? years[0]
+                  : `${years[years.length - 1]}–${years[0]}`)}
+              {filings && filings.length > 0 && (
+                <>
+                  &nbsp;·&nbsp; {filings.length}{" "}
+                  {t("fields.filings").toLowerCase()}
+                </>
+              )}
+              {totalCompensation > 0 && (
+                <>
+                  &nbsp;·&nbsp;{" "}
+                  {totalCompensation.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                    maximumFractionDigits: 0
+                  })}{" "}
+                  total
+                </>
+              )}
+            </p>
           </Col>
         </Row>
-      )}
-      <LobbyingAttribution className="mt-3" />
-    </Container>
+
+        {loading && (
+          <p style={{ color: MAPLE_COLORS.textMuted }}>{t("loading")}</p>
+        )}
+        {filStatus === "error" && (
+          <p style={{ color: MAPLE_COLORS.danger }}>
+            Error: {filError?.message}
+          </p>
+        )}
+
+        {!loading && (
+          <Row className="mt-2">
+            <Col md={8}>
+              <h5 style={sectionHeadStyle}>{t("sections.bills")}</h5>
+              <LobbyingFilingsTable
+                filings={filings ?? []}
+                showBill
+                showClient={false}
+                showFirm
+                showAmount
+              />
+            </Col>
+
+            <Col md={4}>
+              <h5 style={sectionHeadStyle}>Firms</h5>
+              {firms.length === 0 ? (
+                <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 13 }}>—</p>
+              ) : (
+                <ul style={{ paddingLeft: "1.25rem", fontSize: 13 }}>
+                  {firms.map(f => (
+                    <li
+                      key={f.entityNameNorm}
+                      style={{ marginBottom: "0.35rem" }}
+                    >
+                      <a
+                        href={`/lobbying/firms/${encodeURIComponent(
+                          f.entityNameNorm
+                        )}`}
+                        style={{ color: MAPLE_COLORS.primary }}
+                      >
+                        {f.entityName}
+                      </a>
+                      {f.compensation != null && (
+                        <span
+                          style={{
+                            color: MAPLE_COLORS.textMuted,
+                            fontSize: 12
+                          }}
+                        >
+                          {" "}
+                          (
+                          {f.compensation.toLocaleString("en-US", {
+                            style: "currency",
+                            currency: "USD",
+                            maximumFractionDigits: 0
+                          })}
+                          )
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {(filings?.length ?? 0) > 0 && (
+                <>
+                  <h5 style={{ ...sectionHeadStyle, marginTop: "1.5rem" }}>
+                    {t("filters.position")}
+                  </h5>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "0.4rem",
+                      fontSize: 13
+                    }}
+                  >
+                    {(["support", "oppose", "neutral"] as const).map(
+                      pos =>
+                        positionCounts[pos] > 0 && (
+                          <div
+                            key={pos}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "0.5rem"
+                            }}
+                          >
+                            <LobbyingPositionChip position={pos} />
+                            <span style={{ color: MAPLE_COLORS.textMuted }}>
+                              {positionCounts[pos]}
+                            </span>
+                          </div>
+                        )
+                    )}
+                  </div>
+                </>
+              )}
+            </Col>
+          </Row>
+        )}
+        <LobbyingAttribution className="mt-3" />
+      </Container>
+    </>
   )
 }
 

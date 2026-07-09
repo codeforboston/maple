@@ -29,6 +29,7 @@ import {
   Y_AXIS_PROPS
 } from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
+import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 
 // ── Stats bar ─────────────────────────────────────────────────────────────────
 
@@ -217,73 +218,76 @@ function LobbyingOverview() {
   const loading = status === "loading" || status === "not-requested"
 
   return (
-    <Container>
-      <Row className="mt-4 mb-3">
-        <Col>
-          <h1>{t("titles.overview")}</h1>
-          <p style={{ color: MAPLE_COLORS.textMuted }}>{t("subtitle")}</p>
-        </Col>
-      </Row>
-
-      {/* Stats */}
-      <Row className="mb-4">
-        <Col>
-          {loading ? (
-            <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 13 }}>
-              {t("loading")}
-            </p>
-          ) : (
-            <StatsBar stats={stats} />
-          )}
-        </Col>
-      </Row>
-
-      {/* Chart */}
-      {!loading && stats && (
-        <Row className="mb-4">
+    <>
+      <LobbyingSubnav />
+      <Container>
+        <Row className="mt-4 mb-3">
           <Col>
-            <SpendFilingsChart stats={stats} />
+            <h1>{t("titles.overview")}</h1>
+            <p style={{ color: MAPLE_COLORS.textMuted }}>{t("subtitle")}</p>
           </Col>
         </Row>
-      )}
 
-      {/* Entry cards */}
-      <Row className="mb-4">
-        <Col md={4} className="mb-3">
-          <EntryCard
-            title={t("sections.bills")}
-            description={t("titles.bills")}
-            href="/lobbying/bills"
-            count={stats?.totalBillsWithFilings}
-            countLabel={t("sections.bills").toLowerCase()}
-          />
-        </Col>
-        <Col md={4} className="mb-3">
-          <EntryCard
-            title={t("sections.clients")}
-            description={t("titles.clients")}
-            href="/lobbying/clients"
-            count={stats?.totalClients}
-            countLabel={t("sections.clients").toLowerCase()}
-          />
-        </Col>
-        <Col md={4} className="mb-3">
-          <EntryCard
-            title={t("sections.firms")}
-            description={t("titles.firms")}
-            href="/lobbying/firms"
-            count={stats?.totalRegistrants}
-            countLabel="registrants"
-          />
-        </Col>
-      </Row>
+        {/* Stats */}
+        <Row className="mb-4">
+          <Col>
+            {loading ? (
+              <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 13 }}>
+                {t("loading")}
+              </p>
+            ) : (
+              <StatsBar stats={stats} />
+            )}
+          </Col>
+        </Row>
 
-      <Row>
-        <Col>
-          <LobbyingAttribution />
-        </Col>
-      </Row>
-    </Container>
+        {/* Chart */}
+        {!loading && stats && (
+          <Row className="mb-4">
+            <Col>
+              <SpendFilingsChart stats={stats} />
+            </Col>
+          </Row>
+        )}
+
+        {/* Entry cards */}
+        <Row className="mb-4">
+          <Col md={4} className="mb-3">
+            <EntryCard
+              title={t("sections.bills")}
+              description={t("titles.bills")}
+              href="/lobbying/bills"
+              count={stats?.totalBillsWithFilings}
+              countLabel={t("sections.bills").toLowerCase()}
+            />
+          </Col>
+          <Col md={4} className="mb-3">
+            <EntryCard
+              title={t("sections.clients")}
+              description={t("titles.clients")}
+              href="/lobbying/clients"
+              count={stats?.totalClients}
+              countLabel={t("sections.clients").toLowerCase()}
+            />
+          </Col>
+          <Col md={4} className="mb-3">
+            <EntryCard
+              title={t("sections.firms")}
+              description={t("titles.firms")}
+              href="/lobbying/firms"
+              count={stats?.totalRegistrants}
+              countLabel="registrants"
+            />
+          </Col>
+        </Row>
+
+        <Row>
+          <Col>
+            <LobbyingAttribution />
+          </Col>
+        </Row>
+      </Container>
+    </>
   )
 }
 
