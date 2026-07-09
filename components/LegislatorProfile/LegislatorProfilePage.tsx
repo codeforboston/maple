@@ -141,11 +141,6 @@ export function LegislatorProfilePage({
     getLegislatorUID(memberCode)
   }, [memberCode])
 
-  console.log("member: ", memberCode)
-  console.log("legisId", legislatorId)
-  console.log("data", legislatorData)
-  console.log("name", legislatorData[0]?.fullName)
-
   if (memberLoading) {
     return (
       <Row>

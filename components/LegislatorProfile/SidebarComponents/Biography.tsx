@@ -48,13 +48,13 @@ export function Biography({
 }) {
   const { user } = useAuth()
   const uid = user?.uid
-  const pageOwnerResult = useProfile()
 
   let pageOwner = false
-
   if (uid === legislatorId) {
     pageOwner = true
   }
+
+  const pageOwnerResult = useProfile()
 
   if (pageOwnerResult.profile && pageOwner) {
     // the user is the legislator whose page this is
