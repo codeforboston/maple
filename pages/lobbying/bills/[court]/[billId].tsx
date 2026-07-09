@@ -13,6 +13,7 @@ import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar
 import { normalizePosition } from "components/lobbying/LobbyingPositionChip"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
 import type { LobbyingFiling } from "functions/src/lobbying/types"
+import styles from "components/lobbying/lobbying.module.css"
 
 const PAGE_SIZE = 50
 
@@ -54,7 +55,8 @@ function SortTh({
   current,
   dir,
   onSort,
-  style
+  style,
+  className
 }: {
   label: string
   sortKey: SortKey
@@ -62,12 +64,14 @@ function SortTh({
   dir: SortDir
   onSort: (k: SortKey) => void
   style?: React.CSSProperties
+  className?: string
 }) {
   const active = sortKey === current
   const indicator = active ? (dir === "asc" ? " ↑" : " ↓") : ""
   return (
     <th
       onClick={() => onSort(sortKey)}
+      className={className}
       style={{
         ...thStyle,
         ...style,
@@ -150,7 +154,7 @@ function BillFilingsPage() {
             {mapleHref && (
               <p style={{ fontSize: 13, marginBottom: "0.25rem" }}>
                 <a href={mapleHref} style={{ color: MAPLE_COLORS.primary }}>
-                  View bill on MAPLE →
+                  {t("misc.viewOnMaple")}
                 </a>
               </p>
             )}
@@ -213,7 +217,9 @@ function BillFilingsPage() {
                           dir={sortDir}
                           onSort={handleSort}
                         />
-                        <th style={thStyle}>Activity</th>
+                        <th style={thStyle} className={styles.mobileHide}>
+                          {t("fields.activity")}
+                        </th>
                         <SortTh
                           label={t("filters.position")}
                           sortKey="position"
@@ -262,6 +268,7 @@ function BillFilingsPage() {
                             </a>
                           </td>
                           <td
+                            className={styles.mobileHide}
                             style={{
                               ...cellStyle,
                               color: MAPLE_COLORS.textMuted,

@@ -46,7 +46,7 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
             {showBill && <th>{t("fields.bills")}</th>}
             {showClient && <th>{t("fields.clientName")}</th>}
             {showFirm && <th>{t("fields.firmName")}</th>}
-            {showActivity && <th>Activity</th>}
+            {showActivity && <th>{t("fields.activity")}</th>}
             <th>{t("filters.position")}</th>
             {showAmount && (
               <th style={{ textAlign: "right" }}>{t("fields.amount")}</th>

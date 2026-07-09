@@ -1,4 +1,4 @@
-import React, { useMemo } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "next-i18next"
 import { useRouter } from "next/router"
 import { Col, Container, Row } from "components/bootstrap"
@@ -16,7 +16,11 @@ import {
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
+import { usePagination } from "components/lobbying/usePagination"
+import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
 import type { LobbyingRegistrant } from "functions/src/lobbying/types"
+
+const PAGE_SIZE = 25
 
 function findFirmsForClient(
   registrants: LobbyingRegistrant[] | undefined,
@@ -91,6 +95,24 @@ function ClientDetail() {
     [filings]
   )
 
+  const sortedFilings = useMemo(
+    () =>
+      [...(filings ?? [])].sort(
+        (a, b) =>
+          b.year - a.year || (a.billId ?? "").localeCompare(b.billId ?? "")
+      ),
+    [filings]
+  )
+
+  const { page, setPage, pageItems, totalPages, totalItems } = usePagination(
+    sortedFilings,
+    PAGE_SIZE
+  )
+
+  useEffect(() => {
+    setPage(1)
+  }, [clientNameNorm, setPage])
+
   const loading =
     filStatus === "loading" ||
     filStatus === "not-requested" ||
@@ -133,7 +155,7 @@ function ClientDetail() {
                     currency: "USD",
                     maximumFractionDigits: 0
                   })}{" "}
-                  total
+                  {t("misc.total")}
                 </>
               )}
             </p>
@@ -154,16 +176,23 @@ function ClientDetail() {
             <Col md={8}>
               <h5 style={sectionHeadStyle}>{t("sections.bills")}</h5>
               <LobbyingFilingsTable
-                filings={filings ?? []}
+                filings={pageItems}
                 showBill
                 showClient={false}
                 showFirm
                 showAmount
               />
+              <LobbyingPaginationBar
+                page={page}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                pageSize={PAGE_SIZE}
+                onPage={setPage}
+              />
             </Col>
 
             <Col md={4}>
-              <h5 style={sectionHeadStyle}>Firms</h5>
+              <h5 style={sectionHeadStyle}>{t("sections.firms")}</h5>
               {firms.length === 0 ? (
                 <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 13 }}>—</p>
               ) : (

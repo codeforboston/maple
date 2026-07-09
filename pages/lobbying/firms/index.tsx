@@ -146,11 +146,11 @@ function LobbyingFirmsTable() {
             setRegTypeFilter(e.target.value as typeof regTypeFilter)
           }
           style={selectStyle}
-          aria-label="Registrant type"
+          aria-label={t("filters.allTypes")}
         >
-          <option value="all">All types</option>
-          <option value="Lobbyist">Lobbyist</option>
-          <option value="Employer">Employer</option>
+          <option value="all">{t("registrantType.all")}</option>
+          <option value="Lobbyist">{t("registrantType.lobbyist")}</option>
+          <option value="Employer">{t("registrantType.employer")}</option>
         </select>
 
         <input
@@ -193,9 +193,9 @@ function LobbyingFirmsTable() {
                     dir={sortDir}
                     onSort={handleSort}
                   />
-                  <th style={thStyle}>Type</th>
+                  <th style={thStyle}>{t("fields.type")}</th>
                   <SortTh
-                    label="Sessions"
+                    label={t("fields.sessions")}
                     sortKey="sessions"
                     current={sortKey}
                     dir={sortDir}

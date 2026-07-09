@@ -1,6 +1,25 @@
 {
   "title": "Lobbying Explorer",
   "subtitle": "Browse Massachusetts lobbying disclosures filed with the Secretary of State.",
+  "subnav": {
+    "label": "LOBBYING EXPLORER",
+    "overview": "Overview"
+  },
+  "pagination": {
+    "prev": "← Prev",
+    "next": "Next →"
+  },
+  "misc": {
+    "disclosures": "Disclosures",
+    "disclosureLink": "Disclosure {{number}}",
+    "viewOnMaple": "View bill on MAPLE →",
+    "total": "total"
+  },
+  "registrantType": {
+    "all": "All types",
+    "lobbyist": "Lobbyist",
+    "employer": "Employer"
+  },
   "stats": {
     "totalBills": "Lobbied bills",
     "totalClients": "Clients",
@@ -18,6 +37,7 @@
     "position": "Position",
     "allSessions": "All sessions",
     "allPositions": "All positions",
+    "allTypes": "All types",
     "search": "Search…"
   },
   "position": {
@@ -33,7 +53,13 @@
     "year": "Year",
     "filings": "Filings",
     "bills": "Bills lobbied",
-    "clients": "Clients represented"
+    "clients": "Clients represented",
+    "bill": "Bill",
+    "positions": "Positions",
+    "activity": "Activity",
+    "sessions": "Sessions",
+    "type": "Type",
+    "firms": "Firms"
   },
   "attribution": "Data from the MA Secretary of State Lobbyist Public Search.",
   "noData": "No lobbying filings found.",

@@ -1,23 +1,25 @@
 import React from "react"
 import { useRouter } from "next/router"
+import { useTranslation } from "next-i18next"
 import { Container } from "components/bootstrap"
 import { MAPLE_COLORS } from "./chartTheme"
 
-const LINKS = [
-  { label: "Overview", href: "/lobbying", exact: true },
-  { label: "Bills", href: "/lobbying/bills" },
-  { label: "Clients", href: "/lobbying/clients" },
-  { label: "Lobbying Firms", href: "/lobbying/firms" }
-]
-
 export function LobbyingSubnav() {
+  const { t } = useTranslation("lobbying")
   const { pathname } = useRouter()
+
+  const LINKS = [
+    { label: t("subnav.overview"), href: "/lobbying", exact: true },
+    { label: t("sections.bills"), href: "/lobbying/bills" },
+    { label: t("sections.clients"), href: "/lobbying/clients" },
+    { label: t("sections.firms"), href: "/lobbying/firms" }
+  ]
 
   return (
     <div style={barStyle}>
       <Container>
         <div style={innerStyle}>
-          <span style={titleStyle}>Lobbying Explorer</span>
+          <span style={titleStyle}>{t("subnav.label")}</span>
           <nav style={{ display: "flex", gap: "1.25rem" }}>
             {LINKS.map(({ label, href, exact }) => {
               const active = exact

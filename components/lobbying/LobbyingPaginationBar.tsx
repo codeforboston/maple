@@ -1,4 +1,5 @@
 import React from "react"
+import { useTranslation } from "next-i18next"
 import { MAPLE_COLORS } from "./chartTheme"
 
 interface Props {
@@ -16,6 +17,7 @@ export function LobbyingPaginationBar({
   pageSize,
   onPage
 }: Props) {
+  const { t } = useTranslation("lobbying")
   if (totalPages <= 1) return null
   const start = (page - 1) * pageSize + 1
   const end = Math.min(page * pageSize, totalItems)
@@ -31,7 +33,7 @@ export function LobbyingPaginationBar({
           disabled={page === 1}
           style={btnStyle(page === 1)}
         >
-          ← Prev
+          {t("pagination.prev")}
         </button>
         <span
           style={{
@@ -47,7 +49,7 @@ export function LobbyingPaginationBar({
           disabled={page === totalPages}
           style={btnStyle(page === totalPages)}
         >
-          Next →
+          {t("pagination.next")}
         </button>
       </div>
     </div>

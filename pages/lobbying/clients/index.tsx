@@ -186,7 +186,7 @@ function LobbyingClientsTable() {
                     onSort={handleSort}
                   />
                   <SortTh
-                    label="Firms"
+                    label={t("fields.firms")}
                     sortKey="firms"
                     current={sortKey}
                     dir={sortDir}

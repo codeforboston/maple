@@ -13,6 +13,7 @@ import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
+import styles from "components/lobbying/lobbying.module.css"
 
 const COURTS = [194, 193, 192, 191, 190, 189, 188, 187, 186, 185, 184]
 const PAGE_SIZE = 50
@@ -26,7 +27,8 @@ function SortTh({
   current,
   dir,
   onSort,
-  style
+  style,
+  className
 }: {
   label: string
   sortKey: BillSortKey
@@ -34,11 +36,13 @@ function SortTh({
   dir: SortDir
   onSort: (k: BillSortKey) => void
   style?: React.CSSProperties
+  className?: string
 }) {
   const active = sortKey === current
   return (
     <th
       onClick={() => onSort(sortKey)}
+      className={className}
       style={{
         ...thStyle,
         ...style,
@@ -253,13 +257,15 @@ function LobbyingBillsTable() {
               <thead>
                 <tr style={theadStyle}>
                   <SortTh
-                    label="Bill"
+                    label={t("fields.bill")}
                     sortKey="id"
                     current={sortKey}
                     dir={sortDir}
                     onSort={handleSort}
                   />
-                  <th style={thStyle}>{t("filters.session")}</th>
+                  <th style={thStyle} className={styles.mobileHide}>
+                    {t("filters.session")}
+                  </th>
                   <SortTh
                     label={t("fields.filings")}
                     sortKey="filings"
@@ -273,6 +279,7 @@ function LobbyingBillsTable() {
                     current={sortKey}
                     dir={sortDir}
                     onSort={handleSort}
+                    className={styles.mobileHide}
                   />
                   <SortTh
                     label={t("position.oppose")}
@@ -280,6 +287,7 @@ function LobbyingBillsTable() {
                     current={sortKey}
                     dir={sortDir}
                     onSort={handleSort}
+                    className={styles.mobileHide}
                   />
                   <SortTh
                     label={t("position.neutral")}
@@ -287,8 +295,9 @@ function LobbyingBillsTable() {
                     current={sortKey}
                     dir={sortDir}
                     onSort={handleSort}
+                    className={styles.mobileHide}
                   />
-                  <th style={thStyle}>Positions</th>
+                  <th style={thStyle}>{t("fields.positions")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -302,9 +311,11 @@ function LobbyingBillsTable() {
                         {b.billId}
                       </a>
                     </td>
-                    <td style={tdStyle}>{b.court}</td>
+                    <td style={tdStyle} className={styles.mobileHide}>
+                      {b.court}
+                    </td>
                     <td style={tdStyle}>{b.total}</td>
-                    <td style={tdStyle}>
+                    <td style={tdStyle} className={styles.mobileHide}>
                       {b.support > 0 && (
                         <LobbyingPositionChip position="support" />
                       )}{" "}
@@ -312,7 +323,7 @@ function LobbyingBillsTable() {
                         <span style={{ fontSize: 12 }}>{b.support}</span>
                       )}
                     </td>
-                    <td style={tdStyle}>
+                    <td style={tdStyle} className={styles.mobileHide}>
                       {b.oppose > 0 && (
                         <LobbyingPositionChip position="oppose" />
                       )}{" "}
@@ -320,7 +331,7 @@ function LobbyingBillsTable() {
                         <span style={{ fontSize: 12 }}>{b.oppose}</span>
                       )}
                     </td>
-                    <td style={tdStyle}>
+                    <td style={tdStyle} className={styles.mobileHide}>
                       {b.neutral > 0 && (
                         <LobbyingPositionChip position="neutral" />
                       )}{" "}

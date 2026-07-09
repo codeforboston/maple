@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "next-i18next"
 import { useRouter } from "next/router"
 import { Col, Container, Row } from "components/bootstrap"
@@ -16,6 +16,10 @@ import {
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
+import { usePagination } from "components/lobbying/usePagination"
+import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
+
+const PAGE_SIZE = 25
 
 function FirmDetail() {
   const { t } = useTranslation("lobbying")
@@ -39,6 +43,24 @@ function FirmDetail() {
     regStatus === "not-requested" ||
     filStatus === "loading" ||
     filStatus === "not-requested"
+
+  const sortedFilings = useMemo(
+    () =>
+      [...(filings ?? [])].sort(
+        (a, b) =>
+          b.year - a.year || (a.billId ?? "").localeCompare(b.billId ?? "")
+      ),
+    [filings]
+  )
+
+  const { page, setPage, pageItems, totalPages, totalItems } = usePagination(
+    sortedFilings,
+    PAGE_SIZE
+  )
+
+  useEffect(() => {
+    setPage(1)
+  }, [entityNameNorm, setPage])
 
   if (!entityNameNorm) return null
 
@@ -106,11 +128,18 @@ function FirmDetail() {
             <Col md={8}>
               <h5 style={sectionHeadStyle}>{t("sections.bills")}</h5>
               <LobbyingFilingsTable
-                filings={filings ?? []}
+                filings={pageItems}
                 showBill
                 showClient
                 showFirm={false}
                 showAmount
+              />
+              <LobbyingPaginationBar
+                page={page}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                pageSize={PAGE_SIZE}
+                onPage={setPage}
               />
             </Col>
 
@@ -159,7 +188,7 @@ function FirmDetail() {
               {allDisclosureUrls.length > 0 && (
                 <>
                   <h5 style={{ ...sectionHeadStyle, marginTop: "1.5rem" }}>
-                    Disclosures
+                    {t("misc.disclosures")}
                   </h5>
                   <ul style={{ paddingLeft: "1.25rem", fontSize: 12 }}>
                     {allDisclosureUrls.map((url, i) => (
@@ -170,7 +199,7 @@ function FirmDetail() {
                           rel="noreferrer"
                           style={{ color: MAPLE_COLORS.primary }}
                         >
-                          Disclosure {i + 1}
+                          {t("misc.disclosureLink", { number: i + 1 })}
                         </a>
                       </li>
                     ))}
