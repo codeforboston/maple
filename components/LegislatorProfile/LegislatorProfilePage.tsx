@@ -144,7 +144,7 @@ export function LegislatorProfilePage({
   console.log("member: ", memberCode)
   console.log("legisId", legislatorId)
   console.log("data", legislatorData)
-  console.log("about", legislatorData[0]?.about)
+  console.log("name", legislatorData[0]?.fullName)
 
   if (memberLoading) {
     return (
@@ -366,6 +366,8 @@ export function LegislatorProfilePage({
           <LegislatorTabs
             district={district}
             districtLoading={districtLoading}
+            legislatorData={legislatorData}
+            legislatorId={legislatorId}
           />
         </Col>
         <Col md="3">
