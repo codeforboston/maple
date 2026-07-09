@@ -15,11 +15,12 @@ import {
 
 const BioBlock = styled.div`
   background-color: white;
-  border: "1px #ced4da solid";
+  border-color: #b8c0c9;
   border-radius: 5px;
+  border-style: solid;
+  border-width: 1px;
   font-size: 11px;
-  margin-top: 8px;
-  padding: 8px 16px;
+  padding: 16px;
 `
 
 const BioButton = styled.button`

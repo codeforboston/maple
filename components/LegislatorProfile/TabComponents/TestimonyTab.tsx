@@ -87,7 +87,9 @@ export function TestimonyTab({
           ))}
         </div>
       ) : (
-        <NoResults>{t("viewTestimony.noTestimonies")}</NoResults>
+        <TabBlock>
+          <NoResults>{t("viewTestimony.noTestimonies")}</NoResults>
+        </TabBlock>
       )}
     </>
   )
