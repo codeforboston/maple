@@ -49,11 +49,11 @@ function Disclaimer({ fullname }: { fullname?: string }) {
 }
 
 export function TestimonyTab({
-  legislatorData,
-  legislatorId
+  legislatorId,
+  name
 }: {
-  legislatorData: any[]
   legislatorId: string
+  name: string
 }) {
   const { t } = useTranslation("testimony")
   const { user } = useAuth()
@@ -73,8 +73,8 @@ export function TestimonyTab({
 
   return (
     <>
-      <Disclaimer fullname={legislatorData[0]?.fullName} />
-      {allTestimonies.length > 0 ? (
+      <Disclaimer fullname={name} />
+      {allTestimonies.length > 0 && legislatorId ? (
         <div>
           {allTestimonies.map(testimony => (
             <TabBlock key={testimony.id}>

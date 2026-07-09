@@ -361,8 +361,8 @@ export function LegislatorProfilePage({
           <LegislatorTabs
             district={district}
             districtLoading={districtLoading}
-            legislatorData={legislatorData}
             legislatorId={legislatorId}
+            name={member.Name}
           />
         </Col>
         <Col md="3">
