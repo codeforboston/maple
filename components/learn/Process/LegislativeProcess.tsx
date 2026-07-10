@@ -703,44 +703,60 @@ export const LegislativeProcess = () => {
     pendingScrollRef.current = null
 
     const row = document.getElementById(rowId(target))
-    const header = document.getElementById(headerId(target))
     const rail = railRef.current
-    if (!row || !header || !rail) return
+    if (!row || !rail) return
 
     const reduceMotion = prefersReducedMotion()
-    const behavior: ScrollBehavior = reduceMotion ? "auto" : "smooth"
-    const GAP = 16
 
     // Don't let the rail chase the smooth scroll on its way past other chapters.
     suppressUntilRef.current =
       performance.now() + (reduceMotion ? 50 : PANEL_TRANSITION_MS + 350)
     setActiveIdx(target)
 
-    // The row's height once its panel has finished opening. The inner content is
-    // laid out even while the panel is collapsed, so it can be measured up front.
-    const inner = row.querySelector<HTMLElement>(".inner")
-    const panel = document.getElementById(panelId(target))
-    const finalRowHeight =
-      row.getBoundingClientRect().height -
-      (panel ? panel.getBoundingClientRect().height : 0) +
-      (inner ? inner.scrollHeight : 0)
+    // Scroll so the chapter's top sits GAP below the rail, in document
+    // coordinates. The rail sticks beneath the site navbar, which is
+    // `sticky-top` inside a fixed-height (vh-100) page container -- so the navbar
+    // only stays pinned while that container is in view, then scrolls away with
+    // it. Its bottom edge therefore follows navbarBottom(y) = min(navHeight,
+    // V - y), where V is the container's document height. Solving for the scroll
+    // that lands the chapter GAP below the rail gives two regimes:
+    //
+    //   navbar still pinned at the destination -> reserve its height
+    //   navbar already gone (deeper chapters)  -> do not
+    //
+    // We measure the release point rather than hardcode which chapters are past
+    // it, so it stays correct on any viewport.
+    //
+    // Below the 768px breakpoint the navbar swaps to the non-sticky MobileNav,
+    // which is gone the instant you scroll -- so nothing reserves it there. We
+    // detect that by reading the rendered navbar's `position` instead of
+    // duplicating the breakpoint, so this can't drift out of sync with Navbar.
+    //
+    // Sticky live rects are unreliable (they report the unstuck position near
+    // the top and the stuck one after scrolling), so we work from intrinsic
+    // heights and the container's document bottom, all constant at any scroll.
+    const GAP = 16
+    const nav = document.querySelector<HTMLElement>(".main-navbar")
+    const navHeight = nav ? nav.offsetHeight : 0
+    const navSticky = !!nav && getComputedStyle(nav).position === "sticky"
+    const containerBottom = nav?.parentElement
+      ? nav.parentElement.getBoundingClientRect().bottom + window.scrollY
+      : window.innerHeight
+    const railHeight = rail.offsetHeight
+    const rowDocTop = row.getBoundingClientRect().top + window.scrollY
 
-    const desiredTop = rail.getBoundingClientRect().bottom + GAP
-    const top = header.getBoundingClientRect().top
-    const bottom = top + finalRowHeight
-    const viewportBottom = window.innerHeight - GAP
-
-    // Positive delta scrolls the page down (content moves up).
-    let delta = 0
-    if (top < desiredTop) {
-      // Sitting under the rail: bring its top border to just below it.
-      delta = top - desiredTop
-    } else if (bottom > viewportBottom) {
-      // Below the fold: rise only as far as needed, never past the rail.
-      delta = Math.min(bottom - viewportBottom, top - desiredTop)
-    }
-
-    if (Math.abs(delta) > 1) window.scrollBy({ top: delta, behavior })
+    // Desktop: the sticky navbar releases at the container's bottom edge.
+    // Mobile: the navbar never sticks, so it is effectively released at once.
+    const releasePoint = navSticky ? containerBottom - navHeight : 0
+    const yWithNavbar = rowDocTop - navHeight - railHeight - GAP
+    const targetY = Math.max(
+      0,
+      yWithNavbar <= releasePoint ? yWithNavbar : rowDocTop - railHeight - GAP
+    )
+    window.scrollTo({
+      top: targetY,
+      behavior: reduceMotion ? "auto" : "smooth"
+    })
   }, [scrollNonce])
 
   // On narrow screens the rail overflows horizontally. Keep the active node
