@@ -46,13 +46,20 @@ const headerId = (i: number) => `learn-process-header-${i}`
 
 const RailWrapper = styled.div`
   position: sticky;
-  /* Measured at runtime — see the effect in LegislativeProcess. Falls back to a
-     sensible constant before the first layout pass. */
+  /* Desktop: measured at runtime to sit below the sticky navbar (see the
+     nav-offset effect). Falls back to a sensible constant before first paint. */
   top: var(--maple-navbar-height, 6rem);
   z-index: 2;
   margin-inline: -2rem;
   padding: 0.5rem 2rem 1rem;
   background-color: var(--maple-surface-learn);
+
+  /* Below the 768px nav breakpoint the navbar is non-sticky and has scrolled
+     away before the rail reaches the top, so the rail simply sticks at 0 -- no
+     per-frame tracking, which is what made the initial scroll janky here. */
+  @media (max-width: 48rem) {
+    top: 0;
+  }
 
   @media (max-width: 36rem) {
     margin-inline: -1rem;
@@ -571,22 +578,26 @@ export const LegislativeProcess = () => {
   // rail should not chase the intermediate positions.
   const suppressUntilRef = useRef(0)
 
-  // The rail must sit directly beneath whatever remains of the site navbar.
+  // The rail must sit directly beneath whatever remains of the sticky site
+  // navbar, which stays pinned for most of the page on desktop, so the offset
+  // tracks the navbar's current bottom edge on scroll.
   //
-  // A one-off height measurement is not enough: the navbar's `sticky-top` does
-  // not always keep it pinned (it scrolls away on the mobile navbar, and its
-  // stickiness can be defeated by an ancestor), which would leave the rail
-  // floating with a strip of page content visible above it. So the offset
-  // tracks the navbar's *current* bottom edge on scroll, clamped at zero, and
-  // the rail hugs the very top once the navbar has scrolled out of view.
+  // This runs on desktop only. Below the breakpoint the navbar is the
+  // non-sticky MobileNav: it scrolls away immediately, and the rail does not
+  // reach the top until well after it is gone, so the rail simply sticks at
+  // top: 0 (set in CSS). Tracking there would rewrite the sticky offset every
+  // frame during the navbar's exit -- recomputing the sticky rail each frame --
+  // which is exactly the initial-scroll jank on mobile. So we skip it entirely
+  // when the navbar is not sticky.
   useLayoutEffect(() => {
     const scope = scopeRef.current
-    if (!scope) return
+    const nav = document.querySelector<HTMLElement>(".main-navbar")
+    if (!scope || !nav) return
+    if (getComputedStyle(nav).position !== "sticky") return
 
     let frame = 0
     const publishNavOffset = () => {
-      const nav = document.querySelector(".main-navbar")
-      const bottom = nav ? nav.getBoundingClientRect().bottom : 0
+      const bottom = nav.getBoundingClientRect().bottom
       scope.style.setProperty(
         "--maple-navbar-height",
         `${Math.max(0, bottom)}px`
@@ -604,9 +615,8 @@ export const LegislativeProcess = () => {
     window.addEventListener("scroll", schedule, { passive: true })
     window.addEventListener("resize", schedule)
 
-    const nav = document.querySelector(".main-navbar")
     const observer = new ResizeObserver(schedule)
-    if (nav) observer.observe(nav)
+    observer.observe(nav)
 
     return () => {
       if (frame) cancelAnimationFrame(frame)
