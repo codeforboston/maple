@@ -624,11 +624,27 @@ export const LegislativeProcess = () => {
     return () => observer.disconnect()
   }, [])
 
-  // Scroll drives the rail's highlight, and nothing else. The active chapter is
-  // the last one whose top has passed under the rail -- i.e. the one the reader
-  // is currently reading. Because this changes no layout, it cannot oscillate.
+  // Scroll drives the rail's highlight, and nothing else. Because this changes
+  // no layout, it cannot reflow the page.
+  //
+  // The highlight steps from the current stage rather than being recomputed from
+  // scratch, using two lines measured from the rail's live bottom edge:
+  //
+  //   advancing  the next chapter's top crossing a line a little below the rail
+  //              lights the next stage, while some of the current chapter is
+  //              still in view
+  //   retreating  the previous stage only lights again once the top of its own
+  //              card has come back into view below the rail -- a stage never
+  //              lights while its card's top is off-screen above
+  //
+  // The asymmetry is deliberate, and it is also what gives the switch its
+  // hysteresis: going back up costs a whole card's height. A line that moved
+  // with the direction of travel was much worse -- it jumped by the width of the
+  // gap whenever the reader changed direction, so the highlight flickered on the
+  // smallest nudge.
   useEffect(() => {
     let frame = 0
+
     const evaluate = () => {
       frame = 0
       if (performance.now() < suppressUntilRef.current) return
@@ -639,20 +655,30 @@ export const LegislativeProcess = () => {
       // Once the rail has scrolled away there is nothing to track against.
       if (railBottom <= 0) return
 
-      // Look-ahead: a stage lights up while its chapter is still approaching the
-      // rail, so the next step is highlighted with a little of the previous one
-      // still in view. Measured down from the rail's live bottom edge.
-      const LOOK_AHEAD = 120
+      const ADVANCE_AT = railBottom + 120
 
-      const rows = Array.from(
+      const tops = Array.from(
         document.querySelectorAll<HTMLElement>('[id^="learn-process-stage-"]')
-      )
-      let next = 0
-      rows.forEach((row, i) => {
-        if (row.getBoundingClientRect().top <= railBottom + LOOK_AHEAD) next = i
+      ).map(row => row.getBoundingClientRect().top)
+      if (!tops.length) return
+
+      setActiveIdx(prev => {
+        let i = Math.min(prev, tops.length - 1)
+
+        // Scrolling down: step forward while the next chapter's top has crossed
+        // the advance line. Loops so a fast scroll catches up in one frame.
+        while (i + 1 < tops.length && tops[i + 1] <= ADVANCE_AT) i++
+
+        // Scrolling up: only when we did not just advance, step back while the
+        // previous chapter's own top is back in view below the rail.
+        if (i === prev) {
+          while (i > 0 && tops[i - 1] >= railBottom) i--
+        }
+
+        return i === prev ? prev : i
       })
-      setActiveIdx(prev => (prev === next ? prev : next))
     }
+
     const schedule = () => {
       if (frame) return
       frame = requestAnimationFrame(evaluate)
