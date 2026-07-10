@@ -1,7 +1,8 @@
 {
   "title": "MAPLE for Legislators",
+  "tabLabel": "Legislators",
   "callToAction": {
-    "header": "Why use MAPLE", 
+    "header": "Why use MAPLE",
     "title": "Gain free, nonpartisan insight into how constituents are thinking about any proposed measure.",
     "bodytextOne": "Even before you create your own account, you can search our lightning-fast platform for all testimony submitted by MAPLE users about any bill. Our advanced features let you filter to bills sponsored by your office, bills concerning your city, or bills that you choose to follow.",
     "bodytextTwo": "Why trust MAPLE? We are a nonpartisan, nonprofit, volunteer-developed civic technology initiative focused on increasing engagement between the legislature and its constituents. We offer our product as an open source public good; we are committed not to charging our users and we will never sell the data from our platform."

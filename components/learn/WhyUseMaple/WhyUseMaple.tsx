@@ -85,17 +85,18 @@ export const PERSONAS: Persona[] = [
 ]
 
 const PersonaGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: flex;
   gap: 0.75rem;
   margin-bottom: 1.25rem;
-
-  @media (max-width: 48rem) {
-    grid-template-columns: 1fr;
-  }
 `
 
 const PersonaCard = styled.button<{ $color: string; $active: boolean }>`
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
   border-radius: var(--maple-radius-lg);
   padding: 0.875rem 1rem;
   text-align: left;
@@ -104,17 +105,17 @@ const PersonaCard = styled.button<{ $color: string; $active: boolean }>`
     p.$active ? p.$color : "var(--maple-surface-base)"};
   box-shadow: var(--maple-shadow-sm);
   cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, flex 0.2s ease;
 
   .glyph {
-    display: block;
-    margin-bottom: 0.25rem;
+    flex-shrink: 0;
     color: ${p => (p.$active ? "#fff" : "var(--bs-gray-400, #9ca3af)")};
   }
 
   .label {
     font-weight: 700;
     font-size: 0.8125rem;
+    line-height: 1.2;
     margin: 0;
     color: ${p => (p.$active ? "#fff" : "#374151")};
   }
@@ -126,6 +127,18 @@ const PersonaCard = styled.button<{ $color: string; $active: boolean }>`
   &:focus-visible {
     outline: 2px solid var(--bs-blue);
     outline-offset: 3px;
+  }
+
+  /* All three keep their short label on one row. Center and tighten a little
+     on narrow screens so "Organizations" still fits. */
+  @media (max-width: 40rem) {
+    align-items: center;
+    text-align: center;
+    padding: 0.75rem 0.5rem;
+
+    .label {
+      font-size: 0.75rem;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -381,6 +394,8 @@ export const WhyUseMaple = ({
       <PersonaGrid role="tablist" aria-orientation="horizontal">
         {PERSONAS.map(persona => {
           const isActive = persona.slug === active.slug
+          const label = t(`${persona.ns}:title`)
+          const tabLabel = t(`${persona.ns}:tabLabel`)
           return (
             <PersonaCard
               key={persona.slug}
@@ -389,6 +404,8 @@ export const WhyUseMaple = ({
               id={`persona-${persona.slug}`}
               aria-selected={isActive}
               aria-controls="persona-panel"
+              aria-label={label}
+              title={label}
               tabIndex={isActive ? 0 : -1}
               onClick={() => onSelect(persona.slug)}
               $color={persona.color}
@@ -399,7 +416,9 @@ export const WhyUseMaple = ({
                 className="glyph"
                 sx={{ fontSize: "1.5rem" }}
               />
-              <p className="label">{t(`${persona.ns}:title`)}</p>
+              <p className="label" aria-hidden="true">
+                {tabLabel}
+              </p>
             </PersonaCard>
           )
         })}
