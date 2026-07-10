@@ -179,31 +179,6 @@ const HeaderAnchor = styled.div`
   scroll-margin-top: calc(var(--maple-navbar-height) + 0.75rem);
 `
 
-const ExpandAllButton = styled.button`
-  display: inline;
-  padding: 0;
-  margin: 0.5rem 0 0;
-  background: none;
-  border: 0;
-  color: var(--bs-blue);
-  font-weight: 400;
-  text-decoration: underline;
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: none;
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--bs-blue);
-    outline-offset: 2px;
-    border-radius: var(--maple-radius-sm);
-  }
-`
-
-/* A `position: sticky` element can only stick within its containing block.
-   Scoping the rail to the chapters means it releases and scrolls away once the
-   last chapter passes, rather than hovering over Additional Resources. */
 const StickyScope = styled.div`
   position: relative;
 `
@@ -318,6 +293,15 @@ const RowHeader = styled.h3`
       width: 2.25rem;
     }
   }
+
+  @media print {
+    .chevron {
+      display: none;
+    }
+    button {
+      cursor: auto;
+    }
+  }
 `
 
 const Panel = styled.div`
@@ -338,7 +322,6 @@ const Panel = styled.div`
     visibility: visible;
     transition: grid-template-rows 0.55s cubic-bezier(0.4, 0, 0.2, 1),
       opacity 0.32s ease 0.12s, visibility 0s;
-    transition-delay: var(--learn-panel-delay, 0ms);
   }
 
   .clip {
@@ -415,6 +398,19 @@ const Panel = styled.div`
       transition: none;
     }
   }
+
+  /* Every chapter prints expanded, whatever is open on screen. */
+  @media print {
+    display: block;
+    grid-template-rows: none;
+    opacity: 1;
+    visibility: visible;
+    transition: none;
+
+    .clip {
+      overflow: visible;
+    }
+  }
 `
 
 const StatLabel = ({ stat }: { stat: Stat }) => {
@@ -447,8 +443,7 @@ const AccordionRow = ({
   color,
   isOpen,
   isActive,
-  onToggle,
-  stagger = 0
+  onToggle
 }: {
   index: number
   chapter: Chapter
@@ -456,8 +451,6 @@ const AccordionRow = ({
   isOpen: boolean
   isActive: boolean
   onToggle: () => void
-  /** Index used to stagger the open animation when several panels open at once. */
-  stagger?: number
 }) => (
   <Row
     id={rowId(index)}
@@ -513,12 +506,9 @@ const AccordionRow = ({
       role="region"
       aria-labelledby={headerId(index)}
       data-open={isOpen ? "true" : "false"}
-      style={
-        {
-          borderTop: isOpen ? `2px solid ${alpha(color, 9)}` : undefined,
-          "--learn-panel-delay": `${stagger * 55}ms`
-        } as React.CSSProperties
-      }
+      style={{
+        borderTop: isOpen ? `2px solid ${alpha(color, 9)}` : undefined
+      }}
     >
       <div className="clip">
         <div className="inner">
@@ -550,28 +540,28 @@ export const LegislativeProcess = () => {
   const chapters = t("process.chapters", { returnObjects: true }) as Chapter[]
   const stages = t("process.stages", { returnObjects: true }) as string[]
 
-  const [activeIdx, setActiveIdx] = useState(0)
-  const [openIdx, setOpenIdx] = useState<number | null>(0)
-  // "Expand all" is a temporary override. Any interaction with a rail node or a
-  // chapter header drops back to the normal one-at-a-time accordion.
-  const [expandAll, setExpandAll] = useState(false)
+  // Every chapter starts expanded. Each one collapses independently from its own
+  // header; opening or closing one never touches the others.
+  const [openChapters, setOpenChapters] = useState<Set<number>>(
+    () => new Set(chapters.map((_, i) => i))
+  )
+  const isOpen = (i: number) => openChapters.has(i)
 
-  const isOpen = (i: number) => expandAll || openIdx === i
+  // The rail is read-only feedback: it follows the chapter the reader is looking
+  // at. It no longer opens or closes anything, so it cannot reflow the page.
+  const [activeIdx, setActiveIdx] = useState(0)
 
   const railRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLOListElement>(null)
   const scopeRef = useRef<HTMLDivElement>(null)
-  // Set when a rail node is clicked, so that expanding a row from its own
-  // header does not also yank the page around.
-  const pendingScrollRef = useRef<number | null>(null)
-  // Which chapter was open before this change, so we know whose panel is about
-  // to collapse and by how much it will shift the page.
-  const previousOpenRef = useRef<number | null>(0)
-  // Bumped on every click so clicking the already-open chapter still scrolls.
-  const [scrollNonce, setScrollNonce] = useState(0)
-  // Set when "expand all" is pressed, so the subhead is brought to the top.
-  const pendingHeaderScrollRef = useRef(false)
   const headerRef = useRef<HTMLDivElement>(null)
+
+  // Set when a rail node is clicked, so we scroll to that chapter.
+  const pendingScrollRef = useRef<number | null>(null)
+  const [scrollNonce, setScrollNonce] = useState(0)
+  // While a programmatic scroll is running, the reader is not driving, so the
+  // rail should not chase the intermediate positions.
+  const suppressUntilRef = useRef(0)
 
   // The rail must sit directly beneath whatever remains of the site navbar.
   //
@@ -589,8 +579,10 @@ export const LegislativeProcess = () => {
     const publishNavOffset = () => {
       const nav = document.querySelector(".main-navbar")
       const bottom = nav ? nav.getBoundingClientRect().bottom : 0
-      const offset = Math.max(0, bottom)
-      scope.style.setProperty("--maple-navbar-height", `${offset}px`)
+      scope.style.setProperty(
+        "--maple-navbar-height",
+        `${Math.max(0, bottom)}px`
+      )
     }
     const schedule = () => {
       if (frame) return
@@ -632,19 +624,57 @@ export const LegislativeProcess = () => {
     return () => observer.disconnect()
   }, [])
 
-  // No manual scroll compensation here: the browser's native scroll anchoring
-  // already keeps the reader's position stable when a panel above them opens or
-  // closes. Compensating on top of it double-corrects, and near the bottom of
-  // the document (where the scroll position also clamps as the page shrinks)
-  // the two together walk the accordion backwards.
+  // Scroll drives the rail's highlight, and nothing else. The active chapter is
+  // the last one whose top has passed under the rail -- i.e. the one the reader
+  // is currently reading. Because this changes no layout, it cannot oscillate.
+  useEffect(() => {
+    let frame = 0
+    const evaluate = () => {
+      frame = 0
+      if (performance.now() < suppressUntilRef.current) return
 
+      const rail = railRef.current
+      if (!rail) return
+      const railBottom = rail.getBoundingClientRect().bottom
+      // Once the rail has scrolled away there is nothing to track against.
+      if (railBottom <= 0) return
+
+      // Look-ahead: a stage lights up while its chapter is still approaching the
+      // rail, so the next step is highlighted with a little of the previous one
+      // still in view. Measured down from the rail's live bottom edge.
+      const LOOK_AHEAD = 180
+
+      const rows = Array.from(
+        document.querySelectorAll<HTMLElement>('[id^="learn-process-stage-"]')
+      )
+      let next = 0
+      rows.forEach((row, i) => {
+        if (row.getBoundingClientRect().top <= railBottom + LOOK_AHEAD) next = i
+      })
+      setActiveIdx(prev => (prev === next ? prev : next))
+    }
+    const schedule = () => {
+      if (frame) return
+      frame = requestAnimationFrame(evaluate)
+    }
+
+    evaluate()
+    window.addEventListener("scroll", schedule, { passive: true })
+    window.addEventListener("resize", schedule)
+    return () => {
+      if (frame) cancelAnimationFrame(frame)
+      window.removeEventListener("scroll", schedule)
+      window.removeEventListener("resize", schedule)
+    }
+  }, [])
+
+  // Scroll to a chapter after a rail click. Nothing above it collapses any more,
+  // so the only thing that can move it is its own panel opening -- which grows
+  // downward and leaves the header where it is.
   useEffect(() => {
     const target = pendingScrollRef.current
     if (target === null) return
     pendingScrollRef.current = null
-
-    const previous = previousOpenRef.current
-    previousOpenRef.current = target
 
     const row = document.getElementById(rowId(target))
     const header = document.getElementById(headerId(target))
@@ -655,82 +685,40 @@ export const LegislativeProcess = () => {
     const behavior: ScrollBehavior = reduceMotion ? "auto" : "smooth"
     const GAP = 16
 
-    // A chapter above this one collapsing pulls this row upward by that panel's
-    // height. Measure it now, before it animates away, and fold it into a single
-    // scroll -- otherwise the row slides under the rail and has to be yanked
-    // back, which is the jump the reader sees.
-    let shiftUp = 0
-    if (previous !== null && previous < target && !expandAll) {
-      const closing = document.getElementById(panelId(previous))
-      if (closing) shiftUp = closing.getBoundingClientRect().height
-    }
+    // Don't let the rail chase the smooth scroll on its way past other chapters.
+    suppressUntilRef.current =
+      performance.now() + (reduceMotion ? 50 : PANEL_TRANSITION_MS + 350)
+    setActiveIdx(target)
 
-    // The row's height once its own panel has finished opening. The inner
-    // content is laid out even while the panel is collapsed, so it can be
-    // measured up front.
+    // The row's height once its panel has finished opening. The inner content is
+    // laid out even while the panel is collapsed, so it can be measured up front.
     const inner = row.querySelector<HTMLElement>(".inner")
-    const openPanel = document.getElementById(panelId(target))
-    const currentPanelHeight = openPanel
-      ? openPanel.getBoundingClientRect().height
-      : 0
+    const panel = document.getElementById(panelId(target))
     const finalRowHeight =
       row.getBoundingClientRect().height -
-      currentPanelHeight +
+      (panel ? panel.getBoundingClientRect().height : 0) +
       (inner ? inner.scrollHeight : 0)
 
-    const railBottom = rail.getBoundingClientRect().bottom
-    const desiredTop = railBottom + GAP
-    const finalTop = header.getBoundingClientRect().top - shiftUp
-    const finalBottom = finalTop + finalRowHeight
+    const desiredTop = rail.getBoundingClientRect().bottom + GAP
+    const top = header.getBoundingClientRect().top
+    const bottom = top + finalRowHeight
     const viewportBottom = window.innerHeight - GAP
 
     // Positive delta scrolls the page down (content moves up).
     let delta = 0
-    if (finalTop < desiredTop) {
-      // Would sit under the rail: bring its top border to just below the rail.
-      delta = finalTop - desiredTop
-    } else if (finalBottom > viewportBottom) {
+    if (top < desiredTop) {
+      // Sitting under the rail: bring its top border to just below it.
+      delta = top - desiredTop
+    } else if (bottom > viewportBottom) {
       // Below the fold: rise only as far as needed, never past the rail.
-      delta = Math.min(finalBottom - viewportBottom, finalTop - desiredTop)
+      delta = Math.min(bottom - viewportBottom, top - desiredTop)
     }
 
     if (Math.abs(delta) > 1) window.scrollBy({ top: delta, behavior })
-
-    // Safety net: if a measurement was off, settle it once the transition ends.
-    // When the prediction is right this is a no-op, so there is no second jump.
-    const timer = window.setTimeout(
-      () => {
-        const overlap =
-          rail.getBoundingClientRect().bottom +
-          GAP -
-          header.getBoundingClientRect().top
-        if (overlap > 4) window.scrollBy({ top: -overlap, behavior })
-      },
-      reduceMotion ? 0 : PANEL_TRANSITION_MS + 80
-    )
-    return () => clearTimeout(timer)
-  }, [openIdx, scrollNonce, expandAll])
-
-  // Declared after the scroll effect so that effect still sees the previous
-  // value. Keeps the reference correct when a chapter is opened or closed
-  // without a scroll (a header toggle, expand-all).
-  useEffect(() => {
-    previousOpenRef.current = openIdx
-  }, [openIdx])
-
-  useEffect(() => {
-    if (!expandAll || !pendingHeaderScrollRef.current) return
-    pendingHeaderScrollRef.current = false
-    const el = headerRef.current
-    if (!el) return
-    el.scrollIntoView({
-      behavior: prefersReducedMotion() ? "auto" : "smooth",
-      block: "start"
-    })
-  }, [expandAll])
+  }, [scrollNonce])
 
   // On narrow screens the rail overflows horizontally. Keep the active node
-  // visible, whichever way the stage was selected.
+  // visible as the highlight moves.
   useEffect(() => {
     const track = trackRef.current
     if (!track || track.scrollWidth <= track.clientWidth) return
@@ -738,49 +726,34 @@ export const LegislativeProcess = () => {
     const node = track.children[activeIdx] as HTMLElement | undefined
     if (!node) return
 
-    const reduceMotion = prefersReducedMotion()
     track.scrollTo({
       left: node.offsetLeft - (track.clientWidth - node.offsetWidth) / 2,
-      behavior: reduceMotion ? "auto" : "smooth"
+      behavior: prefersReducedMotion() ? "auto" : "smooth"
     })
   }, [activeIdx])
 
+  // A rail click scrolls to the chapter, and opens it only if it was collapsed.
+  // It never closes anything.
   const selectStage = useCallback((i: number) => {
+    setOpenChapters(prev => {
+      if (prev.has(i)) return prev
+      const next = new Set(prev)
+      next.add(i)
+      return next
+    })
     pendingScrollRef.current = i
     setScrollNonce(n => n + 1)
-    setExpandAll(false)
-    setActiveIdx(i)
-    setOpenIdx(i)
   }, [])
 
-  const toggleChapter = useCallback(
-    (i: number) => {
-      if (expandAll) {
-        // Leaving expand-all: keep the chapter the reader just reached for.
-        setExpandAll(false)
-        setOpenIdx(i)
-        setActiveIdx(i)
-        return
-      }
-      setOpenIdx(prev => {
-        const next = prev === i ? null : i
-        if (next !== null) setActiveIdx(next)
-        return next
-      })
-    },
-    [expandAll]
-  )
-
-  const toggleExpandAll = useCallback(() => {
-    setExpandAll(prev => {
-      if (prev) return false
-      pendingHeaderScrollRef.current = true
-      return true
+  // A chapter header toggles just that chapter, and does not scroll.
+  const toggleChapter = useCallback((i: number) => {
+    setOpenChapters(prev => {
+      const next = new Set(prev)
+      if (next.has(i)) next.delete(i)
+      else next.add(i)
+      return next
     })
-    // Collapsing closes every chapter, including the one that was open before
-    // expand-all was pressed.
-    setOpenIdx(prev => (expandAll ? null : prev))
-  }, [expandAll])
+  }, [])
 
   return (
     // "medium" rather than "narrow": the h1 wraps at 48rem.
@@ -792,21 +765,7 @@ export const LegislativeProcess = () => {
             title={t("process.title")}
             titleSize="2.375rem"
             subheadMaxWidth="none"
-            subhead={
-              <>
-                {t("process.subhead")}{" "}
-                <ExpandAllButton
-                  type="button"
-                  onClick={toggleExpandAll}
-                  aria-expanded={expandAll}
-                  aria-controls={chapters.map((_, i) => panelId(i)).join(" ")}
-                >
-                  {expandAll
-                    ? t("process.collapseAll")
-                    : t("process.expandAll")}
-                </ExpandAllButton>
-              </>
-            }
+            subhead={t("process.subhead")}
           />
         </HeaderAnchor>
 
@@ -817,10 +776,8 @@ export const LegislativeProcess = () => {
                 <RailTrack ref={trackRef}>
                   {stages.map((title, i) => {
                     const color = STAGE_COLORS[i]
-                    // With every chapter expanded, no stage is "past" and all
-                    // of them read as current.
-                    const done = !expandAll && i < activeIdx
-                    const current = expandAll || i === activeIdx
+                    const done = i < activeIdx
+                    const current = i === activeIdx
                     const Icon = STAGE_ICONS[i]
 
                     return (
@@ -830,7 +787,6 @@ export const LegislativeProcess = () => {
                           onClick={() => selectStage(i)}
                           aria-current={current ? "step" : undefined}
                           aria-controls={panelId(i)}
-                          aria-expanded={isOpen(i)}
                         >
                           <span
                             className="node"
@@ -841,7 +797,7 @@ export const LegislativeProcess = () => {
                                 ? TINT[color]
                                 : "var(--bs-gray-50, #f9fafb)",
                               border: `2px solid ${
-                                expandAll || i <= activeIdx
+                                i <= activeIdx
                                   ? color
                                   : "var(--bs-gray-200, #e5e7eb)"
                               }`,
@@ -883,7 +839,6 @@ export const LegislativeProcess = () => {
                 isOpen={isOpen(i)}
                 isActive={activeIdx === i}
                 onToggle={() => toggleChapter(i)}
-                stagger={expandAll ? i : 0}
               />
             ))}
           </div>

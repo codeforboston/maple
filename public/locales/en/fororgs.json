@@ -1,7 +1,7 @@
 {
   "title": "MAPLE for Organizations",
   "callToAction": {
-    "header": "Why use MAPLE", 
+    "header": "Why use MAPLE",
     "title": "Get your message out and rally your supporters in civic discourse.",
     "bodytext": "It takes only a couple minutes to sign up for your organization's account on MAPLE, giving you immediate access to publish and share your testimony, designate your priority bills, connect with your members and followers, and research legislation."
   },
@@ -9,7 +9,7 @@
     "header": "What we offer",
     "reach": {
       "title": "Help your priorities & positions reach a wider audience",
-      "bodytext": " Your organization's testimony will be highlighted to MAPLE visitors when they look up bills, with easy tools for sharing on social media. Testimony published on MAPLE will be seen by legislators, residents, members of the media, and other stakeholders.  The more organizations share their testimony on the platform, the more people will see it. You can even designate bills as your legislative priorities to signal your focus for each session."
+      "bodytext": "Your organization's testimony will be highlighted to MAPLE visitors when they look up bills, with easy tools for sharing on social media. Testimony published on MAPLE will be seen by legislators, residents, members of the media, and other stakeholders.  The more organizations share their testimony on the platform, the more people will see it. You can even designate bills as your legislative priorities to signal your focus for each session."
     },
     "connect": {
       "title": "Connect with your members, and grow your reach",
@@ -34,7 +34,7 @@
     "legislativeResearch": {
       "title": "Speed up your legislative research",
       "bodytext1": "MAPLE is fast. (Really fast.). Try",
-      "linkText": "searching for a bill", 
+      "linkText": "searching for a bill",
       "bodytext2": "to see just how much MAPLE can speed up your legislative research process; no sign in required!"
     },
     "changeNorms": {

@@ -195,6 +195,23 @@ const TipsPanel = styled.div`
     line-height: 1.6;
     margin: 0;
   }
+
+  /* The content is collapsed with the hidden attribute. Chrome's user-agent
+     sheet declares [hidden] { display: none !important }, so nothing short of
+     !important can reveal it for printing. */
+  @media print {
+    .content[hidden] {
+      display: block !important;
+    }
+
+    button {
+      cursor: auto;
+    }
+
+    svg {
+      display: none;
+    }
+  }
 `
 
 const Panel = styled.div`
@@ -238,6 +255,13 @@ const Reveal = styled.div<{ $hidden: boolean }>`
   transition: opacity 0.85s ease-out, transform 0.85s ease-out;
 
   @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  /* The How section is revealed on scroll; on paper it must always be there. */
+  @media print {
     opacity: 1;
     transform: none;
     transition: none;

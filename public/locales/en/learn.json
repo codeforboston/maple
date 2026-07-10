@@ -96,7 +96,7 @@
         {
           "title": "Call your legislator",
           "body": "You can contact your legislators any time by looking up their contact information on the MA Legislature website. Your voice will probably carry the most weight with the House and Senate representatives of your own district, but you are free to contact Committee Chairs or any other member of the legislature with your opinions. You could request a meeting in person.",
-          "linkLabel": "Find your legislator's number:",
+          "linkLabel": "Find your legislator's contact info:",
           "linkText": "malegislature.gov/Search/FindMyLegislator",
           "href": "https://malegislature.gov/Search/FindMyLegislator"
         }
@@ -140,8 +140,6 @@
     "title": "Understanding the Legislative Process",
     "subhead": "How most bills become laws in Massachusetts.",
     "railLabel": "Legislative process stages",
-    "expandAll": "Click here to expand all sections",
-    "collapseAll": "Click here to collapse all sections",
     "stages": [
       "Bill Introduction",
       "Committee Referral",
