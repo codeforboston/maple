@@ -117,7 +117,15 @@ const RailTrack = styled.ol`
     &::-webkit-scrollbar {
       display: none;
     }
+    /* Setting overflow-x to auto forces overflow-y to auto as well, which clips
+       the active node -- it is scaled up 12% and has a shadow. Pad the strip
+       vertically so it has room; the negative margin keeps the card's height
+       unchanged. The connecting line shifts down by the same amount to stay
+       centered on the nodes. */
+    padding-block: 0.5rem;
+    margin-block: -0.5rem;
     &::before {
+      top: calc(1.6875rem + 0.5rem);
       right: auto;
       width: max(100%, 30rem);
     }

@@ -269,6 +269,24 @@
   width: fit-content;
 }
 
+/* Inside the mobile hamburger, the dropdown menu is white, but its items carry
+   .navLink-primary (white text, for the top-level links on the dark navbar) —
+   white on white, invisible. Restore the dark, readable text the desktop
+   dropdown uses. */
+#basic-navbar-nav .dropdown-menu .dropdown-item,
+#basic-navbar-nav .dropdown-menu .navLink-primary {
+  color: var(--maple-text-body) !important;
+  font-weight: 400;
+}
+
+#basic-navbar-nav .dropdown-menu .dropdown-item:hover,
+#basic-navbar-nav .dropdown-menu .dropdown-item:focus,
+#basic-navbar-nav .dropdown-menu .navLink-primary:hover,
+#basic-navbar-nav .dropdown-menu .navLink-primary:focus {
+  color: var(--bs-blue) !important;
+  background-color: var(--maple-surface-muted);
+}
+
 .offcanvas {
   background-color: var(--bs-body-bg) !important;
 }
