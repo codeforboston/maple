@@ -578,6 +578,23 @@ export const LegislativeProcess = () => {
   // rail should not chase the intermediate positions.
   const suppressUntilRef = useRef(0)
 
+  // Always start this page at the top on load. The browser otherwise restores
+  // the previous scroll position on refresh, and the rail's highlight -- which
+  // defaults to the first stage -- then snaps forward to match, animating every
+  // completed tint and the active fill in at once: a visible flash across the
+  // nodes. This page has no anchor/deep-link state worth restoring, so we reset
+  // instead. A layout effect resets before paint, so there is no visible jump,
+  // and switching restoration to "manual" keeps later refreshes from restoring.
+  useLayoutEffect(() => {
+    if (!("scrollRestoration" in window.history)) return
+    const previous = window.history.scrollRestoration
+    window.history.scrollRestoration = "manual"
+    window.scrollTo(0, 0)
+    return () => {
+      window.history.scrollRestoration = previous
+    }
+  }, [])
+
   // The rail must sit directly beneath whatever remains of the sticky site
   // navbar, which stays pinned for most of the page on desktop, so the offset
   // tracks the navbar's current bottom edge on scroll.
