@@ -231,7 +231,7 @@ export const NavbarLinkEffective: React.FC<
   return (
     <NavbarDropdownLink
       className={isMobile ? "navLink-primary" : ""}
-      href="/learn/testimony-basics"
+      href="/learn/testimony"
       handleClick={handleClick}
       other={other}
     >

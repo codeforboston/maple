@@ -12,23 +12,23 @@ import {
   NavbarLinkBallotQuestions,
   DESKTOP_NAV_ITEM_CLASS,
   NavbarLinkAI,
-  NavbarLinkAiTools,
   NavbarLinkBills,
-  NavbarLinkHearings,
-  NavbarLinkEditProfile,
+  NavbarLinkAiTools,
   NavbarLinkEffective,
+  NavbarLinkHearings,
+  NavbarLinkProcess,
+  NavbarLinkWhyUse,
+  NavbarLinkEditProfile,
   NavbarLinkFAQ,
   NavbarLinkGoals,
   NavbarLinkInTheNews,
   NavbarLinkLogo,
   NavbarLinkNewsfeed,
-  NavbarLinkProcess,
   NavbarLinkSignOut,
   NavbarLinkSupport,
   NavbarLinkTeam,
   NavbarLinkTestimony,
-  NavbarLinkViewProfile,
-  NavbarLinkWhyUse
+  NavbarLinkViewProfile
 } from "./NavbarComponents"
 
 const MobileCollapse = styled(Navbar.Collapse)`

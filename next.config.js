@@ -17,7 +17,22 @@ const config = {
 module.exports = {
   ...config,
   async redirects() {
-    return [redirectFirebaseAuthHandlers()]
+    return [
+      redirectFirebaseAuthHandlers(),
+      // The four Learn testimony tabs were consolidated into /learn/testimony.
+      // These slugs were linked from the footer and from external sites, so
+      // they redirect permanently rather than 404.
+      ...[
+        "testimony-basics",
+        "role-of-testimony",
+        "writing-effective-testimony",
+        "communicating-with-legislators"
+      ].map(slug => ({
+        source: `/learn/${slug}`,
+        destination: "/learn/testimony",
+        permanent: true
+      }))
+    ]
   },
   async rewrites() {
     const rewrites = [
