@@ -141,6 +141,7 @@
     "subhead": "How most bills become laws in Massachusetts.",
     "railLabel": "Legislative process stages",
     "expandAll": "Click here to expand all sections",
+    "collapseAll": "Click here to collapse all sections",
     "stages": [
       "Bill Introduction",
       "Committee Referral",
