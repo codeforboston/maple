@@ -27,7 +27,7 @@ from google.cloud import firestore, storage
 from google.cloud.storage import Blob
 
 import archive
-from portal import DisclosureMeta, parse_disclosure_detail, year_from_disc_url
+from portal import DisclosureMeta, parse_disclosure_detail
 from writer import REGISTRANTS_COLLECTION, write_filings
 
 _PROCESSED_META_KEY = "reparse-processed"
@@ -66,7 +66,7 @@ def run(limit: int | None, dry_run: bool) -> None:
     bucket_name = archive._get_bucket_name()
     bucket = gcs.bucket(bucket_name)
 
-    db: firestore.Client | None = None if dry_run else firestore.Client()
+    db = firestore.Client()
 
     blobs = list(bucket.list_blobs(prefix="raw_html/"))
     print(f"Found {len(blobs)} archived pages")
@@ -90,24 +90,21 @@ def run(limit: int | None, dry_run: bool) -> None:
             skipped += 1
             continue
 
-        year = year_from_disc_url(url)
-        if year is None:
-            print(f"  SKIP {blob.name}: cannot extract year from {url!r}")
+        meta = _meta_for_disc_url(db, url)
+        if meta is None:
+            print(f"  SKIP {blob.name}: no registrant found for {url!r}")
             skipped += 1
             continue
 
-        meta: DisclosureMeta | None = None
-        if db is not None:
-            meta = _meta_for_disc_url(db, url)
-            if meta is None:
-                print(f"  SKIP {blob.name}: no registrant found for {url!r}")
-                skipped += 1
-                continue
+        if meta.year is None:
+            print(f"  SKIP {blob.name}: registrant doc has no year")
+            skipped += 1
+            continue
 
         try:
             html = blob.download_as_text(encoding="utf-8")
             soup = BeautifulSoup(html, "html.parser")
-            detail = parse_disclosure_detail(soup, year)
+            detail = parse_disclosure_detail(soup, meta.year)
         except Exception as exc:
             print(f"  ERROR parsing {url}: {exc}")
             errors += 1
@@ -118,7 +115,7 @@ def run(limit: int | None, dry_run: bool) -> None:
             f" {len(detail.bills)} bills"
         )
 
-        if not dry_run and db is not None and meta is not None:
+        if not dry_run:
             write_filings(db, meta, detail)
             _mark_processed(blob)
 
