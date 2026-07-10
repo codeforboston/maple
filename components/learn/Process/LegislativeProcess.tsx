@@ -669,9 +669,27 @@ export const LegislativeProcess = () => {
 
       const rail = railRef.current
       if (!rail) return
-      const railBottom = rail.getBoundingClientRect().bottom
+      const railRect = rail.getBoundingClientRect()
+      const railBottom = railRect.bottom
       // Once the rail has scrolled away there is nothing to track against.
       if (railBottom <= 0) return
+
+      // Mobile touch scroll was janky during the pre-lock phase -- while the
+      // rail is still travelling up to its pinned position. Every highlight
+      // change costs a re-render and a smooth horizontal auto-scroll of the
+      // rail (the activeIdx effect below), and near the top the highlight
+      // advances in quick succession, so those stutters bunch up and fight the
+      // finger scroll. Deeper in, tall chapters space them out, which is why it
+      // felt smooth only after the rail locked. Nothing needs highlighting
+      // until the rail is pinned anyway -- the whole rail is on screen -- so on
+      // mobile we hold off until it locks at the top (sticky top is 0 there).
+      // Desktop keeps tracking from the start, where it was already smooth.
+      const LOCK_EPS = 2
+      if (
+        railRect.top > LOCK_EPS &&
+        window.matchMedia("(max-width: 48rem)").matches
+      )
+        return
 
       const ADVANCE_AT = railBottom + 120
 
