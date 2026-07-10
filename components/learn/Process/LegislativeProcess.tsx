@@ -314,33 +314,36 @@ const RowHeader = styled.h3`
 `
 
 const Panel = styled.div`
-  padding: 0 1.75rem 1.75rem;
+  /* Animating grid-template-rows from 0fr to 1fr gives a height transition
+     without knowing the content height. The delayed visibility keeps a closed
+     panel out of the accessibility tree and the focus order once it has
+     finished collapsing. */
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition: grid-template-rows 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s ease, visibility 0s linear 0.55s;
 
-  @keyframes learn-panel-in {
-    from {
-      opacity: 0;
-      transform: translateY(-0.375rem);
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
+  &[data-open="true"] {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    visibility: visible;
+    transition: grid-template-rows 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.32s ease 0.12s, visibility 0s;
+    transition-delay: var(--learn-panel-delay, 0ms);
+  }
+
+  .clip {
+    min-height: 0;
+    overflow: hidden;
   }
 
   .inner {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    padding-top: 1rem;
-    padding-left: 5.5rem;
-    animation: learn-panel-in 0.24s ease both;
-    animation-delay: var(--learn-panel-delay, 0ms);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .inner {
-      animation: none;
-    }
+    padding: 1rem 1.75rem 1.75rem 5.5rem;
   }
 
   .body {
@@ -394,9 +397,15 @@ const Panel = styled.div`
   }
 
   @media (max-width: 36rem) {
-    padding: 0 1rem 1.25rem;
     .inner {
-      padding-left: 0;
+      padding: 1rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    &[data-open="true"] {
+      transition: none;
     }
   }
 `
@@ -496,18 +505,16 @@ const AccordionRow = ({
       id={panelId(index)}
       role="region"
       aria-labelledby={headerId(index)}
-      hidden={!isOpen}
-      style={{ borderTop: isOpen ? `2px solid ${alpha(color, 9)}` : undefined }}
+      data-open={isOpen ? "true" : "false"}
+      style={
+        {
+          borderTop: isOpen ? `2px solid ${alpha(color, 9)}` : undefined,
+          "--learn-panel-delay": `${stagger * 55}ms`
+        } as React.CSSProperties
+      }
     >
-      {isOpen && (
-        <div
-          className="inner"
-          style={
-            {
-              "--learn-panel-delay": `${stagger * 45}ms`
-            } as React.CSSProperties
-          }
-        >
+      <div className="clip">
+        <div className="inner">
           <p className="body">{chapter.body}</p>
 
           {chapter.stat && (
@@ -526,7 +533,7 @@ const AccordionRow = ({
             </div>
           )}
         </div>
-      )}
+      </div>
     </Panel>
   </Row>
 )
@@ -553,21 +560,6 @@ export const LegislativeProcess = () => {
   // Set when "expand all" is pressed, so the subhead is brought to the top.
   const pendingHeaderScrollRef = useRef(false)
   const headerRef = useRef<HTMLDivElement>(null)
-
-  // Scroll-driven opening: while the reader scrolls, the chapter crossing the
-  // line just under the rail opens and the previous one closes.
-  //
-  // Opening a panel reflows everything below it, so a naive implementation
-  // oscillates: the row that just opened pushes the next header across the
-  // trigger line, which opens that one, and so on. Two guards prevent that.
-  // `suppressUntilRef` ignores scroll while a programmatic smooth-scroll is in
-  // flight, and `anchorRef` pins the newly-opened header in place across the
-  // reflow so the page does not shift under the reader.
-  const suppressUntilRef = useRef(0)
-  // Mirrors openIdx so the scroll handler can compare without reading state
-  // inside a setState updater (updaters must stay pure — React invokes them
-  // twice in StrictMode, which fired the anchor and the lock twice).
-  const openIdxRef = useRef<number | null>(0)
 
   // The rail must sit directly beneath whatever remains of the site navbar.
   //
@@ -634,54 +626,6 @@ export const LegislativeProcess = () => {
   // the document (where the scroll position also clamps as the page shrinks)
   // the two together walk the accordion backwards.
 
-  // Scroll drives which chapter is open, unless everything is expanded.
-  useEffect(() => {
-    if (expandAll) return
-
-    let frame = 0
-    const evaluate = () => {
-      frame = 0
-      if (performance.now() < suppressUntilRef.current) return
-      if (pendingScrollRef.current !== null) return
-
-      const rail = railRef.current
-      if (!rail) return
-      // The trigger line sits just below the sticky rail.
-      const line = rail.getBoundingClientRect().bottom + 24
-
-      const headers = Array.from(
-        document.querySelectorAll<HTMLElement>('[id^="learn-process-header-"]')
-      )
-      let candidate = 0
-      headers.forEach((header, i) => {
-        if (header.getBoundingClientRect().top <= line + 4) candidate = i
-      })
-
-      if (openIdxRef.current === candidate) return
-
-      // Let the reflow and its scroll correction settle before evaluating
-      // again, so a correction cannot immediately retrigger the next chapter.
-      suppressUntilRef.current = performance.now() + 220
-      openIdxRef.current = candidate
-      setActiveIdx(candidate)
-      setOpenIdx(candidate)
-    }
-
-    const schedule = () => {
-      if (frame) return
-      frame = requestAnimationFrame(evaluate)
-    }
-
-    evaluate()
-    window.addEventListener("scroll", schedule, { passive: true })
-    window.addEventListener("resize", schedule)
-    return () => {
-      if (frame) cancelAnimationFrame(frame)
-      window.removeEventListener("scroll", schedule)
-      window.removeEventListener("resize", schedule)
-    }
-  }, [expandAll])
-
   useEffect(() => {
     const target = pendingScrollRef.current
     if (target === null) return
@@ -695,7 +639,6 @@ export const LegislativeProcess = () => {
     // view. A card below the fold rises just far enough to be fully visible
     // rather than jumping to the top of the viewport; a card above the fold
     // aligns to its top, where scroll-margin-top clears the navbar and rail.
-    suppressUntilRef.current = performance.now() + (reduceMotion ? 100 : 900)
     el.scrollIntoView({
       behavior: reduceMotion ? "auto" : "smooth",
       block: "nearest"
@@ -729,31 +672,41 @@ export const LegislativeProcess = () => {
     })
   }, [activeIdx])
 
-  // Clicking a rail node or a chapter header leaves expand-all and hands
-  // control back to scroll: the chapter is opened and scrolled to, and from
-  // there scrolling takes over again.
-  const focusChapter = useCallback((i: number) => {
-    suppressUntilRef.current = performance.now() + 900
+  const selectStage = useCallback((i: number) => {
     pendingScrollRef.current = i
-    openIdxRef.current = i
     setExpandAll(false)
     setActiveIdx(i)
     setOpenIdx(i)
   }, [])
 
-  const selectStage = focusChapter
-  const toggleChapter = focusChapter
+  const toggleChapter = useCallback(
+    (i: number) => {
+      if (expandAll) {
+        // Leaving expand-all: keep the chapter the reader just reached for.
+        setExpandAll(false)
+        setOpenIdx(i)
+        setActiveIdx(i)
+        return
+      }
+      setOpenIdx(prev => {
+        const next = prev === i ? null : i
+        if (next !== null) setActiveIdx(next)
+        return next
+      })
+    },
+    [expandAll]
+  )
 
   const toggleExpandAll = useCallback(() => {
-    suppressUntilRef.current = performance.now() + 900
     setExpandAll(prev => {
-      // Collapsing hands control back to scroll: the chapter at the trigger
-      // line reopens on the next frame.
       if (prev) return false
       pendingHeaderScrollRef.current = true
       return true
     })
-  }, [])
+    // Collapsing closes every chapter, including the one that was open before
+    // expand-all was pressed.
+    setOpenIdx(prev => (expandAll ? null : prev))
+  }, [expandAll])
 
   return (
     // "medium" rather than "narrow": the h1 wraps at 48rem.
