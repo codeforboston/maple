@@ -105,7 +105,6 @@ const PersonaCard = styled.button<{ $color: string; $active: boolean }>`
     p.$active ? p.$color : "var(--maple-surface-base)"};
   box-shadow: var(--maple-shadow-sm);
   cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease, flex 0.2s ease;
 
   .glyph {
     flex-shrink: 0;
@@ -120,8 +119,15 @@ const PersonaCard = styled.button<{ $color: string; $active: boolean }>`
     color: ${p => (p.$active ? "#fff" : "#374151")};
   }
 
+  /* Hover fills the tab with its color and turns the text and icon white -- the
+     same look as the selected state. The active tab already looks this way. */
   &:hover {
-    border-color: ${p => p.$color};
+    background-color: ${p => p.$color};
+
+    .glyph,
+    .label {
+      color: #fff;
+    }
   }
 
   &:focus-visible {
@@ -139,10 +145,6 @@ const PersonaCard = styled.button<{ $color: string; $active: boolean }>`
     .label {
       font-size: 0.75rem;
     }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
   }
 `
 
