@@ -570,6 +570,8 @@ export const LegislativeProcess = () => {
   const trackRef = useRef<HTMLOListElement>(null)
   const scopeRef = useRef<HTMLDivElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
+  // Marks the rail's resting position, so an observer can tell when it pins.
+  const lockSentinelRef = useRef<HTMLDivElement>(null)
 
   // Set when a rail node is clicked, so we scroll to that chapter.
   const pendingScrollRef = useRef<number | null>(null)
@@ -686,27 +688,9 @@ export const LegislativeProcess = () => {
 
       const rail = railRef.current
       if (!rail) return
-      const railRect = rail.getBoundingClientRect()
-      const railBottom = railRect.bottom
+      const railBottom = rail.getBoundingClientRect().bottom
       // Once the rail has scrolled away there is nothing to track against.
       if (railBottom <= 0) return
-
-      // Mobile touch scroll was janky during the pre-lock phase -- while the
-      // rail is still travelling up to its pinned position. Every highlight
-      // change costs a re-render and a smooth horizontal auto-scroll of the
-      // rail (the activeIdx effect below), and near the top the highlight
-      // advances in quick succession, so those stutters bunch up and fight the
-      // finger scroll. Deeper in, tall chapters space them out, which is why it
-      // felt smooth only after the rail locked. Nothing needs highlighting
-      // until the rail is pinned anyway -- the whole rail is on screen -- so on
-      // mobile we hold off until it locks at the top (sticky top is 0 there).
-      // Desktop keeps tracking from the start, where it was already smooth.
-      const LOCK_EPS = 2
-      if (
-        railRect.top > LOCK_EPS &&
-        window.matchMedia("(max-width: 48rem)").matches
-      )
-        return
 
       const ADVANCE_AT = railBottom + 120
 
@@ -737,13 +721,56 @@ export const LegislativeProcess = () => {
       frame = requestAnimationFrame(evaluate)
     }
 
-    evaluate()
-    window.addEventListener("scroll", schedule, { passive: true })
-    window.addEventListener("resize", schedule)
-    return () => {
-      if (frame) cancelAnimationFrame(frame)
+    const attach = () => {
+      evaluate()
+      window.addEventListener("scroll", schedule, { passive: true })
+      window.addEventListener("resize", schedule)
+    }
+    const detach = () => {
+      if (frame) {
+        cancelAnimationFrame(frame)
+        frame = 0
+      }
       window.removeEventListener("scroll", schedule)
       window.removeEventListener("resize", schedule)
+    }
+
+    // Desktop tracks from the start: it is smooth there, and lighting the rail
+    // early is wanted.
+    if (!window.matchMedia("(max-width: 48rem)").matches) {
+      attach()
+      return detach
+    }
+
+    // Mobile keeps the initial scroll entirely free of scroll handlers. While
+    // the rail travels up to its pinned spot -- which is also when the site
+    // navbar is scrolling off and the mobile URL bar is collapsing, the jankiest
+    // moment -- a per-frame getBoundingClientRect would force a layout read on
+    // top of that churn. So we attach nothing until the rail locks. A sentinel
+    // at the rail's resting position tells us the moment it pins (it leaves the
+    // top of the viewport); only then do we start the scroll-driven highlight,
+    // and we stop again if the reader scrolls back up past it. Nothing needs
+    // highlighting before lock anyway -- the whole rail is on screen.
+    const sentinel = lockSentinelRef.current
+    if (!sentinel) return
+    let attached = false
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const locked = !entry.isIntersecting
+        if (locked && !attached) {
+          attached = true
+          attach()
+        } else if (!locked && attached) {
+          attached = false
+          detach()
+        }
+      },
+      { threshold: 0 }
+    )
+    observer.observe(sentinel)
+    return () => {
+      observer.disconnect()
+      detach()
     }
   }, [])
 
@@ -865,6 +892,18 @@ export const LegislativeProcess = () => {
         </HeaderAnchor>
 
         <StickyScope>
+          <div
+            ref={lockSentinelRef}
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: 1,
+              height: 1,
+              pointerEvents: "none"
+            }}
+          />
           <RailWrapper ref={railRef}>
             <RailCard>
               <nav aria-label={t("process.railLabel")}>
