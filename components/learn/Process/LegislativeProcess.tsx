@@ -642,7 +642,7 @@ export const LegislativeProcess = () => {
       // Look-ahead: a stage lights up while its chapter is still approaching the
       // rail, so the next step is highlighted with a little of the previous one
       // still in view. Measured down from the rail's live bottom edge.
-      const LOOK_AHEAD = 180
+      const LOOK_AHEAD = 120
 
       const rows = Array.from(
         document.querySelectorAll<HTMLElement>('[id^="learn-process-stage-"]')
