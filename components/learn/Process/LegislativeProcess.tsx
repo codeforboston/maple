@@ -751,6 +751,15 @@ export const LegislativeProcess = () => {
     // top of the viewport); only then do we start the scroll-driven highlight,
     // and we stop again if the reader scrolls back up past it. Nothing needs
     // highlighting before lock anyway -- the whole rail is on screen.
+    //
+    // The sentinel only re-enters the viewport at the TOP of the section (past
+    // the bottom it stays above the viewport, so it never intersects), so an
+    // unlock always means the reader is back at the start. We reset the
+    // highlight to the first stage there rather than leaving it wherever the
+    // last frame put it. A fast fling to the top can outrun the per-frame
+    // retreat loop and strand the highlight on a later stage -- the observer
+    // fires reliably regardless of scroll speed, so it is the dependable place
+    // to snap it back.
     const sentinel = lockSentinelRef.current
     if (!sentinel) return
     let attached = false
@@ -763,6 +772,7 @@ export const LegislativeProcess = () => {
         } else if (!locked && attached) {
           attached = false
           detach()
+          setActiveIdx(0)
         }
       },
       { threshold: 0 }
