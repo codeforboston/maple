@@ -35,6 +35,9 @@ const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
   !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
 
+/** Keep in sync with the Panel grid-template-rows transition below. */
+const PANEL_TRANSITION_MS = 550
+
 const rowId = (i: number) => `learn-process-stage-${i}`
 const panelId = (i: number) => `learn-process-panel-${i}`
 const headerId = (i: number) => `learn-process-header-${i}`
@@ -212,6 +215,10 @@ const Row = styled.div`
   border-radius: var(--maple-radius-xl);
   box-shadow: var(--maple-shadow-sm);
   overflow: hidden;
+
+  /* We compute the post-collapse scroll position ourselves, so the browser must
+     not also try to hold position when a panel above this one collapses. */
+  overflow-anchor: none;
 
   /* Smooth-scroll targets must clear the sticky navbar and the sticky rail
      when they align to the top, and keep a little air when they align to the
@@ -557,6 +564,11 @@ export const LegislativeProcess = () => {
   // Set when a rail node is clicked, so that expanding a row from its own
   // header does not also yank the page around.
   const pendingScrollRef = useRef<number | null>(null)
+  // Which chapter was open before this change, so we know whose panel is about
+  // to collapse and by how much it will shift the page.
+  const previousOpenRef = useRef<number | null>(0)
+  // Bumped on every click so clicking the already-open chapter still scrolls.
+  const [scrollNonce, setScrollNonce] = useState(0)
   // Set when "expand all" is pressed, so the subhead is brought to the top.
   const pendingHeaderScrollRef = useRef(false)
   const headerRef = useRef<HTMLDivElement>(null)
@@ -631,18 +643,79 @@ export const LegislativeProcess = () => {
     if (target === null) return
     pendingScrollRef.current = null
 
-    const el = document.getElementById(rowId(target))
-    if (!el) return
+    const previous = previousOpenRef.current
+    previousOpenRef.current = target
+
+    const row = document.getElementById(rowId(target))
+    const header = document.getElementById(headerId(target))
+    const rail = railRef.current
+    if (!row || !header || !rail) return
 
     const reduceMotion = prefersReducedMotion()
-    // "nearest" scrolls the least distance that brings the whole card into
-    // view. A card below the fold rises just far enough to be fully visible
-    // rather than jumping to the top of the viewport; a card above the fold
-    // aligns to its top, where scroll-margin-top clears the navbar and rail.
-    el.scrollIntoView({
-      behavior: reduceMotion ? "auto" : "smooth",
-      block: "nearest"
-    })
+    const behavior: ScrollBehavior = reduceMotion ? "auto" : "smooth"
+    const GAP = 16
+
+    // A chapter above this one collapsing pulls this row upward by that panel's
+    // height. Measure it now, before it animates away, and fold it into a single
+    // scroll -- otherwise the row slides under the rail and has to be yanked
+    // back, which is the jump the reader sees.
+    let shiftUp = 0
+    if (previous !== null && previous < target && !expandAll) {
+      const closing = document.getElementById(panelId(previous))
+      if (closing) shiftUp = closing.getBoundingClientRect().height
+    }
+
+    // The row's height once its own panel has finished opening. The inner
+    // content is laid out even while the panel is collapsed, so it can be
+    // measured up front.
+    const inner = row.querySelector<HTMLElement>(".inner")
+    const openPanel = document.getElementById(panelId(target))
+    const currentPanelHeight = openPanel
+      ? openPanel.getBoundingClientRect().height
+      : 0
+    const finalRowHeight =
+      row.getBoundingClientRect().height -
+      currentPanelHeight +
+      (inner ? inner.scrollHeight : 0)
+
+    const railBottom = rail.getBoundingClientRect().bottom
+    const desiredTop = railBottom + GAP
+    const finalTop = header.getBoundingClientRect().top - shiftUp
+    const finalBottom = finalTop + finalRowHeight
+    const viewportBottom = window.innerHeight - GAP
+
+    // Positive delta scrolls the page down (content moves up).
+    let delta = 0
+    if (finalTop < desiredTop) {
+      // Would sit under the rail: bring its top border to just below the rail.
+      delta = finalTop - desiredTop
+    } else if (finalBottom > viewportBottom) {
+      // Below the fold: rise only as far as needed, never past the rail.
+      delta = Math.min(finalBottom - viewportBottom, finalTop - desiredTop)
+    }
+
+    if (Math.abs(delta) > 1) window.scrollBy({ top: delta, behavior })
+
+    // Safety net: if a measurement was off, settle it once the transition ends.
+    // When the prediction is right this is a no-op, so there is no second jump.
+    const timer = window.setTimeout(
+      () => {
+        const overlap =
+          rail.getBoundingClientRect().bottom +
+          GAP -
+          header.getBoundingClientRect().top
+        if (overlap > 4) window.scrollBy({ top: -overlap, behavior })
+      },
+      reduceMotion ? 0 : PANEL_TRANSITION_MS + 80
+    )
+    return () => clearTimeout(timer)
+  }, [openIdx, scrollNonce, expandAll])
+
+  // Declared after the scroll effect so that effect still sees the previous
+  // value. Keeps the reference correct when a chapter is opened or closed
+  // without a scroll (a header toggle, expand-all).
+  useEffect(() => {
+    previousOpenRef.current = openIdx
   }, [openIdx])
 
   useEffect(() => {
@@ -674,6 +747,7 @@ export const LegislativeProcess = () => {
 
   const selectStage = useCallback((i: number) => {
     pendingScrollRef.current = i
+    setScrollNonce(n => n + 1)
     setExpandAll(false)
     setActiveIdx(i)
     setOpenIdx(i)
