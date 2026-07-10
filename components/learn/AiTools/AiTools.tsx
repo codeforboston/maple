@@ -60,6 +60,19 @@ const ExampleLabel = styled.div`
   margin-bottom: 0.25rem;
 `
 
+// NOTE: This 140% line-height (and the extra card/section padding bumped into
+// the JSX classNames below) is deliberately scoped to the AI Research Tools
+// page. DescrContainer/SectionContainer/SectionTitle are shared with other
+// pages (about/MapleAI, OurTeam), so we override locally rather than editing the
+// shared components. TODO: revisit whether this spacing reads better everywhere
+// and should be promoted to a global change on those shared components.
+const AiToolsBody = styled(Container)`
+  ${DescrContainer},
+  ${StepText} {
+    line-height: 1.4;
+  }
+`
+
 export const AiTools = () => {
   const { t } = useTranslation("aiTools")
   const { t: tLearn } = useTranslation("learn")
@@ -75,16 +88,16 @@ export const AiTools = () => {
         subhead={t("description")}
         titleSize="2.25rem"
       />
-      <Container className="px-0">
+      <AiToolsBody className="px-0">
         {/* What is it */}
         <Row>
-          <Col className="py-3">
+          <Col className="py-4">
             <SectionContainer>
-              <SectionTitle className="p-2">{t("section1.title")}</SectionTitle>
-              <DescrContainer className="py-3 px-4">
+              <SectionTitle className="p-3">{t("section1.title")}</SectionTitle>
+              <DescrContainer className="py-4 px-4">
                 {t("section1.desc1")}
               </DescrContainer>
-              <DescrContainer className="pb-3 px-4">
+              <DescrContainer className="pb-4 px-4">
                 {t("section1.desc2Pre")}{" "}
                 <b>
                   <a
@@ -103,13 +116,13 @@ export const AiTools = () => {
 
         {/* What you can do */}
         <Row>
-          <Col className="py-3">
+          <Col className="py-4">
             <SectionContainer>
-              <SectionTitle className="p-2">{t("section2.title")}</SectionTitle>
-              <DescrContainer className="py-3 px-4">
+              <SectionTitle className="p-3">{t("section2.title")}</SectionTitle>
+              <DescrContainer className="py-4 px-4">
                 {t("section2.intro")}
               </DescrContainer>
-              <DescrContainer className="pb-1 px-4">
+              <DescrContainer className="pb-3 px-4">
                 <ul>
                   <li className="pb-3">
                     <b>{t("section2.item1Bold")}</b> {t("section2.item1Main")}
@@ -140,10 +153,10 @@ export const AiTools = () => {
 
         {/* Examples */}
         <Row>
-          <Col className="py-3">
+          <Col className="py-4">
             <SectionContainer>
-              <SectionTitle className="p-2">{t("section3.title")}</SectionTitle>
-              <DescrContainer className="py-3 px-4">
+              <SectionTitle className="p-3">{t("section3.title")}</SectionTitle>
+              <DescrContainer className="py-4 px-4">
                 {t("section3.intro")}
               </DescrContainer>
               <div className="px-4 pb-4">
@@ -173,10 +186,10 @@ export const AiTools = () => {
 
         {/* How to get started */}
         <Row>
-          <Col className="py-3">
+          <Col className="py-4">
             <SectionContainer>
-              <SectionTitle className="p-2">{t("section4.title")}</SectionTitle>
-              <DescrContainer className="py-3 px-4">
+              <SectionTitle className="p-3">{t("section4.title")}</SectionTitle>
+              <DescrContainer className="py-4 px-4">
                 {t("section4.intro")}
               </DescrContainer>
               <StepRow>
@@ -283,7 +296,7 @@ export const AiTools = () => {
                   <b>{t("section4.step5Bold")}</b> {t("section4.step5Post")}
                 </StepText>
               </StepRow>
-              <DescrContainer className="py-3 px-4">
+              <DescrContainer className="py-4 px-4">
                 <b>{t("section4.needHelp")}</b> {t("section4.needHelpPost")}{" "}
                 <a href="mailto:info@mapletestimony.org">
                   info@mapletestimony.org
@@ -296,13 +309,13 @@ export const AiTools = () => {
 
         {/* Privacy */}
         <Row>
-          <Col className="py-3">
+          <Col className="py-4">
             <SectionContainer>
-              <SectionTitle className="p-2">{t("section5.title")}</SectionTitle>
-              <DescrContainer className="py-3 px-4">
+              <SectionTitle className="p-3">{t("section5.title")}</SectionTitle>
+              <DescrContainer className="py-4 px-4">
                 {t("section5.desc1")}
               </DescrContainer>
-              <DescrContainer className="pb-3 px-4">
+              <DescrContainer className="pb-4 px-4">
                 {t("section5.desc2Pre")}{" "}
                 <Internal href="/about/how-maple-uses-ai">
                   {t("section5.desc2LinkText")}
@@ -311,7 +324,7 @@ export const AiTools = () => {
             </SectionContainer>
           </Col>
         </Row>
-      </Container>
+      </AiToolsBody>
     </LearnLayout>
   )
 }
