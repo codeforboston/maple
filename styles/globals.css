@@ -287,6 +287,14 @@
   background-color: var(--maple-surface-muted);
 }
 
+/* The active item keeps Bootstrap's filled background (the brand red), so its
+   text must be white and bold, not the dark body color the rule above sets. */
+#basic-navbar-nav .dropdown-menu .dropdown-item.active,
+#basic-navbar-nav .dropdown-menu .navLink-primary.active {
+  color: var(--maple-text-inverse) !important;
+  font-weight: 700;
+}
+
 .offcanvas {
   background-color: var(--bs-body-bg) !important;
 }
