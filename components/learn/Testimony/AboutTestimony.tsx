@@ -1,5 +1,5 @@
 import { useTranslation } from "next-i18next"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import styled from "styled-components"
 import LearnBreadcrumb from "../LearnBreadcrumb"
 import LearnHeader from "../LearnHeader"
@@ -14,6 +14,18 @@ import {
   WhyBlob
 } from "../icons/Blobs"
 import { WHY_ICONS } from "../icons/WhyItMattersIcons"
+
+/**
+ * Anchors for the three Learn pages that were folded into this one. The old
+ * slugs are kept verbatim as ids so /learn/<slug> can redirect straight to the
+ * section that replaced it (see the redirects in next.config.js) and so links
+ * from outside the site keep their meaning.
+ */
+export const ANCHORS = {
+  role: "role-of-testimony",
+  writing: "writing-effective-testimony",
+  communicating: "communicating-with-legislators"
+} as const
 
 type CardData = { badge: string; headline: string; body: string }
 type Matter = { title: string; body: string }
@@ -140,6 +152,11 @@ const TipsPanel = styled.div`
   overflow: hidden;
   background-color: #fdfaf5;
 
+  /* Deep-link target: stop short of the sticky navbar rather than under it. */
+  &#${ANCHORS.writing} {
+    scroll-margin-top: calc(var(--maple-navbar-height) + 1rem);
+  }
+
   button {
     width: 100%;
     display: flex;
@@ -220,6 +237,11 @@ const Panel = styled.div`
   box-shadow: var(--maple-shadow-sm);
   overflow: hidden;
 
+  /* Deep-link targets: stop short of the sticky navbar rather than under it. */
+  &#${ANCHORS.role}, &#${ANCHORS.communicating} {
+    scroll-margin-top: calc(var(--maple-navbar-height) + 1rem);
+  }
+
   .head {
     display: flex;
     align-items: center;
@@ -245,29 +267,6 @@ const Panel = styled.div`
   }
 `
 
-/* The HOW panel fades in as the reader reaches "Ready to get started?".
-   It is only ever hidden once JS has mounted and confirmed the reader has not
-   asked for reduced motion, so no-JS and reduced-motion visitors always see it
-   immediately and screen readers never lose it. */
-const Reveal = styled.div<{ $hidden: boolean }>`
-  opacity: ${p => (p.$hidden ? 0 : 1)};
-  transform: ${p => (p.$hidden ? "translateY(2rem)" : "none")};
-  transition: opacity 0.85s ease-out, transform 0.85s ease-out;
-
-  @media (prefers-reduced-motion: reduce) {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-
-  /* The How section is revealed on scroll; on paper it must always be there. */
-  @media print {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-`
-
 const ReadyToStart = styled.p`
   font-weight: 700;
   color: #2f3031;
@@ -275,6 +274,25 @@ const ReadyToStart = styled.p`
   text-align: center;
   margin: 1.5rem 0;
 `
+
+/* Readers arriving from the retired /learn/writing-effective-testimony page land
+   on this panel, so open it for them: a collapsed "Tips" toggle would be less
+   than the page they followed the link from. */
+const useOpenWhenLinkedTo = (anchor: string) => {
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    const openIfTargeted = () => {
+      if (window.location.hash === `#${anchor}`) setOpen(true)
+    }
+    openIfTargeted()
+    // Catches a same-page link to the anchor, which re-scrolls without remounting.
+    window.addEventListener("hashchange", openIfTargeted)
+    return () => window.removeEventListener("hashchange", openIfTargeted)
+  }, [anchor])
+
+  return [open, setOpen] as const
+}
 
 const Tips = ({
   toggle,
@@ -285,9 +303,9 @@ const Tips = ({
   intro: string
   tips: Tip[]
 }) => {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useOpenWhenLinkedTo(ANCHORS.writing)
   return (
-    <TipsPanel>
+    <TipsPanel id={ANCHORS.writing}>
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
@@ -320,51 +338,8 @@ const Tips = ({
   )
 }
 
-const useRevealOnScroll = () => {
-  const sentinelRef = useRef<HTMLParagraphElement>(null)
-  // Starts visible: only enhanced once we know JS is running.
-  const [hidden, setHidden] = useState(false)
-
-  useEffect(() => {
-    const reduceMotion = window.matchMedia?.(
-      "(prefers-reduced-motion: reduce)"
-    ).matches
-    if (reduceMotion || typeof IntersectionObserver === "undefined") return
-
-    const sentinel = sentinelRef.current
-    if (!sentinel) return
-
-    // If the reader has already scrolled to the sentinel (deep link, refresh
-    // mid-page), leave the section visible rather than hiding it to animate.
-    const TRIGGER_POINT = 0.45 // sentinel must reach 45% up the viewport
-    if (
-      sentinel.getBoundingClientRect().top <
-      window.innerHeight * TRIGGER_POINT
-    )
-      return
-
-    setHidden(true)
-    const observer = new IntersectionObserver(
-      entries => {
-        if (entries.some(e => e.isIntersecting)) {
-          setHidden(false)
-          observer.disconnect()
-        }
-      },
-      // Negative bottom margin shrinks the observed area, so the reveal waits
-      // until the sentinel has travelled well up the viewport.
-      { rootMargin: "0px 0px -55% 0px" }
-    )
-    observer.observe(sentinel)
-    return () => observer.disconnect()
-  }, [])
-
-  return { sentinelRef, hidden }
-}
-
 export const AboutTestimony = () => {
   const { t } = useTranslation("learn")
-  const { sentinelRef, hidden } = useRevealOnScroll()
 
   const cards = t("testimony.cards", { returnObjects: true }) as CardData[]
   const matters = t("testimony.why.matters", {
@@ -402,7 +377,7 @@ export const AboutTestimony = () => {
       </div>
 
       {/* WHY */}
-      <Panel className="mb-3">
+      <Panel className="mb-3" id={ANCHORS.role}>
         <div className="head">
           <WhyBlob />
           <h2>{t("testimony.why.headline")}</h2>
@@ -430,49 +405,45 @@ export const AboutTestimony = () => {
         </div>
       </Panel>
 
-      <ReadyToStart ref={sentinelRef}>
-        {t("testimony.readyToStart")}
-      </ReadyToStart>
+      <ReadyToStart>{t("testimony.readyToStart")}</ReadyToStart>
 
       {/* HOW */}
-      <Reveal $hidden={hidden}>
-        <Panel>
-          <div className="head">
-            <HowBlob />
-            <h2>{t("testimony.how.headline")}</h2>
-          </div>
-          <div className="body">
-            <p className="lede mb-4">{t("testimony.how.intro")}</p>
+      <Panel id={ANCHORS.communicating}>
+        <div className="head">
+          <HowBlob />
+          <h2>{t("testimony.how.headline")}</h2>
+        </div>
+        <div className="body">
+          <p className="lede mb-4">{t("testimony.how.intro")}</p>
 
-            {steps.map((step, i) => (
-              <Step key={step.title}>
-                <NumBadge aria-hidden="true">{i + 1}</NumBadge>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <p className="title">{step.title}</p>
-                  <p className="text">{step.body}</p>
+          {steps.map((step, i) => (
+            <Step key={step.title}>
+              <NumBadge aria-hidden="true">{i + 1}</NumBadge>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p className="title">{step.title}</p>
+                <p className="text">{step.body}</p>
 
-                  {step.href && (
-                    <p className="text">
-                      {step.linkLabel}{" "}
-                      <a href={step.href} target="_blank" rel="noreferrer">
-                        {step.linkText}
-                      </a>
-                    </p>
-                  )}
+                {step.href && (
+                  <p className="text">
+                    {step.linkLabel}{" "}
+                    <a href={step.href} target="_blank" rel="noreferrer">
+                      {step.linkText}
+                    </a>
+                  </p>
+                )}
 
-                  {i === 0 && (
-                    <Tips
-                      toggle={t("testimony.tipsToggle")}
-                      intro={t("testimony.tipsIntro")}
-                      tips={tips}
-                    />
-                  )}
-                </div>
-              </Step>
-            ))}
-          </div>
-        </Panel>
-      </Reveal>
+                {i === 0 && (
+                  <Tips
+                    toggle={t("testimony.tipsToggle")}
+                    intro={t("testimony.tipsIntro")}
+                    tips={tips}
+                  />
+                )}
+              </div>
+            </Step>
+          ))}
+        </div>
+      </Panel>
     </LearnLayout>
   )
 }
