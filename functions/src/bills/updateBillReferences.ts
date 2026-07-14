@@ -218,5 +218,8 @@ class UpdateBillReferences extends BillProcessor {
   }
 }
 
+export const runUpdateBillReferences = (court: number | string) =>
+  BillProcessor.runForCourt(UpdateBillReferences, court)
+
 export const updateBillReferences =
   BillProcessor.scheduled(UpdateBillReferences)

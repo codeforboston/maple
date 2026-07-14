@@ -8,6 +8,11 @@ import { currentGeneralCourt } from "./shared"
 type Batch = {
   court: number
   ids: string[]
+  /** When true, unexpected (non-Axios) errors are logged and the batch
+   * continues with the next id instead of failing the whole invocation.
+   * Used by the per-court backfill script so one bad id doesn't sink a
+   * historical-court run. Defaults to false for the scheduled prod path. */
+  resilient?: boolean
 }
 
 /** List all ids of the resources to scrape. Falsey values will be filtered out.
@@ -117,41 +122,64 @@ export function createScraper<T>({
   const fetchBatch = runWith({ timeoutSeconds: fetchBatchTimeout })
     .firestore.document(`/scrapers/${resourceName}/batches/{batchId}`)
     .onCreate(async snap => {
-      const batch = snap.data() as Batch,
-        court = batch.court,
-        writer = db.bulkWriter()
+      try {
+        const batch = snap.data() as Batch,
+          court = batch.court,
+          writer = db.bulkWriter()
 
-      for (const id of batch.ids) {
-        try {
-          const path = `/generalCourts/${court}/${resourceName}/${id}`
-          const current = await db.doc(path).get()
-          const resource = await fetchResource(court, id, current.data())
+        for (const id of batch.ids) {
+          try {
+            const path = `/generalCourts/${court}/${resourceName}/${id}`
+            const current = await db.doc(path).get()
+            const resource = await fetchResource(court, id, current.data())
 
-          writer.set(
-            db.doc(path),
-            {
-              ...resource,
-              fetchedAt: Timestamp.now(),
-              lastFetch: FieldValue.delete(),
-              id,
-              court
-            },
-            { merge: true }
-          )
-        } catch (e) {
-          if (axios.isAxiosError(e)) {
-            if (!missingResource(e)) {
-              logger.warn(
-                `Could not fetch resource ${resourceName}/${id}: ${e.message}`
-              )
+            writer.set(
+              db.doc(path),
+              {
+                ...resource,
+                fetchedAt: Timestamp.now(),
+                lastFetch: FieldValue.delete(),
+                id,
+                court
+              },
+              { merge: true }
+            )
+          } catch (e) {
+            if (axios.isAxiosError(e)) {
+              if (!missingResource(e)) {
+                logger.warn(
+                  `Could not fetch resource ${resourceName}/${id}: ${e.message}`
+                )
+              }
+            } else if (batch.resilient) {
+              logger.error(`Unexpected error fetching ${resourceName}/${id}`, e)
+            } else {
+              throw e
             }
-          } else {
-            throw e
           }
         }
-      }
 
-      await writer.close()
+        try {
+          await writer.close()
+        } catch (e) {
+          logger.error(`bulkWriter.close failed for ${resourceName} batch`, e)
+        }
+      } finally {
+        logger.info(
+          `Attempting to delete ${resourceName} batch doc ${snap.ref.path}`
+        )
+        await snap.ref
+          .delete()
+          .then(() =>
+            logger.info(`Deleted ${resourceName} batch doc ${snap.ref.path}`)
+          )
+          .catch(e =>
+            logger.warn(
+              `Failed to delete ${resourceName} batch doc ${snap.ref.path}`,
+              e
+            )
+          )
+      }
     })
 
   return { startBatches, fetchBatch }
