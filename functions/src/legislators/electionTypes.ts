@@ -1,4 +1,3 @@
-import { sha256 } from "js-sha256"
 import {
   Array,
   Union,
@@ -87,8 +86,7 @@ export const ElectionResult = Record({
   otherVotes: Number,
   blankVotes: Number,
   noPreferenceVotes: Number.optional(),
-  totalVotes: Number,
-  electionDetailsUrl: String // Can also provide votes by town/ward
+  totalVotes: Number
 })
 
 export type ElectionStage = Static<typeof ElectionStage>
@@ -101,6 +99,7 @@ export const ElectionStage = Record({
 export type ElectionResult = Static<typeof ElectionResult>
 
 export const ElectionInfo = Record({
+  id: Number,
   // Aligned with Candidates[], for use with Firestore array-contains
   // More specific than name; for example, a dual election (such as for president/vice president)
   // has a name "Harris and Walz", but the link is to the page for Kamala Harris
@@ -119,9 +118,3 @@ export const ElectionInfo = Record({
 })
 
 export type ElectionInfo = Static<typeof ElectionInfo>
-
-export function electionId(election: ElectionInfo): string {
-  return sha256(
-    `${election.office},${election.year},${election.special},${election.party},${election.districts}`
-  )
-}

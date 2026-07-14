@@ -1,4 +1,5 @@
 import { JSDOM, VirtualConsole } from "jsdom"
+import { logger } from "firebase-functions"
 import {
   ElectionStage,
   parties,
@@ -10,6 +11,29 @@ import {
   Office,
   officeIds
 } from "./electionTypes"
+
+let queue: Promise<unknown> = Promise.resolve()
+
+function waitAfterPrevious<T>(
+  fn: () => Promise<T>,
+  delayMs: number
+): Promise<T> {
+  const run = queue.then(async () => {
+    const result = await fn()
+
+    await new Promise(resolve => setTimeout(resolve, delayMs))
+
+    return result
+  })
+
+  // Keep the queue alive even if this request fails
+  queue = run.catch(() => {})
+
+  return run
+}
+
+const limitedFetch = (url: string) =>
+  waitAfterPrevious(async () => (await fetch(url)).text(), 3000)
 
 const baseURL = "https://electionstats.state.ma.us"
 
@@ -46,7 +70,7 @@ function precinctHeaderText(th: Element | undefined): string | undefined {
 async function fetchElectionData(
   url: string
 ): Promise<[ElectionResult, string[]]> {
-  const text = await (await fetch(url)).text()
+  const text = await limitedFetch(url)
 
   const virtualConsole = new VirtualConsole()
   virtualConsole.on("jsdomError", error => {
@@ -131,7 +155,6 @@ async function fetchElectionData(
       otherVotes: otherVotes ?? 0,
       blankVotes: blankVotes ?? 0,
       totalVotes,
-      electionDetailsUrl: url,
       ...noPreference
     },
     candidates.map(candidate => candidate.candidateUrl)
@@ -171,17 +194,9 @@ function parseElectionStage(input: string): ElectionStage | null {
   }
 }
 
-async function parseElectionTable(
-  table: Element
-): Promise<[ElectionResult, string[]]> {
+function parseElectionTable(table: Element): [ElectionResult, string[]] | null {
   if (table.querySelector(".other-candidates")) {
-    // The search page does not include all details on this election; secondary fetch
-    const link = table.querySelector<HTMLAnchorElement>("tr.more_info a")?.href
-    if (!link) {
-      throw new Error(`${table.outerHTML} has no 'more info' link`)
-    }
-    const electionDetailsUrl = `${baseURL}${link}`
-    return await fetchElectionData(electionDetailsUrl)
+    return null
   }
   const candidateRows = table.querySelectorAll(
     ":scope > tr:not(.non_candidate):not(.more_info)"
@@ -248,7 +263,6 @@ async function parseElectionTable(
       otherVotes: otherVotes ?? 0,
       blankVotes: blankVotes ?? 0,
       totalVotes,
-      electionDetailsUrl: `${baseURL}${link}`,
       ...(noPreference ? { noPreferenceVotes: noPreference } : {})
     },
     candidates.map(item => item[1])
@@ -261,6 +275,13 @@ async function electionsPageInfo(dom: JSDOM): Promise<(ElectionInfo | null)[]> {
   )
   const info = elements.map(async electionElem => {
     try {
+      const match = electionElem.id.match(/^election-id-(\d+)$/)
+      if (!match) {
+        throw new Error(
+          `In ${electionElem.id}, the id was not parseable as an integer`
+        )
+      }
+      const electionId = parseInt(match[1], 10)
       const electTDs = Array.from(electionElem.children).filter(
         child => child.tagName === "TD"
       )
@@ -284,6 +305,7 @@ async function electionsPageInfo(dom: JSDOM): Promise<(ElectionInfo | null)[]> {
       }
       if (electTDs[4].querySelector(":scope > .no_candidates")) {
         return ElectionInfo.check({
+          id: electionId,
           year,
           office,
           districts,
@@ -295,9 +317,15 @@ async function electionsPageInfo(dom: JSDOM): Promise<(ElectionInfo | null)[]> {
       if (!candidateTable) {
         throw new Error(`No candidate table in ${electionElem.outerHTML}`)
       }
-      const [result, candidateUrls] = await parseElectionTable(candidateTable)
+      const [result, candidateUrls] =
+        parseElectionTable(candidateTable) ??
+        (await (async () => {
+          const electionDetailsUrl = `${baseURL}/elections/view/${electionId}/`
+          return await fetchElectionData(electionDetailsUrl)
+        })())
 
       return ElectionInfo.check({
+        id: electionId,
         year,
         office,
         districts,
@@ -322,8 +350,7 @@ export async function fetchElectionsData(
   const officeId = office ? `/office_id:${officeIds[office]}` : ""
   const electionStage = stage ? `/stage:${stage}` : ""
   const url = `${baseURL}/elections/search/year_from:${startYear}/year_to:${endYear}${officeId}${electionStage}`
-  const page = await fetch(url)
-  const text = await page.text()
+  const text = await limitedFetch(url)
   const virtualConsole = new VirtualConsole()
   virtualConsole.on("jsdomError", error => {
     if (error.message.includes("Could not parse CSS stylesheet")) {
@@ -332,7 +359,11 @@ export async function fetchElectionsData(
     console.error(error)
   })
   const dom = new JSDOM(text, { virtualConsole })
-  return (await electionsPageInfo(dom)).filter(
-    (item): item is ElectionInfo => item !== null
-  )
+  const elections: (ElectionInfo | null)[] = await electionsPageInfo(dom)
+  if (elections.length === 1200) {
+    logger.error(
+      `The url ${url} has reached the maximum number of election results provided, please use a more refined query`
+    )
+  }
+  return elections.filter((item): item is ElectionInfo => item !== null)
 }

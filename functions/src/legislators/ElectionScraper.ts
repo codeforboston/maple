@@ -1,6 +1,5 @@
 import { runWith, RuntimeOptions } from "firebase-functions"
 import { db } from "../firebase"
-import { electionId } from "./electionTypes"
 import { fetchElectionsData } from "./scrapeElections"
 
 export class ElectionScraper {
@@ -40,7 +39,7 @@ export class ElectionScraper {
     const writer = db.bulkWriter()
 
     for (let item of list) {
-      const id = electionId(item)
+      const id = item.id
       writer.set(db.doc(`/electionResults/${id}`), item, { merge: true })
     }
 
