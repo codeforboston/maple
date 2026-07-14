@@ -264,7 +264,12 @@ export const WritingTips = () => {
       <SectionTitle>{t("writingTips.principles.headline")}</SectionTitle>
       <PrincipleList>
         {tips.map((tip, i) => (
-          <Principle key={tip.label} $color={STAGE_COLORS[i]}>
+          // Cycle the stage colours so any number of tips stays coloured, rather
+          // than running off the end of the array into undefined.
+          <Principle
+            key={tip.label}
+            $color={STAGE_COLORS[i % STAGE_COLORS.length]}
+          >
             <span className="num" aria-hidden="true">
               {i + 1}
             </span>

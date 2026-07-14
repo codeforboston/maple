@@ -262,33 +262,29 @@
 }
 
 #basic-navbar-nav .dropdown-menu {
-  background-color: var(--maple-surface-base);
+  /* Set explicitly to the desktop dropdown's background (Bootstrap's $body-bg,
+     #eae7e7). Inside the dark hamburger collapse the inherited background comes
+     out dark, so it must be pinned here to match the desktop menu. */
+  background-color: var(--maple-surface-page);
   box-sizing: border-box;
   max-width: calc(100vw - 3rem);
   min-width: 0;
   width: fit-content;
 }
 
-/* Inside the mobile hamburger, the dropdown menu is white, but its items carry
-   .navLink-primary (white text, for the top-level links on the dark navbar) —
-   white on white, invisible. Restore the dark, readable text the desktop
-   dropdown uses. */
+/* The mobile hamburger's dropdown items carry .navLink-primary (white text, for
+   the top-level links on the dark navbar), which would be white-on-white inside
+   this light menu. Force the dark, readable text the desktop dropdown uses; the
+   menu background, hover, and active states are then left to Bootstrap so this
+   menu matches the desktop dropdown exactly. */
 #basic-navbar-nav .dropdown-menu .dropdown-item,
 #basic-navbar-nav .dropdown-menu .navLink-primary {
   color: var(--maple-text-body) !important;
   font-weight: 400;
 }
 
-#basic-navbar-nav .dropdown-menu .dropdown-item:hover,
-#basic-navbar-nav .dropdown-menu .dropdown-item:focus,
-#basic-navbar-nav .dropdown-menu .navLink-primary:hover,
-#basic-navbar-nav .dropdown-menu .navLink-primary:focus {
-  color: var(--bs-blue) !important;
-  background-color: var(--maple-surface-muted);
-}
-
-/* The active item keeps Bootstrap's filled background (the brand red), so its
-   text must be white and bold, not the dark body color the rule above sets. */
+/* The active item fills with the brand red (Bootstrap), including on hover, so
+   its text stays white and bold rather than the dark body colour above. */
 #basic-navbar-nav .dropdown-menu .dropdown-item.active,
 #basic-navbar-nav .dropdown-menu .navLink-primary.active {
   color: var(--maple-text-inverse) !important;

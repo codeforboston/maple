@@ -136,7 +136,7 @@
     },
     "include": {
       "headline": "What every letter should include",
-      "intro": "Whatever else you write, make sure a reader can answer these five questions after one pass.",
+      "intro": "Make sure a reader can answer these five questions after reading your testimony.",
       "items": [
         {
           "title": "Which bill you are writing about",
@@ -144,19 +144,19 @@
         },
         {
           "title": "Whether you support or oppose it",
-          "body": "Say so plainly, in the first line if you can. If your position is conditional, state the condition rather than leaving it implied."
+          "body": "Say so plainly in the first line. If your position is conditional, state the condition rather than leaving it implied."
         },
         {
           "title": "Who you are, and where you live",
-          "body": "Your name and your city or town. Legislators weigh testimony from their own constituents most heavily, so your district is doing real work here."
+          "body": "Your name and your city or town. Legislators weigh testimony from their own constituents most heavily, so including your district is important here."
         },
         {
           "title": "Why you care about this",
-          "body": "This is the part no one else can write. A short, specific account of how the issue touches your life, your work, or your community carries further than a page of general argument."
+          "body": "A short, specific account of how the issue affects your life, your work, or your community. This is what makes your testimony unique and impactful."
         },
         {
           "title": "What you want done",
-          "body": "Pass it, reject it, or amend it — and if amended, how. Specific asks are the ones a staffer can act on."
+          "body": "Pass it, reject it, or amend it — and if amended, how? Being specific allows staffers to act on your feedback."
         }
       ]
     },

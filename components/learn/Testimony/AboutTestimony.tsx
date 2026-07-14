@@ -245,7 +245,7 @@ export const AboutTestimony = () => {
             <div className="col-12 col-md-6" key={card.badge}>
               <Card>
                 <div className="head">
-                  <Badge />
+                  {Badge && <Badge />}
                   <h2>{card.headline}</h2>
                 </div>
                 <p className="body">{card.body}</p>
@@ -270,10 +270,13 @@ export const AboutTestimony = () => {
             {t("testimony.why.mattersHeading")}
           </p>
           {matters.map((item, i) => {
+            // WHY_ICONS has one icon per matters entry; if copy adds an entry
+            // beyond the drawn set, that row just goes without an icon rather
+            // than rendering <undefined /> and crashing the page.
             const Icon = WHY_ICONS[i]
             return (
               <MatterRow key={item.title}>
-                <Icon />
+                {Icon && <Icon />}
                 <div>
                   <p className="title">{item.title}</p>
                   <p className="text">{item.body}</p>
