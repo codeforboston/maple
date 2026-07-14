@@ -758,6 +758,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Smoss",
+      "name": "Sean Moss",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2860018?v=4",
+      "profile": "https://github.com/Smoss",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs"
