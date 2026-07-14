@@ -830,6 +830,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "n1b11",
+      "name": "Noah Burd",
+      "avatar_url": "https://avatars.githubusercontent.com/u/183017602?v=4",
+      "profile": "https://github.com/n1b11",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs"
