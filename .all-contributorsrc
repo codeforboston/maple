@@ -776,6 +776,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "c-tonneslan",
+      "name": "Charlie Tonneslan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/281950697?v=4",
+      "profile": "https://c-tonneslan-portfolio.vercel.app/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs"
