@@ -274,19 +274,33 @@
 
 /* The mobile hamburger's dropdown items carry .navLink-primary (white text, for
    the top-level links on the dark navbar), which would be white-on-white inside
-   this light menu. Force the dark, readable text the desktop dropdown uses; the
-   menu background, hover, and active states are then left to Bootstrap so this
-   menu matches the desktop dropdown exactly. */
+   this light menu. Force the dark, readable text the desktop dropdown uses. */
 #basic-navbar-nav .dropdown-menu .dropdown-item,
 #basic-navbar-nav .dropdown-menu .navLink-primary {
   color: var(--maple-text-body) !important;
   font-weight: 400;
 }
 
-/* The active item fills with the brand red (Bootstrap), including on hover, so
-   its text stays white and bold rather than the dark body colour above. */
+/* Hover/focus on a non-active item: a light highlight, matching the desktop
+   dropdown. Pinned because Bootstrap's default hover background inherits from
+   --bs-tertiary-bg, which resolves dark inside the navbar (the desktop dropdown
+   escapes that context via a portal, so it stays light). */
+#basic-navbar-nav .dropdown-menu .dropdown-item:hover:not(.active),
+#basic-navbar-nav .dropdown-menu .dropdown-item:focus:not(.active),
+#basic-navbar-nav .dropdown-menu .navLink-primary:hover:not(.active),
+#basic-navbar-nav .dropdown-menu .navLink-primary:focus:not(.active) {
+  background-color: var(--maple-surface-muted) !important;
+}
+
+/* The active row keeps the brand-red fill and white bold text through hover and
+   focus, so hovering the selected item does not fall back to the dark default. */
 #basic-navbar-nav .dropdown-menu .dropdown-item.active,
-#basic-navbar-nav .dropdown-menu .navLink-primary.active {
+#basic-navbar-nav .dropdown-menu .dropdown-item.active:hover,
+#basic-navbar-nav .dropdown-menu .dropdown-item.active:focus,
+#basic-navbar-nav .dropdown-menu .navLink-primary.active,
+#basic-navbar-nav .dropdown-menu .navLink-primary.active:hover,
+#basic-navbar-nav .dropdown-menu .navLink-primary.active:focus {
+  background-color: var(--bs-dropdown-link-active-bg) !important;
   color: var(--maple-text-inverse) !important;
   font-weight: 700;
 }
