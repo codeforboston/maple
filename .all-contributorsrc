@@ -812,6 +812,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "fastfadingviolets",
+      "name": "violet",
+      "avatar_url": "https://avatars.githubusercontent.com/u/158512193?v=4",
+      "profile": "https://github.com/fastfadingviolets",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs"
