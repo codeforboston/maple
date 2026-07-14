@@ -794,6 +794,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "ACoullard",
+      "name": "Andre Coullard",
+      "avatar_url": "https://avatars.githubusercontent.com/u/119697079?v=4",
+      "profile": "https://github.com/ACoullard",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs"
