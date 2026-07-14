@@ -839,6 +839,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "nssensalo",
+      "name": "Nansamba Ssensalo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/85596471?v=4",
+      "profile": "https://github.com/nssensalo",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs"
