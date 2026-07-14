@@ -12,8 +12,10 @@ import { TestimonyItem } from "components/TestimonyCard/TestimonyItem"
 const DisclaimerBlock = styled.div`
   align-items: flex-start;
   background-color: #f0f4ff;
-  border: "1px #d1d6e7 solid";
+  border-color: #b8c0c9;
   border-radius: 5px;
+  border-style: solid;
+  border-width: 1px;
   color: #1a3185;
   display: flex;
   font-size: 13px;
