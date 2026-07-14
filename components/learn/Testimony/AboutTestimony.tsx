@@ -57,6 +57,12 @@ const Card = styled.div`
     align-items: center;
     gap: 0.75rem;
     padding: 1.5rem 1.5rem 1rem;
+
+    /* The badge is a flex item beside the headline: let it shrink and a long
+       headline squeezes it below its drawn size. */
+    > svg {
+      flex-shrink: 0;
+    }
   }
 
   h2 {
@@ -85,6 +91,13 @@ const MatterRow = styled.div`
 
   & + & {
     margin-top: 0.5rem;
+  }
+
+  /* Without this the icon is a shrinkable flex item: on a narrow screen the
+     text squeezes it well below its 40px and it reads as a different size in
+     every row. */
+  > svg {
+    flex-shrink: 0;
   }
 
   .title {
@@ -247,6 +260,12 @@ const Panel = styled.div`
     align-items: center;
     gap: 0.75rem;
     padding: 1.5rem 1.5rem 1rem;
+
+    /* The blob is a flex item beside the headline: let it shrink and a long
+       headline squeezes it below its drawn size. */
+    > svg {
+      flex-shrink: 0;
+    }
   }
 
   h2 {
