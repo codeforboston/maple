@@ -17,7 +17,7 @@ export const populateBillHistoryNotificationEvents = functions.firestore
   .document("/generalCourts/{court}/bills/{billId}")
   .onWrite(async (snapshot, context) => {
     if (!snapshot.after.exists) {
-      console.error("New snapshot does not exist")
+      functions.logger.error("New snapshot does not exist")
       return
     }
 
