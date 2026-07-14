@@ -1,6 +1,7 @@
 {
   "title": "MAPLE for Legislators",
   "tabLabel": "Legislators",
+  "personaLabel": "Legislators",
   "callToAction": {
     "header": "Why use MAPLE",
     "title": "Gain free, nonpartisan insight into how constituents are thinking about any proposed measure.",

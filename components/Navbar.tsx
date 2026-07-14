@@ -28,6 +28,7 @@ import {
   NavbarLinkSupport,
   NavbarLinkTeam,
   NavbarLinkTestimony,
+  NavbarLinkWritingTestimony,
   NavbarLinkViewProfile
 } from "./NavbarComponents"
 
@@ -91,6 +92,7 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 
         <NavDropdown className={"navLink-primary"} title={t("learn")}>
           <NavbarLinkEffective handleClick={closeNav} />
+          <NavbarLinkWritingTestimony handleClick={closeNav} />
           <NavbarLinkProcess handleClick={closeNav} />
           <NavbarLinkWhyUse handleClick={closeNav} />
           <NavbarLinkAiTools handleClick={closeNav} />
@@ -270,6 +272,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <NavbarLinkEffective />
+            <NavbarLinkWritingTestimony />
             <NavbarLinkProcess />
             <NavbarLinkWhyUse />
             <NavbarLinkAiTools />

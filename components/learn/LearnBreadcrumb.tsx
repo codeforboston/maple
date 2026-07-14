@@ -1,6 +1,5 @@
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
-import { Internal } from "../links"
 import { ChevronRightIcon } from "./icons"
 
 const Nav = styled.nav`
@@ -32,6 +31,11 @@ const Nav = styled.nav`
     font-size: 1rem;
   }
 
+  /* Reads like the other crumbs, but not a link. */
+  .disabled {
+    color: var(--maple-text-body);
+  }
+
   .current {
     color: var(--bs-blue);
     font-weight: 700;
@@ -45,8 +49,11 @@ export const LearnBreadcrumb = ({ section }: { section: string }) => {
   return (
     <Nav aria-label={t("breadcrumbLabel")}>
       <ol>
+        {/* The Learn hub link is disabled for now -- the hub page still exists,
+            we just are not surfacing it yet. Restore the <Internal href="/learn">
+            wrapper (and its import) to re-enable it. */}
         <li>
-          <Internal href="/learn">{t("hub.eyebrow")}</Internal>
+          <span className="disabled">{t("hub.eyebrow")}</span>
         </li>
         <li aria-hidden="true" className="separator d-flex align-items-center">
           <ChevronRightIcon fontSize="inherit" />

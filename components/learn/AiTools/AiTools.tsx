@@ -87,6 +87,7 @@ export const AiTools = () => {
         title={t("title")}
         subhead={t("description")}
         titleSize="2.25rem"
+        subheadMaxWidth="none"
       />
       <AiToolsBody className="px-0">
         {/* What is it */}

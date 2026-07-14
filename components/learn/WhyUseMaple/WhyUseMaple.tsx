@@ -12,18 +12,17 @@ import {
   ScaleIcon,
   UsersIcon
 } from "../icons"
-import { GREEN, NAVY, ORANGE, alpha } from "../palette"
+import { GREEN, NAVY, ORANGE } from "../palette"
 
 /**
- * "Who Uses MAPLE" from the Figma prototype: three persona cards above a tinted
- * hero and a two-column "What we offer" checklist.
+ * "Who Uses MAPLE": a row of persona tabs selecting one persona's panel at a
+ * time — a hero (name, tagline, why) above its checklist of benefits.
  *
- * The copy is maple's own. The prototype's `personas` array was derived from
- * these namespaces — its taglines are `callToAction.title`, its "why" text is
- * `callToAction.bodytext`, and its feature bullets are the `benefits.*.title`
- * values — so nothing here is newly written.
- *
- * Routing is unchanged: each persona keeps its own URL under /why-use-maple.
+ * Most copy is drawn from the existing persona namespaces: taglines are
+ * `callToAction.title`, the "why" text is `callToAction.bodytext`, and the
+ * feature bullets are the `benefits.*.title` values. `personaLabel` is the one
+ * key added for this component. Routing is unchanged: each persona keeps its own
+ * URL under /why-use-maple.
  */
 
 export type Persona = {
@@ -155,16 +154,45 @@ const Detail = styled.div`
   overflow: hidden;
 `
 
+/* No fill: the hero sits on the card itself, running straight into the checklist
+   below without a heading or a rule between them. */
 const Hero = styled.div<{ $color: string }>`
-  padding: 2rem;
-  background-color: ${p => alpha(p.$color, 5)};
+  padding: 2rem 2rem 1rem;
+
+  /* Names the persona whose panel this is, so the tagline below it reads as a
+     statement about them.
+
+     A slate grey tinted toward the persona's colour, rather than the colour
+     itself: orange never clears 4.5:1 on white even at full opacity (2.42:1), so
+     a translucent persona colour here would be unreadable. Tinting a dark grey
+     keeps the ink dark enough to read while still carrying the hue -- orange
+     lands at 5.51:1 this way.
+
+     Nunito's heaviest loaded cut is 700, so there is no real weight above this;
+     the hairline stroke thickens it a little without the smearing that the
+     browser's synthetic 900 produced. */
+  .persona-label {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    -webkit-text-stroke: 0.3px currentColor;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(
+      in srgb,
+      ${p => p.$color} 30%,
+      var(--maple-color-gray-subtle-text)
+    );
+    margin-bottom: 0.375rem;
+  }
 
   .tagline {
     font-family: var(--maple-font-heading);
-    font-weight: 900;
+    font-weight: 700;
     font-size: 1.5rem;
     line-height: 1.25;
-    color: ${p => p.$color};
+    /* The persona's colour is carried by the tab, the rule and the ticks; the
+       headline stays ink. */
+    color: var(--maple-text-strong);
     margin-bottom: 0.75rem;
   }
 
@@ -180,20 +208,12 @@ const Hero = styled.div<{ $color: string }>`
   }
 
   @media (max-width: 36rem) {
-    padding: 1.25rem;
+    padding: 1.25rem 1.25rem 1rem;
   }
 `
 
 const Offer = styled.div`
-  padding: 2.25rem 2rem 2.5rem;
-
-  h2 {
-    font-family: var(--maple-font-heading);
-    font-weight: 700;
-    color: var(--maple-text-strong);
-    font-size: 1.375rem;
-    margin-bottom: 1.5rem;
-  }
+  padding: 0.75rem 2rem 2.5rem;
 
   ul {
     /* One full-width column: each benefit is its own disclosure. */
@@ -214,7 +234,7 @@ const Offer = styled.div`
   .benefit-toggle {
     width: 100%;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 0.75rem;
     padding: 1rem 1.25rem;
     background: none;
@@ -235,7 +255,6 @@ const Offer = styled.div`
 
   .tick {
     flex-shrink: 0;
-    margin-top: 0.125rem;
     width: 1.5rem;
     height: 1.5rem;
     border-radius: var(--maple-radius-pill);
@@ -249,7 +268,7 @@ const Offer = styled.div`
     min-width: 0;
     font-weight: 700;
     color: var(--maple-text-strong);
-    line-height: 1.4;
+    line-height: 1;
   }
 
   .chevron {
@@ -432,6 +451,7 @@ export const WhyUseMaple = ({
         aria-labelledby={`persona-${active.slug}`}
       >
         <Hero $color={active.color}>
+          <p className="persona-label">{t(`${active.ns}:personaLabel`)}</p>
           <p className="tagline">{t(`${active.ns}:callToAction.title`)}</p>
           {active.body.map(key => (
             <p className="why" key={key}>
@@ -441,7 +461,6 @@ export const WhyUseMaple = ({
         </Hero>
 
         <Offer>
-          <h2>{t(`${active.ns}:benefits.header`)}</h2>
           <ul>
             {active.benefits.map(key => {
               const open = openBenefit === key

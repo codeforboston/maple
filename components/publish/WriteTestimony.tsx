@@ -84,7 +84,7 @@ export const WriteTestimony = styled(props => {
             }
             components={[
               // eslint-disable-next-line react/jsx-key
-              <links.Internal href="/learn/testimony#writing-effective-testimony" />
+              <links.Internal href="/learn/writing-effective-testimony" />
             ]}
           />
         </div>

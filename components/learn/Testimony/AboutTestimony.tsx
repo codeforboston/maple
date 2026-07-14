@@ -1,10 +1,9 @@
-import { useTranslation } from "next-i18next"
-import { useEffect, useState } from "react"
+import { Trans, useTranslation } from "next-i18next"
 import styled from "styled-components"
+import { Internal } from "../../links"
 import LearnBreadcrumb from "../LearnBreadcrumb"
 import LearnHeader from "../LearnHeader"
 import LearnLayout from "../LearnLayout"
-import { ChevronDownIcon, ChevronUpIcon } from "../icons"
 import {
   HowBlob,
   WhatBlob,
@@ -16,14 +15,15 @@ import {
 import { WHY_ICONS } from "../icons/WhyItMattersIcons"
 
 /**
- * Anchors for the three Learn pages that were folded into this one. The old
+ * Anchors for two of the Learn pages that were folded into this one. The old
  * slugs are kept verbatim as ids so /learn/<slug> can redirect straight to the
  * section that replaced it (see the redirects in next.config.js) and so links
  * from outside the site keep their meaning.
+ *
+ * writing-effective-testimony is not here: it is a page again, not a section.
  */
 export const ANCHORS = {
   role: "role-of-testimony",
-  writing: "writing-effective-testimony",
   communicating: "communicating-with-legislators"
 } as const
 
@@ -36,7 +36,6 @@ type StepData = {
   linkText?: string
   href?: string
 }
-type Tip = { label: string; body: string }
 
 const BADGES: Record<string, () => JSX.Element> = {
   who: WhoBlob,
@@ -130,6 +129,16 @@ const NumBadge = styled.span`
   color: #000;
 `
 
+/* Holds the numbered steps, so they can be inset from the panel without moving
+   the HOW heading or the intro line above them. */
+const Steps = styled.div`
+  padding: 0.5rem 1.5rem 0;
+
+  @media (max-width: 36rem) {
+    padding: 0.5rem 0 0;
+  }
+`
+
 const Step = styled.div`
   display: flex;
   align-items: flex-start;
@@ -156,91 +165,6 @@ const Step = styled.div`
   a {
     color: var(--bs-blue);
     text-decoration: underline;
-  }
-`
-
-const TipsPanel = styled.div`
-  border: 1px solid rgba(28, 43, 58, 0.12);
-  border-radius: var(--maple-radius-lg);
-  overflow: hidden;
-  background-color: #fdfaf5;
-
-  /* Deep-link target: stop short of the sticky navbar rather than under it. */
-  &#${ANCHORS.writing} {
-    scroll-margin-top: calc(var(--maple-navbar-height) + 1rem);
-  }
-
-  button {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    text-align: left;
-    background: none;
-    border: 0;
-    cursor: pointer;
-
-    &:focus-visible {
-      outline: 2px solid var(--bs-blue);
-      outline-offset: -2px;
-    }
-  }
-
-  .toggle-label {
-    font-weight: 600;
-    color: #1c2b3a;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    margin: 0;
-  }
-
-  .content {
-    padding: 0 1rem 0.75rem;
-  }
-
-  .intro {
-    color: var(--maple-text-muted);
-    font-size: 0.875rem;
-    line-height: 1.6;
-    margin-bottom: 0.75rem;
-  }
-
-  .tip {
-    padding: 0.5rem 0;
-  }
-
-  .tip-label {
-    font-weight: 600;
-    color: #1c2b3a;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    margin: 0;
-  }
-
-  .tip-body {
-    color: var(--maple-text-muted);
-    font-size: 0.875rem;
-    line-height: 1.6;
-    margin: 0;
-  }
-
-  /* The content is collapsed with the hidden attribute. Chrome's user-agent
-     sheet declares [hidden] { display: none !important }, so nothing short of
-     !important can reveal it for printing. */
-  @media print {
-    .content[hidden] {
-      display: block !important;
-    }
-
-    button {
-      cursor: auto;
-    }
-
-    svg {
-      display: none;
-    }
   }
 `
 
@@ -294,69 +218,6 @@ const ReadyToStart = styled.p`
   margin: 1.5rem 0;
 `
 
-/* Readers arriving from the retired /learn/writing-effective-testimony page land
-   on this panel, so open it for them: a collapsed "Tips" toggle would be less
-   than the page they followed the link from. */
-const useOpenWhenLinkedTo = (anchor: string) => {
-  const [open, setOpen] = useState(false)
-
-  useEffect(() => {
-    const openIfTargeted = () => {
-      if (window.location.hash === `#${anchor}`) setOpen(true)
-    }
-    openIfTargeted()
-    // Catches a same-page link to the anchor, which re-scrolls without remounting.
-    window.addEventListener("hashchange", openIfTargeted)
-    return () => window.removeEventListener("hashchange", openIfTargeted)
-  }, [anchor])
-
-  return [open, setOpen] as const
-}
-
-const Tips = ({
-  toggle,
-  intro,
-  tips
-}: {
-  toggle: string
-  intro: string
-  tips: Tip[]
-}) => {
-  const [open, setOpen] = useOpenWhenLinkedTo(ANCHORS.writing)
-  return (
-    <TipsPanel id={ANCHORS.writing}>
-      <button
-        type="button"
-        onClick={() => setOpen(o => !o)}
-        aria-expanded={open}
-        aria-controls="testimony-tips"
-      >
-        <span className="toggle-label">{toggle}</span>
-        {open ? (
-          <ChevronUpIcon
-            aria-hidden="true"
-            sx={{ fontSize: "1rem", color: "var(--maple-text-muted)" }}
-          />
-        ) : (
-          <ChevronDownIcon
-            aria-hidden="true"
-            sx={{ fontSize: "1rem", color: "var(--maple-text-muted)" }}
-          />
-        )}
-      </button>
-      <div className="content" id="testimony-tips" hidden={!open}>
-        <p className="intro">{intro}</p>
-        {tips.map(tip => (
-          <div className="tip" key={tip.label}>
-            <p className="tip-label">{tip.label}</p>
-            <p className="tip-body">{tip.body}</p>
-          </div>
-        ))}
-      </div>
-    </TipsPanel>
-  )
-}
-
 export const AboutTestimony = () => {
   const { t } = useTranslation("learn")
 
@@ -365,7 +226,6 @@ export const AboutTestimony = () => {
     returnObjects: true
   }) as Matter[]
   const steps = t("testimony.how.steps", { returnObjects: true }) as StepData[]
-  const tips = t("testimony.tips", { returnObjects: true }) as Tip[]
 
   return (
     <LearnLayout width="medium">
@@ -435,32 +295,41 @@ export const AboutTestimony = () => {
         <div className="body">
           <p className="lede mb-4">{t("testimony.how.intro")}</p>
 
-          {steps.map((step, i) => (
-            <Step key={step.title}>
-              <NumBadge aria-hidden="true">{i + 1}</NumBadge>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <p className="title">{step.title}</p>
-                <p className="text">{step.body}</p>
+          <Steps>
+            {steps.map((step, i) => (
+              <Step key={step.title}>
+                <NumBadge aria-hidden="true">{i + 1}</NumBadge>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p className="title">{step.title}</p>
+                  <p className="text">{step.body}</p>
 
-                {step.href && (
-                  <p className="text">
-                    {step.linkLabel}{" "}
-                    <a href={step.href} target="_blank" rel="noreferrer">
-                      {step.linkText}
-                    </a>
-                  </p>
-                )}
+                  {step.href && (
+                    <p className="text">
+                      {step.linkLabel}{" "}
+                      <a href={step.href} target="_blank" rel="noreferrer">
+                        {step.linkText}
+                      </a>
+                    </p>
+                  )}
 
-                {i === 0 && (
-                  <Tips
-                    toggle={t("testimony.tipsToggle")}
-                    intro={t("testimony.tipsIntro")}
-                    tips={tips}
-                  />
-                )}
-              </div>
-            </Step>
-          ))}
+                  {/* The tips used to sit here as a collapsible panel; they are
+                      their own page now. */}
+                  {i === 0 && (
+                    <p className="text">
+                      <Trans
+                        t={t}
+                        i18nKey="testimony.tipsLink"
+                        components={[
+                          // eslint-disable-next-line react/jsx-key
+                          <Internal href="/learn/writing-effective-testimony" />
+                        ]}
+                      />
+                    </p>
+                  )}
+                </div>
+              </Step>
+            ))}
+          </Steps>
         </div>
       </Panel>
     </LearnLayout>

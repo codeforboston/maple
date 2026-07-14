@@ -40,46 +40,46 @@
       {
         "badge": "who",
         "headline": "Anyone can submit testimony",
-        "body": "Legislators value testimony most when it comes from their own constituents. Testimony from MA residents is typically directed to both the committee responsible for the bill and the legislators representing your district."
+        "body": "Legislators value testimony most when it comes from their own constituents. Testimony from Massachusetts residents is typically directed to both the committee responsible for the bill and the legislators representing you in your district."
       },
       {
         "badge": "what",
-        "headline": "Make it distinctive and relevant",
-        "body": "Write your own text and explain why you are personally interested in an issue. Form letters still count, but an individual, personalized letter will always have greater impact."
+        "headline": "It should be distinctive and relevant",
+        "body": "Writing your own text and explaining why you are interested in an issue gives legislators valuable, personalized insight into their constituents. Form letters still count, but a personalized, individual letter will always have greater impact."
       },
       {
         "badge": "when",
-        "headline": "Before the committee hearing date",
-        "body": "Committees generally accept testimony up until the public hearing date for a bill. You can use bill pages on this site to identify relevant dates. Submit before the hearing for the greatest impact."
+        "headline": "Submit before the hearing date",
+        "body": "Committees generally accept testimony up until the public hearing date for a bill. You can use Maple's bill pages on this site or this link to identify relevant dates. Submit before the hearing for the greatest impact."
       },
       {
         "badge": "where",
-        "headline": "By email to committee chairs",
-        "body": "MAPLE makes it easy to find a bill you want to testify on and generate an email — which you fully control — to send to the relevant committee personnel."
+        "headline": "Use MAPLE to submit testimony",
+        "body": "Browse our bill and ballot question pages to find the measures that matter to you. Select one and follow the prompts to compose your testimony. When you are happy with your testimony, MAPLE sends it to the relevant committee personnel."
       }
     ],
     "why": {
-      "headline": "To shape the laws that govern your life",
+      "headline": "Legislators need your input in order to represent you",
       "body": "If you don't share your perspective, it may not be taken into account when policymakers make decisions about the laws that govern all our lives. By speaking up, you can make the laws of Massachusetts work better for all of us. MAPLE is designed to make it more accessible.",
       "mattersHeading": "Why it Matters:",
       "matters": [
         {
-          "title": "Your voice shapes the legislative agenda",
-          "body": "It can guide what topics and bills the legislature considers, and how they decide to act and vote on each one."
+          "title": "Your voice is instrumental to the legislative process",
+          "body": "Testimony can guide the agenda of the legislature, from what topics and bills they consider, to how they decide to act and vote on each measure."
         },
         {
-          "title": "You give legislators real-world insight",
-          "body": "Testimony informs legislators of the benefits or negative consequences of proposed policies — context that doesn't always appear in the official record."
+          "title": "You give lawmakers real-world insight",
+          "body": "It is important for legislators to understand how communities may be positively or negatively impacted by proposed policies — context that doesn't always appear in the official record."
         },
         {
           "title": "You can recommend specific changes",
-          "body": "You can suggest concrete improvements to legislation, whether you generally support or oppose a bill. Specificity makes your testimony more actionable."
+          "body": "You can suggest concrete improvements to legislation, whether you generally support or oppose a bill. Specificity makes your testimony more actionable to legislators."
         }
       ]
     },
     "readyToStart": "Ready to get started?",
     "how": {
-      "headline": "To make your voice heard",
+      "headline": "Making your voice heard",
       "intro": "There are multiple ways to share your perspective and knowledge with your legislators.",
       "steps": [
         {
@@ -102,24 +102,24 @@
         }
       ]
     },
-    "tipsToggle": "Tips for writing effective testimony",
-    "tipsIntro": "Clearly outline what bill you are testifying about, whether you support or oppose it, why you are concerned about the issue, what policy you would like to see enacted, and what legislative district you live in.",
+    "tipsLink": "Need help? <0>Read our testimony writing tips</0>",
     "tips": [
       {
         "label": "Be Timely",
-        "body": "Written testimony should target bills being considered by the legislature. All Committees should formally accept testimony on each bill in the time between the start of the legislative session and the public hearing of that bill."
-      },
+        "body": "Written testimony should target bills being considered by the legislature and should be submitted before the committee hearing date in order to have the most impact."
+      }, 
       {
         "label": "Be Original",
         "body": "Legislators receive a lot of form letters. These communications are important, but almost always an individual and personalized letter will have greater impact."
-      },
+      },       
       {
         "label": "Be Informative",
-        "body": "Whether you're a longtime advocate or first-time testifier, your testimony is important. Explain why you are concerned about an issue and why you think one policy choice would be better than another."
+        "body": "Introduce yourself. Explain why you are concerned about an issue and why you think one policy choice would be better than another. Whether you're a longtime advocate or first-time testifier, your testimony is important."
       },
+
       {
         "label": "Be Direct",
-        "body": "State whether you support or oppose a bill. Be clear and specific about the policies you want to see. You don't need to know specific legal precedents or legislative language."
+        "body": "State whether you support or oppose a bill. Be clear and specific about the policies you want to see. You don't need to know specific legal precedents or legislative language to provide valuable input."
       },
       {
         "label": "Be Respectful",
@@ -127,13 +127,52 @@
       }
     ]
   },
+  "writingTips": {
+    "breadcrumb": "Writing Effective Testimony",
+    "title": "How to Write Effective Testimony",
+    "subhead": "You don't need legal training or a policy background. You need a clear position, a reason you care, and the district you live in — this page walks through the rest.",
+    "principles": {
+      "headline": "Five things to make testimony impactful"
+    },
+    "include": {
+      "headline": "What every letter should include",
+      "intro": "Whatever else you write, make sure a reader can answer these five questions after one pass.",
+      "items": [
+        {
+          "title": "Which bill you are writing about",
+          "body": "Name the bill by number and title — for example, \"H.1234, An Act relative to…\". Committees sort testimony by bill, so a letter without one is hard to file."
+        },
+        {
+          "title": "Whether you support or oppose it",
+          "body": "Say so plainly, in the first line if you can. If your position is conditional, state the condition rather than leaving it implied."
+        },
+        {
+          "title": "Who you are, and where you live",
+          "body": "Your name and your city or town. Legislators weigh testimony from their own constituents most heavily, so your district is doing real work here."
+        },
+        {
+          "title": "Why you care about this",
+          "body": "This is the part no one else can write. A short, specific account of how the issue touches your life, your work, or your community carries further than a page of general argument."
+        },
+        {
+          "title": "What you want done",
+          "body": "Pass it, reject it, or amend it — and if amended, how. Specific asks are the ones a staffer can act on."
+        }
+      ]
+    },
+    "cta": {
+      "headline": "Ready to write?",
+      "body": "Find a bill you care about and MAPLE will walk you through composing your testimony and sending it to the right committee.",
+      "button": "Browse bills"
+    }
+  },
   "aiTools": {
     "breadcrumb": "AI Research Tools"
   },
   "whyUseMaple": {
     "breadcrumb": "Why Use MAPLE",
     "title": "Why Use MAPLE?",
-    "subhead": "Whether you're a citizen, an organization, or a legislator — MAPLE is for you."
+    "subhead": "Whether you are a citizen, an organization leader, or a legislator, MAPLE can support you."
   },
   "process": {
     "breadcrumb": "Legislative Process",
@@ -152,7 +191,7 @@
       {
         "num": "01",
         "title": "A Bill is Introduced",
-        "lead": "Every law starts as an idea. Any MA resident can petition their legislator to file a bill.",
+        "lead": "Every law starts as an idea. Any Massachusetts resident can petition their legislator to file a bill.",
         "body": "Bills can be filed at any time during the two-year session, but most are filed before the session begins — the standard deadline falls in December of the preceding year. Bills filed after that deadline require special approval. They receive a unique identifier — H. for House-originated bills, S. for Senate. The same idea can be filed in both chambers simultaneously. Bills are publicly available on the MA Legislature website and through MAPLE.",
         "stat": {
           "value": "6,000+",
