@@ -70,8 +70,8 @@ export class AssemblyAIHandler extends AssemblyAIHandlerBase {
     if (!process.env.FUNCTIONS_API_BASE) {
       return {
         status: "error",
-        type: "process.env.FUNCTIONS_API_BASE is not set",
-        error: process.env.FUNCTIONS_API_BASE
+        type: "transcription",
+        error: "process.env.FUNCTIONS_API_BASE is not set"
       }
     }
 
