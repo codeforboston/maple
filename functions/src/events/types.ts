@@ -101,7 +101,7 @@ export type Video = Static<typeof Video>
 export const Video = Record({
   url: String,
   title: String,
-  transcriptionId: String
+  transcriptionId: Union(String, Null)
 })
 
 export type Hearing = Static<typeof Hearing>
