@@ -8,6 +8,9 @@ import { HearingScraper, HearingPostProcessor } from "./HearingScraper"
 /**
  * Callable cloud function to scrape a single hearing by EventId.
  * Requires authentication to prevent abuse of API call limits.
+ * Warning that, for hearings with multiple videos, the timeout
+ * may not be sufficiently large to scrape all videos. Check for
+ * success status.
  *
  * @param data - Object containing the EventId (e.g., 1234)
  * @param context - Firebase callable context with auth information
