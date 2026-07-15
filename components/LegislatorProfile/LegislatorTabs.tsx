@@ -3,16 +3,17 @@ import { TabPane } from "react-bootstrap"
 import TabContainer from "react-bootstrap/TabContainer"
 import styled from "styled-components"
 
-import { Container, Nav } from "../../bootstrap"
+import { Container, Nav } from "../bootstrap"
 
-import { Bills } from "./Bills"
-import { District } from "./District"
-import { Elections } from "./Elections"
-import { Finance } from "./Finance"
-import { Priorities } from "./Priorities"
-import { Testimony } from "./Testimony"
-import { Votes } from "./Votes"
+import { BillsTab } from "./TabComponents/BillsTab"
+import { DistrictTab } from "./TabComponents/DistrictTab"
+import { ElectionsTab } from "./TabComponents/ElectionsTab"
+import { FinanceTab } from "./TabComponents/FinanceTab"
+import { PrioritiesTab } from "./TabComponents/PrioritiesTab"
+import { TestimonyTab } from "./TabComponents/TestimonyTab"
+import { VotesTab } from "./TabComponents/VotesTab"
 
+import { District } from "components/db"
 import {
   StyledTabContent,
   TabNavWrapper,
@@ -63,12 +64,12 @@ const TabNavItem = ({
 }
 
 export function LegislatorTabs({
-  fullname,
-  pageId,
+  district,
+  districtLoading,
   tabCategory
 }: {
-  fullname?: string
-  pageId?: string
+  district?: District | undefined
+  districtLoading?: boolean
   tabCategory?: TabCategories
 }) {
   const { t } = useTranslation("legislators")
@@ -77,42 +78,42 @@ export function LegislatorTabs({
     {
       title: t("tabs.priorities"),
       eventKey: "priorities",
-      content: <Priorities />
+      content: <PrioritiesTab />
     },
     {
       title: t("tabs.bills"),
       eventKey: "bills",
-      content: <Bills />
+      content: <BillsTab />
     },
     {
       title: t("tabs.elections"),
       eventKey: "elections",
-      content: <Elections />
+      content: <ElectionsTab />
     },
     {
       title: t("tabs.finance"),
       eventKey: "finance",
-      content: <Finance />
+      content: <FinanceTab />
     },
     {
       title: t("tabs.district"),
       eventKey: "district",
-      content: <District />
+      content: <DistrictTab district={district} loading={districtLoading} />
     },
     {
       title: t("tabs.testimony"),
       eventKey: "testimony",
-      content: <Testimony fullname={fullname} pageId={pageId} />
+      content: <TestimonyTab />
     },
     {
       title: t("tabs.votes"),
       eventKey: "votes",
-      content: <Votes />
+      content: <VotesTab />
     }
   ]
 
   return (
-    <Container>
+    <Container className={`p-0`}>
       <TabContainer defaultActiveKey="priorities" activeKey={tabCategory}>
         <TabNavWrapper>
           {tabs.map((t, i) => (

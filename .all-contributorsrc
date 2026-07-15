@@ -758,6 +758,105 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Smoss",
+      "name": "Sean Moss",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2860018?v=4",
+      "profile": "https://github.com/Smoss",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "J-C-L",
+      "name": "Janice Lichtman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/9040395?v=4",
+      "profile": "https://github.com/J-C-L",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "c-tonneslan",
+      "name": "Charlie Tonneslan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/281950697?v=4",
+      "profile": "https://c-tonneslan-portfolio.vercel.app/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "VenkateshDevarakonda0706",
+      "name": "VenkateshDevarakonda0706",
+      "avatar_url": "https://avatars.githubusercontent.com/u/188581366?v=4",
+      "profile": "https://github.com/VenkateshDevarakonda0706",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ACoullard",
+      "name": "Andre Coullard",
+      "avatar_url": "https://avatars.githubusercontent.com/u/119697079?v=4",
+      "profile": "https://github.com/ACoullard",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "LexaMichaelides",
+      "name": "Lexa Michaelides",
+      "avatar_url": "https://avatars.githubusercontent.com/u/32111123?v=4",
+      "profile": "http://lexa.fyi",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "fastfadingviolets",
+      "name": "violet",
+      "avatar_url": "https://avatars.githubusercontent.com/u/158512193?v=4",
+      "profile": "https://github.com/fastfadingviolets",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "AstorDG",
+      "name": "Astor Meredith-Goujon",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42044772?v=4",
+      "profile": "https://github.com/AstorDG",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "n1b11",
+      "name": "Noah Burd",
+      "avatar_url": "https://avatars.githubusercontent.com/u/183017602?v=4",
+      "profile": "https://github.com/n1b11",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "nssensalo",
+      "name": "Nansamba Ssensalo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/85596471?v=4",
+      "profile": "https://github.com/nssensalo",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "jasrose",
+      "name": "Jasmine Rose",
+      "avatar_url": "https://avatars.githubusercontent.com/u/72074190?v=4",
+      "profile": "https://github.com/jasrose",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs"
