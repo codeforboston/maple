@@ -196,7 +196,7 @@ export class HearingPostProcessor {
       if (limit && count >= limit) {
         return true
       }
-      nextVideos = await this.submitNextTranscription(eventId, videos)
+      nextVideos = await this.submitNextTranscription(eventId, nextVideos)
       count += 1
     }
     return true
