@@ -67,6 +67,14 @@ export class AssemblyAIHandler extends AssemblyAIHandlerBase {
         error: any
       }
   > {
+    if (!process.env.FUNCTIONS_API_BASE) {
+      return {
+        status: "error",
+        type: "process.env.FUNCTIONS_API_BASE is not set",
+        error: process.env.FUNCTIONS_API_BASE
+      }
+    }
+
     const newToken = randomBytes(16).toString("hex")
     let error
     const audioUrl = await extractAudioFromVideo(
