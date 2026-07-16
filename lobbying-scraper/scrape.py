@@ -172,6 +172,17 @@ def run_weekly(
 # ── Historical backfill ───────────────────────────────────────────────────────
 
 
+def _completed_years(db: "firestore.Client") -> set[int]:
+    data = db.document(BACKFILL_DOC).get().to_dict() or {}
+    return set(data.get("completedYears", []))
+
+
+def _mark_year_complete(db: "firestore.Client", year: int) -> None:
+    db.document(BACKFILL_DOC).set(
+        {"completedYears": firestore.ArrayUnion([year])}, merge=True
+    )
+
+
 def run_backfill(
     db: "firestore.Client | None",
     years: list[int],
@@ -182,7 +193,14 @@ def run_backfill(
     session = make_session()
     total_new = 0
 
+    done = _completed_years(db) if db is not None and not dry_run else set()
+    if done:
+        print(f"Skipping already-completed years: {sorted(done)}")
+
     for year in years:
+        if year in done:
+            continue
+
         print(f"\n── {year} ──")
         try:
             summary_urls = fetch_summary_links(session, year)
@@ -221,6 +239,8 @@ def run_backfill(
                 print(f"  [{i+1}/{len(summary_urls)}] {year_new} new disclosures so far")
 
         print(f"  {year} complete: {year_new} new disclosures")
+        if db is not None and not dry_run and not limit:
+            _mark_year_complete(db, year)
 
     return total_new
 
