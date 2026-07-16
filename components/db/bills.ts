@@ -3,6 +3,7 @@ import {
   getDocs,
   limit,
   orderBy,
+  query,
   Timestamp,
   where
 } from "firebase/firestore"
@@ -34,6 +35,9 @@ export type BillContent = {
   LegislationTypeName: string
   Pinslip: string
   DocumentText?: string
+  /** Present only when DocumentText was too large to store inline and was
+   * chunked into the bill's `contentBlocks` subcollection. */
+  DocumentTextBlockCount?: number
 }
 
 export type BillTopic = {
@@ -85,6 +89,29 @@ export async function getBill(
 ): Promise<Bill | undefined> {
   const bill = await loadDoc(`/generalCourts/${court}/bills/${id}`)
   return bill as any
+}
+
+/**
+ * Resolve a bill's full document text. Returns the inline `DocumentText` when
+ * present; otherwise, for bills whose text was chunked past Firestore's 1 MiB
+ * limit, reassembles it from the ordered `contentBlocks` subcollection.
+ */
+export async function getBillDocumentText(
+  court: number,
+  id: string,
+  content: BillContent
+): Promise<string | undefined> {
+  if (content.DocumentText) return content.DocumentText
+  if (!content.DocumentTextBlockCount) return undefined
+
+  const blocksRef = collection(
+    firestore,
+    `/generalCourts/${court}/bills/${id}/contentBlocks`
+  )
+  const blocks = await getDocs(query(blocksRef, orderBy("index")))
+  if (blocks.empty) return undefined
+
+  return blocks.docs.map(d => (d.data().text as string) ?? "").join("")
 }
 
 export async function listBillsByHearingDate(

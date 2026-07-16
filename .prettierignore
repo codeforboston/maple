@@ -17,3 +17,5 @@ llm
 playwright-report
 CLAUDE.md
 .cursor/
+.claude/
+.serena/
