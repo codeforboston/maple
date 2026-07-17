@@ -33,7 +33,7 @@ export const OurTeam = () => {
   const { t } = useTranslation(["our-team", "common"])
 
   return (
-    <LearnLayout width="wide">
+    <LearnLayout width="medium">
       <LearnBreadcrumb section={t("breadcrumb")} eyebrow={t("common:about")} />
       <LearnHeader title={t("title")} titleSize="2.25rem" />
       <TeamBody>
