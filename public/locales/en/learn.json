@@ -107,16 +107,15 @@
       {
         "label": "Be Timely",
         "body": "Written testimony should target bills being considered by the legislature and should be submitted before the committee hearing date in order to have the most impact."
-      }, 
+      },
       {
         "label": "Be Original",
         "body": "Legislators receive a lot of form letters. These communications are important, but almost always an individual and personalized letter will have greater impact."
-      },       
+      },
       {
         "label": "Be Informative",
         "body": "Introduce yourself. Explain why you are concerned about an issue and why you think one policy choice would be better than another. Whether you're a longtime advocate or first-time testifier, your testimony is important."
       },
-
       {
         "label": "Be Direct",
         "body": "State whether you support or oppose a bill. Be clear and specific about the policies you want to see. You don't need to know specific legal precedents or legislative language to provide valuable input."
@@ -163,7 +162,7 @@
     "cta": {
       "headline": "Ready to write?",
       "body": "Find a bill you care about and MAPLE will walk you through composing your testimony and sending it to the right committee.",
-      "button": "Browse bills"
+      "button": "Browse Bills"
     }
   },
   "aiTools": {

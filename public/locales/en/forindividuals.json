@@ -37,5 +37,11 @@
     "bodytextTwo": "Creating a MAPLE account is completely free and takes only a couple minutes.",
     "signUp": "Click here to sign up for your MAPLE account",
     "contact": "Any questions? Reach out to info@mapletestimony.org"
+  },
+  "cta": {
+    "headline": "Get started with MAPLE today!",
+    "body": "Sign up for an account to follow legislation that matters to you, learn different perspectives, and make your voice heard.",
+    "button": "Sign up for your account",
+    "contact": "Any questions? Reach out to info@mapletestimony.org"
   }
 }

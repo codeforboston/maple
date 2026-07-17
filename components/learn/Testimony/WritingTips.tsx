@@ -205,9 +205,10 @@ const Cta = styled.div`
     margin: 0 auto 1.5rem;
   }
 
+  /* A navy pill, at MAPLE's button height (standard vertical padding). */
   a {
     display: inline-block;
-    padding: 0.75rem 1.75rem;
+    padding: var(--maple-space-sm) var(--maple-space-xl);
     border-radius: var(--maple-radius-pill);
     background: ${NAVY};
     color: var(--maple-text-inverse);

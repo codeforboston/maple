@@ -52,5 +52,11 @@
     "p2": "In addition to all the benefits outlined above, these organizations will have their profiles featured prominently on the MAPLE website during the two-year legislative session. Any organization can contact MAPLE to be considered for membership in the CLO. Organizations will be prioritized to join the CLO based on the size of the constituency they represent.",
     "p3": "Maple is a nonpartisan project and does not take political positions; membership in the CLO does not indicate endorsement of any political position by MAPLE or its parent organization, members, or collaborators.",
     "callToAction": "Join the MAPLE coalition-reach out to info@mapletestimony.org"
+  },
+  "cta": {
+    "headline": "Get started with MAPLE today!",
+    "body": "Sign up for your organization's account to publish and share your testimony, coordinate with your members and followers, and research legislation.",
+    "button": "Sign up for your organization",
+    "contact": "Any questions? Reach out to info@mapletestimony.org"
   }
 }

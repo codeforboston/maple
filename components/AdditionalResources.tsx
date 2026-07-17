@@ -47,12 +47,7 @@ const Section = styled.section`
 
   a {
     color: var(--bs-blue);
-    font-weight: 600;
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
+    text-decoration: underline;
   }
 
   @media (prefers-reduced-motion: reduce) {

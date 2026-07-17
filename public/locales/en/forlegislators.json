@@ -36,5 +36,12 @@
     "title": "Start using MAPLE today to put your finger on the pulse of your constituents!",
     "bodytext": "You can browse testimony submitted by constituents across the state on MAPLE, with or without creating your own account.",
     "contact": "Any questions? We're here to help! Reach out to info@mapletestimony.org"
+  },
+  "cta": {
+    "headline": "Get started with MAPLE!",
+    "body": "You can browse testimony submitted by constituents across the state on MAPLE, with or without creating your own account.",
+    "button": "Browse Testimony",
+    "signup": "Sign up for an account",
+    "contact": "Any questions? Reach out to info@mapletestimony.org"
   }
 }

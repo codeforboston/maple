@@ -1,6 +1,7 @@
 import { TFunction, useTranslation } from "next-i18next"
 import { useEffect, useState } from "react"
 import styled from "styled-components"
+import SignInWithButton from "../../auth/SignInWithButton"
 import { Internal } from "../../links"
 import LearnBreadcrumb from "../LearnBreadcrumb"
 import LearnHeader from "../LearnHeader"
@@ -33,6 +34,12 @@ export type Persona = {
   benefits: string[]
   /** callToAction body keys, in render order. */
   body: string[]
+  /**
+   * The closing call to action. "signup" opens the sign-up modal; "browse"
+   * links to a page and may pair it with a secondary sign-up button. Copy comes
+   * from the persona's `cta` namespace.
+   */
+  cta: { kind: "signup" } | { kind: "browse"; href: string; signup?: boolean }
 }
 
 export const PERSONAS: Persona[] = [
@@ -48,7 +55,8 @@ export const PERSONAS: Persona[] = [
       "anyLanguage",
       "stayInformed"
     ],
-    body: ["bodytext"]
+    body: ["bodytext"],
+    cta: { kind: "signup" }
   },
   {
     slug: "for-orgs",
@@ -65,7 +73,8 @@ export const PERSONAS: Persona[] = [
       "legislativeResearch",
       "changeNorms"
     ],
-    body: ["bodytext"]
+    body: ["bodytext"],
+    cta: { kind: "signup" }
   },
   {
     slug: "for-legislators",
@@ -79,7 +88,8 @@ export const PERSONAS: Persona[] = [
       "languageAccess",
       "advancedStatistics"
     ],
-    body: ["bodytextOne", "bodytextTwo"]
+    body: ["bodytextOne", "bodytextTwo"],
+    cta: { kind: "browse", href: "/testimony", signup: true }
   }
 ]
 
@@ -379,6 +389,92 @@ const BenefitBody = ({
   )
 }
 
+/* Closing call to action, matching the Writing Effective Testimony page's card:
+   a navy pill button (a browse link, or the sign-up modal trigger) and a contact
+   line below it. The button covers both the styled <a> and the Bootstrap button
+   that SignInWithButton renders, whose full-width primary style is overridden. */
+const Cta = styled.div`
+  background: var(--maple-surface-base);
+  border-radius: var(--maple-radius-xl);
+  box-shadow: var(--maple-shadow-sm);
+  padding: 2.5rem 2rem;
+  margin-top: 1rem;
+  text-align: center;
+
+  h2 {
+    font-family: var(--maple-font-heading);
+    font-weight: 900;
+    color: ${NAVY};
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .lede {
+    color: var(--maple-text-body);
+    line-height: 1.65;
+    max-width: 34rem;
+    margin: 0 auto 1.5rem;
+  }
+
+  /* One or two navy pills at MAPLE's button height, centred and wrapping on
+     narrow screens. */
+  .cta-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .cta-action,
+  a.cta-action {
+    display: inline-block;
+    width: auto !important;
+    padding: var(--maple-space-sm) var(--maple-space-xl);
+    border-radius: var(--maple-radius-pill);
+    background: ${NAVY} !important;
+    border: 2px solid ${NAVY} !important;
+    color: var(--maple-text-inverse) !important;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .cta-action:hover,
+  a.cta-action:hover {
+    background: var(--maple-brand-primary-strong) !important;
+    border-color: var(--maple-brand-primary-strong) !important;
+    color: var(--maple-text-inverse) !important;
+  }
+
+  /* Secondary action: the same pill, outlined rather than filled. */
+  .cta-action-secondary,
+  a.cta-action-secondary {
+    background: transparent !important;
+    color: ${NAVY} !important;
+  }
+
+  .cta-action-secondary:hover,
+  a.cta-action-secondary:hover {
+    background: ${NAVY} !important;
+    color: var(--maple-text-inverse) !important;
+  }
+
+  .cta-action-wrap {
+    display: inline-block;
+  }
+
+  .cta-contact {
+    margin: 1.5rem 0 0;
+    font-size: 0.9375rem;
+  }
+
+  .cta-contact a {
+    color: ${NAVY};
+    font-weight: 600;
+    text-decoration: underline;
+  }
+`
+
 export const WhyUseMaple = ({
   slug,
   onSelect
@@ -511,6 +607,36 @@ export const WhyUseMaple = ({
           </ul>
         </Offer>
       </Detail>
+
+      <Cta>
+        <h2>{t(`${active.ns}:cta.headline`)}</h2>
+        <p className="lede">{t(`${active.ns}:cta.body`)}</p>
+        {active.cta.kind === "browse" ? (
+          <div className="cta-buttons">
+            <Internal className="cta-action" href={active.cta.href}>
+              {t(`${active.ns}:cta.button`)}
+            </Internal>
+            {active.cta.signup && (
+              <SignInWithButton
+                label={t(`${active.ns}:cta.signup`)}
+                className="cta-action-wrap"
+                buttonClassName="cta-action cta-action-secondary"
+              />
+            )}
+          </div>
+        ) : (
+          <SignInWithButton
+            label={t(`${active.ns}:cta.button`)}
+            className="cta-action-wrap"
+            buttonClassName="cta-action"
+          />
+        )}
+        <p className="cta-contact">
+          <a href="mailto:info@mapletestimony.org">
+            {t(`${active.ns}:cta.contact`)}
+          </a>
+        </p>
+      </Cta>
     </LearnLayout>
   )
 }
