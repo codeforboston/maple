@@ -142,7 +142,10 @@ const sampleBill: Bill = {
 const sampleHearing = {
   id: "hearing-101",
   startsAt: new Date("2026-03-12T10:00:00-05:00").getTime(),
-  videoURL: "https://malegislature.gov/"
+  videoURLs: [
+    "https://prodarchivevideo.blob.core.windows.net/video/2022/Hearings/Joint/April/12.mp4",
+    "https://prodarchivevideo.blob.core.windows.net/video/2022/Hearings/Joint/April/12_1.mp4"
+  ]
 }
 
 const emptyTestimonyListing: UsePublishedTestimonyListing = {
