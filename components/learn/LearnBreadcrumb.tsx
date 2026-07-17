@@ -42,18 +42,28 @@ const Nav = styled.nav`
   }
 `
 
-/** "Learn > {section}" trail shown at the top of each Learn sub-page. */
-export const LearnBreadcrumb = ({ section }: { section: string }) => {
+/**
+ * "{eyebrow} > {section}" trail shown at the top of a Learn or About sub-page.
+ * The eyebrow defaults to "Learn"; pass one (e.g. "About") to reuse the trail on
+ * other sections.
+ */
+export const LearnBreadcrumb = ({
+  section,
+  eyebrow
+}: {
+  section: string
+  eyebrow?: string
+}) => {
   const { t } = useTranslation("learn")
 
   return (
     <Nav aria-label={t("breadcrumbLabel")}>
       <ol>
-        {/* The Learn hub link is disabled for now -- the hub page still exists,
-            we just are not surfacing it yet. Restore the <Internal href="/learn">
-            wrapper (and its import) to re-enable it. */}
+        {/* The parent link is disabled for now -- the hub pages still exist, we
+            just are not surfacing them yet. Restore the <Internal> wrapper (and
+            its import) to re-enable it. */}
         <li>
-          <span className="disabled">{t("hub.eyebrow")}</span>
+          <span className="disabled">{eyebrow ?? t("hub.eyebrow")}</span>
         </li>
         <li aria-hidden="true" className="separator d-flex align-items-center">
           <ChevronRightIcon fontSize="inherit" />

@@ -85,9 +85,9 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           <NavbarLinkGoals handleClick={closeNav} />
           <NavbarLinkTeam handleClick={closeNav} />
           <NavbarLinkSupport handleClick={closeNav} />
+          <NavbarLinkInTheNews handleClick={closeNav} />
           <NavbarLinkFAQ handleClick={closeNav} />
           <NavbarLinkAI handleClick={closeNav} />
-          <NavbarLinkInTheNews handleClick={closeNav} />
         </NavDropdown>
 
         <NavDropdown className={"navLink-primary"} title={t("learn")}>
@@ -255,9 +255,9 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             <NavbarLinkGoals />
             <NavbarLinkTeam />
             <NavbarLinkSupport />
+            <NavbarLinkInTheNews />
             <NavbarLinkFAQ />
             <NavbarLinkAI />
-            <NavbarLinkInTheNews />
           </Dropdown.Menu>
         </Dropdown>
       </div>
