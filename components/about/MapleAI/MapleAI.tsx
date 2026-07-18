@@ -59,8 +59,9 @@ const PrinciplesGrid = styled.div`
   grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem 2rem;
   /* Match the py-4/px-4 (1.5rem) breathing room the other cards give their
-     content below the title bar; the old 0.25rem top crammed it upward. */
-  padding: 1.5rem;
+     content below the title bar; the old 0.25rem top crammed it upward. A
+     touch more at the bottom so the last row of tiles isn't tight to the edge. */
+  padding: 1.5rem 1.5rem 2rem;
 
   @media (max-width: 34rem) {
     grid-template-columns: 1fr;
@@ -103,7 +104,9 @@ const MapleAI = () => {
       <MapleAIBody className="px-0">
         {/* Guiding principles */}
         <Row>
-          <Col className="py-4">
+          {/* Tighter top than the other sections so the first card sits as
+              close under the subhead as the other About pages' cards do. */}
+          <Col className="pt-3 pb-4">
             <SectionContainer>
               <SectionTitle className="p-3">{t("section2.title")}</SectionTitle>
               <PrinciplesGrid>

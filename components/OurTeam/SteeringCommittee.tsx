@@ -10,7 +10,7 @@ export const SteeringCommittee = () => {
     <Container>
       <PageDescr className="py-3">{t("steering.desc")}</PageDescr>
       <Row>
-        <Col className="my-3">
+        <Col>
           <AboutPagesCard title={t("steering.section1Title")}>
             <MemberItem
               name="Matthew Victor"
@@ -38,7 +38,7 @@ export const SteeringCommittee = () => {
         </Col>
       </Row>
       <Row>
-        <Col className="my-3">
+        <Col>
           <AboutPagesCard title={t("steering.section2Title")}>
             <MemberItem name="James Vasquez" descr={t("steering.JVasquez")} />
             <Divider />

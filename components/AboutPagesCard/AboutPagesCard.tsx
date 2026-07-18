@@ -34,7 +34,7 @@ const AboutPagesCard: FC<PropsWithChildren<{ title: string }>> = ({
   children
 }) => {
   return (
-    <Card className="mx-sm-5 mx-xs-3 my-5 rounded-3 bg-white">
+    <Card className="mx-sm-5 mx-xs-3 my-3 my-md-5 rounded-3 bg-white">
       <StyledHeader
         as="h2"
         className="bg-secondary text-white overflow-hidden pt-2 pt-sm-3 pb-1 pb-sm-3 ps-4 ps-sm-5 pe-5"

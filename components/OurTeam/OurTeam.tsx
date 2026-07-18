@@ -39,7 +39,7 @@ export const OurTeam = () => {
       <TeamBody>
         <Tab.Container defaultActiveKey="steering_committee">
           <TabGroup />
-          <Row className="py-3 g-0">
+          <Row className="py-2 g-0">
             <Col>
               <Tab.Content>
                 <Tab.Pane eventKey="steering_committee">
@@ -60,22 +60,27 @@ export const OurTeam = () => {
   )
 }
 
-// Tabs stay in a single row at every screen size; the font shrinks on narrow
-// viewports so the three fit rather than collapsing to a dropdown.
+// Tabs stay in a single row at every screen size (rather than collapsing to a
+// dropdown). The three split the row evenly, so "Steering Committee" -- the
+// longest label -- is the first to run out of room and wrap to a second line,
+// which drops its underline below the other two. On smaller screens, scale the
+// type down fluidly and keep each label on one line so all three stay aligned.
 const TabsRow = styled(Row)`
-  @media (max-width: 36rem) {
-    font-size: 0.8125rem;
-  }
+  @media (max-width: 48rem) {
+    font-size: clamp(0.55rem, 3.25vw, 0.9375rem);
 
-  @media (max-width: 22rem) {
-    font-size: 0.6875rem;
+    .nav-link {
+      white-space: nowrap;
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
   }
 `
 
 const TabGroup = () => {
   const { t } = useTranslation("our-team")
   return (
-    <TabsRow className="py-3 g-0">
+    <TabsRow className="py-2 g-0">
       <Col className="text-center">
         <Nav className="our-team-tab flex-column">
           <Nav.Item>

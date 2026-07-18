@@ -17,10 +17,10 @@ const Page = styled.div`
 const Inner = styled.div<{ $width: Width }>`
   max-width: ${p => maxWidths[p.$width]};
   margin: 0 auto;
-  padding: 3.5rem 2rem;
+  padding: 3.25rem 2rem 3.5rem;
 
   @media (max-width: 36rem) {
-    padding: 2rem 1rem;
+    padding: 1.75rem 1rem 2rem;
   }
 `
 

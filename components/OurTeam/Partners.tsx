@@ -55,7 +55,7 @@ export const OurPartners = () => (
     <PartnerContentCard src="/pid.png" org="pid" />
     <PartnerContentCard src="/codeforbostonicon.png" org="codeforboston" />
     <PartnerContentCard
-      src="/northeastern_school_of_law_logo.svg"
+      src="/northeastern_school_of_law_logo.png"
       org="nulawlab"
     />
   </Container>

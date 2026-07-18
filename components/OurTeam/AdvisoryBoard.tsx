@@ -10,7 +10,7 @@ export const AdvisoryBoard = () => {
     <Container>
       <PageDescr className="py-3">{t("advisory.desc")}</PageDescr>
       <Row>
-        <Col className="my-3">
+        <Col>
           <AboutPagesCard title={t("advisory.title")}>
             <MemberItem name="David Fields" descr={t("advisory.DFields")} />
             <Divider />
