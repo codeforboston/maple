@@ -10,6 +10,7 @@ export const NewsCard = ({ newsItem }: NewsCardProps) => {
   const { t } = useTranslation("inTheNews")
   return (
     <div
+      role="listitem"
       className="d-flex flex-row flex-fill gap-4 p-4 w-100"
       style={{
         backgroundColor: "var(--maple-surface-base)",
@@ -43,7 +44,7 @@ export const NewsCard = ({ newsItem }: NewsCardProps) => {
           />
           <p className="m-0">{newsItem.author}</p>
         </div>
-        <h3
+        <h2
           className="m-0"
           style={{
             fontWeight: 700,
@@ -53,7 +54,7 @@ export const NewsCard = ({ newsItem }: NewsCardProps) => {
           }}
         >
           {newsItem.title}
-        </h3>
+        </h2>
         <div
           className="text-truncate"
           style={{ color: "var(--maple-text-body)", fontSize: "0.9375rem" }}

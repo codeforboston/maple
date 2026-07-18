@@ -139,18 +139,18 @@ export const FaqQandAButton = ({ question, answer }: faqQandAProps) => {
         </span>
         <span className="question">{question}</span>
       </button>
-      {open && (
-        <p className="answer" id={panelId}>
-          {answer}
-          {isSupport && (
-            <>
-              {" "}
-              {/* eslint-disable-next-line i18next/no-literal-string */}
-              <Internal href="/about/support-maple">this page</Internal>.
-            </>
-          )}
-        </p>
-      )}
+      {/* Kept mounted (hidden when collapsed) so the button's aria-controls
+          always references an element that exists in the DOM. */}
+      <p className="answer" id={panelId} hidden={!open}>
+        {answer}
+        {isSupport && (
+          <>
+            {" "}
+            {/* eslint-disable-next-line i18next/no-literal-string */}
+            <Internal href="/about/support-maple">this page</Internal>.
+          </>
+        )}
+      </p>
     </Item>
   )
 }

@@ -33,7 +33,7 @@ const Cta = styled.div`
   padding-bottom: 1.5rem;
   text-align: center;
 
-  h2 {
+  h3 {
     font-family: var(--maple-font-heading);
     font-weight: 900;
     color: var(--bs-blue);
@@ -100,9 +100,9 @@ const OurGoalsCardContent = () => {
   const { t } = useTranslation("goalsandmission")
   return (
     <>
-      <h5 className="text-center fw-bold tracking-tight pb-3 pb-sm-4">
+      <h3 className="h5 text-center fw-bold tracking-tight pb-3 pb-sm-4">
         {t("goals.overview")}
-      </h5>
+      </h3>
       <Row className="mb-4">
         <Col md={6}>
           <figure className="text-center mb-3">
@@ -156,9 +156,9 @@ const OurMissionCardContent = () => {
 
   return (
     <>
-      <h5 className="text-center fw-bold tracking-tight pb-3 pb-sm-4">
+      <h3 className="h5 text-center fw-bold tracking-tight pb-3 pb-sm-4">
         {t("mission.overview")}
-      </h5>
+      </h3>
       <Row className="mb-0">
         <Col xs={{ span: 12, order: 2 }} md={{ span: 6, order: 1 }} lg={8}>
           <p
@@ -223,7 +223,7 @@ const OurMissionCardContent = () => {
 
       {!authenticated && (
         <Cta>
-          <h2>{t("mission.ctaHeadline")}</h2>
+          <h3>{t("mission.ctaHeadline")}</h3>
           <p className="lede">{t("mission.ctaBody")}</p>
           <div className="cta-buttons">
             <SignInWithButton

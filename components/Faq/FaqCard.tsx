@@ -14,7 +14,15 @@ const Card = styled.section`
   box-shadow: var(--maple-shadow-sm);
   overflow: hidden;
 
-  > button {
+  > h2 {
+    font-family: var(--maple-font-heading);
+    font-weight: 700;
+    color: var(--bs-blue);
+    font-size: 1.125rem;
+    margin: 0;
+  }
+
+  > h2 > button {
     width: 100%;
     display: flex;
     align-items: center;
@@ -24,19 +32,14 @@ const Card = styled.section`
     background: none;
     border: 0;
     cursor: pointer;
+    font: inherit;
+    color: inherit;
+    text-align: left;
 
     &:focus-visible {
       outline: 2px solid var(--bs-blue);
       outline-offset: -2px;
     }
-  }
-
-  h2 {
-    font-family: var(--maple-font-heading);
-    font-weight: 700;
-    color: var(--bs-blue);
-    font-size: 1.125rem;
-    margin: 0;
   }
 
   /* Chevron size and animation copied from the Why Use MAPLE toggles: a single
@@ -119,19 +122,24 @@ export const FaqCard = ({ heading, qAndAs }: faqCardProps) => {
 
   return (
     <Card>
-      <button
-        type="button"
-        aria-expanded={open}
-        aria-controls={panelId}
-        onClick={() => setOpen(o => !o)}
-      >
-        <h2>{heading ?? ""}</h2>
-        <ChevronDownIcon
-          className="chevron"
-          aria-hidden="true"
-          sx={{ fontSize: "1.25rem" }}
-        />
-      </button>
+      {/* The heading wraps the button (WAI-ARIA accordion pattern) so the
+          category is exposed as a real h2 -- a heading nested inside the button
+          would be flattened into the button's label and lost. */}
+      <h2>
+        <button
+          type="button"
+          aria-expanded={open}
+          aria-controls={panelId}
+          onClick={() => setOpen(o => !o)}
+        >
+          {heading ?? ""}
+          <ChevronDownIcon
+            className="chevron"
+            aria-hidden="true"
+            sx={{ fontSize: "1.25rem" }}
+          />
+        </button>
+      </h2>
       <div className="items" id={panelId} data-open={open}>
         <div className="items-inner">
           <div className="items-content">
