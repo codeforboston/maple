@@ -17,7 +17,29 @@ const config = {
 module.exports = {
   ...config,
   async redirects() {
-    return [redirectFirebaseAuthHandlers()]
+    return [
+      redirectFirebaseAuthHandlers(),
+      // Three of the four old Learn testimony tabs were consolidated into
+      // /learn/testimony. These slugs were linked from the footer and from
+      // external sites, so they redirect permanently rather than 404. Each tab
+      // became a section of the new page and keeps its old slug as an anchor id
+      // (see ANCHORS in components/learn/Testimony/AboutTestimony.tsx), so the
+      // reader lands on the content that replaced the page they asked for
+      // rather than at the top. "testimony-basics" was the overview tab, which
+      // the whole page now covers, so it has no anchor.
+      ...[
+        "testimony-basics",
+        "role-of-testimony",
+        "communicating-with-legislators"
+      ].map(slug => ({
+        source: `/learn/${slug}`,
+        destination:
+          slug === "testimony-basics"
+            ? "/learn/testimony"
+            : `/learn/testimony#${slug}`,
+        permanent: true
+      }))
+    ]
   },
   async rewrites() {
     const rewrites = [

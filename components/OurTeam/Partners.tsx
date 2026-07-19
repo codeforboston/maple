@@ -1,10 +1,10 @@
 import { useTranslation, Trans } from "next-i18next"
 import AboutPagesCard from "../AboutPagesCard/AboutPagesCard"
 import { Col, Container, Row } from "../bootstrap"
-import { PageTitle, PageDescr } from "../shared/CommonComponents"
+import { PageDescr } from "../shared/CommonComponents"
 import Image from "react-bootstrap/Image"
 
-const LocalizedContent = (props: {
+export const LocalizedContent = (props: {
   i18nKey: string
   linkClassName?: string
 }) => (
@@ -36,7 +36,7 @@ const PartnerContentCard = ({ src, org }: { src: string; org: string }) => {
               <Image fluid src={src} alt={t("logo", { org: orgTitle })} />
             </Col>
             <Col className="align-self-center" md={9}>
-              <p className="lh-sm tracking-wide fs-5 pt-4 pt-md-0">
+              <p className="lh-sm tracking-wide fs-6 pt-4 pt-md-0">
                 <LocalizedContent i18nKey={`${org}.content`} />
               </p>
             </Col>
@@ -49,15 +49,14 @@ const PartnerContentCard = ({ src, org }: { src: string; org: string }) => {
 
 export const OurPartners = () => (
   <Container>
-    <PageTitle>{useTranslation("partners").t("title")}</PageTitle>
     <PageDescr className="py-3">
       <LocalizedContent i18nKey="desc" linkClassName="text-decoration-none" />
     </PageDescr>
+    <PartnerContentCard src="/pid.png" org="pid" />
+    <PartnerContentCard src="/codeforbostonicon.png" org="codeforboston" />
     <PartnerContentCard
-      src="/northeastern_school_of_law_logo.svg"
+      src="/northeastern_school_of_law_logo.png"
       org="nulawlab"
     />
-    <PartnerContentCard src="/codeforbostonicon.png" org="codeforboston" />
-    <PartnerContentCard src="/pid.png" org="pid" />
   </Container>
 )

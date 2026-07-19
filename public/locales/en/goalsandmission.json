@@ -1,5 +1,6 @@
 {
   "header": "Our Goals and Mission",
+  "breadcrumb": "Mission & Goals",
   "goals": {
     "title": "Our Goals",
     "overview": "MAPLE is a free public platform for submitting and reading testimony on Massachusetts legislation. We aim to achieve these goals:",
@@ -18,6 +19,9 @@
     "callout": "MAPLE seeks to fill this void.",
     "publish1": "When you submit testimony through the MAPLE platform, it is published in our freely accessible online database (this website), allowing legislators and other stakeholders to read and benefit from your perspective. MAPLE also assists in identifying the appropriate legislative recipients for your testimony and prepares a ready-to-send email on your behalf.",
     "publish2": "By facilitating the submission and sharing of testimony, we aim to enhance self-governance and contribute to better policy outcomes that reflect the needs, values, and objectives of Massachusetts residents. While using MAPLE is not required to submit testimony, each contribution enriches our collective understanding and empowers more individuals to engage effectively in the legislative process.",
-    "submit_now": "Submit your testimony now!"
+    "submit_now": "Submit your testimony now!",
+    "ctaHeadline": "Ready to get started?",
+    "ctaBody": "Whether you're a resident, an organization, or a legislator, discover the ways MAPLE makes civic engagement easier.",
+    "ctaSecondary": "Learn More"
   }
 }

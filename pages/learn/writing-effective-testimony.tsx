@@ -1,10 +1,10 @@
 import { createPage } from "../../components/page"
-import LearnHub from "components/learn/Hub/LearnHub"
+import WritingTips from "components/learn/Testimony/WritingTips"
 import { createGetStaticTranslationProps } from "components/translations"
 
 export default createPage({
-  titleI18nKey: "titles.learn_hub",
-  Page: () => <LearnHub />
+  titleI18nKey: "titles.writing_testimony",
+  Page: () => <WritingTips />
 })
 
 export const getStaticProps = createGetStaticTranslationProps([

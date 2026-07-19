@@ -231,11 +231,31 @@ export const NavbarLinkEffective: React.FC<
   return (
     <NavbarDropdownLink
       className={isMobile ? "navLink-primary" : ""}
-      href="/learn/testimony-basics"
+      href="/learn/testimony"
       handleClick={handleClick}
       other={other}
     >
       {t("navigation.aboutTestimony")}
+    </NavbarDropdownLink>
+  )
+}
+
+export const NavbarLinkWritingTestimony: React.FC<
+  React.PropsWithChildren<{
+    handleClick?: any
+    other?: any
+  }>
+> = ({ handleClick, other }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  const { t } = useTranslation(["common", "auth"])
+  return (
+    <NavbarDropdownLink
+      className={isMobile ? "navLink-primary" : ""}
+      href="/learn/writing-effective-testimony"
+      handleClick={handleClick}
+      other={other}
+    >
+      {t("navigation.writingTestimony")}
     </NavbarDropdownLink>
   )
 }

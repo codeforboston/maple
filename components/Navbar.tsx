@@ -12,23 +12,24 @@ import {
   NavbarLinkBallotQuestions,
   DESKTOP_NAV_ITEM_CLASS,
   NavbarLinkAI,
-  NavbarLinkAiTools,
   NavbarLinkBills,
-  NavbarLinkHearings,
-  NavbarLinkEditProfile,
+  NavbarLinkAiTools,
   NavbarLinkEffective,
+  NavbarLinkHearings,
+  NavbarLinkProcess,
+  NavbarLinkWhyUse,
+  NavbarLinkEditProfile,
   NavbarLinkFAQ,
   NavbarLinkGoals,
   NavbarLinkInTheNews,
   NavbarLinkLogo,
   NavbarLinkNewsfeed,
-  NavbarLinkProcess,
   NavbarLinkSignOut,
   NavbarLinkSupport,
   NavbarLinkTeam,
   NavbarLinkTestimony,
-  NavbarLinkViewProfile,
-  NavbarLinkWhyUse
+  NavbarLinkWritingTestimony,
+  NavbarLinkViewProfile
 } from "./NavbarComponents"
 
 const MobileCollapse = styled(Navbar.Collapse)`
@@ -84,13 +85,14 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           <NavbarLinkGoals handleClick={closeNav} />
           <NavbarLinkTeam handleClick={closeNav} />
           <NavbarLinkSupport handleClick={closeNav} />
+          <NavbarLinkInTheNews handleClick={closeNav} />
           <NavbarLinkFAQ handleClick={closeNav} />
           <NavbarLinkAI handleClick={closeNav} />
-          <NavbarLinkInTheNews handleClick={closeNav} />
         </NavDropdown>
 
         <NavDropdown className={"navLink-primary"} title={t("learn")}>
           <NavbarLinkEffective handleClick={closeNav} />
+          <NavbarLinkWritingTestimony handleClick={closeNav} />
           <NavbarLinkProcess handleClick={closeNav} />
           <NavbarLinkWhyUse handleClick={closeNav} />
           <NavbarLinkAiTools handleClick={closeNav} />
@@ -253,9 +255,9 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             <NavbarLinkGoals />
             <NavbarLinkTeam />
             <NavbarLinkSupport />
+            <NavbarLinkInTheNews />
             <NavbarLinkFAQ />
             <NavbarLinkAI />
-            <NavbarLinkInTheNews />
           </Dropdown.Menu>
         </Dropdown>
       </div>
@@ -270,6 +272,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <NavbarLinkEffective />
+            <NavbarLinkWritingTestimony />
             <NavbarLinkProcess />
             <NavbarLinkWhyUse />
             <NavbarLinkAiTools />
