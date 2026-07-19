@@ -14,7 +14,7 @@ export const LocalizedContent = (props: {
     components={{
       a: (
         <a
-          href="value-overridden-by-partners-json"
+          // href="value-overridden-by-partners-json"
           target="_blank"
           rel="noreferrer"
           className={props.linkClassName}
