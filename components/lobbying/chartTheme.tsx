@@ -199,7 +199,7 @@ export const LEGEND_PROPS = {
 export const MapleTooltip: React.FC<
   TooltipContentProps<ValueType, NameType> & {
     labelFormatter?: (label: string | number) => React.ReactNode
-    valueFormatter?: (value: ValueType) => string
+    valueFormatter?: (value: ValueType, dataKey?: NameType) => string
   }
 > = ({ active, payload, label, labelFormatter, valueFormatter }) => {
   if (!active || !payload?.length) return null
@@ -219,7 +219,14 @@ export const MapleTooltip: React.FC<
             {entry.name}
           </span>
           <span style={{ fontWeight: 600 }}>
-            {entry.value != null ? fmt(entry.value) : ""}
+            {entry.value != null
+              ? fmt(
+                  entry.value,
+                  typeof entry.dataKey !== "function"
+                    ? entry.dataKey
+                    : undefined
+                )
+              : ""}
           </span>
         </div>
       ))}

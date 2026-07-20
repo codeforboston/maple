@@ -25,10 +25,65 @@ FILINGS_COLLECTION = "lobbyingFilings"
 SCRAPER_DOC = "scrapers/lobbying"
 BACKFILL_DOC = "scrapers/lobbyingBackfill"
 BACKFILL_URLS_COLLECTION = "processedUrls"
+STATS_COLLECTION = "lobbyingMeta"
+STATS_DOC_ID = "stats"
 
 
 def _now() -> datetime:
     return datetime.now(tz=timezone.utc)
+
+
+def compute_stats(db: firestore.Client) -> None:
+    """Recompute and write the lobbyingMeta/stats singleton from raw collections."""
+    print("\nRecomputing stats…")
+    bills: set[str] = set()
+    courts: set[int] = set()
+    filings_by_year: dict[str, int] = {}
+    total_filings = 0
+
+    for doc in db.collection(FILINGS_COLLECTION).stream():
+        d = doc.to_dict()
+        year = str(d.get("year", ""))
+        gc = d.get("generalCourt")
+        bill_id = d.get("billId")
+        if bill_id and len(bill_id) > 2 and gc:
+            bills.add(f"{gc}/{bill_id}")
+        if gc:
+            courts.add(gc)
+        if year:
+            filings_by_year[year] = filings_by_year.get(year, 0) + 1
+        total_filings += 1
+
+    client_norms: set[str] = set()
+    spend_by_year: dict[str, float] = {}
+    total_registrants = 0
+
+    for doc in db.collection(REGISTRANTS_COLLECTION).stream():
+        d = doc.to_dict()
+        year = str(d.get("year", ""))
+        for c in d.get("clients", []):
+            norm = c.get("clientNameNorm")
+            if norm:
+                client_norms.add(norm)
+            comp = c.get("compensation")
+            if comp is not None and year:
+                spend_by_year[year] = spend_by_year.get(year, 0) + comp
+        total_registrants += 1
+
+    stats = {
+        "totalFilings": total_filings,
+        "totalRegistrants": total_registrants,
+        "totalClients": len(client_norms),
+        "totalBillsWithFilings": len(bills),
+        "courtsWithData": sorted(courts),
+        "spendByYear": spend_by_year,
+        "filingsByYear": filings_by_year,
+    }
+    db.collection(STATS_COLLECTION).document(STATS_DOC_ID).set(stats, merge=True)
+    print(
+        f"  stats written: {total_filings} filings, "
+        f"{total_registrants} registrants, {len(client_norms)} clients"
+    )
 
 
 def write_registrant(

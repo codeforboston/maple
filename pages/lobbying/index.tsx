@@ -5,6 +5,7 @@ import {
   Bar,
   CartesianGrid,
   ComposedChart,
+  Legend,
   Line,
   ResponsiveContainer,
   Tooltip,
@@ -107,68 +108,94 @@ function SpendFilingsChart({ stats }: { stats: LobbyingStats | undefined }) {
 
   if (!stats || data.length === 0) return null
 
+  const axisLabelStyle: React.CSSProperties = {
+    position: "absolute",
+    top: 0,
+    fontSize: 11,
+    fontWeight: 700,
+    color: MAPLE_COLORS.textMuted,
+    fontFamily: "Nunito, system-ui, sans-serif",
+    pointerEvents: "none",
+    lineHeight: 1
+  }
+
   return (
     <ChartContainer
       title={`${t("fields.amount")} & ${t("fields.filings")} by ${t(
         "filters.year"
       )}`}
-      height={240}
+      height={260}
       className="mb-4"
     >
-      <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart
-          data={data}
-          margin={{ top: 4, right: 48, left: 0, bottom: 0 }}
-        >
-          <CartesianGrid {...GRID_PROPS} />
-          <XAxis dataKey="year" {...X_AXIS_PROPS} />
-          <YAxis
-            yAxisId="spend"
-            orientation="left"
-            {...Y_AXIS_PROPS}
-            tickFormatter={formatCurrencyCompact}
-          />
-          <YAxis
-            yAxisId="filings"
-            orientation="right"
-            tick={{
-              fill: MAPLE_COLORS.textMuted,
-              fontSize: 12,
-              fontFamily: "Nunito, system-ui, sans-serif"
-            }}
-            axisLine={false}
-            tickLine={false}
-            width={48}
-            tickFormatter={formatCount}
-          />
-          <Tooltip
-            content={props => (
-              <MapleTooltip
-                {...props}
-                labelFormatter={y => `${y}`}
-                valueFormatter={v => {
-                  const n = Number(v)
-                  return n > 10_000 ? formatCurrency(n) : formatCount(n)
-                }}
-              />
-            )}
-          />
-          <Bar
-            yAxisId="spend"
-            dataKey="spend"
-            name={t("fields.amount")}
-            fill={MAPLE_COLORS.periwinkle}
-            {...BAR_PROPS_COMPACT}
-          />
-          <Line
-            yAxisId="filings"
-            dataKey="filings"
-            name={t("fields.filings")}
-            stroke={MAPLE_COLORS.primary}
-            {...LINE_PROPS_EMPHASIS}
-          />
-        </ComposedChart>
-      </ResponsiveContainer>
+      <div style={{ position: "relative", width: "100%", height: "100%" }}>
+        <span style={{ ...axisLabelStyle, left: 4 }}>{t("fields.amount")}</span>
+        <span style={{ ...axisLabelStyle, right: 52 }}>
+          {t("fields.filings")}
+        </span>
+        <ResponsiveContainer width="100%" height="100%">
+          <ComposedChart
+            data={data}
+            margin={{ top: 16, right: 48, left: 0, bottom: 4 }}
+          >
+            <CartesianGrid {...GRID_PROPS} />
+            <XAxis dataKey="year" {...X_AXIS_PROPS} />
+            <YAxis
+              yAxisId="spend"
+              orientation="left"
+              {...Y_AXIS_PROPS}
+              tickFormatter={formatCurrencyCompact}
+            />
+            <YAxis
+              yAxisId="filings"
+              orientation="right"
+              tick={{
+                fill: MAPLE_COLORS.textMuted,
+                fontSize: 12,
+                fontFamily: "Nunito, system-ui, sans-serif"
+              }}
+              axisLine={false}
+              tickLine={false}
+              width={56}
+              tickFormatter={formatCount}
+            />
+            <Legend
+              wrapperStyle={{
+                fontSize: 12,
+                fontFamily: "Nunito, system-ui, sans-serif",
+                color: MAPLE_COLORS.textMuted,
+                paddingTop: 4
+              }}
+            />
+            <Tooltip
+              content={props => (
+                <MapleTooltip
+                  {...props}
+                  labelFormatter={y => `${y}`}
+                  valueFormatter={(v, key) =>
+                    key === "filings"
+                      ? formatCount(Number(v))
+                      : formatCurrency(Number(v))
+                  }
+                />
+              )}
+            />
+            <Bar
+              yAxisId="spend"
+              dataKey="spend"
+              name={t("fields.amount")}
+              fill={MAPLE_COLORS.periwinkle}
+              {...BAR_PROPS_COMPACT}
+            />
+            <Line
+              yAxisId="filings"
+              dataKey="filings"
+              name={t("fields.filings")}
+              stroke={MAPLE_COLORS.primary}
+              {...LINE_PROPS_EMPHASIS}
+            />
+          </ComposedChart>
+        </ResponsiveContainer>
+      </div>
     </ChartContainer>
   )
 }
@@ -281,6 +308,37 @@ function LobbyingOverview() {
           </Col>
         </Row>
 
+        <Row className="mb-3">
+          <Col>
+            <p style={dataNotesStyle}>
+              Compensation figures reflect amounts reported by registered
+              lobbyists and employers to the Massachusetts Secretary of State
+              under{" "}
+              <a
+                href="https://malegislature.gov/Laws/GeneralLaws/PartI/TitleI/Chapter3"
+                target="_blank"
+                rel="noreferrer"
+              >
+                MGL Chapter 3
+              </a>
+              . Data begins in 2005, the first year available on the portal. The
+              sharp increase in reported activity starting in 2010 coincides
+              with{" "}
+              <a
+                href="https://malegislature.gov/Laws/SessionLaws/Acts/2009/Chapter28"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Chapter 28 of the Acts of 2009
+              </a>
+              , which significantly expanded lobbying disclosure requirements.
+              Apparent increases in compensation and disclosure filings in 2014
+              and 2019 likely reflect changes in how the portal records activity
+              rather than real-world shifts in lobbying volume.
+            </p>
+          </Col>
+        </Row>
+
         <Row>
           <Col>
             <LobbyingAttribution />
@@ -366,6 +424,12 @@ const entryCardDesc: React.CSSProperties = {
   fontSize: 13,
   color: MAPLE_COLORS.textMuted,
   marginTop: "0.2rem"
+}
+
+const dataNotesStyle: React.CSSProperties = {
+  fontSize: 13,
+  color: MAPLE_COLORS.textMuted,
+  lineHeight: 1.6
 }
 
 const entryCardCount: React.CSSProperties = {

@@ -14,21 +14,14 @@ export const script: Script = async ({ db }) => {
   const registrantsSnap = await db.collection(REGISTRANTS_COLLECTION).get()
   console.log(`  ${registrantsSnap.size} registrants`)
 
-  const entityNames = new Set<string>()
-  const clientNames = new Set<string>()
   const bills = new Set<string>()
   const courts = new Set<number>()
-  const spendByYear: Record<string, number> = {}
   const filingsByYear: Record<string, number> = {}
 
   for (const doc of filingsSnap.docs) {
     const d = doc.data()
     const year: number = d.year
     const gc: number = d.generalCourt
-
-    entityNames.add(d.entityNameNorm ?? d.entityName)
-
-    if (d.clientNameNorm) clientNames.add(d.clientNameNorm)
 
     if (d.billId && d.billId.length > 2) {
       bills.add(`${gc}/${d.billId}`)
@@ -38,24 +31,24 @@ export const script: Script = async ({ db }) => {
 
     const y = String(year)
     filingsByYear[y] = (filingsByYear[y] ?? 0) + 1
-    if (d.amount != null) {
-      spendByYear[y] = (spendByYear[y] ?? 0) + d.amount
-    }
   }
 
-  // Also count unique clients from registrant docs (more reliable than filings)
-  const clientNormsFromRegistrants = new Set<string>()
+  // Aggregate spend and unique clients from registrant docs.
+  // Registrant clients[].compensation is the annual total paid per client
+  // relationship — more accurate than the per-bill amount on filings.
+  const clientNorms = new Set<string>()
+  const spendByYear: Record<string, number> = {}
   for (const doc of registrantsSnap.docs) {
     const d = doc.data()
+    const y = String(d.year)
     for (const c of d.clients ?? []) {
-      if (c.clientNameNorm) clientNormsFromRegistrants.add(c.clientNameNorm)
+      if (c.clientNameNorm) clientNorms.add(c.clientNameNorm)
+      if (c.compensation != null) {
+        spendByYear[y] = (spendByYear[y] ?? 0) + c.compensation
+      }
     }
   }
-  // Use whichever source gives more clients
-  const totalClients = Math.max(
-    clientNames.size,
-    clientNormsFromRegistrants.size
-  )
+  const totalClients = clientNorms.size
 
   const stats = {
     totalFilings: filingsSnap.size,

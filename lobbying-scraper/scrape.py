@@ -39,6 +39,7 @@ from writer import (
     BACKFILL_DOC,
     BACKFILL_URLS_COLLECTION,
     SCRAPER_DOC,
+    compute_stats,
     write_filings,
     write_registrant,
 )
@@ -282,6 +283,11 @@ def main() -> None:
     else:
         n = run_backfill(db, years, limit=args.limit, dry_run=args.dry_run)
         print(f"\nBackfill complete: {n} new disclosures written.")
+
+    # Recompute aggregate stats after any run that wrote new data.
+    # Skip when --limit is set (partial run would produce inaccurate totals).
+    if db is not None and not args.dry_run and not args.limit and n > 0:
+        compute_stats(db)
 
     # Emit structured result for callers (e.g. TypeScript backfill script)
     print(json.dumps({"newDisclosures": n}), file=sys.stderr)
