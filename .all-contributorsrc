@@ -857,6 +857,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "k-g-k",
+      "name": "Grace (Iron Yard/CaseNEX/IO Account)",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10489124?v=4",
+      "profile": "https://github.com/k-g-k",
+      "contributions": [
+        "code",
+        "design"
+      ]
     }
   ],
   "commitType": "docs"
