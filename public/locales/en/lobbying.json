@@ -13,7 +13,8 @@
     "disclosures": "Disclosures",
     "disclosureLink": "Disclosure {{number}}",
     "viewOnMaple": "View bill on MAPLE →",
-    "total": "total"
+    "total": "total",
+    "generalCourt": "General Court"
   },
   "registrantType": {
     "all": "All types",

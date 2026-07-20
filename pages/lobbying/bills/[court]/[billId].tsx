@@ -86,6 +86,21 @@ function SortTh({
   )
 }
 
+function ordinalSuffix(n: number): string {
+  const v = n % 100
+  if (v >= 11 && v <= 13) return "th"
+  switch (n % 10) {
+    case 1:
+      return "st"
+    case 2:
+      return "nd"
+    case 3:
+      return "rd"
+    default:
+      return "th"
+  }
+}
+
 function BillFilingsPage() {
   const { t } = useTranslation("lobbying")
   const { query } = useRouter()
@@ -97,6 +112,11 @@ function BillFilingsPage() {
     status,
     error
   } = useLobbyingFilingsForBill(court, billId ?? "")
+
+  const billDescription = useMemo(
+    () => filings?.find(f => f.activityTitle)?.activityTitle ?? null,
+    [filings]
+  )
 
   const [sortKey, setSortKey] = useState<SortKey>("year")
   const [sortDir, setSortDir] = useState<SortDir>("desc")
@@ -151,6 +171,23 @@ function BillFilingsPage() {
               ← {t("titles.bills")}
             </a>
             <h1 className="mt-2">{billId}</h1>
+            {court > 0 && (
+              <p
+                style={{
+                  color: MAPLE_COLORS.textMuted,
+                  fontSize: 13,
+                  marginBottom: "0.15rem"
+                }}
+              >
+                {court}
+                {ordinalSuffix(court)} {t("misc.generalCourt")}
+              </p>
+            )}
+            {billDescription && (
+              <p style={{ fontSize: 14, marginBottom: "0.25rem" }}>
+                {billDescription}
+              </p>
+            )}
             {mapleHref && (
               <p style={{ fontSize: 13, marginBottom: "0.25rem" }}>
                 <a href={mapleHref} style={{ color: MAPLE_COLORS.primary }}>
@@ -217,9 +254,6 @@ function BillFilingsPage() {
                           dir={sortDir}
                           onSort={handleSort}
                         />
-                        <th style={thStyle} className={styles.mobileHide}>
-                          {t("fields.activity")}
-                        </th>
                         <SortTh
                           label={t("filters.position")}
                           sortKey="position"
@@ -266,16 +300,6 @@ function BillFilingsPage() {
                             >
                               {f.entityName}
                             </a>
-                          </td>
-                          <td
-                            className={styles.mobileHide}
-                            style={{
-                              ...cellStyle,
-                              color: MAPLE_COLORS.textMuted,
-                              fontSize: 12
-                            }}
-                          >
-                            {f.activityTitle || "—"}
                           </td>
                           <td style={cellStyle}>
                             <span
