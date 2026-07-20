@@ -788,25 +788,46 @@
       "collectionGroup": "ballotQuestions",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "electionYear", "order": "ASCENDING" },
-        { "fieldPath": "ballotStatus", "order": "ASCENDING" }
+        {
+          "fieldPath": "electionYear",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "ballotStatus",
+          "order": "ASCENDING"
+        }
       ]
     },
     {
       "collectionGroup": "publishedTestimony",
       "queryScope": "COLLECTION_GROUP",
       "fields": [
-        { "fieldPath": "ballotQuestionId", "order": "ASCENDING" },
-        { "fieldPath": "publishedAt", "order": "DESCENDING" }
+        {
+          "fieldPath": "ballotQuestionId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publishedAt",
+          "order": "DESCENDING"
+        }
       ]
     },
     {
       "collectionGroup": "publishedTestimony",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "billId", "order": "ASCENDING" },
-        { "fieldPath": "court", "order": "ASCENDING" },
-        { "fieldPath": "ballotQuestionId", "order": "ASCENDING" }
+        {
+          "fieldPath": "billId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "court",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "ballotQuestionId",
+          "order": "ASCENDING"
+        }
       ]
     },
     {
@@ -896,6 +917,118 @@
             "dimension": 768,
             "flat": {}
           }
+        }
+      ]
+    },
+    {
+      "collectionGroup": "lobbyingFilings",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "generalCourt",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "billId",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "lobbyingFilings",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "generalCourt",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "chamber",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "lobbyingFilings",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "generalCourt",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "entityNameNorm",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "lobbyingFilings",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "generalCourt",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "clientNameNorm",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "lobbyingFilings",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "registrantId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "year",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "lobbyingFilings",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "clientNameNorm",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "year",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "lobbyingFilings",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "entityNameNorm",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "year",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "lobbyingRegistrants",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "entityNameNorm",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "year",
+          "order": "DESCENDING"
         }
       ]
     }

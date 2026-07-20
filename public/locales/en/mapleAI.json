@@ -1,15 +1,16 @@
 {
   "title": "How MAPLE Uses AI",
+  "breadcrumb": "How MAPLE Uses AI",
   "mission-statement": "Our commitment is to provide you with the most reliable and accessible legislative information using cutting-edge AI technology. Stay tuned for continuous improvements and new features as we enhance MAPLE’s AI capabilities.",
   "legal-advisory": "We advise users to consult the full text of the legislation and official resources for the most accurate and comprehensive understanding.",
   "section1": {
-    "title": "How MAPLE Uses AI",
+    "title": "How MAPLE Uses Gen AI",
     "desc1": "We use Artificial Intelligence (AI) on MAPLE to help you quickly understand legislative information and navigate to policies that interest you. Right now, we use AI in three ways:",
-    "desc2Bold": "Bill Summaries",
+    "desc2Bold": "Plain-language Summaries:",
     "desc2Main": "We use AI to generate concise summaries for each piece of legislation. These summaries help you grasp the essentials of a bill without wading through dense legal text.",
-    "desc3Bold": "Topic Tags",
+    "desc3Bold": "Dynamic Tagging:",
     "desc3Main": "AI tags each bill with relevant topics, making it easier for you to find related legislation and understand the broader context. These tags categorize bills by subject matter, allowing for efficient searching and filtering.",
-    "desc4Bold": "Hearing transcriptions",
+    "desc4Bold": "Speech-to-text:",
     "desc4Main": "AI transcribes video recordings of oral hearings held at the legislature to generate a searchable text transcript."
   },
   "section2": {
@@ -24,7 +25,7 @@
     "desc4Main": "We integrate feedback from a range of stakeholders to build our AI deployments, and solicit community input to continually improve our use of AI. You can email any questions or ideas to admin@mapletestimony.org."
   },
   "section3": {
-    "title": "Limitations and Risks of AI",
+    "title": "Disclaimers",
     "desc1Title": "Limitations",
     "desc1Main": "While we believe AI significantly enhances your experience on MAPLE, it has limitations. AI-generated summaries and tags are based on limited information about the bill in question and existing law and may not always capture every nuance or recent events. Legislative information is also complex and can use archaic or legal language that is difficult for AI models to properly understand and summarize. Transcriptions of oral hearings can be flawed and may lack context not present in the audio recording. Finally, like us humans, AI can make mistakes in both understanding and explaining policies.",
     "desc2Title": "Risks",
@@ -37,20 +38,9 @@
   "section4": {
     "title": "About Our AI Systems",
     "sub1": {
-      "title": "Overview",
-      "desc1": "Our AI features are built with foundation models and language processing technologies. Using a large language model, we generate summaries and tags by analyzing the full text of each bill and associated metadata, including the relevant sections of the existing law. Using a speech-to-text model, we transcribe audio recordings of hearings.",
-      "desc2": "Key features of our AI deployment include:",
-      "desc3Bold": "Real-time Summaries:",
-      "desc3Main": "AI generates summaries as new bills are filed or updated.",
-      "desc4Bold": "Dynamic Tagging:",
-      "desc4Main": "Bills are tagged with multiple relevant topics, helping you find similar legislation quickly.",
-      "desc5Bold": "Transcriptions:",
-      "desc5Main": "Oral hearing recordings are transcribed to text, making it easier to find discussion about particular bills and issues.",
-      "desc6Bold": "Scalability:",
-      "desc6Main": "Our system is designed to handle the large volume of bills in each legislative session, ensuring timely and accurate updates."
+      "desc1": "Our AI features are built with foundation models and language processing technologies. Using a large language model, we generate summaries and tags by analyzing the full text of each bill and associated metadata, including the relevant sections of the existing law. Using a speech-to-text model, we transcribe audio recordings of hearings. Our system is designed to handle the large volume of bills in each legislative session, ensuring timely and accurate updates."
     },
     "sub2": {
-      "title": "Technical details",
       "desc1Bold": "Backend Integration:",
       "desc1Main": "We use Python functions to call commercially available AI models, integrating seamlessly with our backend systems.",
       "desc2Bold": "API Utilization:",
@@ -59,10 +49,15 @@
       "desc3Main": "Summaries, tags, and hearing transcripts are stored in our backend, timestamped, and linked to specific bills, hearings, and legislative sessions. We may regenerate them periodically as modeling capabilities evolve."
     }
   },
+  "aiResearch": {
+    "title": "Use AI to research MAPLE data",
+    "desc": "You can connect AI chat tools like Claude directly to MAPLE's database of bills, testimony, and ballot questions, ask questions in plain English, and get real-time answers drawn from the full legislative record.",
+    "linkText": "Learn how to set up AI research tools with your MAPLE account →"
+  },
   "section5": {
     "title": "Future Deployments of AI",
     "desc1": "We are continually exploring new ways to leverage AI to improve your experience on MAPLE. Future enhancements may include more personalized recommendations, deeper insights into legislative trends, and interactive tools to engage with legislative data more effectively. Here are some projects we are considering:",
-    "desc2Bold": "Testimony Summarizer:",
+    "desc2Bold": "Testimony Synthesizer:",
     "desc2Main": "AI will summarize all of the testimonies on a single bill or related bills, and identify points of consensus, disagreement and notable points.",
     "desc3Bold": "Testimony-Drafting Copilot:",
     "desc3Main": "AI will help a user organize their thoughts, compose appropriate testimony and cite relevant sources.",

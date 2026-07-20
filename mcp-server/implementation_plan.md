@@ -1,154 +1,112 @@
-This document outlines the implementation for a Model Context Protocol (MCP) server enabling RAG operations over MAPLE data.
+This document describes the implemented MCP server enabling AI-powered RAG over MAPLE legislative data.
 
-| Category       | Description                                                                                                                                                                                                                                                                                                        |
-| :------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Goals**      | • Inform and empower constituents for policy change<br>• Increase engagement between legislature and constituents<br>• Grow MAPLE usage by organizations, advocates, and journalists                                                                                                                               |
-| **Jobs**       | • "Tell me about bills that would..." (RAG over bills)<br>• "Tell me what people are saying about..." (RAG over testimony)<br>• "Tell me about the 2026 ballot questions regarding..." (RAG over ballot questions)<br>• "Tell me what other states are doing..." or "if it is true that..." (RAG over MAPLE + Web) |
-| **Mechanisms** | • Deploy AI features on MAPLE<br>• Enable 3rd parties (sites, Agent Skills)<br>• Enable individual authorized users to leverage MAPLE data                                                                                                                                                                         |
+| Category       | Description                                                                                                                                                                                                        |
+| :------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Goals**      | • Inform and empower constituents for policy change<br>• Increase engagement between legislature and constituents<br>• Grow MAPLE usage by organizations, advocates, and journalists                               |
+| **Jobs**       | • "Tell me about bills that would..." (RAG over bills)<br>• "Tell me what people are saying about..." (RAG over testimony)<br>• "Tell me about the 2026 ballot questions regarding..." (RAG over ballot questions) |
+| **Mechanisms** | • Deploy AI features on MAPLE<br>• Enable 3rd parties (sites, Agent Skills)<br>• Enable individual authorized users to leverage MAPLE data                                                                         |
 
 ## Architecture
 
+### High-level data flow
+
 ```mermaid
 graph TD
-    FB[(Firebase: Bills, Testimony, Ballot Qs)] --> FV[Firebase Vector DB]
-    FV --> MCP[MCP Server]
-    MCP --> M1[MAPLE App]
-    MCP --> M2[3rd Party Apps / Agent Skills]
-    MCP --> M3[Authorized Users]
+    FB[(Firestore: Bills, Testimony, Ballot Qs)] -->|vector_embedding field| FV[Firestore Vector Index]
+    VA[Vertex AI\ntext-embedding-005] -->|backfill + triggers| FB
+    FV -->|findNearest| MCP[MCP Server\nCloud Run]
+    MCP --> M1[MAPLE App\nmapletestimony.org]
+    MCP --> M2[3rd Party AI Clients\nClaude, ChatGPT, etc.]
+```
+
+### Auth flow
+
+```mermaid
+sequenceDiagram
+    participant C as AI Client
+    participant F as Firebase Function\nmcpProxy
+    participant CR as Cloud Run\nmcp-server
+    participant FS as Firestore\nagentKeys
+
+    C->>F: POST /api/mcp\nX-Maple-Token: Bearer <maple-token>
+    Note over F: Firebase strips Authorization header\nfrom allUsers-accessible functions,\nso X-Maple-Token is used instead
+    F->>F: Fetch GCP identity token\nfrom metadata server
+    F->>CR: POST /mcp\nAuthorization: Bearer <gcp-id-token>\nX-Maple-Authorization: Bearer <maple-token>
+    Note over CR: Cloud Run IAM validates\nGCP identity token
+    CR->>CR: Try Firebase ID token verification
+    alt Firebase ID token
+        CR-->>F: next() — user authenticated
+    else Agent Key
+        CR->>FS: GET agentKeys/{token}
+        FS-->>CR: {active: true, ...}
+        CR-->>F: next() — agent authenticated
+    else Invalid
+        CR-->>F: 401 + help URL
+    end
+    CR->>CR: Rate limit check\n(60/min, 1000/day per token)
+    CR->>CR: Embed query via Vertex AI\nfindNearest in Firestore
+    CR-->>F: MCP JSON response
+    F-->>C: MCP JSON response
 ```
 
 ## Environments
 
-- **DEV**: Project `digital-testimony-dev`. All initial development, backfilling, and prototype testing will occur here.
-- **PROD**: Project `digital-testimony-prod`. Final deployment only after successful verification in DEV. **DO NOT MODIFY PROD DURING INITIAL PROTOTYPING.**
+- **DEV**: Project `digital-testimony-dev`. Cloud Run service and Firebase Function deployed and tested.
+- **PROD**: Project `digital-testimony-prod`. Embeddings backfilled; deployment pending.
 
-## Development Flow
+## What's implemented
 
-1. **Infrastructure**: Create `agentKeys` in Firestore (DEV) and deploy vector indexes via `firebase deploy --only firestore:indexes`.
-2. **Indexing**: Implement and run `backfill-embeddings.ts` against the DEV project to populate `vector_embedding` fields.
-3. **MCP Core**: Initialize `mcp-server` package and implement `tools.ts` with Vertex AI + Firestore `findNearest` logic.
-4. **Auth & Local Test**: Implement Hybrid Auth and verify the prototype locally using Stdio transport and the MCP Inspector.
-5. **Remote Deployment**: Deploy to Cloud Run (DEV) using SSE transport and verify with a remote agent.
+### Firestore vector search
 
-## Proposed Changes
+- **Vector indexes**: All required composite indexes in `firestore.indexes.json` — deployed to dev and prod.
+- **Embedding model**: `text-embedding-005` (768 dimensions) via Vertex AI Predict API.
+- **Backfill**: `scripts/firebase-admin/backfill-embeddings-parallel.ts` — parallel (concurrency=8) with exponential backoff. Run against both dev and prod.
+- **Migration**: `scripts/firebase-admin/migrate-embeddings-to-vector.ts` — one-time migration of plain-array embeddings to Firestore `VectorValue` format (required for `findNearest`).
+- **Continuous sync**: `functions/src/search/createVectorIndexer.ts` triggers on document write to keep embeddings current.
 
-### Firestore Vector Search Setup
+### MCP server (`mcp-server/`)
 
-We need to prepare Firestore to support vector queries.
+7 tools implemented in `tools.ts`:
 
-#### [MODIFY] [firestore.indexes.json](../firestore.indexes.json)
+| Tool                      | Description                                                                                                            |
+| :------------------------ | :--------------------------------------------------------------------------------------------------------------------- |
+| `search_bills`            | Vector search on bills. Filters: `legislationType`, `topic`, `committee`, `primarySponsor`, `court`, `includeFullText` |
+| `search_testimony`        | Vector search on testimony. Filters: `policyType`, `policyId`, `authorDisplayName`, `court`                            |
+| `search_ballot_questions` | Vector search on ballot questions                                                                                      |
+| `search_policies`         | Unified search across bills + ballot questions, sorted by relevance                                                    |
+| `list_topics`             | Returns all valid AI-assigned topic tags by category                                                                   |
+| `list_committees`         | Returns active committee names for use as filters                                                                      |
+| `list_sponsors`           | Returns primary sponsor names for use as filters                                                                       |
 
-- Add vector indexes for `bills`, `publishedTestimony`, and `ballotQuestions` collections (dimension 3072 for Gemini Embedding 2).
+Auth (`auth.ts`): checks `X-Maple-Authorization` → `X-Maple-Token` → `Authorization` in that order. Accepts Firebase ID Token or agent key.
 
-#### [NEW] `scripts/backfill-embeddings.ts`
+Rate limiting (`rateLimit.ts`): 60 req/min and 1,000 req/day per token, in-memory.
 
-- A script to iterate through all bills, testimony, and ballot questions, generate embeddings using **Vertex AI**, and save them to a new `vector_embedding` field in Firestore.
-
-#### [MODIFY] [bill_on_document_created.py](../llm/bill_on_document_created.py) (and similar triggers)
-
-- Update existing LLM triggers to generate embeddings using Vertex AI whenever a new bill, testimony, or ballot question is added/updated.
-
-### Continuous Synchronization
-
-To keep the vector database updated in real-time, we will implement **Firestore Triggers** (Vector Indexers) for the following paths:
-
-| Data Type     | Firestore Path                        | Logic Location                            |
-| :------------ | :------------------------------------ | :---------------------------------------- |
-| **Bills**     | `generalCourts/{court}/bills/{id}`    | `functions/src/bills/vector.ts`           |
-| **Testimony** | `users/{uid}/publishedTestimony/{id}` | `functions/src/testimony/vector.ts`       |
-| **Ballot Qs** | `ballotQuestions/{id}`                | `functions/src/ballotQuestions/vector.ts` |
-
-- **Pattern**: Create a `createVectorIndexer` utility in TypeScript (mirroring the existing `createSearchIndexer`) to standardize embedding generation across all collections.
-
----
-
-### MCP Server Implementation
-
-#### [NEW] `mcp-server/` (New Package)
-
-Initialize a new Node.js package with the following structure:
-
-- `package.json`: Include `@modelcontextprotocol/sdk`, `firebase-admin`, `@google-cloud/aiplatform`.
-- `index.ts`: Main entry point implementing the MCP server with **SSE transport**.
-- `tools.ts`: Implementation of RAG tools:
-  - `search_policies`: Unified vector search across both **bills** and **ballot questions**.
-  - `search_bills`: Focused vector search on legislative bills.
-  - `search_ballot_questions`: Focused vector search on ballot questions.
-  - `search_testimony`: Vector search on testimony, with optional `policyType` (bill/ballot) and `policyId` filters.
-  - `get_bill_details`: Fetch full bill content.
-  - `get_testimony_details`: Fetch testimony content.
-  - `get_ballot_question_details`: Fetch ballot question content.
-- `auth.ts`: Middleware for **Hybrid Auth**:
-  1.  Check for `Authorization: Bearer <token>`.
-  2.  If token is a Firebase ID Token, verify via `admin.auth()`.
-  3.  If token is an Agent Key, verify via lookup in `/agentKeys/{key}` Firestore collection.
-
----
+Transports: HTTP (`index-http.ts`) for Cloud Run; stdio (`index.ts`) for local use.
 
 ### Deployment
 
-#### [NEW] `mcp-server/Dockerfile`
+- **Cloud Run**: `mcp-server/Dockerfile` (two-stage build). Deployed to `digital-testimony-dev` with `max-instances=2`, `--no-allow-unauthenticated`.
+- **Firebase Function proxy**: `functions/src/mcp/proxy.ts` (`mcpProxy`). Deployed to dev. Exposes `/api/mcp` via `firebase.json` hosting rewrite once hosting is deployed.
+- **Billing budget**: $60/month alert on dev.
 
-- Containerize the MCP server for Cloud Run deployment.
+### User guide
 
-#### [NEW] `infra/deploy-mcp.sh`
+New page at `/learn/ai-tools` (Learn nav menu) explaining setup for non-technical advocates, including Claude Desktop and ChatGPT instructions, example queries, and privacy notes.
 
-- Script to build and deploy the container to Google Cloud Run, supporting `--env dev` and `--env prod` targets.
+## Remaining work (before prod deploy)
 
-## Scalability & Cost Estimates
+- [ ] Deploy Cloud Run + `mcpProxy` to prod
+- [ ] CI/CD pipeline for Cloud Run image build and deploy on merge
+- [ ] Hosting deploy needed to activate `/api/mcp` rewrite — nav link should not be publicly promoted until complete
 
-### Scalability Analysis
+## Cost estimates
 
-- **Cloud Run**: Scales from 0 to 1000+ instances. Initial users (5/day) will stay within the free tier. Scaling to 100+ users will trigger horizontal scaling with minimal latency impact.
-- **Firestore Vector Search**: Managed by Google to scale transparently with document count and search volume.
-- **Vertex AI**: High-throughput API that handles concurrent embedding requests effortlessly.
+| Component            | 25 queries/day    | 500 queries/day   |
+| :------------------- | :---------------- | :---------------- |
+| Vertex AI Embeddings | ~$0.00            | ~$0.08/month      |
+| Firestore Reads      | $0.00 (free tier) | $0.00 (free tier) |
+| Cloud Run Compute    | $0.00 (free tier) | $0.00 (free tier) |
+| **Total**            | **~$0.00**        | **~$0.08/month**  |
 
-### Estimated Monthly Costs
-
-| Component                | Initial (25 queries/day) | Scale (500 queries/day) | Notes                           |
-| :----------------------- | :----------------------- | :---------------------- | :------------------------------ |
-| **Vertex AI Embeddings** | ~$0.00 / month           | ~$0.08 / month          | $0.025 per 1M characters        |
-| **Firestore Reads**      | $0.00 (Free Tier)        | $0.00 (Free Tier)       | Free up to 50k reads/day        |
-| **Cloud Run Compute**    | $0.00 (Free Tier)        | $0.00 (Free Tier)       | Free tier: 180k vCPU-s/mo       |
-| **Network Egress**       | ~$0.00 / month           | ~$0.05 / month          | Standard GCP rates              |
-| **Total Monthly Cost**   | **~$0.00**               | **~$0.15**              | **Mostly covered by Free Tier** |
-
-> [!NOTE] > **One-time Backfill Cost**: ~$1.50 (assuming 10k documents and 50M characters).
-
-## Verification Plan
-
-### Automated Tests
-
-- Unit tests for `mcp-server` tools using mocked Firestore and Vertex AI.
-- Integration tests using the Firebase Emulator.
-
-### Manual Verification
-
-- Deploy to Cloud Run staging environment.
-- Use the **MCP Inspector** or a custom script to connect via SSE.
-- Verify that `search_bills` and `search_testimony` return relevant results for various queries using both Firebase Auth tokens and Agent Keys.
-
----
-
-# Integration and Configuration
-
-#### [MODIFY] [package.json](../package.json)
-
-- Add a script to start the MCP server: `"mcp:start": "ts-node mcp-server/index.ts"`.
-
-#### [NEW] `mcp-server/.env.example`
-
-- Template for required environment variables: `FIREBASE_PROJECT_ID`, `GOOGLE_APPLICATION_CREDENTIALS`, `MCP_API_KEY`.
-
-## Verification Plan
-
-### Automated Tests
-
-- Unit tests for `mcp-server` tools using mocked Firestore and Vertex AI.
-- Integration tests using the Firebase Emulator (if it supports vector search, otherwise against a dev project).
-
-### Manual Verification
-
-- Start the MCP server locally.
-- Connect it to Claude Desktop or use an MCP inspector tool.
-- Verify that `search_bills` and `search_testimony` return relevant results for various queries.
+One-time backfill cost (dev + prod, ~27k docs): ~$3.

@@ -7,6 +7,7 @@ $orange: #ff8600;
 $blue: #1a3185;
 $dark-blue: #0b0a3e;
 $green: #3d9922;
+$gold: #fbbc04;
 $gray-700: #495057;
 $pantone-blue: #d1d6e7;
 
@@ -57,6 +58,10 @@ $maple-text-inverse-muted: rgba(255, 255, 255, 0.55);
 $maple-surface-base: #ffffff;
 // Provisional: keep the current page background in PR 1 and retune later with surface contrast as a group.
 $maple-surface-page: #eae7e7;
+// Learn section only. Distinct from $maple-surface-page on purpose.
+$maple-surface-learn: #eef0f8;
+// The HOW badge on /learn/testimony. Not part of the core brand palette.
+$maple-learn-cyan: #42c1e1;
 $maple-surface-muted: rgba(248, 250, 252, 0.9);
 $maple-surface-accent: rgba(94, 114, 228, 0.08);
 $maple-surface-accent-strong: rgba(94, 114, 228, 0.12);
@@ -117,6 +122,8 @@ $maple-space-2xl: 2rem;
 $maple-space-3xl: 3rem;
 
 // Typography
+$maple-font-heading: "Lexend", system-ui, -apple-system, "Segoe UI", sans-serif;
+
 $maple-font-weight-normal: 400;
 $maple-font-weight-medium: 500;
 $maple-font-weight-semibold: 600;
@@ -236,14 +243,22 @@ $utilities: (
 
 @import "bootstrap/scss/bootstrap";
 
-// Import fonts using the default bootstrap weights
-@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&display=swap");
+// Import fonts using the default bootstrap weights.
+// Lexend is the display face for the Learn section headings; Nunito remains the body face.
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Lexend:wght@400;600;700;900&display=swap");
 
 :root {
   --bs-blue-100: #{$blue-100};
   --bs-blue-300: #{$blue-300};
   --bs-red-100: #{$red-100};
   --bs-dark-blue: #0b0a3e;
+  --bs-gold: #{$gold};
+
+  --maple-font-heading: #{$maple-font-heading};
+
+  // Height of the sticky site navbar. The Learn process rail sticks below it,
+  // and section rows use it for scroll-margin so smooth-scroll targets clear it.
+  --maple-navbar-height: 4.5rem;
 
   // Maple design tokens — emitted from the SCSS variables defined above so
   // the compile-time (Bootstrap) and runtime (app components) layers stay
@@ -267,6 +282,8 @@ $utilities: (
 
   --maple-surface-base: #{$maple-surface-base};
   --maple-surface-page: #{$maple-surface-page};
+  --maple-surface-learn: #{$maple-surface-learn};
+  --maple-learn-cyan: #{$maple-learn-cyan};
   --maple-surface-muted: #{$maple-surface-muted};
   --maple-surface-accent: #{$maple-surface-accent};
   --maple-surface-accent-strong: #{$maple-surface-accent-strong};
