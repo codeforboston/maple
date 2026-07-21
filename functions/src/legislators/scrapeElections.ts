@@ -12,6 +12,9 @@ import {
   officeIds
 } from "./electionTypes"
 
+const REQUEST_DELAY_MS =
+  process.env.NODE_ENV === "test" ? 0 : 3000
+
 let queue: Promise<unknown> = Promise.resolve()
 
 function waitAfterPrevious<T>(
@@ -33,7 +36,7 @@ function waitAfterPrevious<T>(
 }
 
 const limitedFetch = (url: string) =>
-  waitAfterPrevious(async () => (await fetch(url)).text(), 3000)
+  waitAfterPrevious(async () => (await fetch(url)).text(), REQUEST_DELAY_MS)
 
 const baseURL = "https://electionstats.state.ma.us"
 
@@ -109,14 +112,19 @@ async function fetchElectionData(
   const candidates = Array.from(
     document.querySelectorAll(".candidate_key .item")
   ).map(item => {
-    const nameElem = item.querySelector<HTMLAnchorElement>(".display_name a")
+    const nameElem = item.querySelector<HTMLAnchorElement>(".display_name > a")
     const name = nameElem?.textContent?.trim()
-    const votes = values.get(name ?? "")
-    if (!nameElem || !name || !nameElem.href || !votes) {
+    if (!nameElem || !name) {
       throw new Error(
-        `${item.outerHTML} does not have one of ".display_name a", name, or votes (from ${values})`
+        `${item.outerHTML} does not have ".display_name > a"`
       )
     }
+    if (!values.has(name)) {
+      throw new Error(
+        `The table ${item.outerHTML} does not have votes for the name ${name} (from ${JSON.stringify(values, null, 2)})`
+      )
+    }
+    const votes = values.get(name)!
     return {
       name,
       party: parsePartyString(
@@ -243,11 +251,6 @@ function parseElectionTable(table: Element): [ElectionResult, string[]] | null {
     return parseInt(text, 10)
   }
 
-  const link = table.querySelector<HTMLAnchorElement>("tr.more_info a")?.href
-  if (!link) {
-    throw new Error(`More info link missing from ${table.outerHTML}`)
-  }
-
   const [otherVotes, blankVotes, totalVotes] = [
     getSummaryValue("tr.n_all_other_votes"),
     getSummaryValue("tr.n_blank_votes"),
@@ -269,7 +272,7 @@ function parseElectionTable(table: Element): [ElectionResult, string[]] | null {
   ]
 }
 
-async function electionsPageInfo(dom: JSDOM): Promise<(ElectionInfo | null)[]> {
+export async function electionsPageInfo(dom: JSDOM): Promise<(ElectionInfo | null)[]> {
   const elements = Array.from(
     dom.window.document.querySelectorAll('[id^="election-id-"]')
   )
@@ -334,7 +337,7 @@ async function electionsPageInfo(dom: JSDOM): Promise<(ElectionInfo | null)[]> {
         result
       })
     } catch (error) {
-      console.error(error)
+      logger.error(error)
       return null
     }
   })

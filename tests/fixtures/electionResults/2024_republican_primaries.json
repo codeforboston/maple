@@ -1,0 +1,5716 @@
+[
+  {
+    "id": 171341,
+    "year": 2025,
+    "office": "State Representative",
+    "districts": "3rd Bristol",
+    "party": "Republican",
+    "special": true,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Lawrence-Joseph-Quintal"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Lawrence Joseph Quintal",
+          "votes": 270,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 4,
+      "blankVotes": 2,
+      "totalVotes": 276
+    }
+  },
+  {
+    "id": 170372,
+    "year": 2025,
+    "office": "State Representative",
+    "districts": "6th Essex",
+    "party": "Republican",
+    "special": true,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Medley-Long-III"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Medley Long, III",
+          "votes": 244,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 0,
+      "blankVotes": 36,
+      "totalVotes": 280
+    }
+  },
+  {
+    "id": 160659,
+    "year": 2024,
+    "office": "President",
+    "districts": "Statewide",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Donald-J-Trump",
+      "https://electionstats.state.ma.us/candidates/view/Nikki-Haley",
+      "https://electionstats.state.ma.us/candidates/view/Chris-Christie",
+      "https://electionstats.state.ma.us/candidates/view/Ron-Desantis",
+      "https://electionstats.state.ma.us/candidates/view/Vivek-Ramaswamy",
+      "https://electionstats.state.ma.us/candidates/view/Ryan-Binkley",
+      "https://electionstats.state.ma.us/candidates/view/Asa-Hutchinson"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Donald J. Trump",
+          "votes": 343189,
+          "writeIn": false
+        },
+        {
+          "name": "Nikki Haley",
+          "votes": 211440,
+          "writeIn": false
+        },
+        {
+          "name": "Chris Christie",
+          "votes": 5217,
+          "writeIn": false
+        },
+        {
+          "name": "Ron Desantis",
+          "votes": 3981,
+          "writeIn": false
+        },
+        {
+          "name": "Vivek Ramaswamy",
+          "votes": 1738,
+          "writeIn": false
+        },
+        {
+          "name": "Ryan Binkley",
+          "votes": 619,
+          "writeIn": false
+        },
+        {
+          "name": "Asa Hutchinson",
+          "votes": 527,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 1674,
+      "blankVotes": 2148,
+      "totalVotes": 576250,
+      "noPreferenceVotes": 5717
+    }
+  },
+  {
+    "id": 160680,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "Berkshire, Hampden, Franklin & Hampshire",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Nicholas-A-Boldyga"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Nicholas A. Boldyga",
+          "votes": 7066,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 76,
+      "blankVotes": 4394,
+      "totalVotes": 11536
+    }
+  },
+  {
+    "id": 160866,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "First Plymouth & Norfolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/David-F-Decoste"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "David F. Decoste",
+          "votes": 15546,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 145,
+      "blankVotes": 7488,
+      "totalVotes": 23179
+    }
+  },
+  {
+    "id": 160758,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "Hampden, Hampshire & Worcester",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Sidney-M-Starks"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Sidney M. Starks",
+          "votes": 9583,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 131,
+      "blankVotes": 6430,
+      "totalVotes": 16144
+    }
+  },
+  {
+    "id": 160848,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "Norfolk & Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Tom-Mountain",
+      "https://electionstats.state.ma.us/candidates/view/Vladislav-S-Yanovsky"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Tom Mountain",
+          "votes": 4203,
+          "writeIn": false
+        },
+        {
+          "name": "Vladislav S. Yanovsky",
+          "votes": 2876,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 92,
+      "blankVotes": 3829,
+      "totalVotes": 11000
+    }
+  },
+  {
+    "id": 160842,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "Norfolk, Plymouth & Bristol",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Sean-E-Powers",
+      "https://electionstats.state.ma.us/candidates/view/Steven-D-Fruzzetti"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Sean E. Powers",
+          "votes": 7062,
+          "writeIn": false
+        },
+        {
+          "name": "Steven D. Fruzzetti",
+          "votes": 5838,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 47,
+      "blankVotes": 3221,
+      "totalVotes": 16168
+    }
+  },
+  {
+    "id": 160764,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "Norfolk, Worcester & Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Eric-Calton",
+      "https://electionstats.state.ma.us/candidates/view/Andrew-E-Johanson"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Eric Calton",
+          "votes": 10216,
+          "writeIn": false
+        },
+        {
+          "name": "Andrew E. Johanson",
+          "votes": 6096,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 98,
+      "blankVotes": 4900,
+      "totalVotes": 21310
+    }
+  },
+  {
+    "id": 160740,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "Second Plymouth & Norfolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Geoff-Diehl",
+      "https://electionstats.state.ma.us/candidates/view/Lawrence-Peter-Novak"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Geoff Diehl",
+          "votes": 7751,
+          "writeIn": false
+        },
+        {
+          "name": "Lawrence Peter Novak",
+          "votes": 2308,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 18,
+      "blankVotes": 1144,
+      "totalVotes": 11221
+    }
+  },
+  {
+    "id": 160776,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "Third Bristol & Plymouth",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Mark-Edward-Townsend",
+      "https://electionstats.state.ma.us/candidates/view/Mark-R-Swan"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Mark Edward Townsend",
+          "votes": 8967,
+          "writeIn": false
+        },
+        {
+          "name": "Mark R. Swan",
+          "votes": 6936,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 53,
+      "blankVotes": 4041,
+      "totalVotes": 19997
+    }
+  },
+  {
+    "id": 160794,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "Worcester & Hampden",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Ryan-Chamberland",
+      "https://electionstats.state.ma.us/candidates/view/Michael-W-Young"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Ryan Chamberland",
+          "votes": 10745,
+          "writeIn": false
+        },
+        {
+          "name": "Michael W. Young",
+          "votes": 7346,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 47,
+      "blankVotes": 3411,
+      "totalVotes": 21549
+    }
+  },
+  {
+    "id": 160746,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "Worcester & Hampshire",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-Paul-Fountain",
+      "https://electionstats.state.ma.us/candidates/view/Jesse-Michael-Barnaby"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael Paul Fountain",
+          "votes": 10099,
+          "writeIn": false
+        },
+        {
+          "name": "Jesse Michael Barnaby",
+          "votes": 5218,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 93,
+      "blankVotes": 5301,
+      "totalVotes": 20711
+    }
+  },
+  {
+    "id": 160728,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "Bristol and Norfolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/David-B-Cannata"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "David B. Cannata",
+          "votes": 10796,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 329,
+      "blankVotes": 6451,
+      "totalVotes": 17576
+    }
+  },
+  {
+    "id": 160878,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "1st Bristol and Plymouth",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Gabriel-Boomer-Amaral",
+      "https://electionstats.state.ma.us/candidates/view/Angel-Luis-Pantoja-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Gabriel Boomer Amaral",
+          "votes": 7275,
+          "writeIn": false
+        },
+        {
+          "name": "Angel Luis Pantoja, Jr",
+          "votes": 2742,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 53,
+      "blankVotes": 3596,
+      "totalVotes": 13666
+    }
+  },
+  {
+    "id": 160674,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "2nd Bristol and Plymouth",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Robert-S-McConnell"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Robert S. McConnell",
+          "votes": 7207,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 106,
+      "blankVotes": 4152,
+      "totalVotes": 11465
+    }
+  },
+  {
+    "id": 160704,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "Cape and Islands",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/William-L-Crocker-Jr",
+      "https://electionstats.state.ma.us/candidates/view/Michael-Arnold"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "William L. Crocker, Jr.",
+          "votes": 10960,
+          "writeIn": false
+        },
+        {
+          "name": "Michael Arnold",
+          "votes": 7450,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 122,
+      "blankVotes": 3674,
+      "totalVotes": 22206
+    }
+  },
+  {
+    "id": 160884,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "1st Essex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Paul-C-Downing",
+      "https://electionstats.state.ma.us/candidates/view/Charles-Hayward-Stearns"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Paul C. Downing",
+          "votes": 4032,
+          "writeIn": false
+        },
+        {
+          "name": "Charles Hayward Stearns",
+          "votes": 1152,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 20,
+      "blankVotes": 1407,
+      "totalVotes": 6611
+    }
+  },
+  {
+    "id": 160788,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "2nd Essex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/John-F-McCarthy-Jr",
+      "https://electionstats.state.ma.us/candidates/view/Bob-May"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "John F. McCarthy, Jr.",
+          "votes": 7776,
+          "writeIn": false
+        },
+        {
+          "name": "Bob May",
+          "votes": 6126,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 47,
+      "blankVotes": 3107,
+      "totalVotes": 17056
+    }
+  },
+  {
+    "id": 160890,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "3rd Essex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Donald-H-Wong"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Donald H. Wong",
+          "votes": 8967,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 91,
+      "blankVotes": 4247,
+      "totalVotes": 13305
+    }
+  },
+  {
+    "id": 160836,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "1st Essex and Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-J-Scarlata",
+      "https://electionstats.state.ma.us/candidates/view/Clayton-R-Sova",
+      "https://electionstats.state.ma.us/candidates/view/Jeffrey-R-Yull"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael J. Scarlata",
+          "votes": 6409,
+          "writeIn": false
+        },
+        {
+          "name": "Clayton R. Sova",
+          "votes": 6383,
+          "writeIn": false
+        },
+        {
+          "name": "Jeffrey R. Yull",
+          "votes": 5747,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 137,
+      "blankVotes": 6520,
+      "totalVotes": 25196
+    }
+  },
+  {
+    "id": 160692,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "2nd Essex and Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Shaun-P-Toohey",
+      "https://electionstats.state.ma.us/candidates/view/Joseph-G-Finn"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Shaun P. Toohey",
+          "votes": 9237,
+          "writeIn": false
+        },
+        {
+          "name": "Joseph G. Finn",
+          "votes": 8838,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 78,
+      "blankVotes": 4003,
+      "totalVotes": 22156
+    }
+  },
+  {
+    "id": 160860,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "Hampden",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Thomas-S-Balcom-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Thomas S. Balcom, Jr",
+          "votes": 2278,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 68,
+      "blankVotes": 1782,
+      "totalVotes": 4128
+    }
+  },
+  {
+    "id": 160686,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "Hampden and Hampshire",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Nathan-A-Bech",
+      "https://electionstats.state.ma.us/candidates/view/Richard-A-Berrena"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Nathan A. Bech",
+          "votes": 7696,
+          "writeIn": false
+        },
+        {
+          "name": "Richard A. Berrena",
+          "votes": 2514,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 95,
+      "blankVotes": 2698,
+      "totalVotes": 13003
+    }
+  },
+  {
+    "id": 160698,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "Hampshire, Franklin and Worcester",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Christopher-J-Ryan",
+      "https://electionstats.state.ma.us/candidates/view/Jay-Scott-Fleitman"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Christopher J. Ryan",
+          "votes": 5499,
+          "writeIn": false
+        },
+        {
+          "name": "Jay Scott Fleitman",
+          "votes": 2777,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 71,
+      "blankVotes": 2278,
+      "totalVotes": 10625
+    }
+  },
+  {
+    "id": 160872,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "1st Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Brian-K-Genest"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Brian K. Genest",
+          "votes": 8044,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 95,
+      "blankVotes": 4118,
+      "totalVotes": 12257
+    }
+  },
+  {
+    "id": 160854,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "2nd Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/John-Joseph-Sousa",
+      "https://electionstats.state.ma.us/candidates/view/Mark-Alan-Steffen"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "John Joseph Sousa",
+          "votes": 4184,
+          "writeIn": false
+        },
+        {
+          "name": "Mark Alan Steffen",
+          "votes": 1132,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 113,
+      "blankVotes": 2783,
+      "totalVotes": 8212
+    }
+  },
+  {
+    "id": 160752,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "3rd Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/James-E-Dixon",
+      "https://electionstats.state.ma.us/candidates/view/Justin-David-Cusano"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "James E. Dixon",
+          "votes": 8777,
+          "writeIn": false
+        },
+        {
+          "name": "Justin David Cusano",
+          "votes": 252,
+          "writeIn": true
+        }
+      ],
+      "otherVotes": 211,
+      "blankVotes": 6054,
+      "totalVotes": 15294
+    }
+  },
+  {
+    "id": 160710,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "4th Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Anthony-M-Ventresca",
+      "https://electionstats.state.ma.us/candidates/view/Jeffrey-M-Semon"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Anthony M. Ventresca",
+          "votes": 8473,
+          "writeIn": false
+        },
+        {
+          "name": "Jeffrey M. Semon",
+          "votes": 5009,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 70,
+      "blankVotes": 4198,
+      "totalVotes": 17750
+    }
+  },
+  {
+    "id": 160896,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "5th Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Robert-E-Aufiero"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Robert E. Aufiero",
+          "votes": 8725,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 113,
+      "blankVotes": 7097,
+      "totalVotes": 15935
+    }
+  },
+  {
+    "id": 160722,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "Middlesex and Norfolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Nicholas-Blaize-Miceli"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Nicholas Blaize Miceli",
+          "votes": 8087,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 272,
+      "blankVotes": 5393,
+      "totalVotes": 13752
+    }
+  },
+  {
+    "id": 160668,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "Middlesex and Worcester",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Dave-H-Lunger"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Dave H. Lunger",
+          "votes": 9972,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 125,
+      "blankVotes": 7197,
+      "totalVotes": 17294
+    }
+  },
+  {
+    "id": 160803,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "Middlesex and Suffolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Todd-B-Taylor",
+      "https://electionstats.state.ma.us/candidates/view/John-David-Olds"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Todd B. Taylor",
+          "votes": 1728,
+          "writeIn": false
+        },
+        {
+          "name": "John David Olds",
+          "votes": 1561,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 23,
+      "blankVotes": 1302,
+      "totalVotes": 4614
+    }
+  },
+  {
+    "id": 160662,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "Norfolk and Plymouth",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Alexander-S-Hagerty",
+      "https://electionstats.state.ma.us/candidates/view/Gary-Malcolm-Innes"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Alexander S. Hagerty",
+          "votes": 6702,
+          "writeIn": false
+        },
+        {
+          "name": "Gary Malcolm Innes",
+          "votes": 5528,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 95,
+      "blankVotes": 2885,
+      "totalVotes": 15210
+    }
+  },
+  {
+    "id": 160806,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "Norfolk and Suffolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/John-T-Hasenjaeger",
+      "https://electionstats.state.ma.us/candidates/view/Thomas-Lee-Ricketts"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "John T. Hasenjaeger",
+          "votes": 7570,
+          "writeIn": false
+        },
+        {
+          "name": "Thomas Lee Ricketts",
+          "votes": 4100,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 91,
+      "blankVotes": 4348,
+      "totalVotes": 16109
+    }
+  },
+  {
+    "id": 160830,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "Plymouth and Barnstable",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/James-R-McMahon-III"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "James R. McMahon, III",
+          "votes": 19167,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 119,
+      "blankVotes": 8028,
+      "totalVotes": 27314
+    }
+  },
+  {
+    "id": 160800,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "1st Suffolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Timothy-J-Smyth-Jr",
+      "https://electionstats.state.ma.us/candidates/view/Daniel-K-Kelly"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Timothy J. Smyth, Jr",
+          "votes": 2124,
+          "writeIn": false
+        },
+        {
+          "name": "Daniel K. Kelly",
+          "votes": 2107,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 84,
+      "blankVotes": 1755,
+      "totalVotes": 6070
+    }
+  },
+  {
+    "id": 160809,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "2nd Suffolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Timothy-McCarthy",
+      "https://electionstats.state.ma.us/candidates/view/Brendan-Halloran-OConnell"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Timothy McCarthy",
+          "votes": 39,
+          "writeIn": true
+        },
+        {
+          "name": "Brendan Halloran O'Connell",
+          "votes": 3,
+          "writeIn": true
+        }
+      ],
+      "otherVotes": 182,
+      "blankVotes": 1330,
+      "totalVotes": 1554
+    }
+  },
+  {
+    "id": 160812,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "3rd Suffolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Paul-J-Ronukaitus",
+      "https://electionstats.state.ma.us/candidates/view/Talen-John-Carvalho"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Paul J. Ronukaitus",
+          "votes": 3272,
+          "writeIn": false
+        },
+        {
+          "name": "Talen John Carvalho",
+          "votes": 2227,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 77,
+      "blankVotes": 2326,
+      "totalVotes": 7902
+    }
+  },
+  {
+    "id": 160770,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "Suffolk and Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Daniel-Hickey",
+      "https://electionstats.state.ma.us/candidates/view/John-T-Umina"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Daniel Hickey",
+          "votes": 2188,
+          "writeIn": false
+        },
+        {
+          "name": "John T. Umina",
+          "votes": 2142,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 79,
+      "blankVotes": 2034,
+      "totalVotes": 6443
+    }
+  },
+  {
+    "id": 160716,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "Worcester and Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Mark-C-Bodanza",
+      "https://electionstats.state.ma.us/candidates/view/Dennis-J-Galvin"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Mark C. Bodanza",
+          "votes": 8021,
+          "writeIn": false
+        },
+        {
+          "name": "Dennis J. Galvin",
+          "votes": 7441,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 57,
+      "blankVotes": 2427,
+      "totalVotes": 17946
+    }
+  },
+  {
+    "id": 160782,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "1st Worcester",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-A-Vulcano"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael A. Vulcano",
+          "votes": 6040,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 114,
+      "blankVotes": 3454,
+      "totalVotes": 9608
+    }
+  },
+  {
+    "id": 160734,
+    "year": 2024,
+    "office": "Party State Committee Man",
+    "districts": "2nd Worcester",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Paul-K-Frost",
+      "https://electionstats.state.ma.us/candidates/view/James-Davidson"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Paul K. Frost",
+          "votes": 6716,
+          "writeIn": false
+        },
+        {
+          "name": "James Davidson",
+          "votes": 4204,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 53,
+      "blankVotes": 2106,
+      "totalVotes": 13079
+    }
+  },
+  {
+    "id": 160683,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "Berkshire, Hampden, Franklin & Hampshire",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jessica-L-Boldyga"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jessica L. Boldyga",
+          "votes": 6822,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 158,
+      "blankVotes": 4556,
+      "totalVotes": 11536
+    }
+  },
+  {
+    "id": 160869,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "First Plymouth & Norfolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Janet-R-Fogarty",
+      "https://electionstats.state.ma.us/candidates/view/Kristen-G-Arute",
+      "https://electionstats.state.ma.us/candidates/view/Lynne-Santangelo"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Janet R. Fogarty",
+          "votes": 9817,
+          "writeIn": false
+        },
+        {
+          "name": "Kristen G. Arute",
+          "votes": 4340,
+          "writeIn": false
+        },
+        {
+          "name": "Lynne Santangelo",
+          "votes": 4232,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 52,
+      "blankVotes": 4738,
+      "totalVotes": 23179
+    }
+  },
+  {
+    "id": 160761,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "Hampden, Hampshire & Worcester",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Virginia-E-Neill"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Virginia E. Neill",
+          "votes": 9319,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 113,
+      "blankVotes": 6712,
+      "totalVotes": 16144
+    }
+  },
+  {
+    "id": 160851,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "Norfolk & Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Susan-Huffman",
+      "https://electionstats.state.ma.us/candidates/view/Rosann-Palermo-Fleischauer"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Susan Huffman",
+          "votes": 3848,
+          "writeIn": false
+        },
+        {
+          "name": "Rosann Palermo Fleischauer",
+          "votes": 3037,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 85,
+      "blankVotes": 4030,
+      "totalVotes": 11000
+    }
+  },
+  {
+    "id": 160845,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "Norfolk, Plymouth & Bristol",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Sandra-M-Wright",
+      "https://electionstats.state.ma.us/candidates/view/Patricia-A-Locke"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Sandra M. Wright",
+          "votes": 6648,
+          "writeIn": false
+        },
+        {
+          "name": "Patricia A. Locke",
+          "votes": 5598,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 54,
+      "blankVotes": 3868,
+      "totalVotes": 16168
+    }
+  },
+  {
+    "id": 160767,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "Norfolk, Worcester & Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Amanda-Joan-Peterson",
+      "https://electionstats.state.ma.us/candidates/view/Maureen-Maloney"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Amanda Joan Peterson",
+          "votes": 8570,
+          "writeIn": false
+        },
+        {
+          "name": "Maureen Maloney",
+          "votes": 7382,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 106,
+      "blankVotes": 5252,
+      "totalVotes": 21310
+    }
+  },
+  {
+    "id": 160743,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "Second Plymouth & Norfolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Kathyjo-Boss",
+      "https://electionstats.state.ma.us/candidates/view/Jeanie-Falcone"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Kathyjo Boss",
+          "votes": 6223,
+          "writeIn": false
+        },
+        {
+          "name": "Jeanie Falcone",
+          "votes": 3186,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 24,
+      "blankVotes": 1788,
+      "totalVotes": 11221
+    }
+  },
+  {
+    "id": 160779,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "Third Bristol & Plymouth",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Shaunna-L-OConnell",
+      "https://electionstats.state.ma.us/candidates/view/Maria-S-Collins"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Shaunna L. O'Connell",
+          "votes": 9885,
+          "writeIn": false
+        },
+        {
+          "name": "Maria S. Collins",
+          "votes": 6904,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 41,
+      "blankVotes": 3167,
+      "totalVotes": 19997
+    }
+  },
+  {
+    "id": 160797,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "Worcester & Hampden",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Elizabeth-L-S-Groot",
+      "https://electionstats.state.ma.us/candidates/view/Janet-E-Garon"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Elizabeth L. S. Groot",
+          "votes": 9234,
+          "writeIn": false
+        },
+        {
+          "name": "Janet E. Garon",
+          "votes": 8638,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 50,
+      "blankVotes": 3627,
+      "totalVotes": 21549
+    }
+  },
+  {
+    "id": 160749,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "Worcester & Hampshire",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Stephanie-R-Mulroy",
+      "https://electionstats.state.ma.us/candidates/view/Rebecca-E-Connors"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Stephanie R. Mulroy",
+          "votes": 9878,
+          "writeIn": false
+        },
+        {
+          "name": "Rebecca E. Connors",
+          "votes": 6263,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 69,
+      "blankVotes": 4501,
+      "totalVotes": 20711
+    }
+  },
+  {
+    "id": 160731,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "Bristol and Norfolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Julie-A-Hall"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Julie A. Hall",
+          "votes": 11290,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 69,
+      "blankVotes": 6217,
+      "totalVotes": 17576
+    }
+  },
+  {
+    "id": 160881,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "1st Bristol and Plymouth",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Kayla-Rose-Churchill"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Kayla Rose Churchill",
+          "votes": 8186,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 109,
+      "blankVotes": 5371,
+      "totalVotes": 13666
+    }
+  },
+  {
+    "id": 160677,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "2nd Bristol and Plymouth",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jo-Anne-Mello-Hodgson"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jo-Anne Mello Hodgson",
+          "votes": 7409,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 94,
+      "blankVotes": 3962,
+      "totalVotes": 11465
+    }
+  },
+  {
+    "id": 160707,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "Cape and Islands",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Judith-Anessa-Crocker",
+      "https://electionstats.state.ma.us/candidates/view/Daralyn-Andrea-Heywood"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Judith Anessa Crocker",
+          "votes": 10317,
+          "writeIn": false
+        },
+        {
+          "name": "Daralyn Andrea Heywood",
+          "votes": 7938,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 42,
+      "blankVotes": 3909,
+      "totalVotes": 22206
+    }
+  },
+  {
+    "id": 160887,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "1st Essex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Maura-L-Ryan-Ciardiello",
+      "https://electionstats.state.ma.us/candidates/view/Cecilia-G-Buckles"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Maura L. Ryan-Ciardiello",
+          "votes": 3048,
+          "writeIn": false
+        },
+        {
+          "name": "Cecilia G. Buckles",
+          "votes": 689,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 8,
+      "blankVotes": 2866,
+      "totalVotes": 6611
+    }
+  },
+  {
+    "id": 160791,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "2nd Essex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jaclyn-Corriveau",
+      "https://electionstats.state.ma.us/candidates/view/Sandy-M-Franceschini"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jaclyn Corriveau",
+          "votes": 6734,
+          "writeIn": false
+        },
+        {
+          "name": "Sandy M. Franceschini",
+          "votes": 6541,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 52,
+      "blankVotes": 3729,
+      "totalVotes": 17056
+    }
+  },
+  {
+    "id": 160893,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "3rd Essex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Amy-Carnevale",
+      "https://electionstats.state.ma.us/candidates/view/Maria-Pia-Perez"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Amy Carnevale",
+          "votes": 6638,
+          "writeIn": false
+        },
+        {
+          "name": "Maria Pia Perez",
+          "votes": 3878,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 83,
+      "blankVotes": 2706,
+      "totalVotes": 13305
+    }
+  },
+  {
+    "id": 160839,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "1st Essex and Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Lisa-Marie-C-Cashman",
+      "https://electionstats.state.ma.us/candidates/view/Ashley-Sullivan",
+      "https://electionstats.state.ma.us/candidates/view/Cynthia-C-Bjorlie",
+      "https://electionstats.state.ma.us/candidates/view/Nicole-Coles"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Lisa-Marie C. Cashman",
+          "votes": 9127,
+          "writeIn": false
+        },
+        {
+          "name": "Ashley Sullivan",
+          "votes": 5344,
+          "writeIn": false
+        },
+        {
+          "name": "Cynthia C. Bjorlie",
+          "votes": 2629,
+          "writeIn": false
+        },
+        {
+          "name": "Nicole Coles",
+          "votes": 1332,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 84,
+      "blankVotes": 6777,
+      "totalVotes": 25293
+    }
+  },
+  {
+    "id": 160695,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "2nd Essex and Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jeri-Ann-Levasseur",
+      "https://electionstats.state.ma.us/candidates/view/Tatum-Ryan-Toohey"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jeri Ann Levasseur",
+          "votes": 9123,
+          "writeIn": false
+        },
+        {
+          "name": "Tatum Ryan-Toohey",
+          "votes": 8106,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 73,
+      "blankVotes": 4854,
+      "totalVotes": 22156
+    }
+  },
+  {
+    "id": 160863,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "Hampden",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 160689,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "Hampden and Hampshire",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Linda-L-Vacon"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Linda L. Vacon",
+          "votes": 8113,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 175,
+      "blankVotes": 4715,
+      "totalVotes": 13003
+    }
+  },
+  {
+    "id": 160701,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "Hampshire, Franklin and Worcester",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Sue-OSullivan",
+      "https://electionstats.state.ma.us/candidates/view/Mary-L-Stuart"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Sue O'Sullivan",
+          "votes": 5098,
+          "writeIn": false
+        },
+        {
+          "name": "Mary L. Stuart",
+          "votes": 2906,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 53,
+      "blankVotes": 2568,
+      "totalVotes": 10625
+    }
+  },
+  {
+    "id": 160875,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "1st Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Noreen-E-Crowley"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Noreen E. Crowley",
+          "votes": 8038,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 89,
+      "blankVotes": 4130,
+      "totalVotes": 12257
+    }
+  },
+  {
+    "id": 160857,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "2nd Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Patricia-Brady-Doherty",
+      "https://electionstats.state.ma.us/candidates/view/Christine-H-Doherty"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Patricia Brady Doherty",
+          "votes": 3572,
+          "writeIn": false
+        },
+        {
+          "name": "Christine H. Doherty",
+          "votes": 1910,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 106,
+      "blankVotes": 2624,
+      "totalVotes": 8212
+    }
+  },
+  {
+    "id": 160755,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "3rd Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Doreen-A-Deshler",
+      "https://electionstats.state.ma.us/candidates/view/Ruth-A-Cusano"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Doreen A. Deshler",
+          "votes": 5215,
+          "writeIn": false
+        },
+        {
+          "name": "Ruth A. Cusano",
+          "votes": 5161,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 81,
+      "blankVotes": 4837,
+      "totalVotes": 15294
+    }
+  },
+  {
+    "id": 160713,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "4th Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Helen-Anne-Hatch",
+      "https://electionstats.state.ma.us/candidates/view/Stirling-D-Smith"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Helen Anne Hatch",
+          "votes": 8657,
+          "writeIn": false
+        },
+        {
+          "name": "Stirling D. Smith",
+          "votes": 4480,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 81,
+      "blankVotes": 4532,
+      "totalVotes": 17750
+    }
+  },
+  {
+    "id": 160899,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "5th Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Monica-C-Medeiros-Solano",
+      "https://electionstats.state.ma.us/candidates/view/Marcy-L-McCauley"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Monica C. Medeiros Solano",
+          "votes": 6626,
+          "writeIn": false
+        },
+        {
+          "name": "Marcy L. McCauley",
+          "votes": 5189,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 65,
+      "blankVotes": 4055,
+      "totalVotes": 15935
+    }
+  },
+  {
+    "id": 160725,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "Middlesex and Norfolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Leanne-J-Yarosz-Harris"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Leanne J. Yarosz-Harris",
+          "votes": 7775,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 118,
+      "blankVotes": 5859,
+      "totalVotes": 13752
+    }
+  },
+  {
+    "id": 160671,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "Middlesex and Worcester",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Caroline-Stewart-Cunningham",
+      "https://electionstats.state.ma.us/candidates/view/Dorothy-A-Bisson"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Caroline Stewart Cunningham",
+          "votes": 9008,
+          "writeIn": false
+        },
+        {
+          "name": "Dorothy A. Bisson",
+          "votes": 941,
+          "writeIn": true
+        }
+      ],
+      "otherVotes": 307,
+      "blankVotes": 7038,
+      "totalVotes": 17294
+    }
+  },
+  {
+    "id": 160818,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "Middlesex and Suffolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Regina-M-Taylor"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Regina M. Taylor",
+          "votes": 2564,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 63,
+      "blankVotes": 1987,
+      "totalVotes": 4614
+    }
+  },
+  {
+    "id": 160665,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "Norfolk and Plymouth",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Beth-M-Veneto",
+      "https://electionstats.state.ma.us/candidates/view/Edith-Hughes"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Beth M. Veneto",
+          "votes": 7050,
+          "writeIn": false
+        },
+        {
+          "name": "Edith Hughes",
+          "votes": 4960,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 84,
+      "blankVotes": 3116,
+      "totalVotes": 15210
+    }
+  },
+  {
+    "id": 160821,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "Norfolk and Suffolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Lynne-Roberts",
+      "https://electionstats.state.ma.us/candidates/view/Kristina-Kaye-Karpovich"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Lynne Roberts",
+          "votes": 8087,
+          "writeIn": false
+        },
+        {
+          "name": "Kristina Kaye Karpovich",
+          "votes": 3596,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 78,
+      "blankVotes": 4348,
+      "totalVotes": 16109
+    }
+  },
+  {
+    "id": 160833,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "Plymouth and Barnstable",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jennifer-A-Cunningham",
+      "https://electionstats.state.ma.us/candidates/view/Alice-Zinkevich"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jennifer A. Cunningham",
+          "votes": 12485,
+          "writeIn": false
+        },
+        {
+          "name": "Alice Zinkevich",
+          "votes": 9107,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 171,
+      "blankVotes": 5551,
+      "totalVotes": 27314
+    }
+  },
+  {
+    "id": 160815,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "1st Suffolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Elizabeth-H-Hinds-Ferrick",
+      "https://electionstats.state.ma.us/candidates/view/Lori-Kauffman"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Elizabeth H. Hinds-Ferrick",
+          "votes": 2352,
+          "writeIn": false
+        },
+        {
+          "name": "Lori Kauffman",
+          "votes": 1476,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 127,
+      "blankVotes": 2115,
+      "totalVotes": 6070
+    }
+  },
+  {
+    "id": 160824,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "2nd Suffolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Brittney-Rocchina-Ciccone"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Brittney Rocchina Ciccone",
+          "votes": 34,
+          "writeIn": true
+        }
+      ],
+      "otherVotes": 145,
+      "blankVotes": 1375,
+      "totalVotes": 1554
+    }
+  },
+  {
+    "id": 160827,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "3rd Suffolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Vera-E-Carducci",
+      "https://electionstats.state.ma.us/candidates/view/Jeannamarie-Tamas",
+      "https://electionstats.state.ma.us/candidates/view/Rachel-Nicole-Miselman"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Vera E. Carducci",
+          "votes": 2532,
+          "writeIn": false
+        },
+        {
+          "name": "Jeannamarie Tamas",
+          "votes": 1581,
+          "writeIn": false
+        },
+        {
+          "name": "Rachel Nicole Miselman",
+          "votes": 1124,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 78,
+      "blankVotes": 2587,
+      "totalVotes": 7902
+    }
+  },
+  {
+    "id": 160773,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "Suffolk and Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Catherine-A-Umina",
+      "https://electionstats.state.ma.us/candidates/view/Eva-M-Webster"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Catherine A. Umina",
+          "votes": 2389,
+          "writeIn": false
+        },
+        {
+          "name": "Eva M. Webster",
+          "votes": 1926,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 64,
+      "blankVotes": 2064,
+      "totalVotes": 6443
+    }
+  },
+  {
+    "id": 160719,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "Worcester and Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Kathleen-Lynch",
+      "https://electionstats.state.ma.us/candidates/view/Beth-Joyce-Lindstrom"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Kathleen Lynch",
+          "votes": 8900,
+          "writeIn": false
+        },
+        {
+          "name": "Beth Joyce Lindstrom",
+          "votes": 6046,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 46,
+      "blankVotes": 2954,
+      "totalVotes": 17946
+    }
+  },
+  {
+    "id": 160785,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "1st Worcester",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Joanne-E-Powell",
+      "https://electionstats.state.ma.us/candidates/view/Lisa-K-Mair"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Joanne E. Powell",
+          "votes": 3722,
+          "writeIn": false
+        },
+        {
+          "name": "Lisa K. Mair",
+          "votes": 3684,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 47,
+      "blankVotes": 2147,
+      "totalVotes": 9600
+    }
+  },
+  {
+    "id": 160737,
+    "year": 2024,
+    "office": "Party State Committee Woman",
+    "districts": "2nd Worcester",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Mindy-J-McKenzie",
+      "https://electionstats.state.ma.us/candidates/view/Stacie-Norton-Bennett"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Mindy J. McKenzie",
+          "votes": 6843,
+          "writeIn": false
+        },
+        {
+          "name": "Stacie Norton Bennett",
+          "votes": 3883,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 26,
+      "blankVotes": 2327,
+      "totalVotes": 13079
+    }
+  },
+  {
+    "id": 163522,
+    "year": 2024,
+    "office": "U.S. Senate",
+    "districts": "Statewide",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/John-Deaton",
+      "https://electionstats.state.ma.us/candidates/view/Robert-J-Antonellis",
+      "https://electionstats.state.ma.us/candidates/view/Ian-Cain"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "John Deaton",
+          "votes": 136773,
+          "writeIn": false
+        },
+        {
+          "name": "Robert J. Antonellis",
+          "votes": 54940,
+          "writeIn": false
+        },
+        {
+          "name": "Ian Cain",
+          "votes": 19374,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 924,
+      "blankVotes": 5952,
+      "totalVotes": 217963
+    }
+  },
+  {
+    "id": 163582,
+    "year": 2024,
+    "office": "U.S. House",
+    "districts": "1st Congressional",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163642,
+    "year": 2024,
+    "office": "U.S. House",
+    "districts": "2nd Congressional",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163537,
+    "year": 2024,
+    "office": "U.S. House",
+    "districts": "3rd Congressional",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163732,
+    "year": 2024,
+    "office": "U.S. House",
+    "districts": "4th Congressional",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163675,
+    "year": 2024,
+    "office": "U.S. House",
+    "districts": "5th Congressional",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163621,
+    "year": 2024,
+    "office": "U.S. House",
+    "districts": "6th Congressional",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163858,
+    "year": 2024,
+    "office": "U.S. House",
+    "districts": "7th Congressional",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163516,
+    "year": 2024,
+    "office": "U.S. House",
+    "districts": "8th Congressional",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Robert-G-Burke",
+      "https://electionstats.state.ma.us/candidates/view/James-M-Govatsos",
+      "https://electionstats.state.ma.us/candidates/view/Daniel-P-Kelly"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Robert G. Burke",
+          "votes": 10335,
+          "writeIn": false
+        },
+        {
+          "name": "James M. Govatsos",
+          "votes": 6216,
+          "writeIn": false
+        },
+        {
+          "name": "Daniel P. Kelly",
+          "votes": 5761,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 127,
+      "blankVotes": 2750,
+      "totalVotes": 25189
+    }
+  },
+  {
+    "id": 163561,
+    "year": 2024,
+    "office": "U.S. House",
+    "districts": "9th Congressional",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Dan-Sullivan"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Dan Sullivan",
+          "votes": 36888,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 549,
+      "blankVotes": 7706,
+      "totalVotes": 45143
+    }
+  },
+  {
+    "id": 163552,
+    "year": 2024,
+    "office": "Governor's Council",
+    "districts": "1st",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163714,
+    "year": 2024,
+    "office": "Governor's Council",
+    "districts": "2nd",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Francis-T-Crimmins-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Francis T. Crimmins, Jr",
+          "votes": 22357,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 226,
+      "blankVotes": 7134,
+      "totalVotes": 29717
+    }
+  },
+  {
+    "id": 163531,
+    "year": 2024,
+    "office": "Governor's Council",
+    "districts": "3rd",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163507,
+    "year": 2024,
+    "office": "Governor's Council",
+    "districts": "4th",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163615,
+    "year": 2024,
+    "office": "Governor's Council",
+    "districts": "5th",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Anne-M-Manning-Martin"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Anne M. Manning-Martin",
+          "votes": 21462,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 224,
+      "blankVotes": 6980,
+      "totalVotes": 28666
+    }
+  },
+  {
+    "id": 163849,
+    "year": 2024,
+    "office": "Governor's Council",
+    "districts": "6th",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163696,
+    "year": 2024,
+    "office": "Governor's Council",
+    "districts": "7th",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Andrew-J-Couture"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Andrew J. Couture",
+          "votes": 24763,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 169,
+      "blankVotes": 7779,
+      "totalVotes": 32711
+    }
+  },
+  {
+    "id": 163576,
+    "year": 2024,
+    "office": "Governor's Council",
+    "districts": "8th",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163588,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Berkshire, Hampden, Franklin & Hampshire",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/David-A-Rosa"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "David A. Rosa",
+          "votes": 3095,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 33,
+      "blankVotes": 868,
+      "totalVotes": 3996
+    }
+  },
+  {
+    "id": 164011,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "First Plymouth & Norfolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Patrick-A-OConnor"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Patrick A. O'Connor",
+          "votes": 8061,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 13,
+      "blankVotes": 1178,
+      "totalVotes": 9252
+    }
+  },
+  {
+    "id": 163798,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Hampden, Hampshire & Worcester",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163963,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Norfolk & Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163936,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Norfolk, Plymouth & Bristol",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Steven-David-Fruzzetti"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Steven David Fruzzetti",
+          "votes": 101,
+          "writeIn": true
+        }
+      ],
+      "otherVotes": 565,
+      "blankVotes": 5679,
+      "totalVotes": 6345
+    }
+  },
+  {
+    "id": 163804,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Norfolk, Worcester & Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Dashe-M-Videira"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Dashe M. Videira",
+          "votes": 1066,
+          "writeIn": true
+        }
+      ],
+      "otherVotes": 465,
+      "blankVotes": 6084,
+      "totalVotes": 7615
+    }
+  },
+  {
+    "id": 163762,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Second Plymouth & Norfolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163813,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Third Bristol & Plymouth",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Kelly-A-Dooner"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Kelly A. Dooner",
+          "votes": 7182,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 58,
+      "blankVotes": 1539,
+      "totalVotes": 8779
+    }
+  },
+  {
+    "id": 163834,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Worcester & Hampden",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Ryan-C-Fattman"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Ryan C. Fattman",
+          "votes": 8099,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 65,
+      "blankVotes": 864,
+      "totalVotes": 9028
+    }
+  },
+  {
+    "id": 163783,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Worcester & Hampshire",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Peter-J-Durant"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Peter J. Durant",
+          "votes": 7488,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 29,
+      "blankVotes": 953,
+      "totalVotes": 8470
+    }
+  },
+  {
+    "id": 163741,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Bristol and Norfolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164071,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "1st Bristol and Plymouth",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163570,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "2nd Bristol and Plymouth",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163672,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Cape and Islands",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Christopher-Robert-Lauzon"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Christopher Robert Lauzon",
+          "votes": 8405,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 75,
+      "blankVotes": 1350,
+      "totalVotes": 9830
+    }
+  },
+  {
+    "id": 164110,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "1st Essex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163825,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "2nd Essex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Damian-Mitchell-Anketell"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Damian Mitchell Anketell",
+          "votes": 4649,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 25,
+      "blankVotes": 1335,
+      "totalVotes": 6009
+    }
+  },
+  {
+    "id": 164161,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "3rd Essex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163930,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "1st Essex and Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Bruce-E-Tarr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Bruce E. Tarr",
+          "votes": 7197,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 43,
+      "blankVotes": 983,
+      "totalVotes": 8223
+    }
+  },
+  {
+    "id": 163630,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "2nd Essex and Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164005,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Hampden",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163603,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Hampden and Hampshire",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163648,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Hampshire, Franklin and Worcester",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164038,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "1st Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Karla-J-Miller"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Karla J. Miller",
+          "votes": 3827,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 38,
+      "blankVotes": 908,
+      "totalVotes": 4773
+    }
+  },
+  {
+    "id": 163975,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "2nd Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163792,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "3rd Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163684,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "4th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164176,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "5th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163720,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Middlesex and Norfolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163546,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Middlesex and Worcester",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163912,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Middlesex and Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163525,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Norfolk and Plymouth",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163915,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Norfolk and Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163927,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Plymouth and Barnstable",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Mathew-J-Muratore",
+      "https://electionstats.state.ma.us/candidates/view/Kari-Macrae"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Mathew J. Muratore",
+          "votes": 7005,
+          "writeIn": false
+        },
+        {
+          "name": "Kari Macrae",
+          "votes": 6966,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 15,
+      "blankVotes": 564,
+      "totalVotes": 14550
+    }
+  },
+  {
+    "id": 163909,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "1st Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163918,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "2nd Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163921,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "3rd Suffolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jeannamarie-Tamas"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jeannamarie Tamas",
+          "votes": 1817,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 30,
+      "blankVotes": 860,
+      "totalVotes": 2707
+    }
+  },
+  {
+    "id": 163807,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Suffolk and Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163702,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Worcester and Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Nicholas-A-Pirro-III"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Nicholas A. Pirro, III",
+          "votes": 5747,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 41,
+      "blankVotes": 897,
+      "totalVotes": 6685
+    }
+  },
+  {
+    "id": 163819,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "1st Worcester",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163747,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "2nd Worcester",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163939,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "1st Barnstable",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Gerald-Joseph-OConnell"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Gerald Joseph O'Connell",
+          "votes": 518,
+          "writeIn": true
+        }
+      ],
+      "otherVotes": 165,
+      "blankVotes": 2703,
+      "totalVotes": 3386
+    }
+  },
+  {
+    "id": 163777,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "2nd Barnstable",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Susanne-H-Conley",
+      "https://electionstats.state.ma.us/candidates/view/Gerald-Joseph-OConnell"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Susanne H. Conley",
+          "votes": 2148,
+          "writeIn": false
+        },
+        {
+          "name": "Gerald Joseph O'Connell",
+          "votes": 0,
+          "writeIn": true
+        }
+      ],
+      "otherVotes": 56,
+      "blankVotes": 366,
+      "totalVotes": 2570
+    }
+  },
+  {
+    "id": 163924,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "3rd Barnstable",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/David-T-Vieira"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "David T. Vieira",
+          "votes": 2672,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 23,
+      "blankVotes": 467,
+      "totalVotes": 3162
+    }
+  },
+  {
+    "id": 163984,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "4th Barnstable",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163774,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "5th Barnstable",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Steven-G-Xiarhos"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Steven G. Xiarhos",
+          "votes": 3039,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 10,
+      "blankVotes": 253,
+      "totalVotes": 3302
+    }
+  },
+  {
+    "id": 163669,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "Barnstable, Dukes and Nantucket",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Erich-F-Horgan"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Erich F. Horgan",
+          "votes": 131,
+          "writeIn": true
+        }
+      ],
+      "otherVotes": 160,
+      "blankVotes": 996,
+      "totalVotes": 1287
+    }
+  },
+  {
+    "id": 163585,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "1st Berkshire",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164224,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "2nd Berkshire",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163609,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "3rd Berkshire",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164077,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "1st Bristol",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-Chaisson"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael Chaisson",
+          "votes": 1434,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 6,
+      "blankVotes": 354,
+      "totalVotes": 1794
+    }
+  },
+  {
+    "id": 163738,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "2nd Bristol",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164053,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "3rd Bristol",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164215,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "4th Bristol",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Steven-S-Howitt"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Steven S. Howitt",
+          "votes": 1628,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 14,
+      "blankVotes": 279,
+      "totalVotes": 1921
+    }
+  },
+  {
+    "id": 164026,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "5th Bristol",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Justin-Thurber"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Justin Thurber",
+          "votes": 1415,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 16,
+      "blankVotes": 377,
+      "totalVotes": 1808
+    }
+  },
+  {
+    "id": 164068,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "6th Bristol",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164065,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "7th Bristol",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163564,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "8th Bristol",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Christopher-Thrasher"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Christopher Thrasher",
+          "votes": 213,
+          "writeIn": true
+        }
+      ],
+      "otherVotes": 58,
+      "blankVotes": 1787,
+      "totalVotes": 2058
+    }
+  },
+  {
+    "id": 164020,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "9th Bristol",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163567,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "10th Bristol",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Joseph-M-Pires",
+      "https://electionstats.state.ma.us/candidates/view/Robert-S-McConnell"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Joseph M. Pires",
+          "votes": 1894,
+          "writeIn": false
+        },
+        {
+          "name": "Robert S. McConnell",
+          "votes": 854,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 6,
+      "blankVotes": 107,
+      "totalVotes": 2861
+    }
+  },
+  {
+    "id": 164203,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "11th Bristol",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163810,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "12th Bristol",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Norman-J-Orrall"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Norman J. Orrall",
+          "votes": 1685,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 7,
+      "blankVotes": 324,
+      "totalVotes": 2016
+    }
+  },
+  {
+    "id": 164206,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "13th Bristol",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163735,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "14th Bristol",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/David-B-Cannata"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "David Cannata, Jr",
+          "votes": 1229,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 8,
+      "blankVotes": 295,
+      "totalVotes": 1532
+    }
+  },
+  {
+    "id": 163624,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "1st Essex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164092,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "2nd Essex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Mark-T-Tashjian"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Mark T. Tashjian",
+          "votes": 394,
+          "writeIn": true
+        }
+      ],
+      "otherVotes": 122,
+      "blankVotes": 2126,
+      "totalVotes": 2642
+    }
+  },
+  {
+    "id": 164107,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "3rd Essex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164125,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "4th Essex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164056,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "5th Essex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163822,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "6th Essex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Ty-Vitale"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Ty Vitale",
+          "votes": 1153,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 2,
+      "blankVotes": 304,
+      "totalVotes": 1459
+    }
+  },
+  {
+    "id": 164245,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "7th Essex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164149,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "8th Essex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164155,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "9th Essex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Donald-H-Wong"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Donald H. Wong",
+          "votes": 1796,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 9,
+      "blankVotes": 305,
+      "totalVotes": 2110
+    }
+  },
+  {
+    "id": 164158,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "10th Essex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164152,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "11th Essex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164221,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "12th Essex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164017,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "13th Essex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163627,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "14th Essex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164104,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "15th Essex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164128,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "16th Essex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163657,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "17th Essex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163654,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "18th Essex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163711,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "1st Franklin",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163726,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "2nd Franklin",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jeffrey-L-Raymond"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jeffrey L. Raymond",
+          "votes": 1180,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 9,
+      "blankVotes": 308,
+      "totalVotes": 1497
+    }
+  },
+  {
+    "id": 163945,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "1st Hampden",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Todd-M-Smola"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Todd M. Smola",
+          "votes": 2072,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 19,
+      "blankVotes": 303,
+      "totalVotes": 2394
+    }
+  },
+  {
+    "id": 164044,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "2nd Hampden",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163600,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "3rd Hampden",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Nicholas-A-Boldyga"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Nicholas A. Boldyga",
+          "votes": 1902,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 10,
+      "blankVotes": 331,
+      "totalVotes": 2243
+    }
+  },
+  {
+    "id": 164254,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "4th Hampden",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Kelly-W-Pease"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Kelly W. Pease",
+          "votes": 1737,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 51,
+      "blankVotes": 278,
+      "totalVotes": 2066
+    }
+  },
+  {
+    "id": 164002,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "5th Hampden",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163597,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "6th Hampden",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163795,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "7th Hampden",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163999,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "8th Hampden",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164260,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "9th Hampden",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164263,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "10th Hampden",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164257,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "11th Hampden",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164047,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "12th Hampden",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163996,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "1st Hampshire",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164050,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "2nd Hampshire",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163645,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "3rd Hampshire",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163699,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "1st Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Lynne-E-Archambault"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Lynne E. Archambault",
+          "votes": 2190,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 21,
+      "blankVotes": 292,
+      "totalVotes": 2503
+    }
+  },
+  {
+    "id": 163987,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "2nd Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163837,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "3rd Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164080,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "4th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164200,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "5th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164086,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "6th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163717,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "7th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164119,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "8th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164272,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "9th Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Carly-Marie-Downs"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Carly Marie Downs",
+          "votes": 685,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 17,
+      "blankVotes": 374,
+      "totalVotes": 1076
+    }
+  },
+  {
+    "id": 164212,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "10th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164209,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "11th Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Vladislav-S-Yanovsky"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Vladislav S. Yanovsky",
+          "votes": 450,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 7,
+      "blankVotes": 215,
+      "totalVotes": 672
+    }
+  },
+  {
+    "id": 163960,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "12th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164014,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "13th Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Virginia-A-Gardner"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Virginia A Gardner",
+          "votes": 151,
+          "writeIn": true
+        }
+      ],
+      "otherVotes": 23,
+      "blankVotes": 1035,
+      "totalVotes": 1209
+    }
+  },
+  {
+    "id": 163540,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "14th Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Doreen-Ann-Deshler"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Doreen Ann Deshler",
+          "votes": 62,
+          "writeIn": true
+        }
+      ],
+      "otherVotes": 36,
+      "blankVotes": 1333,
+      "totalVotes": 1431
+    }
+  },
+  {
+    "id": 164137,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "15th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163990,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "16th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164146,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "17th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164143,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "18th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164269,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "19th Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Paul-Sarnowski"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Paul Sarnowski",
+          "votes": 1591,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 14,
+      "blankVotes": 448,
+      "totalVotes": 2053
+    }
+  },
+  {
+    "id": 164164,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "20th Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Bradley-H-Jones-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Bradley H. Jones, Jr",
+          "votes": 2019,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 4,
+      "blankVotes": 391,
+      "totalVotes": 2414
+    }
+  },
+  {
+    "id": 163789,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "21st Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163831,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "22nd Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Marc-T-Lombardo"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Marc T. Lombardo",
+          "votes": 1657,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 25,
+      "blankVotes": 232,
+      "totalVotes": 1914
+    }
+  },
+  {
+    "id": 163681,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "23rd Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163678,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "24th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163966,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "25th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163972,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "26th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164251,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "27th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164059,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "28th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163969,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "29th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164236,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "30th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164266,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "31st Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164170,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "32nd Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164173,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "33rd Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164188,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "34th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164167,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "35th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164035,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "36th Middlesex",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163543,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "37th Middlesex",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Gary-J-Grossi"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Gary J. Grossi",
+          "votes": 95,
+          "writeIn": true
+        }
+      ],
+      "otherVotes": 50,
+      "blankVotes": 1233,
+      "totalVotes": 1378
+    }
+  },
+  {
+    "id": 164230,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "1st Norfolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164233,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "2nd Norfolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Sharon-Marie-Cintolo"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Sharon Marie Cintolo",
+          "votes": 1030,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 24,
+      "blankVotes": 602,
+      "totalVotes": 1656
+    }
+  },
+  {
+    "id": 164113,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "3rd Norfolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164278,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "4th Norfolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163933,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "5th Norfolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163759,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "6th Norfolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164191,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "7th Norfolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164179,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "8th Norfolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164185,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "9th Norfolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Marcus-S-Vaughn"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Marcus S. Vaughn",
+          "votes": 2232,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 6,
+      "blankVotes": 372,
+      "totalVotes": 2610
+    }
+  },
+  {
+    "id": 164089,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "10th Norfolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Charles-F-Bailey-III"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Charles F. Bailey, III",
+          "votes": 1730,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 22,
+      "blankVotes": 347,
+      "totalVotes": 2099
+    }
+  },
+  {
+    "id": 164023,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "11th Norfolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164218,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "12th Norfolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164032,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "13th Norfolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164140,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "14th Norfolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163957,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "15th Norfolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164227,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "1st Plymouth",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jesse-G-Brown",
+      "https://electionstats.state.ma.us/candidates/view/Dee-Wallace-Spencer"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jesse G. Brown",
+          "votes": 2241,
+          "writeIn": false
+        },
+        {
+          "name": "Dee Wallace Spencer",
+          "votes": 2027,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 8,
+      "blankVotes": 167,
+      "totalVotes": 4443
+    }
+  },
+  {
+    "id": 163978,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "2nd Plymouth",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/John-Robert-Gaskey",
+      "https://electionstats.state.ma.us/candidates/view/Susan-Williams-Gifford"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "John Robert Gaskey",
+          "votes": 1811,
+          "writeIn": false
+        },
+        {
+          "name": "Susan Williams Gifford",
+          "votes": 1258,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 2,
+      "blankVotes": 50,
+      "totalVotes": 3121
+    }
+  },
+  {
+    "id": 164008,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "3rd Plymouth",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164182,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "4th Plymouth",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164101,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "5th Plymouth",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/David-F-Decoste"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "David F. Decoste",
+          "votes": 2266,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 13,
+      "blankVotes": 298,
+      "totalVotes": 2577
+    }
+  },
+  {
+    "id": 164041,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "6th Plymouth",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Kenneth-Sweezey",
+      "https://electionstats.state.ma.us/candidates/view/Jane-L-Cournan"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Kenneth Peter Sweezey",
+          "votes": 1846,
+          "writeIn": false
+        },
+        {
+          "name": "Jane L. Cournan",
+          "votes": 1681,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 1,
+      "blankVotes": 92,
+      "totalVotes": 3620
+    }
+  },
+  {
+    "id": 163519,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "7th Plymouth",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Alyson-M-Sullivan-Almeida"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Alyson M. Sullivan-Almeida",
+          "votes": 1829,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 7,
+      "blankVotes": 319,
+      "totalVotes": 2155
+    }
+  },
+  {
+    "id": 163942,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "8th Plymouth",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Sandra-M-Wright"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Sandra M. Wright",
+          "votes": 1516,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 5,
+      "blankVotes": 330,
+      "totalVotes": 1851
+    }
+  },
+  {
+    "id": 163951,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "9th Plymouth",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Lawrence-Peter-Novak"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Lawrence Peter Novak",
+          "votes": 1244,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 12,
+      "blankVotes": 440,
+      "totalVotes": 1696
+    }
+  },
+  {
+    "id": 163954,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "10th Plymouth",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163948,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "11th Plymouth",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164098,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "12th Plymouth",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Eric-J-Meschino"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Eric J. Meschino",
+          "votes": 2553,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 7,
+      "blankVotes": 652,
+      "totalVotes": 3212
+    }
+  },
+  {
+    "id": 163873,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "1st Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163885,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "2nd Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163900,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "3rd Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163879,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "4th Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163870,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "5th Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163894,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "6th Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163891,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "7th Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163864,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "8th Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163882,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "9th Suffolk",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Roy-A-Owens"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Roy A. Owens",
+          "votes": 179,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 11,
+      "blankVotes": 88,
+      "totalVotes": 278
+    }
+  },
+  {
+    "id": 163897,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "10th Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163993,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "11th Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163906,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "12th Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163903,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "13th Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163876,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "14th Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163867,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "15th Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164242,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "16th Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163888,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "17th Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163861,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "18th Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164239,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "19th Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164116,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "1st Worcester",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Kimberly-N-Ferguson"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Kimberly N. Ferguson",
+          "votes": 2278,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 7,
+      "blankVotes": 336,
+      "totalVotes": 2621
+    }
+  },
+  {
+    "id": 163693,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "2nd Worcester",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Bruce-K-Chester"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Bruce K. Chester",
+          "votes": 1396,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 10,
+      "blankVotes": 216,
+      "totalVotes": 1622
+    }
+  },
+  {
+    "id": 164074,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "3rd Worcester",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164134,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "4th Worcester",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Salvatore-Perla"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Salvatore Perla",
+          "votes": 1295,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 3,
+      "blankVotes": 248,
+      "totalVotes": 1546
+    }
+  },
+  {
+    "id": 163780,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "5th Worcester",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Donald-R-Berthiaume-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Donald R. Berthiaume, Jr",
+          "votes": 2444,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 8,
+      "blankVotes": 282,
+      "totalVotes": 2734
+    }
+  },
+  {
+    "id": 160413,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "6th Worcester",
+    "party": "Republican",
+    "special": true,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/John-J-Marsi-Jr",
+      "https://electionstats.state.ma.us/candidates/view/David-S-Adams"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "John J. Marsi, Jr",
+          "votes": 1189,
+          "writeIn": false
+        },
+        {
+          "name": "David S. Adams",
+          "votes": 1044,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 3,
+      "blankVotes": 7,
+      "totalVotes": 2243
+    }
+  },
+  {
+    "id": 163981,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "6th Worcester",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/John-J-Marsi-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "John J. Marsi, Jr",
+          "votes": 1711,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 15,
+      "blankVotes": 248,
+      "totalVotes": 1974
+    }
+  },
+  {
+    "id": 163744,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "7th Worcester",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Paul-K-Frost",
+      "https://electionstats.state.ma.us/candidates/view/Michelle-L-Frigon"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Paul K. Frost",
+          "votes": 2107,
+          "writeIn": false
+        },
+        {
+          "name": "Michelle L. Frigon",
+          "votes": 476,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 2,
+      "blankVotes": 59,
+      "totalVotes": 2644
+    }
+  },
+  {
+    "id": 163801,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "8th Worcester",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-J-Soter"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael J. Soter",
+          "votes": 1765,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 29,
+      "blankVotes": 265,
+      "totalVotes": 2059
+    }
+  },
+  {
+    "id": 164095,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "9th Worcester",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/David-Kent-Muradian-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "David Kent Muradian, Jr",
+          "votes": 1597,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 8,
+      "blankVotes": 207,
+      "totalVotes": 1812
+    }
+  },
+  {
+    "id": 164122,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "10th Worcester",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164248,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "11th Worcester",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Hannah-E-Kane"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Hannah E. Kane",
+          "votes": 1093,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 4,
+      "blankVotes": 165,
+      "totalVotes": 1262
+    }
+  },
+  {
+    "id": 163816,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "12th Worcester",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164287,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "13th Worcester",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164275,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "14th Worcester",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164281,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "15th Worcester",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164284,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "16th Worcester",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164131,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "17th Worcester",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164029,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "18th Worcester",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Joseph-D-Mckenna"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Joseph D. Mckenna",
+          "votes": 1944,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 9,
+      "blankVotes": 293,
+      "totalVotes": 2246
+    }
+  },
+  {
+    "id": 164083,
+    "year": 2024,
+    "office": "State Representative",
+    "districts": "19th Worcester",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163765,
+    "year": 2024,
+    "office": "Clerk of Courts",
+    "districts": "Barnstable County",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163573,
+    "year": 2024,
+    "office": "Clerk of Courts",
+    "districts": "Berkshire County",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163549,
+    "year": 2024,
+    "office": "Clerk of Courts",
+    "districts": "Bristol County",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163660,
+    "year": 2024,
+    "office": "Clerk of Courts",
+    "districts": "Dukes County",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163612,
+    "year": 2024,
+    "office": "Clerk of Courts",
+    "districts": "Essex County",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163705,
+    "year": 2024,
+    "office": "Clerk of Courts",
+    "districts": "Franklin County",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163591,
+    "year": 2024,
+    "office": "Clerk of Courts",
+    "districts": "Hampden County",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163633,
+    "year": 2024,
+    "office": "Clerk of Courts",
+    "districts": "Hampshire County",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163528,
+    "year": 2024,
+    "office": "Clerk of Courts",
+    "districts": "Middlesex County",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164194,
+    "year": 2024,
+    "office": "Clerk of Courts",
+    "districts": "Nantucket County",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163750,
+    "year": 2024,
+    "office": "Clerk of Courts",
+    "districts": "Norfolk County",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163504,
+    "year": 2024,
+    "office": "Clerk of Courts",
+    "districts": "Plymouth County",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163687,
+    "year": 2024,
+    "office": "Clerk of Courts",
+    "districts": "Worcester County",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163840,
+    "year": 2024,
+    "office": "Clerk of Superior Court (Civil)",
+    "districts": "Suffolk County",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163843,
+    "year": 2024,
+    "office": "Clerk of Superior Court (Criminal)",
+    "districts": "Suffolk County",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163846,
+    "year": 2024,
+    "office": "Clerk of Supreme Judicial Court",
+    "districts": "Suffolk County",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163771,
+    "year": 2024,
+    "office": "Register of Deeds",
+    "districts": "Barnstable",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/John-F-Meade"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "John F. Meade",
+          "votes": 12804,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 39,
+      "blankVotes": 2542,
+      "totalVotes": 15385
+    }
+  },
+  {
+    "id": 163786,
+    "year": 2024,
+    "office": "Register of Deeds",
+    "districts": "Berkshire Middle",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163579,
+    "year": 2024,
+    "office": "Register of Deeds",
+    "districts": "Berkshire Northern",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163606,
+    "year": 2024,
+    "office": "Register of Deeds",
+    "districts": "Berkshire Southern",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163729,
+    "year": 2024,
+    "office": "Register of Deeds",
+    "districts": "Bristol Northern",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163558,
+    "year": 2024,
+    "office": "Register of Deeds",
+    "districts": "Bristol Southern",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163666,
+    "year": 2024,
+    "office": "Register of Deeds",
+    "districts": "Dukes",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163651,
+    "year": 2024,
+    "office": "Register of Deeds",
+    "districts": "Essex Northern",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163618,
+    "year": 2024,
+    "office": "Register of Deeds",
+    "districts": "Essex Southern",
+    "party": "Republican",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jonathan-Edward-Ring"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jonathan Edward Ring",
+          "votes": 15951,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 156,
+      "blankVotes": 4812,
+      "totalVotes": 20919
+    }
+  },
+  {
+    "id": 164062,
+    "year": 2024,
+    "office": "Register of Deeds",
+    "districts": "Fall River",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163708,
+    "year": 2024,
+    "office": "Register of Deeds",
+    "districts": "Franklin",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163594,
+    "year": 2024,
+    "office": "Register of Deeds",
+    "districts": "Hampden",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163636,
+    "year": 2024,
+    "office": "Register of Deeds",
+    "districts": "Hampshire",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163828,
+    "year": 2024,
+    "office": "Register of Deeds",
+    "districts": "Middlesex Northern",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163534,
+    "year": 2024,
+    "office": "Register of Deeds",
+    "districts": "Middlesex Southern",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 164197,
+    "year": 2024,
+    "office": "Register of Deeds",
+    "districts": "Nantucket",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163756,
+    "year": 2024,
+    "office": "Register of Deeds",
+    "districts": "Norfolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163513,
+    "year": 2024,
+    "office": "Register of Deeds",
+    "districts": "Plymouth",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163852,
+    "year": 2024,
+    "office": "Register of Deeds",
+    "districts": "Suffolk",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163723,
+    "year": 2024,
+    "office": "Register of Deeds",
+    "districts": "Worcester",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163690,
+    "year": 2024,
+    "office": "Register of Deeds",
+    "districts": "Worcester Northern",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163639,
+    "year": 2024,
+    "office": "Register of Probate",
+    "districts": "Hampshire County",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  },
+  {
+    "id": 163855,
+    "year": 2024,
+    "office": "Register of Probate",
+    "districts": "Suffolk County",
+    "candidateUrls": [],
+    "party": "Republican",
+    "special": false
+  }
+]
