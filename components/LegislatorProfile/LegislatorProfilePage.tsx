@@ -1,4 +1,4 @@
-import { collection, getDocs, query, where } from "firebase/firestore"
+import { collection, getDocs, limit, query, where } from "firebase/firestore"
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import ErrorPage from "next/error"
@@ -125,7 +125,9 @@ export function LegislatorProfilePage({
     let docList: any[] = []
     const q = query(
       collection(firestore, "profiles"),
-      where("memberId", "==", memberCode)
+      where("memberId", "==", memberCode),
+      where("public", "==", true),
+      limit(1)
     )
     const docData = await getDocs(q)
 
