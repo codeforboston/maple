@@ -6,6 +6,7 @@ export const Role = Union(
   L("admin"),
   L("legislator"),
   L("pendingUpgrade"),
+  L("pendingLegislator"),
   L("organization")
 )
 export type Role = Static<typeof Role>
@@ -15,6 +16,7 @@ export const ZRole = z.enum([
   "admin",
   "legislator",
   "pendingUpgrade",
+  "pendingLegislator",
   "organization"
 ])
 
