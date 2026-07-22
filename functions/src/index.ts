@@ -58,6 +58,7 @@ export {
   unfollowUser,
   getFollowers
 } from "./subscriptions"
+export { scrapeElections } from "./legislators"
 
 export { transcription } from "./webhooks"
 
