@@ -7,6 +7,40 @@
   "cosponsored": "Cosponsored",
   "districtDetails": "District details are not available yet.",
   "editBio": "Edit your biography",
+  "finance": {
+    "breakdown": {
+      "candidateFunds": "Candidate's own funds",
+      "committee": "Committees / PACs",
+      "inKind": "In-kind contributions",
+      "individual": "Individual donors",
+      "union": "Unions & associations",
+      "unitemized": "Micro-donations (under $50)"
+    },
+    "breakdownHeading": "Contributions Breakdown",
+    "electionCycleHeading": "{{year}} Election Cycle",
+    "noContributions": "No itemized contributions recorded yet.",
+    "noData": "Finance data not yet available for this legislator.",
+    "otherReceipts": "Other non-contribution receipts: {{amount}} (refunds and miscellaneous receipts — not included above)",
+    "processingFees": "Category amounts above are shown before {{amount}} in payment-processing fees deducted, which is why they total more than \"Total Raised\" above.",
+    "source": "Source: MA OCPF · ocpf.us",
+    "sourceWithDate": "Source: MA OCPF · ocpf.us\nIncludes contributions through {{date}}",
+    "stats": {
+      "cashOnHand": "Cash on Hand",
+      "cashOnHandSubtitle": "End of reporting period",
+      "smallDonors": "Small Donors",
+      "smallDonorsSubtitle": "Under $200 contributions",
+      "totalRaised": "Total Raised*",
+      "totalRaisedFootnote": "*after processing fees, through {{date}}",
+      "totalRaisedSubtitle": "From {{count}} contributors",
+      "totalSpent": "Total Spent",
+      "totalSpentSubtitle": "As of {{date}}"
+    },
+    "table": {
+      "amount": "Amount",
+      "category": "Category",
+      "share": "Share"
+    }
+  },
   "fundsRaised": "Funds Raised",
   "home": "Home",
   "legislators": "Legislators",

@@ -24,6 +24,7 @@ import { LegislatorTabs } from "./LegislatorTabs"
 import { useAuth } from "components/auth"
 import { Col, Container, Row, Spinner } from "components/bootstrap"
 import { useDistrict, useMember } from "components/db"
+import { useMembersFinance } from "components/db/membersFinance"
 import { Internal } from "components/links"
 import { FollowUserButton } from "components/shared/FollowButton"
 import { CircleImage } from "components/shared/LabeledIcon"
@@ -116,6 +117,7 @@ export function LegislatorProfilePage({
     member?.Branch,
     member?.District
   )
+  const { finance } = useMembersFinance(court, memberCode)
   const { t } = useTranslation("legislators")
 
   const [legislatorId, setLegislatorId] = useState("")
@@ -352,7 +354,11 @@ export function LegislatorProfilePage({
         </StatBlock>
         <StatBlock>
           <Col className="flex-grow-0 mx-auto">
-            <StatNum>?</StatNum>
+            <StatNum>
+              {finance?.totalRaised != null
+                ? "$" + Math.round(finance.totalRaised).toLocaleString()
+                : "?"}
+            </StatNum>
             <StatLine>{t("fundsRaised")}</StatLine>
           </Col>
         </StatBlock>
@@ -365,6 +371,7 @@ export function LegislatorProfilePage({
             districtLoading={districtLoading}
             legislatorId={legislatorId}
             name={member.Name}
+            finance={finance}
           />
         </Col>
         <Col md="3">
