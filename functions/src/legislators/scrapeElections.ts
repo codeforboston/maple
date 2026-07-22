@@ -12,8 +12,7 @@ import {
   officeIds
 } from "./electionTypes"
 
-const REQUEST_DELAY_MS =
-  process.env.NODE_ENV === "test" ? 0 : 3000
+const REQUEST_DELAY_MS = process.env.NODE_ENV === "test" ? 0 : 3000
 
 let queue: Promise<unknown> = Promise.resolve()
 
@@ -115,13 +114,17 @@ async function fetchElectionData(
     const nameElem = item.querySelector<HTMLAnchorElement>(".display_name > a")
     const name = nameElem?.textContent?.trim()
     if (!nameElem || !name) {
-      throw new Error(
-        `${item.outerHTML} does not have ".display_name > a"`
-      )
+      throw new Error(`${item.outerHTML} does not have ".display_name > a"`)
     }
     if (!values.has(name)) {
       throw new Error(
-        `The table ${item.outerHTML} does not have votes for the name ${name} (from ${JSON.stringify(values, null, 2)})`
+        `The table ${
+          item.outerHTML
+        } does not have votes for the name ${name} (from ${JSON.stringify(
+          values,
+          null,
+          2
+        )})`
       )
     }
     const votes = values.get(name)!
@@ -272,7 +275,9 @@ function parseElectionTable(table: Element): [ElectionResult, string[]] | null {
   ]
 }
 
-export async function electionsPageInfo(dom: JSDOM): Promise<(ElectionInfo | null)[]> {
+export async function electionsPageInfo(
+  dom: JSDOM
+): Promise<(ElectionInfo | null)[]> {
   const elements = Array.from(
     dom.window.document.querySelectorAll('[id^="election-id-"]')
   )
