@@ -1,33 +1,9 @@
-// One active filer row parsed from ocpf-filers.txt
-export interface OcpfFilerRow {
-  cpfId: number
-  lastName: string
-  firstName: string
-  officeSought: string // "Senate" | "House"
-  district: string
-  closedDate: string // empty string = active
-}
+import { Timestamp } from "firebase/firestore"
+import { useMemo } from "react"
+import { useAsync } from "react-async-hook"
+import { loadDoc } from "./common"
 
-// Firestore: /config/ocpfMemberMapping
-// memberCode → { cpfId, name }, e.g. { "SND1": { cpfId: 15031, name: "Sal N. DiDomenico" } }
-export interface OcpfMemberMappingEntry {
-  cpfId: number
-  name: string
-}
-
-export type OcpfMemberMapping = Record<string, OcpfMemberMappingEntry>
-
-export interface OcpfMemberMappingFlagsEntry {
-  memberCode: string
-  name: string
-}
-
-// Firestore: /config/ocpfMemberMappingFlags
-export interface OcpfMemberMappingFlags {
-  unmatched: OcpfMemberMappingFlagsEntry[]
-  ambiguous: OcpfMemberMappingFlagsEntry[]
-}
-
+// Mirror of functions/src/ocpf/types.ts MembersFinance, using client-side Timestamp
 export interface FinanceBreakdownEntry {
   count: number
   amount: number
@@ -51,19 +27,19 @@ export interface MembersFinanceBreakdown {
 }
 
 export interface MembersFinanceCandidateFunds {
-  loans: FinanceBreakdownEntry // types 206 + 331
-  contributions: FinanceBreakdownEntry // type 332
+  loans: FinanceBreakdownEntry
+  contributions: FinanceBreakdownEntry
 }
 
 export interface MembersFinanceInKind {
-  individual: FinanceBreakdownEntry // type 401
-  committee: FinanceBreakdownEntry // type 402
-  union: FinanceBreakdownEntry // type 403
-  unitemized: { amount: number } // type 420
+  individual: FinanceBreakdownEntry
+  committee: FinanceBreakdownEntry
+  union: FinanceBreakdownEntry
+  unitemized: { amount: number }
 }
 
 export interface MembersFinanceOtherReceipts {
-  nonContribution: FinanceBreakdownEntry // type 204
+  nonContribution: FinanceBreakdownEntry
 }
 
 export interface MembersFinanceYearData {
@@ -73,23 +49,41 @@ export interface MembersFinanceYearData {
   finalized: boolean
 }
 
-// Firestore: /generalCourts/{court}/membersFinance/{memberCode}
 export interface MembersFinance {
   ocpfCpfId: number
   totalRaised: number
   totalSpent: number
   cashOnHand: number
-  contributorCount: number // count of type-201 rows (row = one itemized contribution)
-  lastUpdated: FirebaseFirestore.Timestamp
+  contributorCount: number
+  lastUpdated: Timestamp
   // End_Date of the most recent Bank Report (type 70) — the basis for totalRaised/cashOnHand.
-  bankDataAsOf?: FirebaseFirestore.Timestamp
+  bankDataAsOf?: Timestamp
   // End_Date of the most recent Deposit Report (type 60) — the basis for the
   // breakdown categories. Normally later than bankDataAsOf, since Deposit
   // Reports are filed more frequently than Bank Reports.
-  depositDataAsOf?: FirebaseFirestore.Timestamp
+  depositDataAsOf?: Timestamp
   breakdown: MembersFinanceBreakdown
   candidateFunds: MembersFinanceCandidateFunds
   inKind: MembersFinanceInKind
   otherReceipts: MembersFinanceOtherReceipts
   years: Record<string, MembersFinanceYearData>
+}
+
+export function useMembersFinance(court: number, memberId?: string) {
+  const { loading, result, error } = useAsync(getFinance, [court, memberId])
+  return useMemo(
+    () => ({ finance: result, loading, error }),
+    [loading, result, error]
+  )
+}
+
+async function getFinance(
+  court: number,
+  memberId?: string
+): Promise<MembersFinance | undefined> {
+  if (!memberId) return undefined
+  const data = await loadDoc(
+    `/generalCourts/${court}/membersFinance/${memberId}`
+  )
+  return data as MembersFinance | undefined
 }
