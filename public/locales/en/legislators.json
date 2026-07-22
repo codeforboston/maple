@@ -1,13 +1,17 @@
 {
+  "addBio": "Add your biography",
   "billsSponsored": "Bills Sponsored",
-  "canSubmit": "can submit testimony on any bill or ballot question, just like any constituent. Her stance and reasoning are shown exactly as submitted — MAPLE does not edit or editorialize.",
+  "biography": "Biography",
+  "canSubmit": "can submit testimony on any bill or ballot question, just like any constituent. Their stance and reasoning are shown exactly as submitted — MAPLE does not edit or editorialize.",
   "contact": "Contact",
   "cosponsored": "Cosponsored",
   "districtDetails": "District details are not available yet.",
+  "editBio": "Edit your biography",
   "fundsRaised": "Funds Raised",
   "home": "Home",
   "legislators": "Legislators",
   "loading": "Loading district...",
+  "notClaimed": "This legislator has not claimed their MAPLE account",
   "party": {
     "democratic": "Democratic Party",
     "party": "Party",
@@ -15,6 +19,7 @@
   },
   "stateRepresentative": "State Representative",
   "stateSenator": "State Senator",
+  "submit": "Submit",
   "tabs": {
     "bills": "Bills",
     "district": "District",

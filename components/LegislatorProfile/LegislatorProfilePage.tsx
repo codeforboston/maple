@@ -1,9 +1,12 @@
+import { collection, getDocs, limit, query, where } from "firebase/firestore"
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import ErrorPage from "next/error"
 import { useTranslation } from "next-i18next"
+import { useEffect, useState } from "react"
 import styled from "styled-components"
 
+import { firestore } from "../firebase"
 import * as links from "../links"
 
 import {
@@ -11,6 +14,7 @@ import {
   DistrictLabel,
   formatPhoneNumber,
   LinkedIn,
+  Mastodon,
   PartyLabel,
   Twitter
 } from "./LegislatorComponents"
@@ -23,25 +27,6 @@ import { useDistrict, useMember } from "components/db"
 import { Internal } from "components/links"
 import { FollowUserButton } from "components/shared/FollowButton"
 import { CircleImage } from "components/shared/LabeledIcon"
-
-type ProfilePlaceholder = {
-  social?: {
-    blueSky?: string
-    linkedIn?: string
-    twitter?: string
-  }
-  website?: string
-}
-
-const tabs = [
-  "Priorities",
-  "Bills",
-  "Elections",
-  "Finance",
-  "District",
-  "Her testimony",
-  "Votes"
-]
 
 const ButtonContainer = styled(Col).attrs(props => ({
   className: `col-12 justify-content-md-end ${props.className}`,
@@ -124,6 +109,7 @@ export function LegislatorProfilePage({
   court: number
   memberCode: string
 }) {
+  const { user } = useAuth()
   const { member, loading: memberLoading } = useMember(court, memberCode)
   const { district, loading: districtLoading } = useDistrict(
     court,
@@ -131,23 +117,31 @@ export function LegislatorProfilePage({
     member?.District
   )
   const { t } = useTranslation("legislators")
-  // const { user } = useAuth() **uncomment when Following Button in enabled**
 
-  /* replace with profile info for legislators with Maple accounts */
-  let profile: ProfilePlaceholder = {
-    // social: {
-    //   blueSky: "blueskyTest",
-    //   linkedIn: "linkedinTest",
-    //   twitter: "twitterTest"
-    // },
-    // website: "test.com"
-    social: {
-      blueSky: "",
-      linkedIn: "",
-      twitter: ""
-    },
-    website: ""
+  const [legislatorId, setLegislatorId] = useState("")
+  const [legislatorData, setLegislatorData] = useState<any[]>([])
+
+  async function getLegislatorUID(memberCode: string) {
+    let docList: any[] = []
+    const q = query(
+      collection(firestore, "profiles"),
+      where("memberId", "==", memberCode),
+      where("public", "==", true),
+      limit(1)
+    )
+    const docData = await getDocs(q)
+
+    docData.forEach(doc => {
+      // doc.data() is never undefined for query doc snapshots
+      docList.push(doc.data())
+      setLegislatorData(docList)
+      setLegislatorId(doc.id)
+    })
   }
+
+  useEffect(() => {
+    getLegislatorUID(memberCode)
+  }, [memberCode])
 
   if (memberLoading) {
     return (
@@ -221,14 +215,14 @@ export function LegislatorProfilePage({
               </links.External>
             </div>
 
-            {profile.website ? (
+            {legislatorData[0]?.website ? (
               <div>
                 <span className="px-2">·</span>
                 <links.External
-                  href={`https://${profile.website}`}
+                  href={`https://${legislatorData[0].website}`}
                   className="text-decoration-none"
                 >
-                  {profile.website}
+                  {legislatorData[0].website}
                 </links.External>
               </div>
             ) : (
@@ -252,17 +246,18 @@ export function LegislatorProfilePage({
             )}
 
             <div>
-              {profile?.social?.twitter ||
-              profile?.social?.linkedIn ||
-              profile?.social?.blueSky ? (
+              {legislatorData[0]?.social.twitter ||
+              legislatorData[0]?.social.linkedIn ||
+              legislatorData[0]?.social.blueSky ||
+              legislatorData[0]?.social.mastodon ? (
                 <span className="px-2">·</span>
               ) : (
                 <></>
               )}
 
-              {profile?.social?.twitter ? (
+              {legislatorData[0]?.social.twitter ? (
                 <a
-                  href={profile.social.twitter}
+                  href={legislatorData[0].social.twitter}
                   className="pe-2"
                   rel="noreferrer"
                   target="_blank"
@@ -273,9 +268,10 @@ export function LegislatorProfilePage({
               ) : (
                 <></>
               )}
-              {profile?.social?.linkedIn ? (
+
+              {legislatorData[0]?.social.linkedIn ? (
                 <a
-                  href={profile.social.linkedIn}
+                  href={legislatorData[0].social.linkedIn}
                   className="pe-2"
                   rel="noreferrer"
                   target="_blank"
@@ -286,9 +282,10 @@ export function LegislatorProfilePage({
               ) : (
                 <></>
               )}
-              {profile?.social?.blueSky ? (
+
+              {legislatorData[0]?.social.blueSky ? (
                 <a
-                  href={profile?.social.blueSky}
+                  href={legislatorData[0].social.blueSky}
                   className="pe-2"
                   rel="noreferrer"
                   target="_blank"
@@ -299,20 +296,32 @@ export function LegislatorProfilePage({
               ) : (
                 <></>
               )}
+
+              {legislatorData[0]?.social.mastodon ? (
+                <a
+                  href={legislatorData[0].social.mastodon}
+                  className="pe-2"
+                  rel="noreferrer"
+                  target="_blank"
+                  title="Mastodon"
+                >
+                  <Mastodon />
+                </a>
+              ) : (
+                <></>
+              )}
             </div>
           </SocialLine>
         </Col>
 
         <ButtonContainer>
-          {/* uncomment when legislator Maple accounts are linked to this page 
-          
-          {user && legislatorAccountId ? (
+          {user && legislatorId ? (
             <div className="mb-2">
-              <FollowUserButton profileId={props.id} />
+              <FollowUserButton profileId={legislatorId} />
             </div>
           ) : (
             <></>
-          )} */}
+          )}
           <links.External
             href={`mailto:${member.EmailAddress}`}
             className="border border-2 border-secondary btn btn-lg fw-bold py-1 text-decoration-none text-secondary w-100"
@@ -354,10 +363,17 @@ export function LegislatorProfilePage({
           <LegislatorTabs
             district={district}
             districtLoading={districtLoading}
+            legislatorId={legislatorId}
+            name={member.Name}
           />
         </Col>
         <Col md="3">
-          <LegislatorSidebar />
+          <LegislatorSidebar
+            court={court}
+            legislatorData={legislatorData}
+            legislatorId={legislatorId}
+            memberCode={memberCode}
+          />
         </Col>
       </Row>
     </Container>

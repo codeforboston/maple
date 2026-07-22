@@ -1,5 +1,98 @@
+import { useMemo } from "react"
+import { useTranslation } from "next-i18next"
+import styled from "styled-components"
+
 import { TabBlock } from "../LegislatorComponents"
 
-export function TestimonyTab() {
-  return <TabBlock>- Testimony</TabBlock>
+import { useAuth } from "components/auth"
+import { usePublishedTestimonyListing } from "components/db/testimony/usePublishedTestimonyListing"
+import { NoResults } from "components/search/NoResults"
+import { TestimonyItem } from "components/TestimonyCard/TestimonyItem"
+
+const DisclaimerBlock = styled.div`
+  align-items: flex-start;
+  background-color: #f0f4ff;
+  border-color: #b8c0c9;
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 1px;
+  color: #1a3185;
+  display: flex;
+  font-size: 13px;
+  gap: 10px;
+  line-height: 1.6;
+  margin-top: 14px;
+  margin-bottom: 14px;
+  padding: 12px 16px;
+`
+
+function Disclaimer({ fullname }: { fullname?: string }) {
+  const { t } = useTranslation("legislators")
+
+  return (
+    <DisclaimerBlock>
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#1a3185"
+        strokeWidth="2"
+      >
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <div>
+        {fullname} {t("canSubmit")}
+      </div>
+    </DisclaimerBlock>
+  )
+}
+
+export function TestimonyTab({
+  legislatorId,
+  name
+}: {
+  legislatorId: string
+  name: string
+}) {
+  const { t } = useTranslation("testimony")
+  const { user } = useAuth()
+
+  const testimony = usePublishedTestimonyListing({
+    uid: legislatorId
+  })
+
+  const testimonies = useMemo(() => {
+    const legislatorTestimonies = testimony.items.result ?? []
+
+    // Sort by publishedAt (newest first), then take 4 most recent
+    return [...legislatorTestimonies]
+      .sort((a, b) => b.publishedAt.toMillis() - a.publishedAt.toMillis())
+      .slice(0, 4)
+  }, [testimony.items.result])
+
+  return (
+    <>
+      <Disclaimer fullname={name} />
+      {testimonies.length > 0 && legislatorId ? (
+        <div>
+          {testimonies.map(testimony => (
+            <TabBlock key={testimony.id}>
+              <TestimonyItem
+                testimony={testimony}
+                isUser={testimony.authorUid === user?.uid}
+                onProfilePage={true}
+              />
+            </TabBlock>
+          ))}
+        </div>
+      ) : (
+        <TabBlock>
+          <NoResults>{t("viewTestimony.noTestimonies")}</NoResults>
+        </TabBlock>
+      )}
+    </>
+  )
 }
