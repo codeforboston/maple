@@ -76,6 +76,7 @@
   "billCard": {
     "filingCount_one": "{{count}} lobbying filing",
     "filingCount_other": "{{count}} lobbying filings",
-    "viewAll": "View all lobbying activity →"
+    "viewAll": "View all lobbying activity →",
+    "showingOf": "Showing {{showing}} of {{total}} filings"
   }
 }

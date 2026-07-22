@@ -7,7 +7,7 @@
  * hex values that match the SCSS source of truth are the correct approach.
  */
 
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { TooltipContentProps } from "recharts"
 import type {
   NameType,
@@ -43,8 +43,12 @@ export const MAPLE_COLORS = {
   // Semantic subtle tints
   blueSubtleBg: "#e8efff",
   blueSubtleText: "#1d3f8a",
+  blueBorder: "#c9d8ff",
   greenSubtleBg: "#e8f6ea",
   greenSubtleText: "#1d5d2d",
+  greenBorder: "#c8e7cf",
+  orangeSubtleBg: "#fff4e8",
+  orangeSubtleText: "#7a3800",
   redSubtleBg: "#fde8ef",
   redSubtleText: "#902141",
   graySubtleBg: "#f1f5f9",
@@ -64,11 +68,11 @@ export const DATA_PALETTE: readonly string[] = [
   MAPLE_COLORS.danger
 ]
 
-/** Lobbying position colours. Use across all position visualisations. */
+/** Lobbying position colours. Aligned to MAPLE bill position palette. */
 export const POSITION_COLORS = {
   support: MAPLE_COLORS.green,
-  oppose: MAPLE_COLORS.danger,
-  neutral: MAPLE_COLORS.textMuted,
+  oppose: MAPLE_COLORS.accent,
+  neutral: MAPLE_COLORS.primary,
   none: MAPLE_COLORS.graySubtleBorder
 } as const
 
@@ -299,6 +303,20 @@ const chartTitleStyle: React.CSSProperties = {
   textTransform: "uppercase",
   letterSpacing: "0.06em",
   marginBottom: "0.75rem"
+}
+
+// ── Accessibility ─────────────────────────────────────────────────────────────
+
+export function usePrefersReducedMotion(): boolean {
+  const [reduced, setReduced] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
+    setReduced(mq.matches)
+    const handler = (e: MediaQueryListEvent) => setReduced(e.matches)
+    mq.addEventListener("change", handler)
+    return () => mq.removeEventListener("change", handler)
+  }, [])
+  return reduced
 }
 
 // ── Formatters ────────────────────────────────────────────────────────────────

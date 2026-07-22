@@ -76,12 +76,12 @@ export const LobbyingBillCard: React.FC<LobbyingBillCardProps> = ({
         />
         <LegendItem
           label={t("lobbying:position.oppose")}
-          color={MAPLE_COLORS.danger}
+          color={MAPLE_COLORS.accent}
           count={counts.oppose}
         />
         <LegendItem
           label={t("lobbying:position.neutral")}
-          color={MAPLE_COLORS.textMuted}
+          color={MAPLE_COLORS.primary}
           count={counts.neutral}
         />
       </div>
@@ -128,7 +128,7 @@ const PositionBar: React.FC<{
           style={{
             ...barSegmentStyle,
             width: pct(counts.oppose),
-            background: MAPLE_COLORS.danger,
+            background: MAPLE_COLORS.accent,
             borderRadius:
               counts.support === 0 && counts.neutral === 0
                 ? "4px"
@@ -145,7 +145,7 @@ const PositionBar: React.FC<{
           style={{
             ...barSegmentStyle,
             width: pct(counts.neutral),
-            background: MAPLE_COLORS.textMuted,
+            background: MAPLE_COLORS.primary,
             borderRadius: "0 4px 4px 0"
           }}
         />

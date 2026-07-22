@@ -5,7 +5,6 @@ import { Col, Container, Row } from "components/bootstrap"
 import { createPage } from "components/page"
 import { createGetStaticTranslationProps } from "components/translations"
 import { useLobbyingFilingsForBill } from "components/db/lobbying"
-import { LobbyingFilingsTable } from "components/lobbying/LobbyingFilingsTable"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { usePagination } from "components/lobbying/usePagination"
@@ -17,7 +16,7 @@ import styles from "components/lobbying/lobbying.module.css"
 
 const PAGE_SIZE = 50
 
-type SortKey = "client" | "firm" | "position" | "amount" | "year"
+type SortKey = "client" | "firm" | "position" | "year"
 type SortDir = "asc" | "desc"
 
 function sortFilings(
@@ -39,8 +38,6 @@ function sortFilings(
             normalizePosition(b.position)
           )
         )
-      case "amount":
-        return mul * ((a.amount ?? -1) - (b.amount ?? -1))
       case "year":
         return mul * (a.year - b.year)
       default:
@@ -262,14 +259,6 @@ function BillFilingsPage() {
                           onSort={handleSort}
                         />
                         <SortTh
-                          label={t("fields.amount")}
-                          sortKey="amount"
-                          current={sortKey}
-                          dir={sortDir}
-                          onSort={handleSort}
-                          style={{ textAlign: "right" }}
-                        />
-                        <SortTh
                           label={t("fields.year")}
                           sortKey="year"
                           current={sortKey}
@@ -310,15 +299,6 @@ function BillFilingsPage() {
                             >
                               {f.position || "—"}
                             </span>
-                          </td>
-                          <td style={{ ...cellStyle, textAlign: "right" }}>
-                            {f.amount != null
-                              ? f.amount.toLocaleString("en-US", {
-                                  style: "currency",
-                                  currency: "USD",
-                                  maximumFractionDigits: 0
-                                })
-                              : "—"}
                           </td>
                           <td style={cellStyle}>{f.year}</td>
                         </tr>
@@ -421,9 +401,17 @@ const chipStyle: React.CSSProperties = {
 
 function posChipStyle(pos: string): React.CSSProperties {
   if (pos === "support")
-    return { color: MAPLE_COLORS.green, borderColor: MAPLE_COLORS.green }
+    return { color: MAPLE_COLORS.green, borderColor: MAPLE_COLORS.greenBorder }
   if (pos === "oppose")
-    return { color: MAPLE_COLORS.danger, borderColor: MAPLE_COLORS.danger }
+    return {
+      color: MAPLE_COLORS.orangeSubtleText,
+      borderColor: MAPLE_COLORS.accent
+    }
+  if (pos === "neutral")
+    return {
+      color: MAPLE_COLORS.blueSubtleText,
+      borderColor: MAPLE_COLORS.blueBorder
+    }
   return {
     color: MAPLE_COLORS.textMuted,
     borderColor: MAPLE_COLORS.borderDefault

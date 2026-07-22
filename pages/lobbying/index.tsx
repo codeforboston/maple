@@ -26,6 +26,7 @@ import {
   LINE_PROPS_EMPHASIS,
   MAPLE_COLORS,
   MapleTooltip,
+  usePrefersReducedMotion,
   X_AXIS_PROPS,
   Y_AXIS_PROPS
 } from "components/lobbying/chartTheme"
@@ -36,19 +37,29 @@ import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 
 function StatCard({
   label,
-  value
+  value,
+  href
 }: {
   label: string
   value: string | number | undefined
+  href?: string
 }) {
-  return (
-    <div style={statCardStyle}>
+  const inner = (
+    <>
       <div style={statValueStyle}>
         {value ?? <span style={{ color: MAPLE_COLORS.borderDefault }}>—</span>}
       </div>
       <div style={statLabelStyle}>{label}</div>
-    </div>
+    </>
   )
+  if (href) {
+    return (
+      <a href={href} style={{ ...statCardStyle, textDecoration: "none" }}>
+        {inner}
+      </a>
+    )
+  }
+  return <div style={statCardStyle}>{inner}</div>
 }
 
 function StatsBar({ stats }: { stats: LobbyingStats | undefined }) {
@@ -69,10 +80,12 @@ function StatsBar({ stats }: { stats: LobbyingStats | undefined }) {
             ? stats.totalBillsWithFilings.toLocaleString("en-US")
             : undefined
         }
+        href="/lobbying/bills"
       />
       <StatCard
         label={t("stats.totalClients")}
         value={stats ? stats.totalClients.toLocaleString("en-US") : undefined}
+        href="/lobbying/clients"
       />
       <StatCard
         label={t("stats.sessionsCovered")}
@@ -105,6 +118,7 @@ function buildYearData(stats: LobbyingStats): YearRow[] {
 function SpendFilingsChart({ stats }: { stats: LobbyingStats | undefined }) {
   const { t } = useTranslation("lobbying")
   const data = useMemo(() => (stats ? buildYearData(stats) : []), [stats])
+  const reducedMotion = usePrefersReducedMotion()
 
   if (!stats || data.length === 0) return null
 
@@ -184,6 +198,7 @@ function SpendFilingsChart({ stats }: { stats: LobbyingStats | undefined }) {
               dataKey="spend"
               name={t("fields.amount")}
               fill={MAPLE_COLORS.periwinkle}
+              isAnimationActive={!reducedMotion}
               {...BAR_PROPS_COMPACT}
             />
             <Line
@@ -191,6 +206,7 @@ function SpendFilingsChart({ stats }: { stats: LobbyingStats | undefined }) {
               dataKey="filings"
               name={t("fields.filings")}
               stroke={MAPLE_COLORS.primary}
+              isAnimationActive={!reducedMotion}
               {...LINE_PROPS_EMPHASIS}
             />
           </ComposedChart>

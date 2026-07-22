@@ -60,7 +60,10 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
               {showBill && (
                 <td style={cellStyle}>
                   {f.billId ? (
-                    <a href={`/bills/${f.generalCourt}/${f.billId}`}>
+                    <a
+                      href={`/lobbying/bills/${f.generalCourt}/${f.billId}`}
+                      style={{ color: MAPLE_COLORS.primary }}
+                    >
                       {f.billId}
                     </a>
                   ) : (
@@ -94,6 +97,14 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
           ))}
         </tbody>
       </Table>
+      {truncated && (
+        <p style={truncatedNoteStyle}>
+          {t("billCard.showingOf", {
+            showing: rows.length,
+            total: filings.length
+          })}
+        </p>
+      )}
       {truncated && onViewAll && (
         <button onClick={onViewAll} style={viewAllStyle}>
           {t("billCard.viewAll")}
@@ -120,6 +131,12 @@ const theadRowStyle: React.CSSProperties = {
 const cellStyle: React.CSSProperties = {
   verticalAlign: "middle",
   padding: "0.4rem 0.5rem"
+}
+
+const truncatedNoteStyle: React.CSSProperties = {
+  fontSize: 12,
+  color: MAPLE_COLORS.textMuted,
+  margin: "0.25rem 0 0"
 }
 
 const viewAllStyle: React.CSSProperties = {

@@ -8,17 +8,17 @@ const CHIP_STYLES: Record<Position, React.CSSProperties> = {
   support: {
     background: "#e8f6ea",
     color: "#1d5d2d",
-    border: "1px solid #3d9922"
+    border: "1px solid #c8e7cf"
   },
   oppose: {
-    background: "#fde8ef",
-    color: "#902141",
-    border: "1px solid #c71e32"
+    background: "#fff4e8",
+    color: "#7a3800",
+    border: "1px solid #ff8600"
   },
   neutral: {
-    background: "#f1f5f9",
-    color: "#475569",
-    border: "1px solid #cbd5e1"
+    background: "#e8efff",
+    color: "#1d3f8a",
+    border: "1px solid #c9d8ff"
   },
   none: {
     background: "#f1f5f9",

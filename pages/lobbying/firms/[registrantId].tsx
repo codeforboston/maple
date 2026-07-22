@@ -62,6 +62,16 @@ function FirmDetail() {
     setPage(1)
   }, [entityNameNorm, setPage])
 
+  const totalCompensation = useMemo(() => {
+    let sum = 0
+    for (const r of registrants ?? []) {
+      for (const c of r.clients) {
+        if (c.compensation != null) sum += c.compensation
+      }
+    }
+    return sum
+  }, [registrants])
+
   if (!entityNameNorm) return null
 
   // Aggregate from all registrant docs for this entity
@@ -109,6 +119,17 @@ function FirmDetail() {
               )}
               &nbsp;·&nbsp; {filings?.length ?? "—"}{" "}
               {t("fields.filings").toLowerCase()}
+              {totalCompensation > 0 && (
+                <>
+                  &nbsp;·&nbsp;{" "}
+                  {totalCompensation.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                    maximumFractionDigits: 0
+                  })}{" "}
+                  {t("misc.total")}
+                </>
+              )}
             </p>
           </Col>
         </Row>

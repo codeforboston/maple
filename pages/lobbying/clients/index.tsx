@@ -68,10 +68,13 @@ function deriveClients(
   const map = new Map<string, ClientRow>()
   for (const r of registrants) {
     for (const c of r.clients) {
+      const lc = c.clientName.toLowerCase()
       if (
         !c.clientNameNorm ||
         c.clientNameNorm === LEGACY_TOTAL_CLIENT ||
-        c.clientName === LEGACY_TOTAL_CLIENT
+        c.clientName === LEGACY_TOTAL_CLIENT ||
+        lc.includes("total salaries") ||
+        lc.includes("total salary")
       )
         continue
       if (!map.has(c.clientNameNorm)) {
