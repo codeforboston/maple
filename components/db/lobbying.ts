@@ -226,3 +226,25 @@ export function useLobbyingClient(clientSlug: string) {
 export function useLobbyingFilingsForClient(clientNameNorm: string) {
   return useAsync(fetchFilingsForClient, [clientNameNorm])
 }
+
+async function fetchEntityFilingCounts(): Promise<Record<string, number>> {
+  const snap = await getDoc(
+    doc(firestore, LOBBYING_STATS_COLLECTION, "entityFilingCounts")
+  )
+  return snap.exists() ? (snap.data() as Record<string, number>) : {}
+}
+
+async function fetchClientFilingCounts(): Promise<Record<string, number>> {
+  const snap = await getDoc(
+    doc(firestore, LOBBYING_STATS_COLLECTION, "clientFilingCounts")
+  )
+  return snap.exists() ? (snap.data() as Record<string, number>) : {}
+}
+
+export function useLobbyingEntityFilingCounts() {
+  return useAsync(fetchEntityFilingCounts, [])
+}
+
+export function useLobbyingClientFilingCounts() {
+  return useAsync(fetchClientFilingCounts, [])
+}

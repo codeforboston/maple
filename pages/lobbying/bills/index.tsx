@@ -371,6 +371,9 @@ function LobbyingBillsPage() {
         <Row className="mt-4 mb-3">
           <Col>
             <h1>{t("titles.bills")}</h1>
+            <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 14 }}>
+              {t("explainers.bills")}
+            </p>
           </Col>
         </Row>
         <Row>

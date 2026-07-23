@@ -39,6 +39,8 @@ def compute_stats(db: firestore.Client) -> None:
     bills: set[str] = set()
     courts: set[int] = set()
     filings_by_year: dict[str, int] = {}
+    entity_filing_counts: dict[str, int] = {}
+    client_filing_counts: dict[str, int] = {}
     total_filings = 0
 
     for doc in db.collection(FILINGS_COLLECTION).stream():
@@ -53,6 +55,12 @@ def compute_stats(db: firestore.Client) -> None:
         if year:
             filings_by_year[year] = filings_by_year.get(year, 0) + 1
         total_filings += 1
+        en = d.get("entityNameNorm")
+        cn = d.get("clientNameNorm")
+        if en:
+            entity_filing_counts[en] = entity_filing_counts.get(en, 0) + 1
+        if cn:
+            client_filing_counts[cn] = client_filing_counts.get(cn, 0) + 1
 
     client_norms: set[str] = set()
     spend_by_year: dict[str, float] = {}
@@ -80,9 +88,16 @@ def compute_stats(db: firestore.Client) -> None:
         "filingsByYear": filings_by_year,
     }
     db.collection(STATS_COLLECTION).document(STATS_DOC_ID).set(stats, merge=True)
+    db.collection(STATS_COLLECTION).document("entityFilingCounts").set(
+        entity_filing_counts
+    )
+    db.collection(STATS_COLLECTION).document("clientFilingCounts").set(
+        client_filing_counts
+    )
     print(
         f"  stats written: {total_filings} filings, "
-        f"{total_registrants} registrants, {len(client_norms)} clients"
+        f"{total_registrants} registrants, {len(client_norms)} clients, "
+        f"{len(entity_filing_counts)} entities, {len(client_filing_counts)} client norms"
     )
 
 

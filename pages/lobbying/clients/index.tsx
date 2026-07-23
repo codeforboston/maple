@@ -3,7 +3,10 @@ import { useTranslation } from "next-i18next"
 import { Col, Container, Row } from "components/bootstrap"
 import { createPage } from "components/page"
 import { createGetStaticTranslationProps } from "components/translations"
-import { useLobbyingAllRegistrants } from "components/db/lobbying"
+import {
+  useLobbyingAllRegistrants,
+  useLobbyingClientFilingCounts
+} from "components/db/lobbying"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { usePagination } from "components/lobbying/usePagination"
@@ -14,7 +17,7 @@ import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 const LEGACY_TOTAL_CLIENT = "_total_salary_"
 const PAGE_SIZE = 50
 
-type ClientSortKey = "name" | "compensation" | "firms"
+type ClientSortKey = "name" | "compensation" | "firms" | "filings"
 type SortDir = "asc" | "desc"
 
 function SortTh({
@@ -59,6 +62,7 @@ type ClientRow = {
   clientNameNorm: string
   totalCompensation: number | null
   registrantCount: number
+  totalFilings: number | undefined
 }
 
 function deriveClients(
@@ -82,7 +86,8 @@ function deriveClients(
           clientName: c.clientName,
           clientNameNorm: c.clientNameNorm,
           totalCompensation: null,
-          registrantCount: 0
+          registrantCount: 0,
+          totalFilings: undefined
         })
       }
       const row = map.get(c.clientNameNorm)!
@@ -111,16 +116,27 @@ function LobbyingClientsTable() {
   }
 
   const { result: registrants, status, error } = useLobbyingAllRegistrants()
+  const { result: filCounts } = useLobbyingClientFilingCounts()
   const clients = useMemo(() => deriveClients(registrants), [registrants])
+  const clientsWithCounts = useMemo(
+    () =>
+      filCounts
+        ? clients.map(c => ({
+            ...c,
+            totalFilings: filCounts[c.clientNameNorm]
+          }))
+        : clients,
+    [clients, filCounts]
+  )
 
   const filtered = useMemo(
     () =>
       search
-        ? clients.filter(c =>
+        ? clientsWithCounts.filter(c =>
             c.clientName.toLowerCase().includes(search.toLowerCase())
           )
-        : clients,
-    [clients, search]
+        : clientsWithCounts,
+    [clientsWithCounts, search]
   )
 
   const sorted = useMemo(() => {
@@ -133,6 +149,8 @@ function LobbyingClientsTable() {
           )
         case "firms":
           return mul * (a.registrantCount - b.registrantCount)
+        case "filings":
+          return mul * ((a.totalFilings ?? -1) - (b.totalFilings ?? -1))
         default:
           return mul * a.clientNameNorm.localeCompare(b.clientNameNorm)
       }
@@ -196,6 +214,13 @@ function LobbyingClientsTable() {
                     onSort={handleSort}
                   />
                   <SortTh
+                    label={t("fields.filings")}
+                    sortKey="filings"
+                    current={sortKey}
+                    dir={sortDir}
+                    onSort={handleSort}
+                  />
+                  <SortTh
                     label={t("fields.amount")}
                     sortKey="compensation"
                     current={sortKey}
@@ -220,6 +245,9 @@ function LobbyingClientsTable() {
                     </td>
                     <td style={{ ...tdStyle, color: MAPLE_COLORS.textMuted }}>
                       {c.registrantCount}
+                    </td>
+                    <td style={{ ...tdStyle, color: MAPLE_COLORS.textMuted }}>
+                      {c.totalFilings !== undefined ? c.totalFilings : "—"}
                     </td>
                     <td
                       style={{
@@ -263,6 +291,9 @@ function LobbyingClientsPage() {
         <Row className="mt-4 mb-3">
           <Col>
             <h1>{t("titles.clients")}</h1>
+            <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 14 }}>
+              {t("explainers.clients")}
+            </p>
           </Col>
         </Row>
         <Row>

@@ -17,6 +17,8 @@ export const script: Script = async ({ db }) => {
   const bills = new Set<string>()
   const courts = new Set<number>()
   const filingsByYear: Record<string, number> = {}
+  const entityFilingCounts: Record<string, number> = {}
+  const clientFilingCounts: Record<string, number> = {}
 
   for (const doc of filingsSnap.docs) {
     const d = doc.data()
@@ -31,6 +33,15 @@ export const script: Script = async ({ db }) => {
 
     const y = String(year)
     filingsByYear[y] = (filingsByYear[y] ?? 0) + 1
+
+    if (d.entityNameNorm) {
+      entityFilingCounts[d.entityNameNorm] =
+        (entityFilingCounts[d.entityNameNorm] ?? 0) + 1
+    }
+    if (d.clientNameNorm) {
+      clientFilingCounts[d.clientNameNorm] =
+        (clientFilingCounts[d.clientNameNorm] ?? 0) + 1
+    }
   }
 
   // Aggregate spend and unique clients from registrant docs.
@@ -72,5 +83,23 @@ export const script: Script = async ({ db }) => {
     .doc(STATS_DOC_ID)
     .set(stats, { merge: true })
 
+  await db
+    .collection(STATS_COLLECTION)
+    .doc("entityFilingCounts")
+    .set(entityFilingCounts)
+
+  await db
+    .collection(STATS_COLLECTION)
+    .doc("clientFilingCounts")
+    .set(clientFilingCounts)
+
   console.log(`Written to ${STATS_COLLECTION}/${STATS_DOC_ID}`)
+  console.log(
+    `  entityFilingCounts: ${Object.keys(entityFilingCounts).length} entities`
+  )
+  console.log(
+    `  clientFilingCounts: ${
+      Object.keys(clientFilingCounts).length
+    } client norms`
+  )
 }

@@ -24,7 +24,7 @@
   "stats": {
     "totalBills": "Lobbied bills",
     "totalClients": "Clients",
-    "sessionsCovered": "Sessions covered",
+    "totalFirms": "Lobbying firms",
     "totalSpend": "Total compensation reported"
   },
   "sections": {
@@ -61,6 +61,14 @@
     "sessions": "Sessions",
     "type": "Type",
     "firms": "Firms"
+  },
+  "explainers": {
+    "statBills": "Bills that have been the subject of at least one lobbying disclosure.",
+    "statClients": "Organizations that have hired lobbyists to advocate on their behalf.",
+    "statSpend": "Sum of all annual compensation amounts reported by lobbying firms to the Secretary of State.",
+    "bills": "Bills that appear in lobbying disclosures filed with the MA Secretary of State, across all sessions in this dataset.",
+    "clients": "Organizations that retained lobbyists or lobbied on their own behalf, as reported in annual compensation disclosures.",
+    "firms": "Registered lobbyists and employers who filed lobbying disclosures with the MA Secretary of State."
   },
   "attribution": "Data from the MA Secretary of State Lobbyist Public Search.",
   "noData": "No lobbying filings found.",

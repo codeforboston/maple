@@ -151,7 +151,8 @@ function BillFilingsPage() {
   }, [posFilter, sortKey, sortDir, setPage])
 
   const loading = status === "loading" || status === "not-requested"
-  const mapleHref = court && billId ? `/bills/${court}/${billId}` : undefined
+  const mapleHref =
+    court >= 192 && billId ? `/bills/${court}/${billId}` : undefined
 
   if (!billId) return null
 

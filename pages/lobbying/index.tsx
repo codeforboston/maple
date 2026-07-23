@@ -38,11 +38,13 @@ import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 function StatCard({
   label,
   value,
-  href
+  href,
+  description
 }: {
   label: string
   value: string | number | undefined
   href?: string
+  description?: string
 }) {
   const inner = (
     <>
@@ -50,6 +52,7 @@ function StatCard({
         {value ?? <span style={{ color: MAPLE_COLORS.borderDefault }}>—</span>}
       </div>
       <div style={statLabelStyle}>{label}</div>
+      {description && <div style={statDescStyle}>{description}</div>}
     </>
   )
   if (href) {
@@ -81,17 +84,27 @@ function StatsBar({ stats }: { stats: LobbyingStats | undefined }) {
             : undefined
         }
         href="/lobbying/bills"
+        description={t("explainers.statBills")}
       />
       <StatCard
         label={t("stats.totalClients")}
         value={stats ? stats.totalClients.toLocaleString("en-US") : undefined}
         href="/lobbying/clients"
+        description={t("explainers.statClients")}
       />
       <StatCard
-        label={t("stats.sessionsCovered")}
-        value={stats ? stats.courtsWithData.length : undefined}
+        label={t("stats.totalFirms")}
+        value={
+          stats ? stats.totalRegistrants.toLocaleString("en-US") : undefined
+        }
+        href="/lobbying/firms"
+        description={t("explainers.firms")}
       />
-      <StatCard label={t("stats.totalSpend")} value={totalSpend} />
+      <StatCard
+        label={t("stats.totalSpend")}
+        value={totalSpend}
+        description={t("explainers.statSpend")}
+      />
     </div>
   )
 }
@@ -216,43 +229,6 @@ function SpendFilingsChart({ stats }: { stats: LobbyingStats | undefined }) {
   )
 }
 
-// ── Entry cards ───────────────────────────────────────────────────────────────
-
-function EntryCard({
-  title,
-  description,
-  href,
-  count,
-  countLabel
-}: {
-  title: string
-  description: string
-  href: string
-  count?: number
-  countLabel?: string
-}) {
-  return (
-    <a href={href} style={entryCardStyle}>
-      <div style={entryCardInner}>
-        <div>
-          <div style={entryCardTitle}>{title}</div>
-          <div style={entryCardDesc}>{description}</div>
-        </div>
-        {count != null && (
-          <div style={entryCardCount}>
-            {count.toLocaleString("en-US")}
-            {countLabel && (
-              <span style={{ fontSize: 11, fontWeight: 400, marginLeft: 4 }}>
-                {countLabel}
-              </span>
-            )}
-          </div>
-        )}
-      </div>
-    </a>
-  )
-}
-
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 function LobbyingOverview() {
@@ -293,37 +269,6 @@ function LobbyingOverview() {
           </Row>
         )}
 
-        {/* Entry cards */}
-        <Row className="mb-4">
-          <Col md={4} className="mb-3">
-            <EntryCard
-              title={t("sections.bills")}
-              description={t("titles.bills")}
-              href="/lobbying/bills"
-              count={stats?.totalBillsWithFilings}
-              countLabel={t("sections.bills").toLowerCase()}
-            />
-          </Col>
-          <Col md={4} className="mb-3">
-            <EntryCard
-              title={t("sections.clients")}
-              description={t("titles.clients")}
-              href="/lobbying/clients"
-              count={stats?.totalClients}
-              countLabel={t("sections.clients").toLowerCase()}
-            />
-          </Col>
-          <Col md={4} className="mb-3">
-            <EntryCard
-              title={t("sections.firms")}
-              description={t("titles.firms")}
-              href="/lobbying/firms"
-              count={stats?.totalRegistrants}
-              countLabel="registrants"
-            />
-          </Col>
-        </Row>
-
         <Row className="mb-3">
           <Col>
             <p style={dataNotesStyle}>
@@ -337,9 +282,11 @@ function LobbyingOverview() {
               >
                 MGL Chapter 3
               </a>
-              . Data begins in 2005, the first year available on the portal. The
-              sharp increase in reported activity starting in 2010 coincides
-              with{" "}
+              . The dataset spans{" "}
+              {stats ? stats.courtsWithData.length : "multiple"} legislative
+              sessions (General Courts), beginning in 2005, the first year
+              available on the portal. The sharp increase in reported activity
+              starting in 2010 coincides with{" "}
               <a
                 href="https://malegislature.gov/Laws/SessionLaws/Acts/2009/Chapter28"
                 target="_blank"
@@ -411,47 +358,16 @@ const statLabelStyle: React.CSSProperties = {
   fontWeight: 600
 }
 
-const entryCardStyle: React.CSSProperties = {
-  display: "block",
-  background: MAPLE_COLORS.surfaceBase,
-  border: `1px solid ${MAPLE_COLORS.borderDefault}`,
-  borderRadius: 8,
-  padding: "1.25rem",
-  textDecoration: "none",
-  color: MAPLE_COLORS.textBody,
-  boxShadow: "0 0.25rem 1rem rgba(15, 23, 42, 0.04)",
-  transition: "box-shadow 0.15s, border-color 0.15s",
-  height: "100%"
-}
-
-const entryCardInner: React.CSSProperties = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "flex-start"
-}
-
-const entryCardTitle: React.CSSProperties = {
-  fontWeight: 700,
-  fontSize: 16,
-  color: MAPLE_COLORS.primary
-}
-
-const entryCardDesc: React.CSSProperties = {
-  fontSize: 13,
+const statDescStyle: React.CSSProperties = {
+  fontSize: 11,
   color: MAPLE_COLORS.textMuted,
-  marginTop: "0.2rem"
+  marginTop: "0.4rem",
+  lineHeight: 1.4,
+  fontWeight: 400
 }
 
 const dataNotesStyle: React.CSSProperties = {
   fontSize: 13,
   color: MAPLE_COLORS.textMuted,
   lineHeight: 1.6
-}
-
-const entryCardCount: React.CSSProperties = {
-  fontSize: 20,
-  fontWeight: 700,
-  color: MAPLE_COLORS.textStrong,
-  fontFamily: "Nunito, system-ui, sans-serif",
-  whiteSpace: "nowrap"
 }

@@ -3,7 +3,10 @@ import { useTranslation } from "next-i18next"
 import { Col, Container, Row } from "components/bootstrap"
 import { createPage } from "components/page"
 import { createGetStaticTranslationProps } from "components/translations"
-import { useLobbyingAllRegistrants } from "components/db/lobbying"
+import {
+  useLobbyingAllRegistrants,
+  useLobbyingEntityFilingCounts
+} from "components/db/lobbying"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { usePagination } from "components/lobbying/usePagination"
@@ -13,7 +16,7 @@ import type { LobbyingRegistrant } from "functions/src/lobbying/types"
 
 const PAGE_SIZE = 50
 
-type FirmSortKey = "name" | "clients" | "sessions"
+type FirmSortKey = "name" | "clients" | "sessions" | "filings"
 type SortDir = "asc" | "desc"
 
 function SortTh({
@@ -60,6 +63,7 @@ type FirmRow = {
   regType: string
   years: number[]
   clientCount: number
+  totalFilings: number | undefined
 }
 
 function groupByFirm(registrants: LobbyingRegistrant[] | undefined): FirmRow[] {
@@ -73,7 +77,8 @@ function groupByFirm(registrants: LobbyingRegistrant[] | undefined): FirmRow[] {
         registrantId: r.registrantId,
         regType: r.regType,
         years: [],
-        clientCount: 0
+        clientCount: 0,
+        totalFilings: undefined
       })
     }
     const row = map.get(r.entityNameNorm)!
@@ -103,16 +108,24 @@ function LobbyingFirmsTable() {
   }
 
   const { result: registrants, status, error } = useLobbyingAllRegistrants()
+  const { result: filCounts } = useLobbyingEntityFilingCounts()
   const firms = useMemo(() => groupByFirm(registrants), [registrants])
+  const firmsWithCounts = useMemo(
+    () =>
+      filCounts
+        ? firms.map(f => ({ ...f, totalFilings: filCounts[f.entityNameNorm] }))
+        : firms,
+    [firms, filCounts]
+  )
 
   const filtered = useMemo(() => {
-    return firms.filter(f => {
+    return firmsWithCounts.filter(f => {
       if (regTypeFilter !== "all" && f.regType !== regTypeFilter) return false
       if (search && !f.entityName.toLowerCase().includes(search.toLowerCase()))
         return false
       return true
     })
-  }, [firms, regTypeFilter, search])
+  }, [firmsWithCounts, regTypeFilter, search])
 
   const sorted = useMemo(() => {
     const mul = sortDir === "asc" ? 1 : -1
@@ -122,6 +135,8 @@ function LobbyingFirmsTable() {
           return mul * (a.clientCount - b.clientCount)
         case "sessions":
           return mul * (a.years.length - b.years.length)
+        case "filings":
+          return mul * ((a.totalFilings ?? -1) - (b.totalFilings ?? -1))
         default:
           return mul * a.entityNameNorm.localeCompare(b.entityNameNorm)
       }
@@ -208,6 +223,13 @@ function LobbyingFirmsTable() {
                     dir={sortDir}
                     onSort={handleSort}
                   />
+                  <SortTh
+                    label={t("fields.filings")}
+                    sortKey="filings"
+                    current={sortKey}
+                    dir={sortDir}
+                    onSort={handleSort}
+                  />
                 </tr>
               </thead>
               <tbody>
@@ -236,6 +258,9 @@ function LobbyingFirmsTable() {
                         : `${f.years[f.years.length - 1]}–${f.years[0]}`}
                     </td>
                     <td style={tdStyle}>{f.clientCount}</td>
+                    <td style={{ ...tdStyle, color: MAPLE_COLORS.textMuted }}>
+                      {f.totalFilings !== undefined ? f.totalFilings : "—"}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -263,6 +288,9 @@ function LobbyingFirmsPage() {
         <Row className="mt-4 mb-3">
           <Col>
             <h1>{t("titles.firms")}</h1>
+            <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 14 }}>
+              {t("explainers.firms")}
+            </p>
           </Col>
         </Row>
         <Row>
