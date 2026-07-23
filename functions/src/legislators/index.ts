@@ -1,0 +1,1 @@
+export { scrapeElections } from "./ElectionScraper"

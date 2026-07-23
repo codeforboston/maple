@@ -166,15 +166,15 @@ For each relevant hearing, display:
 
 - **Status**: "Occurred" if `hearing.content.startsAt` is in the past, "Scheduled" if in the future
 - **Date**: formatted from `hearing.content.startsAt`
-- **Watch link**: "Watch the committee hearing here." linked to `hearing.videoURL` — hidden if no video
+- **Watch link**: "Watch the committee hearing here." linked to `hearing.videoURLs` — hidden if no videos
 
 Since ballot questions are always under SJ42 and typically have one hearing, render a single hearing block. If there are multiple, render them in reverse chronological order (most recent first).
 
 **Hearing data model recap:**
 
 - `bill.hearingIds?: string[]` — event IDs; doc path is `/events/hearing-{id}`
-- `bill.nextHearingAt?: Timestamp` — convenience field for upcoming hearing only (not sufficient alone — we need date + videoURL from the full document)
-- `hearing.videoURL?: string` — link for the "Watch" CTA
+- `bill.nextHearingAt?: Timestamp` — convenience field for upcoming hearing only (not sufficient alone — we need date + videoURLs from the full document)
+- `hearing.videoURLs: string[]` — link for the "Watch" CTA
 - `hearing.content.startsAt` — determines "Occurred" vs. "Scheduled" status
 
 No new components are needed for hearing display — build a simple `CommitteeHearing` component local to `components/ballotquestions/`.

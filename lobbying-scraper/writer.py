@@ -131,6 +131,7 @@ def write_registrant(
         "generalCourt": year_to_general_court(meta.year),
         "regType": meta.reg_type,
         "clients": clients,
+        "legacyTotalCompensation": detail.legacy_total_compensation,
         "disclosureUrls": firestore.ArrayUnion([disc_url]),
         "fetchedAt": _now(),
     }

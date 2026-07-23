@@ -73,6 +73,9 @@ infra/dev/typesense-secrets.yml
 infra/prod/typesense-secrets.yml
 
 .python-version
+__pycache__/
+*.pyc
+*.pyo
 
 /*.history
 

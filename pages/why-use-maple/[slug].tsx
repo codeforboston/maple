@@ -1,19 +1,9 @@
 import { useRouter } from "next/router"
 import { createPage } from "../../components/page"
-import ForIndividuals from "../../components/about/ForIndividuals/ForIndividuals"
-import ForOrgs from "../../components/about/ForOrgs/ForOrgs"
-import ForLegislators from "../../components/about/ForLegislators/ForLegislators"
-import Tabs from "../../components/Tabs/Tabs"
+import WhyUseMaple, { PERSONAS } from "components/learn/WhyUseMaple/WhyUseMaple"
 import { GetStaticPaths, GetStaticProps } from "next/types"
 import { ParsedUrlQuery } from "querystring"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
-
-type TabsType = {
-  label: string
-  slug: string
-  index: number
-  Component: React.FC<{}>
-}
 
 type Props = {
   slug: string
@@ -23,61 +13,40 @@ interface IParams extends ParsedUrlQuery {
   slug: string
 }
 
-const tabs: TabsType[] = [
-  {
-    label: "For Individuals",
-    slug: "for-individuals",
-    index: 1,
-    Component: ForIndividuals
-  },
-  {
-    label: "For Organizations",
-    slug: "for-orgs",
-    index: 2,
-    Component: ForOrgs
-  },
-  {
-    label: "For Legislators",
-    slug: "for-legislators",
-    index: 3,
-    Component: ForLegislators
-  }
-]
-
 export default createPage<{ params: IParams }>({
   titleI18nKey: "titles.why_use_maple",
   Page: props => {
     const router = useRouter()
 
-    const { slug } = props.params as Props
+    // After a shallow navigation `props.params` is stale, so read the live
+    // route. It falls back to the build-time param for the first render.
+    const slug =
+      (router.query.slug as string | undefined) ?? (props.params as Props).slug
 
-    const [selectedTab] = tabs.filter(t => t.slug === slug)
-
+    // Each persona keeps its own URL, so all three stay independently linkable
+    // and server-render with the right persona selected.
+    //
+    // The push is shallow: getStaticProps already loads all three persona
+    // namespaces for every slug, so re-fetching `/_next/data/<slug>.json` on
+    // each click would buy nothing and just add latency.
     return (
-      <Tabs
-        selectedTab={selectedTab?.index}
-        onClick={(index: number) => {
-          const [indexedTab] = tabs.filter(t => t.index === index)
-          if (indexedTab !== selectedTab) {
-            router.push(`/why-use-maple/${indexedTab.slug}`)
-          }
+      <WhyUseMaple
+        slug={slug}
+        onSelect={next => {
+          if (next !== slug)
+            router.push(`/why-use-maple/${next}`, undefined, { shallow: true })
         }}
-        tabs={tabs}
       />
     )
   }
 })
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  // Get the paths we want to prerender based on posts
-  // In production environments, prerender all pages
-  // (slower builds, but faster initial page load)
-  const paths = tabs.map(tab => ({
-    params: { slug: tab.slug }
-  }))
-
-  // { fallback: false } means other routes should 404
-  return { paths, fallback: false }
+  return {
+    paths: PERSONAS.map(p => ({ params: { slug: p.slug } })),
+    // { fallback: false } means other routes should 404
+    fallback: false
+  }
 }
 
 export const getStaticProps: GetStaticProps = async context => {
@@ -91,7 +60,7 @@ export const getStaticProps: GetStaticProps = async context => {
         "auth",
         "common",
         "footer",
-        "testimony",
+        "learn",
         "forindividuals",
         "forlegislators",
         "fororgs"

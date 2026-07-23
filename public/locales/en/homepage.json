@@ -26,7 +26,11 @@
   },
   "hero": {
     "title": "Your Voice Matters",
-    "body": "MAPLE makes it easy for anyone to submit and see testimony to the Massachusetts Legislature about the bills that will shape our future.",
+    "body": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future.",
+    "body2a": "New to MAPLE? For extra support, check",
+    "calendar": "Our Calendar",
+    "body2b": "and join an upcoming training session!",
+    "newsletter": "Click Here to Subscribe to Our Newsletter",
     "primaryAction": "Get Started",
     "secondaryAction": "Learn More"
   },

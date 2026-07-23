@@ -62,7 +62,14 @@ export const FeatureCalloutButton = styled.button`
   font-size: 12px;
 `
 
-export const NameContainer = styled.div`
+// A person's name / sub-heading. Exposed as an h3 for screen-reader heading
+// navigation via role/aria-level (rather than a native <h3>) so the visual
+// styling is untouched -- these sit under an h2 section/card title everywhere
+// they are used.
+export const NameContainer = styled.div.attrs({
+  role: "heading",
+  "aria-level": 3
+})`
   color: var(--maple-brand-primary);
   font-size: 25px;
   font-weight: 600;
@@ -88,7 +95,13 @@ export const SectionContainer = styled.div`
   background: var(--maple-surface-base);
 `
 
-export const SectionTitle = styled.div`
+// A card/section title. Exposed as an h2 for screen-reader heading navigation
+// via role/aria-level (rather than a native <h2>) so the visual styling is
+// untouched -- it sits directly under the page h1.
+export const SectionTitle = styled.div.attrs({
+  role: "heading",
+  "aria-level": 2
+})`
   color: var(--maple-text-inverse);
   background: var(--maple-brand-primary);
   font-weight: 500;

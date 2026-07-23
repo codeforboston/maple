@@ -1,0 +1,6497 @@
+[
+  {
+    "id": 130243,
+    "year": 2016,
+    "office": "President",
+    "districts": "Statewide",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Clinton-and-Kaine",
+      "https://electionstats.state.ma.us/candidates/view/Trump-and-Pence",
+      "https://electionstats.state.ma.us/candidates/view/Johnson-and-Weld",
+      "https://electionstats.state.ma.us/candidates/view/Stein-and-Baraka",
+      "https://electionstats.state.ma.us/candidates/view/Mcmullin-and-Johnson",
+      "https://electionstats.state.ma.us/candidates/view/Kotlikoff-and-Leamer",
+      "https://electionstats.state.ma.us/candidates/view/Feegbeh-and-OBrien",
+      "https://electionstats.state.ma.us/candidates/view/Moorehead-and-Lilly",
+      "https://electionstats.state.ma.us/candidates/view/Schoenke-and-Mitchel"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Clinton and Kaine",
+          "votes": 1995196,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Trump and Pence",
+          "votes": 1090893,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Johnson and Weld",
+          "votes": 138018,
+          "writeIn": false,
+          "party": "Libertarian"
+        },
+        {
+          "name": "Stein and Baraka",
+          "votes": 47661,
+          "writeIn": false,
+          "party": "Green-rainbow"
+        },
+        {
+          "name": "Mcmullin and Johnson",
+          "votes": 2719,
+          "writeIn": true
+        },
+        {
+          "name": "Kotlikoff and Leamer",
+          "votes": 28,
+          "writeIn": true
+        },
+        {
+          "name": "Feegbeh and O'Brien",
+          "votes": 28,
+          "writeIn": true
+        },
+        {
+          "name": "Moorehead and Lilly",
+          "votes": 15,
+          "writeIn": true
+        },
+        {
+          "name": "Schoenke and Mitchel",
+          "votes": 0,
+          "writeIn": true
+        }
+      ],
+      "otherVotes": 50488,
+      "blankVotes": 53755,
+      "totalVotes": 3378801
+    }
+  },
+  {
+    "id": 130262,
+    "year": 2016,
+    "office": "U.S. House",
+    "districts": "1st Congressional",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Richard-E-Neal",
+      "https://electionstats.state.ma.us/candidates/view/Frederick-O-Mayock",
+      "https://electionstats.state.ma.us/candidates/view/Thomas-T-Simmons"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Richard E. Neal",
+          "votes": 235803,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Frederick O. Mayock",
+          "votes": 57504,
+          "writeIn": false
+        },
+        {
+          "name": "Thomas T. Simmons",
+          "votes": 27511,
+          "writeIn": false,
+          "party": "Libertarian"
+        }
+      ],
+      "otherVotes": 721,
+      "blankVotes": 28137,
+      "totalVotes": 349676
+    }
+  },
+  {
+    "id": 130275,
+    "year": 2016,
+    "office": "U.S. House",
+    "districts": "2nd Congressional",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/James-P-McGovern"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "James P. McGovern",
+          "votes": 275487,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 4924,
+      "blankVotes": 82786,
+      "totalVotes": 363197
+    }
+  },
+  {
+    "id": 130249,
+    "year": 2016,
+    "office": "U.S. House",
+    "districts": "3rd Congressional",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Nicola-S-Tsongas",
+      "https://electionstats.state.ma.us/candidates/view/Ann-Wofford"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Nicola S. Tsongas",
+          "votes": 236713,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Ann Wofford",
+          "votes": 107519,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 360,
+      "blankVotes": 15532,
+      "totalVotes": 360124
+    }
+  },
+  {
+    "id": 130302,
+    "year": 2016,
+    "office": "U.S. House",
+    "districts": "4th Congressional",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Joseph-P-Kennedy-III",
+      "https://electionstats.state.ma.us/candidates/view/David-A-Rosa"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Joseph P. Kennedy, III",
+          "votes": 265823,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "David A. Rosa",
+          "votes": 113055,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 335,
+      "blankVotes": 16091,
+      "totalVotes": 395304
+    }
+  },
+  {
+    "id": 130286,
+    "year": 2016,
+    "office": "U.S. House",
+    "districts": "5th Congressional",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Katherine-M-Clark"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Katherine M. Clark",
+          "votes": 285606,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 4201,
+      "blankVotes": 95648,
+      "totalVotes": 385455
+    }
+  },
+  {
+    "id": 130271,
+    "year": 2016,
+    "office": "U.S. House",
+    "districts": "6th Congressional",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Seth-W-Moulton"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Seth W. Moulton",
+          "votes": 308923,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 5132,
+      "blankVotes": 101694,
+      "totalVotes": 415749
+    }
+  },
+  {
+    "id": 130337,
+    "year": 2016,
+    "office": "U.S. House",
+    "districts": "7th Congressional",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-E-Capuano"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael E. Capuano",
+          "votes": 253354,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 3557,
+      "blankVotes": 52734,
+      "totalVotes": 309645
+    }
+  },
+  {
+    "id": 130244,
+    "year": 2016,
+    "office": "U.S. House",
+    "districts": "8th Congressional",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Stephen-F-Lynch",
+      "https://electionstats.state.ma.us/candidates/view/William-Burke"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Stephen F. Lynch",
+          "votes": 271019,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "William Burke",
+          "votes": 102744,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 502,
+      "blankVotes": 21744,
+      "totalVotes": 396009
+    }
+  },
+  {
+    "id": 130257,
+    "year": 2016,
+    "office": "U.S. House",
+    "districts": "9th Congressional",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/William-Richard-Keating",
+      "https://electionstats.state.ma.us/candidates/view/Mark-C-Alliegro",
+      "https://electionstats.state.ma.us/candidates/view/Paul-J-Harrington",
+      "https://electionstats.state.ma.us/candidates/view/Christopher-D-Cataldo",
+      "https://electionstats.state.ma.us/candidates/view/Anna-Grace-Raduc"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "William Richard Keating",
+          "votes": 211790,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Mark C. Alliegro",
+          "votes": 127803,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Paul J. Harrington",
+          "votes": 26233,
+          "writeIn": false
+        },
+        {
+          "name": "Christopher D. Cataldo",
+          "votes": 8338,
+          "writeIn": false
+        },
+        {
+          "name": "Anna Grace Raduc",
+          "votes": 5320,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 411,
+      "blankVotes": 23747,
+      "totalVotes": 403642
+    }
+  },
+  {
+    "id": 130254,
+    "year": 2016,
+    "office": "Governor's Council",
+    "districts": "1st",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Joseph-C-Ferreira"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Joseph C. Ferreira",
+          "votes": 304970,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 2766,
+      "blankVotes": 130377,
+      "totalVotes": 438113
+    }
+  },
+  {
+    "id": 130298,
+    "year": 2016,
+    "office": "Governor's Council",
+    "districts": "2nd",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Robert-L-Jubinville",
+      "https://electionstats.state.ma.us/candidates/view/Brad-Williams"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Robert L. Jubinville",
+          "votes": 239729,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Brad Williams",
+          "votes": 149441,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 491,
+      "blankVotes": 55723,
+      "totalVotes": 445384
+    }
+  },
+  {
+    "id": 130248,
+    "year": 2016,
+    "office": "Governor's Council",
+    "districts": "3rd",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Marilyn-Petitto-Devaney"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Marilyn Petitto Devaney",
+          "votes": 317010,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 4429,
+      "blankVotes": 126144,
+      "totalVotes": 447583
+    }
+  },
+  {
+    "id": 130241,
+    "year": 2016,
+    "office": "Governor's Council",
+    "districts": "4th",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Christopher-A-Iannella-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Christopher A. Iannella, Jr.",
+          "votes": 298606,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 3316,
+      "blankVotes": 103132,
+      "totalVotes": 405054
+    }
+  },
+  {
+    "id": 130270,
+    "year": 2016,
+    "office": "Governor's Council",
+    "districts": "5th",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Eileen-R-Duff",
+      "https://electionstats.state.ma.us/candidates/view/Richard-A-Baker-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Eileen R. Duff",
+          "votes": 226341,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Richard A. Baker, Jr.",
+          "votes": 169502,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 576,
+      "blankVotes": 46098,
+      "totalVotes": 442517
+    }
+  },
+  {
+    "id": 130335,
+    "year": 2016,
+    "office": "Governor's Council",
+    "districts": "6th",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Terrence-W-Kennedy"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Terrence W. Kennedy",
+          "votes": 296092,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 3853,
+      "blankVotes": 108867,
+      "totalVotes": 408812
+    }
+  },
+  {
+    "id": 130290,
+    "year": 2016,
+    "office": "Governor's Council",
+    "districts": "7th",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jennie-L-Caissie",
+      "https://electionstats.state.ma.us/candidates/view/Matthew-Cj-Vance"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jennie L. Caissie",
+          "votes": 203165,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Matthew Cj Vance",
+          "votes": 162521,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 614,
+      "blankVotes": 43270,
+      "totalVotes": 409570
+    }
+  },
+  {
+    "id": 130261,
+    "year": 2016,
+    "office": "Governor's Council",
+    "districts": "8th",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Mary-E-Hurley"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Mary E. Hurley",
+          "votes": 290544,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 3499,
+      "blankVotes": 87725,
+      "totalVotes": 381768
+    }
+  },
+  {
+    "id": 130264,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "Berkshire, Hampshire and Franklin",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Adam-G-Hinds",
+      "https://electionstats.state.ma.us/candidates/view/Christine-M-Canning"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Adam G. Hinds",
+          "votes": 53216,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Christine M. Canning",
+          "votes": 22624,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 62,
+      "blankVotes": 5886,
+      "totalVotes": 81788
+    }
+  },
+  {
+    "id": 130305,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "Bristol and Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/James-E-Timilty"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "James E. Timilty",
+          "votes": 66611,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 445,
+      "blankVotes": 22381,
+      "totalVotes": 89437
+    }
+  },
+  {
+    "id": 130412,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "1st Bristol and Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-J-Rodrigues"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael J. Rodrigues",
+          "votes": 54618,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 355,
+      "blankVotes": 19358,
+      "totalVotes": 74331
+    }
+  },
+  {
+    "id": 130259,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "2nd Bristol and Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Mark-C-Montigny"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Mark C. Montigny",
+          "votes": 53882,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 526,
+      "blankVotes": 14542,
+      "totalVotes": 68950
+    }
+  },
+  {
+    "id": 130284,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "Cape and Islands",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Julian-Andre-Cyr",
+      "https://electionstats.state.ma.us/candidates/view/Anthony-E-Schiavi"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Julian Andre Cyr",
+          "votes": 59974,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Anthony E. Schiavi",
+          "votes": 45349,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 94,
+      "blankVotes": 6697,
+      "totalVotes": 112114
+    }
+  },
+  {
+    "id": 130273,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "1st Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Kathleen-Oconnor-A-Ives"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Kathleen  A. O'Connor Ives",
+          "votes": 65131,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 622,
+      "blankVotes": 26105,
+      "totalVotes": 91858
+    }
+  },
+  {
+    "id": 130332,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "2nd Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Joan-B-Lovely"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Joan B. Lovely",
+          "votes": 67120,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 772,
+      "blankVotes": 25073,
+      "totalVotes": 92965
+    }
+  },
+  {
+    "id": 130441,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "3rd Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Thomas-M-McGee"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Thomas M. McGee",
+          "votes": 58844,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 545,
+      "blankVotes": 21632,
+      "totalVotes": 81021
+    }
+  },
+  {
+    "id": 130364,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "1st Essex and Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Bruce-E-Tarr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Bruce E. Tarr",
+          "votes": 77851,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 647,
+      "blankVotes": 27087,
+      "totalVotes": 105585
+    }
+  },
+  {
+    "id": 130281,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "2nd Essex and Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Barbara-A-LItalien",
+      "https://electionstats.state.ma.us/candidates/view/Susan-M-Laplante"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Barbara A. L'Italien",
+          "votes": 45218,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Susan M. Laplante",
+          "votes": 25973,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 100,
+      "blankVotes": 6863,
+      "totalVotes": 78154
+    }
+  },
+  {
+    "id": 130389,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "Hampden",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/James-T-Welch"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "James T. Welch",
+          "votes": 45061,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 782,
+      "blankVotes": 10328,
+      "totalVotes": 56171
+    }
+  },
+  {
+    "id": 130322,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "1st Hampden and Hampshire",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Eric-Philip-Lesser",
+      "https://electionstats.state.ma.us/candidates/view/James-Chip-Harrington"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Eric P. Lesser",
+          "votes": 44602,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "James Chip Harrington",
+          "votes": 35188,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 100,
+      "blankVotes": 4315,
+      "totalVotes": 84205
+    }
+  },
+  {
+    "id": 130267,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "2nd Hampden and Hampshire",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Donald-F-Humason-Jr",
+      "https://electionstats.state.ma.us/candidates/view/Jerome-Parker-Ogrady"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Donald F. Humason, Jr",
+          "votes": 43097,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Jerome Parker-O'grady",
+          "votes": 29285,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 67,
+      "blankVotes": 5497,
+      "totalVotes": 77946
+    }
+  },
+  {
+    "id": 130277,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "Hampshire, Franklin and Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Stanley-C-Rosenberg",
+      "https://electionstats.state.ma.us/candidates/view/Donald-Peltier"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Stanley C. Rosenberg",
+          "votes": 62286,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Donald Peltier",
+          "votes": 13908,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 105,
+      "blankVotes": 5359,
+      "totalVotes": 81658
+    }
+  },
+  {
+    "id": 130399,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "1st Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Eileen-M-Donoghue"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Eileen M. Donoghue",
+          "votes": 56759,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 819,
+      "blankVotes": 16377,
+      "totalVotes": 73955
+    }
+  },
+  {
+    "id": 130379,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "2nd Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Patricia-D-Jehlen"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Patricia D. Jehlen",
+          "votes": 75777,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1146,
+      "blankVotes": 19706,
+      "totalVotes": 96629
+    }
+  },
+  {
+    "id": 130320,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "3rd Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-J-Barrett"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael J. Barrett",
+          "votes": 64554,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 822,
+      "blankVotes": 27888,
+      "totalVotes": 93264
+    }
+  },
+  {
+    "id": 130289,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "4th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Kenneth-J-Donnelly"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Kenneth J. Donnelly",
+          "votes": 68540,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 675,
+      "blankVotes": 28221,
+      "totalVotes": 97436
+    }
+  },
+  {
+    "id": 130446,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "5th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jason-M-Lewis",
+      "https://electionstats.state.ma.us/candidates/view/Vincent-Lawrence-Dixon"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jason M. Lewis",
+          "votes": 52954,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Vincent Lawrence Dixon",
+          "votes": 23628,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 290,
+      "blankVotes": 13939,
+      "totalVotes": 90811
+    }
+  },
+  {
+    "id": 130375,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "1st Middlesex and Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Cynthia-Stone-Creem"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Cynthia Stone Creem",
+          "votes": 62668,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 647,
+      "blankVotes": 24341,
+      "totalVotes": 87656
+    }
+  },
+  {
+    "id": 130300,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "2nd Middlesex and Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Karen-E-Spilka"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Karen E. Spilka",
+          "votes": 61230,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 947,
+      "blankVotes": 21552,
+      "totalVotes": 83729
+    }
+  },
+  {
+    "id": 130252,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "Middlesex and Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/James-B-Eldridge",
+      "https://electionstats.state.ma.us/candidates/view/Ted-Busiek",
+      "https://electionstats.state.ma.us/candidates/view/Terra-Friedrichs"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "James B. Eldridge",
+          "votes": 55698,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Ted Busiek",
+          "votes": 26865,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Terra Friedrichs",
+          "votes": 4033,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 117,
+      "blankVotes": 8927,
+      "totalVotes": 95640
+    }
+  },
+  {
+    "id": 130357,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "Middlesex and Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Sal-N-DiDomenico"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Sal N. DiDomenico",
+          "votes": 53022,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 577,
+      "blankVotes": 15098,
+      "totalVotes": 68697
+    }
+  },
+  {
+    "id": 130306,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "Norfolk, Bristol and Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Richard-J-Ross",
+      "https://electionstats.state.ma.us/candidates/view/Kristopher-K-Aleksov"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Richard J. Ross",
+          "votes": 49776,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Kristopher K. Aleksov",
+          "votes": 33083,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 95,
+      "blankVotes": 9626,
+      "totalVotes": 92580
+    }
+  },
+  {
+    "id": 130311,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "Norfolk, Bristol and Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Walter-F-Timilty-Jr",
+      "https://electionstats.state.ma.us/candidates/view/Jonathan-D-Lott"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Walter F. Timilty, Jr.",
+          "votes": 56466,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Jonathan D. Lott",
+          "votes": 19960,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 167,
+      "blankVotes": 12071,
+      "totalVotes": 88664
+    }
+  },
+  {
+    "id": 130246,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "Norfolk and Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/John-F-Keenan",
+      "https://electionstats.state.ma.us/candidates/view/Alexander-N-Mendez"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "John F. Keenan",
+          "votes": 50148,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Alexander N. Mendez",
+          "votes": 20433,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 71,
+      "blankVotes": 9436,
+      "totalVotes": 80088
+    }
+  },
+  {
+    "id": 130358,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "Norfolk and Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-F-Rush"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael F. Rush",
+          "votes": 66792,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 867,
+      "blankVotes": 23315,
+      "totalVotes": 90974
+    }
+  },
+  {
+    "id": 130362,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "Plymouth and Barnstable",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Vinny-M-deMacedo"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Vinny M. deMacedo",
+          "votes": 69474,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 508,
+      "blankVotes": 25623,
+      "totalVotes": 95605
+    }
+  },
+  {
+    "id": 130391,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "Plymouth and Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Patrick-M-OConnor",
+      "https://electionstats.state.ma.us/candidates/view/Paul-J-Gannon"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Patrick M. O'Connor",
+          "votes": 52440,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Paul J. Gannon",
+          "votes": 40193,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 140,
+      "blankVotes": 8429,
+      "totalVotes": 101202
+    }
+  },
+  {
+    "id": 130483,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "Plymouth and Norfolk",
+    "party": "General",
+    "special": true,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Patrick-M-OConnor",
+      "https://electionstats.state.ma.us/candidates/view/Joan-Meschino"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Patrick M. O'Connor",
+          "votes": 9047,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Joan Meschino",
+          "votes": 8108,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 30,
+      "blankVotes": 30,
+      "totalVotes": 17215
+    }
+  },
+  {
+    "id": 130327,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "1st Plymouth and Bristol",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Marc-R-Pacheco",
+      "https://electionstats.state.ma.us/candidates/view/Sandra-M-Wright"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Marc R. Pacheco",
+          "votes": 52915,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Sandra M. Wright",
+          "votes": 28059,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 87,
+      "blankVotes": 6052,
+      "totalVotes": 87113
+    }
+  },
+  {
+    "id": 130373,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "2nd Plymouth and Bristol",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-D-Brady"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael D. Brady",
+          "votes": 56156,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 330,
+      "blankVotes": 19230,
+      "totalVotes": 75716
+    }
+  },
+  {
+    "id": 130356,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "1st Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Linda-Dorcena-Forry"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Linda Dorcena Forry",
+          "votes": 59874,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 966,
+      "blankVotes": 15030,
+      "totalVotes": 75870
+    }
+  },
+  {
+    "id": 130359,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "2nd Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Sonia-Rosa-Chang-Diaz"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Sonia Rosa Chang-DÃ­az",
+          "votes": 58705,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 713,
+      "blankVotes": 12760,
+      "totalVotes": 72178
+    }
+  },
+  {
+    "id": 130355,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "1st Suffolk and Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Joseph-A-Boncore"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Joseph A. Boncore",
+          "votes": 50978,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 951,
+      "blankVotes": 19725,
+      "totalVotes": 71654
+    }
+  },
+  {
+    "id": 130482,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "1st Suffolk and Middlesex",
+    "party": "General",
+    "special": true,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Joseph-A-Boncore",
+      "https://electionstats.state.ma.us/candidates/view/Lydia-Marie-Edwards",
+      "https://electionstats.state.ma.us/candidates/view/Jay-D-Livingstone"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Joseph A. Boncore",
+          "votes": 2429,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Lydia Marie Edwards",
+          "votes": 27,
+          "writeIn": true
+        },
+        {
+          "name": "Jay D. Livingstone",
+          "votes": 16,
+          "writeIn": true
+        }
+      ],
+      "otherVotes": 246,
+      "blankVotes": 22,
+      "totalVotes": 2740
+    }
+  },
+  {
+    "id": 130325,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "2nd Suffolk and Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/William-N-Brownsberger"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "William N. Brownsberger",
+          "votes": 56011,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 804,
+      "blankVotes": 16772,
+      "totalVotes": 73587
+    }
+  },
+  {
+    "id": 130329,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "Worcester and Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jennifer-L-Flanagan"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jennifer L. Flanagan",
+          "votes": 59860,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 527,
+      "blankVotes": 18383,
+      "totalVotes": 78770
+    }
+  },
+  {
+    "id": 130324,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "Worcester and Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Ryan-C-Fattman"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Ryan C. Fattman",
+          "votes": 64665,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 1021,
+      "blankVotes": 19840,
+      "totalVotes": 85526
+    }
+  },
+  {
+    "id": 130292,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "Worcester, Hampden, Hampshire and Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Anne-M-Gobi",
+      "https://electionstats.state.ma.us/candidates/view/James-P-Ehrhard"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Anne M. Gobi",
+          "votes": 44021,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "James P. Ehrhard",
+          "votes": 36883,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 68,
+      "blankVotes": 5349,
+      "totalVotes": 86321
+    }
+  },
+  {
+    "id": 130365,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "1st Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Harriette-L-Chandler"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Harriette L. Chandler",
+          "votes": 56545,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1104,
+      "blankVotes": 18001,
+      "totalVotes": 75650
+    }
+  },
+  {
+    "id": 130308,
+    "year": 2016,
+    "office": "State Senate",
+    "districts": "2nd Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-O-Moore",
+      "https://electionstats.state.ma.us/candidates/view/Mesfin-H-Beshir"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael O. Moore",
+          "votes": 55093,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Mesfin H. Beshir",
+          "votes": 19250,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 125,
+      "blankVotes": 8835,
+      "totalVotes": 83303
+    }
+  },
+  {
+    "id": 130315,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "1st Barnstable",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Timothy-R-Whelan"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Timothy R. Whelan",
+          "votes": 19640,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 187,
+      "blankVotes": 7379,
+      "totalVotes": 27206
+    }
+  },
+  {
+    "id": 130316,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "2nd Barnstable",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/William-L-Crocker-Jr",
+      "https://electionstats.state.ma.us/candidates/view/Aaron-S-Kanzer"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "William L. Crocker, Jr.",
+          "votes": 11879,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Aaron S. Kanzer",
+          "votes": 9799,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 25,
+      "blankVotes": 1099,
+      "totalVotes": 22802
+    }
+  },
+  {
+    "id": 130361,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "3rd Barnstable",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/David-T-Vieira",
+      "https://electionstats.state.ma.us/candidates/view/Matthew-C-Patrick"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "David T. Vieira",
+          "votes": 12739,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Matthew C. Patrick",
+          "votes": 11317,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 11,
+      "blankVotes": 1540,
+      "totalVotes": 25607
+    }
+  },
+  {
+    "id": 130367,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "4th Barnstable",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Sarah-K-Peake"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Sarah K. Peake",
+          "votes": 22948,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 150,
+      "blankVotes": 6894,
+      "totalVotes": 29992
+    }
+  },
+  {
+    "id": 130314,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "5th Barnstable",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Randy-Hunt"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Randy Hunt",
+          "votes": 18096,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 141,
+      "blankVotes": 6432,
+      "totalVotes": 24669
+    }
+  },
+  {
+    "id": 130283,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "Barnstable, Dukes and Nantucket",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Dylan-A-Fernandes",
+      "https://electionstats.state.ma.us/candidates/view/Tobias-B-Glidden",
+      "https://electionstats.state.ma.us/candidates/view/Jacob-Norman-Ferry"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Dylan A. Fernandes",
+          "votes": 13030,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Tobias B. Glidden",
+          "votes": 9601,
+          "writeIn": false
+        },
+        {
+          "name": "Jacob Norman Ferry",
+          "votes": 2566,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 29,
+      "blankVotes": 2732,
+      "totalVotes": 27958
+    }
+  },
+  {
+    "id": 130263,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "1st Berkshire",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Gailanne-M-Cariddi"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Gailanne M. Cariddi",
+          "votes": 15675,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 95,
+      "blankVotes": 3304,
+      "totalVotes": 19074
+    }
+  },
+  {
+    "id": 130330,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "2nd Berkshire",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Paul-W-Mark"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Paul W. Mark",
+          "votes": 17631,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 76,
+      "blankVotes": 4677,
+      "totalVotes": 22384
+    }
+  },
+  {
+    "id": 130462,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "3rd Berkshire",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Tricia-Farley-Bouvier",
+      "https://electionstats.state.ma.us/candidates/view/Christopher-J-Connell"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Tricia Farley-Bouvier",
+          "votes": 11827,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Christopher J. Connell",
+          "votes": 5986,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 14,
+      "blankVotes": 1176,
+      "totalVotes": 19003
+    }
+  },
+  {
+    "id": 130269,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "4th Berkshire",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/William-Pignatelli"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "William \"Smitty\" Pignatelli",
+          "votes": 19356,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 54,
+      "blankVotes": 3355,
+      "totalVotes": 22765
+    }
+  },
+  {
+    "id": 130414,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "1st Bristol",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Fred-Jay-Barrows",
+      "https://electionstats.state.ma.us/candidates/view/Michael-E-Toole"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Fred Jay Barrows",
+          "votes": 12561,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Michael E. Toole",
+          "votes": 8361,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 8,
+      "blankVotes": 1752,
+      "totalVotes": 22682
+    }
+  },
+  {
+    "id": 130304,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "2nd Bristol",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Paul-R-Heroux"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Paul R. Heroux",
+          "votes": 15301,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 68,
+      "blankVotes": 3744,
+      "totalVotes": 19113
+    }
+  },
+  {
+    "id": 130405,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "3rd Bristol",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Shaunna-L-OConnell",
+      "https://electionstats.state.ma.us/candidates/view/Estele-C-Borges"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Shaunna L. O'Connell",
+          "votes": 10520,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Estele C. Borges",
+          "votes": 7417,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 18,
+      "blankVotes": 987,
+      "totalVotes": 18942
+    }
+  },
+  {
+    "id": 130459,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "4th Bristol",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Steven-S-Howitt",
+      "https://electionstats.state.ma.us/candidates/view/Paul-W-Jacques"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Steven S. Howitt",
+          "votes": 13253,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Paul W. Jacques",
+          "votes": 8030,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 14,
+      "blankVotes": 1596,
+      "totalVotes": 22893
+    }
+  },
+  {
+    "id": 130395,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "5th Bristol",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Patricia-A-Haddad"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Patricia A. Haddad",
+          "votes": 16907,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 160,
+      "blankVotes": 5299,
+      "totalVotes": 22366
+    }
+  },
+  {
+    "id": 130411,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "6th Bristol",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Carole-A-Fiola"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Carole A. Fiola",
+          "votes": 12457,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 89,
+      "blankVotes": 4073,
+      "totalVotes": 16619
+    }
+  },
+  {
+    "id": 130410,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "7th Bristol",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Alan-Silvia"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Alan Silvia",
+          "votes": 9594,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 40,
+      "blankVotes": 2395,
+      "totalVotes": 12029
+    }
+  },
+  {
+    "id": 130409,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "8th Bristol",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Paul-Schmid-III"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Paul Schmid, III",
+          "votes": 14788,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 86,
+      "blankVotes": 5399,
+      "totalVotes": 20273
+    }
+  },
+  {
+    "id": 130393,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "9th Bristol",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Christopher-M-Markey"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Christopher M. Markey",
+          "votes": 15010,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 90,
+      "blankVotes": 4601,
+      "totalVotes": 19701
+    }
+  },
+  {
+    "id": 130408,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "10th Bristol",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/William-M-Straus"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "William M. Straus",
+          "votes": 16429,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 166,
+      "blankVotes": 5591,
+      "totalVotes": 22186
+    }
+  },
+  {
+    "id": 130258,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "11th Bristol",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Robert-M-Koczera"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Robert M. Koczera",
+          "votes": 11907,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 106,
+      "blankVotes": 3270,
+      "totalVotes": 15283
+    }
+  },
+  {
+    "id": 130326,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "12th Bristol",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Keiko-M-Orrall"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Keiko M. Orrall",
+          "votes": 15855,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 192,
+      "blankVotes": 5066,
+      "totalVotes": 21113
+    }
+  },
+  {
+    "id": 130455,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "13th Bristol",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Antonio-FD-Cabral"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Antonio F.D. Cabral",
+          "votes": 12021,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 114,
+      "blankVotes": 2724,
+      "totalVotes": 14859
+    }
+  },
+  {
+    "id": 130303,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "14th Bristol",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Elizabeth-A-Poirier",
+      "https://electionstats.state.ma.us/candidates/view/Scott-P-Dubuc"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Elizabeth A. Poirier",
+          "votes": 13865,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Scott P. Dubuc",
+          "votes": 5805,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 14,
+      "blankVotes": 1824,
+      "totalVotes": 21508
+    }
+  },
+  {
+    "id": 130272,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "1st Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/James-M-Kelcourse",
+      "https://electionstats.state.ma.us/candidates/view/Brianna-Sullivan"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "James M. Kelcourse",
+          "votes": 13272,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Brianna Sullivan",
+          "votes": 11280,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 7,
+      "blankVotes": 1237,
+      "totalVotes": 25796
+    }
+  },
+  {
+    "id": 130363,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "2nd Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Leonard-Mirra"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Leonard Mirra",
+          "votes": 19363,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 204,
+      "blankVotes": 8156,
+      "totalVotes": 27723
+    }
+  },
+  {
+    "id": 130424,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "3rd Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Brian-S-Dempsey"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Brian S. Dempsey",
+          "votes": 15136,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 207,
+      "blankVotes": 3897,
+      "totalVotes": 19240
+    }
+  },
+  {
+    "id": 130419,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "4th Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Bradford-R-Hill"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Bradford R. Hill",
+          "votes": 21813,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 97,
+      "blankVotes": 5918,
+      "totalVotes": 27828
+    }
+  },
+  {
+    "id": 130406,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "5th Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Ann-Margaret-Ferrante"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Ann-Margaret Ferrante",
+          "votes": 18239,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 269,
+      "blankVotes": 5480,
+      "totalVotes": 23988
+    }
+  },
+  {
+    "id": 130331,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "6th Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jerald-A-Parisella",
+      "https://electionstats.state.ma.us/candidates/view/Daniel-Fishman"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jerald A. Parisella",
+          "votes": 15012,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Daniel Fishman",
+          "votes": 5045,
+          "writeIn": false,
+          "party": "United Independent"
+        }
+      ],
+      "otherVotes": 12,
+      "blankVotes": 2344,
+      "totalVotes": 22413
+    }
+  },
+  {
+    "id": 130468,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "7th Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Paul-F-Tucker"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Paul F. Tucker",
+          "votes": 18208,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 64,
+      "blankVotes": 3911,
+      "totalVotes": 22183
+    }
+  },
+  {
+    "id": 130437,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "8th Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Lori-A-Ehrlich"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Lori A. Ehrlich",
+          "votes": 18365,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 131,
+      "blankVotes": 6229,
+      "totalVotes": 24725
+    }
+  },
+  {
+    "id": 130439,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "9th Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Donald-H-Wong",
+      "https://electionstats.state.ma.us/candidates/view/Jennifer-Migliore"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Donald H. Wong",
+          "votes": 12816,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Jennifer Migliore",
+          "votes": 10513,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 178,
+      "blankVotes": 1242,
+      "totalVotes": 24749
+    }
+  },
+  {
+    "id": 130440,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "10th Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Daniel-H-Cahill"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Daniel H. Cahill",
+          "votes": 11556,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 186,
+      "blankVotes": 3212,
+      "totalVotes": 14954
+    }
+  },
+  {
+    "id": 130484,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "10th Essex",
+    "party": "General",
+    "special": true,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Daniel-H-Cahill"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Daniel H. Cahill",
+          "votes": 320,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 11,
+      "blankVotes": 0,
+      "totalVotes": 331
+    }
+  },
+  {
+    "id": 130438,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "11th Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Brendan-P-Crighton"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Brendan P. Crighton",
+          "votes": 11223,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 202,
+      "blankVotes": 3533,
+      "totalVotes": 14958
+    }
+  },
+  {
+    "id": 127018,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "12th Essex",
+    "party": "General",
+    "special": true,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Thomas-P-Walsh",
+      "https://electionstats.state.ma.us/candidates/view/Stephanie-R-Peach",
+      "https://electionstats.state.ma.us/candidates/view/Christopher-M-Gallagher"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Thomas P. Walsh",
+          "votes": 7138,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Stephanie R. Peach",
+          "votes": 4644,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Christopher M. Gallagher",
+          "votes": 576,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 70,
+      "blankVotes": 93,
+      "totalVotes": 12521
+    }
+  },
+  {
+    "id": 130461,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "12th Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Thomas-P-Walsh"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Thomas P. Walsh",
+          "votes": 16480,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 241,
+      "blankVotes": 5032,
+      "totalVotes": 21753
+    }
+  },
+  {
+    "id": 130392,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "13th Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Theodore-C-Speliotis"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Theodore C. Speliotis",
+          "votes": 18163,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 361,
+      "blankVotes": 6503,
+      "totalVotes": 25027
+    }
+  },
+  {
+    "id": 130423,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "14th Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Diana-Dizoglio"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Diana DiZoglio",
+          "votes": 15927,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 126,
+      "blankVotes": 4633,
+      "totalVotes": 20686
+    }
+  },
+  {
+    "id": 130422,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "15th Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Linda-Dean-Campbell",
+      "https://electionstats.state.ma.us/candidates/view/Nicholas-S-Torresi"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Linda Dean Campbell",
+          "votes": 12904,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Nicholas S. Torresi",
+          "votes": 7421,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 53,
+      "blankVotes": 2094,
+      "totalVotes": 22472
+    }
+  },
+  {
+    "id": 130431,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "16th Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Juana-B-Matias"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Juana B. Matias",
+          "votes": 11205,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 220,
+      "blankVotes": 1942,
+      "totalVotes": 13367
+    }
+  },
+  {
+    "id": 130280,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "17th Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Frank-A-Moran"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Frank A. Moran",
+          "votes": 12033,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 160,
+      "blankVotes": 3601,
+      "totalVotes": 15794
+    }
+  },
+  {
+    "id": 130279,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "18th Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/James-J-Lyons-Jr",
+      "https://electionstats.state.ma.us/candidates/view/Oscar-Camargo"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "James J. Lyons, Jr.",
+          "votes": 14218,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Oscar Camargo",
+          "votes": 9615,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 36,
+      "blankVotes": 1879,
+      "totalVotes": 25748
+    }
+  },
+  {
+    "id": 130296,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "1st Franklin",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Stephen-Kulik"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Stephen Kulik",
+          "votes": 20798,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 51,
+      "blankVotes": 4020,
+      "totalVotes": 24869
+    }
+  },
+  {
+    "id": 130301,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "2nd Franklin",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Susannah-M-Whipps"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Susannah M. Whipps Lee",
+          "votes": 15490,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 200,
+      "blankVotes": 4885,
+      "totalVotes": 20575
+    }
+  },
+  {
+    "id": 130369,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "1st Hampden",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Todd-M-Smola"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Todd M. Smola",
+          "votes": 17633,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 126,
+      "blankVotes": 4126,
+      "totalVotes": 21885
+    }
+  },
+  {
+    "id": 130402,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "2nd Hampden",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Brian-M-Ashe"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Brian M. Ashe",
+          "votes": 18058,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 239,
+      "blankVotes": 6118,
+      "totalVotes": 24415
+    }
+  },
+  {
+    "id": 130266,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "3rd Hampden",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Nicholas-A-Boldyga",
+      "https://electionstats.state.ma.us/candidates/view/Rosemary-Sandlin"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Nicholas A. Boldyga",
+          "votes": 12136,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Rosemary Sandlin",
+          "votes": 8089,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 20,
+      "blankVotes": 945,
+      "totalVotes": 21190
+    }
+  },
+  {
+    "id": 130478,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "4th Hampden",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/John-C-Velis"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "John C. Velis",
+          "votes": 15399,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 95,
+      "blankVotes": 3812,
+      "totalVotes": 19306
+    }
+  },
+  {
+    "id": 130429,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "5th Hampden",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Aaron-Vega"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Aaron Vega",
+          "votes": 13687,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 40,
+      "blankVotes": 3312,
+      "totalVotes": 17039
+    }
+  },
+  {
+    "id": 130388,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "6th Hampden",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-J-Finn"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael J. Finn",
+          "votes": 12819,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 144,
+      "blankVotes": 4033,
+      "totalVotes": 16996
+    }
+  },
+  {
+    "id": 130321,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "7th Hampden",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Thomas-M-Petrolati"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Thomas M. Petrolati",
+          "votes": 16180,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 231,
+      "blankVotes": 4904,
+      "totalVotes": 21315
+    }
+  },
+  {
+    "id": 130386,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "8th Hampden",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Joseph-F-Wagner"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Joseph F. Wagner",
+          "votes": 14479,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 278,
+      "blankVotes": 3032,
+      "totalVotes": 17789
+    }
+  },
+  {
+    "id": 130387,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "9th Hampden",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jose-F-Tosado",
+      "https://electionstats.state.ma.us/candidates/view/Robert-J-Underwood"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jose F. Tosado",
+          "votes": 12020,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Robert J. Underwood",
+          "votes": 2885,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 69,
+      "blankVotes": 1682,
+      "totalVotes": 16656
+    }
+  },
+  {
+    "id": 130472,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "10th Hampden",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Carlos-Gonzalez"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Carlos Gonzalez",
+          "votes": 10286,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 165,
+      "blankVotes": 1960,
+      "totalVotes": 12411
+    }
+  },
+  {
+    "id": 130471,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "11th Hampden",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Bud-L-Williams"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Bud L. Williams",
+          "votes": 11634,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 299,
+      "blankVotes": 2001,
+      "totalVotes": 13934
+    }
+  },
+  {
+    "id": 130403,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "12th Hampden",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Angelo-J-Puppolo-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Angelo J. Puppolo, Jr.",
+          "votes": 16368,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 167,
+      "blankVotes": 4340,
+      "totalVotes": 20875
+    }
+  },
+  {
+    "id": 130421,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "1st Hampshire",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Peter-V-Kocot"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Peter V. Kocot",
+          "votes": 20145,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 89,
+      "blankVotes": 4420,
+      "totalVotes": 24654
+    }
+  },
+  {
+    "id": 130404,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "2nd Hampshire",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/John-W-Scibak"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "John W. Scibak",
+          "votes": 19023,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 138,
+      "blankVotes": 5056,
+      "totalVotes": 24217
+    }
+  },
+  {
+    "id": 130276,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "3rd Hampshire",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Solomon-Israel-Goldstein-Rose"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Solomon Israel Goldstein-Rose",
+          "votes": 14601,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 186,
+      "blankVotes": 3165,
+      "totalVotes": 17952
+    }
+  },
+  {
+    "id": 130294,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "1st Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Sheila-C-Harrington",
+      "https://electionstats.state.ma.us/candidates/view/Matthew-T-Meneghini"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Sheila C. Harrington",
+          "votes": 14984,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Matthew T. Meneghini",
+          "votes": 8003,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 15,
+      "blankVotes": 1919,
+      "totalVotes": 24921
+    }
+  },
+  {
+    "id": 130382,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "2nd Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/James-Arciero"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "James Arciero",
+          "votes": 20337,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 139,
+      "blankVotes": 6592,
+      "totalVotes": 27068
+    }
+  },
+  {
+    "id": 130334,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "3rd Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Kate-Hogan"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Kate Hogan",
+          "votes": 19161,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 242,
+      "blankVotes": 5384,
+      "totalVotes": 24787
+    }
+  },
+  {
+    "id": 130448,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "4th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Danielle-W-Gregoire",
+      "https://electionstats.state.ma.us/candidates/view/Paul-R-Ferro"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Danielle W. Gregoire",
+          "votes": 11531,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Paul R. Ferro",
+          "votes": 7801,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 27,
+      "blankVotes": 1547,
+      "totalVotes": 20906
+    }
+  },
+  {
+    "id": 130452,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "5th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/David-Paul-Linsky"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "David Paul Linsky",
+          "votes": 19566,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 170,
+      "blankVotes": 6457,
+      "totalVotes": 26193
+    }
+  },
+  {
+    "id": 130415,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "6th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Chris-Walsh"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Chris Walsh",
+          "votes": 16009,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 250,
+      "blankVotes": 4822,
+      "totalVotes": 21081
+    }
+  },
+  {
+    "id": 130299,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "7th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jack-Patrick-Lewis",
+      "https://electionstats.state.ma.us/candidates/view/Yolanda-Greaves",
+      "https://electionstats.state.ma.us/candidates/view/Clifford-c-T-Wilson"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jack Patrick Lewis",
+          "votes": 9286,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Yolanda Greaves",
+          "votes": 4982,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Clifford c. T. Wilson",
+          "votes": 740,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 23,
+      "blankVotes": 1281,
+      "totalVotes": 16312
+    }
+  },
+  {
+    "id": 130428,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "8th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Carolyn-C-Dykema"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Carolyn C. Dykema",
+          "votes": 19524,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 289,
+      "blankVotes": 5938,
+      "totalVotes": 25751
+    }
+  },
+  {
+    "id": 130435,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "9th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Thomas-M-Stanley",
+      "https://electionstats.state.ma.us/candidates/view/Stacey-Gallagher-M-Tully"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Thomas M. Stanley",
+          "votes": 12654,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Stacey Gallagher M. Tully",
+          "votes": 7164,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 165,
+      "blankVotes": 1681,
+      "totalVotes": 21664
+    }
+  },
+  {
+    "id": 130457,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "10th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/John-J-Lawn-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "John J. Lawn, Jr.",
+          "votes": 12665,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 192,
+      "blankVotes": 3968,
+      "totalVotes": 16825
+    }
+  },
+  {
+    "id": 130456,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "11th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Kay-S-Khan"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Kay S. Khan",
+          "votes": 17153,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 222,
+      "blankVotes": 5233,
+      "totalVotes": 22608
+    }
+  },
+  {
+    "id": 130458,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "12th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Ruth-B-Balser"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Ruth B. Balser",
+          "votes": 16582,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 235,
+      "blankVotes": 5108,
+      "totalVotes": 21925
+    }
+  },
+  {
+    "id": 130416,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "13th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Carmine-Lawrence-Gentile"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Carmine Lawrence Gentile",
+          "votes": 17561,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 240,
+      "blankVotes": 6840,
+      "totalVotes": 24641
+    }
+  },
+  {
+    "id": 130250,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "14th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Cory-Atkins",
+      "https://electionstats.state.ma.us/candidates/view/Helen-Brady",
+      "https://electionstats.state.ma.us/candidates/view/Daniel-L-Factor"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Cory Atkins",
+          "votes": 14831,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Helen Brady",
+          "votes": 8950,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Daniel L. Factor",
+          "votes": 824,
+          "writeIn": false,
+          "party": "Green-rainbow"
+        }
+      ],
+      "otherVotes": 22,
+      "blankVotes": 1128,
+      "totalVotes": 25755
+    }
+  },
+  {
+    "id": 130434,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "15th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jay-R-Kaufman"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jay R. Kaufman",
+          "votes": 17736,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 8,
+      "blankVotes": 7071,
+      "totalVotes": 24815
+    }
+  },
+  {
+    "id": 130384,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "16th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Thomas-A-Golden-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Thomas A. Golden, Jr.",
+          "votes": 13962,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 233,
+      "blankVotes": 3600,
+      "totalVotes": 17795
+    }
+  },
+  {
+    "id": 130383,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "17th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/David-M-Nangle"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "David M. Nangle",
+          "votes": 12305,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 317,
+      "blankVotes": 3335,
+      "totalVotes": 15957
+    }
+  },
+  {
+    "id": 130436,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "18th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Rady-Mom",
+      "https://electionstats.state.ma.us/candidates/view/Kamara-Kay"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Rady Mom",
+          "votes": 8107,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Kamara Kay",
+          "votes": 3115,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 77,
+      "blankVotes": 1077,
+      "totalVotes": 12376
+    }
+  },
+  {
+    "id": 130475,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "19th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/James-R-Miceli"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "James R. Miceli",
+          "votes": 19349,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 248,
+      "blankVotes": 4597,
+      "totalVotes": 24194
+    }
+  },
+  {
+    "id": 130442,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "20th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Bradley-H-Jones-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Bradley H. Jones, Jr",
+          "votes": 19756,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 107,
+      "blankVotes": 7292,
+      "totalVotes": 27155
+    }
+  },
+  {
+    "id": 130319,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "21st Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Kenneth-I-Gordon",
+      "https://electionstats.state.ma.us/candidates/view/Paul-Girouard-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Kenneth I. Gordon",
+          "votes": 13476,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Paul Girouard, Jr",
+          "votes": 9526,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 24,
+      "blankVotes": 1432,
+      "totalVotes": 24458
+    }
+  },
+  {
+    "id": 130333,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "22nd Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Marc-T-Lombardo",
+      "https://electionstats.state.ma.us/candidates/view/George-Simolaris-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Marc T. Lombardo",
+          "votes": 12583,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "George Simolaris, Jr.",
+          "votes": 8671,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 92,
+      "blankVotes": 1012,
+      "totalVotes": 22358
+    }
+  },
+  {
+    "id": 130288,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "23rd Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Sean-Garballey"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Sean Garballey",
+          "votes": 20991,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 165,
+      "blankVotes": 5687,
+      "totalVotes": 26843
+    }
+  },
+  {
+    "id": 130287,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "24th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/David-M-Rogers"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "David M. Rogers",
+          "votes": 18570,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 172,
+      "blankVotes": 6597,
+      "totalVotes": 25339
+    }
+  },
+  {
+    "id": 130376,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "25th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Marjorie-C-Decker"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Marjorie C. Decker",
+          "votes": 15968,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 135,
+      "blankVotes": 3271,
+      "totalVotes": 19374
+    }
+  },
+  {
+    "id": 130378,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "26th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Mike-Connolly"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Mike Connolly",
+          "votes": 15872,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 255,
+      "blankVotes": 3555,
+      "totalVotes": 19682
+    }
+  },
+  {
+    "id": 130470,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "27th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Denise-Provost",
+      "https://electionstats.state.ma.us/candidates/view/Aaron-James"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Denise Provost",
+          "votes": 18409,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Aaron James",
+          "votes": 2680,
+          "writeIn": false,
+          "party": "Pirate"
+        }
+      ],
+      "otherVotes": 74,
+      "blankVotes": 2531,
+      "totalVotes": 23694
+    }
+  },
+  {
+    "id": 130407,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "28th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Joseph-W-Mcgonagle-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Joseph W. Mcgonagle, Jr",
+          "votes": 10811,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 161,
+      "blankVotes": 3251,
+      "totalVotes": 14223
+    }
+  },
+  {
+    "id": 130377,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "29th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jonathan-Hecht"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jonathan Hecht",
+          "votes": 18821,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 258,
+      "blankVotes": 5145,
+      "totalVotes": 24224
+    }
+  },
+  {
+    "id": 130466,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "30th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/James-J-Dwyer"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "James J. Dwyer",
+          "votes": 15943,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 72,
+      "blankVotes": 6534,
+      "totalVotes": 22549
+    }
+  },
+  {
+    "id": 130473,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "31st Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-Seamus-Day",
+      "https://electionstats.state.ma.us/candidates/view/Caroline-Colarusso"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael Seamus Day",
+          "votes": 14528,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Caroline Colarusso",
+          "votes": 10163,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 9,
+      "blankVotes": 1581,
+      "totalVotes": 26281
+    }
+  },
+  {
+    "id": 130444,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "32nd Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Paul-A-Brodeur"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Paul A. Brodeur",
+          "votes": 18386,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 246,
+      "blankVotes": 7209,
+      "totalVotes": 25841
+    }
+  },
+  {
+    "id": 130445,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "33rd Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Steven-Ultrino"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Steven Ultrino",
+          "votes": 11435,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 180,
+      "blankVotes": 3688,
+      "totalVotes": 15303
+    }
+  },
+  {
+    "id": 130451,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "34th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Christine-P-Barber"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Christine P. Barber",
+          "votes": 16334,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 233,
+      "blankVotes": 4383,
+      "totalVotes": 20950
+    }
+  },
+  {
+    "id": 130443,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "35th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Paul-J-Donato-Sr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Paul J. Donato, Sr.",
+          "votes": 15306,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 237,
+      "blankVotes": 4148,
+      "totalVotes": 19691
+    }
+  },
+  {
+    "id": 130398,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "36th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Colleen-M-Garry"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Colleen M. Garry",
+          "votes": 18003,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 31,
+      "blankVotes": 5248,
+      "totalVotes": 23282
+    }
+  },
+  {
+    "id": 130251,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "37th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jennifer-E-Benson"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jennifer E. Benson",
+          "votes": 17814,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 180,
+      "blankVotes": 6088,
+      "totalVotes": 24082
+    }
+  },
+  {
+    "id": 130464,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "1st Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Bruce-J-Ayers"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Bruce J. Ayers",
+          "votes": 15497,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 27,
+      "blankVotes": 3856,
+      "totalVotes": 19380
+    }
+  },
+  {
+    "id": 130465,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "2nd Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Tackey-Chan"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Tackey Chan",
+          "votes": 15005,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 0,
+      "blankVotes": 4232,
+      "totalVotes": 19237
+    }
+  },
+  {
+    "id": 130426,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "3rd Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Ronald-Mariano"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Ronald Mariano",
+          "votes": 15810,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 129,
+      "blankVotes": 4941,
+      "totalVotes": 20880
+    }
+  },
+  {
+    "id": 130425,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "4th Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/James-Michael-Murphy"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "James Michael Murphy",
+          "votes": 17771,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 240,
+      "blankVotes": 5586,
+      "totalVotes": 23597
+    }
+  },
+  {
+    "id": 130366,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "5th Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Mark-J-Cusack"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Mark J. Cusack",
+          "votes": 16652,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 246,
+      "blankVotes": 6475,
+      "totalVotes": 23373
+    }
+  },
+  {
+    "id": 130310,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "6th Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/William-C-Galvin"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "William C. Galvin",
+          "votes": 17215,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 68,
+      "blankVotes": 5039,
+      "totalVotes": 22322
+    }
+  },
+  {
+    "id": 130453,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "7th Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/William-J-Driscoll-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "William J. Driscoll, Jr",
+          "votes": 16318,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 128,
+      "blankVotes": 5482,
+      "totalVotes": 21928
+    }
+  },
+  {
+    "id": 130447,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "8th Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Louis-L-Kafka"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Louis L. Kafka",
+          "votes": 18169,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 152,
+      "blankVotes": 6050,
+      "totalVotes": 24371
+    }
+  },
+  {
+    "id": 130450,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "9th Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Shawn-C-Dooley",
+      "https://electionstats.state.ma.us/candidates/view/Brian-P-Hamlin"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Shawn C. Dooley",
+          "votes": 14427,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Brian P. Hamlin",
+          "votes": 9267,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 13,
+      "blankVotes": 1398,
+      "totalVotes": 25105
+    }
+  },
+  {
+    "id": 130417,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "10th Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jeffrey-N-Roy"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jeffrey N. Roy",
+          "votes": 18581,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 349,
+      "blankVotes": 5454,
+      "totalVotes": 24384
+    }
+  },
+  {
+    "id": 130394,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "11th Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Paul-McMurtry"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Paul McMurtry",
+          "votes": 18918,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 153,
+      "blankVotes": 6936,
+      "totalVotes": 26007
+    }
+  },
+  {
+    "id": 130460,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "12th Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/John-H-Rogers",
+      "https://electionstats.state.ma.us/candidates/view/Tim-Hempton"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "John H. Rogers",
+          "votes": 14534,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Tim Hempton",
+          "votes": 7486,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 27,
+      "blankVotes": 1707,
+      "totalVotes": 23754
+    }
+  },
+  {
+    "id": 130397,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "13th Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Denise-C-Garlick"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Denise C. Garlick",
+          "votes": 20144,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 273,
+      "blankVotes": 5638,
+      "totalVotes": 26055
+    }
+  },
+  {
+    "id": 130476,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "14th Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Alice-Hanlon-Peisch"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Alice Hanlon Peisch",
+          "votes": 17759,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 110,
+      "blankVotes": 6385,
+      "totalVotes": 24254
+    }
+  },
+  {
+    "id": 130374,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "15th Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Frank-Israel-Smizik"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Frank Israel Smizik",
+          "votes": 16079,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 79,
+      "blankVotes": 4116,
+      "totalVotes": 20274
+    }
+  },
+  {
+    "id": 130463,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "1st Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Mathew-J-Muratore",
+      "https://electionstats.state.ma.us/candidates/view/John-T-Mahoney-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Mathew J. Muratore",
+          "votes": 11873,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "John T. Mahoney, Jr",
+          "votes": 11471,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 8,
+      "blankVotes": 1533,
+      "totalVotes": 24885
+    }
+  },
+  {
+    "id": 130380,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "2nd Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Susan-Williams-Gifford",
+      "https://electionstats.state.ma.us/candidates/view/Sarah-G-Hewins"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Susan Williams Gifford",
+          "votes": 11894,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Sarah G. Hewins",
+          "votes": 8692,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 23,
+      "blankVotes": 1479,
+      "totalVotes": 22088
+    }
+  },
+  {
+    "id": 130390,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "3rd Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Joan-Meschino",
+      "https://electionstats.state.ma.us/candidates/view/Kristen-G-Arute"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Joan Meschino",
+          "votes": 13257,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Kristen G. Arute",
+          "votes": 11285,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 23,
+      "blankVotes": 1399,
+      "totalVotes": 25964
+    }
+  },
+  {
+    "id": 130449,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "4th Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/James-M-Cantwell",
+      "https://electionstats.state.ma.us/candidates/view/Michael-White"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "James M. Cantwell",
+          "votes": 17388,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Michael White",
+          "votes": 7601,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 10,
+      "blankVotes": 1028,
+      "totalVotes": 26027
+    }
+  },
+  {
+    "id": 130420,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "5th Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/David-F-Decoste",
+      "https://electionstats.state.ma.us/candidates/view/Kara-L-Nyman"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "David F. Decoste",
+          "votes": 12293,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Kara L. Nyman",
+          "votes": 11790,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 17,
+      "blankVotes": 1065,
+      "totalVotes": 25165
+    }
+  },
+  {
+    "id": 130400,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "6th Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Josh-S-Cutler",
+      "https://electionstats.state.ma.us/candidates/view/Vince-Cogliano"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Josh S. Cutler",
+          "votes": 15290,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Vince Cogliano",
+          "votes": 8582,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 14,
+      "blankVotes": 1122,
+      "totalVotes": 25008
+    }
+  },
+  {
+    "id": 130245,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "7th Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Geoff-Diehl"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Geoff Diehl",
+          "votes": 17088,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 144,
+      "blankVotes": 5770,
+      "totalVotes": 23002
+    }
+  },
+  {
+    "id": 130368,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "8th Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Angelo-L-DEmilia"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Angelo L. D'Emilia",
+          "votes": 14963,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 247,
+      "blankVotes": 5744,
+      "totalVotes": 20954
+    }
+  },
+  {
+    "id": 127016,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "9th Plymouth",
+    "party": "General",
+    "special": true,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Gerard-J-Cassidy"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Gerard J. Cassidy",
+          "votes": 4536,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 44,
+      "blankVotes": 392,
+      "totalVotes": 4972
+    }
+  },
+  {
+    "id": 130371,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "9th Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Gerard-J-Cassidy",
+      "https://electionstats.state.ma.us/candidates/view/Danny-J-Yoon"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Gerard J. Cassidy",
+          "votes": 10346,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Danny J. Yoon",
+          "votes": 1745,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 2,
+      "blankVotes": 1612,
+      "totalVotes": 13705
+    }
+  },
+  {
+    "id": 130372,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "10th Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michelle-M-Dubois"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michelle M. Dubois",
+          "votes": 13945,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 114,
+      "blankVotes": 4859,
+      "totalVotes": 18918
+    }
+  },
+  {
+    "id": 130370,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "11th Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Claire-D-Cronin"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Claire D. Cronin",
+          "votes": 15361,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 33,
+      "blankVotes": 5422,
+      "totalVotes": 20816
+    }
+  },
+  {
+    "id": 130401,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "12th Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Thomas-J-Calter-III",
+      "https://electionstats.state.ma.us/candidates/view/Peter-J-Boncek"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Thomas J. Calter, III",
+          "votes": 13908,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Peter J. Boncek",
+          "votes": 9297,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 26,
+      "blankVotes": 1634,
+      "totalVotes": 24865
+    }
+  },
+  {
+    "id": 130343,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "1st Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Adrian-C-Madaro"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Adrian C. Madaro",
+          "votes": 9946,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 205,
+      "blankVotes": 2671,
+      "totalVotes": 12822
+    }
+  },
+  {
+    "id": 130347,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "2nd Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Daniel-Joseph-Ryan"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Daniel Joseph Ryan",
+          "votes": 12755,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 118,
+      "blankVotes": 4344,
+      "totalVotes": 17217
+    }
+  },
+  {
+    "id": 130352,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "3rd Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Aaron-M-Michlewitz"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Aaron M. Michlewitz",
+          "votes": 15542,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 199,
+      "blankVotes": 5015,
+      "totalVotes": 20756
+    }
+  },
+  {
+    "id": 130345,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "4th Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Nick-Collins"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Nick Collins",
+          "votes": 18781,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 264,
+      "blankVotes": 3969,
+      "totalVotes": 23014
+    }
+  },
+  {
+    "id": 130342,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "5th Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Evandro-C-Carvalho",
+      "https://electionstats.state.ma.us/candidates/view/Althea-Garrison"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Evandro C. Carvalho",
+          "votes": 10855,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Althea Garrison",
+          "votes": 2014,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 70,
+      "blankVotes": 1861,
+      "totalVotes": 14800
+    }
+  },
+  {
+    "id": 130350,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "6th Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Russell-E-Holmes"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Russell E. Holmes",
+          "votes": 13044,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 160,
+      "blankVotes": 3433,
+      "totalVotes": 16637
+    }
+  },
+  {
+    "id": 130349,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "7th Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Chynah-Tyler"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Chynah Tyler",
+          "votes": 9150,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 132,
+      "blankVotes": 2138,
+      "totalVotes": 11420
+    }
+  },
+  {
+    "id": 130339,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "8th Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jay-D-Livingstone"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jay D. Livingstone",
+          "votes": 16201,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 209,
+      "blankVotes": 4360,
+      "totalVotes": 20770
+    }
+  },
+  {
+    "id": 130346,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "9th Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Byron-Rushing"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Byron Rushing",
+          "votes": 12617,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 190,
+      "blankVotes": 3488,
+      "totalVotes": 16295
+    }
+  },
+  {
+    "id": 130351,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "10th Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Edward-F-Coppinger"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Edward F. Coppinger",
+          "votes": 17070,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 203,
+      "blankVotes": 5333,
+      "totalVotes": 22606
+    }
+  },
+  {
+    "id": 130340,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "11th Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Elizabeth-A-Malia",
+      "https://electionstats.state.ma.us/candidates/view/Stephen-Charles-Bedell"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Elizabeth A. Malia",
+          "votes": 15628,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Stephen Charles Bedell",
+          "votes": 1884,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 60,
+      "blankVotes": 2707,
+      "totalVotes": 20279
+    }
+  },
+  {
+    "id": 130354,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "12th Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Dan-Cullinane"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Dan Cullinane",
+          "votes": 15286,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 213,
+      "blankVotes": 4058,
+      "totalVotes": 19557
+    }
+  },
+  {
+    "id": 130353,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "13th Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Daniel-J-Hunt"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Daniel J. Hunt",
+          "votes": 14507,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 232,
+      "blankVotes": 4072,
+      "totalVotes": 18811
+    }
+  },
+  {
+    "id": 130344,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "14th Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Angelo-M-Scaccia"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Angelo M. Scaccia",
+          "votes": 15784,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 259,
+      "blankVotes": 4048,
+      "totalVotes": 20091
+    }
+  },
+  {
+    "id": 130341,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "15th Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jeffrey-Sanchez"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jeffrey Sanchez",
+          "votes": 15675,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 179,
+      "blankVotes": 3594,
+      "totalVotes": 19448
+    }
+  },
+  {
+    "id": 130385,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "16th Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Roselee-Vincent"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Roselee Vincent",
+          "votes": 11220,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 162,
+      "blankVotes": 6435,
+      "totalVotes": 17817
+    }
+  },
+  {
+    "id": 130348,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "17th Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Kevin-G-Honan"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Kevin G. Honan",
+          "votes": 13367,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 183,
+      "blankVotes": 2762,
+      "totalVotes": 16312
+    }
+  },
+  {
+    "id": 130338,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "18th Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-J-Moran"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael J. Moran",
+          "votes": 10714,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 154,
+      "blankVotes": 2960,
+      "totalVotes": 13828
+    }
+  },
+  {
+    "id": 130467,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "19th Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Robert-A-DeLeo"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Robert A. DeLeo",
+          "votes": 13000,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 241,
+      "blankVotes": 4453,
+      "totalVotes": 17694
+    }
+  },
+  {
+    "id": 130427,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "1st Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Kimberly-N-Ferguson"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Kimberly N. Ferguson",
+          "votes": 20065,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 144,
+      "blankVotes": 6012,
+      "totalVotes": 26221
+    }
+  },
+  {
+    "id": 130291,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "2nd Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jonathan-D-Zlotnik"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jonathan D. Zlotnik",
+          "votes": 14470,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 152,
+      "blankVotes": 4444,
+      "totalVotes": 19066
+    }
+  },
+  {
+    "id": 127017,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "3rd Worcester",
+    "party": "General",
+    "special": true,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Stephan-Hay",
+      "https://electionstats.state.ma.us/candidates/view/Dean-Tran"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Stephan Hay",
+          "votes": 4613,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Dean Tran",
+          "votes": 4488,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 25,
+      "blankVotes": 69,
+      "totalVotes": 9195
+    }
+  },
+  {
+    "id": 130413,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "3rd Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Stephan-Hay"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Stephan Hay",
+          "votes": 13498,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 70,
+      "blankVotes": 3589,
+      "totalVotes": 17157
+    }
+  },
+  {
+    "id": 130433,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "4th Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Natalie-Higgins",
+      "https://electionstats.state.ma.us/candidates/view/Thomas-F-Ardinger"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Natalie Higgins",
+          "votes": 10382,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Thomas F. Ardinger",
+          "votes": 8426,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 51,
+      "blankVotes": 1092,
+      "totalVotes": 19951
+    }
+  },
+  {
+    "id": 130318,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "5th Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Donald-R-Berthiaume-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Donald R. Berthiaume, Jr",
+          "votes": 17133,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 91,
+      "blankVotes": 5146,
+      "totalVotes": 22370
+    }
+  },
+  {
+    "id": 130381,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "6th Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Peter-J-Durant"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Peter J. Durant",
+          "votes": 15106,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 225,
+      "blankVotes": 4229,
+      "totalVotes": 19560
+    }
+  },
+  {
+    "id": 130307,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "7th Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Paul-K-Frost",
+      "https://electionstats.state.ma.us/candidates/view/Terry-Burke-Dotson"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Paul K. Frost",
+          "votes": 13691,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Terry Burke Dotson",
+          "votes": 6951,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 19,
+      "blankVotes": 1376,
+      "totalVotes": 22037
+    }
+  },
+  {
+    "id": 130323,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "8th Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Kevin-J-Kuros"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Kevin J. Kuros",
+          "votes": 17436,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 203,
+      "blankVotes": 5436,
+      "totalVotes": 23075
+    }
+  },
+  {
+    "id": 130418,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "9th Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/David-K-Muradian-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "David K. Muradian, Jr",
+          "votes": 18513,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 79,
+      "blankVotes": 4778,
+      "totalVotes": 23370
+    }
+  },
+  {
+    "id": 130430,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "10th Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Brian-W-Murray",
+      "https://electionstats.state.ma.us/candidates/view/Sandra-Slattery-E-Biagetti"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Brian W. Murray",
+          "votes": 11869,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Sandra Slattery E. Biagetti",
+          "votes": 9708,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 25,
+      "blankVotes": 1168,
+      "totalVotes": 22770
+    }
+  },
+  {
+    "id": 130469,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "11th Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Hannah-E-Kane"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Hannah E. Kane",
+          "votes": 17835,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 349,
+      "blankVotes": 5850,
+      "totalVotes": 24034
+    }
+  },
+  {
+    "id": 130328,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "12th Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Harold-P-Naughton-Jr",
+      "https://electionstats.state.ma.us/candidates/view/Charlene-R-Dicalogero"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Harold P. Naughton, Jr.",
+          "votes": 15976,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Charlene R. Dicalogero",
+          "votes": 3916,
+          "writeIn": false,
+          "party": "Green-rainbow"
+        }
+      ],
+      "otherVotes": 119,
+      "blankVotes": 3140,
+      "totalVotes": 23151
+    }
+  },
+  {
+    "id": 130481,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "13th Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/John-J-Mahoney-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "John J. Mahoney, Jr.",
+          "votes": 12943,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 268,
+      "blankVotes": 4594,
+      "totalVotes": 17805
+    }
+  },
+  {
+    "id": 130477,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "14th Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/James-J-ODay"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "James J. O'Day",
+          "votes": 13360,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 257,
+      "blankVotes": 4535,
+      "totalVotes": 18152
+    }
+  },
+  {
+    "id": 130479,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "15th Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Mary-S-Keefe",
+      "https://electionstats.state.ma.us/candidates/view/Ralph-Perez"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Mary S. Keefe",
+          "votes": 8039,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Ralph Perez",
+          "votes": 2184,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 55,
+      "blankVotes": 1843,
+      "totalVotes": 12121
+    }
+  },
+  {
+    "id": 130480,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "16th Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Daniel-M-Donahue",
+      "https://electionstats.state.ma.us/candidates/view/John-P-Fresolo"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Daniel M. Donahue",
+          "votes": 7783,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "John P. Fresolo",
+          "votes": 3804,
+          "writeIn": false,
+          "party": "United Independent"
+        }
+      ],
+      "otherVotes": 32,
+      "blankVotes": 1136,
+      "totalVotes": 12755
+    }
+  },
+  {
+    "id": 130432,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "17th Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Kate-D-Campanale",
+      "https://electionstats.state.ma.us/candidates/view/Moses-S-Dixon"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Kate D. Campanale",
+          "votes": 8011,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Moses S. Dixon",
+          "votes": 6671,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 31,
+      "blankVotes": 1007,
+      "totalVotes": 15720
+    }
+  },
+  {
+    "id": 130396,
+    "year": 2016,
+    "office": "State Representative",
+    "districts": "18th Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Joseph-D-Mckenna"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Joseph D. Mckenna",
+          "votes": 16504,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 168,
+      "blankVotes": 4910,
+      "totalVotes": 21582
+    }
+  },
+  {
+    "id": 130256,
+    "year": 2016,
+    "office": "District Attorney",
+    "districts": "Bristol",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Thomas-M-Quinn-III"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Thomas M. Quinn, III",
+          "votes": 187993,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1146,
+      "blankVotes": 67547,
+      "totalVotes": 256686
+    }
+  },
+  {
+    "id": 130282,
+    "year": 2016,
+    "office": "Register of Deeds",
+    "districts": "Dukes",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Paulo-C-Deoliveira",
+      "https://electionstats.state.ma.us/candidates/view/Martina-Thornton"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Paulo C. Deoliveira",
+          "votes": 8229,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Martina Thornton",
+          "votes": 2467,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 12,
+      "blankVotes": 1143,
+      "totalVotes": 11851
+    }
+  },
+  {
+    "id": 130336,
+    "year": 2016,
+    "office": "Register of Deeds",
+    "districts": "Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Stephen-J-Murphy",
+      "https://electionstats.state.ma.us/candidates/view/Margherita-Ciampa-Coyne",
+      "https://electionstats.state.ma.us/candidates/view/John-A-Keith",
+      "https://electionstats.state.ma.us/candidates/view/Joseph-M-Donnelly-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Stephen J. Murphy",
+          "votes": 180667,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Margherita Ciampa-Coyne",
+          "votes": 32689,
+          "writeIn": false
+        },
+        {
+          "name": "John A. Keith",
+          "votes": 18576,
+          "writeIn": false
+        },
+        {
+          "name": "Joseph M. Donnelly, Jr",
+          "votes": 18222,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 1685,
+      "blankVotes": 65368,
+      "totalVotes": 317207
+    }
+  },
+  {
+    "id": 130317,
+    "year": 2016,
+    "office": "Sheriff",
+    "districts": "Barnstable County",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/James-M-Cummings",
+      "https://electionstats.state.ma.us/candidates/view/Randy-P-Azzato"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "James M. Cummings",
+          "votes": 77210,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Randy P. Azzato",
+          "votes": 52211,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 796,
+      "blankVotes": 7695,
+      "totalVotes": 137912
+    }
+  },
+  {
+    "id": 130265,
+    "year": 2016,
+    "office": "Sheriff",
+    "districts": "Berkshire County",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Thomas-N-Bowler"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Thomas N. Bowler",
+          "votes": 54402,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 208,
+      "blankVotes": 11898,
+      "totalVotes": 66508
+    }
+  },
+  {
+    "id": 130260,
+    "year": 2016,
+    "office": "Sheriff",
+    "districts": "Bristol County",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Thomas-M-Hodgson"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Thomas M. Hodgson",
+          "votes": 188055,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 2542,
+      "blankVotes": 66089,
+      "totalVotes": 256686
+    }
+  },
+  {
+    "id": 130285,
+    "year": 2016,
+    "office": "Sheriff",
+    "districts": "Dukes County",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Robert-Ogden",
+      "https://electionstats.state.ma.us/candidates/view/Neal-J-Maciel"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Robert Ogden",
+          "votes": 7136,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Neal J. Maciel",
+          "votes": 3907,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 21,
+      "blankVotes": 787,
+      "totalVotes": 11851
+    }
+  },
+  {
+    "id": 130274,
+    "year": 2016,
+    "office": "Sheriff",
+    "districts": "Essex County",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Kevin-F-Coppinger",
+      "https://electionstats.state.ma.us/candidates/view/Anne-M-Manning-Martin",
+      "https://electionstats.state.ma.us/candidates/view/Mark-E-Archer",
+      "https://electionstats.state.ma.us/candidates/view/Kelvin-J-Leach"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Kevin F. Coppinger",
+          "votes": 178699,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Anne M. Manning-Martin",
+          "votes": 119795,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Mark E. Archer",
+          "votes": 26036,
+          "writeIn": false
+        },
+        {
+          "name": "Kelvin J. Leach",
+          "votes": 22242,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 750,
+      "blankVotes": 45267,
+      "totalVotes": 392789
+    }
+  },
+  {
+    "id": 130297,
+    "year": 2016,
+    "office": "Sheriff",
+    "districts": "Franklin County",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Christopher-J-Donelan"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Christopher J. Donelan",
+          "votes": 32254,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 124,
+      "blankVotes": 7153,
+      "totalVotes": 39531
+    }
+  },
+  {
+    "id": 130268,
+    "year": 2016,
+    "office": "Sheriff",
+    "districts": "Hampden County",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Nick-Cocchi",
+      "https://electionstats.state.ma.us/candidates/view/John-M-Comerford",
+      "https://electionstats.state.ma.us/candidates/view/James-L-Gill-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Nick Cocchi",
+          "votes": 132396,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "John M. Comerford",
+          "votes": 33459,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "James L. Gill, Jr",
+          "votes": 28225,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 415,
+      "blankVotes": 14841,
+      "totalVotes": 209336
+    }
+  },
+  {
+    "id": 130278,
+    "year": 2016,
+    "office": "Sheriff",
+    "districts": "Hampshire County",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Patrick-J-Cahillane",
+      "https://electionstats.state.ma.us/candidates/view/David-F-Isakson"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Patrick J. Cahillane",
+          "votes": 59951,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "David F. Isakson",
+          "votes": 18868,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 175,
+      "blankVotes": 6630,
+      "totalVotes": 85624
+    }
+  },
+  {
+    "id": 130253,
+    "year": 2016,
+    "office": "Sheriff",
+    "districts": "Middlesex County",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Peter-J-Koutoujian"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Peter J. Koutoujian",
+          "votes": 589594,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 7780,
+      "blankVotes": 211256,
+      "totalVotes": 808630
+    }
+  },
+  {
+    "id": 130454,
+    "year": 2016,
+    "office": "Sheriff",
+    "districts": "Nantucket County",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/James-A-Perelman",
+      "https://electionstats.state.ma.us/candidates/view/David-J-Aguiar"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "James A. Perelman",
+          "votes": 5633,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "David J. Aguiar",
+          "votes": 730,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 10,
+      "blankVotes": 210,
+      "totalVotes": 6583
+    }
+  },
+  {
+    "id": 130312,
+    "year": 2016,
+    "office": "Sheriff",
+    "districts": "Norfolk County",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-G-Bellotti"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael G. Bellotti",
+          "votes": 278782,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1994,
+      "blankVotes": 93766,
+      "totalVotes": 374542
+    }
+  },
+  {
+    "id": 130247,
+    "year": 2016,
+    "office": "Sheriff",
+    "districts": "Plymouth County",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Joseph-D-McDonald-Jr",
+      "https://electionstats.state.ma.us/candidates/view/Scott-M-Vecchi"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Joseph D. McDonald, Jr.",
+          "votes": 143334,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Scott M. Vecchi",
+          "votes": 110540,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 174,
+      "blankVotes": 21458,
+      "totalVotes": 275506
+    }
+  },
+  {
+    "id": 130360,
+    "year": 2016,
+    "office": "Sheriff",
+    "districts": "Suffolk County",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Steven-W-Tompkins"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Steven W. Tompkins",
+          "votes": 231807,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 3836,
+      "blankVotes": 81564,
+      "totalVotes": 317207
+    }
+  },
+  {
+    "id": 130293,
+    "year": 2016,
+    "office": "Sheriff",
+    "districts": "Worcester County",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Lewis-G-Evangelidis"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Lewis G. Evangelidis",
+          "votes": 288432,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 4140,
+      "blankVotes": 103524,
+      "totalVotes": 396096
+    }
+  },
+  {
+    "id": 130295,
+    "year": 2016,
+    "office": "Council of Governments Executive Committee",
+    "districts": "Franklin County",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jay-D-Dipucchio"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jay D. Dipucchio",
+          "votes": 29130,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 57,
+      "blankVotes": 10344,
+      "totalVotes": 39531
+    }
+  }
+]

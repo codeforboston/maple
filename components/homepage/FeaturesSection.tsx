@@ -34,7 +34,7 @@ export default function FeaturesSection() {
           <div className={styles.featurePreviewWrap}>
             <Image
               className={styles.featurePreview}
-              src="/homepage/feature-preview-ballot-question.png"
+              src="/homepage/feature-preview-browse-bills.png"
               alt={t("hearings.appPreviewAlt")}
             />
           </div>

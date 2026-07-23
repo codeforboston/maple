@@ -38,6 +38,7 @@ export const LobbyingRegistrant = Record({
   generalCourt: Number,
   regType: Union(Literal("Lobbyist"), Literal("Employer")),
   clients: Array(LobbyingClient),
+  legacyTotalCompensation: Null.Or(Number),
   disclosureUrls: Array(String),
   fetchedAt: InstanceOf(Timestamp)
 })
