@@ -248,3 +248,24 @@ export function useLobbyingEntityFilingCounts() {
 export function useLobbyingClientFilingCounts() {
   return useAsync(fetchClientFilingCounts, [])
 }
+
+export type BillSummaryEntry = {
+  total: number
+  support: number
+  oppose: number
+  neutral: number
+  none: number
+}
+
+async function fetchLobbyingBillSummaries(
+  court: number
+): Promise<Record<string, BillSummaryEntry>> {
+  const snap = await getDoc(
+    doc(firestore, LOBBYING_STATS_COLLECTION, `billSummaries_${court}`)
+  )
+  return snap.exists() ? (snap.data() as Record<string, BillSummaryEntry>) : {}
+}
+
+export function useLobbyingBillSummaries(court: number) {
+  return useAsync(fetchLobbyingBillSummaries, [court])
+}

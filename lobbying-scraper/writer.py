@@ -33,6 +33,19 @@ def _now() -> datetime:
     return datetime.now(tz=timezone.utc)
 
 
+def _normalize_position(raw: str | None) -> str:
+    if not raw:
+        return "none"
+    s = raw.lower().strip()
+    if s.startswith("support"):
+        return "support"
+    if s.startswith("oppose") or s.startswith("against"):
+        return "oppose"
+    if s.startswith("neutral") or s.startswith("monitor"):
+        return "neutral"
+    return "none"
+
+
 def compute_stats(db: firestore.Client) -> None:
     """Recompute and write the lobbyingMeta/stats singleton from raw collections."""
     print("\nRecomputing stats…")
@@ -41,6 +54,7 @@ def compute_stats(db: firestore.Client) -> None:
     filings_by_year: dict[str, int] = {}
     entity_filing_counts: dict[str, int] = {}
     client_filing_counts: dict[str, int] = {}
+    bill_summaries: dict[int, dict[str, dict]] = {}
     total_filings = 0
 
     for doc in db.collection(FILINGS_COLLECTION).stream():
@@ -50,6 +64,19 @@ def compute_stats(db: firestore.Client) -> None:
         bill_id = d.get("billId")
         if bill_id and len(bill_id) > 2 and gc:
             bills.add(f"{gc}/{bill_id}")
+            pos = _normalize_position(d.get("position"))
+            if gc not in bill_summaries:
+                bill_summaries[gc] = {}
+            if bill_id not in bill_summaries[gc]:
+                bill_summaries[gc][bill_id] = {
+                    "total": 0,
+                    "support": 0,
+                    "oppose": 0,
+                    "neutral": 0,
+                    "none": 0,
+                }
+            bill_summaries[gc][bill_id]["total"] += 1
+            bill_summaries[gc][bill_id][pos] += 1
         if gc:
             courts.add(gc)
         if year:
@@ -94,10 +121,15 @@ def compute_stats(db: firestore.Client) -> None:
     db.collection(STATS_COLLECTION).document("clientFilingCounts").set(
         client_filing_counts
     )
+    for gc, bills_map in bill_summaries.items():
+        db.collection(STATS_COLLECTION).document(f"billSummaries_{gc}").set(
+            bills_map
+        )
     print(
         f"  stats written: {total_filings} filings, "
         f"{total_registrants} registrants, {len(client_norms)} clients, "
-        f"{len(entity_filing_counts)} entities, {len(client_filing_counts)} client norms"
+        f"{len(entity_filing_counts)} entities, {len(client_filing_counts)} client norms, "
+        f"bill summaries for courts {sorted(bill_summaries.keys())}"
     )
 
 

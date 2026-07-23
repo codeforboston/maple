@@ -1,5 +1,17 @@
 import { Script } from "./types"
 
+type PositionKey = "support" | "oppose" | "neutral" | "none"
+type BillCounts = { total: number } & Record<PositionKey, number>
+
+function normalizePosition(raw: string | undefined): PositionKey {
+  if (!raw) return "none"
+  const s = raw.toLowerCase().trim()
+  if (s.startsWith("support")) return "support"
+  if (s.startsWith("oppose") || s.startsWith("against")) return "oppose"
+  if (s.startsWith("neutral") || s.startsWith("monitor")) return "neutral"
+  return "none"
+}
+
 const FILINGS_COLLECTION = "lobbyingFilings"
 const REGISTRANTS_COLLECTION = "lobbyingRegistrants"
 const STATS_COLLECTION = "lobbyingMeta"
@@ -19,6 +31,7 @@ export const script: Script = async ({ db }) => {
   const filingsByYear: Record<string, number> = {}
   const entityFilingCounts: Record<string, number> = {}
   const clientFilingCounts: Record<string, number> = {}
+  const billSummaries: Record<number, Record<string, BillCounts>> = {}
 
   for (const doc of filingsSnap.docs) {
     const d = doc.data()
@@ -27,6 +40,19 @@ export const script: Script = async ({ db }) => {
 
     if (d.billId && d.billId.length > 2) {
       bills.add(`${gc}/${d.billId}`)
+      const pos = normalizePosition(d.position)
+      if (!billSummaries[gc]) billSummaries[gc] = {}
+      if (!billSummaries[gc][d.billId]) {
+        billSummaries[gc][d.billId] = {
+          total: 0,
+          support: 0,
+          oppose: 0,
+          neutral: 0,
+          none: 0
+        }
+      }
+      billSummaries[gc][d.billId].total++
+      billSummaries[gc][d.billId][pos]++
     }
 
     courts.add(gc)
@@ -93,6 +119,13 @@ export const script: Script = async ({ db }) => {
     .doc("clientFilingCounts")
     .set(clientFilingCounts)
 
+  for (const [court, billsMap] of Object.entries(billSummaries)) {
+    await db
+      .collection(STATS_COLLECTION)
+      .doc(`billSummaries_${court}`)
+      .set(billsMap)
+  }
+
   console.log(`Written to ${STATS_COLLECTION}/${STATS_DOC_ID}`)
   console.log(
     `  entityFilingCounts: ${Object.keys(entityFilingCounts).length} entities`
@@ -101,5 +134,10 @@ export const script: Script = async ({ db }) => {
     `  clientFilingCounts: ${
       Object.keys(clientFilingCounts).length
     } client norms`
+  )
+  console.log(
+    `  billSummaries: ${
+      Object.keys(billSummaries).length
+    } courts (${Object.keys(billSummaries).join(", ")})`
   )
 }

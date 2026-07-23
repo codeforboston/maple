@@ -3,11 +3,11 @@ import { useTranslation } from "next-i18next"
 import { Col, Container, Row } from "components/bootstrap"
 import { createPage } from "components/page"
 import { createGetStaticTranslationProps } from "components/translations"
-import { useLobbyingFilingsForCourt } from "components/db/lobbying"
 import {
-  LobbyingPositionChip,
-  normalizePosition
-} from "components/lobbying/LobbyingPositionChip"
+  useLobbyingBillSummaries,
+  type BillSummaryEntry
+} from "components/db/lobbying"
+import { LobbyingPositionChip } from "components/lobbying/LobbyingPositionChip"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { usePagination } from "components/lobbying/usePagination"
@@ -71,29 +71,16 @@ type BillRow = {
   none: number
 }
 
-function groupByBill(
-  filings: ReturnType<typeof useLobbyingFilingsForCourt>["result"]
+function summariesToRows(
+  summaries: Record<string, BillSummaryEntry> | undefined,
+  court: number
 ): BillRow[] {
-  if (!filings) return []
-  const map = new Map<string, BillRow>()
-  for (const f of filings) {
-    if (!f.billId || f.billId.length <= 2) continue
-    if (!map.has(f.billId)) {
-      map.set(f.billId, {
-        billId: f.billId,
-        court: f.generalCourt,
-        total: 0,
-        support: 0,
-        oppose: 0,
-        neutral: 0,
-        none: 0
-      })
-    }
-    const row = map.get(f.billId)!
-    row[normalizePosition(f.position)]++
-    row.total++
-  }
-  return [...map.values()]
+  if (!summaries) return []
+  return Object.entries(summaries).map(([billId, counts]) => ({
+    billId,
+    court,
+    ...counts
+  }))
 }
 
 function PositionMiniBar({ row }: { row: BillRow }) {
@@ -151,9 +138,12 @@ function LobbyingBillsTable() {
     }
   }
 
-  const { result: filings, status, error } = useLobbyingFilingsForCourt(court)
+  const { result: summaries, status, error } = useLobbyingBillSummaries(court)
 
-  const bills = useMemo(() => groupByBill(filings), [filings])
+  const bills = useMemo(
+    () => summariesToRows(summaries, court),
+    [summaries, court]
+  )
 
   const filtered = useMemo(() => {
     return bills.filter(b => {
