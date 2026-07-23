@@ -37,7 +37,7 @@ const defaults: Record<Env, FeatureFlags> = {
     notifications: true,
     billTracker: true,
     followOrg: true,
-    lobbyingTable: false,
+    lobbyingTable: true,
     hearingsAndTranscriptions: true,
     phoneVerificationUI: true,
     ballotQuestions: true,

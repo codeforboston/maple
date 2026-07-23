@@ -1,0 +1,318 @@
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  where
+} from "firebase/firestore"
+import { useAsync } from "react-async-hook"
+import type {
+  LobbyingClientSummary,
+  LobbyingFiling,
+  LobbyingRegistrant,
+  LobbyingStats
+} from "functions/src/lobbying/types"
+import { firestore } from "../firebase"
+
+// Mirror of constants in functions/src/lobbying/types.ts — kept here to avoid
+// pulling firebase-admin (a Node-only package) into the browser bundle.
+const FILINGS_COLLECTION = "lobbyingFilings"
+const REGISTRANTS_COLLECTION = "lobbyingRegistrants"
+const CLIENTS_COLLECTION = "lobbyingClients"
+const LOBBYING_STATS_COLLECTION = "lobbyingMeta"
+const LOBBYING_STATS_DOC_ID = "stats"
+
+// ── Internal fetchers ─────────────────────────────────────────────────────────
+
+async function fetchLobbyingStats(): Promise<LobbyingStats | undefined> {
+  const snap = await getDoc(
+    doc(firestore, LOBBYING_STATS_COLLECTION, LOBBYING_STATS_DOC_ID)
+  )
+  return snap.exists() ? (snap.data() as LobbyingStats) : undefined
+}
+
+async function fetchFilingsForBill(
+  court: number,
+  billId: string
+): Promise<LobbyingFiling[]> {
+  const snap = await getDocs(
+    query(
+      collection(firestore, FILINGS_COLLECTION),
+      where("generalCourt", "==", court),
+      where("billId", "==", billId)
+    )
+  )
+  return snap.docs.map(d => d.data() as LobbyingFiling)
+}
+
+async function fetchRegistrants(opts: {
+  regType?: "Lobbyist" | "Employer"
+  year?: number
+  pageSize?: number
+}): Promise<LobbyingRegistrant[]> {
+  const constraints = [
+    opts.regType ? where("regType", "==", opts.regType) : undefined,
+    opts.year ? where("year", "==", opts.year) : undefined,
+    orderBy("entityNameNorm"),
+    limit(opts.pageSize ?? 50)
+  ].filter(Boolean) as Parameters<typeof query>[1][]
+
+  const snap = await getDocs(
+    query(collection(firestore, REGISTRANTS_COLLECTION), ...constraints)
+  )
+  return snap.docs.map(d => d.data() as LobbyingRegistrant)
+}
+
+async function fetchRegistrant(
+  registrantId: string
+): Promise<LobbyingRegistrant | undefined> {
+  const snap = await getDoc(
+    doc(firestore, REGISTRANTS_COLLECTION, registrantId)
+  )
+  return snap.exists() ? (snap.data() as LobbyingRegistrant) : undefined
+}
+
+async function fetchFilingsForRegistrant(
+  registrantId: string
+): Promise<LobbyingFiling[]> {
+  const snap = await getDocs(
+    query(
+      collection(firestore, FILINGS_COLLECTION),
+      where("registrantId", "==", registrantId),
+      orderBy("year", "desc")
+    )
+  )
+  return snap.docs.map(d => d.data() as LobbyingFiling)
+}
+
+async function fetchClients(opts: {
+  year?: number
+  pageSize?: number
+}): Promise<LobbyingClientSummary[]> {
+  const constraints = [
+    opts.year ? where("years", "array-contains", opts.year) : undefined,
+    orderBy("clientNameNorm"),
+    limit(opts.pageSize ?? 50)
+  ].filter(Boolean) as Parameters<typeof query>[1][]
+
+  const snap = await getDocs(
+    query(collection(firestore, CLIENTS_COLLECTION), ...constraints)
+  )
+  return snap.docs.map(d => d.data() as LobbyingClientSummary)
+}
+
+async function fetchClient(
+  clientSlug: string
+): Promise<LobbyingClientSummary | undefined> {
+  const snap = await getDoc(doc(firestore, CLIENTS_COLLECTION, clientSlug))
+  return snap.exists() ? (snap.data() as LobbyingClientSummary) : undefined
+}
+
+async function fetchAllRegistrants(): Promise<LobbyingRegistrant[]> {
+  const snap = await getDocs(
+    query(
+      collection(firestore, REGISTRANTS_COLLECTION),
+      orderBy("entityNameNorm"),
+      limit(2000)
+    )
+  )
+  return snap.docs.map(d => d.data() as LobbyingRegistrant)
+}
+
+async function fetchRegistrantsByEntityName(
+  entityNameNorm: string
+): Promise<LobbyingRegistrant[]> {
+  const snap = await getDocs(
+    query(
+      collection(firestore, REGISTRANTS_COLLECTION),
+      where("entityNameNorm", "==", entityNameNorm),
+      orderBy("year", "desc")
+    )
+  )
+  return snap.docs.map(d => d.data() as LobbyingRegistrant)
+}
+
+async function fetchFilingsForEntityName(
+  entityNameNorm: string
+): Promise<LobbyingFiling[]> {
+  const snap = await getDocs(
+    query(
+      collection(firestore, FILINGS_COLLECTION),
+      where("entityNameNorm", "==", entityNameNorm),
+      orderBy("year", "desc")
+    )
+  )
+  return snap.docs.map(d => d.data() as LobbyingFiling)
+}
+
+async function fetchFilingsForCourt(court: number): Promise<LobbyingFiling[]> {
+  const snap = await getDocs(
+    query(
+      collection(firestore, FILINGS_COLLECTION),
+      where("generalCourt", "==", court)
+    )
+  )
+  return snap.docs.map(d => d.data() as LobbyingFiling)
+}
+
+async function fetchFilingsForClient(
+  clientNameNorm: string
+): Promise<LobbyingFiling[]> {
+  const snap = await getDocs(
+    query(
+      collection(firestore, FILINGS_COLLECTION),
+      where("clientNameNorm", "==", clientNameNorm),
+      orderBy("year", "desc")
+    )
+  )
+  return snap.docs.map(d => d.data() as LobbyingFiling)
+}
+
+// ── Public hooks ──────────────────────────────────────────────────────────────
+
+export function useLobbyingFilingsForCourt(court: number) {
+  return useAsync(fetchFilingsForCourt, [court])
+}
+
+export function useLobbyingAllRegistrants() {
+  return useAsync(fetchAllRegistrants, [])
+}
+
+export function useLobbyingRegistrantsByEntityName(entityNameNorm: string) {
+  return useAsync(fetchRegistrantsByEntityName, [entityNameNorm])
+}
+
+export function useLobbyingFilingsForEntityName(entityNameNorm: string) {
+  return useAsync(fetchFilingsForEntityName, [entityNameNorm])
+}
+
+export function useLobbyingStats() {
+  return useAsync(fetchLobbyingStats, [])
+}
+
+export function useLobbyingFilingsForBill(court: number, billId: string) {
+  return useAsync(fetchFilingsForBill, [court, billId])
+}
+
+export function useLobbyingRegistrants(opts: {
+  regType?: "Lobbyist" | "Employer"
+  year?: number
+  pageSize?: number
+}) {
+  return useAsync(fetchRegistrants, [opts])
+}
+
+export function useLobbyingRegistrant(registrantId: string) {
+  return useAsync(fetchRegistrant, [registrantId])
+}
+
+export function useLobbyingFilingsForRegistrant(registrantId: string) {
+  return useAsync(fetchFilingsForRegistrant, [registrantId])
+}
+
+export function useLobbyingClients(
+  opts: { year?: number; pageSize?: number } = {}
+) {
+  return useAsync(fetchClients, [opts])
+}
+
+export function useLobbyingClient(clientSlug: string) {
+  return useAsync(fetchClient, [clientSlug])
+}
+
+export function useLobbyingFilingsForClient(clientNameNorm: string) {
+  return useAsync(fetchFilingsForClient, [clientNameNorm])
+}
+
+async function fetchEntityFilingCounts(): Promise<Record<string, number>> {
+  const snap = await getDoc(
+    doc(firestore, LOBBYING_STATS_COLLECTION, "entityFilingCounts")
+  )
+  return snap.exists() ? (snap.data() as Record<string, number>) : {}
+}
+
+async function fetchClientFilingCounts(): Promise<Record<string, number>> {
+  const snap = await getDoc(
+    doc(firestore, LOBBYING_STATS_COLLECTION, "clientFilingCounts")
+  )
+  return snap.exists() ? (snap.data() as Record<string, number>) : {}
+}
+
+export function useLobbyingEntityFilingCounts() {
+  return useAsync(fetchEntityFilingCounts, [])
+}
+
+export function useLobbyingClientFilingCounts() {
+  return useAsync(fetchClientFilingCounts, [])
+}
+
+export type BillSummaryEntry = {
+  total: number
+  support: number
+  oppose: number
+  neutral: number
+  none: number
+  title?: string
+  clients?: number
+  lobbyists?: number
+}
+
+export type BillRow = {
+  billId: string
+  court: number
+  total: number
+  support: number
+  oppose: number
+  neutral: number
+  none: number
+  title: string
+  clients: number
+  lobbyists: number
+}
+
+async function fetchLobbyingBillSummaries(
+  court: number
+): Promise<Record<string, BillSummaryEntry>> {
+  const snap = await getDoc(
+    doc(firestore, LOBBYING_STATS_COLLECTION, `billSummaries_${court}`)
+  )
+  if (!snap.exists()) return {}
+  const raw = snap.data() as { data?: string }
+  if (!raw.data) return {}
+  return JSON.parse(raw.data) as Record<string, BillSummaryEntry>
+}
+
+export function useLobbyingBillSummaries(court: number) {
+  return useAsync(fetchLobbyingBillSummaries, [court])
+}
+
+export function useLobbyingBillRows(courts: number[]) {
+  const courtsKey = courts.join(",")
+  return useAsync(
+    async (key: string) => {
+      if (!key) return [] as BillRow[]
+      const courtList = key.split(",").map(Number)
+      const results = await Promise.all(
+        courtList.map(fetchLobbyingBillSummaries)
+      )
+      return courtList.flatMap((court, i) =>
+        Object.entries(results[i]).map(([billId, e]) => ({
+          billId,
+          court,
+          total: e.total,
+          support: e.support,
+          oppose: e.oppose,
+          neutral: e.neutral,
+          none: e.none,
+          title: e.title ?? "",
+          clients: e.clients ?? 0,
+          lobbyists: e.lobbyists ?? 0
+        }))
+      )
+    },
+    [courtsKey]
+  )
+}

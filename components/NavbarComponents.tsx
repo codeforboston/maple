@@ -142,6 +142,27 @@ export const NavbarLinkBills: React.FC<
   )
 }
 
+export const NavbarLinkLobbying: React.FC<
+  React.PropsWithChildren<{
+    handleClick?: any
+    other?: any
+  }>
+> = ({ handleClick, other }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  const { t } = useTranslation(["common", "auth"])
+  return (
+    <Nav.Item onClick={handleClick}>
+      <NavLink
+        className={isMobile ? "navLink-primary" : DESKTOP_NAV_ITEM_CLASS}
+        href="/lobbying"
+        {...other}
+      >
+        {t("navigation.lobbying")}
+      </NavLink>
+    </Nav.Item>
+  )
+}
+
 export const NavbarLinkBallotQuestions: React.FC<
   React.PropsWithChildren<{
     handleClick?: any

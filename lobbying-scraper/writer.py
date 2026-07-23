@@ -6,6 +6,7 @@ names and field names must stay in sync with that file.
 
 from __future__ import annotations
 
+import json
 from datetime import datetime, timezone
 
 from google.cloud import firestore
@@ -25,10 +26,132 @@ FILINGS_COLLECTION = "lobbyingFilings"
 SCRAPER_DOC = "scrapers/lobbying"
 BACKFILL_DOC = "scrapers/lobbyingBackfill"
 BACKFILL_URLS_COLLECTION = "processedUrls"
+STATS_COLLECTION = "lobbyingMeta"
+STATS_DOC_ID = "stats"
 
 
 def _now() -> datetime:
     return datetime.now(tz=timezone.utc)
+
+
+def _normalize_position(raw: str | None) -> str:
+    if not raw:
+        return "none"
+    s = raw.lower().strip()
+    if s.startswith("support"):
+        return "support"
+    if s.startswith("oppose") or s.startswith("against"):
+        return "oppose"
+    if s.startswith("neutral") or s.startswith("monitor"):
+        return "neutral"
+    return "none"
+
+
+def compute_stats(db: firestore.Client) -> None:
+    """Recompute and write the lobbyingMeta/stats singleton from raw collections."""
+    print("\nRecomputing stats…")
+    bills: set[str] = set()
+    courts: set[int] = set()
+    filings_by_year: dict[str, int] = {}
+    entity_filing_counts: dict[str, int] = {}
+    client_filing_counts: dict[str, int] = {}
+    bill_summaries: dict[int, dict[str, dict]] = {}
+    bill_client_sets: dict[int, dict[str, set]] = {}
+    bill_entity_sets: dict[int, dict[str, set]] = {}
+    total_filings = 0
+
+    for doc in db.collection(FILINGS_COLLECTION).stream():
+        d = doc.to_dict()
+        year = str(d.get("year", ""))
+        gc = d.get("generalCourt")
+        bill_id = d.get("billId")
+        if bill_id and len(bill_id) > 2 and gc:
+            bills.add(f"{gc}/{bill_id}")
+            pos = _normalize_position(d.get("position"))
+            if gc not in bill_summaries:
+                bill_summaries[gc] = {}
+                bill_client_sets[gc] = {}
+                bill_entity_sets[gc] = {}
+            if bill_id not in bill_summaries[gc]:
+                bill_summaries[gc][bill_id] = {
+                    "total": 0,
+                    "support": 0,
+                    "oppose": 0,
+                    "neutral": 0,
+                    "none": 0,
+                    "title": d.get("activityTitle") or "",
+                    "clients": 0,
+                    "lobbyists": 0,
+                }
+                bill_client_sets[gc][bill_id] = set()
+                bill_entity_sets[gc][bill_id] = set()
+            bill_summaries[gc][bill_id]["total"] += 1
+            bill_summaries[gc][bill_id][pos] += 1
+            cn = d.get("clientNameNorm")
+            en = d.get("entityNameNorm")
+            if cn:
+                bill_client_sets[gc][bill_id].add(cn)
+            if en:
+                bill_entity_sets[gc][bill_id].add(en)
+        if gc:
+            courts.add(gc)
+        if year:
+            filings_by_year[year] = filings_by_year.get(year, 0) + 1
+        total_filings += 1
+        en = d.get("entityNameNorm")
+        cn = d.get("clientNameNorm")
+        if en:
+            entity_filing_counts[en] = entity_filing_counts.get(en, 0) + 1
+        if cn:
+            client_filing_counts[cn] = client_filing_counts.get(cn, 0) + 1
+
+    for gc, bills_map in bill_summaries.items():
+        for bill_id, counts in bills_map.items():
+            counts["clients"] = len(bill_client_sets.get(gc, {}).get(bill_id, set()))
+            counts["lobbyists"] = len(bill_entity_sets.get(gc, {}).get(bill_id, set()))
+
+    client_norms: set[str] = set()
+    spend_by_year: dict[str, float] = {}
+    total_registrants = 0
+
+    for doc in db.collection(REGISTRANTS_COLLECTION).stream():
+        d = doc.to_dict()
+        year = str(d.get("year", ""))
+        for c in d.get("clients", []):
+            norm = c.get("clientNameNorm")
+            if norm:
+                client_norms.add(norm)
+            comp = c.get("compensation")
+            if comp is not None and year:
+                spend_by_year[year] = spend_by_year.get(year, 0) + comp
+        total_registrants += 1
+
+    stats = {
+        "totalFilings": total_filings,
+        "totalRegistrants": total_registrants,
+        "totalClients": len(client_norms),
+        "totalBillsWithFilings": len(bills),
+        "courtsWithData": sorted(courts),
+        "spendByYear": spend_by_year,
+        "filingsByYear": filings_by_year,
+    }
+    db.collection(STATS_COLLECTION).document(STATS_DOC_ID).set(stats, merge=True)
+    db.collection(STATS_COLLECTION).document("entityFilingCounts").set(
+        entity_filing_counts
+    )
+    db.collection(STATS_COLLECTION).document("clientFilingCounts").set(
+        client_filing_counts
+    )
+    for gc, bills_map in bill_summaries.items():
+        db.collection(STATS_COLLECTION).document(f"billSummaries_{gc}").set(
+            {"data": json.dumps(bills_map)}
+        )
+    print(
+        f"  stats written: {total_filings} filings, "
+        f"{total_registrants} registrants, {len(client_norms)} clients, "
+        f"{len(entity_filing_counts)} entities, {len(client_filing_counts)} client norms, "
+        f"bill summaries for courts {sorted(bill_summaries.keys())}"
+    )
 
 
 def write_registrant(
