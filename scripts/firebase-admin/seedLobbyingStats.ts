@@ -1,7 +1,16 @@
 import { Script } from "./types"
 
 type PositionKey = "support" | "oppose" | "neutral" | "none"
-type BillCounts = { total: number } & Record<PositionKey, number>
+type BillCounts = {
+  total: number
+  support: number
+  oppose: number
+  neutral: number
+  none: number
+  title: string
+  clients: number
+  lobbyists: number
+}
 
 function normalizePosition(raw: string | undefined): PositionKey {
   if (!raw) return "none"
@@ -32,6 +41,8 @@ export const script: Script = async ({ db }) => {
   const entityFilingCounts: Record<string, number> = {}
   const clientFilingCounts: Record<string, number> = {}
   const billSummaries: Record<number, Record<string, BillCounts>> = {}
+  const billClientSets: Record<number, Record<string, Set<string>>> = {}
+  const billEntitySets: Record<number, Record<string, Set<string>>> = {}
 
   for (const doc of filingsSnap.docs) {
     const d = doc.data()
@@ -41,18 +52,29 @@ export const script: Script = async ({ db }) => {
     if (d.billId && d.billId.length > 2) {
       bills.add(`${gc}/${d.billId}`)
       const pos = normalizePosition(d.position)
-      if (!billSummaries[gc]) billSummaries[gc] = {}
+      if (!billSummaries[gc]) {
+        billSummaries[gc] = {}
+        billClientSets[gc] = {}
+        billEntitySets[gc] = {}
+      }
       if (!billSummaries[gc][d.billId]) {
         billSummaries[gc][d.billId] = {
           total: 0,
           support: 0,
           oppose: 0,
           neutral: 0,
-          none: 0
+          none: 0,
+          title: d.activityTitle ?? "",
+          clients: 0,
+          lobbyists: 0
         }
+        billClientSets[gc][d.billId] = new Set()
+        billEntitySets[gc][d.billId] = new Set()
       }
       billSummaries[gc][d.billId].total++
       billSummaries[gc][d.billId][pos]++
+      if (d.clientNameNorm) billClientSets[gc][d.billId].add(d.clientNameNorm)
+      if (d.entityNameNorm) billEntitySets[gc][d.billId].add(d.entityNameNorm)
     }
 
     courts.add(gc)
@@ -67,6 +89,15 @@ export const script: Script = async ({ db }) => {
     if (d.clientNameNorm) {
       clientFilingCounts[d.clientNameNorm] =
         (clientFilingCounts[d.clientNameNorm] ?? 0) + 1
+    }
+  }
+
+  // Fill in client/lobbyist counts from the sets
+  for (const [gcStr, billsMap] of Object.entries(billSummaries)) {
+    const gc = Number(gcStr)
+    for (const [billId, counts] of Object.entries(billsMap)) {
+      counts.clients = billClientSets[gc]?.[billId]?.size ?? 0
+      counts.lobbyists = billEntitySets[gc]?.[billId]?.size ?? 0
     }
   }
 
@@ -123,7 +154,7 @@ export const script: Script = async ({ db }) => {
     await db
       .collection(STATS_COLLECTION)
       .doc(`billSummaries_${court}`)
-      .set(billsMap)
+      .set({ data: JSON.stringify(billsMap) })
   }
 
   console.log(`Written to ${STATS_COLLECTION}/${STATS_DOC_ID}`)

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { useRouter } from "next/router"
 import { useTranslation } from "next-i18next"
 import { Container } from "components/bootstrap"
@@ -7,12 +7,6 @@ import { MAPLE_COLORS } from "./chartTheme"
 export function LobbyingSubnav() {
   const { t } = useTranslation("lobbying")
   const { pathname } = useRouter()
-  const [navbarH, setNavbarH] = useState(96)
-
-  useEffect(() => {
-    const el = document.querySelector<HTMLElement>(".main-navbar")
-    if (el) setNavbarH(el.offsetHeight)
-  }, [])
 
   const LINKS = [
     { label: t("subnav.overview"), href: "/lobbying", exact: true },
@@ -22,7 +16,7 @@ export function LobbyingSubnav() {
   ]
 
   return (
-    <div style={{ ...barStyle, top: navbarH }}>
+    <div style={barStyle}>
       <Container>
         <div style={innerStyle}>
           <span style={titleStyle}>{t("subnav.label")}</span>
@@ -45,8 +39,6 @@ export function LobbyingSubnav() {
 }
 
 const barStyle: React.CSSProperties = {
-  position: "sticky",
-  zIndex: 100,
   background: "#fff",
   borderBottom: `1px solid ${MAPLE_COLORS.borderDefault}`,
   width: "100%"

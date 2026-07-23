@@ -6,6 +6,7 @@ names and field names must stay in sync with that file.
 
 from __future__ import annotations
 
+import json
 from datetime import datetime, timezone
 
 from google.cloud import firestore
@@ -55,6 +56,8 @@ def compute_stats(db: firestore.Client) -> None:
     entity_filing_counts: dict[str, int] = {}
     client_filing_counts: dict[str, int] = {}
     bill_summaries: dict[int, dict[str, dict]] = {}
+    bill_client_sets: dict[int, dict[str, set]] = {}
+    bill_entity_sets: dict[int, dict[str, set]] = {}
     total_filings = 0
 
     for doc in db.collection(FILINGS_COLLECTION).stream():
@@ -67,6 +70,8 @@ def compute_stats(db: firestore.Client) -> None:
             pos = _normalize_position(d.get("position"))
             if gc not in bill_summaries:
                 bill_summaries[gc] = {}
+                bill_client_sets[gc] = {}
+                bill_entity_sets[gc] = {}
             if bill_id not in bill_summaries[gc]:
                 bill_summaries[gc][bill_id] = {
                     "total": 0,
@@ -74,9 +79,20 @@ def compute_stats(db: firestore.Client) -> None:
                     "oppose": 0,
                     "neutral": 0,
                     "none": 0,
+                    "title": d.get("activityTitle") or "",
+                    "clients": 0,
+                    "lobbyists": 0,
                 }
+                bill_client_sets[gc][bill_id] = set()
+                bill_entity_sets[gc][bill_id] = set()
             bill_summaries[gc][bill_id]["total"] += 1
             bill_summaries[gc][bill_id][pos] += 1
+            cn = d.get("clientNameNorm")
+            en = d.get("entityNameNorm")
+            if cn:
+                bill_client_sets[gc][bill_id].add(cn)
+            if en:
+                bill_entity_sets[gc][bill_id].add(en)
         if gc:
             courts.add(gc)
         if year:
@@ -88,6 +104,11 @@ def compute_stats(db: firestore.Client) -> None:
             entity_filing_counts[en] = entity_filing_counts.get(en, 0) + 1
         if cn:
             client_filing_counts[cn] = client_filing_counts.get(cn, 0) + 1
+
+    for gc, bills_map in bill_summaries.items():
+        for bill_id, counts in bills_map.items():
+            counts["clients"] = len(bill_client_sets.get(gc, {}).get(bill_id, set()))
+            counts["lobbyists"] = len(bill_entity_sets.get(gc, {}).get(bill_id, set()))
 
     client_norms: set[str] = set()
     spend_by_year: dict[str, float] = {}
@@ -123,7 +144,7 @@ def compute_stats(db: firestore.Client) -> None:
     )
     for gc, bills_map in bill_summaries.items():
         db.collection(STATS_COLLECTION).document(f"billSummaries_{gc}").set(
-            bills_map
+            {"data": json.dumps(bills_map)}
         )
     print(
         f"  stats written: {total_filings} filings, "

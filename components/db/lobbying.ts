@@ -255,6 +255,22 @@ export type BillSummaryEntry = {
   oppose: number
   neutral: number
   none: number
+  title?: string
+  clients?: number
+  lobbyists?: number
+}
+
+export type BillRow = {
+  billId: string
+  court: number
+  total: number
+  support: number
+  oppose: number
+  neutral: number
+  none: number
+  title: string
+  clients: number
+  lobbyists: number
 }
 
 async function fetchLobbyingBillSummaries(
@@ -263,9 +279,40 @@ async function fetchLobbyingBillSummaries(
   const snap = await getDoc(
     doc(firestore, LOBBYING_STATS_COLLECTION, `billSummaries_${court}`)
   )
-  return snap.exists() ? (snap.data() as Record<string, BillSummaryEntry>) : {}
+  if (!snap.exists()) return {}
+  const raw = snap.data() as { data?: string }
+  if (!raw.data) return {}
+  return JSON.parse(raw.data) as Record<string, BillSummaryEntry>
 }
 
 export function useLobbyingBillSummaries(court: number) {
   return useAsync(fetchLobbyingBillSummaries, [court])
+}
+
+export function useLobbyingBillRows(courts: number[]) {
+  const courtsKey = courts.join(",")
+  return useAsync(
+    async (key: string) => {
+      if (!key) return [] as BillRow[]
+      const courtList = key.split(",").map(Number)
+      const results = await Promise.all(
+        courtList.map(fetchLobbyingBillSummaries)
+      )
+      return courtList.flatMap((court, i) =>
+        Object.entries(results[i]).map(([billId, e]) => ({
+          billId,
+          court,
+          total: e.total,
+          support: e.support,
+          oppose: e.oppose,
+          neutral: e.neutral,
+          none: e.none,
+          title: e.title ?? "",
+          clients: e.clients ?? 0,
+          lobbyists: e.lobbyists ?? 0
+        }))
+      )
+    },
+    [courtsKey]
+  )
 }
