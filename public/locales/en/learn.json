@@ -40,27 +40,27 @@
       {
         "badge": "who",
         "headline": "Anyone can submit testimony",
-        "body": "Legislators value testimony most when it comes from their own constituents. Testimony from Massachusetts residents is typically directed to both the committee responsible for the bill and the legislators representing you in your district."
+        "body": "Every Massachusetts resident has the right to weigh in on the proposed laws that shape our future. Testimony is typically directed to both the committee responsible for the bill and the legislators representing you in your district."
       },
       {
         "badge": "what",
         "headline": "It should be distinctive and relevant",
-        "body": "Writing your own text and explaining why you are interested in an issue gives legislators valuable, personalized insight into their constituents. Form letters still count, but a personalized, individual letter will always have greater impact."
+        "body": "Writing your own words and explaining why you are interested in an issue gives legislators valuable, personalized insight into their constituents. Form letters still count, but a personal letter will always have greater impact."
       },
       {
         "badge": "when",
-        "headline": "Submit before the hearing date",
-        "body": "Committees generally accept testimony up until the public hearing date for a bill. You can use Maple's bill pages on this site or this link to identify relevant dates. Submit before the hearing for the greatest impact."
+        "headline": "Get it in before the hearing date",
+        "body": "Committees generally accept testimony up until a bill's public hearing date, but earlier is always better. While some committees will accept testimony after this date, submitting prior to the hearing date ensures it will be considered. In addition to written testimony, you can also attend a hearing to testify in person."
       },
       {
         "badge": "where",
-        "headline": "Use MAPLE to submit testimony",
-        "body": "Browse our bill and ballot question pages to find the measures that matter to you. Select one and follow the prompts to compose your testimony. When you are happy with your testimony, MAPLE sends it to the relevant committee personnel."
+        "headline": "Write to the committee chairs",
+        "body": "This is what MAPLE was built for! MAPLE not only makes it easy to learn about bills that impact you but it also identifies the correct legislators for you to email and makes your testimony available for all to benefit from. Some committees accept online submissions via malegislature.gov but not all. Emails and letters are always accepted."
       }
     ],
     "why": {
-      "headline": "Legislators need your input in order to represent you",
-      "body": "If you don't share your perspective, it may not be taken into account when policymakers make decisions about the laws that govern all our lives. By speaking up, you can make the laws of Massachusetts work better for all of us. MAPLE is designed to make it more accessible.",
+      "headline": "The key role of testimony is to let your legislators know how you feel about an issue",
+      "body": "If you don't share your perspective, it can't be taken into account when policymakers make decisions about the laws that govern our lives. By speaking up, you can make the laws of Massachusetts work better for all of us. MAPLE is designed to make this process more accessible.",
       "mattersHeading": "Why it Matters:",
       "matters": [
         {
@@ -84,7 +84,7 @@
       "steps": [
         {
           "title": "Testify in writing",
-          "body": "Written testimony should target bills being considered by the legislature. All Committees should formally accept testimony on each bill in the time between the start of the legislative session and the public hearing of that bill. This is what MAPLE can help with!"
+          "body": "Written testimony should target bills being considered by the legislature. You can submit testimony by email, letter, or in some cases, a webform on the MA Legislature website. Hearings marked “written testimony only” do not accept webform submissions but emails are always accepted and that's what MAPLE can help with!"
         },
         {
           "title": "Testify in person",
@@ -102,40 +102,41 @@
         }
       ]
     },
-    "tipsLink": "Need help? <0>Read our testimony writing tips</0>",
+    "tipsLink": "Ready to write? <0>Read our testimony writing tips</0>",
     "tips": [
       {
         "label": "Be Timely",
         "body": "Written testimony should target bills being considered by the legislature and should be submitted before the committee hearing date in order to have the most impact."
-      },
+      }, 
       {
         "label": "Be Original",
         "body": "Legislators receive a lot of form letters. These communications are important, but almost always an individual and personalized letter will have greater impact."
-      },
+      },       
       {
         "label": "Be Informative",
-        "body": "Introduce yourself. Explain why you are concerned about an issue and why you think one policy choice would be better than another. Whether you're a longtime advocate or first-time testifier, your testimony is important."
+        "body": "Be sure to introduce yourself, share why you are concerned about an issue, and why you think one policy choice would be better than another. Whether you're a longtime advocate or first-time testifier, your testimony is important."
       },
+
       {
         "label": "Be Direct",
         "body": "State whether you support or oppose a bill. Be clear and specific about the policies you want to see. You don't need to know specific legal precedents or legislative language to provide valuable input."
       },
       {
         "label": "Be Respectful",
-        "body": "No matter how strongly you hold your position, there may be people of good intent who feel differently. Respectful testimony will carry more weight with legislators — especially those you may need to persuade."
+        "body": "No matter how strongly or sincerely you hold your position, there will be people of good intent who feel differently. We all deserve to have our perspectives considered. Respectful testimony will carry more weight with legislators — especially those you may need to persuade."
       }
     ]
   },
   "writingTips": {
     "breadcrumb": "Writing Effective Testimony",
     "title": "How to Write Effective Testimony",
-    "subhead": "You don't need legal training or a policy background. You need a clear position, a reason you care, and the district you live in — this page walks through the rest.",
+    "subhead": "Submitting testimony doesn’t require a law degree or a policy background — only a clear position, a reason you care, and the district you live in. This page provides some initial guidance to help you get started.",
     "principles": {
-      "headline": "Five things to make testimony impactful"
+      "headline": "Five ways to make testimony more impactful"
     },
     "include": {
       "headline": "What every letter should include",
-      "intro": "Make sure a reader can answer these five questions after reading your testimony.",
+      "intro": "Make sure a reader can understand these five things after reading your testimony.",
       "items": [
         {
           "title": "Which bill you are writing about",
@@ -191,9 +192,9 @@
         "num": "01",
         "title": "A Bill is Introduced",
         "lead": "Every law starts as an idea. Any Massachusetts resident can petition their legislator to file a bill.",
-        "body": "Bills can be filed at any time during the two-year session, but most are filed before the session begins — the standard deadline falls in December of the preceding year. Bills filed after that deadline require special approval. They receive a unique identifier — H. for House-originated bills, S. for Senate. The same idea can be filed in both chambers simultaneously. Bills are publicly available on the MA Legislature website and through MAPLE.",
+        "body": "Nearly all bills filed in the Massachusetts Legislature are filed in the first two weeks of the session. This means that, every other year, the first two to three weeks of January see thousands of bills being filed in the House and Senate. Bills filed after that initial deadline require special committee approval. When a bill is filed, it receives a unique identifier — H. for House-originated bills, S. for Senate. The same idea can be filed in both chambers at the same time. Bills are publicly available on the MA Legislature website and through MAPLE. On MAPLE, you can track the progress of a bill across iterations and even if the bill changes identifiers.",
         "stat": {
-          "value": "6,000+",
+          "value": "7,000+",
           "label": "bills filed each session",
           "href": "/bills"
         }
@@ -202,7 +203,7 @@
         "num": "02",
         "title": "Committee Referral",
         "lead": "Every bill is routed to a Joint Committee based on its subject matter.",
-        "body": "There are 33 Joint Legislative Committees covering topics from Education to Public Safety. Joint Committees include members from both the House and Senate. This is where the real work of examining a bill begins. Every bill is entitled to a hearing — but most bills are sent to study after that hearing, which ends their progress for that session.",
+        "body": "There are 33 Joint Legislative Committees in Massachusetts covering different subject areas from Education to Public Safety. Joint Committees include members from both the House and Senate. Every bill is entitled to a hearing where public testimony can be considered. Committee staff review the incoming bills and group related measures onto a single hearing agenda and set a hearing date.",
         "stat": {
           "value": "33",
           "label": "Joint Committees",
@@ -213,14 +214,14 @@
         "num": "03",
         "title": "Public Hearing & Testimony",
         "lead": "This is your moment. Anyone can submit written testimony or speak in person.",
-        "body": "Committees schedule public hearings where citizens, advocacy groups, experts, and government officials can all testify. Written testimony submitted before the hearing is accepted and reviewed by committee staff. Legislators pay attention to volume — and especially to constituent voices from their own districts.",
+        "body": "Public hearings are the time when citizens, advocacy groups, experts, and government officials can all testify. Written testimony submitted before the hearing is reviewed by committee staff. Legislators pay special attention to constituent voices from their own districts, but also pay attention to volume.",
         "callout": "MAPLE makes it easy to find a bill's hearing date and submit testimony directly to the committee chairs via email."
       },
       {
         "num": "04",
         "title": "Committee Report",
         "lead": "The committee decides a bill's fate — advance, amend, or let it die.",
-        "body": "After reviewing testimony and staff analysis, the committee votes whether to report the bill favorably, unfavorably, or with amendments. A bill reported favorably advances to the full chamber. Most bills are 'sent to study' — a formal committee recommendation that ends the bill's progress for that session. A bill can be refiled in the next session and go through the process again."
+        "body": "After reviewing testimony and staff analysis, the committee votes whether to report the bill favorably, unfavorably, or with amendments. A bill reported favorably advances to the full chamber. Most bills are 'sent to study', which is a formal committee recommendation that ends the bill's progress for that session. A bill can be refiled in the next session and go through the process again."
       },
       {
         "num": "05",
@@ -232,7 +233,7 @@
         "num": "06",
         "title": "Governor's Action",
         "lead": "The Governor has 10 days to sign, veto, or return a bill with amendments.",
-        "body": "A signed bill is 'chaptered' and becomes part of Massachusetts General Laws. A vetoed bill can be overridden by a 2/3 vote in each chamber. If the Governor returns the bill with amendments, the legislature can accept the amendments, override them, or let the bill die. If the Governor takes no action within 10 days and the legislature is still in session, the bill becomes law automatically. If the legislature has adjourned, the same inaction kills the bill — this is called a pocket veto."
+        "body": "A bill signed by the governor is ‘chaptered’ and becomes part of the Massachusetts General Laws. If the governor vetoes a bill, that veto can be overridden by a 2/3 vote in each chamber. If the governor returns the bill with amendments, the legislature can accept the amendments, override them, or let the bill die. If the governor takes no action within 10 days and the legislature is still in session, the bill becomes law automatically. If the legislature has adjourned, the same inaction kills the bill, which is sometimes referred to as a pocket veto."
       }
     ]
   }
