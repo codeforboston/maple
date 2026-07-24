@@ -37,6 +37,18 @@ const YEAR_END_REPORT_TYPE_IDS = new Set([
   113 // Year-End Report (Municipal)
 ])
 
+// Committee lifecycle reports: like Year-End reports, these roll up a date
+// range already covered by periodic Bank Reports (verified empirically —
+// CPF 16576's Dissolution Report exactly matched the sum of two Bank Reports
+// covering the same period, $1,583.64). Kept separate from
+// YEAR_END_REPORT_TYPE_IDS because their date range doesn't align to a
+// calendar year, so they shouldn't feed the yearEndCheck reconciliation.
+const LIFECYCLE_REPORT_TYPE_IDS = new Set([
+  12, // Dissolution Report
+  14, // Transition-Out Report
+  15 // Transition-In Report
+])
+
 // ── Accumulator types ─────────────────────────────────────────────────────────
 
 interface MutableBreakdownEntry {
@@ -415,6 +427,13 @@ async function parseReports(
       if (acc.yearEndCheck[year] === null) {
         acc.yearEndCheck[year] = { receiptsTotal, expendituresTotal }
       }
+      matched++
+      continue
+    }
+
+    if (LIFECYCLE_REPORT_TYPE_IDS.has(reportTypeId)) {
+      // Dissolution/Transition rollup — same double-counting risk as Year-End,
+      // but not tied to a calendar year, so skipped without feeding yearEndCheck.
       matched++
       continue
     }
