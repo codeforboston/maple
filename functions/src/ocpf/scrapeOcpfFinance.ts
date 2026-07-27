@@ -609,7 +609,7 @@ function accumulateItem(
     case 319: // Payment-processor fee (see breakdown.processingFees doc comment)
       addTo(acc.breakdown.processingFees, yb?.processingFees)
       break
-    // 205 (Bank Interest) and 220 (Aggregated un-itemized) come from reports.txt, not items
+    // 205 (Bank Interest) and 220 (Aggregated un-itemized) totals sourced from reports.txt, not items
     default:
       break
   }
