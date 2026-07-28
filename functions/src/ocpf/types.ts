@@ -62,10 +62,6 @@ export interface MembersFinanceInKind {
   unitemized: { amount: number } // type 420
 }
 
-export interface MembersFinanceOtherReceipts {
-  nonContribution: FinanceBreakdownEntry // type 204
-}
-
 export interface MembersFinanceYearData {
   totalRaised: number
   totalSpent: number
@@ -76,6 +72,9 @@ export interface MembersFinanceYearData {
 // Firestore: /generalCourts/{court}/membersFinance/{memberCode}
 export interface MembersFinance {
   ocpfCpfId: number
+  // Net receipts: Bank Report Receipts_Total, minus non-contribution
+  // receipts (type 204 — refunds/misc from Deposit Reports). Matches OCPF's own public
+  // "Receipts" definition.
   totalRaised: number
   totalSpent: number
   cashOnHand: number
@@ -94,6 +93,5 @@ export interface MembersFinance {
   breakdown: MembersFinanceBreakdown
   candidateFunds: MembersFinanceCandidateFunds
   inKind: MembersFinanceInKind
-  otherReceipts: MembersFinanceOtherReceipts
   years: Record<string, MembersFinanceYearData>
 }

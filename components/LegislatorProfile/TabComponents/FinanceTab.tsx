@@ -57,7 +57,6 @@ export function FinanceTab({ finance }: { finance?: MembersFinance }) {
     .sort((a, b) => b.value - a.value)
 
   const total = categories.reduce((sum, c) => sum + c.value, 0)
-  const nonContribution = finance.otherReceipts?.nonContribution?.amount ?? 0
   const processingFees = finance.breakdown?.processingFees?.amount ?? 0
 
   const smallDonorTotal =
@@ -270,14 +269,6 @@ export function FinanceTab({ finance }: { finance?: MembersFinance }) {
               : t("finance.source")}
           </p>
         </div>
-      )}
-
-      {nonContribution > 0 && (
-        <p className="text-muted mt-3" style={{ fontSize: 12 }}>
-          {t("finance.otherReceipts", {
-            amount: formatCurrency(nonContribution)
-          })}
-        </p>
       )}
 
       {processingFees > 0 && (

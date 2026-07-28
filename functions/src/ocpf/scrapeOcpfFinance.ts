@@ -13,7 +13,6 @@ import {
   MembersFinanceBreakdown,
   MembersFinanceCandidateFunds,
   MembersFinanceInKind,
-  MembersFinanceOtherReceipts,
   MembersFinanceYearData
 } from "./types"
 
@@ -84,9 +83,6 @@ interface MemberAccumulator {
     union: MutableBreakdownEntry
     unitemized: { amount: number }
   }
-  otherReceipts: {
-    nonContribution: MutableBreakdownEntry
-  }
   years: Record<
     string,
     {
@@ -150,7 +146,6 @@ function newAccumulator(cpfId: number): MemberAccumulator {
       union: emptyEntry(),
       unitemized: { amount: 0 }
     },
-    otherReceipts: { nonContribution: emptyEntry() },
     years: Object.fromEntries(YEARS.map(y => [y, yearInit()])),
     yearEndCheck: Object.fromEntries(YEARS.map(y => [y, null]))
   }
@@ -304,7 +299,6 @@ export const scrapeOcpfFinance = functions
         breakdown: acc.breakdown as MembersFinanceBreakdown,
         candidateFunds: acc.candidateFunds as MembersFinanceCandidateFunds,
         inKind: acc.inKind as MembersFinanceInKind,
-        otherReceipts: acc.otherReceipts as MembersFinanceOtherReceipts,
         years: Object.fromEntries(
           Object.entries(acc.years).map(([y, yd]) => [
             y,
@@ -600,8 +594,15 @@ function accumulateItem(
     case 203: // Union/Association Contribution
       addTo(acc.breakdown.union, yb?.union)
       break
-    case 204: // Non-contribution receipt
-      addTo(acc.otherReceipts.nonContribution)
+    case 204: // Non-contribution receipt (refunds, misc.) — not real fundraising.
+      // Bank Report Receipts_Total (summed into totalRaised in parseReports)
+      // includes this cash since it did hit the bank, but OCPF's own public
+      // "Receipts" figure nets it out. Subtract here, once identified, to
+      // match that definition. Verified empirically against ocpf.us: for
+      // CPF 16883 (Rausch), totalRaised minus this exact amount ($101.39)
+      // matched the site's displayed 2026 YTD Receipts to the penny.
+      acc.totalRaised -= amount
+      if (acc.years[year]) acc.years[year].totalRaised -= amount
       break
     case 206: // Candidate Loan
     case 331: // Out-of-pocket expense (as loan)
