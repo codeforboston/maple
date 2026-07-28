@@ -62,6 +62,8 @@ interface MemberAccumulator {
   totalSpent: number
   cashOnHand: number
   cashOnHandEndDateMs: number // End_Date (as ms) of the most recent Bank Report (type 70) seen
+  startBalance: number
+  startBalanceStartDateMs: number // Start_Date (as ms) of the earliest Bank Report (type 70) seen
   depositEndDateMs: number // End_Date (as ms) of the most recent Deposit Report (type 60) seen
   contributorCount: number
   breakdown: {
@@ -129,6 +131,8 @@ function newAccumulator(cpfId: number): MemberAccumulator {
     totalSpent: 0,
     cashOnHand: 0,
     cashOnHandEndDateMs: 0,
+    startBalance: 0,
+    startBalanceStartDateMs: Infinity,
     depositEndDateMs: 0,
     contributorCount: 0,
     breakdown: {
@@ -292,6 +296,7 @@ export const scrapeOcpfFinance = functions
         totalRaised: acc.totalRaised,
         totalSpent: acc.totalSpent,
         cashOnHand: acc.cashOnHand,
+        startBalance: acc.startBalance,
         contributorCount: acc.contributorCount,
         lastUpdated: now,
         bankDataAsOf: Timestamp.fromMillis(acc.cashOnHandEndDateMs),
@@ -341,7 +346,9 @@ const REPORT_COLUMN_ALIASES: Record<string, string[]> = {
   receiptsTotal: ["receipts_total"],
   receiptsUnitemizedTotal: ["receipts_unitemized_total"],
   expendituresTotal: ["expenditures_total"],
+  startBalance: ["start_balance"],
   endBalance: ["end_balance"],
+  startDate: ["start_date"],
   endDate: ["end_date"]
 }
 
@@ -413,6 +420,7 @@ async function parseReports(
     const receiptsUnitemized =
       parseFloat(col(cols, idx.receiptsUnitemizedTotal)) || 0
     const expendituresTotal = parseFloat(col(cols, idx.expendituresTotal)) || 0
+    const startBalance = parseFloat(col(cols, idx.startBalance)) || 0
     const endBalance = parseFloat(col(cols, idx.endBalance)) || 0
 
     let acc = accumulators.get(memberCode)
@@ -478,6 +486,14 @@ async function parseReports(
     if (reportTypeId === 70 && endDateMs > acc.cashOnHandEndDateMs) {
       acc.cashOnHand = endBalance
       acc.cashOnHandEndDateMs = endDateMs
+    }
+    // Start_Balance from the Bank Report with the earliest Start_Date, i.e. cash
+    // on hand at the start of the election cycle.
+    const startDate = col(cols, idx.startDate)
+    const startDateMs = startDate ? new Date(startDate).getTime() : Infinity
+    if (reportTypeId === 70 && startDateMs < acc.startBalanceStartDateMs) {
+      acc.startBalance = startBalance
+      acc.startBalanceStartDateMs = startDateMs
     }
     // Deposit Reports are filed more frequently than Bank Reports, so this
     // date is normally later — tracked to show readers why the Contributions
