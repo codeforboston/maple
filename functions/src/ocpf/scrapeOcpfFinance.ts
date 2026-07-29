@@ -13,7 +13,6 @@ import {
   MembersFinanceBreakdown,
   MembersFinanceCandidateFunds,
   MembersFinanceInKind,
-  MembersFinanceOtherReceipts,
   MembersFinanceYearData
 } from "./types"
 
@@ -37,6 +36,18 @@ const YEAR_END_REPORT_TYPE_IDS = new Set([
   113 // Year-End Report (Municipal)
 ])
 
+// Committee lifecycle reports: like Year-End reports, these roll up a date
+// range already covered by periodic Bank Reports (verified empirically —
+// CPF 16576's Dissolution Report exactly matched the sum of two Bank Reports
+// covering the same period, $1,583.64). Kept separate from
+// YEAR_END_REPORT_TYPE_IDS because their date range doesn't align to a
+// calendar year, so they shouldn't feed the yearEndCheck reconciliation.
+const LIFECYCLE_REPORT_TYPE_IDS = new Set([
+  12, // Dissolution Report
+  14, // Transition-Out Report
+  15 // Transition-In Report
+])
+
 // ── Accumulator types ─────────────────────────────────────────────────────────
 
 interface MutableBreakdownEntry {
@@ -50,6 +61,8 @@ interface MemberAccumulator {
   totalSpent: number
   cashOnHand: number
   cashOnHandEndDateMs: number // End_Date (as ms) of the most recent Bank Report (type 70) seen
+  startBalance: number
+  startBalanceStartDateMs: number // Start_Date (as ms) of the earliest Bank Report (type 70) seen
   depositEndDateMs: number // End_Date (as ms) of the most recent Deposit Report (type 60) seen
   contributorCount: number
   breakdown: {
@@ -69,9 +82,6 @@ interface MemberAccumulator {
     committee: MutableBreakdownEntry
     union: MutableBreakdownEntry
     unitemized: { amount: number }
-  }
-  otherReceipts: {
-    nonContribution: MutableBreakdownEntry
   }
   years: Record<
     string,
@@ -117,6 +127,8 @@ function newAccumulator(cpfId: number): MemberAccumulator {
     totalSpent: 0,
     cashOnHand: 0,
     cashOnHandEndDateMs: 0,
+    startBalance: 0,
+    startBalanceStartDateMs: Infinity,
     depositEndDateMs: 0,
     contributorCount: 0,
     breakdown: {
@@ -134,7 +146,6 @@ function newAccumulator(cpfId: number): MemberAccumulator {
       union: emptyEntry(),
       unitemized: { amount: 0 }
     },
-    otherReceipts: { nonContribution: emptyEntry() },
     years: Object.fromEntries(YEARS.map(y => [y, yearInit()])),
     yearEndCheck: Object.fromEntries(YEARS.map(y => [y, null]))
   }
@@ -280,6 +291,7 @@ export const scrapeOcpfFinance = functions
         totalRaised: acc.totalRaised,
         totalSpent: acc.totalSpent,
         cashOnHand: acc.cashOnHand,
+        startBalance: acc.startBalance,
         contributorCount: acc.contributorCount,
         lastUpdated: now,
         bankDataAsOf: Timestamp.fromMillis(acc.cashOnHandEndDateMs),
@@ -287,7 +299,6 @@ export const scrapeOcpfFinance = functions
         breakdown: acc.breakdown as MembersFinanceBreakdown,
         candidateFunds: acc.candidateFunds as MembersFinanceCandidateFunds,
         inKind: acc.inKind as MembersFinanceInKind,
-        otherReceipts: acc.otherReceipts as MembersFinanceOtherReceipts,
         years: Object.fromEntries(
           Object.entries(acc.years).map(([y, yd]) => [
             y,
@@ -329,7 +340,9 @@ const REPORT_COLUMN_ALIASES: Record<string, string[]> = {
   receiptsTotal: ["receipts_total"],
   receiptsUnitemizedTotal: ["receipts_unitemized_total"],
   expendituresTotal: ["expenditures_total"],
+  startBalance: ["start_balance"],
   endBalance: ["end_balance"],
+  startDate: ["start_date"],
   endDate: ["end_date"]
 }
 
@@ -401,6 +414,7 @@ async function parseReports(
     const receiptsUnitemized =
       parseFloat(col(cols, idx.receiptsUnitemizedTotal)) || 0
     const expendituresTotal = parseFloat(col(cols, idx.expendituresTotal)) || 0
+    const startBalance = parseFloat(col(cols, idx.startBalance)) || 0
     const endBalance = parseFloat(col(cols, idx.endBalance)) || 0
 
     let acc = accumulators.get(memberCode)
@@ -415,6 +429,13 @@ async function parseReports(
       if (acc.yearEndCheck[year] === null) {
         acc.yearEndCheck[year] = { receiptsTotal, expendituresTotal }
       }
+      matched++
+      continue
+    }
+
+    if (LIFECYCLE_REPORT_TYPE_IDS.has(reportTypeId)) {
+      // Dissolution/Transition rollup — same double-counting risk as Year-End,
+      // but not tied to a calendar year, so skipped without feeding yearEndCheck.
       matched++
       continue
     }
@@ -459,6 +480,14 @@ async function parseReports(
     if (reportTypeId === 70 && endDateMs > acc.cashOnHandEndDateMs) {
       acc.cashOnHand = endBalance
       acc.cashOnHandEndDateMs = endDateMs
+    }
+    // Start_Balance from the Bank Report with the earliest Start_Date, i.e. cash
+    // on hand at the start of the election cycle.
+    const startDate = col(cols, idx.startDate)
+    const startDateMs = startDate ? new Date(startDate).getTime() : Infinity
+    if (reportTypeId === 70 && startDateMs < acc.startBalanceStartDateMs) {
+      acc.startBalance = startBalance
+      acc.startBalanceStartDateMs = startDateMs
     }
     // Deposit Reports are filed more frequently than Bank Reports, so this
     // date is normally later — tracked to show readers why the Contributions
@@ -565,8 +594,15 @@ function accumulateItem(
     case 203: // Union/Association Contribution
       addTo(acc.breakdown.union, yb?.union)
       break
-    case 204: // Non-contribution receipt
-      addTo(acc.otherReceipts.nonContribution)
+    case 204: // Non-contribution receipt (refunds, misc.) — not real fundraising.
+      // Bank Report Receipts_Total (summed into totalRaised in parseReports)
+      // includes this cash since it did hit the bank, but OCPF's own public
+      // "Receipts" figure nets it out. Subtract here, once identified, to
+      // match that definition. Verified empirically against ocpf.us: for
+      // CPF 16883 (Rausch), totalRaised minus this exact amount ($101.39)
+      // matched the site's displayed 2026 YTD Receipts to the penny.
+      acc.totalRaised -= amount
+      if (acc.years[year]) acc.years[year].totalRaised -= amount
       break
     case 206: // Candidate Loan
     case 331: // Out-of-pocket expense (as loan)
@@ -590,7 +626,7 @@ function accumulateItem(
     case 319: // Payment-processor fee (see breakdown.processingFees doc comment)
       addTo(acc.breakdown.processingFees, yb?.processingFees)
       break
-    // 205 (Bank Interest) and 220 (Aggregated un-itemized) come from reports.txt, not items
+    // 205 (Bank Interest) and 220 (Aggregated un-itemized) totals sourced from reports.txt, not items
     default:
       break
   }

@@ -38,10 +38,6 @@ export interface MembersFinanceInKind {
   unitemized: { amount: number }
 }
 
-export interface MembersFinanceOtherReceipts {
-  nonContribution: FinanceBreakdownEntry
-}
-
 export interface MembersFinanceYearData {
   totalRaised: number
   totalSpent: number
@@ -65,7 +61,6 @@ export interface MembersFinance {
   breakdown: MembersFinanceBreakdown
   candidateFunds: MembersFinanceCandidateFunds
   inKind: MembersFinanceInKind
-  otherReceipts: MembersFinanceOtherReceipts
   years: Record<string, MembersFinanceYearData>
 }
 

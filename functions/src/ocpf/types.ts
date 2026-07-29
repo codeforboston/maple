@@ -62,10 +62,6 @@ export interface MembersFinanceInKind {
   unitemized: { amount: number } // type 420
 }
 
-export interface MembersFinanceOtherReceipts {
-  nonContribution: FinanceBreakdownEntry // type 204
-}
-
 export interface MembersFinanceYearData {
   totalRaised: number
   totalSpent: number
@@ -76,9 +72,16 @@ export interface MembersFinanceYearData {
 // Firestore: /generalCourts/{court}/membersFinance/{memberCode}
 export interface MembersFinance {
   ocpfCpfId: number
+  // Net receipts: Bank Report Receipts_Total, minus non-contribution
+  // receipts (type 204 — refunds/misc from Deposit Reports). Matches OCPF's own public
+  // "Receipts" definition.
   totalRaised: number
   totalSpent: number
   cashOnHand: number
+  // Start_Balance of the earliest Bank Report (type 70) in the tracked window,
+  // i.e. cash on hand at the start of the current election cycle.
+  // TODO: Surface this on the Finance tab.
+  startBalance: number
   contributorCount: number // count of type-201 rows (row = one itemized contribution)
   lastUpdated: FirebaseFirestore.Timestamp
   // End_Date of the most recent Bank Report (type 70) — the basis for totalRaised/cashOnHand.
@@ -90,6 +93,5 @@ export interface MembersFinance {
   breakdown: MembersFinanceBreakdown
   candidateFunds: MembersFinanceCandidateFunds
   inKind: MembersFinanceInKind
-  otherReceipts: MembersFinanceOtherReceipts
   years: Record<string, MembersFinanceYearData>
 }

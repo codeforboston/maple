@@ -20,7 +20,6 @@
     "electionCycleHeading": "{{year}} Election Cycle",
     "noContributions": "No itemized contributions recorded yet.",
     "noData": "Finance data not yet available for this legislator.",
-    "otherReceipts": "Other non-contribution receipts: {{amount}} (refunds and miscellaneous receipts — not included above)",
     "processingFees": "Category amounts above are shown before {{amount}} in payment-processing fees deducted, which is why they total more than \"Total Raised\" above.",
     "source": "Source: MA OCPF · ocpf.us",
     "sourceWithDate": "Source: MA OCPF · ocpf.us\nIncludes contributions through {{date}}",
