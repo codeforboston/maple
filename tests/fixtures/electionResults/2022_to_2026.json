@@ -1,0 +1,2267 @@
+[
+  {
+    "id": 171923,
+    "year": 2026,
+    "office": "State Senate",
+    "districts": "1st Middlesex",
+    "party": "General",
+    "special": true,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Vanna-Howard",
+      "https://electionstats.state.ma.us/candidates/view/Sam-S-Meas",
+      "https://electionstats.state.ma.us/candidates/view/Joe-Espinola"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Vanna Howard",
+          "votes": 4306,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Sam S. Meas",
+          "votes": 1699,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Joe Espinola",
+          "votes": 1379,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 16,
+      "blankVotes": 19,
+      "totalVotes": 7419
+    }
+  },
+  {
+    "id": 165325,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Berkshire, Hampden, Franklin & Hampshire",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Paul-W-Mark",
+      "https://electionstats.state.ma.us/candidates/view/David-A-Rosa"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Paul W. Mark",
+          "votes": 62249,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "David A. Rosa",
+          "votes": 25494,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 68,
+      "blankVotes": 7170,
+      "totalVotes": 94981
+    }
+  },
+  {
+    "id": 165464,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "First Plymouth & Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Patrick-A-OConnor"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Patrick A. O'Connor",
+          "votes": 82720,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 935,
+      "blankVotes": 25443,
+      "totalVotes": 109098
+    }
+  },
+  {
+    "id": 165393,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Hampden, Hampshire & Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jacob-R-Oliveira"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jacob R. Oliveira",
+          "votes": 68420,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1380,
+      "blankVotes": 25855,
+      "totalVotes": 95655
+    }
+  },
+  {
+    "id": 165448,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Norfolk & Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Cynthia-Stone-Creem"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Cynthia Stone Creem",
+          "votes": 68002,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 924,
+      "blankVotes": 22533,
+      "totalVotes": 91459
+    }
+  },
+  {
+    "id": 165439,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Norfolk, Plymouth & Bristol",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/William-J-Driscoll-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "William J. Driscoll, Jr",
+          "votes": 63145,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1010,
+      "blankVotes": 25835,
+      "totalVotes": 89990
+    }
+  },
+  {
+    "id": 165395,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Norfolk, Worcester & Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Rebecca-L-Rausch",
+      "https://electionstats.state.ma.us/candidates/view/Dashe-M-Videira"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Rebecca L. Rausch",
+          "votes": 57309,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Dashe M. Videira",
+          "votes": 39983,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 184,
+      "blankVotes": 7675,
+      "totalVotes": 105151
+    }
+  },
+  {
+    "id": 165382,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Second Plymouth & Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-D-Brady"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael D. Brady",
+          "votes": 55766,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 487,
+      "blankVotes": 17457,
+      "totalVotes": 73710
+    }
+  },
+  {
+    "id": 165398,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Third Bristol & Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Kelly-A-Dooner",
+      "https://electionstats.state.ma.us/candidates/view/Joseph-Richard-Pacheco",
+      "https://electionstats.state.ma.us/candidates/view/James-B-Dupont"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Kelly A. Dooner",
+          "votes": 45777,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Joseph Richard Pacheco",
+          "votes": 44137,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "James B. Dupont",
+          "votes": 4737,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 86,
+      "blankVotes": 6737,
+      "totalVotes": 101474
+    }
+  },
+  {
+    "id": 165405,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Worcester & Hampden",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Ryan-C-Fattman",
+      "https://electionstats.state.ma.us/candidates/view/Anthony-Jm-Allard"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Ryan C. Fattman",
+          "votes": 65438,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Anthony Jm Allard",
+          "votes": 33911,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 153,
+      "blankVotes": 4958,
+      "totalVotes": 104460
+    }
+  },
+  {
+    "id": 165388,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Worcester & Hampshire",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Peter-J-Durant",
+      "https://electionstats.state.ma.us/candidates/view/Sheila-H-Dibb"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Peter J. Durant",
+          "votes": 52465,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Sheila H. Dibb",
+          "votes": 37346,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 160,
+      "blankVotes": 4494,
+      "totalVotes": 94465
+    }
+  },
+  {
+    "id": 165376,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Bristol and Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Paul-R-Feeney",
+      "https://electionstats.state.ma.us/candidates/view/Laura-L-Saylor"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Paul R. Feeney",
+          "votes": 61252,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Laura L. Saylor",
+          "votes": 22661,
+          "writeIn": false,
+          "party": "Workers Party"
+        }
+      ],
+      "otherVotes": 432,
+      "blankVotes": 17348,
+      "totalVotes": 101693
+    }
+  },
+  {
+    "id": 165484,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "1st Bristol and Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-J-Rodrigues"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael J. Rodrigues",
+          "votes": 55377,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1346,
+      "blankVotes": 23986,
+      "totalVotes": 80709
+    }
+  },
+  {
+    "id": 165319,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "2nd Bristol and Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Mark-C-Montigny"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Mark C. Montigny",
+          "votes": 55918,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1229,
+      "blankVotes": 17198,
+      "totalVotes": 74345
+    }
+  },
+  {
+    "id": 165352,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Cape and Islands",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Julian-Andre-Cyr",
+      "https://electionstats.state.ma.us/candidates/view/Christopher-Robert-Lauzon",
+      "https://electionstats.state.ma.us/candidates/view/Joe-Van-Nes"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Julian Andre Cyr",
+          "votes": 64636,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Christopher Robert Lauzon",
+          "votes": 38893,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Joe Van Nes",
+          "votes": 2493,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 158,
+      "blankVotes": 4780,
+      "totalVotes": 110960
+    }
+  },
+  {
+    "id": 165497,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "1st Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Pavel-M-Payano"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Pavel M. Payano",
+          "votes": 39632,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1515,
+      "blankVotes": 12405,
+      "totalVotes": 53552
+    }
+  },
+  {
+    "id": 165402,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "2nd Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Joan-B-Lovely",
+      "https://electionstats.state.ma.us/candidates/view/Damian-Mitchell-Anketell"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Joan B. Lovely",
+          "votes": 58109,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Damian Mitchell Anketell",
+          "votes": 28813,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 86,
+      "blankVotes": 5937,
+      "totalVotes": 92945
+    }
+  },
+  {
+    "id": 165514,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "3rd Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Brendan-Peter-Crighton"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Brendan Peter Crighton",
+          "votes": 56430,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1277,
+      "blankVotes": 23058,
+      "totalVotes": 80765
+    }
+  },
+  {
+    "id": 165437,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "1st Essex and Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Bruce-E-Tarr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Bruce E. Tarr",
+          "votes": 88918,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 1112,
+      "blankVotes": 27172,
+      "totalVotes": 117202
+    }
+  },
+  {
+    "id": 165339,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "2nd Essex and Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Barry-R-Finegold"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Barry R. Finegold",
+          "votes": 73764,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1208,
+      "blankVotes": 30064,
+      "totalVotes": 105036
+    }
+  },
+  {
+    "id": 165462,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Hampden",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Adam-Gomez"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Adam Gomez",
+          "votes": 43211,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1340,
+      "blankVotes": 9751,
+      "totalVotes": 54302
+    }
+  },
+  {
+    "id": 165330,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Hampden and Hampshire",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/John-C-Velis"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "John C. Velis",
+          "votes": 62335,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 831,
+      "blankVotes": 19074,
+      "totalVotes": 82240
+    }
+  },
+  {
+    "id": 165345,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Hampshire, Franklin and Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jo-Comerford"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jo Comerford",
+          "votes": 67078,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 988,
+      "blankVotes": 16775,
+      "totalVotes": 84841
+    }
+  },
+  {
+    "id": 165473,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "1st Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Edward-J-Kennedy",
+      "https://electionstats.state.ma.us/candidates/view/Karla-J-Miller"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Edward J. Kennedy, Jr",
+          "votes": 40887,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Karla J. Miller",
+          "votes": 23422,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 147,
+      "blankVotes": 5757,
+      "totalVotes": 70213
+    }
+  },
+  {
+    "id": 165452,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "2nd Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Patricia-D-Jehlen"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Patricia D. Jehlen",
+          "votes": 72232,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1183,
+      "blankVotes": 17914,
+      "totalVotes": 91329
+    }
+  },
+  {
+    "id": 165391,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "3rd Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-J-Barrett"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael J. Barrett",
+          "votes": 65186,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 496,
+      "blankVotes": 23542,
+      "totalVotes": 89224
+    }
+  },
+  {
+    "id": 165356,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "4th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Cindy-F-Friedman"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Cindy F. Friedman",
+          "votes": 70460,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1235,
+      "blankVotes": 29256,
+      "totalVotes": 100951
+    }
+  },
+  {
+    "id": 165519,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "5th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jason-M-Lewis"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jason M. Lewis",
+          "votes": 63221,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1043,
+      "blankVotes": 29088,
+      "totalVotes": 93352
+    }
+  },
+  {
+    "id": 165369,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Middlesex and Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Karen-E-Spilka"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Karen E. Spilka",
+          "votes": 68762,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1223,
+      "blankVotes": 19595,
+      "totalVotes": 89580
+    }
+  },
+  {
+    "id": 165312,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Middlesex and Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/James-B-Eldridge"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "James B. Eldridge",
+          "votes": 75178,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 927,
+      "blankVotes": 24174,
+      "totalVotes": 100279
+    }
+  },
+  {
+    "id": 165431,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Middlesex and Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Sal-N-DiDomenico"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Sal N. DiDomenico",
+          "votes": 47113,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 736,
+      "blankVotes": 12594,
+      "totalVotes": 60443
+    }
+  },
+  {
+    "id": 165305,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Norfolk and Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/John-F-Keenan"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "John F. Keenan",
+          "votes": 61091,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1325,
+      "blankVotes": 20582,
+      "totalVotes": 82998
+    }
+  },
+  {
+    "id": 165432,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Norfolk and Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-F-Rush"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael F. Rush",
+          "votes": 72352,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1289,
+      "blankVotes": 27513,
+      "totalVotes": 101154
+    }
+  },
+  {
+    "id": 165436,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Plymouth and Barnstable",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Dylan-A-Fernandes",
+      "https://electionstats.state.ma.us/candidates/view/Mathew-J-Muratore"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Dylan A. Fernandes",
+          "votes": 59137,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Mathew J. Muratore",
+          "votes": 56335,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 107,
+      "blankVotes": 6412,
+      "totalVotes": 121991
+    }
+  },
+  {
+    "id": 165430,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "1st Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Nicholas-P-Collins"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Nicholas P. Collins",
+          "votes": 61127,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1437,
+      "blankVotes": 16251,
+      "totalVotes": 78815
+    }
+  },
+  {
+    "id": 165433,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "2nd Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Liz-Miranda"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Liz Miranda",
+          "votes": 52072,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 897,
+      "blankVotes": 9286,
+      "totalVotes": 62255
+    }
+  },
+  {
+    "id": 165434,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "3rd Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Lydia-Marie-Edwards",
+      "https://electionstats.state.ma.us/candidates/view/Jeannamarie-Tamas"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Lydia Marie Edwards",
+          "votes": 41690,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Jeannamarie Tamas",
+          "votes": 17681,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 281,
+      "blankVotes": 7865,
+      "totalVotes": 67517
+    }
+  },
+  {
+    "id": 165396,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Suffolk and Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/William-N-Brownsberger"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "William N. Brownsberger",
+          "votes": 56815,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 685,
+      "blankVotes": 14509,
+      "totalVotes": 72009
+    }
+  },
+  {
+    "id": 165362,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "Worcester and Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/John-J-Cronin",
+      "https://electionstats.state.ma.us/candidates/view/Nicholas-A-Pirro-III"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "John J. Cronin",
+          "votes": 50235,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Nicholas A. Pirro, III",
+          "votes": 34759,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 100,
+      "blankVotes": 4594,
+      "totalVotes": 89688
+    }
+  },
+  {
+    "id": 165400,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "1st Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Robyn-K-Kennedy"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Robyn K. Kennedy",
+          "votes": 49613,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1531,
+      "blankVotes": 13654,
+      "totalVotes": 64798
+    }
+  },
+  {
+    "id": 165378,
+    "year": 2024,
+    "office": "State Senate",
+    "districts": "2nd Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-O-Moore"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael O. Moore",
+          "votes": 59686,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1052,
+      "blankVotes": 16563,
+      "totalVotes": 77301
+    }
+  },
+  {
+    "id": 160410,
+    "year": 2023,
+    "office": "State Senate",
+    "districts": "Worcester & Hampshire",
+    "party": "General",
+    "special": true,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Peter-J-Durant",
+      "https://electionstats.state.ma.us/candidates/view/Jonathan-D-Zlotnik"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Peter J. Durant",
+          "votes": 12646,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Jonathan D. Zlotnik",
+          "votes": 10546,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 30,
+      "blankVotes": 90,
+      "totalVotes": 23312
+    }
+  },
+  {
+    "id": 154365,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "Berkshire, Hampden, Franklin & Hampshire",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Paul-W-Mark",
+      "https://electionstats.state.ma.us/candidates/view/Brendan-M-Phair"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Paul W. Mark",
+          "votes": 47989,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Brendan M. Phair",
+          "votes": 14806,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 139,
+      "blankVotes": 6306,
+      "totalVotes": 69240
+    }
+  },
+  {
+    "id": 154498,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "First Plymouth & Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Patrick-Michael-OConnor",
+      "https://electionstats.state.ma.us/candidates/view/Robert-William-Stephens-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Patrick Michael O'Connor",
+          "votes": 48668,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Robert William Stephens, Jr",
+          "votes": 31609,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 42,
+      "blankVotes": 2952,
+      "totalVotes": 83271
+    }
+  },
+  {
+    "id": 154431,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "Hampden, Hampshire & Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jacob-R-Oliveira",
+      "https://electionstats.state.ma.us/candidates/view/William-E-Johnson"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jacob R. Oliveira",
+          "votes": 37410,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "William E. Johnson",
+          "votes": 29027,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 31,
+      "blankVotes": 1681,
+      "totalVotes": 68149
+    }
+  },
+  {
+    "id": 154482,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "Norfolk & Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Cynthia-Stone-Creem"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Cynthia Stone Creem",
+          "votes": 55022,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 713,
+      "blankVotes": 15213,
+      "totalVotes": 70948
+    }
+  },
+  {
+    "id": 154473,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "Norfolk, Plymouth & Bristol",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Walter-F-Timilty-Jr",
+      "https://electionstats.state.ma.us/candidates/view/Brian-R-Muello"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Walter F. Timilty, Jr.",
+          "votes": 40311,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Brian R. Muello",
+          "votes": 20648,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 86,
+      "blankVotes": 2996,
+      "totalVotes": 64041
+    }
+  },
+  {
+    "id": 154433,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "Norfolk, Worcester & Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Rebecca-L-Rausch",
+      "https://electionstats.state.ma.us/candidates/view/Shawn-C-Dooley"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Rebecca L. Rausch",
+          "votes": 41893,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Shawn C. Dooley",
+          "votes": 34452,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 53,
+      "blankVotes": 1950,
+      "totalVotes": 78348
+    }
+  },
+  {
+    "id": 154419,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "Second Plymouth & Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-D-Brady",
+      "https://electionstats.state.ma.us/candidates/view/Jim-Gordon"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael D. Brady",
+          "votes": 29297,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Jim Gordon",
+          "votes": 16693,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 38,
+      "blankVotes": 1733,
+      "totalVotes": 47761
+    }
+  },
+  {
+    "id": 154436,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "Third Bristol & Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Marc-R-Pacheco",
+      "https://electionstats.state.ma.us/candidates/view/Maria-S-Collins"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Marc R. Pacheco",
+          "votes": 35556,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Maria S. Collins",
+          "votes": 29937,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 32,
+      "blankVotes": 2105,
+      "totalVotes": 67630
+    }
+  },
+  {
+    "id": 154442,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "Worcester & Hampden",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Ryan-C-Fattman"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Ryan C. Fattman",
+          "votes": 53456,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 833,
+      "blankVotes": 17109,
+      "totalVotes": 71398
+    }
+  },
+  {
+    "id": 154427,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "Worcester & Hampshire",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Anne-M-Gobi",
+      "https://electionstats.state.ma.us/candidates/view/James-Anthony-Amorello"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Anne M. Gobi",
+          "votes": 35409,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "James Anthony Amorello",
+          "votes": 29734,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 15,
+      "blankVotes": 1580,
+      "totalVotes": 66738
+    }
+  },
+  {
+    "id": 154413,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "Bristol and Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Paul-R-Feeney",
+      "https://electionstats.state.ma.us/candidates/view/Michael-Chaisson",
+      "https://electionstats.state.ma.us/candidates/view/Laura-L-Saylor"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Paul R. Feeney",
+          "votes": 40353,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Michael Chaisson",
+          "votes": 26221,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Laura L. Saylor",
+          "votes": 2168,
+          "writeIn": false,
+          "party": "Workers Party"
+        }
+      ],
+      "otherVotes": 17,
+      "blankVotes": 2733,
+      "totalVotes": 71492
+    }
+  },
+  {
+    "id": 154517,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "1st Bristol and Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-J-Rodrigues",
+      "https://electionstats.state.ma.us/candidates/view/Russell-T-Protentis"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael J. Rodrigues",
+          "votes": 29420,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Russell T. Protentis",
+          "votes": 21600,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 34,
+      "blankVotes": 1920,
+      "totalVotes": 52974
+    }
+  },
+  {
+    "id": 154359,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "2nd Bristol and Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Mark-C-Montigny"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Mark C. Montigny",
+          "votes": 35193,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1018,
+      "blankVotes": 12524,
+      "totalVotes": 48735
+    }
+  },
+  {
+    "id": 154391,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "Cape and Islands",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Julian-Andre-Cyr",
+      "https://electionstats.state.ma.us/candidates/view/Christopher-Robert-Lauzon"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Julian Andre Cyr",
+          "votes": 54714,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Christopher Robert Lauzon",
+          "votes": 31176,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 32,
+      "blankVotes": 1722,
+      "totalVotes": 87644
+    }
+  },
+  {
+    "id": 154530,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "1st Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Pavel-M-Payano"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Pavel M. Payano",
+          "votes": 21591,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1256,
+      "blankVotes": 8106,
+      "totalVotes": 30953
+    }
+  },
+  {
+    "id": 154440,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "2nd Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Joan-B-Lovely",
+      "https://electionstats.state.ma.us/candidates/view/Damian-M-Anketell"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Joan B. Lovely",
+          "votes": 44277,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Damian M. Anketell",
+          "votes": 21108,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 50,
+      "blankVotes": 2022,
+      "totalVotes": 67457
+    }
+  },
+  {
+    "id": 154548,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "3rd Essex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Brendan-P-Crighton",
+      "https://electionstats.state.ma.us/candidates/view/Annalisa-Salustri"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Brendan P. Crighton",
+          "votes": 34620,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Annalisa Salustri",
+          "votes": 13910,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 205,
+      "blankVotes": 7443,
+      "totalVotes": 56178
+    }
+  },
+  {
+    "id": 154471,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "1st Essex and Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Bruce-E-Tarr",
+      "https://electionstats.state.ma.us/candidates/view/Terence-William-Cudney"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Bruce E. Tarr",
+          "votes": 58838,
+          "writeIn": false,
+          "party": "Republican"
+        },
+        {
+          "name": "Terence William Cudney",
+          "votes": 23408,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 171,
+      "blankVotes": 7075,
+      "totalVotes": 89492
+    }
+  },
+  {
+    "id": 154378,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "2nd Essex and Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Barry-R-Finegold",
+      "https://electionstats.state.ma.us/candidates/view/SalvatorE-Paul-Defranco"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Barry R. Finegold",
+          "votes": 42932,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "SalvatorE Paul Defranco",
+          "votes": 31926,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 42,
+      "blankVotes": 1727,
+      "totalVotes": 76627
+    }
+  },
+  {
+    "id": 154496,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "Hampden",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Adam-Gomez"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Adam Gomez",
+          "votes": 23665,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 845,
+      "blankVotes": 5790,
+      "totalVotes": 30300
+    }
+  },
+  {
+    "id": 154370,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "Hampden and Hampshire",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/John-C-Velis",
+      "https://electionstats.state.ma.us/candidates/view/Cecilia-P-Calabrese"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "John C. Velis",
+          "votes": 37130,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Cecilia P. Calabrese",
+          "votes": 19388,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 77,
+      "blankVotes": 1244,
+      "totalVotes": 57839
+    }
+  },
+  {
+    "id": 154383,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "Hampshire, Franklin and Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jo-Comerford"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jo Comerford",
+          "votes": 51232,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1280,
+      "blankVotes": 11039,
+      "totalVotes": 63551
+    }
+  },
+  {
+    "id": 154507,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "1st Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Edward-J-Kennedy"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Edward J. Kennedy, Jr",
+          "votes": 32003,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 847,
+      "blankVotes": 12782,
+      "totalVotes": 45632
+    }
+  },
+  {
+    "id": 154486,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "2nd Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Patricia-D-Jehlen"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Patricia D. Jehlen",
+          "votes": 53866,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 439,
+      "blankVotes": 12403,
+      "totalVotes": 66708
+    }
+  },
+  {
+    "id": 154429,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "3rd Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-J-Barrett"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael J. Barrett",
+          "votes": 50728,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 672,
+      "blankVotes": 17403,
+      "totalVotes": 68803
+    }
+  },
+  {
+    "id": 154396,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "4th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Cindy-F-Friedman"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Cindy F. Friedman",
+          "votes": 54112,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1107,
+      "blankVotes": 21232,
+      "totalVotes": 76451
+    }
+  },
+  {
+    "id": 154553,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "5th Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Jason-M-Lewis",
+      "https://electionstats.state.ma.us/candidates/view/Edward-F-Dombroski-Jr"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Jason M. Lewis",
+          "votes": 42130,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Edward F. Dombroski, Jr",
+          "votes": 24104,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 63,
+      "blankVotes": 2625,
+      "totalVotes": 68922
+    }
+  },
+  {
+    "id": 154408,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "Middlesex and Norfolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Karen-E-Spilka"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Karen E. Spilka",
+          "votes": 52484,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 952,
+      "blankVotes": 14075,
+      "totalVotes": 67511
+    }
+  },
+  {
+    "id": 154350,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "Middlesex and Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/James-B-Eldridge",
+      "https://electionstats.state.ma.us/candidates/view/Anthony-Christakis"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "James B. Eldridge",
+          "votes": 51574,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Anthony Christakis",
+          "votes": 21819,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 44,
+      "blankVotes": 2528,
+      "totalVotes": 75965
+    }
+  },
+  {
+    "id": 154464,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "Middlesex and Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Sal-N-DiDomenico"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Sal N. DiDomenico",
+          "votes": 33355,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 395,
+      "blankVotes": 7831,
+      "totalVotes": 41581
+    }
+  },
+  {
+    "id": 154342,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "Norfolk and Plymouth",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/John-F-Keenan",
+      "https://electionstats.state.ma.us/candidates/view/Gary-M-Innes"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "John F. Keenan",
+          "votes": 36063,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Gary M. Innes",
+          "votes": 20586,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 38,
+      "blankVotes": 2248,
+      "totalVotes": 58935
+    }
+  },
+  {
+    "id": 154465,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "Norfolk and Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-F-Rush"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael F. Rush",
+          "votes": 54915,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1043,
+      "blankVotes": 19742,
+      "totalVotes": 75700
+    }
+  },
+  {
+    "id": 154470,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "Plymouth and Barnstable",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Susan-Lynn-Moran",
+      "https://electionstats.state.ma.us/candidates/view/Kari-Macrae"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Susan Lynn Moran",
+          "votes": 49686,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Kari Macrae",
+          "votes": 38493,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 39,
+      "blankVotes": 2832,
+      "totalVotes": 91050
+    }
+  },
+  {
+    "id": 154463,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "1st Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Nicholas-P-Collins"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Nicholas P. Collins",
+          "votes": 41069,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 929,
+      "blankVotes": 10482,
+      "totalVotes": 52480
+    }
+  },
+  {
+    "id": 154466,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "2nd Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Liz-Miranda"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Liz Miranda",
+          "votes": 35207,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 439,
+      "blankVotes": 5011,
+      "totalVotes": 40657
+    }
+  },
+  {
+    "id": 154467,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "3rd Suffolk",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Lydia-Marie-Edwards"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Lydia Marie Edwards",
+          "votes": 32396,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 1006,
+      "blankVotes": 11580,
+      "totalVotes": 44982
+    }
+  },
+  {
+    "id": 154434,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "Suffolk and Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/William-N-Brownsberger"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "William N. Brownsberger",
+          "votes": 42713,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 437,
+      "blankVotes": 9782,
+      "totalVotes": 52932
+    }
+  },
+  {
+    "id": 145908,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "1st Suffolk and Middlesex",
+    "party": "General",
+    "special": true,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Lydia-Marie-Edwards"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Lydia Marie Edwards",
+          "votes": 1764,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 95,
+      "blankVotes": 34,
+      "totalVotes": 1893
+    }
+  },
+  {
+    "id": 154402,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "Worcester and Middlesex",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/John-J-Cronin",
+      "https://electionstats.state.ma.us/candidates/view/Kenneth-B-Hoyt"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "John J. Cronin",
+          "votes": 36784,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Kenneth B. Hoyt",
+          "votes": 24238,
+          "writeIn": false,
+          "party": "Republican"
+        }
+      ],
+      "otherVotes": 35,
+      "blankVotes": 2232,
+      "totalVotes": 63289
+    }
+  },
+  {
+    "id": 154438,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "1st Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Robyn-K-Kennedy",
+      "https://electionstats.state.ma.us/candidates/view/Lisa-K-Mair"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Robyn K. Kennedy",
+          "votes": 30138,
+          "writeIn": false,
+          "party": "Democratic"
+        },
+        {
+          "name": "Lisa K. Mair",
+          "votes": 10805,
+          "writeIn": false
+        }
+      ],
+      "otherVotes": 456,
+      "blankVotes": 3318,
+      "totalVotes": 44717
+    }
+  },
+  {
+    "id": 154415,
+    "year": 2022,
+    "office": "State Senate",
+    "districts": "2nd Worcester",
+    "party": "General",
+    "special": false,
+    "candidateUrls": [
+      "https://electionstats.state.ma.us/candidates/view/Michael-O-Moore"
+    ],
+    "result": {
+      "candidates": [
+        {
+          "name": "Michael O. Moore",
+          "votes": 40946,
+          "writeIn": false,
+          "party": "Democratic"
+        }
+      ],
+      "otherVotes": 793,
+      "blankVotes": 12641,
+      "totalVotes": 54380
+    }
+  }
+]

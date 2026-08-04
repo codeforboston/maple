@@ -19,6 +19,7 @@ import {
   TabNavWrapper,
   TabType
 } from "components/EditProfilePage/StyledEditProfileComponents"
+import { MembersFinance } from "components/db/membersFinance"
 
 const tabCategory = [
   "priorities",
@@ -66,11 +67,17 @@ const TabNavItem = ({
 export function LegislatorTabs({
   district,
   districtLoading,
-  tabCategory
+  legislatorId,
+  name,
+  tabCategory,
+  finance
 }: {
   district?: District | undefined
   districtLoading?: boolean
+  legislatorId: string
+  name: string
   tabCategory?: TabCategories
+  finance?: MembersFinance
 }) {
   const { t } = useTranslation("legislators")
 
@@ -93,7 +100,7 @@ export function LegislatorTabs({
     {
       title: t("tabs.finance"),
       eventKey: "finance",
-      content: <FinanceTab />
+      content: <FinanceTab finance={finance} />
     },
     {
       title: t("tabs.district"),
@@ -103,7 +110,7 @@ export function LegislatorTabs({
     {
       title: t("tabs.testimony"),
       eventKey: "testimony",
-      content: <TestimonyTab />
+      content: <TestimonyTab legislatorId={legislatorId} name={name} />
     },
     {
       title: t("tabs.votes"),

@@ -138,9 +138,11 @@ export class HearingPostProcessor {
       | FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData>,
     {
       limit,
+      bucketName,
       refetch = false
     }: {
       limit?: number
+      bucketName?: string
       refetch?: boolean
     }
   ): Promise<boolean> {
@@ -185,7 +187,9 @@ export class HearingPostProcessor {
       videos = data.videos
     }
 
-    let nextVideos = await this.submitNextTranscription(eventId, videos)
+    let nextVideos = await this.submitNextTranscription(eventId, videos, {
+      bucketName
+    })
     count += 1
     if (!nextVideos) return false
     while (nextVideos) {
@@ -196,7 +200,9 @@ export class HearingPostProcessor {
       if (limit && count >= limit) {
         return true
       }
-      nextVideos = await this.submitNextTranscription(eventId, nextVideos)
+      nextVideos = await this.submitNextTranscription(eventId, nextVideos, {
+        bucketName
+      })
       count += 1
     }
     return true
@@ -204,7 +210,12 @@ export class HearingPostProcessor {
 
   async submitNextTranscription(
     eventId: number,
-    videos: Video[]
+    videos: Video[],
+    {
+      bucketName
+    }: {
+      bucketName?: string
+    } = {}
   ): Promise<Video[] | null> {
     const nextTranscription = videos.findIndex(item => !item.transcriptionId)
     if (nextTranscription < 0) {
@@ -212,7 +223,8 @@ export class HearingPostProcessor {
     }
     const result = await assemblyAI().submitTranscription({
       EventId: eventId,
-      videoUrl: videos[nextTranscription].url
+      videoUrl: videos[nextTranscription].url,
+      bucketName: bucketName
     })
     if (result.status === ("error" as const)) {
       functions.logger.error(`Error during ${result.type}: ${result.error}`)
