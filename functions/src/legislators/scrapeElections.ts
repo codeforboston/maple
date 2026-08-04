@@ -79,7 +79,7 @@ async function fetchElectionData(
     if (error.message.includes("Could not parse CSS stylesheet")) {
       return
     }
-    console.error(error)
+    logger.error(error)
   })
 
   const dom = new JSDOM(text, { virtualConsole })
@@ -102,7 +102,7 @@ async function fetchElectionData(
   headers.reverse()
   cells.reverse()
   headers.forEach((header, i) => {
-    const text = cells[i].textContent?.replace(/,/g, "").trim()
+    const text = cells[i]?.textContent?.replace(/,/g, "").trim()
     if (text && /^\d+$/.test(text)) {
       values.set(header, parseInt(text))
     }
