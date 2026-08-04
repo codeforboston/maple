@@ -2,6 +2,7 @@ import { Database } from "../types"
 import { UserRecord } from "firebase-admin/auth"
 import { TopicSubscription } from "./types"
 import { addTopicSubscription } from "./addTopicSubscription"
+import { logger } from "firebase-functions"
 
 export const subscribeToTestimonyTopic = async ({
   user,
@@ -40,6 +41,6 @@ export const subscribeToTestimonyTopic = async ({
     console.log("Debug: Subscription added successfully")
   } catch (error) {
     // Debug: Log any errors
-    console.error("Debug: Error in subscribeToOrgTopic", error)
+    logger.error("Debug: Error in subscribeToTestimonyTopic", error)
   }
 }

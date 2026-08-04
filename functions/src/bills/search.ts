@@ -2,6 +2,7 @@ import { isString } from "lodash"
 import { db } from "../firebase"
 import { createSearchIndexer } from "../search"
 import { Bill, BillTopic } from "./types"
+import { logger } from "firebase-functions"
 
 export const {
   syncToSearchIndex: syncBillToSearchIndex,
@@ -42,7 +43,7 @@ export const {
   convert: data => {
     const validation = Bill.validateWithDefaults(data)
     if (!validation.success) {
-      console.error(data, validation.message, validation.details)
+      logger.error(data, validation.message, validation.details)
     }
     const bill = Bill.checkWithDefaults(data)
 

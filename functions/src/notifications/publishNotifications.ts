@@ -112,7 +112,7 @@ export const publishNotifications = functions.firestore
       | undefined
 
     if (!topic) {
-      console.error("Invalid topic data:", topic)
+      functions.logger.error("Invalid topic data:", topic)
       return
     }
 
