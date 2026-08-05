@@ -8,6 +8,7 @@ import {
   CompleteTestimony,
   CreateTestimony,
   PanelCtaVariant,
+  PendingLegislator,
   PendingUpgrade,
   SignedOut,
   UnverifiedEmail
@@ -54,6 +55,8 @@ const Panel = ({ variant }: { variant: PanelCtaVariant }) => {
       return <CompleteTestimony variant={variant} />
     case "pendingUpgrade":
       return <PendingUpgrade variant={variant} />
+    case "pendingLegislator":
+      return <PendingLegislator variant={variant} />
     default:
       return <YourTestimony variant={variant} />
   }

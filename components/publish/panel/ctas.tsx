@@ -211,3 +211,30 @@ export const PendingUpgrade = ({
     <Cta title={t("panel.pendingUpgrade.title")} cta={cta} />
   )
 }
+
+export const PendingLegislator = ({
+  variant = "default"
+}: {
+  variant?: PanelCtaVariant
+}) => {
+  const { t } = useTranslation("testimony")
+  const cta = (
+    <Button
+      variant="primary"
+      disabled
+      className={
+        variant === "ballotQuestion"
+          ? "w-100 py-2 small fw-semibold"
+          : undefined
+      }
+    >
+      {t("panel.pendingLegislator.label")}
+    </Button>
+  )
+
+  return variant === "ballotQuestion" ? (
+    <CompactPanel title={t("panel.pendingLegislator.title")} cta={cta} />
+  ) : (
+    <Cta title={t("panel.pendingLegislator.title")} cta={cta} />
+  )
+}

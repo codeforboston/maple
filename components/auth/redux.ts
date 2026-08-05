@@ -9,6 +9,7 @@ export type AuthFlowStep =
   | "signIn"
   | "userSignUp"
   | "orgSignUp"
+  | "legislatorSignUp"
   | "forgotPassword"
   | "verifyEmail"
   | "chooseProfileType"

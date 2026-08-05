@@ -12,6 +12,7 @@ export type PanelStatus =
   | "published"
   | "editInProgress"
   | "pendingUpgrade"
+  | "pendingLegislator"
 
 /** What to display on the testimony panel on the bill detail page */
 export const usePanelStatus = (): PanelStatus => {
@@ -19,6 +20,7 @@ export const usePanelStatus = (): PanelStatus => {
   const { authenticated, user, claims } = useAuth()
   const loading = sync !== "synced"
   const isPendingUpgrade = claims?.role === "pendingUpgrade"
+  const isPendingLegislator = claims?.role === "pendingLegislator"
 
   if (!authenticated) {
     return "signedOut"
@@ -26,6 +28,8 @@ export const usePanelStatus = (): PanelStatus => {
     return "loading"
   } else if (isPendingUpgrade) {
     return "pendingUpgrade"
+  } else if (isPendingLegislator) {
+    return "pendingLegislator"
   } else if (!user?.emailVerified) {
     return "unverified"
   } else if (!draft && !publication) {

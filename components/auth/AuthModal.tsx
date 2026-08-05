@@ -1,6 +1,7 @@
 import SignInModal from "./SignInModal"
 import UserSignUpModal from "./UserSignUpModal"
 import OrgSignUpModal from "./OrgSignUpModal"
+import LegislatorSignUpModal from "./LegislatorSignUpModal"
 import StartModal from "./StartModal"
 import ForgotPasswordModal from "./ForgotPasswordModal"
 import VerifyEmailModal from "./VerifyEmailModal"
@@ -28,6 +29,7 @@ export default function AuthModal() {
         onHide={close}
         onIndividualUserClick={() => setCurrentModal("userSignUp")}
         onOrgUserClick={() => setCurrentModal("orgSignUp")}
+        onLegislatorUserClick={() => setCurrentModal("legislatorSignUp")}
       />
       <SignInModal
         show={currentModal === "signIn"}
@@ -41,6 +43,11 @@ export default function AuthModal() {
       />
       <OrgSignUpModal
         show={currentModal === "orgSignUp"}
+        onHide={close}
+        onSuccessfulSubmit={() => setCurrentModal("verifyEmail")}
+      />
+      <LegislatorSignUpModal
+        show={currentModal === "legislatorSignUp"}
         onHide={close}
         onSuccessfulSubmit={() => setCurrentModal("verifyEmail")}
       />

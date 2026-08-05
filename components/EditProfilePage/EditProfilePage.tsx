@@ -28,6 +28,7 @@ import { TestimoniesTab } from "./TestimoniesTab"
 import { useFlags } from "components/featureFlags"
 import LoginPage from "components/Login/Login"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
+import { PendingLegislatorBanner } from "components/PendingLegislatorBanner"
 import { FollowersTab } from "./FollowersTab"
 
 const tabTitle = ["about-you", "testimonies", "following", "followers"] as const
@@ -114,6 +115,7 @@ export function EditProfileForm({
 
   const { claims, user } = useAuth()
   const isPendingUpgrade = claims?.role === "pendingUpgrade"
+  const isPendingLegislator = claims?.role === "pendingLegislator"
 
   isOrg = isOrg || isPendingUpgrade
 
@@ -175,6 +177,7 @@ export function EditProfileForm({
   return (
     <>
       {isPendingUpgrade && <PendingUpgradeBanner />}
+      {isPendingLegislator && <PendingLegislatorBanner />}
 
       <Container>
         <EditProfileHeader
