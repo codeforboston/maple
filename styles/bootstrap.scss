@@ -367,6 +367,58 @@ $utilities: (
   --maple-color-gray-subtle-border: #{$maple-color-gray-subtle-border};
 }
 
+// -----------------------------------------------------------------------------
+// Alternate skin: Digital Democracy.
+//
+// An experiment, off by default. Nothing above changes value; this block only
+// overrides custom properties, the same way Bootstrap 5.3's own `data-bs-theme`
+// works. Switch it in Storybook's toolbar, or set the attribute by hand:
+//
+//   <html data-maple-theme="dd">
+//
+// What it borrows is surface and shape, not hue. MAPLE stays blue. Type is
+// deliberately untouched: the CalMatters and Honolulu Civil Beat editions of
+// Digital Democracy use different typefaces, so type is not part of what the
+// two share.
+// -----------------------------------------------------------------------------
+
+[data-maple-theme="dd"] {
+  // Surfaces. A near-white page instead of the warm mid-grey, so white cards
+  // read as raised without needing a shadow.
+  --maple-surface-page: #f7f7f7;
+  --maple-surface-base: #ffffff;
+  --maple-surface-muted: #fafafa;
+
+  // Borders do the work the shadows used to.
+  --maple-surface-border: rgba(15, 23, 42, 0.12);
+  --maple-border-default: rgba(15, 23, 42, 0.14);
+
+  // Shape. Near-square, 2 to 6px rather than 4 to 16. The pill is left alone,
+  // since a half-rounded pill is just a bad rectangle.
+  --maple-radius-sm: 2px;
+  --maple-radius-md: 3px;
+  --maple-radius-lg: 4px;
+  --maple-radius-xl: 6px;
+
+  // Shadow. Almost gone. Kept faintly on hover so interactive things still
+  // signal that they are interactive.
+  --maple-shadow-sm: none;
+  --maple-shadow-md: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --maple-shadow-hover: 0 2px 6px rgba(15, 23, 42, 0.1);
+
+  // Accent moves from orange toward gold. The blues are untouched.
+  --maple-brand-accent: #e5b93c;
+
+  // Bootstrap's own runtime layer, so components styled by Bootstrap classes
+  // follow the skin instead of staying behind.
+  --bs-body-bg: #f7f7f7;
+  --bs-border-color: rgba(15, 23, 42, 0.14);
+  --bs-border-radius-sm: 2px;
+  --bs-border-radius: 3px;
+  --bs-border-radius-lg: 4px;
+  --bs-border-radius-xl: 6px;
+}
+
 .btn {
   --bs-btn-border-radius: var(--maple-radius-md);
   --bs-btn-focus-box-shadow: 0 0 0 0.25rem var(--maple-focus-ring);
