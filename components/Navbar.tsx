@@ -33,7 +33,7 @@ import {
 } from "./NavbarComponents"
 
 const MobileCollapse = styled(Navbar.Collapse)`
-  background-color: var(--maple-brand-primary);
+  background-color: var(--maple-navbar-bg);
 `
 
 export const MainNavbar: React.FC<React.PropsWithChildren<unknown>> = () => {
@@ -129,7 +129,7 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   return (
     <Navbar
       className={`main-navbar w-100 ${isExpanded ? "pb-0" : ""}`}
-      style={{ backgroundColor: "var(--maple-brand-primary)" }}
+      style={{ backgroundColor: "var(--maple-navbar-bg)" }}
       data-bs-theme="dark"
       expand="lg"
       expanded={isExpanded}
@@ -207,106 +207,119 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
     <Container
       fluid
       className={`main-navbar desktop-navbar d-flex py-2 sticky-top justify-content-end gap-2`}
-      style={{ backgroundColor: "var(--maple-brand-primary)" }}
+      style={{ backgroundColor: "var(--maple-navbar-bg)" }}
     >
-      <div className={`me-auto`}>
-        <NavbarLinkLogo />
-      </div>
-
-      <div className={`align-self-center`}>
-        <NavbarLinkBills />
-      </div>
-
-      {flags().ballotQuestions ? (
-        <div className={`align-self-center`}>
-          <NavbarLinkBallotQuestions />
+      {/* Logo, nav items and the sign-in action share one container, so the
+          Digital Democracy skin can seat the whole lot on its own surface and
+          leave the bar itself transparent. */}
+      <div className={`desktop-navbar-bar align-items-center d-flex gap-2`}>
+        <div className={`me-auto`}>
+          <NavbarLinkLogo />
         </div>
-      ) : null}
 
-      {flags().hearingsAndTranscriptions ? (
-        <div className={`align-self-center`}>
-          <NavbarLinkHearings />
+        <div className={`desktop-navbar-items align-items-center d-flex gap-2`}>
+          <div className={`align-self-center`}>
+            <NavbarLinkBills />
+          </div>
+
+          {flags().ballotQuestions ? (
+            <div className={`align-self-center`}>
+              <NavbarLinkBallotQuestions />
+            </div>
+          ) : null}
+
+          {flags().hearingsAndTranscriptions ? (
+            <div className={`align-self-center`}>
+              <NavbarLinkHearings />
+            </div>
+          ) : (
+            <></>
+          )}
+
+          <div className="align-self-center">
+            <NavbarLinkTestimony />
+          </div>
+
+          {authenticated ? (
+            <div className="align-self-center">
+              <NavbarLinkNewsfeed />
+            </div>
+          ) : (
+            <></>
+          )}
+
+          <div className={`align-self-center`}>
+            <Dropdown>
+              <Dropdown.Toggle
+                variant="light"
+                className={`${DESKTOP_NAV_ITEM_CLASS}`}
+              >
+                {t("about")}
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <NavbarLinkGoals />
+                <NavbarLinkTeam />
+                <NavbarLinkSupport />
+                <NavbarLinkInTheNews />
+                <NavbarLinkFAQ />
+                <NavbarLinkAI />
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+
+          <div className={`align-self-center`}>
+            <Dropdown>
+              <Dropdown.Toggle
+                variant="light"
+                className={`${DESKTOP_NAV_ITEM_CLASS}`}
+              >
+                {t("learn")}
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <NavbarLinkEffective />
+                <NavbarLinkWritingTestimony />
+                <NavbarLinkProcess />
+                <NavbarLinkWhyUse />
+                <NavbarLinkAiTools />
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+
+          {authenticated ? (
+            <div className={`align-self-center`}>
+              <Dropdown>
+                <Dropdown.Toggle
+                  variant="light"
+                  className={`desktop-navbar-dropdown`}
+                >
+                  <Avatar />
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <NavbarLinkViewProfile dropdown />
+                  <NavbarLinkEditProfile
+                    dropdown
+                    tab={"navigation.editProfile"}
+                  />
+                  <NavbarLinkEditProfile
+                    dropdown
+                    tab={"navigation.followingTab"}
+                  />
+                  <NavbarLinkSignOut
+                    dropdown
+                    handleClick={() => {
+                      void signOutAndRedirectToHome()
+                    }}
+                  />
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+          ) : (
+            <div className={`align-self-center`}>
+              <SignInWithButton />
+            </div>
+          )}
         </div>
-      ) : (
-        <></>
-      )}
-
-      <div className="align-self-center">
-        <NavbarLinkTestimony />
       </div>
-
-      {authenticated ? (
-        <div className="align-self-center">
-          <NavbarLinkNewsfeed />
-        </div>
-      ) : (
-        <></>
-      )}
-
-      <div className={`align-self-center`}>
-        <Dropdown>
-          <Dropdown.Toggle
-            variant="light"
-            className={`${DESKTOP_NAV_ITEM_CLASS}`}
-          >
-            {t("about")}
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <NavbarLinkGoals />
-            <NavbarLinkTeam />
-            <NavbarLinkSupport />
-            <NavbarLinkInTheNews />
-            <NavbarLinkFAQ />
-            <NavbarLinkAI />
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
-
-      <div className={`align-self-center`}>
-        <Dropdown>
-          <Dropdown.Toggle
-            variant="light"
-            className={`${DESKTOP_NAV_ITEM_CLASS}`}
-          >
-            {t("learn")}
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <NavbarLinkEffective />
-            <NavbarLinkWritingTestimony />
-            <NavbarLinkProcess />
-            <NavbarLinkWhyUse />
-            <NavbarLinkAiTools />
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
-
-      {authenticated ? (
-        <div className={`align-self-center`}>
-          <Dropdown>
-            <Dropdown.Toggle
-              variant="light"
-              className={`desktop-navbar-dropdown`}
-            >
-              <Avatar />
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <NavbarLinkViewProfile dropdown />
-              <NavbarLinkEditProfile dropdown tab={"navigation.editProfile"} />
-              <NavbarLinkEditProfile dropdown tab={"navigation.followingTab"} />
-              <NavbarLinkSignOut
-                dropdown
-                handleClick={() => {
-                  void signOutAndRedirectToHome()
-                }}
-              />
-            </Dropdown.Menu>
-          </Dropdown>
-        </div>
-      ) : (
-        <div className={`align-self-center`}>
-          <SignInWithButton />
-        </div>
-      )}
     </Container>
   )
 }

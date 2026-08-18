@@ -48,7 +48,7 @@ const RailWrapper = styled.div`
   position: sticky;
   /* Desktop: measured at runtime to sit below the sticky navbar (see the
      nav-offset effect). Falls back to a sensible constant before first paint. */
-  top: var(--maple-navbar-height, 6rem);
+  top: var(--maple-navbar-sticky-offset, 6rem);
   z-index: 2;
   margin-inline: -2rem;
   padding: 0.5rem 2rem 1rem;
@@ -191,7 +191,7 @@ const RailNode = styled.li`
 `
 
 const HeaderAnchor = styled.div`
-  scroll-margin-top: calc(var(--maple-navbar-height) + 0.75rem);
+  scroll-margin-top: calc(var(--maple-navbar-sticky-offset) + 0.75rem);
 `
 
 const StickyScope = styled.div`
@@ -214,7 +214,7 @@ const Row = styled.div`
      when they align to the top, and keep a little air when they align to the
      bottom (scrollIntoView block: "nearest"). */
   scroll-margin-top: calc(
-    var(--maple-navbar-height) + var(--learn-rail-height, 10rem) + 1rem
+    var(--maple-navbar-sticky-offset) + var(--learn-rail-height, 10rem) + 1rem
   );
   scroll-margin-bottom: 1rem;
 `

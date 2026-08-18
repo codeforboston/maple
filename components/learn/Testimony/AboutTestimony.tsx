@@ -176,7 +176,7 @@ const Panel = styled.div`
 
   /* Deep-link targets: stop short of the sticky navbar rather than under it. */
   &#${ANCHORS.role}, &#${ANCHORS.communicating} {
-    scroll-margin-top: calc(var(--maple-navbar-height) + 1rem);
+    scroll-margin-top: calc(var(--maple-navbar-sticky-offset) + 1rem);
   }
 
   .head {

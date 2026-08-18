@@ -1,5 +1,5 @@
 import { PropsWithChildren } from "react"
-import styled from "styled-components"
+import styled, { createGlobalStyle } from "styled-components"
 
 type Width = "narrow" | "medium" | "wide"
 
@@ -8,6 +8,15 @@ const maxWidths: Record<Width, string> = {
   medium: "56rem", // 896px — testimony page
   wide: "64rem" // 1024px — hub
 }
+
+/* The navbar is a sibling above this wrapper, so a background painted here can
+   never reach the strip the header occupies. Setting it on the body instead
+   means the whole page, header included, sits on the section's ground. */
+const LearnGround = createGlobalStyle`
+  [data-maple-theme="dd"] body {
+    background-color: var(--maple-surface-learn);
+  }
+`
 
 const Page = styled.div`
   background-color: var(--maple-surface-learn);
@@ -33,9 +42,12 @@ export const LearnLayout = ({
   width = "medium",
   children
 }: PropsWithChildren<{ width?: Width }>) => (
-  <Page>
-    <Inner $width={width}>{children}</Inner>
-  </Page>
+  <>
+    <LearnGround />
+    <Page>
+      <Inner $width={width}>{children}</Inner>
+    </Page>
+  </>
 )
 
 export default LearnLayout

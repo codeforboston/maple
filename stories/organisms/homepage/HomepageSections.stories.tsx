@@ -4,6 +4,7 @@ import ExplainerSection from "components/homepage/ExplainerSection"
 import FeaturesSection from "components/homepage/FeaturesSection"
 import { HearingsSectionContent } from "components/homepage/HearingsSection"
 import HeroSection from "components/homepage/HeroSection"
+import TopicsSection from "components/homepage/TopicsSection"
 
 const meta: Meta = {
   title: "Organisms/Homepage/Sections"
@@ -15,6 +16,10 @@ type Story = StoryObj
 
 export const Hero: Story = {
   render: () => <HeroSection />
+}
+
+export const Topics: Story = {
+  render: () => <TopicsSection />
 }
 
 export const DidYouKnow: Story = {

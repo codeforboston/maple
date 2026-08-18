@@ -47,6 +47,11 @@ $maple-brand-dark: #0b0a3e;
 $maple-brand-senate: #a92929;
 $maple-brand-stage-past: #8ebc81;
 
+// The navbar sets its background with an inline style in two places, which no
+// stylesheet can override. Pointing that inline value at a variable puts the
+// colour back under the theme's control.
+$maple-navbar-bg: $maple-brand-primary;
+
 // Text
 $maple-text-strong: #1e293b;
 $maple-text-body: #334155;
@@ -154,6 +159,14 @@ $maple-color-gray-subtle-bg: #f1f5f9;
 $maple-color-gray-subtle-text: #475569;
 $maple-color-gray-subtle-border: #d7e0ea;
 
+$maple-color-amber-subtle-bg: #fdf3e0;
+$maple-color-amber-subtle-text: #7a4c10;
+$maple-color-amber-subtle-border: #f3ddb4;
+
+$maple-color-purple-subtle-bg: #efeafb;
+$maple-color-purple-subtle-text: #4c2f8a;
+$maple-color-purple-subtle-border: #ddd2f4;
+
 // Ballot question status palettes — aliases of the semantic color palette
 $maple-status-expectedonballot-bg: $maple-color-blue-subtle-bg;
 $maple-status-expectedonballot-text: $maple-color-blue-subtle-text;
@@ -245,7 +258,7 @@ $utilities: (
 
 // Import fonts using the default bootstrap weights.
 // Lexend is the display face for the Learn section headings; Nunito remains the body face.
-@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Lexend:wght@400;600;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Lexend:wght@300;400;500;600;700;900&display=swap");
 
 :root {
   --bs-blue-100: #{$blue-100};
@@ -260,11 +273,17 @@ $utilities: (
   // and section rows use it for scroll-margin so smooth-scroll targets clear it.
   --maple-navbar-height: 4.5rem;
 
+  // How far a pinned element must sit below the top of the viewport to clear
+  // the navbar. Same as the navbar height while the bar is sticky; zero when
+  // it is not, so nothing reserves space for a header that scrolls away.
+  --maple-navbar-sticky-offset: var(--maple-navbar-height);
+
   // Maple design tokens — emitted from the SCSS variables defined above so
   // the compile-time (Bootstrap) and runtime (app components) layers stay
   // structurally linked. Edit the SCSS variable, not the custom property.
   --maple-nav-link-color: #{$maple-nav-link-color};
   --maple-nav-link-color-active: #{$maple-nav-link-color-active};
+  --maple-navbar-bg: #{$maple-navbar-bg};
 
   --maple-brand-primary: #{$maple-brand-primary};
   --maple-brand-primary-strong: #{$maple-brand-primary-strong};
@@ -365,6 +384,13 @@ $utilities: (
   --maple-color-gray-subtle-bg: #{$maple-color-gray-subtle-bg};
   --maple-color-gray-subtle-text: #{$maple-color-gray-subtle-text};
   --maple-color-gray-subtle-border: #{$maple-color-gray-subtle-border};
+
+  --maple-color-amber-subtle-bg: #{$maple-color-amber-subtle-bg};
+  --maple-color-amber-subtle-text: #{$maple-color-amber-subtle-text};
+  --maple-color-amber-subtle-border: #{$maple-color-amber-subtle-border};
+  --maple-color-purple-subtle-bg: #{$maple-color-purple-subtle-bg};
+  --maple-color-purple-subtle-text: #{$maple-color-purple-subtle-text};
+  --maple-color-purple-subtle-border: #{$maple-color-purple-subtle-border};
 }
 
 // -----------------------------------------------------------------------------
@@ -408,6 +434,31 @@ $utilities: (
 
   // Accent moves from orange toward gold. The blues are untouched.
   --maple-brand-accent: #e5b93c;
+
+  // The bar is a transparent gutter; the white surface belongs to the container
+  // inside it. Its ink inverts to suit; the logo swaps asset rather than
+  // recolouring, in components/NavbarComponents.tsx.
+  --maple-navbar-bg: transparent;
+
+  // Anything pulled up behind the navbar uses this, so it has to match the bar's
+  // whole footprint or a strip of body colour shows above the page's own
+  // ground. Here that is 1rem margin + 1rem padding + 48px of content + 1rem
+  // padding + 1rem margin.
+  --maple-navbar-height: 7rem;
+  // The bar is not pinned in this skin, so nothing should reserve space for it.
+  --maple-navbar-sticky-offset: 0px;
+
+  // Lexend everywhere, not just the headings. Bootstrap emits its body face as
+  // a runtime custom property, so this reaches every component that inherits
+  // it. Four places hardcode Nunito and will not follow: AboutPagesCard,
+  // HistoryTable, and three rules in globals.css.
+  --bs-font-sans-serif: "Lexend", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+
+  // Buttons run smaller in this skin.
+  --bs-btn-padding-x: 0.85rem;
+  --bs-btn-padding-y: 0.3rem;
+  --bs-btn-font-size: 0.875rem;
 
   // Bootstrap's own runtime layer, so components styled by Bootstrap classes
   // follow the skin instead of staying behind.

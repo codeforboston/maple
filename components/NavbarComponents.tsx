@@ -316,10 +316,20 @@ export const NavbarLinkLogo: React.FC<
       onClick={handleClick}
     >
       <NavLink className={isMobile ? "" : "py-0 px-2"} href="/" {...other}>
+        {/* Two assets rather than one recoloured asset: the logo is a flat
+            silhouette with the colour baked in. CSS picks which is visible, so
+            the choice stays with the theme. */}
         <Image
           src="/maple-logo-white-no-tagline.svg"
           alt={t("navigation.logo")}
-          className={isMobile ? "w-100" : ""}
+          className={`navbar-logo navbar-logo-light ${isMobile ? "w-100" : ""}`}
+          width={isMobile ? "60" : "80"}
+          height={isMobile ? "60" : "80"}
+        />
+        <Image
+          src="/logo-long.svg"
+          alt={t("navigation.logo")}
+          className={`navbar-logo navbar-logo-dark ${isMobile ? "w-100" : ""}`}
           width={isMobile ? "60" : "80"}
           height={isMobile ? "60" : "80"}
         />

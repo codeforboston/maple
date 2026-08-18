@@ -605,3 +605,152 @@
 .finance-spending-group {
   background-color: var(--maple-surface-page, #f4f5f7);
 }
+
+/* ---------------------------------------------------------------------------
+   Digital Democracy skin: navbar.
+
+   The navbar is a solid brand-blue band with a white logo and white links. On
+   a white band none of that is legible, so the ink inverts. Scoped to the skin
+   attribute; the current MAPLE navbar is untouched.
+   --------------------------------------------------------------------------- */
+
+/* Default: the light logo shows, the navy one is not rendered. */
+.navbar-logo-dark {
+  display: none;
+}
+
+[data-maple-theme="dd"] .navbar-logo-light {
+  display: none;
+}
+
+[data-maple-theme="dd"] .navbar-logo-dark {
+  display: inline-block;
+}
+
+/* No border: the navbar and the hero share a surface and should read as one
+   band, the way the Civil Beat header does. */
+
+/* Red is reserved for one deliberate call to action, not the default button.
+   $primary compiles to red at build time, so this reaches past that. */
+[data-maple-theme="dd"] .btn-primary {
+  --bs-btn-bg: var(--maple-brand-primary);
+  --bs-btn-border-color: var(--maple-brand-primary);
+  --bs-btn-hover-bg: var(--maple-brand-primary-strong);
+  --bs-btn-hover-border-color: var(--maple-brand-primary-strong);
+  --bs-btn-active-bg: var(--maple-brand-primary-strong);
+  --bs-btn-active-border-color: var(--maple-brand-primary-strong);
+  --bs-btn-disabled-bg: var(--maple-brand-primary);
+  --bs-btn-disabled-border-color: var(--maple-brand-primary);
+}
+
+/* The desktop navbar carries data-bs-theme="dark", which drives Bootstrap's
+   own link colours. Point those at the skin's ink instead. */
+[data-maple-theme="dd"] .main-navbar .nav-link,
+[data-maple-theme="dd"] .main-navbar .navbar-nav .nav-link {
+  color: var(--maple-text-body);
+}
+
+[data-maple-theme="dd"] .main-navbar .nav-link:hover,
+[data-maple-theme="dd"] .main-navbar .nav-link:focus,
+[data-maple-theme="dd"] .main-navbar .navbar-nav .nav-link.active {
+  color: var(--maple-brand-primary);
+}
+
+[data-maple-theme="dd"] .main-navbar .navbar-toggler-icon {
+  filter: invert(1);
+}
+
+/* HighContrastButton and OutlineButton attach .btn-hover-* automatically, and
+   that class sets the resting background to white, not just the hover one. On
+   a white page those buttons disappear. Give them the skin's surface and a
+   visible edge so they read as buttons at rest. */
+[data-maple-theme="dd"] .btn-hover-primary,
+[data-maple-theme="dd"] .btn-hover-secondary,
+[data-maple-theme="dd"] .btn-active-outline-primary,
+[data-maple-theme="dd"] .btn-active-outline-secondary {
+  --bs-btn-bg: var(--maple-surface-base);
+  --bs-btn-border-color: var(--maple-surface-border);
+  --bs-btn-color: var(--maple-brand-primary);
+  --bs-btn-hover-bg: var(--maple-brand-primary);
+  --bs-btn-hover-color: var(--maple-text-inverse);
+  --bs-btn-hover-border-color: var(--maple-brand-primary);
+}
+
+/* The circular logo needs no border radius from the skin. */
+[data-maple-theme="dd"] .navbar-logo-dark {
+  border-radius: 50%;
+}
+
+/* .desktop-navbar-link forces white with !important, which was correct on a
+   blue band and invisible on a light one. The hover wash is white-alpha for
+   the same reason, so it inverts to dark-alpha here. */
+[data-maple-theme="dd"] .desktop-navbar-link,
+[data-maple-theme="dd"] .desktop-navbar-dropdown,
+[data-maple-theme="dd"] .desktop-navbar-dropdown .dropdown-toggle {
+  color: var(--maple-text-strong) !important;
+}
+
+[data-maple-theme="dd"] .desktop-navbar-link:hover,
+[data-maple-theme="dd"] .desktop-navbar-link:focus-visible {
+  color: var(--maple-brand-primary) !important;
+  background-color: rgba(15, 23, 42, 0.06) !important;
+}
+
+[data-maple-theme="dd"] .desktop-navbar-dropdown.btn {
+  --bs-btn-color: var(--maple-text-strong);
+  --bs-btn-hover-color: var(--maple-brand-primary);
+  --bs-btn-hover-bg: rgba(15, 23, 42, 0.06);
+  --bs-btn-active-color: var(--maple-brand-primary);
+  --bs-btn-active-bg: rgba(15, 23, 42, 0.06);
+}
+
+[data-maple-theme="dd"] .navbar-logo-dark {
+  border-radius: 0;
+  width: auto;
+  /* Taller than the bar and overhanging it evenly, so the mark breaks the band
+     top and bottom rather than sitting inside it. The negative margins are
+     symmetrical, which keeps the bar's own height unchanged. */
+  height: 76px;
+  margin-top: -20px;
+  margin-bottom: -20px;
+  position: relative;
+  z-index: 3;
+}
+
+/* Nothing in the header may clip the overhang. */
+[data-maple-theme="dd"] .main-navbar,
+[data-maple-theme="dd"] .main-navbar .nav-link {
+  overflow: visible;
+}
+
+/* maple-logo-navy.svg is the existing white logo recoloured, so it carries a
+   real alpha channel and needs no blend trick. */
+
+/* The nav items and sign-in action sit on their own white surface, floating on
+   the transparent header, so they stay legible over whatever the hero artwork
+   puts behind them. */
+/* The container only groups the nav items and the sign-in action; it carries
+   no surface of its own. */
+
+/* The bar itself carries the breathing room instead of the container, so the
+   white block reads as thin and floating rather than as a full-height strip. */
+/* The bar itself is a transparent gutter: it stays in normal flow so nothing
+   slides underneath it, and the surface belongs to the container inside. */
+[data-maple-theme="dd"] .main-navbar.desktop-navbar {
+  padding: 1.5rem 0 !important;
+  /* Not pinned in this skin: the bar scrolls away with the page. Anything that
+     reserved space beneath a pinned navbar has to stop doing so, see the
+     sticky rail on /learn/legislative-process. */
+  position: static !important;
+}
+
+/* Logo and nav items sit together on this. */
+[data-maple-theme="dd"] .desktop-navbar-bar {
+  background-color: transparent;
+  /* The same content column the page body uses (.sectionShell), so the logo
+     and the nav line up with everything below them while the bar itself stays
+     full-bleed. */
+  width: min(1660px, calc(100% - 3rem));
+  margin: 0 auto;
+  padding: 0.4rem 0;
+}
