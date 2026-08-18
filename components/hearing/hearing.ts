@@ -170,3 +170,72 @@ export function toVTT(transcriptData: Paragraph[]): string {
 
   return vttLines.join("\n")
 }
+
+export interface CommitteeRecommendation {
+  Action?: string
+  FiscalAmounts?: FiscalAmount[]
+  Committee?: Committee
+  Votes?: CommitteeVote[]
+}
+
+export interface FiscalAmount {
+  FiscalType?: string
+  Amount?: string
+}
+
+export interface Committee {
+  CommitteeCode?: string
+  GeneralCourtNumber?: number
+  Details?: string
+}
+
+export interface CommitteeVote {
+  Question?: string
+  Bill?: CommitteeVoteBill
+  Committee?: Committee
+  Date: string
+  Vote?: CommitteeVoteRecord[]
+}
+
+export interface CommitteeVoteBill {
+  BillNumber?: string
+  DocketNumber?: string
+  Title?: string
+  PrimarySponsor?: BillSponsor
+  Cosponsors?: BillSponsor[]
+  JointSponsor?: BillSponsor
+  GeneralCourtNumber: number
+  Details?: string
+  IsDocketBookOnly: boolean
+}
+
+export interface BillSponsor {
+  Id?: string
+  Name?: string
+  /**
+   * Type of the Bill Sponsor:
+   * 1 = Legislative Member
+   * 2 = Committee
+   * 3 = Public Request
+   * 4 = Special Request
+   */
+  Type: 1 | 2 | 3 | 4
+  /**
+   * Only Committees and Legislative Members will have further details.
+   */
+  Details?: string
+  ResponseDate?: string
+}
+
+export interface CommitteeVoteRecord {
+  Favorable?: LegislativeMemberSummary[]
+  Adverse?: LegislativeMemberSummary[]
+  ReserveRight?: LegislativeMemberSummary[]
+  NoVoteRecorded?: LegislativeMemberSummary[]
+}
+
+export interface LegislativeMemberSummary {
+  GeneralCourtNumber: number
+  MemberCode?: string
+  Details?: string
+}
