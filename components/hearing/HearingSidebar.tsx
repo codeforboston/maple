@@ -4,13 +4,14 @@ import Link from "next/link"
 import { useCallback, useEffect, useState } from "react"
 import type { ModalProps } from "react-bootstrap"
 import styled from "styled-components"
-import { Col, Image, Modal, Row } from "../bootstrap"
+import { Col, Image, Modal, Row, Dropdown } from "../bootstrap"
 import { firestore } from "../firebase"
 import * as links from "../links"
 import { billSiteURL, Internal } from "../links"
 import { LabeledIcon } from "../shared"
 import {
   CommitteeRecommendation,
+  CommitteeVote,
   CommitteeVoteRecord,
   LegislativeMemberSummary,
   TranscriptData
@@ -435,15 +436,17 @@ function AgendaBill({
           )}
         </div>
       </div>
-      <VotesModal
-        BillNumber={BillNumber}
-        committeeActions={committeeActions}
-        CourtNumber={CourtNumber}
-        generalCourtNumber={generalCourtNumber}
-        onHide={close}
-        onSettingsModalClose={() => setSettingsModal(null)}
-        show={settingsModal === "show"}
-      />
+      {committeeActions.length > 0 ? (
+        <VotesModal
+          BillNumber={BillNumber}
+          committeeActions={committeeActions}
+          CourtNumber={CourtNumber}
+          generalCourtNumber={generalCourtNumber}
+          onHide={close}
+          onSettingsModalClose={() => setSettingsModal(null)}
+          show={settingsModal === "show"}
+        />
+      ) : null}
     </>
   )
 }
@@ -466,9 +469,12 @@ function VotesModal({
   show
 }: Props) {
   const { t } = useTranslation(["common", "editProfile", "hearing"])
-  const votes: CommitteeVoteRecord[][] = committeeActions.map(action =>
-    action.Votes!.map(votes =>
-      (votes.Vote ?? []).reduce((acc, vote) => {
+  const votes: CommitteeVote[] = []
+  const [selectedVote, setSelectedVote] = useState(0)
+  for (const action of committeeActions) {
+    for (const vote of action.Votes!) {
+      // Merge different vote arrays into [0]
+      const record = vote.Vote!.reduce((acc, vote) => {
         for (const [key, values] of Object.entries(vote) as [
           keyof CommitteeVoteRecord,
           LegislativeMemberSummary[]
@@ -478,8 +484,10 @@ function VotesModal({
         }
         return acc
       }, {})
-    )
-  )
+      vote.Vote = [record]
+      votes.push(vote)
+    }
+  }
 
   return (
     <Modal show={show} onHide={onHide} aria-labelledby="votes-modal" centered>
@@ -497,18 +505,40 @@ function VotesModal({
         />
       </Modal.Header>
       <Modal.Body className={`bg-white p-3`}>
-        <div className={`fw-bold`}>
-          {committeeActions?.[0]?.Votes?.[0]?.Question ??
-            committeeActions?.[0]?.Action ??
-            "No question"}
+        <div className="fw-bold">
+          {votes.length > 1 ? (
+            <Dropdown>
+              <Dropdown.Toggle
+                variant="link"
+                className="p-0 text-start text-dark fw-bold text-decoration-none"
+                style={{ whiteSpace: "normal" }}
+              >
+                {votes[selectedVote].Question}
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu className="w-100">
+                {votes.map((vote, n) => (
+                  <Dropdown.Item
+                    key={n}
+                    className="text-wrap"
+                    onClick={() => setSelectedVote(n)}
+                  >
+                    {vote.Question}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+          ) : (
+            votes[selectedVote].Question
+          )}
         </div>
         <ModalLine />
         <div className={`fw-bold`}>
-          {t("yes", { ns: "hearing" })} ({votes[0]?.[0]?.Favorable?.length ?? 0}
-          )
+          {t("yes", { ns: "hearing" })} (
+          {votes[selectedVote]?.Vote![0].Favorable?.length ?? 0})
         </div>
         {generalCourtNumber &&
-          (votes[0]?.[0]?.Favorable ?? []).map(
+          (votes[selectedVote]?.Vote![0].Favorable ?? []).map(
             (element: any, index: number) => (
               <Vote
                 key={index}
@@ -520,24 +550,27 @@ function VotesModal({
           )}
 
         <div className={`fw-bold`}>
-          {t("no", { ns: "hearing" })} ({votes[0]?.[0]?.Adverse?.length ?? 0})
+          {t("no", { ns: "hearing" })} (
+          {votes[selectedVote].Vote![0].Adverse?.length ?? 0})
         </div>
         {generalCourtNumber &&
-          (votes[0]?.[0]?.Adverse ?? []).map((element: any, index: number) => (
-            <Vote
-              key={index}
-              element={element}
-              generalCourtNumber={generalCourtNumber}
-              value={`no`}
-            />
-          ))}
+          (votes[selectedVote]?.Vote![0].Adverse ?? []).map(
+            (element: any, index: number) => (
+              <Vote
+                key={index}
+                element={element}
+                generalCourtNumber={generalCourtNumber}
+                value={`no`}
+              />
+            )
+          )}
 
         <div className={`fw-bold`}>
           {t("no_vote", { ns: "hearing" })} (
-          {votes[0]?.[0]?.NoVoteRecorded?.length ?? 0})
+          {votes[selectedVote]?.Vote![0].NoVoteRecorded?.length ?? 0})
         </div>
         {generalCourtNumber &&
-          (votes[0]?.[0]?.NoVoteRecorded ?? []).map(
+          (votes[selectedVote]?.Vote![0].NoVoteRecorded ?? []).map(
             (element: any, index: number) => (
               <Vote
                 key={index}
@@ -550,10 +583,10 @@ function VotesModal({
 
         <div className={`fw-bold`}>
           {t("reserve_right", { ns: "hearing" })} (
-          {votes[0]?.[0]?.ReserveRight?.length ?? 0})
+          {votes[selectedVote]?.Vote![0].ReserveRight?.length ?? 0})
         </div>
         {generalCourtNumber &&
-          (votes[0]?.[0]?.ReserveRight ?? []).map(
+          (votes[selectedVote]?.Vote![0].ReserveRight ?? []).map(
             (element: any, index: number) => (
               <Vote
                 key={index}
