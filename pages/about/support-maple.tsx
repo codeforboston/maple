@@ -4,13 +4,7 @@ import { createGetStaticTranslationProps } from "components/translations"
 
 export default createPage({
   titleI18nKey: "titles.support_maple",
-  Page: () => {
-    return (
-      <div>
-        <SupportMaple />
-      </div>
-    )
-  }
+  Page: () => <SupportMaple />
 })
 
 export const getStaticProps = createGetStaticTranslationProps([

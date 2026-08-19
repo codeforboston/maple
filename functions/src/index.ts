@@ -17,6 +17,7 @@ export {
 } from "./committees"
 export {
   scrapeHearings,
+  scrapeVideos,
   scrapeSessions,
   scrapeSpecialEvents,
   scrapeSingleHearing,
@@ -57,14 +58,18 @@ export {
   unfollowUser,
   getFollowers
 } from "./subscriptions"
+export { scrapeElections } from "./legislators"
 
 export { transcription } from "./webhooks"
 
 export { askQuestion } from "./llm"
 
 export { matchOcpfMembers } from "./ocpf/matchOcpfMembers"
+export { scrapeOcpfFinance } from "./ocpf/scrapeOcpfFinance"
 
 export * from "./triggerPubsubFunction"
+
+export { mcpProxy } from "./mcp/proxy"
 
 // Export the health check last so it is loaded last.
 export * from "./healthCheck"

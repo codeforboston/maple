@@ -1,31 +1,17 @@
 import { useTranslation } from "next-i18next"
 import { Col, Row, Container } from "../bootstrap"
-import {
-  MemberItem,
-  PageTitle,
-  PageDescr,
-  SectionContainer,
-  Divider
-} from "../shared/CommonComponents"
+import { MemberItem, Divider, PageDescr } from "../shared/CommonComponents"
+import AboutPagesCard from "../AboutPagesCard/AboutPagesCard"
 
 export const AdvisoryBoard = () => {
   const { t } = useTranslation("our-team")
 
   return (
     <Container>
+      <PageDescr className="py-3">{t("advisory.desc")}</PageDescr>
       <Row>
         <Col>
-          <PageTitle>{t("advisory.title")}</PageTitle>
-        </Col>
-      </Row>
-      <Row>
-        <Col className="py-3">
-          <PageDescr>{t("advisory.desc")}</PageDescr>
-        </Col>
-      </Row>
-      <Row>
-        <Col className="my-3">
-          <SectionContainer className="py-1">
+          <AboutPagesCard title={t("advisory.title")}>
             <MemberItem name="David Fields" descr={t("advisory.DFields")} />
             <Divider />
             <MemberItem name="Jerren Chang" descr={t("advisory.JChang")} />
@@ -44,7 +30,7 @@ export const AdvisoryBoard = () => {
             <MemberItem name="Harlan Weber" descr={t("advisory.HWeber")} />
             <Divider />
             <MemberItem name="Liz Barry" descr={t("advisory.LBarry")} />
-          </SectionContainer>
+          </AboutPagesCard>
         </Col>
       </Row>
     </Container>

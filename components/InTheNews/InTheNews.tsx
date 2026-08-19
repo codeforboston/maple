@@ -1,5 +1,5 @@
 import { useState, Fragment } from "react"
-import { Col, Row, Container, Badge, Spinner } from "../bootstrap"
+import { Col, Row, Badge, Spinner } from "../bootstrap"
 import Tab from "react-bootstrap/Tab"
 import Nav from "react-bootstrap/Nav"
 import Dropdown from "react-bootstrap/Dropdown"
@@ -7,6 +7,9 @@ import { useMediaQuery } from "usehooks-ts"
 import { useTranslation } from "next-i18next"
 import { NewsCard } from "./NewsCard"
 import { NewsType, NewsItem, useNews } from "components/db/news"
+import LearnBreadcrumb from "../learn/LearnBreadcrumb"
+import LearnHeader from "../learn/LearnHeader"
+import LearnLayout from "../learn/LearnLayout"
 
 type NewsFeedProps = {
   type: NewsType | null
@@ -22,7 +25,10 @@ type TabCounts = {
 
 const NewsFeed = ({ type, newsItems }: NewsFeedProps) => {
   return (
-    <div className="d-flex flex-column align-items-left gap-1 w-100">
+    <div
+      className="d-flex flex-column align-items-left gap-3 w-100"
+      role="list"
+    >
       {newsItems
         .filter(item => item.type === type || type === null)
         .map((item, index) => (
@@ -33,7 +39,7 @@ const NewsFeed = ({ type, newsItems }: NewsFeedProps) => {
 }
 
 export const InTheNews = () => {
-  const { t } = useTranslation("inTheNews")
+  const { t } = useTranslation(["inTheNews", "common"])
   const isMobile = useMediaQuery("(max-width: 768px)")
   const { result: newsItems, loading } = useNews()
 
@@ -46,11 +52,15 @@ export const InTheNews = () => {
     : null
 
   return (
-    <Container className="ptx-4 pt-5 gap-4 min-vh-100">
-      <h1 className="fw-bold m-3" style={{ fontSize: "5rem" }}>
-        {t("title")}
-      </h1>
-      <div className="d-flex flex-column bg-white rounded-4 my-5 gap-4 p-4">
+    <LearnLayout width="medium">
+      <LearnBreadcrumb section={t("breadcrumb")} eyebrow={t("common:about")} />
+      <LearnHeader
+        title={t("title")}
+        subhead={t("subhead")}
+        titleSize="2.25rem"
+        subheadMaxWidth="none"
+      />
+      <div className="d-flex flex-column gap-4">
         {loading ? (
           <div className="d-flex justify-content-center p-5">
             <Spinner animation="border" role="status">
@@ -72,42 +82,30 @@ export const InTheNews = () => {
               <Col>
                 <Tab.Content>
                   <Tab.Pane eventKey="media">
-                    <div className="d-flex flex-column align-items-center">
-                      <NewsFeed type="article" newsItems={newsItems ?? []} />
-                    </div>
+                    <NewsFeed type="article" newsItems={newsItems ?? []} />
                   </Tab.Pane>
                   <Tab.Pane eventKey="awards">
-                    <div className="d-flex flex-column align-items-center">
-                      <NewsFeed type="award" newsItems={newsItems ?? []} />
-                    </div>
+                    <NewsFeed type="award" newsItems={newsItems ?? []} />
                   </Tab.Pane>
                   <Tab.Pane eventKey="books">
-                    <div className="d-flex flex-column align-items-center">
-                      <NewsFeed type="book" newsItems={newsItems ?? []} />
-                    </div>
+                    <NewsFeed type="book" newsItems={newsItems ?? []} />
                   </Tab.Pane>
                 </Tab.Content>
               </Col>
             </Row>
           </Tab.Container>
         ) : (
-          <Row className="g-0">
-            <Col>
-              <div className="d-flex flex-column align-items-center">
-                <NewsFeed type={null} newsItems={newsItems ?? []} />
-              </div>
-            </Col>
-          </Row>
+          <NewsFeed type={null} newsItems={newsItems ?? []} />
         )}
       </div>
-    </Container>
+    </LearnLayout>
   )
 }
 
 const TabGroup = ({ counts }: { counts: TabCounts }) => {
   const { t } = useTranslation("inTheNews")
   return (
-    <Row className="g-0 fs-4 fw-semibold">
+    <Row className="g-0 fs-5 fw-semibold">
       {newsTypePlurals
         .filter(val => counts[val])
         .map(val => (
@@ -115,13 +113,13 @@ const TabGroup = ({ counts }: { counts: TabCounts }) => {
             <Nav className="in-the-news flex-column">
               <Nav.Item>
                 <Nav.Link eventKey={val}>
-                  <div className="d-flex justify-content-center align-items-center gap-3 p-4">
+                  <div className="d-flex justify-content-center align-items-center gap-2 p-3">
                     {t(`${val}.title`)}
                     <Badge
                       bg="secondary"
-                      className="rounded-pill px-4 fw-bold"
+                      className="rounded-pill px-3 fw-bold"
                       style={{
-                        fontSize: "20px"
+                        fontSize: "0.875rem"
                       }}
                     >
                       {counts[val]}

@@ -3,6 +3,8 @@ import { ProfileMember } from "../db"
 import { LabeledIcon, TitledSectionCard } from "../shared"
 import { Card as MapleCard } from "components/Card"
 import { useTranslation } from "next-i18next"
+import { currentGeneralCourt } from "functions/src/shared"
+import { Internal, maple } from "components/links"
 
 type ProfileMemberPlus = (ProfileMember & { title: string }) | undefined
 
@@ -23,11 +25,19 @@ const DisplayLegislator = ({
   return (
     <>
       {legislator ? (
-        <LabeledIcon
-          idImage={idphoto}
-          mainText={legislator.title}
-          subText={legislator.name}
-        />
+        <Internal
+          href={maple.legislator({
+            court: currentGeneralCourt,
+            memberCode: legislator.id
+          })}
+          className="text-decoration-none"
+        >
+          <LabeledIcon
+            idImage={idphoto}
+            mainText={legislator.title}
+            subText={legislator.name}
+          />
+        </Internal>
       ) : (
         <div>{t("content.noLegislatorInfo")}</div>
       )}

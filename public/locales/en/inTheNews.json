@@ -1,6 +1,8 @@
 {
   "title": "Media, Articles & Insights",
-  "readMoreButton": "READ MORE",
+  "breadcrumb": "In the News",
+  "subhead": "Press coverage, awards, and books featuring MAPLE and its community.",
+  "readMoreButton": "Read more",
   "media": {
     "title": "Media"
   },

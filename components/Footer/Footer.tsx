@@ -189,7 +189,7 @@ const LearnLinks = () => {
   const { t } = useTranslation(["footer", "common"])
   return (
     <>
-      <StyledInternalLink href="/learn/writing-effective-testimony">
+      <StyledInternalLink href="/learn/testimony">
         {t("links.learnWriting")}
       </StyledInternalLink>
       <StyledInternalLink href="/learn/legislative-process">
@@ -197,6 +197,9 @@ const LearnLinks = () => {
       </StyledInternalLink>
       <StyledInternalLink href="/why-use-maple/for-individuals">
         {t("links.learnWhy")}
+      </StyledInternalLink>
+      <StyledInternalLink href="/learn/ai-tools">
+        {t("links.learnAi")}
       </StyledInternalLink>
     </>
   )

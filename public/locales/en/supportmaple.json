@@ -1,5 +1,7 @@
 {
   "title": "How to Support MAPLE",
+  "subhead": "MAPLE is a volunteer-powered nonprofit. Here are a few ways you can help.",
+  "breadcrumb": "Support MAPLE",
   "useMAPLE": {
     "header": "Use our Platform!",
     "bodytext": "The best way to support MAPLE is by using our platform and sharing it with friends and colleagues! That is the best endorsement we could receive."
@@ -16,10 +18,10 @@
     "bodytextTwo": "and that doesn't include our advisors, partners and communication team! If you'd like to get involved, email "
   },
   "feedback": {
-    "header": "Feedback",
+    "header": "Share Feedback",
     "bodytextOne": "If you would like to share thoughts on your experience using MAPLE or suggest improvements for the platform, please use our ",
     "feedbackForm": "feedback form!",
     "bodytextTwo": "You can also let us know about 'bugs' you've encountered in our ",
     "bugForm": "report a bug form."
-  }  
+  }
 }

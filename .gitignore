@@ -72,7 +72,11 @@ prod-build.env
 infra/dev/typesense-secrets.yml
 infra/prod/typesense-secrets.yml
 
+ /.venv
 .python-version
+__pycache__/
+*.pyc
+*.pyo
 
 /*.history
 
@@ -92,3 +96,10 @@ cert.txt
 # local MCP server config (contains auth tokens)
 .mcp.json
 mcp-server/create-agent-key.ts
+
+# Claude
+CLAUDE.md
+
+#gcloud
+.gcloudignore
+

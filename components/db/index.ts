@@ -1,6 +1,7 @@
 export * from "./api"
 export * from "./bills"
 export * from "./createTableHook"
+export * from "./districts"
 export * from "./members"
 export * from "./news"
 export * from "./profile"

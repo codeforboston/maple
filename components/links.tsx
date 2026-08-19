@@ -75,6 +75,8 @@ export const maple = {
   ballotQuestion: ({ id }: { id: string }) => `/ballotQuestions/${id}`,
   bill: ({ court, id }: { court: number; id: string }) =>
     `/bills/${court}/${id}`,
+  legislator: ({ court, memberCode }: { court: number; memberCode: string }) =>
+    `/legislators/${court}/${memberCode}`,
   testimony: ({ publishedId }: { publishedId: string }) =>
     `/testimony/${publishedId}`,
   userTestimony: ({

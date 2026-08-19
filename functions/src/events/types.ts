@@ -97,6 +97,13 @@ export const HearingContent = BaseEventContent.extend({
 export type HearingListItem = Static<typeof HearingListItem>
 export const HearingListItem = Record({ EventId: Number })
 
+export type Video = Static<typeof Video>
+export const Video = Record({
+  url: String,
+  title: String,
+  transcriptionId: Union(String, Null)
+})
+
 export type Hearing = Static<typeof Hearing>
 export const Hearing = BaseEvent.extend({
   type: L("hearing"),
@@ -104,6 +111,9 @@ export const Hearing = BaseEvent.extend({
   videoURL: Optional(String),
   videoTranscriptionId: Optional(String),
   videoFetchedAt: Optional(InstanceOf(Timestamp)),
+  transcriptionIds: Optional(Array(String)),
+  videos: Optional(Array(Video)),
+  videosFetchedAt: Optional(InstanceOf(Timestamp)),
   committeeChairs: Optional(Array(String))
 })
 

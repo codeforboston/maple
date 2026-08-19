@@ -4,6 +4,9 @@ import { FC, PropsWithChildren } from "react"
 
 const StyledHeader = styled(Card.Header)`
   transform: translate(0);
+  font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-weight: 700;
+  font-size: 1.25rem;
 
   &:first-child {
     border-radius: 10px 10px 0 0;
@@ -20,19 +23,25 @@ const StyledHeader = styled(Card.Header)`
   }
 `
 
+const Body = styled(Card.Body)`
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--maple-text-body);
+`
+
 const AboutPagesCard: FC<PropsWithChildren<{ title: string }>> = ({
   title,
   children
 }) => {
   return (
-    <Card className="mx-sm-5 mx-xs-3 my-5 rounded-3 bg-white">
+    <Card className="mx-sm-5 mx-xs-3 my-3 my-md-5 rounded-3 bg-white">
       <StyledHeader
-        as="h1"
-        className="bg-secondary text-white overflow-hidden fs-sm-1 pt-2 pt-sm-3 pb-1 pb-sm-3 ps-4 ps-sm-5 pe-5"
+        as="h2"
+        className="bg-secondary text-white overflow-hidden pt-2 pt-sm-3 pb-1 pb-sm-3 ps-4 ps-sm-5 pe-5"
       >
         {title}
       </StyledHeader>
-      <Card.Body>{children}</Card.Body>
+      <Body>{children}</Body>
     </Card>
   )
 }
