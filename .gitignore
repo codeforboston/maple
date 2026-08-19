@@ -103,3 +103,7 @@ CLAUDE.md
 #gcloud
 .gcloudignore
 
+# Python virtual environments
+.venv/
+venv/
+env/
