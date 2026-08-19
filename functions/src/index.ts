@@ -60,6 +60,8 @@ export {
 
 export { transcription } from "./webhooks"
 
+export { askQuestion } from "./llm"
+
 export { matchOcpfMembers } from "./ocpf/matchOcpfMembers"
 
 export * from "./triggerPubsubFunction"

@@ -1,8 +1,7 @@
 import { runWith } from "firebase-functions"
-import * as admin from "firebase-admin"
 import { FieldValue } from "firebase-admin/firestore"
-import { PredictionServiceClient, helpers } from "@google-cloud/aiplatform"
 import hash from "object-hash"
+import { embedText } from "../llm/embeddings"
 
 export interface VectorIndexerConfig {
   documentTrigger: string
@@ -12,10 +11,6 @@ export interface VectorIndexerConfig {
 }
 
 export function createVectorIndexer(config: VectorIndexerConfig) {
-  const location = "us-central1"
-  const publisher = "google"
-  const model = "text-embedding-005"
-
   return runWith({
     timeoutSeconds: 60,
     memory: "512MB"
@@ -57,39 +52,7 @@ export function createVectorIndexer(config: VectorIndexerConfig) {
         return // Nothing changed
       }
 
-      // Initialize Vertex AI client
-      const project = admin.app().options.projectId
-      const endpoint = `projects/${project}/locations/${location}/publishers/${publisher}/models/${model}`
-      const client = new PredictionServiceClient({
-        apiEndpoint: `${location}-aiplatform.googleapis.com`
-      })
-
-      // Get embedding with multimodal/task prefix
-      const formattedText = `title: ${title} | text: ${textToEmbed}`
-      const instance = helpers.toValue({ content: formattedText })!
-      const parameters = helpers.toValue({ outputDimensionality: 768 })!
-      const responseArray = (await client.predict({
-        endpoint,
-        instances: [instance],
-        parameters
-      })) as any
-      const response = responseArray[0]
-
-      if (!response.predictions || response.predictions.length === 0) {
-        throw new Error("No predictions returned from Vertex AI")
-      }
-
-      const prediction = helpers.fromValue(
-        response.predictions[0] as any
-      ) as any
-      const embedding =
-        prediction.embeddings?.values || prediction.embedding?.values
-
-      if (!embedding) {
-        throw new Error(
-          `Unexpected prediction format: ${JSON.stringify(prediction)}`
-        )
-      }
+      const embedding = await embedText(textToEmbed, title)
 
       // Update document. The embedding must be stored as a Firestore
       // VectorValue (not a plain array) for the vector index / findNearest to
