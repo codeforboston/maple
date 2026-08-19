@@ -3,11 +3,13 @@ import { OtherTestimony } from "./SidebarComponents/OtherTestimony"
 import { UpcomingHearings } from "./SidebarComponents/UpcomingHearings"
 
 export function LegislatorSidebar({
+  committeeList,
   court,
   legislatorData,
   legislatorId,
   memberCode
 }: {
+  committeeList: any[]
   court: number
   legislatorData: any[]
   legislatorId: string
@@ -16,7 +18,7 @@ export function LegislatorSidebar({
   return (
     <>
       <OtherTestimony />
-      <UpcomingHearings />
+      <UpcomingHearings committeeList={committeeList} />
       <Biography
         court={court}
         legislatorData={legislatorData}
