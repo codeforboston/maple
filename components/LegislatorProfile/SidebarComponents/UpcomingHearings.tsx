@@ -2,6 +2,8 @@ import { DateTime } from "luxon"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 
+import * as links from "../../links"
+import { Col } from "../../bootstrap"
 import { SidebarBlock, SidebarTitle } from "../LegislatorSidebar"
 
 import { useUpcomingEvents } from "components/db/events"
@@ -12,7 +14,7 @@ const EventBlock = styled.div`
   border-bottom: 1px solid #b8c0c9;
   font-size: 12px;
   font-weight: 700;
-  margin-bottom: 2px;
+  margin: 0 2px;
   padding: 8px 0;
 `
 
@@ -29,6 +31,16 @@ const EventTitle = styled.div`
 const EventLocation = styled.div`
   color: #6c757d;
   margin-top: 1px;
+`
+
+export const HearingsLink = styled(links.Internal)`
+  font-size: 12px;
+  font-weight: 700;
+  color: #1a3185;
+  padding: 10px;
+  display: block;
+  text-align: center;
+  text-decoration: none;
 `
 
 export function UpcomingHearings({ committeeList }: { committeeList: any[] }) {
@@ -98,6 +110,12 @@ export function UpcomingHearings({ committeeList }: { committeeList: any[] }) {
       ) : (
         <div>{t("noEvents")}</div>
       )}
+      <Col>
+        <HearingsLink href="/hearings">
+          {t("viewAllHearings")}
+          {" ↗"}
+        </HearingsLink>
+      </Col>
     </SidebarBlock>
   )
 }
