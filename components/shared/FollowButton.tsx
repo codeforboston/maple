@@ -120,7 +120,7 @@ export const BaseFollowButton = ({
   const checkmark = isFollowing ? (
     <StyledImage src="/check-white.svg" alt="" />
   ) : null
-  const handleClick = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleClick = (event: any) => {
     event.preventDefault()
     if (!uid) {
       const currentPath = router.asPath
@@ -134,7 +134,7 @@ export const BaseFollowButton = ({
     <>
       {!hide && (
         <div className="follow-button">
-          <Button onClick={onClick} className={`btn btn-lg py-1`}>
+          <Button onClick={handleClick} className={`btn btn-lg py-1`}>
             {t(`button.${isFollowing ? "unfollow" : "follow"}`)}
             {isFollowing && <StyledImage src="/check-white.svg" alt="" />}
           </Button>
