@@ -45,6 +45,7 @@
   "legislators": "Legislators",
   "loading": "Loading district...",
   "notClaimed": "This legislator has not claimed their MAPLE account",
+  "otherTestimony": "Others' testimony on their bills",
   "party": {
     "democratic": "Democratic Party",
     "party": "Party",
@@ -62,5 +63,6 @@
     "testimony": "Testimony",
     "votes": "Votes"
   },
-  "termsServed": "Terms Served"
+  "termsServed": "Terms Served",
+  "upcomingHearings": "Upcoming Hearings"
 }

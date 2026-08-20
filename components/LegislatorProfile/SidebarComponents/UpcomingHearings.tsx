@@ -1,12 +1,15 @@
 import { DateTime } from "luxon"
+import { useTranslation } from "next-i18next"
 
-import { TabBlock } from "../LegislatorComponents"
+import { SidebarBlock, SidebarTitle } from "../LegislatorSidebar"
 
 import { useUpcomingEvents } from "components/db/events"
 import { EventData } from "components/HearingsScheduled"
 import { formatDate } from "components/HearingsScheduled/dateUtils"
 
 export function UpcomingHearings({ committeeList }: { committeeList: any[] }) {
+  const { t } = useTranslation("legislators")
+
   const events = useUpcomingEvents()
   const thisMonth = DateTime.now().startOf("month")
   const eventList: EventData[] = []
@@ -53,5 +56,12 @@ export function UpcomingHearings({ committeeList }: { committeeList: any[] }) {
 
   console.log("legislatorEvents", legislatorEvents)
 
-  return <TabBlock>- Upcoming Hearings</TabBlock>
+  return (
+    <SidebarBlock className="mb-2">
+      <SidebarTitle className={`my-1`}>{t("upcomingHearings")}</SidebarTitle>
+      {/* <div style={{ whiteSpace: "pre-wrap" }}>
+        {legislatorData[0]?.about ? legislatorData[0].about : t("notClaimed")}
+      </div> */}
+    </SidebarBlock>
+  )
 }

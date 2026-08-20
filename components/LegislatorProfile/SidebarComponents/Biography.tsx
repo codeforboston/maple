@@ -6,6 +6,7 @@ import styled from "styled-components"
 import { Form } from "../../bootstrap"
 import { Profile, ProfileHook, useProfile } from "../../db"
 import Input from "../../forms/Input"
+import { SidebarBlock, SidebarTitle } from "../LegislatorSidebar"
 
 import { useAuth } from "components/auth"
 import {
@@ -13,27 +14,9 @@ import {
   UpdateProfileData
 } from "components/EditProfilePage/PersonalInfoTab"
 
-const BioBlock = styled.div`
-  background-color: white;
-  border-color: #b8c0c9;
-  border-radius: 5px;
-  border-style: solid;
-  border-width: 1px;
-  font-size: 11px;
-  padding: 16px;
-`
-
 const BioButton = styled.button`
   font-size: 9px;
   padding: 2px;
-`
-
-const BioTitle = styled.div`
-  font-weight: 700;
-  color: #0b0a3e;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 10px;
 `
 
 export function Biography({
@@ -108,12 +91,12 @@ function EditableBiography({
   }, [isDirty, setFormUpdated])
 
   return (
-    <BioBlock>
+    <SidebarBlock>
       <Form onSubmit={onSubmit}>
         <div className={`d-flex justify-content-between`}>
-          <BioTitle className={`align-self-center d-inline my-1`}>
+          <SidebarTitle className={`align-self-center d-inline my-1`}>
             {t("biography")}
-          </BioTitle>
+          </SidebarTitle>
           <BioButton
             type="submit"
             className={`btn btn-primary d-inline m-1 w-auto`}
@@ -131,7 +114,7 @@ function EditableBiography({
           defaultValue={about ? about : t("addBio")}
         />
       </Form>
-    </BioBlock>
+    </SidebarBlock>
   )
 }
 
@@ -139,11 +122,11 @@ function ReadonlyBiography({ legislatorData }: { legislatorData: any[] }) {
   const { t } = useTranslation("legislators")
 
   return (
-    <BioBlock>
-      <BioTitle className={`my-1`}>{t("biography")}</BioTitle>
+    <SidebarBlock>
+      <SidebarTitle className={`my-1`}>{t("biography")}</SidebarTitle>
       <div style={{ whiteSpace: "pre-wrap" }}>
         {legislatorData[0]?.about ? legislatorData[0].about : t("notClaimed")}
       </div>
-    </BioBlock>
+    </SidebarBlock>
   )
 }
