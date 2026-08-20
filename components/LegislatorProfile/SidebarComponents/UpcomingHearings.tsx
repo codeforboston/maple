@@ -1,11 +1,35 @@
 import { DateTime } from "luxon"
 import { useTranslation } from "next-i18next"
+import styled from "styled-components"
 
 import { SidebarBlock, SidebarTitle } from "../LegislatorSidebar"
 
 import { useUpcomingEvents } from "components/db/events"
 import { EventData } from "components/HearingsScheduled"
 import { formatDate } from "components/HearingsScheduled/dateUtils"
+
+const EventBlock = styled.div`
+  border-bottom: 1px solid #b8c0c9;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 2px;
+  padding: 8px 0;
+`
+
+const EventDate = styled.div`
+  color: #1a3185;
+`
+
+const EventTitle = styled.div`
+  color: #212529;
+  font-weight: 600;
+  text-decoration: none;
+`
+
+const EventLocation = styled.div`
+  color: #6c757d;
+  margin-top: 1px;
+`
 
 export function UpcomingHearings({ committeeList }: { committeeList: any[] }) {
   const { t } = useTranslation("legislators")
@@ -59,9 +83,21 @@ export function UpcomingHearings({ committeeList }: { committeeList: any[] }) {
   return (
     <SidebarBlock className="mb-2">
       <SidebarTitle className={`my-1`}>{t("upcomingHearings")}</SidebarTitle>
-      {/* <div style={{ whiteSpace: "pre-wrap" }}>
-        {legislatorData[0]?.about ? legislatorData[0].about : t("notClaimed")}
-      </div> */}
+      {legislatorEvents ? (
+        <>
+          {legislatorEvents.slice(0, 3).map(e => (
+            <EventBlock key={e.id}>
+              <EventDate>
+                {e.month} {e.date} {" · "} {e.time}
+              </EventDate>
+              <EventTitle>{e.name}</EventTitle>
+              <EventLocation>{e.location}</EventLocation>
+            </EventBlock>
+          ))}
+        </>
+      ) : (
+        <div>{t("noEvents")}</div>
+      )}
     </SidebarBlock>
   )
 }

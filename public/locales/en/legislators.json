@@ -44,6 +44,7 @@
   "home": "Home",
   "legislators": "Legislators",
   "loading": "Loading district...",
+  "noEvents": "This legislator does not have hearings in the near term future",
   "notClaimed": "This legislator has not claimed their MAPLE account",
   "otherTestimony": "Others' testimony on their bills",
   "party": {
