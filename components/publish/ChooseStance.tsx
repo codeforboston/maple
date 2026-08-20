@@ -9,10 +9,10 @@ import { FormNavigation, Next } from "./NavigationButtons"
 import { setPosition } from "./redux"
 import { StepHeader } from "./StepHeader"
 import { useMediaQuery } from "usehooks-ts"
-import { useTranslation } from "next-i18next"
+import { usePublishCopy } from "./hooks"
 
 export const ChooseStance = styled(({ ...rest }) => {
-  const { t } = useTranslation("testimony")
+  const { copy } = usePublishCopy()
   const { position: currentPosition } = usePublishState()
   const dispatch = useAppDispatch()
   const isMobile = useMediaQuery("(max-width: 768px)")
@@ -24,7 +24,12 @@ export const ChooseStance = styled(({ ...rest }) => {
   const hasPosition = Boolean(currentPosition)
   return (
     <div {...rest}>
-      <StepHeader step={1}>{t("submitTestimonyForm.chooseStance")}</StepHeader>
+      <StepHeader step={1}>
+        {copy(
+          "submitTestimonyForm.chooseStance",
+          "ballotQuestion.submitTestimonyForm.chooseStance"
+        )}
+      </StepHeader>
       <Row className="d-flex gap-3 justify-content-center mt-4">
         <Col md={3} xs={12} className="d-flex justify-content-center">
           <PositionButton {...props("endorse")} isMobile={isMobile} />

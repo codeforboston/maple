@@ -85,14 +85,16 @@ export interface UseEditTestimony {
 export function useEditTestimony(
   uid: string,
   court: number,
-  billId: string
+  billId: string,
+  ballotQuestionId?: string
 ): UseEditTestimony {
   const [state, dispatch] = useReducer(reducer, {
     draftLoading: true,
     publicationLoading: true,
     uid,
     court,
-    billId
+    billId,
+    ballotQuestionId
   })
 
   useTestimony(state, dispatch)
@@ -130,17 +132,17 @@ export function useEditTestimony(
 }
 
 function useTestimony(
-  { uid, billId, draftRef, publicationRef, court }: State,
+  { uid, billId, draftRef, publicationRef, court, ballotQuestionId }: State,
   dispatch: Dispatch<Action>
 ) {
   useEffect(() => {
-    resolveBillTestimony(uid, court, billId)
+    resolveBillTestimony(uid, court, billId, ballotQuestionId)
       .then(({ draft, publication }) => {
         dispatch({ type: "resolveDraft", id: draft?.id })
         dispatch({ type: "resolvePublication", id: publication?.id })
       })
       .catch(error => dispatch({ type: "error", error }))
-  }, [billId, court, dispatch, uid])
+  }, [ballotQuestionId, billId, court, dispatch, uid])
 
   useEffect(() => {
     if (draftRef)
@@ -219,9 +221,18 @@ type SaveDraftRequest = Pick<
   | "attachmentId"
   | "recipientMemberCodes"
   | "editReason"
->
+> & { ballotQuestionId?: string | null }
 function useSaveDraft(
-  { draftRef, draftLoading, billId, uid, court, publication, draft }: State,
+  {
+    draftRef,
+    draftLoading,
+    billId,
+    ballotQuestionId,
+    uid,
+    court,
+    publication,
+    draft
+  }: State,
   dispatch: Dispatch<Action>
 ) {
   return useAsyncCallback(
@@ -231,7 +242,8 @@ function useSaveDraft(
         content,
         attachmentId,
         recipientMemberCodes,
-        editReason
+        editReason,
+        ballotQuestionId: requestBallotQuestionId
       }: SaveDraftRequest) => {
         if (draftLoading) {
           return
@@ -243,7 +255,9 @@ function useSaveDraft(
             position,
             editReason: editReason ?? null,
             recipientMemberCodes: recipientMemberCodes ?? null,
-            attachmentId: attachmentId ?? null
+            attachmentId: attachmentId ?? null,
+            ballotQuestionId:
+              requestBallotQuestionId ?? ballotQuestionId ?? null
           }
           const result = await addDoc(
             collection(firestore, `/users/${uid}/draftTestimony`),
@@ -259,11 +273,23 @@ function useSaveDraft(
             attachmentId: attachmentId ?? null,
             recipientMemberCodes: recipientMemberCodes ?? null,
             editReason: editReason ?? null,
+            ballotQuestionId:
+              requestBallotQuestionId ?? ballotQuestionId ?? null,
             publishedVersion: hasChanges ? deleteField() : undefined
           })
         }
       },
-      [billId, dispatch, draftLoading, draftRef, uid, court, draft, publication]
+      [
+        ballotQuestionId,
+        billId,
+        dispatch,
+        draftLoading,
+        draftRef,
+        uid,
+        court,
+        draft,
+        publication
+      ]
     ),
     { onError: error => dispatch({ type: "error", error }) }
   )
@@ -273,6 +299,7 @@ type State = {
   court: number
   uid: string
   billId: string
+  ballotQuestionId?: string
   error?: Error
 
   draft?: WorkingDraft

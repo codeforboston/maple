@@ -20,11 +20,11 @@ export const Header = styled(Row)`
 
 export const HeaderTitle = styled(Col)`
   font-style: normal;
-  font-weight: 700;
+  font-weight: var(--maple-font-weight-bold);
   font-size: 40px;
-  line-height: 48px;
+  line-height: var(--maple-line-height-loose);
   letter-spacing: -0.03em;
-  color: #000000;
+  color: var(--maple-text-strong);
 `
 
 export const StyledContainer = styled(Container)`
@@ -32,15 +32,15 @@ export const StyledContainer = styled(Container)`
   .checkbox {
     width: 187px;
     padding: 0px;
-    color: #12266f;
+    color: var(--maple-brand-primary-strong);
   }
   .checkbox input {
     height: 16px;
     width: 16px;
     background-color: transparent;
-    border-color: #12266f;
+    border-color: var(--maple-brand-primary-strong);
   }
   .checkbox input:checked {
-    background-color: #12266f;
+    background-color: var(--maple-brand-primary-strong);
   }
 `

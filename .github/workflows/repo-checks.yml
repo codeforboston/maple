@@ -67,6 +67,13 @@ jobs:
         with:
           path: /home/runner/.cache/firebase/emulators
           key: ${{ runner.os }}-firebase-emulators-${{ hashFiles('~/.cache/firebase/emulators/**') }}
+      - name: Smoke Test Firebase Admin CLI
+        run: >
+          ./node_modules/.bin/firebase --project demo-dtp emulators:exec
+          --only auth,firestore
+          --import tests/integration/exportedTestData
+          "yarn firebase-admin run-script backfillTestimonyBallotQuestionId --env local"
+
       - name: Run Integration Tests
         run: >
           yarn test:integration-ci
@@ -74,3 +81,5 @@ jobs:
           tests/integration/auth.test.ts
           tests/integration/moderation.test.ts
           tests/integration/profile.test.ts
+          tests/integration/ballotQuestions.test.ts
+          tests/integration/backfillTestimonyBallotQuestionId.test.ts

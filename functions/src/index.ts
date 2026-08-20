@@ -17,6 +17,7 @@ export {
 } from "./committees"
 export {
   scrapeHearings,
+  scrapeVideos,
   scrapeSessions,
   scrapeSpecialEvents,
   scrapeSingleHearing,
@@ -31,7 +32,7 @@ export {
   fetchMemberBatch,
   startMemberBatches
 } from "./members"
-export { finishSignup } from "./profile"
+export { completePhoneVerification, finishSignup } from "./profile"
 export { checkSearchIndexVersion, searchHealthCheck } from "./search"
 export {
   deleteTestimony,
@@ -42,6 +43,7 @@ export {
 } from "./testimony"
 export {
   publishNotifications,
+  populateBallotQuestionNotificationEvents,
   populateBillHistoryNotificationEvents,
   populateTestimonySubmissionNotificationEvents,
   cleanupNotifications,
@@ -56,10 +58,16 @@ export {
   unfollowUser,
   getFollowers
 } from "./subscriptions"
+export { scrapeElections } from "./legislators"
 
 export { transcription } from "./webhooks"
 
+export { matchOcpfMembers } from "./ocpf/matchOcpfMembers"
+export { scrapeOcpfFinance } from "./ocpf/scrapeOcpfFinance"
+
 export * from "./triggerPubsubFunction"
+
+export { mcpProxy } from "./mcp/proxy"
 
 // Export the health check last so it is loaded last.
 export * from "./healthCheck"

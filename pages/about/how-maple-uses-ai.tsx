@@ -5,11 +5,7 @@ import MapleAI from "components/about/MapleAI/MapleAI"
 export default createPage({
   titleI18nKey: "navigation.ai",
   Page: () => {
-    return (
-      <div>
-        <MapleAI />
-      </div>
-    )
+    return <MapleAI />
   }
 })
 

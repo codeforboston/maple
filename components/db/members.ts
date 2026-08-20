@@ -21,6 +21,8 @@ export type MemberContent = {
   PhoneNumber: string
   FaxNumber: string | null
   Committees: CommitteeReference[]
+  SponsoredBills: Array<string>
+  CoSponsoredBills: Array<string>
 }
 
 export type Member = {

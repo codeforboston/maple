@@ -33,7 +33,8 @@ export const Profile = Record({
   profileImage: Optional(String),
   billsFollowing: Optional(Array(String)),
   contactInfo: Optional(Dictionary(String)),
-  location: Optional(String)
+  location: Optional(String),
+  phoneVerified: Optional(Boolean)
 })
 
 export type Profile = Static<typeof Profile>

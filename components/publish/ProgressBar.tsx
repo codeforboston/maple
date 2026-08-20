@@ -1,9 +1,9 @@
 import { faCheck } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import styled from "styled-components"
+import { usePublishCopy } from "./hooks"
 import { isComplete, isCurrent, Step } from "./redux"
 import { chipHeight, StepChip } from "./StepChip"
-import { useTranslation } from "next-i18next"
 
 const Divider = styled.div`
   height: 1px;
@@ -14,7 +14,7 @@ const Divider = styled.div`
 
 export const ProgressBar = styled<{ currentStep: Step }>(
   ({ currentStep, ...rest }) => {
-    const { t } = useTranslation("testimony")
+    const { copy } = usePublishCopy()
     const renderStep = (idx: number, step: Step, label: string) => (
       <StepBox
         key={step}
@@ -27,11 +27,32 @@ export const ProgressBar = styled<{ currentStep: Step }>(
     )
     return (
       <div {...rest}>
-        {renderStep(1, "position", t("submitTestimonyForm.chooseStance"))}
+        {renderStep(
+          1,
+          "position",
+          copy(
+            "submitTestimonyForm.chooseStance",
+            "ballotQuestion.submitTestimonyForm.chooseStance"
+          )
+        )}
         <Divider />
-        {renderStep(2, "write", t("submitTestimonyForm.write.header"))}
+        {renderStep(
+          2,
+          "write",
+          copy(
+            "submitTestimonyForm.write.header",
+            "ballotQuestion.submitTestimonyForm.write.header"
+          )
+        )}
         <Divider />
-        {renderStep(3, "publish", t("publish.confirmAndSend"))}
+        {renderStep(
+          3,
+          "publish",
+          copy(
+            "publish.confirmAndSend",
+            "ballotQuestion.publish.confirmAndPublish"
+          )
+        )}
       </div>
     )
   }

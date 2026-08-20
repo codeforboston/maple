@@ -19,7 +19,7 @@ const HearingDate = styled.div`
   line-height: 125%;
 
   text-align: center;
-  color: #ffffff;
+  color: var(--maple-text-inverse);
 
   align-self: stretch;
   max-width: 202px;

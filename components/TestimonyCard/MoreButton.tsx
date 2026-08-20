@@ -11,7 +11,10 @@ export const MoreButton = ({ children }: { children: React.ReactChild }) => {
       overlay={
         <div
           ref={menuRef}
-          style={{ position: "absolute", background: "white" }}
+          style={{
+            position: "absolute",
+            background: "var(--maple-surface-base)"
+          }}
         >
           {children}
         </div>

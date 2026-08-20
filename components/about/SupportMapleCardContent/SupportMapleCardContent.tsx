@@ -7,7 +7,7 @@ const DonateCardContent = () => {
       <p>
         <span>{`${t("donate.bodytextOne")} `}</span>
         <a
-          href="https://partnersindemocracy.us/donate-to-maple/"
+          href="https://partnersindemocracy.us/?form=FUNMSSLLQEC"
           target="_blank"
           rel="noopener noreferrer"
         >

@@ -44,11 +44,15 @@ const FooterButton = ({
 export const TestimonyItem = ({
   testimony,
   isUser,
-  onProfilePage
+  onProfilePage,
+  variant = "default",
+  allowEdit = true
 }: {
   testimony: Testimony
   isUser: boolean
   onProfilePage: boolean
+  variant?: "default" | "ballotQuestion"
+  allowEdit?: boolean
 }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const publishedDate = testimony.publishedAt
@@ -64,9 +68,16 @@ export const TestimonyItem = ({
   const reportMutation = useReportTestimony()
   const didReport = reportMutation.isError || reportMutation.isSuccess
 
+  const { t } = useTranslation("testimony")
+  const isBallotQuestion = variant === "ballotQuestion"
+  const editLabel = isBallotQuestion
+    ? t("ballotQuestion.testimonyItem.edit")
+    : t("testimonyItem.edit")
   const testimonyContent =
     testimony.content ??
-    "This draft has no content. Click Edit to add your testimony."
+    (isBallotQuestion
+      ? t("ballotQuestion.testimonyItem.emptyDraft")
+      : t("testimonyItem.emptyDraft"))
 
   const snippetChars = 500
   const [showAllTestimony, setShowAllTestimony] = useState(false)
@@ -75,15 +86,8 @@ export const TestimonyItem = ({
     : trimContent(testimonyContent.slice(0, snippetChars), snippetChars)
   const canExpand = snippet.length !== testimonyContent.length
 
-  const { t } = useTranslation("testimony")
-
   const IconSpacer = () => {
-    /* this image does not appear to display anything,      *
-     * however it acts as a spacing element                 *
-     *                                                      *
-     * removing this image will throw off the alignment vs  *
-     * the nearby elements that contain visible icons      */
-
+    if (isBallotQuestion) return null
     return (
       <Image
         className="ms-auto align-self-center"
@@ -96,18 +100,29 @@ export const TestimonyItem = ({
   }
 
   return (
-    <div className={`py-3 px-2 ${onProfilePage && "border-bottom border-2"}`}>
+    <div
+      className={`${
+        variant === "ballotQuestion"
+          ? `py-4 ${onProfilePage ? "border-bottom border-2" : "border-bottom"}`
+          : `py-3 px-2 ${onProfilePage && "border-bottom border-2"}`
+      }`}
+    >
       <div className={`border-0 h5 d-flex`}>
-        {isMobile && isUser && (
+        {isMobile && isUser && allowEdit && (
           <>
             <Internal
               className={`text-decoration-none`}
-              href={formUrl(testimony.billId, testimony.court)}
+              href={formUrl(
+                testimony.billId,
+                testimony.court,
+                "position",
+                testimony.ballotQuestionId ?? undefined
+              )}
             >
               <Image
                 className="px-2 ms-auto align-self-center"
                 src="/edit-testimony.svg"
-                alt={t("testimonyItem.edit")}
+                alt={editLabel}
                 height={50}
                 width={50}
               />
@@ -115,7 +130,7 @@ export const TestimonyItem = ({
           </>
         )}
       </div>
-      <Stack gap={1}>
+      <Stack gap={variant === "ballotQuestion" ? 2 : 1}>
         <Row className={`justify-content-between align-items-center`}>
           {onProfilePage ? (
             <BillInfoHeader
@@ -131,10 +146,10 @@ export const TestimonyItem = ({
             />
           )}
         </Row>
-        <Row className={`col m2`}>
-          <TestimonyContent className="col m2" testimony={snippet} />
-        </Row>
-        <Row xs="auto" className={`d-flex align-items-center`}>
+        <div className="w-100">
+          <TestimonyContent testimony={snippet} />
+        </div>
+        <Row xs="auto" className={`d-flex align-items-center gy-2`}>
           {canExpand && (
             <Col className="justify-content-end d-flex">
               <FooterButton
@@ -164,9 +179,6 @@ export const TestimonyItem = ({
             <Col className="d-flex">
               <FooterButton variant="text">
                 <ViewAttachment testimony={testimony} />
-
-                {/* Current bug Issue #1564 makes this instance of IconSpacer hard to test *
-                 * Please revisit once #1564 is resolved                                  */}
                 <IconSpacer />
               </FooterButton>
             </Col>
@@ -181,18 +193,23 @@ export const TestimonyItem = ({
               <IconSpacer />
             </FooterButton>
           </Col>
-          {isUser && !isMobile && (
+          {isUser && allowEdit && !isMobile && (
             <Col>
               <FooterButton variant="text">
                 <Internal
                   className={`text-decoration-none text-secondary`}
-                  href={formUrl(testimony.billId, testimony.court)}
+                  href={formUrl(
+                    testimony.billId,
+                    testimony.court,
+                    "position",
+                    testimony.ballotQuestionId ?? undefined
+                  )}
                 >
-                  {t("testimonyItem.edit")}
+                  {editLabel}
                   <Image
                     className="px-2 ms-auto align-self-center"
                     src="/edit-testimony.svg"
-                    alt={t("")}
+                    alt={editLabel}
                     height={40}
                     width={40}
                   />

@@ -1,5 +1,5 @@
 import { useTranslation } from "next-i18next"
-import React, { useContext, useState } from "react"
+import React, { useState } from "react"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
@@ -9,23 +9,32 @@ import { flags } from "./featureFlags"
 
 import {
   Avatar,
+  NavbarLinkBallotQuestions,
+  DESKTOP_NAV_ITEM_CLASS,
   NavbarLinkAI,
   NavbarLinkBills,
-  NavbarLinkHearings,
-  NavbarLinkEditProfile,
+  NavbarLinkAiTools,
   NavbarLinkEffective,
+  NavbarLinkHearings,
+  NavbarLinkProcess,
+  NavbarLinkWhyUse,
+  NavbarLinkEditProfile,
   NavbarLinkFAQ,
   NavbarLinkGoals,
+  NavbarLinkInTheNews,
   NavbarLinkLogo,
   NavbarLinkNewsfeed,
-  NavbarLinkProcess,
   NavbarLinkSignOut,
   NavbarLinkSupport,
   NavbarLinkTeam,
   NavbarLinkTestimony,
-  NavbarLinkViewProfile,
-  NavbarLinkWhyUse
+  NavbarLinkWritingTestimony,
+  NavbarLinkViewProfile
 } from "./NavbarComponents"
+
+const MobileCollapse = styled(Navbar.Collapse)`
+  background-color: var(--maple-brand-primary);
+`
 
 export const MainNavbar: React.FC<React.PropsWithChildren<unknown>> = () => {
   const isMobile = useMediaQuery("(max-width: 768px)")
@@ -34,27 +43,10 @@ export const MainNavbar: React.FC<React.PropsWithChildren<unknown>> = () => {
 }
 
 const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
-  const BlackCollapse = styled(() => {
-    return (
-      <Navbar.Collapse id="basic-navbar-nav" className="bg-black mt-2 ps-4">
-        {/* while MAPLE is trying to do away with inline styling,   *
-         *  both styled-components and bootstrap classes have been  *
-         *  ignoring height properties for some reason              */}
-        <div style={{ height: "100vh" }}>
-          {whichMenu == "site" ? <SiteLinks /> : <ProfileLinks />}
-        </div>
-      </Navbar.Collapse>
-    )
-  })`
-    .bg-black {
-      background-color: black;
-    }
-  `
-
   const ProfileLinks = () => {
     return (
       <Nav className="my-4 d-flex align-items-start">
-        <NavbarLinkViewProfile />
+        <NavbarLinkViewProfile handleClick={closeNav} />
         <NavbarLinkEditProfile
           handleClick={() => {
             closeNav()
@@ -81,6 +73,9 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
     return (
       <Nav className="my-4">
         <NavbarLinkBills handleClick={closeNav} />
+        {flags().ballotQuestions ? (
+          <NavbarLinkBallotQuestions handleClick={closeNav} />
+        ) : null}
         {flags().hearingsAndTranscriptions ? (
           <NavbarLinkHearings handleClick={closeNav} />
         ) : null}
@@ -90,14 +85,17 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           <NavbarLinkGoals handleClick={closeNav} />
           <NavbarLinkTeam handleClick={closeNav} />
           <NavbarLinkSupport handleClick={closeNav} />
+          <NavbarLinkInTheNews handleClick={closeNav} />
           <NavbarLinkFAQ handleClick={closeNav} />
           <NavbarLinkAI handleClick={closeNav} />
         </NavDropdown>
 
         <NavDropdown className={"navLink-primary"} title={t("learn")}>
           <NavbarLinkEffective handleClick={closeNav} />
+          <NavbarLinkWritingTestimony handleClick={closeNav} />
           <NavbarLinkProcess handleClick={closeNav} />
           <NavbarLinkWhyUse handleClick={closeNav} />
+          <NavbarLinkAiTools handleClick={closeNav} />
         </NavDropdown>
       </Nav>
     )
@@ -130,52 +128,73 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 
   return (
     <Navbar
-      bg="secondary"
-      className={`w-100 ${isExpanded ? "pb-0" : ""}`}
+      className={`main-navbar w-100 ${isExpanded ? "pb-0" : ""}`}
+      style={{ backgroundColor: "var(--maple-brand-primary)" }}
       data-bs-theme="dark"
       expand="lg"
       expanded={isExpanded}
     >
       <Col className="ms-3 ps-2">
-        <Navbar.Brand onClick={toggleSite}>
+        <button
+          type="button"
+          onClick={toggleSite}
+          aria-controls="basic-navbar-nav"
+          aria-expanded={isExpanded && whichMenu === "site"}
+          aria-label={
+            isExpanded && whichMenu === "site"
+              ? t("navigation.closeNavMenu")
+              : t("navigation.openNavMenu")
+          }
+          className="mobile-nav-trigger"
+        >
           {isExpanded && whichMenu == "site" ? (
-            <Image
-              src="/Union.svg"
-              alt={t("navigation.closeNavMenu")}
-              width="35"
-              height="35"
-              className="ms-2"
-            />
+            <span className="mobile-nav-close-icon" aria-hidden="true" />
           ) : (
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <span className="navbar-toggler-icon" aria-hidden="true" />
           )}
-        </Navbar.Brand>
+        </button>
       </Col>
       <Col className="d-flex justify-content-center">
         <NavbarLinkLogo handleClick={closeNav} />
       </Col>
       <Col className="d-flex justify-content-end me-3 pe-2">
         {authenticated ? (
-          <Navbar.Brand onClick={toggleAvatar}>
-            <Nav.Link className="p-0 text-white">
+          <button
+            type="button"
+            onClick={toggleAvatar}
+            aria-controls="basic-navbar-nav"
+            aria-expanded={isExpanded && whichMenu === "profile"}
+            aria-label={
+              isExpanded && whichMenu === "profile"
+                ? t("navigation.closeProfileMenu")
+                : t("navigation.openProfileMenu")
+            }
+            className="mobile-nav-trigger"
+          >
+            <span
+              className="p-0 d-inline-flex"
+              style={{ color: "var(--maple-brand-primary-strong)" }}
+            >
               {isExpanded && whichMenu == "profile" ? (
-                <Image
-                  src="/Union.svg"
-                  alt={t("navigation.closeProfileMenu")}
-                  width="35"
-                  height="35"
-                />
+                <span className="mobile-nav-close-icon" aria-hidden="true" />
               ) : (
                 <Avatar />
               )}
-            </Nav.Link>
-          </Navbar.Brand>
+            </span>
+          </button>
         ) : (
           <SignInWithButton />
         )}
       </Col>
 
-      <BlackCollapse />
+      <MobileCollapse id="basic-navbar-nav" className="mt-2 ps-4">
+        {/* while MAPLE is trying to do away with inline styling,   *
+         *  both styled-components and bootstrap classes have been  *
+         *  ignoring height properties for some reason              */}
+        <div style={{ height: "100vh" }}>
+          {whichMenu == "site" ? <SiteLinks /> : <ProfileLinks />}
+        </div>
+      </MobileCollapse>
     </Navbar>
   )
 }
@@ -187,30 +206,37 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   return (
     <Container
       fluid
-      className={`bg-secondary d-flex py-2 sticky-top justify-content-end`}
+      className={`main-navbar desktop-navbar d-flex py-2 sticky-top justify-content-end gap-2`}
+      style={{ backgroundColor: "var(--maple-brand-primary)" }}
     >
       <div className={`me-auto`}>
         <NavbarLinkLogo />
       </div>
 
-      <div className={`align-self-center px-2`}>
+      <div className={`align-self-center`}>
         <NavbarLinkBills />
       </div>
 
+      {flags().ballotQuestions ? (
+        <div className={`align-self-center`}>
+          <NavbarLinkBallotQuestions />
+        </div>
+      ) : null}
+
       {flags().hearingsAndTranscriptions ? (
-        <div className={`align-self-center px-2`}>
+        <div className={`align-self-center`}>
           <NavbarLinkHearings />
         </div>
       ) : (
         <></>
       )}
 
-      <div className="align-self-center px-2">
+      <div className="align-self-center">
         <NavbarLinkTestimony />
       </div>
 
       {authenticated ? (
-        <div className="align-self-center px-2">
+        <div className="align-self-center">
           <NavbarLinkNewsfeed />
         </div>
       ) : (
@@ -219,13 +245,17 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 
       <div className={`align-self-center`}>
         <Dropdown>
-          <Dropdown.Toggle className={`btn-secondary text-white-50`}>
+          <Dropdown.Toggle
+            variant="light"
+            className={`${DESKTOP_NAV_ITEM_CLASS}`}
+          >
             {t("about")}
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <NavbarLinkGoals />
             <NavbarLinkTeam />
             <NavbarLinkSupport />
+            <NavbarLinkInTheNews />
             <NavbarLinkFAQ />
             <NavbarLinkAI />
           </Dropdown.Menu>
@@ -234,13 +264,18 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 
       <div className={`align-self-center`}>
         <Dropdown>
-          <Dropdown.Toggle className={`btn-secondary text-white-50`}>
+          <Dropdown.Toggle
+            variant="light"
+            className={`${DESKTOP_NAV_ITEM_CLASS}`}
+          >
             {t("learn")}
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <NavbarLinkEffective />
+            <NavbarLinkWritingTestimony />
             <NavbarLinkProcess />
             <NavbarLinkWhyUse />
+            <NavbarLinkAiTools />
           </Dropdown.Menu>
         </Dropdown>
       </div>
@@ -248,26 +283,22 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
       {authenticated ? (
         <div className={`align-self-center`}>
           <Dropdown>
-            <Dropdown.Toggle className={`btn-secondary`}>
+            <Dropdown.Toggle
+              variant="light"
+              className={`desktop-navbar-dropdown`}
+            >
               <Avatar />
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              <NavDropdown.Item>
-                <NavbarLinkViewProfile />
-              </NavDropdown.Item>
-              <NavDropdown.Item>
-                <NavbarLinkEditProfile tab={"navigation.editProfile"} />
-              </NavDropdown.Item>
-              <NavDropdown.Item>
-                <NavbarLinkEditProfile tab={"navigation.followingTab"} />
-              </NavDropdown.Item>
-              <NavDropdown.Item>
-                <NavbarLinkSignOut
-                  handleClick={() => {
-                    void signOutAndRedirectToHome()
-                  }}
-                />
-              </NavDropdown.Item>
+              <NavbarLinkViewProfile dropdown />
+              <NavbarLinkEditProfile dropdown tab={"navigation.editProfile"} />
+              <NavbarLinkEditProfile dropdown tab={"navigation.followingTab"} />
+              <NavbarLinkSignOut
+                dropdown
+                handleClick={() => {
+                  void signOutAndRedirectToHome()
+                }}
+              />
             </Dropdown.Menu>
           </Dropdown>
         </div>

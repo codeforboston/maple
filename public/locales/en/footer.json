@@ -6,9 +6,10 @@
     "resources": "Resources"
   },
   "links": {
-    "learnWriting": "To Write Effective Testimony",
+    "learnWriting": "About Testimony",
     "learnProcess": "About the Legislative Process",
     "learnWhy": "Why Use MAPLE",
+    "learnAi": "AI Research Tools",
     "supportMaple": "Support MAPLE",
     "ourMission": "Mission & Goals",
     "team": "Team",
@@ -16,10 +17,9 @@
     "mapleAI": "How MAPLE Uses AI",
     "socials": {
       "instagram": "Follow MAPLE on Intagram",
-      "linkedin":"Follow MAPLE on LinkedIn",
-      "twitter":"Follow MAPLE on Twitter"
+      "linkedin": "Follow MAPLE on LinkedIn",
+      "twitter": "Follow MAPLE on Twitter"
     }
-
   },
   "legal": {
     "disclaimer": "MAPLE is an independent project, not affiliated with the Massachusetts legislature",

@@ -2,14 +2,13 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import { Image, Modal } from "../../bootstrap"
 import { useAppDispatch } from "../../hooks"
-import { usePublishState } from "../hooks"
+import { usePublishCopy, usePublishState } from "../hooks"
 import { setShowThankYou } from "../redux"
-import { useTranslation } from "next-i18next"
 
 const modalDurationMs = 2000
 
 export const ThankYouModal = styled(({ ...rest }) => {
-  const { t } = useTranslation("testimony")
+  const { copy } = usePublishCopy()
   const show = usePublishState().showThankYou
   const dispatch = useAppDispatch()
   const timeout = useRef<number>(-1)
@@ -45,7 +44,9 @@ export const ThankYouModal = styled(({ ...rest }) => {
       <Modal.Body className=" d-flex align-items-center">
         <Image alt="" src="/leaf-bundle.png" className="leaves-ul" />
         <Image alt="" src="/leaf-bundle.png" className="leaves-br" />
-        <div className="thank-you">{t("thankYouModal")}</div>
+        <div className="thank-you">
+          {copy("thankYouModal", "ballotQuestion.thankYouModal")}
+        </div>
         <Image alt="" src="/bill-thank-you.svg" />
       </Modal.Body>
     </Modal>

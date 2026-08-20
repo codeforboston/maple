@@ -1,5 +1,6 @@
 // Import the functions
 import { publishNotifications } from "./publishNotifications"
+import { populateBallotQuestionNotificationEvents } from "./populateBallotQuestionNotificationEvents"
 import { populateBillHistoryNotificationEvents } from "./populateBillHistoryNotificationEvents"
 import { populateTestimonySubmissionNotificationEvents } from "./populateTestimonySubmissionNotificationEvents"
 import { cleanupNotifications } from "./cleanupNotifications"
@@ -9,6 +10,7 @@ import { updateUserNotificationFrequency } from "./updateUserNotificationFrequen
 // Export the functions
 export {
   publishNotifications,
+  populateBallotQuestionNotificationEvents,
   populateBillHistoryNotificationEvents,
   populateTestimonySubmissionNotificationEvents,
   cleanupNotifications,

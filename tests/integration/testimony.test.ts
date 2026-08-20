@@ -24,6 +24,7 @@ type BaseTestimony = {
   content: string
   attachmentId: string | null | undefined
   editReason?: string
+  ballotQuestionId?: string | null
 }
 
 type DraftTestimony = BaseTestimony & {
@@ -225,9 +226,9 @@ describe("publishTestimony", () => {
     const res1 = await publishTestimony({ draftId })
 
     const { uid: uid2 } = await signInTestAdmin()
-    await createDraft(uid2, billId)
+    const { draftId: draftId2 } = await createDraft(uid2, billId)
 
-    const res2 = await publishTestimony({ draftId })
+    const res2 = await publishTestimony({ draftId: draftId2 })
 
     let bill = await getBill(billId)
     expect(bill.testimonyCount).toBe(2)
@@ -366,6 +367,116 @@ describe("publishTestimony", () => {
       expect(publication.attachmentId).toBeTruthy()
       expect(publication2.attachmentId).toBeFalsy()
       expect(attachments.published).toBeFalsy()
+    })
+  })
+
+  describe("ballotQuestionId", () => {
+    beforeAll(async () => {
+      await testDb.collection("ballotQuestions").doc("bq-test-1").set({
+        id: "bq-test-1",
+        billId: null,
+        court: currentGeneralCourt,
+        electionYear: 2026,
+        type: "initiative_statute",
+        ballotStatus: "expectedOnBallot",
+        ballotQuestionNumber: null,
+        relatedBillIds: [],
+        description: null,
+        atAGlance: null,
+        fullSummary: null,
+        pdfUrl: null,
+        title: "Test ballot question"
+      })
+    })
+
+    afterAll(async () => {
+      await testDb.collection("ballotQuestions").doc("bq-test-1").delete()
+    })
+
+    it("Copies ballotQuestionId from draft to published testimony", async () => {
+      const { draftId } = await createDraft(uid, billId, undefined, "bq-test-1")
+      const res = await publishTestimony({ draftId })
+      const publication = await getPublication(uid, res.data.publicationId)
+      expect(publication.ballotQuestionId).toBe("bq-test-1")
+    })
+
+    it("Ballot question testimony does not overwrite existing regular bill testimony", async () => {
+      // Publish regular testimony first
+      const resA = await publishTestimony({ draftId })
+      const publicationIdA = resA.data.publicationId
+
+      // Publish ballot question testimony for same bill
+      const { draftId: bqDraftId } = await createDraft(
+        uid,
+        billId,
+        undefined,
+        "bq-test-1"
+      )
+      const resB = await publishTestimony({ draftId: bqDraftId })
+      const publicationIdB = resB.data.publicationId
+
+      expect(publicationIdA).not.toBe(publicationIdB)
+
+      const pubA = await getPublication(uid, publicationIdA)
+      const pubB = await getPublication(uid, publicationIdB)
+      expect(pubA.ballotQuestionId ?? null).toBeNull()
+      expect(pubB.ballotQuestionId).toBe("bq-test-1")
+    })
+
+    it("Regular bill testimony does not overwrite existing ballot question testimony", async () => {
+      // Publish ballot question testimony first
+      const { draftId: bqDraftId } = await createDraft(
+        uid,
+        billId,
+        undefined,
+        "bq-test-1"
+      )
+      const resA = await publishTestimony({ draftId: bqDraftId })
+      const publicationIdA = resA.data.publicationId
+
+      // Publish regular testimony for same bill
+      const resB = await publishTestimony({ draftId })
+      const publicationIdB = resB.data.publicationId
+
+      expect(publicationIdA).not.toBe(publicationIdB)
+
+      const pubA = await getPublication(uid, publicationIdA)
+      const pubB = await getPublication(uid, publicationIdB)
+      expect(pubA.ballotQuestionId).toBe("bq-test-1")
+      expect(pubB.ballotQuestionId ?? null).toBeNull()
+    })
+
+    it("Fails to publish testimony with a non-existent ballotQuestionId", async () => {
+      const { draftId: bqDraftId } = await createDraft(
+        uid,
+        billId,
+        undefined,
+        "nonexistent-bq"
+      )
+      await expect(publishTestimony({ draftId: bqDraftId })).rejects.toThrow(
+        "invalid ballotQuestionId"
+      )
+    })
+
+    it("Re-publishing ballot question testimony updates the same doc", async () => {
+      const { draftId: bqDraftId } = await createDraft(
+        uid,
+        billId,
+        undefined,
+        "bq-test-1"
+      )
+      const res1 = await publishTestimony({ draftId: bqDraftId })
+
+      await updateDoc(refs.draftTestimony(uid, bqDraftId), {
+        content: "updated ballot question content",
+        editReason: "update reason"
+      })
+      const res2 = await publishTestimony({ draftId: bqDraftId })
+
+      expect(res1.data.publicationId).toBe(res2.data.publicationId)
+      const publication = await getPublication(uid, res2.data.publicationId)
+      expect(publication.version).toBe(2)
+      expect(publication.ballotQuestionId).toBe("bq-test-1")
     })
   })
 })
@@ -507,15 +618,17 @@ async function createDraftAttachment(uid: string, id: string, content: string) {
 async function createDraft(
   uid: string,
   billId: string,
-  court = currentGeneralCourt
+  court = currentGeneralCourt,
+  ballotQuestionId?: string
 ) {
-  const draftId = "test-draft-id"
+  const draftId = nanoid()
   const draft: DraftTestimony = {
     billId,
     content: "test testimony",
     court,
     position: "endorse",
-    attachmentId: null
+    attachmentId: null,
+    ballotQuestionId: ballotQuestionId ?? null
   }
 
   await setDoc(refs.draftTestimony(uid, draftId), draft)

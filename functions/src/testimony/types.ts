@@ -24,7 +24,8 @@ const BaseTestimony = R({
   ),
   attachmentId: Maybe(RtString),
   /** Only present if testimony was edited (has a version greater than 1) */
-  editReason: Maybe(RtString)
+  editReason: Maybe(RtString),
+  ballotQuestionId: Maybe(RtString)
 })
 
 export type Testimony = Static<typeof Testimony>

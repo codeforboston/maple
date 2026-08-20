@@ -33,7 +33,8 @@ export const BaseTestimony = R({
   position: Position,
   content: Content,
   attachmentId: Maybe(String),
-  editReason: Maybe(String)
+  editReason: Maybe(String),
+  ballotQuestionId: Maybe(String)
 })
 export type BaseTestimony = Static<typeof BaseTestimony>
 

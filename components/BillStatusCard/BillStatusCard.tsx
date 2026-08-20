@@ -39,10 +39,10 @@ const HandleBranchStyle = (branchStyle: string) => {
   var returnStyle
   switch (branchStyle) {
     case "HOUSE":
-      returnStyle = { backgroundColor: "#1a3185" }
+      returnStyle = { backgroundColor: "var(--maple-brand-primary)" }
       break
     case "SENATE":
-      returnStyle = { backgroundColor: "#A92929" }
+      returnStyle = { backgroundColor: "var(--maple-brand-senate)" }
       break
     default:
       returnStyle = {
@@ -102,7 +102,7 @@ const ScrollStyle = styled.div`
 
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background: #d9d9d9;
+    background: var(--maple-border-default);
     border-radius: 10px;
   }
 `

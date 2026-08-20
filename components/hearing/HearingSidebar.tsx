@@ -4,12 +4,18 @@ import Link from "next/link"
 import { useCallback, useEffect, useState } from "react"
 import type { ModalProps } from "react-bootstrap"
 import styled from "styled-components"
-import { Col, Image, Modal, Row } from "../bootstrap"
+import { Col, Image, Modal, Row, Dropdown } from "../bootstrap"
 import { firestore } from "../firebase"
 import * as links from "../links"
 import { billSiteURL, Internal } from "../links"
 import { LabeledIcon } from "../shared"
-import { Paragraph, formatVTTTimestamp } from "./hearing"
+import {
+  CommitteeRecommendation,
+  CommitteeVote,
+  CommitteeVoteRecord,
+  LegislativeMemberSummary,
+  TranscriptData
+} from "./hearing"
 
 type Bill = {
   BillNumber: string
@@ -85,7 +91,7 @@ const BillsBody = styled.div`
 `
 
 const ModalLine = styled.hr`
-  border-color: #000000;
+  border-color: currentColor;
   border-style: solid;
   border-width: 1px;
   opacity: 0.1;
@@ -103,10 +109,10 @@ const SidebarBottom = styled.div`
 `
 
 const SidebarHeader = styled.div`
-  background-color: #c0c4dc;
+  background-color: var(--maple-surface-hearing-header);
   border-top-left-radius: 0.75rem;
   border-top-right-radius: 0.75rem;
-  padding-top: 9px;
+  padding-top: var(--maple-space-sm);
 `
 
 const SidebarSubbody = styled.div`
@@ -114,19 +120,19 @@ const SidebarSubbody = styled.div`
 `
 
 export const HearingSidebar = ({
+  activeVideo,
   billsInAgenda,
   committeeCode,
   generalCourtNumber,
   hearingDate,
-  hearingId,
-  transcriptData
+  transcripts
 }: {
+  activeVideo: number
   billsInAgenda: any[] | null
   committeeCode: string | null
   generalCourtNumber: string | null
   hearingDate: string | null
-  hearingId: string
-  transcriptData: Paragraph[] | null
+  transcripts: (TranscriptData | null)[] | null
 }) => {
   const { t } = useTranslation(["common", "hearing"])
 
@@ -186,35 +192,14 @@ export const HearingSidebar = ({
   }, [committeeCode, generalCourtNumber])
 
   useEffect(() => {
-    setDownloadName(`hearing-${hearingId}.vtt`)
-  }, [hearingId])
-
-  useEffect(() => {
-    if (!transcriptData) return
-    const vttLines = ["WEBVTT", ""]
-
-    transcriptData.forEach((paragraph, index) => {
-      const cueNumber = index + 1
-      const startTime = formatVTTTimestamp(paragraph.start)
-      const endTime = formatVTTTimestamp(paragraph.end)
-
-      vttLines.push(
-        String(cueNumber),
-        `${startTime} --> ${endTime}`,
-        paragraph.text,
-        ""
-      )
-    })
-
-    const vtt = vttLines.join("\n")
-    const blob = new Blob([vtt], { type: "text/vtt" })
-    const url = URL.createObjectURL(blob)
+    if (!transcripts || !transcripts[activeVideo]) return
+    setDownloadName(transcripts[activeVideo]!.filename)
+    const url = URL.createObjectURL(transcripts[activeVideo]!.blob)
     setDownloadURL(url)
-
     return () => {
       URL.revokeObjectURL(url)
     }
-  }, [transcriptData])
+  }, [activeVideo, transcripts])
 
   useEffect(() => {
     committeeCode && generalCourtNumber ? committeeData() : null
@@ -245,14 +230,21 @@ export const HearingSidebar = ({
           ) : (
             <></>
           )}
-          {downloadURL !== "" ? (
+          {downloadURL !== "" &&
+          transcripts !== null &&
+          transcripts[activeVideo] !== null ? (
             <div>
               <a
                 href={downloadURL}
                 download={downloadName}
                 className="text-blue-600 underline"
               >
-                {t("download_transcript", { ns: "hearing" })}
+                {transcripts.length == 1
+                  ? t("download_transcript", { ns: "hearing" })
+                  : t("download_transcript_x", {
+                      ns: "hearing",
+                      title: transcripts[activeVideo]!.title
+                    })}
               </a>
             </div>
           ) : (
@@ -379,9 +371,9 @@ function AgendaBill({
   const { t } = useTranslation(["common", "hearing"])
   const BillNumber = element.BillNumber
   const CourtNumber = element.GeneralCourtNumber
-  const [committeeRecommendations, setCommitteeRecommendations] = useState<any>(
-    []
-  )
+  const [committeeActions, setCommitteeActions] = useState<
+    CommitteeRecommendation[]
+  >([])
   const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
 
   const close = () => setSettingsModal(null)
@@ -392,20 +384,35 @@ function AgendaBill({
     )
     const docData = bill.data()
 
-    setCommitteeRecommendations(docData?.content.CommitteeRecommendations)
+    // All recommendations for this bill
+    let committeeRecommendations: CommitteeRecommendation[] =
+      docData?.content.CommitteeRecommendations
+    for (const action of committeeRecommendations) {
+      action.Votes = action.Votes?.filter(
+        vote =>
+          vote.Vote &&
+          vote.Vote.length &&
+          vote.Vote.some(
+            vote =>
+              vote.Adverse?.length ||
+              vote.Favorable?.length ||
+              vote.NoVoteRecorded?.length ||
+              vote.ReserveRight?.length
+          )
+      )
+    }
+    // Recommendations for this bill from the relevant committee (regardless of whether they are in this hearing specifically)
+    committeeRecommendations = committeeRecommendations.filter(
+      action =>
+        action.Committee?.CommitteeCode === committeeCode &&
+        action.Votes?.length
+    )
+    setCommitteeActions(committeeRecommendations)
   }, [BillNumber, CourtNumber])
 
   useEffect(() => {
     BillNumber && CourtNumber ? hearingBill() : null
   }, [BillNumber, hearingBill, CourtNumber])
-
-  let committeeActions = []
-
-  committeeRecommendations
-    ? (committeeActions = committeeRecommendations.filter(
-        (action: any) => action.Committee.CommitteeCode === committeeCode
-      ))
-    : null
 
   return (
     <>
@@ -415,7 +422,7 @@ function AgendaBill({
             {BillNumber}
           </Internal>
           <SidebarSubbody className={`my-2`}>{element.Title}</SidebarSubbody>
-          {committeeActions[0]?.Votes[0]?.Question ? (
+          {committeeActions.length > 0 ? (
             <SidebarSubbody className={`d-flex justify-content-end mb-2`}>
               <button
                 className={`bg-transparent border-0 d-flex text-nowrap text-secondary mt-1 mx-1 p-1`}
@@ -429,22 +436,24 @@ function AgendaBill({
           )}
         </div>
       </div>
-      <VotesModal
-        BillNumber={BillNumber}
-        committeeActions={committeeActions}
-        CourtNumber={CourtNumber}
-        generalCourtNumber={generalCourtNumber}
-        onHide={close}
-        onSettingsModalClose={() => setSettingsModal(null)}
-        show={settingsModal === "show"}
-      />
+      {committeeActions.length > 0 ? (
+        <VotesModal
+          BillNumber={BillNumber}
+          committeeActions={committeeActions}
+          CourtNumber={CourtNumber}
+          generalCourtNumber={generalCourtNumber}
+          onHide={close}
+          onSettingsModalClose={() => setSettingsModal(null)}
+          show={settingsModal === "show"}
+        />
+      ) : null}
     </>
   )
 }
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
   BillNumber: string
-  committeeActions: any
+  committeeActions: CommitteeRecommendation[]
   CourtNumber: number
   generalCourtNumber: string | null
   onSettingsModalClose: () => void
@@ -460,6 +469,25 @@ function VotesModal({
   show
 }: Props) {
   const { t } = useTranslation(["common", "editProfile", "hearing"])
+  const votes: CommitteeVote[] = []
+  const [selectedVote, setSelectedVote] = useState(0)
+  for (const action of committeeActions) {
+    for (const vote of action.Votes!) {
+      // Merge different vote arrays into [0]
+      const record = vote.Vote!.reduce((acc, vote) => {
+        for (const [key, values] of Object.entries(vote) as [
+          keyof CommitteeVoteRecord,
+          LegislativeMemberSummary[]
+        ][]) {
+          acc[key] ??= []
+          acc[key]!.push(...values)
+        }
+        return acc
+      }, {})
+      vote.Vote = [record]
+      votes.push(vote)
+    }
+  }
 
   return (
     <Modal show={show} onHide={onHide} aria-labelledby="votes-modal" centered>
@@ -477,16 +505,40 @@ function VotesModal({
         />
       </Modal.Header>
       <Modal.Body className={`bg-white p-3`}>
-        <div className={`fw-bold`}>
-          {committeeActions[0]?.Votes[0]?.Question}
+        <div className="fw-bold">
+          {votes.length > 1 ? (
+            <Dropdown>
+              <Dropdown.Toggle
+                variant="link"
+                className="p-0 text-start text-dark fw-bold text-decoration-none"
+                style={{ whiteSpace: "normal" }}
+              >
+                {votes[selectedVote].Question}
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu className="w-100">
+                {votes.map((vote, n) => (
+                  <Dropdown.Item
+                    key={n}
+                    className="text-wrap"
+                    onClick={() => setSelectedVote(n)}
+                  >
+                    {vote.Question}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+          ) : (
+            votes[selectedVote].Question
+          )}
         </div>
         <ModalLine />
         <div className={`fw-bold`}>
           {t("yes", { ns: "hearing" })} (
-          {committeeActions[0]?.Votes[0]?.Vote[0]?.Favorable.length})
+          {votes[selectedVote]?.Vote![0].Favorable?.length ?? 0})
         </div>
         {generalCourtNumber &&
-          committeeActions[0]?.Votes[0]?.Vote[0]?.Favorable.map(
+          (votes[selectedVote]?.Vote![0].Favorable ?? []).map(
             (element: any, index: number) => (
               <Vote
                 key={index}
@@ -499,10 +551,10 @@ function VotesModal({
 
         <div className={`fw-bold`}>
           {t("no", { ns: "hearing" })} (
-          {committeeActions[0]?.Votes[0]?.Vote[0]?.Adverse.length})
+          {votes[selectedVote].Vote![0].Adverse?.length ?? 0})
         </div>
         {generalCourtNumber &&
-          committeeActions[0]?.Votes[0]?.Vote[0]?.Adverse.map(
+          (votes[selectedVote]?.Vote![0].Adverse ?? []).map(
             (element: any, index: number) => (
               <Vote
                 key={index}
@@ -515,10 +567,10 @@ function VotesModal({
 
         <div className={`fw-bold`}>
           {t("no_vote", { ns: "hearing" })} (
-          {committeeActions[0]?.Votes[0]?.Vote[0]?.NoVoteRecorded.length})
+          {votes[selectedVote]?.Vote![0].NoVoteRecorded?.length ?? 0})
         </div>
         {generalCourtNumber &&
-          committeeActions[0]?.Votes[0]?.Vote[0]?.NoVoteRecorded.map(
+          (votes[selectedVote]?.Vote![0].NoVoteRecorded ?? []).map(
             (element: any, index: number) => (
               <Vote
                 key={index}
@@ -531,10 +583,10 @@ function VotesModal({
 
         <div className={`fw-bold`}>
           {t("reserve_right", { ns: "hearing" })} (
-          {committeeActions[0]?.Votes[0]?.Vote[0]?.ReserveRight.length})
+          {votes[selectedVote]?.Vote![0].ReserveRight?.length ?? 0})
         </div>
         {generalCourtNumber &&
-          committeeActions[0]?.Votes[0]?.Vote[0]?.ReserveRight.map(
+          (votes[selectedVote]?.Vote![0].ReserveRight ?? []).map(
             (element: any, index: number) => (
               <Vote
                 key={index}
@@ -561,7 +613,7 @@ function VotesModal({
 
 const VoteRow = styled.div`
   &:nth-child(even) {
-    background-color: #eae7e7;
+    background-color: var(--maple-surface-page);
   &:nth-child(odd) {
     background-color: white;
   }

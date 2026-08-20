@@ -42,7 +42,7 @@ export function ResourcesCard({}: Props) {
 
 const Container = styled.div`
   width: 255px;
-  background-color: #1a3185;
+  background-color: var(--maple-brand-primary);
   height: 223px;
   margin: 1rem;
   border-radius: 20px;
@@ -76,7 +76,7 @@ const LanguagesContainer = styled.div`
   font-weight: 500;
   font-size: 22px;
   line-height: 27px;
-  color: #ffffff;
+  color: var(--maple-surface-base);
   padding-top: 20px;
 `
 
@@ -88,7 +88,7 @@ const PrivacyContainer = styled.div`
 `
 
 const Links = styled.a`
-  color: #ffffff;
+  color: var(--maple-surface-base);
   text-decoration: none;
   position: relative;
   :after {
@@ -98,7 +98,7 @@ const Links = styled.a`
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: #ffffff;
+    background-color: var(--maple-surface-base);
     transition: all 300ms linear;
     transform-origin: left center;
     transform: scaleX(0);
@@ -110,7 +110,7 @@ const Links = styled.a`
       transform: scaleX(1);
       opacity: 1;
     }
-    color: #ffffff;
+    color: var(--maple-surface-base);
   }
 `
 

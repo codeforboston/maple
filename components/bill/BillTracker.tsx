@@ -61,7 +61,7 @@ export const BillStageStrip = ({
   const color = isCurrentStage
     ? "var(--bs-green)"
     : isPastStage
-    ? "#8EBC81"
+    ? "var(--maple-brand-stage-past)"
     : "var(--bs-gray)"
 
   return (

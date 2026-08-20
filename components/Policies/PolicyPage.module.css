@@ -5,7 +5,7 @@
 .sharedValues {
   font-size: 1rem;
   font-weight: 700;
-  color: #1a3185;
+  color: var(--maple-brand-primary);
   text-align: justify;
   margin-top: 1rem;
   margin-bottom: 0.5rem;
@@ -34,7 +34,7 @@
   align-items: center;
   width: 325px;
   height: 100px;
-  background: #1a3185;
+  background: var(--maple-brand-primary);
   border-radius: 10px;
 }
 
@@ -62,7 +62,7 @@ hr.bottomBorder {
   justify-content: center;
   align-items: flex-end;
   background: none;
-  color: #000;
+  color: var(--maple-text-strong);
   width: 100%;
   margin-bottom: 24px;
   font-size: 1.3rem;
@@ -85,20 +85,20 @@ hr.bottomBorder {
 }
 
 .policyContent button.currentTab {
-  border-bottom: inset 5px #902323;
-  color: #902323;
+  border-bottom: inset 5px var(--maple-brand-danger);
+  color: var(--maple-brand-danger);
 }
 
 .policyContent button:hover,
 .policyContent button.currentTab:hover {
-  color: #fff;
-  background-color: #902323;
-  border-bottom: inset 5px #902323;
+  color: var(--maple-surface-base);
+  background-color: var(--maple-brand-danger);
+  border-bottom: inset 5px var(--maple-brand-danger);
 }
 
 /* ---------- Policy Content ------------*/
 .policyContent ul {
-  background: #fff;
+  background: var(--maple-surface-base);
   list-style-type: none;
   padding: 0 20px;
   padding-bottom: 20px;
@@ -114,7 +114,7 @@ hr.bottomBorder {
 }
 
 .policyContent ul hr {
-  background: #000;
+  background: var(--maple-text-strong);
   height: 2px;
 }
 
@@ -131,14 +131,14 @@ hr.bottomBorder {
 }
 
 .policyContent h2 {
-  color: #1a3185;
+  color: var(--maple-brand-primary);
   font-size: 1rem;
   font-weight: bold;
   padding-top: 45px;
 }
 
 .policyContent h3 {
-  color: #1a3185;
+  color: var(--maple-brand-primary);
   font-size: 1rem;
   font-weight: bold;
 }

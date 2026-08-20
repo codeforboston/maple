@@ -1,0 +1,329 @@
+# Admin Scripts
+
+One-off migration, seeding, and administrative scripts for the Maple platform. These are not part of the deployed application — they run locally against a target environment (local emulators, dev, or prod).
+
+## Prerequisites
+
+- Node.js / yarn installed (`yarn install` to get all deps including `@swc/core`)
+- For `local`: Firebase emulators running (`yarn emulators:start`)
+- For `dev` / `prod`: a Google service account key, either in `GOOGLE_APPLICATION_CREDENTIALS` or passed via `--creds <path>`
+
+---
+
+## Firebase Admin Scripts
+
+Scripts in `scripts/firebase-admin/` share a common CLI dispatcher (`index.ts`) that initialises a Firestore `db`, Firebase `auth`, and related helpers before running the named script.
+
+### Running a script
+
+```sh
+yarn firebase-admin run-script <script-name> --env <local|dev|prod> [-- <script-specific args>]
+
+# With explicit credentials (for dev/prod)
+yarn firebase-admin run-script <script-name> --env prod --creds /path/to/key.json
+
+# Interactive REPL (db, auth, etc. in scope)
+yarn firebase-admin console --env local
+```
+
+### Scripts
+
+#### `backfillTestimonyBallotQuestionId`
+
+Stamps `ballotQuestionId: null` onto every `publishedTestimony` and `archivedTestimony` document that is missing the field.
+
+**Why it exists:** The composite Firestore index used by `resolvePublication()` (which queries by `billId + court + ballotQuestionId`) excludes documents where an indexed field is absent. Without this backfill, re-publishing legacy testimony creates a duplicate record instead of updating the existing one.
+
+**Idempotent:** Documents that already have the field set (to any value) are skipped, so it is safe to re-run.
+
+**When to run:** Once against each environment after deploying the ballot-questions feature. Can be deleted from the codebase once confirmed executed everywhere.
+
+```sh
+yarn firebase-admin run-script backfillTestimonyBallotQuestionId --env local
+yarn firebase-admin run-script backfillTestimonyBallotQuestionId --env dev
+yarn firebase-admin run-script backfillTestimonyBallotQuestionId --env prod
+```
+
+---
+
+#### `syncBallotQuestions`
+
+Upserts ballot question records from local YAML files into the `ballotQuestions` Firestore collection. Each file is validated against the `BallotQuestion` type before being written; invalid files abort with an error. All writes are committed atomically in a single Firestore batch.
+
+Persisted testimony counters on existing ballot-question documents are preserved during sync so YAML refreshes do not wipe live testimony data.
+
+```sh
+# Uses ./ballotQuestions/ directory by default
+yarn firebase-admin run-script syncBallotQuestions --env local
+
+# Specify a custom directory
+yarn firebase-admin run-script syncBallotQuestions --env dev -- --dir /path/to/yaml-dir
+```
+
+YAML files must export a document whose shape matches the `BallotQuestion` type defined in `functions/src/ballotQuestions/types.ts`, including a top-level `id` field used as the Firestore document ID.
+
+For phase 1, ballot-question YAML should include these fields when available:
+
+```yaml
+id: "23-36"
+billId: "H4252"
+title: "Elimination of MCAS as High School Graduation Requirement"
+court: 193
+electionYear: 2024
+type: initiative_statute
+ballotStatus: accepted
+ballotQuestionNumber: 2
+relatedBillIds: []
+description: "Would replace the MCAS graduation requirement with district-certified coursework mastery."
+alertFlag: |-
+  Legal challenge pending. [Read more](https://example.com/legal-challenge).
+alertTip: "This may affect whether the question appears on the ballot."
+atAGlance:
+  - label: "What it does"
+    value: "Removes MCAS as a graduation requirement."
+voteEffectYes: "A YES vote would replace the MCAS graduation requirement with district-certified coursework mastery."
+voteEffectNo: "A NO vote would make no change in the law governing the MCAS graduation requirement."
+fiscalConsequences: "The proposed law has no discernible material fiscal consequences for state and municipal government finances."
+inFavor: "..."
+against: "..."
+campaignFinancials:
+  support:
+    - committee: "Committee name"
+      cashRaised: 950000
+      spent: 950000
+      inKind: 15604360.49
+  oppose: []
+fullSummary: "Official summary text from the voter guide."
+pdfUrl: "https://..."
+```
+
+Notes:
+
+- `description`, `alertFlag`, `alertTip`, `atAGlance`, `voteEffectYes`, `voteEffectNo`, `fiscalConsequences`, `inFavor`, `against`, `campaignFinancials`, and `pdfUrl` are optional in the schema and may be `null`.
+- `alertFlag` supports sanitized Markdown links. Keep `alertTip` plain text.
+- `campaignFinancials` is only shown in the UI when present.
+
+### Field Reference
+
+**Core fields** (required):
+
+- `id` - Unique identifier for the ballot question (e.g., `"23-36"`)
+- `court` - General Court number where the question originated (e.g., `193`)
+- `electionYear` - Year the question appears on the ballot (e.g., `2024`)
+- `type` - Category of question: `initiative_statute`, `initiative_constitutional`, `legislative_referral`, `constitutional_amendment`, or `advisory`
+- `ballotStatus` - Status of the question: `expectedOnBallot`, `failedToAppear`, `rejected`, or `accepted`
+
+**Linking fields** (optional):
+
+- `billId` - Associated bill identifier if the question relates to legislation (e.g., `"H4252"`)
+- `relatedBillIds` - Array of other related bill IDs
+
+**Position fields** (optional):
+
+- `ballotQuestionNumber` - Position on the ballot (e.g., `2`)
+
+**Title and summary** (optional):
+
+- `title` - Short title of the question displayed to users
+- `description` - Brief context or summary of what the question is about
+- `fullSummary` - Official summary text from the Massachusetts Attorney General (voter guide text)
+
+**Information cards** (optional):
+
+- `atAGlance` - Array of key detail cards shown in the Overview tab. Each card has `label` and `value` fields to highlight important facts
+
+**Vote effects** (optional):
+
+- `voteEffectYes` - Plain text describing what a YES vote would accomplish
+- `voteEffectNo` - Plain text describing what a NO vote would accomplish
+
+**Fiscal impact** (optional):
+
+- `fiscalConsequences` - Plain text explaining expected budget or financial impact on state/municipalities
+
+**Arguments** (optional):
+
+- `inFavor` - Argument written by proponents of the question (supports markdown formatting)
+- `against` - Argument written by opponents of the question (supports markdown formatting)
+- `supportCommittee` - Name of the committee/organization sponsoring the yes argument (e.g., `"Committee for High Standards Not High Stakes 95507"`)
+- `opposeCommittee` - Name of the committee/organization sponsoring the no argument (e.g., `"Protect Our Kids' Future: Vote No on 2 95518"`)
+
+**Campaign financials** (optional):
+
+- `campaignFinancials` - Committee receipts and expenditures for the election. Structure:
+  ```yaml
+  campaignFinancials:
+    support:
+      - cashRaised: 950000 # Contributions in cash
+        spent: 950000 # Cash expenditures
+        inKind: 15604360.49 # In-kind contributions (goods/services)
+    oppose:
+      - cashRaised: 5318307.02
+        spent: 5318307.02
+        inKind: 93763.81
+  ```
+
+**Notices and links** (optional):
+
+- `alertFlag` - Important notice to display to users (supports Markdown links for external resources, e.g., legal challenge info)
+- `alertTip` - Plain text tooltip to provide context for the alert (displayed as a help icon)
+- `pdfUrl` - Link to the full text of the bill (if applicable)
+
+**Counters** (auto-managed):
+
+- `testimonyCount`, `endorseCount`, `neutralCount`, `opposeCount` - Live testimony counts on the ballot question page. Managed by the system; don't edit manually in YAML. Preserved during sync refreshes.
+
+---
+
+#### `backfillBallotQuestionTestimonyCounts`
+
+Computes and stores `testimonyCount`, `endorseCount`, `neutralCount`, and `opposeCount` on every ballot-question document from `publishedTestimony`.
+
+**Why it exists:** Ballot-question pages now read persisted counters from the ballot-question document instead of recomputing them on every request. Existing environments need a one-time backfill so legacy ballot questions start with correct stored counts.
+
+**Idempotent:** The script overwrites only the four counter fields based on current published testimony, so it is safe to re-run.
+
+```sh
+yarn firebase-admin run-script backfillBallotQuestionTestimonyCounts --env local
+yarn firebase-admin run-script backfillBallotQuestionTestimonyCounts --env dev
+yarn firebase-admin run-script backfillBallotQuestionTestimonyCounts --env prod
+```
+
+---
+
+#### `backfillBillCourt`
+
+<!-- TODO: document -->
+
+#### `backfillBillPdfText`
+
+Fills missing `content.DocumentText` on bill documents by checking the MA
+Legislature Document API and then falling back to embedded text in the official
+bill PDF. The script is dry-run by default; pass `--commit true` to write
+updates.
+
+```sh
+yarn firebase-admin run-script backfillBillPdfText --env dev -- --court 194 --bills "H1 H18 H4787 H5008 S2539" --output ./bill-pdf-text-dry-run.csv
+yarn firebase-admin run-script backfillBillPdfText --env dev -- --court 194 --commit true --output ./bill-pdf-text-dev.csv
+```
+
+See `docs/bill-pdf-text-extraction.md` for extraction categories and the LLM
+summary/topic follow-up.
+
+#### `backfillBillNotificationEvents`
+
+<!-- TODO: document -->
+
+#### `backfillHearingTranscription`
+
+<!-- TODO: document -->
+
+#### `backfillNextDigestAt`
+
+<!-- TODO: document -->
+
+#### `backfillOrganizationTestimony`
+
+<!-- TODO: document -->
+
+#### `backfillPublishedTestimonyId`
+
+<!-- TODO: document -->
+
+#### `backfillTestimonyBillTitle`
+
+<!-- TODO: document -->
+
+#### `backfillUserRoles`
+
+<!-- TODO: document -->
+
+#### `backfillWeeklyFrequency`
+
+<!-- TODO: document -->
+
+#### `batchDeleteTestimony`
+
+<!-- TODO: document -->
+
+#### `generateBill`
+
+<!-- TODO: document -->
+
+#### `generateBillHistory`
+
+<!-- TODO: document -->
+
+#### `list-all-users`
+
+<!-- TODO: document -->
+
+#### `migrateHearingTranscription`
+
+<!-- TODO: document -->
+
+#### `runScrapers`
+
+<!-- TODO: document -->
+
+#### `seedActiveTopicSubscriptions`
+
+<!-- TODO: document -->
+
+#### `seedTopicEvents`
+
+<!-- TODO: document -->
+
+#### `sendTestEmail`
+
+<!-- TODO: document -->
+
+#### `touchBills`
+
+<!-- TODO: document -->
+
+#### `updateDisplayNames`
+
+<!-- TODO: document -->
+
+#### `updateHistory`
+
+<!-- TODO: document -->
+
+---
+
+## Typesense Admin
+
+Manages the Typesense search index. Integrates with Firebase secrets to retrieve API keys.
+
+```sh
+yarn typesense-admin <command> --env <local|dev|prod>
+```
+
+### Commands
+
+<!-- TODO: document commands (console, create-search-key, list-keys, delete-key) -->
+
+---
+
+## `generate-stories`
+
+<!-- TODO: document -->
+
+---
+
+## `setRole` (quick alias)
+
+A convenience alias for the `setRole` firebase-admin script. See the script entry above.
+
+```sh
+yarn setRole --env <local|dev|prod> [args]
+```
+
+<!-- TODO: document arguments -->
+
+---
+
+## CI test
+
+The `integration_tests` job in `.github/workflows/repo-checks.yml` runs `backfillTestimonyBallotQuestionId` end-to-end via `yarn firebase-admin run-script` against the Firebase emulator to verify the CLI runner is working. This covers the full path: ts-node compilation, `run-script` dispatch, dynamic script loading, and Firestore writes.

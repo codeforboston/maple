@@ -1,12 +1,15 @@
-import { useRouter } from "next/router"
-import { useEffect } from "react"
+import { createPage } from "../../components/page"
+import LearnHub from "components/learn/Hub/LearnHub"
+import { createGetStaticTranslationProps } from "components/translations"
 
-export default function Page() {
-  const router = useRouter()
+export default createPage({
+  titleI18nKey: "titles.learn_hub",
+  Page: () => <LearnHub />
+})
 
-  useEffect(() => {
-    router.push("/learn/testimony-basics")
-  })
-
-  return null
-}
+export const getStaticProps = createGetStaticTranslationProps([
+  "auth",
+  "common",
+  "footer",
+  "learn"
+])

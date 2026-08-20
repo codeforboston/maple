@@ -1,24 +1,44 @@
 import { Card, ListItem, ListItemProps } from "components/Card"
+import { dbService } from "components/db/api"
 import { useFlags } from "components/featureFlags"
 import { formatBillId } from "components/formatting"
 import { formUrl } from "components/publish"
-import { FC, ReactElement, useContext, useEffect } from "react"
+import { FC, ReactElement, useContext, useEffect, useState } from "react"
 import { useCurrentTestimonyDetails } from "./testimonyDetailSlice"
 import { useTranslation } from "next-i18next"
 import { useRouter } from "next/router"
 import { useAuth } from "components/auth"
-import { TopicQuery } from "components/shared/FollowingQueries"
+import {
+  ballotQuestionTopicName,
+  billTopicName,
+  followBallotQuestion,
+  followBill,
+  followsTopic,
+  unfollowBallotQuestion,
+  unfollowBill
+} from "components/shared/FollowingQueries"
 import { StyledImage } from "components/ProfilePage/StyledProfileComponents"
 import { FollowContext } from "components/shared/FollowContext"
+import { isActiveBallotQuestionPhase } from "components/ballotquestions/status"
 
 interface PolicyActionsProps {
   className?: string
   isUser?: boolean
   isReporting: boolean
   setReporting: (boolean: boolean) => void
-  topicName: string
-  followAction: () => Promise<void>
-  unfollowAction: () => Promise<void>
+}
+
+function formatBallotQuestionPolicyLabel(
+  ballotQuestionId: string,
+  ballotQuestion?: {
+    title?: string | null
+    description?: string | null
+  } | null
+) {
+  const title = ballotQuestion?.title ?? ballotQuestion?.description
+  return title
+    ? `Ballot Question ${ballotQuestionId}: ${title}`
+    : `Ballot Question ${ballotQuestionId}`
 }
 
 const PolicyActionItem: FC<React.PropsWithChildren<ListItemProps>> = props => (
@@ -29,42 +49,95 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
   className,
   isUser,
   isReporting,
-  setReporting,
-  topicName,
-  followAction,
-  unfollowAction
+  setReporting
 }) => {
-  const { bill } = useCurrentTestimonyDetails(),
+  const { bill, revision, ballotQuestion } = useCurrentTestimonyDetails(),
     billLabel = formatBillId(bill.id)
   const { notifications } = useFlags()
 
   const { user } = useAuth()
   const uid = user?.uid
+
   const router = useRouter()
 
+  const ballotQuestionId = revision.ballotQuestionId ?? undefined
+  const ballotQuestionTopic = ballotQuestionId
+    ? { court: bill.court, id: ballotQuestionId }
+    : null
+  const policyLabel = ballotQuestionTopic
+    ? formatBallotQuestionPolicyLabel(ballotQuestionTopic.id, ballotQuestion)
+    : billLabel
+  const topicName = ballotQuestionTopic
+    ? ballotQuestionTopicName(ballotQuestionTopic.court, ballotQuestionTopic.id)
+    : billTopicName(bill.court, bill.id)
+
+
   const { followStatus, setFollowStatus } = useContext(FollowContext)
+  const [canEditBallotQuestionTestimony, setCanEditBallotQuestionTestimony] =
+    useState(!ballotQuestionId)
 
   useEffect(() => {
     uid
-      ? TopicQuery(uid, topicName).then(result => {
-          setFollowStatus(prevOrgFollowGroup => {
-            return { ...prevOrgFollowGroup, [topicName]: Boolean(result) }
-          })
+      ? followsTopic(uid, topicName).then(result => {
+          setFollowStatus(prev => ({ ...prev, [topicName]: result }))
         })
       : null
   }, [uid, topicName, setFollowStatus])
 
+  useEffect(() => {
+    if (!ballotQuestionId) {
+      setCanEditBallotQuestionTestimony(true)
+      return
+    }
+
+    if (ballotQuestion) {
+      setCanEditBallotQuestionTestimony(
+        isActiveBallotQuestionPhase(ballotQuestion.ballotStatus)
+      )
+      return
+    }
+
+    let active = true
+    dbService()
+      .getBallotQuestion({ id: ballotQuestionId })
+      .then(ballotQuestion => {
+        if (!active) return
+        setCanEditBallotQuestionTestimony(
+          !!ballotQuestion &&
+            isActiveBallotQuestionPhase(ballotQuestion.ballotStatus)
+        )
+      })
+      .catch(() => {
+        if (active) setCanEditBallotQuestionTestimony(false)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [ballotQuestion, ballotQuestionId])
+
   const FollowClick = async () => {
-    await followAction()
-    setFollowStatus({ ...followStatus, [topicName]: true })
+    if (ballotQuestionTopic) {
+      await followBallotQuestion(uid, ballotQuestionTopic)
+    } else {
+      await followBill(uid, bill)
+    }
+    setFollowStatus(prev => ({ ...prev, [topicName]: true }))
   }
 
   const UnfollowClick = async () => {
-    await unfollowAction()
-    setFollowStatus({ ...followStatus, [topicName]: false })
+    if (ballotQuestionTopic) {
+      await unfollowBallotQuestion(uid, ballotQuestionTopic)
+    } else {
+      await unfollowBill(uid, bill)
+    }
+    setFollowStatus(prev => ({ ...prev, [topicName]: false }))
   }
 
+  const { t } = useTranslation("testimony")
+
   const isFollowing = followStatus[topicName]
+  const isUnverified = !!user && !isUser && !user.emailVerified
   const text = isFollowing ? "Unfollow" : "Follow"
   const checkmark = isFollowing ? (
     <StyledImage src="/check-white.svg" alt="" />
@@ -85,7 +158,7 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
       <PolicyActionItem
         onClick={e => handleClick(e)}
         key="follow"
-        billName={`${text} ${billLabel}`}
+        billName={`${text} ${policyLabel}`}
       />
     )
   items.push(
@@ -95,15 +168,22 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
       onClick={() => setReporting(!isReporting)}
     />
   )
-  items.push(
-    <PolicyActionItem
-      key="add-testimony"
-      billName={`${isUser ? "Edit" : "Add"} Testimony for ${billLabel}`}
-      href={formUrl(bill.id, bill.court)}
-    />
-  )
-
-  const { t } = useTranslation("testimony")
+  if (canEditBallotQuestionTestimony)
+    items.push(
+      <PolicyActionItem
+        key="add-testimony"
+        billName={
+          isUnverified
+            ? t("panel.unverifiedEmail.title")
+            : `${isUser ? "Edit" : "Add"} Testimony for ${policyLabel}`
+        }
+        href={
+          isUnverified
+            ? `/profile?id=${uid}`
+            : formUrl(bill.id, bill.court, "position", ballotQuestionId)
+        }
+      />
+    )
 
   return (
     <Card

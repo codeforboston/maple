@@ -23,10 +23,17 @@ export class SearchIndexer {
   private collection: Collection | undefined
 
   constructor(private readonly config: CollectionConfig) {
-    const schemaHash = hash(config.schema, {
-      algorithm: "md5",
-      unorderedArrays: true
-    })
+    const schemaHash = hash(
+      {
+        schema: config.schema,
+        filter: config.filter?.toString(),
+        convert: config.convert.toString()
+      },
+      {
+        algorithm: "md5",
+        unorderedArrays: true
+      }
+    )
     this.collectionName = `${config.alias}_${schemaHash}`
   }
 

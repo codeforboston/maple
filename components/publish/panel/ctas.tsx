@@ -6,6 +6,8 @@ import { Wrap } from "../../links"
 import { formUrl, usePublishState } from "../hooks"
 import { useTranslation } from "next-i18next"
 
+export type PanelCtaVariant = "default" | "ballotQuestion"
+
 const Styled = styled.div`
   display: flex;
   flex-direction: column;
@@ -39,10 +41,28 @@ const Cta = ({
   )
 }
 
+const CompactPanel = ({
+  title,
+  cta
+}: {
+  title?: string
+  cta: ReactElement
+}) => (
+  <div className="d-grid gap-3">
+    {title && (
+      <div className="rounded border bg-light px-3 py-3 small text-body-secondary fw-semibold">
+        {title}
+      </div>
+    )}
+    {cta}
+  </div>
+)
+
 const OpenForm = ({ label, ...props }: { label: string } & ButtonProps) => {
-  const bill = usePublishState().bill!
+  const { bill, ballotQuestionId } = usePublishState()
+  if (!bill) return null
   return (
-    <Wrap href={formUrl(bill.id, bill.court)}>
+    <Wrap href={formUrl(bill.id, bill.court, "position", ballotQuestionId)}>
       <Button variant="primary" {...props}>
         {label}
       </Button>
@@ -50,68 +70,144 @@ const OpenForm = ({ label, ...props }: { label: string } & ButtonProps) => {
   )
 }
 
-export const CreateTestimony = () => {
+export const CreateTestimony = ({
+  variant = "default"
+}: {
+  variant?: PanelCtaVariant
+}) => {
   const { t } = useTranslation("testimony")
-
-  return (
-    <Cta
-      title={t("panel.createTestimony.title")}
-      cta={<OpenForm label={t("panel.createTestimony.label")} />}
+  const namespace =
+    variant === "ballotQuestion" ? "ballotQuestion.panel" : "panel"
+  const cta = (
+    <OpenForm
+      label={t(`${namespace}.createTestimony.label`)}
+      className={
+        variant === "ballotQuestion"
+          ? "w-100 py-2 small fw-semibold"
+          : undefined
+      }
     />
+  )
+
+  return variant === "ballotQuestion" ? (
+    <CompactPanel cta={cta} />
+  ) : (
+    <Cta title={t(`${namespace}.createTestimony.title`)} cta={cta} />
   )
 }
 
-export const CompleteTestimony = () => {
+export const CompleteTestimony = ({
+  variant = "default"
+}: {
+  variant?: PanelCtaVariant
+}) => {
   const { t } = useTranslation("testimony")
-
-  return (
-    <Cta
-      title={t("panel.completeTestimony.title")}
-      cta={
-        <OpenForm
-          label={t("panel.completeTestimony.label")}
-          variant="info"
-          className="text-white"
-        />
+  const namespace =
+    variant === "ballotQuestion" ? "ballotQuestion.panel" : "panel"
+  const cta = (
+    <OpenForm
+      label={t(`${namespace}.completeTestimony.label`)}
+      variant={variant === "ballotQuestion" ? "primary" : "info"}
+      className={
+        variant === "ballotQuestion"
+          ? "w-100 py-2 small fw-semibold"
+          : "text-white"
       }
+    />
+  )
+
+  return variant === "ballotQuestion" ? (
+    <CompactPanel cta={cta} />
+  ) : (
+    <Cta
+      title={t(`${namespace}.completeTestimony.title`)}
+      cta={cta}
       className="text-info"
     />
   )
 }
 
-export const SignedOut = () => {
+export const SignedOut = ({
+  variant = "default"
+}: {
+  variant?: PanelCtaVariant
+}) => {
   const { t } = useTranslation("testimony")
+  const namespace =
+    variant === "ballotQuestion" ? "ballotQuestion.panel" : "panel"
+  const title =
+    variant === "ballotQuestion"
+      ? t(`${namespace}.createTestimony.title`)
+      : t("panel.signedOut.title")
+  const cta =
+    variant === "ballotQuestion" ? (
+      <SignInWithButton
+        label={t(`${namespace}.createTestimony.label`)}
+        buttonClassName="py-2 small fw-semibold"
+      />
+    ) : (
+      <SignInWithButton />
+    )
 
-  return <Cta title={t("panel.signedOut.title")} cta={<SignInWithButton />} />
-}
-
-export const UnverifiedEmail = () => {
-  const { t } = useTranslation("testimony")
-  const id = useAuth().user?.uid!
-
-  return (
-    <Cta
-      title={t("panel.unverifiedEmail.title")}
-      cta={
-        <Wrap href={`/profile?id=${id}`}>
-          <Button variant="primary">{t("panel.unverifiedEmail.label")}</Button>
-        </Wrap>
-      }
-    />
+  return variant === "ballotQuestion" ? (
+    <CompactPanel cta={cta} />
+  ) : (
+    <Cta title={title} cta={cta} />
   )
 }
 
-export const PendingUpgrade = () => {
+export const UnverifiedEmail = ({
+  variant = "default"
+}: {
+  variant?: PanelCtaVariant
+}) => {
   const { t } = useTranslation("testimony")
+  const id = useAuth().user?.uid!
+  const cta = (
+    <Wrap href={`/profile?id=${id}`}>
+      <Button
+        variant="primary"
+        className={
+          variant === "ballotQuestion"
+            ? "w-100 py-2 small fw-semibold"
+            : undefined
+        }
+      >
+        {t("panel.unverifiedEmail.label")}
+      </Button>
+    </Wrap>
+  )
 
-  return (
-    <Cta
-      title={t("panel.pendingUpgrade.title")}
-      cta={
-        <Button variant="primary" disabled>
-          {t("panel.pendingUpgrade.label")}
-        </Button>
+  return variant === "ballotQuestion" ? (
+    <CompactPanel title={t("panel.unverifiedEmail.title")} cta={cta} />
+  ) : (
+    <Cta title={t("panel.unverifiedEmail.title")} cta={cta} />
+  )
+}
+
+export const PendingUpgrade = ({
+  variant = "default"
+}: {
+  variant?: PanelCtaVariant
+}) => {
+  const { t } = useTranslation("testimony")
+  const cta = (
+    <Button
+      variant="primary"
+      disabled
+      className={
+        variant === "ballotQuestion"
+          ? "w-100 py-2 small fw-semibold"
+          : undefined
       }
-    />
+    >
+      {t("panel.pendingUpgrade.label")}
+    </Button>
+  )
+
+  return variant === "ballotQuestion" ? (
+    <CompactPanel title={t("panel.pendingUpgrade.title")} cta={cta} />
+  ) : (
+    <Cta title={t("panel.pendingUpgrade.title")} cta={cta} />
   )
 }

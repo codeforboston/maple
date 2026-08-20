@@ -30,7 +30,11 @@ function AnnouncementBanner({
         >
           <FontAwesomeIcon
             icon={faXmark}
-            style={{ color: "white", fontSize: "18px", paddingRight: "8px" }}
+            style={{
+              color: "var(--maple-text-inverse)",
+              fontSize: "18px",
+              paddingRight: "8px"
+            }}
           />
         </button>
 

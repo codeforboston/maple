@@ -41,18 +41,18 @@ export const PaginationButtons = ({
 }
 
 const SpanStyle = styled(Button)`
-  background-color: #1a3185;
+  background-color: var(--maple-brand-primary);
   color: white;
   margin: 2px;
   border-radius: 0;
 `
 const NextStyle = styled(Button)`
-  background-color: #1a3185;
+  background-color: var(--maple-brand-primary);
   margin: 2px;
   border-radius: 0px 15px 15px 0px;
 `
 const PreviousStyle = styled(Button)`
-  background-color: #1a3185;
+  background-color: var(--maple-brand-primary);
   margin: 2px;
   border-radius: 15px 0px 0px 15px;
 `

@@ -10,7 +10,7 @@ import {
 import { httpsCallable } from "firebase/functions"
 import { loremIpsum } from "lorem-ipsum"
 import { auth, firestore, functions } from "../../components/firebase"
-import { terminateFirebase } from "../testUtils"
+import { terminateFirebase, testDb } from "../testUtils"
 
 const publishTestimony = httpsCallable<
   { draftId: string },
@@ -36,10 +36,38 @@ beforeAll(async () => {
 
 afterAll(terminateFirebase)
 
-it("can publish and delete testimony", async () => {
+it("can publish and delete bill testimony", async () => {
   const draft = await expectCreateDraft()
   const publication = await expectPublish(draft.draft, draft.draftRef)
   await expectDelete(publication.id)
+})
+
+describe("ballot question testimony", () => {
+  const ballotQuestionId = `bq-system-test-${Date.now()}`
+
+  beforeAll(async () => {
+    await testDb
+      .collection("ballotQuestions")
+      .doc(ballotQuestionId)
+      .set({ id: ballotQuestionId })
+  })
+
+  afterAll(async () => {
+    await testDb.collection("ballotQuestions").doc(ballotQuestionId).delete()
+  })
+
+  it("can publish ballot-question testimony", async () => {
+    const draft = await expectCreateDraft({
+      billId: "H1",
+      content: "system test ballot-question testimony",
+      court: currentGeneralCourt,
+      position: "endorse",
+      ballotQuestionId
+    })
+    const publication = await expectPublish(draft.draft, draft.draftRef)
+
+    expect(publication.data()!.ballotQuestionId).toEqual(ballotQuestionId)
+  })
 })
 
 // Publish some testimony for testing purposes

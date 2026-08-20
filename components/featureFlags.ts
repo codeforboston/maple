@@ -12,10 +12,14 @@ export const FeatureFlags = z.object({
   followOrg: z.boolean().default(false),
   /** Lobbying Table */
   lobbyingTable: z.boolean().default(false),
-  /** LLM Bill Summary and Tags **/
-  showLLMFeatures: z.boolean().default(false),
   /** Hearings and Transcriptions **/
-  hearingsAndTranscriptions: z.boolean().default(false)
+  hearingsAndTranscriptions: z.boolean().default(false),
+  /** Phone Verification UI changes **/
+  phoneVerificationUI: z.boolean().default(false),
+  /** Ballot Questions feature */
+  ballotQuestions: z.boolean().default(false),
+  /** Legislators Page feature **/
+  legislators: z.boolean().default(false)
 })
 
 export type FeatureFlags = z.infer<typeof FeatureFlags>
@@ -34,8 +38,10 @@ const defaults: Record<Env, FeatureFlags> = {
     billTracker: true,
     followOrg: true,
     lobbyingTable: false,
-    showLLMFeatures: true,
-    hearingsAndTranscriptions: true
+    hearingsAndTranscriptions: true,
+    phoneVerificationUI: true,
+    ballotQuestions: true,
+    legislators: true
   },
   production: {
     testimonyDiffing: false,
@@ -43,8 +49,10 @@ const defaults: Record<Env, FeatureFlags> = {
     billTracker: false,
     followOrg: true,
     lobbyingTable: false,
-    showLLMFeatures: true,
-    hearingsAndTranscriptions: true
+    hearingsAndTranscriptions: true,
+    phoneVerificationUI: false,
+    ballotQuestions: false,
+    legislators: false
   },
   test: {
     testimonyDiffing: false,
@@ -52,8 +60,10 @@ const defaults: Record<Env, FeatureFlags> = {
     billTracker: false,
     followOrg: true,
     lobbyingTable: false,
-    showLLMFeatures: true,
-    hearingsAndTranscriptions: true
+    hearingsAndTranscriptions: true,
+    phoneVerificationUI: true,
+    ballotQuestions: false,
+    legislators: false
   }
 }
 

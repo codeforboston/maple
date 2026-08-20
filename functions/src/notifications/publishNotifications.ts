@@ -8,6 +8,8 @@ import * as functions from "firebase-functions"
 import { getFirestore } from "firebase-admin/firestore"
 import { Timestamp } from "../firebase"
 import {
+  BallotQuestionUpdateNotification,
+  BallotQuestionUpdateNotificationFields,
   BillHistoryUpdateNotification,
   BillHistoryUpdateNotificationFields,
   TestimonySubmissionNotification,
@@ -19,10 +21,14 @@ import { cloneDeep } from "lodash"
 const db = getFirestore()
 
 const createNotificationFields = (
-  entity: BillHistoryUpdateNotification | TestimonySubmissionNotification
+  entity:
+    | BillHistoryUpdateNotification
+    | TestimonySubmissionNotification
+    | BallotQuestionUpdateNotification
 ):
   | BillHistoryUpdateNotificationFields
-  | TestimonySubmissionNotificationFields => {
+  | TestimonySubmissionNotificationFields
+  | BallotQuestionUpdateNotificationFields => {
   switch (entity.type) {
     case "bill":
       if (entity.billHistory.length < 1) {
@@ -62,13 +68,32 @@ const createNotificationFields = (
           type: "testimony",
           isBillMatch: false,
           isUserMatch: false,
+          isBallotQuestionMatch: false,
           delivered: false,
           authorUid: entity.userId,
           testimonyId: entity.testimonyId,
-          userRole: entity.userRole
+          userRole: entity.userRole,
+          ballotQuestionId: entity.ballotQuestionId ?? null,
+          ballotQuestionCourt: entity.ballotQuestionCourt ?? null
         },
         createdAt: Timestamp.now()
       }
+    case "ballotQuestion":
+      return {
+        uid: "",
+        notification: {
+          type: "ballotQuestion",
+          ballotQuestionId: entity.ballotQuestionId,
+          ballotQuestionCourt: entity.ballotQuestionCourt,
+          ballotStatus: entity.ballotStatus,
+          header: entity.description,
+          timestamp: entity.updateTime,
+          isBallotQuestionMatch: true,
+          delivered: false
+        },
+        createdAt: Timestamp.now()
+      }
+
     default:
       console.log(`Invalid entity: ${entity}`)
       throw new Error(`Invalid entity: ${entity}`)
@@ -83,6 +108,7 @@ export const publishNotifications = functions.firestore
     const topic = snapshot?.after.data() as
       | BillHistoryUpdateNotification
       | TestimonySubmissionNotification
+      | BallotQuestionUpdateNotification
       | undefined
 
     if (!topic) {
@@ -98,22 +124,33 @@ export const publishNotifications = functions.firestore
     console.log(`topic type: ${topic.type}`)
 
     const handleNotifications = async (
-      topic: BillHistoryUpdateNotification | TestimonySubmissionNotification
+      topic:
+        | BillHistoryUpdateNotification
+        | TestimonySubmissionNotification
+        | BallotQuestionUpdateNotification
     ) => {
       const notificationFields = createNotificationFields(topic)
 
+      const topicNames =
+        topic.type === "bill"
+          ? [`bill-${topic.billCourt}-${topic.billId}`]
+          : topic.type === "ballotQuestion"
+          ? [
+              `ballot-question-${topic.ballotQuestionCourt}-${topic.ballotQuestionId}`
+            ]
+          : [
+              `testimony-${topic.userId}`,
+              `bill-${topic.billCourt}-${topic.billId}`,
+              ...(topic.ballotQuestionId && topic.ballotQuestionCourt != null
+                ? [
+                    `ballot-question-${topic.ballotQuestionCourt}-${topic.ballotQuestionId}`
+                  ]
+                : [])
+            ]
+
       const topicNameSnapshot = await db
         .collectionGroup("activeTopicSubscriptions")
-        .where(
-          "topicName",
-          "in",
-          topic.type === "bill"
-            ? [`bill-${topic.billCourt}-${topic.billId}`]
-            : [
-                `testimony-${topic.userId}`,
-                `bill-${topic.billCourt}-${topic.billId}`
-              ]
-        )
+        .where("topicName", "in", topicNames)
         .get()
 
       const users: { [uid: string]: any } = {}
@@ -133,15 +170,24 @@ export const publishNotifications = functions.firestore
         // If the topic is a testimony and the user is not the author of the testimony
         if (topic.type === "testimony" && topic.userId !== uid) {
           initializeUserNotification(uid)
-          users[uid].notification[
-            type === "testimony" ? "isUserMatch" : "isBillMatch"
-          ] = true
+          if (type === "testimony") {
+            users[uid].notification.isUserMatch = true
+          } else if (type === "ballotQuestion") {
+            users[uid].notification.isBallotQuestionMatch = true
+          } else {
+            users[uid].notification.isBillMatch = true
+          }
         }
 
         // If the topic is a bill
         if (topic.type === "bill") {
           initializeUserNotification(uid)
           users[uid].notification["isBillMatch"] = true
+        }
+
+        if (topic.type === "ballotQuestion") {
+          initializeUserNotification(uid)
+          users[uid].notification.isBallotQuestionMatch = true
         }
       })
 

@@ -19,7 +19,7 @@ const StyledSelect = styled(Select)`
   }
 
   .s__option--is-selected:hover {
-    background-color: #deebff;
+    background-color: var(--maple-color-blue-subtle-bg);
   }
 
   .s__single-value,

@@ -10,6 +10,7 @@ import styled from "styled-components"
 import { Col, Container, Row } from "../bootstrap"
 import {
   Paragraph,
+  TranscriptData,
   convertToString,
   formatMilliseconds,
   formatTotalSeconds
@@ -22,10 +23,14 @@ const ClearButton = styled(FontAwesomeIcon)`
   right: 3rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #1a3185;
+  color: var(--maple-brand-primary);
   font-size: 1rem;
   z-index: 1;
   cursor: pointer;
+`
+
+const LegalContainer = styled(Container)`
+  background-color: white;
 `
 
 const ResultNumText = styled.div`
@@ -34,7 +39,7 @@ const ResultNumText = styled.div`
   top: 50%;
   user-select: none;
   transform: translateY(-50%);
-  color: #979797;
+  color: var(--maple-text-muted);
 `
 
 const NoResultFound = styled.div`
@@ -49,17 +54,17 @@ const SearchInput = styled.input`
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
   border: none;
-  background-color: #ffffff;
+  background-color: var(--maple-surface-base);
   font-size: 1rem;
   outline: none;
-  color: #1a3185;
+  color: var(--maple-brand-primary);
   &:focus {
-    border-color: #999;
-    background-color: #fff;
+    border-color: var(--maple-border-default);
+    background-color: var(--maple-surface-base);
   }
 
   &::placeholder {
-    color: #aaa;
+    color: var(--maple-text-muted);
   }
 `
 
@@ -68,7 +73,7 @@ const SearchIcon = styled(FontAwesomeIcon)`
   right: 1.75rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #1a3185;
+  color: var(--maple-brand-primary);
   font-size: 1rem;
   z-index: 1;
 `
@@ -76,7 +81,7 @@ const SearchIcon = styled(FontAwesomeIcon)`
 const SearchWrapper = styled.div`
   position: relative;
   width: 100%;
-  background-color: #8c98c2;
+  background-color: var(--maple-surface-hearing-search);
   padding: 1.5rem 1rem;
 `
 
@@ -104,7 +109,7 @@ const TranscriptBottom = styled(Container)`
 const TranscriptContainer = styled(Container)`
   max-height: 483px;
   overflow-y: auto;
-  background-color: #ffffff;
+  background-color: var(--maple-surface-base);
 `
 
 const TranscriptRow = styled(Row)`
@@ -115,8 +120,8 @@ const TranscriptRow = styled(Row)`
     border-left-width: 5px;
   }
   &:nth-child(odd) {
-    background-color: #e8ecf4;
-    border-left-color: #e8ecf4;
+    background-color: var(--maple-surface-transcript-stripe);
+    border-left-color: var(--maple-surface-transcript-stripe);
     border-left-style: solid;
     border-left-width: 5px;
   }
@@ -125,8 +130,8 @@ const TranscriptRow = styled(Row)`
     border-bottom-right-radius: 0.75rem;
   }
   &:hover {
-    background-color: #d9dfea;
-    border-color: #1a3185;
+    background-color: var(--maple-surface-transcript-hover);
+    border-color: var(--maple-brand-primary);
     border-style: solid;
     border-width: 5px;
   }
@@ -135,16 +140,16 @@ const TranscriptRow = styled(Row)`
 const TranscriptRowActive = styled(Row)``
 
 export const Transcriptions = ({
+  activeVideo,
   hearingId,
-  transcriptData,
+  transcripts,
   setCurTimeVideo,
-  videoLoaded,
   videoRef
 }: {
+  activeVideo: number
   hearingId: string
-  transcriptData: Paragraph[]
+  transcripts: (TranscriptData | null)[]
   setCurTimeVideo: any
-  videoLoaded: boolean
   videoRef: any
 }) => {
   const { t } = useTranslation(["common", "hearing"])
@@ -188,32 +193,36 @@ export const Transcriptions = ({
   }
 
   useEffect(() => {
+    if (!transcripts[activeVideo]) return
+    setHighlightedId(-1)
+    containerRef.current.scrollTop = 0
+    setSearchTerm("")
+  }, [activeVideo])
+
+  useEffect(() => {
+    if (!transcripts[activeVideo]) return
     setFilteredData(
-      transcriptData.filter(el =>
+      transcripts[activeVideo]!.transcript.filter(el =>
         el.text.toLowerCase().includes(searchTerm.toLowerCase())
       )
     )
-  }, [transcriptData, searchTerm])
+  }, [activeVideo, searchTerm])
 
   const router = useRouter()
   const startTime = router.query.t
-  const resultString: string = convertToString(startTime)
-
-  let currentIndex = transcriptData.findIndex(
-    element => parseInt(resultString, 10) <= element.end / 1000
-  )
 
   // Set the initial scroll target when we have a startTime and transcripts
   useEffect(() => {
-    if (
-      startTime &&
-      transcriptData.length > 0 &&
-      currentIndex !== -1 &&
-      !hasScrolledToInitial.current
-    ) {
+    const resultString: string = convertToString(startTime)
+    const currentIndex = transcripts[activeVideo]
+      ? transcripts[activeVideo]!.transcript.findIndex(
+          element => parseInt(resultString, 10) < element.end / 1000
+        )
+      : -1
+    if (startTime && currentIndex !== -1 && !hasScrolledToInitial.current) {
       setInitialScrollTarget(currentIndex)
     }
-  }, [startTime, transcriptData, currentIndex])
+  }, [startTime, transcripts])
 
   // Scroll to the initial target when the ref becomes available
   useEffect(() => {
@@ -230,12 +239,13 @@ export const Transcriptions = ({
   }, [initialScrollTarget, transcriptRefs.current.size, searchTerm])
 
   useEffect(() => {
+    if (!transcripts[activeVideo]) return
     const handleTimeUpdate = () => {
-      videoLoaded
-        ? (currentIndex = transcriptData.findIndex(
-            element => videoRef.current.currentTime <= element.end / 1000
-          ))
-        : null
+      if (videoRef.current.readyState < HTMLMediaElement.HAVE_CURRENT_DATA)
+        return
+      const currentIndex = filteredData.findIndex(
+        paragraph => videoRef.current.currentTime < paragraph.end / 1000
+      )
       if (containerRef.current && currentIndex !== highlightedId) {
         setHighlightedId(currentIndex)
         if (currentIndex !== -1 && !searchTerm) {
@@ -245,18 +255,16 @@ export const Transcriptions = ({
     }
 
     const videoElement = videoRef.current
-    videoLoaded
-      ? videoElement.addEventListener("timeupdate", handleTimeUpdate)
-      : null
+    if (!videoElement) return
+
+    videoElement.addEventListener("timeupdate", handleTimeUpdate)
 
     return () => {
-      videoLoaded
-        ? videoElement.removeEventListener("timeupdate", handleTimeUpdate)
-        : null
+      videoElement.removeEventListener("timeupdate", handleTimeUpdate)
     }
-  }, [highlightedId, transcriptData, videoLoaded, videoRef, searchTerm])
+  }, [highlightedId, activeVideo, filteredData, videoRef])
 
-  return (
+  return transcripts[activeVideo] ? (
     <>
       <SearchWrapper>
         <SearchInput
@@ -285,6 +293,7 @@ export const Transcriptions = ({
         {filteredData.map((element: Paragraph, index: number) => (
           <TranscriptItem
             key={index}
+            activeVideo={activeVideo}
             element={element}
             hearingId={hearingId}
             highlightedId={highlightedId}
@@ -312,12 +321,17 @@ export const Transcriptions = ({
       </TranscriptContainer>
       <TranscriptBottom />
     </>
+  ) : (
+    <LegalContainer className={`fs-6 fw-bold mb-2 py-2 rounded-bottom`}>
+      <div>{t("no_transcript_on_file", { ns: "hearing" })}</div>
+    </LegalContainer>
   )
 }
 
 // forwardRef must be updated for React 19 migration
 const TranscriptItem = forwardRef(function TranscriptItem(
   {
+    activeVideo,
     element,
     hearingId,
     highlightedId,
@@ -325,6 +339,7 @@ const TranscriptItem = forwardRef(function TranscriptItem(
     setCurTimeVideo,
     searchTerm
   }: {
+    activeVideo: number
     element: Paragraph
     hearingId: string
     highlightedId: number
@@ -396,7 +411,9 @@ const TranscriptItem = forwardRef(function TranscriptItem(
             <ShareLinkButton
               key="copy"
               text={siteUrl(
-                `hearing/${hearingId}?t=${formatTotalSeconds(element.start)}`
+                `hearing/${hearingId}?v=${
+                  activeVideo + 1
+                }&t=${formatTotalSeconds(element.start)}`
               )}
               className={`copy my-1 px-1 py-0`}
               format="text/plain"
@@ -443,7 +460,10 @@ const TranscriptItem = forwardRef(function TranscriptItem(
               value={element.start}
             >
               {isHovered ? (
-                <ArrowRightAlt fontSize="large" style={{ color: "#737373" }} />
+                <ArrowRightAlt
+                  fontSize="large"
+                  style={{ color: "var(--maple-text-muted)" }}
+                />
               ) : (
                 <></>
               )}

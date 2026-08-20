@@ -31,7 +31,7 @@ const CountCategory = styled.div`
 
   letter-spacing: 0.03em;
 
-  color: #979797;
+  color: var(--maple-text-muted);
 `
 
 const CountIcon = styled(Image)`

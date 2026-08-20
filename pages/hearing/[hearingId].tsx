@@ -9,7 +9,7 @@ import { fetchHearingData, HearingData } from "components/hearing/hearing"
 const Query = z.object({ hearingId: z.coerce.number() })
 
 export default createPage<{ hearingData: HearingData }>({
-  titleI18nKey: "Hearing",
+  titleI18nKey: "navigation.hearing",
   Page: ({ hearingData }) => {
     return <HearingDetails hearingData={hearingData} />
   }

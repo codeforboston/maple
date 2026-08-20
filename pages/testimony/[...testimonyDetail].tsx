@@ -25,11 +25,23 @@ export default createPage({
 const useSyncQueryParameters = () => {
   const { version } = useCurrentTestimonyDetails()
   useEffect(() => {
-    const parts: Array<any> = Query.parse(Router.query).testimonyDetail
-    const currentVersion = parts.pop()
+    const query = Query.parse(Router.query)
+    const parts: Array<any> = [...query.testimonyDetail]
+    const currentVersion =
+      typeof parts[parts.length - 1] === "number" ? parts.pop() : undefined
+
     parts.push(version)
     if (currentVersion !== version)
-      Router.push(`/testimony/${parts.join("/")}`, undefined, { shallow: true })
+      Router.push(
+        {
+          pathname: `/testimony/${parts.join("/")}`,
+          query: query.ballotQuestionId
+            ? { ballotQuestionId: query.ballotQuestionId }
+            : undefined
+        },
+        undefined,
+        { shallow: true }
+      )
   }, [version])
 }
 
@@ -43,6 +55,7 @@ const PublishedId = z.string().min(1),
   BillId = z.string().min(1),
   Version = z.coerce.number().positive(),
   Query = z.object({
+    ballotQuestionId: z.string().min(1).optional(),
     testimonyDetail: z.union([
       z.tuple([PublishedId]),
       z.tuple([PublishedId, Version]),
@@ -59,15 +72,25 @@ const parseQuery = (query: ParsedUrlQuery) => {
 
   switch (params.length) {
     case 1:
-      return { params, publishedId: params[0] }
+      return {
+        params,
+        publishedId: params[0],
+        ballotQuestionId: q.data.ballotQuestionId
+      }
     case 2:
-      return { params, publishedId: params[0], version: params[1] }
+      return {
+        params,
+        publishedId: params[0],
+        version: params[1],
+        ballotQuestionId: q.data.ballotQuestionId
+      }
     case 3:
       return {
         params,
         authorUid: params[0],
         court: params[1],
-        billId: params[2]
+        billId: params[2],
+        ballotQuestionId: q.data.ballotQuestionId
       }
     case 4:
       return {
@@ -75,7 +98,8 @@ const parseQuery = (query: ParsedUrlQuery) => {
         authorUid: params[0],
         court: params[1],
         billId: params[2],
-        version: params[3]
+        version: params[3],
+        ballotQuestionId: q.data.ballotQuestionId
       }
   }
 }
@@ -88,6 +112,7 @@ const fetchDocs = async (q: NonNullable<ReturnType<typeof parseQuery>>) => {
   let billId: string,
     court: number,
     authorUid: string,
+    ballotQuestionId: string | undefined,
     archive: Testimony[],
     testimony: Testimony
 
@@ -97,10 +122,21 @@ const fetchDocs = async (q: NonNullable<ReturnType<typeof parseQuery>>) => {
 
     testimony = doc
     ;({ billId, court, authorUid } = testimony)
-    archive = await db.getArchivedTestimony({ authorUid, billId, court })
+    ballotQuestionId = testimony.ballotQuestionId ?? undefined
+    archive = await db.getArchivedTestimony({
+      authorUid,
+      billId,
+      court,
+      ballotQuestionId
+    })
   } else if (q.authorUid) {
-    ;({ authorUid, billId, court } = q)
-    archive = await db.getArchivedTestimony({ authorUid, billId, court })
+    ;({ authorUid, billId, court, ballotQuestionId } = q)
+    archive = await db.getArchivedTestimony({
+      authorUid,
+      billId,
+      court,
+      ballotQuestionId
+    })
 
     const latest = first(archive)
     if (!latest) return
@@ -110,11 +146,14 @@ const fetchDocs = async (q: NonNullable<ReturnType<typeof parseQuery>>) => {
   }
 
   const bill = await db.getBill({ billId, court }),
-    author = await db.getProfile({ uid: authorUid })
+    author = await db.getProfile({ uid: authorUid }),
+    ballotQuestion = ballotQuestionId
+      ? await db.getBallotQuestion({ id: ballotQuestionId })
+      : null
 
   if (!bill) return
 
-  return { bill, author, archive, testimony }
+  return { bill, author, archive, testimony, ballotQuestion }
 }
 
 export const getServerSideProps = wrapper.getServerSideProps(
@@ -139,7 +178,14 @@ export const getServerSideProps = wrapper.getServerSideProps(
         docs.testimony.version
       ].join("/")
       return {
-        redirect: { destination, permanent: false }
+        redirect: {
+          destination: q.ballotQuestionId
+            ? `${destination}?ballotQuestionId=${encodeURIComponent(
+                q.ballotQuestionId
+              )}`
+            : destination,
+          permanent: false
+        }
       }
     } else if (q.version > docs.testimony.version) return notFound
 
@@ -147,6 +193,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       pageDataLoaded({
         testimony: docs.testimony,
         bill: docs.bill,
+        ballotQuestion: docs.ballotQuestion ?? null,
         author: docs.author ?? null,
         archive: docs.archive,
         version: q.version

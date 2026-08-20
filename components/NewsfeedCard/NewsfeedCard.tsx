@@ -1,7 +1,9 @@
 import styled from "styled-components"
 import { Timestamp } from "firebase/firestore"
 import { Card as MapleCard } from "../Card/Card"
+import { flags } from "../featureFlags"
 import {
+  NewsfeedBallotQuestionCardBody,
   NewsfeedBillCardBody,
   NewsfeedTestimonyCardBody
 } from "./NewsfeedCardBody"
@@ -13,10 +15,13 @@ const Container = styled.div`
 
 export const NewsfeedCard = (props: {
   authorUid?: string
+  ballotQuestionId?: string
+  ballotStatus?: string
   billId?: string
   bodyText: string
   court?: string
   header: string
+  isBallotQuestionMatch?: boolean
   isBillMatch?: boolean
   isUserMatch?: boolean
   position?: string
@@ -35,6 +40,7 @@ export const NewsfeedCard = (props: {
       billId={props.billId}
       court={props.court}
       header={props.header}
+      isBallotQuestionMatch={props.isBallotQuestionMatch}
       isBillMatch={props.isBillMatch}
       isUserMatch={props.isUserMatch}
       subheader={props.subheader}
@@ -62,6 +68,15 @@ export const NewsfeedCard = (props: {
         testimonyId={props.testimonyId}
         timestamp={formattedTimestamp}
         type={props.type}
+      />
+    )
+  } else if (props.type == `ballotQuestion` && flags().ballotQuestions) {
+    body = (
+      <NewsfeedBallotQuestionCardBody
+        ballotQuestionId={props.ballotQuestionId}
+        ballotStatus={props.ballotStatus}
+        header={props.header}
+        timestamp={formattedTimestamp}
       />
     )
   }

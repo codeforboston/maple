@@ -1,5 +1,5 @@
 import { ComponentStory } from "@storybook/react"
-import { VerifyAccountSection } from "components/ProfilePage/VerifyAccountSection"
+import { VerifyAccountSection } from "components/shared"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { User } from "firebase/auth"

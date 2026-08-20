@@ -27,8 +27,8 @@ const Link = styled.a`
 const Item = styled.div`
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 9px 22px;
+  gap: var(--maple-space-lg);
+  padding: var(--maple-space-sm) var(--maple-space-xl);
 `
 
 export const FollowingCard: FC<React.PropsWithChildren<Props>> = ({

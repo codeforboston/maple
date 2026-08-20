@@ -1,45 +1,47 @@
 {
   "title": "MAPLE for Organizations",
+  "tabLabel": "Organizations",
+  "personaLabel": "Organizations",
   "callToAction": {
-    "header": "Why use MAPLE", 
-    "title": "MAPLE is a powerful communication tool for organizations, offered completely for free.",
+    "header": "Why use MAPLE",
+    "title": "Get your message out and engage your members in civic discourse.",
     "bodytext": "It takes only a couple minutes to sign up for your organization's account on MAPLE, giving you immediate access to publish and share your testimony, designate your priority bills, connect with your members and followers, and research legislation."
   },
   "benefits": {
     "header": "What we offer",
     "reach": {
       "title": "Help your priorities & positions reach a wider audience",
-      "bodytext": " Your organization's testimony will be highlighted to MAPLE visitors when they look up bills, with easy tools for sharing on social media. Testimony published on MAPLE will be seen by legislators, residents, members of the media, and other stakeholders.  The more organizations share their testimony on the platform, the more people will see it. You can even designate bills as your legislative priorities to signal your focus for each session."
+      "bodytext": "Testimony published on MAPLE reaches a broad range of stakeholders, from legislators to residents to the media and more. When your organization publishes testimony, the bill pages on MAPLE will highlight that testimony so visitors can quickly see where you stand. You can even designate bills as your legislative priorities to signal your focus for each session. The more that organizations share their testimony, the more people will see it. Your organization's testimony will be highlighted to MAPLE visitors when they look up bills, with easy tools for sharing on social media."
     },
     "connect": {
-      "title": "Connect with your members, and grow your reach",
-      "bodytext": "MAPLE users can discover your profile when searching for their policy interests and follow your organization to get updates on your priorities and positions. MAPLE helps alert your constituents to the most important bills on issues you care about, and helps you explain why you support or oppose them"
+      "title": "Connect with your members and grow your reach",
+      "bodytext": "MAPLE users can discover your profile when searching for their policy interests and follow your organization to get updates on your priorities and positions. MAPLE works to alert your constituents to the most important bills on the issues relevant to your organization while allowing you room to explain your support or opposition."
     },
     "language": {
       "title": "Extend access to members who speak any language",
-      "bodytext": "MAPLE uses machine translation to make the legislative process more accessible to non-native English speakers. Both our website content and the testimonies we post can be automatically translated to any language on demand, meaning that non-English speakers can write testimony in the language in which they are most comfortable and legislative offices can click a button to translate it to English.  While machine translation is not perfect, it offers a big step forward in language accessibility for constituents who do not have access to expert translation."
+      "bodytext": "MAPLE uses machine translation to make the legislative process more accessible to non-native English speakers. Both our website content and the testimonies we post can be automatically translated to any language on demand, meaning that non-English speakers can write testimony in the language in which they are most comfortable and legislative offices can click a button to translate it to English. While machine translation is not perfect, it offers a big step forward in language accessibility for constituents who do not have access to expert translation."
     },
     "coordinate": {
       "title": "Coordinate legislative communication campaigns with ease",
       "bodytext": "By linking to a bill page on MAPLE, your constituents can submit their own testimony with just a few clicks. MAPLE makes it easy for users of any experience level to draft, format, and submit their testimony to the right legislators for any bill."
     },
     "seeEveryone": {
-      "title": "See what everyone's saying",
-      "bodytext": "Even if you don't sign in, you can use MAPLE to browse testimony submitted on any bill. Get a lay of the land and track public opinion at a glance using our endorse / oppose ratios. Read the full testimony of any user to find other stakeholders you may want to connect with or learn from."
+      "title": "See what the public is saying",
+      "bodytext": "Even if you don't sign in, you can use MAPLE to browse testimony submitted on any bill. Get a lay of the land and track public opinion at a glance using our endorse / oppose ratios. Read the full testimony of any user and find other stakeholders who you may want to connect with or learn from."
     },
     "curateHistory": {
       "title": "Curate your testimony history",
-      "bodytext": "When you submit your testimony through MAPLE, it automatically appears in an indexed & organized listing on your profile page. Use your profile to automatically generate a record of your lobbying efforts for your website, for member communications, or for semi-annual filings. You can also publish previously submitted tesitmony on MAPLE at any time."
+      "bodytext": "When you submit your testimony through MAPLE, it automatically appears in an indexed & organized listing on your profile page. Use your profile to automatically generate a record of your lobbying efforts for your website, for member communications, or for semi-annual filings. You can also publish previously submitted testimony on MAPLE at any time."
     },
     "legislativeResearch": {
       "title": "Speed up your legislative research",
-      "bodytext1": "MAPLE is fast. (Really fast.). Try",
-      "linkText": "searching for a bill", 
+      "bodytext1": "Finding bills on MAPLE is really fast. Try",
+      "linkText": "searching for a bill",
       "bodytext2": "to see just how much MAPLE can speed up your legislative research process; no sign in required!"
     },
     "changeNorms": {
       "title": "Help change the norms in Massachusetts",
-      "bodytext": "The Commonwealth can be a leader in legislative transparency and good government. Help shift the norms in Massachusetts by making your testimony available for anyone to read."
+      "bodytext": "The Commonwealth can be a leader in legislative transparency and good government. As a community, we can help shift the norms in Massachusetts. Making your testimony accessible and centralized supports your members and followers in their own critical civic engagement."
     },
     "signUp": "Ready to sign up for MAPLE?"
   },
@@ -48,7 +50,13 @@
     "title": "Join MAPLE's Coalition to make the 193rd General Court the most transparent in Massachusetts history!",
     "p1": "Organizations that join MAPLE's Coalition of Lead Organizations (CLO) commit to publishing all of their public testimony submitted to the 193rd General Court through the MAPLE platform. The 193rd General Court is the session that runs from January of 2023 through 2024.",
     "p2": "In addition to all the benefits outlined above, these organizations will have their profiles featured prominently on the MAPLE website during the two-year legislative session. Any organization can contact MAPLE to be considered for membership in the CLO. Organizations will be prioritized to join the CLO based on the size of the constituency they represent.",
-    "p3": "Maple is a nonpartisan project and does not take political positions; membership in the CLO does not indicate endorsement of any political position by MAPLE or its parent organization, members, or collaborators.",
-    "callToAction": "Join the MAPLE coalition-reach out to info@mapletestimony.org"
+    "p3": "MAPLE is a nonpartisan project and does not take political positions; membership in the CLO does not indicate endorsement of any political position by MAPLE or its parent organization, members, or collaborators.",
+    "callToAction": "Join the MAPLE coalition — reach out to info@mapletestimony.org"
+  },
+  "cta": {
+    "headline": "Get started with MAPLE today!",
+    "body": "Sign up for your organization's account to publish and share your testimony, coordinate with your members and followers, and research legislation.",
+    "button": "Sign up for your organization",
+    "contact": "Any questions? Reach out to info@mapletestimony.org"
   }
 }
