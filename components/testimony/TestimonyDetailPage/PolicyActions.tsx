@@ -71,7 +71,6 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
     ? ballotQuestionTopicName(ballotQuestionTopic.court, ballotQuestionTopic.id)
     : billTopicName(bill.court, bill.id)
 
-
   const { followStatus, setFollowStatus } = useContext(FollowContext)
   const [canEditBallotQuestionTestimony, setCanEditBallotQuestionTestimony] =
     useState(!ballotQuestionId)
