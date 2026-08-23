@@ -6,9 +6,10 @@ names and field names must stay in sync with that file.
 
 from __future__ import annotations
 
-import json
+import time
 from datetime import datetime, timezone
 
+from google.api_core.exceptions import GoogleAPICallError
 from google.cloud import firestore
 from normalize import normalize_entity_name
 from portal import (
@@ -24,10 +25,55 @@ from portal import (
 REGISTRANTS_COLLECTION = "lobbyingRegistrants"
 FILINGS_COLLECTION = "lobbyingFilings"
 SCRAPER_DOC = "scrapers/lobbying"
+PROCESSED_URLS_COLLECTION = "processedUrls"
+SUMMARY_CACHE_COLLECTION = "summaryCache"
 BACKFILL_DOC = "scrapers/lobbyingBackfill"
 BACKFILL_URLS_COLLECTION = "processedUrls"
 STATS_COLLECTION = "lobbyingMeta"
 STATS_DOC_ID = "stats"
+
+# compute_stats() streams the full filings/registrants collections, which at
+# MAPLE's current scale (300K+ docs) can exceed Firestore's server-side query
+# timeout. Batching with an explicit cursor keeps each individual RPC small
+# and fast; retry=None disables the client library's built-in stream-retry
+# (which has a version-skew bug that crashes instead of retrying), and the
+# manual retry loop below just re-issues a fresh, small query on failure
+# instead of trying to resume a broken stream.
+_BATCH_SIZE = 50000
+_MAX_RETRIES = 3
+
+
+def _iter_collection(db: firestore.Client, collection_name: str):
+    """Yield every document in a collection via small, cursor-paginated reads."""
+    coll_ref = db.collection(collection_name)
+    last_doc = None
+
+    while True:
+        query = coll_ref.order_by("__name__").limit(_BATCH_SIZE)
+        if last_doc is not None:
+            query = query.start_after(last_doc)
+
+        for attempt in range(_MAX_RETRIES):
+            try:
+                batch = list(query.stream(retry=None))
+                break
+            except GoogleAPICallError as e:
+                if attempt == _MAX_RETRIES - 1:
+                    raise
+                print(
+                    f"  batch read failed ({e}); retrying "
+                    f"({attempt + 1}/{_MAX_RETRIES})…"
+                )
+                time.sleep(2**attempt)
+
+        if not batch:
+            return
+
+        yield from batch
+        last_doc = batch[-1]
+
+        if len(batch) < _BATCH_SIZE:
+            return
 
 
 def _now() -> datetime:
@@ -60,7 +106,7 @@ def compute_stats(db: firestore.Client) -> None:
     bill_entity_sets: dict[int, dict[str, set]] = {}
     total_filings = 0
 
-    for doc in db.collection(FILINGS_COLLECTION).stream():
+    for doc in _iter_collection(db, FILINGS_COLLECTION):
         d = doc.to_dict()
         year = str(d.get("year", ""))
         gc = d.get("generalCourt")
@@ -114,7 +160,7 @@ def compute_stats(db: firestore.Client) -> None:
     spend_by_year: dict[str, float] = {}
     total_registrants = 0
 
-    for doc in db.collection(REGISTRANTS_COLLECTION).stream():
+    for doc in _iter_collection(db, REGISTRANTS_COLLECTION):
         d = doc.to_dict()
         year = str(d.get("year", ""))
         for c in d.get("clients", []):
@@ -143,9 +189,25 @@ def compute_stats(db: firestore.Client) -> None:
         client_filing_counts
     )
     for gc, bills_map in bill_summaries.items():
-        db.collection(STATS_COLLECTION).document(f"billSummaries_{gc}").set(
-            {"data": json.dumps(bills_map)}
+        # One small doc per bill, not one JSON blob per court: a court's blob
+        # eventually exceeds Firestore's 1MB field-size limit as its session
+        # accumulates filings (hit at 1,057KB for court 194 with ~5,600
+        # bills). Per-bill docs have no such ceiling.
+        parent_ref = db.collection(STATS_COLLECTION).document(f"billSummaries_{gc}")
+        parent_ref.set(
+            {"billCount": len(bills_map), "updatedAt": _now().isoformat()}
         )
+        bills_coll = parent_ref.collection("bills")
+        batch = db.batch()
+        count = 0
+        for bill_id, counts in bills_map.items():
+            batch.set(bills_coll.document(bill_id), counts)
+            count += 1
+            if count % 400 == 0:
+                batch.commit()
+                batch = db.batch()
+        if count % 400 != 0:
+            batch.commit()
     print(
         f"  stats written: {total_filings} filings, "
         f"{total_registrants} registrants, {len(client_norms)} clients, "
