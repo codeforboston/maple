@@ -207,17 +207,21 @@ def run_weekly(
 
 
 # ── Historical backfill ───────────────────────────────────────────────────────
-
-
-def _completed_years(db: "firestore.Client") -> set[int]:
-    data = db.document(BACKFILL_DOC).get().to_dict() or {}
-    return set(data.get("completedYears", []))
-
-
-def _mark_year_complete(db: "firestore.Client", year: int) -> None:
-    db.document(BACKFILL_DOC).set(
-        {"completedYears": firestore.ArrayUnion([year])}, merge=True
-    )
+#
+# Correctness here relies entirely on the per-URL cursor (_is_backfill_processed
+# / _mark_backfill_processed below) — every disclosure URL is checked and
+# marked individually, so re-running a backfill is always safe and complete.
+#
+# An earlier version also tracked a per-year "completedYears" flag as a
+# fast-path to skip re-listing a year's registrants at all. That flag was
+# permanent once set, which is wrong for the current (still-accruing) year:
+# a backfill run partway through the year would mark it complete after
+# finding whatever existed at that moment, and every later run would then
+# skip it forever — silently missing every disclosure filed afterward. There
+# is no reliable way to tell "genuinely finished" apart from "happened to be
+# a quiet moment" for a year that's still in progress, so the flag is gone;
+# each run always re-lists every requested year's registrants (one cheap
+# HTTP request per year) and leans on the per-URL cursor for correctness.
 
 
 def run_backfill(
@@ -226,18 +230,15 @@ def run_backfill(
     limit: int | None = None,
     dry_run: bool = False,
 ) -> int:
-    """Full historical backfill using the subcollection cursor. Resumable."""
+    """Full historical backfill using the per-URL subcollection cursor.
+
+    Always resumable and safe to re-run: every disclosure URL is checked
+    individually against the cursor, so no year is ever skipped wholesale.
+    """
     session = make_session()
     total_new = 0
 
-    done = _completed_years(db) if db is not None and not dry_run else set()
-    if done:
-        print(f"Skipping already-completed years: {sorted(done)}")
-
     for year in years:
-        if year in done:
-            continue
-
         print(f"\n── {year} ──")
         try:
             summary_urls = fetch_summary_links(session, year)
@@ -276,8 +277,6 @@ def run_backfill(
                 print(f"  [{i+1}/{len(summary_urls)}] {year_new} new disclosures so far")
 
         print(f"  {year} complete: {year_new} new disclosures")
-        if db is not None and not dry_run and not limit:
-            _mark_year_complete(db, year)
 
     return total_new
 
