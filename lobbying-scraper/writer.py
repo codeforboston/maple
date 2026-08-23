@@ -23,6 +23,8 @@ from portal import (
 REGISTRANTS_COLLECTION = "lobbyingRegistrants"
 FILINGS_COLLECTION = "lobbyingFilings"
 SCRAPER_DOC = "scrapers/lobbying"
+PROCESSED_URLS_COLLECTION = "processedUrls"
+SUMMARY_CACHE_COLLECTION = "summaryCache"
 BACKFILL_DOC = "scrapers/lobbyingBackfill"
 BACKFILL_URLS_COLLECTION = "processedUrls"
 
