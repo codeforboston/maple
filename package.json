@@ -131,6 +131,7 @@
     "react-query": "^3.39.3",
     "react-redux": "^8.0.2",
     "react-select": "^5.2.2",
+    "recharts": "^3.9.2",
     "redux-mock-store": "^1.5.4",
     "redux-thunk": "^3.1.0",
     "runtypes": "6.6.0",
