@@ -1,4 +1,4 @@
-# MAPLE ReACT Agent Architecture
+# MAPLE ReACT Agent — Architecture & Search Tool Design
 
 > **Feature:** Bill & Policy Q&A Chatbot  
 > **Branch:** `maple_pr_2198_bot`  
