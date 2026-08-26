@@ -102,10 +102,9 @@ CLAUDE.md
 #gcloud
 .gcloudignore
 
-# search-eval: the bills corpus regenerates from the committed emulator fixture
-# (`yarn search-eval:corpus`), so it is not committed. The prod-derived corpora
-# for hearings/publishedTestimony cannot be regenerated without prod creds, so
-# those ARE committed — see tests/search-eval/README.md. Labeling sheets are
+# search-eval: every corpus is committed, because none of them can be rebuilt
+# byte-for-byte from what the repo holds — bills now joins `summary` in from a
+# live project on top of the emulator fixture, and hearings/publishedTestimony
+# come from prod outright. See tests/search-eval/README.md. Labeling sheets are
 # authoring scratch.
-tests/search-eval/corpus/bills/docs.jsonl.gz
 tests/search-eval/labeling-sheet-*.md

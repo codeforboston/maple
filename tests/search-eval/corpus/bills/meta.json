@@ -6,5 +6,12 @@
     "192": 7334,
     "193": 3
   },
-  "jsonlMd5": "6041d1fed1399eece7aa523428e97397"
+  "jsonlMd5": "256fe0c51980064a1a308cefcde070ad",
+  "enriched": [
+    {
+      "field": "summary",
+      "source": "prod",
+      "count": 7034
+    }
+  ]
 }

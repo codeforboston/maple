@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from "fs"
 import { join } from "path"
 import { gunzipSync } from "zlib"
 import { createClient } from "../../functions/src/search/client"
+import { resolveEvalCollection } from "./collections"
 
 export const corpusRoot = join(__dirname, "../../tests/search-eval/corpus")
 
@@ -25,12 +26,16 @@ export type CorpusMeta = {
   orderBy?: string
   /** Fields overwritten at export time; never fields the eval searches. */
   redacted?: string[]
+  /** Fields copied in from a live project after export, for fields the corpus's
+   * own source predates. One entry per join. See the `enrich` subcommand.
+   */
+  enriched?: { field: string; source: string; count: number }[]
 }
 
 const regenerate = (alias: string) =>
-  alias === "bills"
-    ? "yarn search-eval:corpus"
-    : `yarn firebase-admin run-script exportSearchCorpus --env prod ${alias} (see tests/search-eval/README.md)`
+  `${resolveEvalCollection(alias).regenerate.join(
+    " && "
+  )} (see tests/search-eval/README.md)`
 
 export function readMeta(alias: string): CorpusMeta {
   return JSON.parse(readFileSync(join(corpusDir(alias), "meta.json"), "utf8"))

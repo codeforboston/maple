@@ -26,10 +26,21 @@ export type EvalCollection = {
   /** The app's relevance sort option. A golden set's defaults.sort_by must
    * match it, or the eval is measuring an ordering no user can select. */
   relevanceSort: string
-  /** Pinned include_fields: the id plus every field golden rules resolve
-   * against, so judgments can be checked against a live index. */
+  /** Pinned include_fields: the id, every field golden rules resolve against
+   * so judgments can be checked against a live index, and any field a human
+   * needs in the labeling sheet to judge relevance — its columns come from
+   * this list. bills' `pinslip` and `summary` are there for the second reason
+   * only; no rule names either, deliberately (see the README on why widening
+   * rules to the field under test rewards it by construction). */
   includeFields: string
   categories: readonly string[]
+  /** How to rebuild this corpus, in order. Printed when the committed md5 does
+   * not match — which is exactly when a contributor is looking for the recipe,
+   * so it has to be the recipe the README documents and not an approximation of
+   * it. bills is two steps because its documents come from the emulator fixture
+   * while `summary` is joined in from a live project.
+   */
+  regenerate: readonly string[]
 }
 
 export const evalCollections: Record<string, EvalCollection> = {
@@ -38,14 +49,20 @@ export const evalCollections: Record<string, EvalCollection> = {
     evalCollection: "bills_eval",
     searchParams: billsSearchParams,
     relevanceSort: billsRelevanceSort,
-    includeFields: "id,court,number,title,primarySponsor,currentCommittee",
+    includeFields:
+      "id,court,number,title,pinslip,summary,primarySponsor,currentCommittee",
     categories: [
       "exact-bill-id",
       "topic",
       "synonym",
       "misspelling",
       "member-committee",
-      "hyphenation"
+      "hyphenation",
+      "plain-language"
+    ],
+    regenerate: [
+      "yarn search-eval:corpus",
+      "yarn search-eval enrich --env prod --alias bills --field summary"
     ]
   },
   hearings: {
@@ -63,7 +80,8 @@ export const evalCollections: Record<string, EvalCollection> = {
       "location",
       "synonym",
       "misspelling"
-    ]
+    ],
+    regenerate: ["yarn search-eval corpus --env prod --alias hearings"]
   },
   publishedTestimony: {
     alias: "publishedTestimony",
@@ -71,7 +89,17 @@ export const evalCollections: Record<string, EvalCollection> = {
     searchParams: testimonySearchParams,
     relevanceSort: testimonyRelevanceSort,
     includeFields: "id,court,billId,authorDisplayName,authorRole,position",
-    categories: ["bill-id", "author", "topic", "synonym", "misspelling", "role"]
+    categories: [
+      "bill-id",
+      "author",
+      "topic",
+      "synonym",
+      "misspelling",
+      "role"
+    ],
+    regenerate: [
+      "yarn search-eval corpus --env prod --alias publishedTestimony --order-by publishedAt:desc"
+    ]
   }
 }
 

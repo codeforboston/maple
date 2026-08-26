@@ -4,8 +4,10 @@ import { join } from "path"
 import type { SearchParams } from "typesense"
 import yargs, { Arguments } from "yargs"
 import { hideBin } from "yargs/helpers"
+import { supportedGeneralCourts } from "../../functions/src/shared/constants"
 import { TypesenseConnectionArgs, resolveClient } from "../typesense-env"
 import { EvalCollection, aliases, resolveEvalCollection } from "./collections"
+import type { RemoteEnv } from "./remoteCorpus"
 import {
   CorpusDoc,
   corpusDir,
@@ -41,6 +43,8 @@ type Args = Arguments<
     threshold?: number
     limit?: number
     orderBy?: string
+    court?: number[]
+    field?: string
   }
 >
 
@@ -289,47 +293,68 @@ async function writeLabelingSheet(args: Args) {
   console.log(`Wrote labeling sheet for ${queries.length} queries to ${path}`)
 }
 
-/** Builds a corpus from a live project. Imports are deferred because pulling in
- * the search configs loads firebase-admin, which every other subcommand does
- * without.
+/** Everything the two subcommands that read a live project need. Imports are
+ * deferred because pulling in the search configs loads firebase-admin, which
+ * every other subcommand does without — and `require` rather than `import()`,
+ * because under ts-node --swc a dynamic import survives as a native ESM import
+ * and fails to resolve the extensionless path.
  */
-async function buildRemoteCorpus(args: Args) {
-  const env = args.env
-  if (env !== "dev" && env !== "prod")
-    throw Error(
-      "corpus needs --env dev or --env prod. The bills corpus comes from the committed emulator fixture: yarn search-eval:corpus"
-    )
+function remoteSetup(args: Args, command: string) {
+  // Args.env is a bare string (see TypesenseConnectionArgs), so the guard is
+  // what pins it to a project the remote export can actually read.
+  const env: RemoteEnv | undefined =
+    args.env === "dev" || args.env === "prod" ? args.env : undefined
+  if (!env) throw Error(`${command} needs --env dev or --env prod`)
 
   const { evalCollection } = resolveTarget(args)
-  // require, not import(): under ts-node --swc the dynamic import survives as a
-  // native ESM import and fails to resolve the extensionless path.
-  const { fetchRemoteDocs, projects } =
+  const remoteCorpus =
     require("./remoteCorpus") as typeof import("./remoteCorpus")
-  const { writeCorpus } =
-    require("./corpusFiles") as typeof import("./corpusFiles")
-  const { getRegisteredConfigs } =
+  const corpusFiles = require("./corpusFiles") as typeof import("./corpusFiles")
+  const { configForAlias } =
     require("../../functions/src/search/config") as typeof import("../../functions/src/search/config")
+  // Loading a collection's search module is what registers its config.
+  require("../../functions/src/bills/search")
   require("../../functions/src/hearings/search")
   require("../../functions/src/testimony/search")
 
-  const config = getRegisteredConfigs().find(
-    c => c.alias === evalCollection.alias
-  )
-  if (!config)
-    throw Error(`No search config registered for "${evalCollection.alias}"`)
+  return {
+    env,
+    alias: evalCollection.alias,
+    config: configForAlias(evalCollection.alias),
+    fetchRemoteDocs: remoteCorpus.fetchRemoteDocs,
+    projects: remoteCorpus.projects,
+    writeCorpus: corpusFiles.writeCorpus,
+    redactions: corpusFiles.redactions
+  }
+}
 
-  const [orderByField, direction = "asc"] = (
-    args.orderBy ?? config.idField
-  ).split(":")
+/** Only bills' trigger nests under `{court}`; for every other collection the
+ * list is unused, so passing a default costs nothing.
+ */
+const courtsFor = (args: Args, fallback: readonly number[]) =>
+  args.court?.length ? args.court : fallback
+
+/** Builds a corpus from a live project. */
+async function buildRemoteCorpus(args: Args) {
+  const { env, config, fetchRemoteDocs, projects, writeCorpus } = remoteSetup(
+    args,
+    "corpus"
+  )
+
+  const [orderByField, direction = "asc"] = (args.orderBy ?? "__name__").split(
+    ":"
+  )
   if (direction !== "asc" && direction !== "desc")
     throw Error(`--order-by direction must be asc or desc, got "${direction}"`)
 
+  const courts = courtsFor(args, supportedGeneralCourts)
   console.log(
     `Reading ${config.alias} from ${projects[env]} (no credentials — see firestore.rules)`
   )
   const { docs, failures } = await fetchRemoteDocs({
     env,
     config,
+    courts,
     limit: args.limit,
     orderByField,
     direction,
@@ -352,6 +377,107 @@ async function buildRemoteCorpus(args: Args) {
   )
 }
 
+/** Copies one field from a live project onto an existing corpus, for a field
+ * the corpus's own source predates.
+ *
+ * The bills corpus is the committed emulator fixture, captured before the LLM
+ * `summary` trigger in llm/ existed — all 7,337 documents have no summary, and
+ * prod has one for 97.9% of them. Re-exporting bills from prod instead would
+ * bring four years of unrelated drift with it: court 192 closed in 2022, so
+ * prod's copy has drained out of its policy committees (36 distinct
+ * `currentCommittee` values in the fixture against 21 in prod, and none left in
+ * Revenue at all), which silently rewrites the member-committee goldens.
+ * Joining the one missing field keeps every other value frozen, so a control
+ * run reproduces the previous baseline exactly and the field under test is the
+ * only thing that moved.
+ */
+async function enrichCorpus(args: Args) {
+  const field = args.field
+  if (!field) throw Error("enrich needs --field, e.g. --field summary")
+
+  const {
+    env,
+    alias,
+    config,
+    fetchRemoteDocs,
+    projects,
+    writeCorpus,
+    redactions
+  } = remoteSetup(args, "enrich")
+
+  // writeCorpus redacts on the way out, and redaction is not idempotent —
+  // publishedTestimony's authorUid would be hashed a second time.
+  if (redactions[alias])
+    throw Error(
+      `Cannot enrich "${alias}": its export redacts fields, and rewriting the corpus here would redact them twice.`
+    )
+
+  const meta = readMeta(alias)
+  const { docs: corpusDocs } = readCorpus(alias)
+  // The corpus records which courts it holds, and a court it does not hold can
+  // only produce documents the id lookup below throws away — so read those and
+  // no more. Defaulting to every supported court downloads the current one in
+  // full for nothing.
+  const courts = courtsFor(args, Object.keys(meta.courts).map(Number))
+
+  console.log(
+    `Reading ${config.alias} from ${projects[env]} for "${field}" (no credentials — see firestore.rules)`
+  )
+  const { docs: liveDocs, failures } = await fetchRemoteDocs({
+    env,
+    config,
+    courts,
+    orderByField: "__name__",
+    direction: "asc",
+    onProgress: (fetched, kept) =>
+      console.log(`  fetched ${fetched}, kept ${kept}`)
+  })
+
+  const values = new Map(
+    liveDocs
+      .filter(
+        d => d[field] !== undefined && d[field] !== null && d[field] !== ""
+      )
+      .map(d => [d.id, d[field]])
+  )
+
+  let enriched = 0
+  const merged = corpusDocs.map(doc => {
+    const value = values.get(doc.id)
+    if (value === undefined) return doc
+    enriched++
+    return { ...doc, [field]: value }
+  })
+
+  const count = writeCorpus({
+    alias,
+    source: meta.source,
+    docs: merged,
+    schema: config.schema,
+    limit: meta.limit,
+    orderBy: meta.orderBy,
+    // Replace this field's entry, keep every other join's. A corpus that has
+    // been enriched twice has to say so, or it stops describing how it was
+    // built and the md5 can only tell you the bytes moved.
+    enriched: [
+      ...(meta.enriched ?? []).filter(e => e.field !== field),
+      { field, source: env, count: enriched }
+    ]
+  })
+  console.log(
+    `Set "${field}" on ${enriched} of ${count} docs from ${projects[env]} (${failures} conversion failures)`
+  )
+}
+
+/** Shared by `corpus` and `enrich`; the default differs per command, so the
+ * describe text names the flag's purpose rather than a specific fallback. */
+const courtOption = {
+  array: true,
+  number: true,
+  describe:
+    "general court(s) to read, for collections nested under one (bills). Defaults to every supported court for `corpus`, and to the courts the corpus already holds for `enrich`"
+} as const
+
 yargs(hideBin(process.argv))
   .scriptName("search-eval")
   .command(
@@ -363,10 +489,25 @@ yargs(hideBin(process.argv))
         "order-by": {
           string: true,
           describe:
-            "field[:asc|desc] to page in, e.g. publishedAt:desc (default: the config's id field)"
-        }
+            "field[:asc|desc] to page in, e.g. publishedAt:desc (default: __name__, which needs no index)"
+        },
+        court: courtOption
       }),
     (args: Args) => buildRemoteCorpus(args)
+  )
+  .command(
+    "enrich",
+    "copy one field from a live project onto the existing corpus",
+    yargs =>
+      yargs.options({
+        field: {
+          string: true,
+          demandOption: true,
+          describe: "the field to copy, e.g. summary"
+        },
+        court: courtOption
+      }),
+    (args: Args) => enrichCorpus(args)
   )
   .command(
     "seed",

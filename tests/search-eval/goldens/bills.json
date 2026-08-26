@@ -568,6 +568,10 @@
         {
           "docId": "192-H2043",
           "grade": 3
+        },
+        {
+          "docId": "192-H2013",
+          "grade": 1
         }
       ]
     },
@@ -590,6 +594,14 @@
         {
           "docId": "192-H696",
           "grade": 3
+        },
+        {
+          "docId": "192-H676",
+          "grade": 1
+        },
+        {
+          "docId": "192-H598",
+          "grade": 1
         }
       ]
     },
@@ -1213,6 +1225,220 @@
             "contains": "post traumatic"
           },
           "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "pl-001",
+      "category": "plain-language",
+      "query": "tenants facing eviction",
+      "relevant": [
+        {
+          "docId": "192-H1434",
+          "grade": 3
+        },
+        {
+          "docId": "192-S891",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1436",
+          "grade": 3
+        },
+        {
+          "docId": "192-S874",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1440",
+          "grade": 3
+        },
+        {
+          "docId": "192-S889",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1911",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1808",
+          "grade": 1
+        },
+        {
+          "docId": "192-H4505",
+          "grade": 1
+        },
+        {
+          "docId": "192-S921",
+          "grade": 1
+        },
+        {
+          "docId": "192-H1404",
+          "grade": 1
+        },
+        {
+          "docId": "192-H4354",
+          "grade": 1
+        },
+        {
+          "docId": "192-S944",
+          "grade": 1
+        },
+        {
+          "docId": "192-H4148",
+          "grade": 1
+        },
+        {
+          "docId": "192-S2467",
+          "grade": 1
+        },
+        {
+          "docId": "192-H1378",
+          "grade": 1
+        },
+        {
+          "docId": "192-S886",
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "pl-002",
+      "category": "plain-language",
+      "query": "cap insulin costs",
+      "relevant": [
+        {
+          "docId": "192-H4034",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1055",
+          "grade": 3
+        },
+        {
+          "docId": "192-S2651",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1132",
+          "grade": 1
+        },
+        {
+          "docId": "192-S691",
+          "grade": 1
+        },
+        {
+          "docId": "192-S2537",
+          "grade": 1
+        },
+        {
+          "docId": "192-H729",
+          "grade": 1
+        },
+        {
+          "docId": "192-S2695",
+          "grade": 1
+        },
+        {
+          "docId": "192-S771",
+          "grade": 1
+        },
+        {
+          "docId": "192-S1991",
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "pl-003",
+      "category": "plain-language",
+      "query": "lead in school drinking water",
+      "relevant": [
+        {
+          "docId": "192-H906",
+          "grade": 3
+        },
+        {
+          "docId": "192-S580",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1725",
+          "grade": 1
+        },
+        {
+          "docId": "192-S1056",
+          "grade": 1
+        },
+        {
+          "docId": "192-H939",
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "pl-004",
+      "category": "plain-language",
+      "query": "property tax break for solar",
+      "relevant": [
+        {
+          "docId": "192-H2827",
+          "grade": 3
+        },
+        {
+          "docId": "192-H3000",
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "pl-005",
+      "category": "plain-language",
+      "query": "background checks for gun sales",
+      "relevant": [
+        {
+          "docId": "192-H3729",
+          "grade": 3
+        },
+        {
+          "docId": "192-H3846",
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "pl-006",
+      "category": "plain-language",
+      "query": "limit rent increases",
+      "relevant": [
+        {
+          "docId": "192-H1440",
+          "grade": 3
+        },
+        {
+          "docId": "192-S889",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1404",
+          "grade": 3
+        },
+        {
+          "docId": "192-H4354",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1378",
+          "grade": 1
+        },
+        {
+          "docId": "192-S886",
+          "grade": 1
+        },
+        {
+          "docId": "192-H3721",
+          "grade": 1
         }
       ]
     }

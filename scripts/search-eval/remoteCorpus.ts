@@ -4,14 +4,14 @@
  * built from — `events` and `generalCourts/**` are "public, read-only", and
  * publishedTestimony has an explicit `match /{path=**}/publishedTestimony/{id}`
  * rule so it can be read as a collection group. So the web client SDK reads it
- * with nothing but a project id, which is what makes hearings and testimony
- * corpora reachable to contributors who have no service account.
+ * with nothing but a project id, which is what makes every corpus reachable to
+ * contributors who have no service account.
  *
- * Bills is the exception: its rule is path-scoped to `generalCourts/**` and
- * does not grant collection-group scope, so a collectionGroup("bills") read is
- * denied here. Bills is exported from the committed emulator fixture instead
- * (scripts/firebase-admin/exportSearchCorpus.ts), where the admin SDK bypasses
- * rules.
+ * Bills needs one extra step. Its rule is path-scoped to `generalCourts/**` and
+ * does not grant collection-group scope, so `collectionGroup("bills")` is
+ * denied — but `generalCourts/192/bills` is a plain collection read inside that
+ * scope and is allowed. Substituting each general court for the trigger's
+ * `{court}` wildcard turns the one denied read into three permitted ones.
  */
 import { initializeApp } from "firebase/app"
 import {
@@ -20,6 +20,7 @@ import {
   Timestamp as ClientTimestamp,
   collection,
   collectionGroup,
+  documentId,
   getDocs,
   getFirestore,
   limit as limitTo,
@@ -66,28 +67,49 @@ const toAdminTypes = (value: unknown): unknown => {
   return value
 }
 
-/** The collection to read, derived from the config's document trigger so it
- * cannot drift from the indexer's own source. "events/{eventId}" reads the
- * events collection; "users/{uid}/publishedTestimony/{id}" reads
- * publishedTestimony as a collection group.
+/** One readable Firestore source. For a collection group the collection id is
+ * the path, so one field covers both.
+ */
+type RemoteSource = { path: string; isCollectionGroup?: boolean }
+
+/** The sources to read, derived from the config's document trigger so they
+ * cannot drift from the indexer's own source.
+ *
+ * - `events/{eventId}` is a top-level collection.
+ * - `users/{uid}/publishedTestimony/{id}` is nested under a wildcard, so it is
+ *   read as a collection group — permitted by its own `{path=**}` rule.
+ * - `generalCourts/{court}/bills/{id}` is nested too, but no rule grants it
+ *   group scope. `courts` is substituted for `{court}` to give one concrete,
+ *   readable path per general court.
  *
  * Any `where` on config.sourceCollection is deliberately not reproduced —
  * config.filter is the authority on which documents belong in the index, and
  * it is applied to every document below.
  */
-export function sourceFromTrigger(documentTrigger: string) {
+export function sourcesFromTrigger(
+  documentTrigger: string,
+  courts: readonly number[]
+): RemoteSource[] {
   const segments = documentTrigger.split("/").filter(Boolean)
   if (segments.length < 2 || segments.length % 2 !== 0)
     throw Error(`Cannot read a collection out of trigger "${documentTrigger}"`)
-  return {
-    collectionId: segments[segments.length - 2],
-    isCollectionGroup: segments.length > 2
-  }
+
+  // Drop the trailing document-id wildcard; what remains is the collection.
+  const path = segments.slice(0, -1)
+  const collectionId = path[path.length - 1]
+
+  if (path.length === 1) return [{ path: collectionId }]
+  if (path.length === 3 && path[0] === "generalCourts")
+    return courts.map(court => ({
+      path: `generalCourts/${court}/${collectionId}`
+    }))
+  return [{ path: collectionId, isCollectionGroup: true }]
 }
 
 export async function fetchRemoteDocs({
   env,
   config,
+  courts,
   limit,
   orderByField,
   direction,
@@ -95,52 +117,64 @@ export async function fetchRemoteDocs({
 }: {
   env: RemoteEnv
   config: CollectionConfig
+  courts: readonly number[]
   limit?: number
   orderByField: string
   direction: "asc" | "desc"
   onProgress?: (fetched: number, kept: number) => void
 }): Promise<{ docs: ExportedDoc[]; failures: number }> {
   const projectId = projects[env]
-  const { collectionId, isCollectionGroup } = sourceFromTrigger(
-    config.documentTrigger
-  )
+  const sources = sourcesFromTrigger(config.documentTrigger, courts)
 
   const app = initializeApp({ projectId }, `search-eval-${env}`)
   const db = getFirestore(app)
-  const source = isCollectionGroup
-    ? collectionGroup(db, collectionId)
-    : collection(db, collectionId)
 
   const docs: ExportedDoc[] = []
   let failures = 0
   let fetched = 0
-  let cursor: QueryDocumentSnapshot<DocumentData> | undefined
 
-  while (limit === undefined || docs.length < limit) {
-    const page = query(
-      source,
-      orderBy(orderByField, direction),
-      ...(cursor ? [startAfter(cursor)] : []),
-      limitTo(batchSize)
-    )
-    const snap = await getDocs(page)
-    if (snap.empty) break
-    cursor = snap.docs[snap.docs.length - 1]
-    fetched += snap.size
+  // `limit` caps the corpus as a whole, not each source, so a capped export of
+  // a multi-court collection is the first N documents overall.
+  for (const source of sources) {
+    const ref = source.isCollectionGroup
+      ? collectionGroup(db, source.path)
+      : collection(db, source.path)
+    let cursor: QueryDocumentSnapshot<DocumentData> | undefined
 
-    for (const d of snap.docs) {
-      const data = toAdminTypes(d.data()) as DocumentData
-      try {
-        if (config.filter && !config.filter(data)) continue
-        docs.push(config.convert(data) as ExportedDoc)
-        if (limit !== undefined && docs.length >= limit) break
-      } catch (error: any) {
-        failures++
-        console.error(`Failed to convert ${d.ref.path}: ${error.message}`)
+    while (limit === undefined || docs.length < limit) {
+      const page = query(
+        ref,
+        // Paging needs a total order, not a meaningful one: writeCorpus sorts
+        // by id before writing, so this never reaches the corpus. "__name__"
+        // is the default because document name is the one ordering Firestore
+        // can always serve — prod carries a single-field index exemption on
+        // bills' `id`, and ordering by it fails with failed-precondition.
+        orderBy(
+          orderByField === "__name__" ? documentId() : orderByField,
+          direction
+        ),
+        ...(cursor ? [startAfter(cursor)] : []),
+        limitTo(batchSize)
+      )
+      const snap = await getDocs(page)
+      if (snap.empty) break
+      cursor = snap.docs[snap.docs.length - 1]
+      fetched += snap.size
+
+      for (const d of snap.docs) {
+        const data = toAdminTypes(d.data()) as DocumentData
+        try {
+          if (config.filter && !config.filter(data)) continue
+          docs.push(config.convert(data) as ExportedDoc)
+          if (limit !== undefined && docs.length >= limit) break
+        } catch (error: any) {
+          failures++
+          console.error(`Failed to convert ${d.ref.path}: ${error.message}`)
+        }
       }
+      onProgress?.(fetched, docs.length)
+      if (snap.size < batchSize) break
     }
-    onProgress?.(fetched, docs.length)
-    if (snap.size < batchSize) break
   }
 
   return { docs, failures }

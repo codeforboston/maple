@@ -25,3 +25,19 @@ export const registerConfig = (config: CollectionConfig) => {
   registered.push(config)
 }
 export const getRegisteredConfigs = () => registered
+
+/** The config for one alias. A config registers itself when its module is
+ * loaded, so a miss usually means the caller forgot to require
+ * `functions/src/<collection>/search` — the error names what is loaded so that
+ * is visible rather than guessed at.
+ */
+export const configForAlias = (alias: string): CollectionConfig => {
+  const config = registered.find(c => c.alias === alias)
+  if (!config)
+    throw Error(
+      `No search config registered for "${alias}". Registered: ${
+        registered.map(c => c.alias).join(", ") || "(none)"
+      }`
+    )
+  return config
+}

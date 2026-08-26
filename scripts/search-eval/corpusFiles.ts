@@ -43,7 +43,8 @@ export function writeCorpus({
   docs,
   schema,
   limit,
-  orderBy
+  orderBy,
+  enriched
 }: {
   alias: string
   /** Where the documents came from: an env name, or the fixture path. */
@@ -52,6 +53,9 @@ export function writeCorpus({
   schema: Schema
   limit?: number
   orderBy?: string
+  /** Set by the `enrich` subcommand: one entry per field joined in from a live
+   * project after export. */
+  enriched?: { field: string; source: string; count: number }[]
 }): number {
   const redact = redactions[alias]
 
@@ -87,7 +91,8 @@ export function writeCorpus({
         jsonlMd5: createHash("md5").update(jsonl).digest("hex"),
         ...(limit === undefined ? {} : { limit }),
         ...(orderBy === undefined ? {} : { orderBy }),
-        ...(redact === undefined ? {} : { redacted: redact.fields })
+        ...(redact === undefined ? {} : { redacted: redact.fields }),
+        ...(enriched === undefined ? {} : { enriched })
       },
       null,
       2

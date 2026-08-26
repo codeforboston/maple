@@ -28,6 +28,8 @@ export const {
       { name: "numberVariants", type: "string[]", facet: false },
       { name: "court", type: "int32", facet: true },
       { name: "title", type: "string", facet: false },
+      { name: "pinslip", type: "string", facet: false, optional: true },
+      { name: "summary", type: "string", facet: false, optional: true },
       { name: "body", type: "string", facet: false, optional: true },
       { name: "city", type: "string", facet: true, optional: true },
       { name: "currentCommittee", type: "string", facet: true, optional: true },
@@ -66,6 +68,52 @@ export const {
       number: bill.id,
       numberVariants: billNumberVariants(bill.id),
       title: bill.content.Title,
+      /** Nullable in Firestore, but an optional Typesense field rejects an
+       * explicit null, so the absent case has to be undefined.
+       *
+       * The cap drops the ~20 procedural study orders whose Pinslip is a
+       * concatenated committee docket rather than a description; indexed whole
+       * they match nearly any topical query. Numbers and the top-10 evidence:
+       * "Long fields are topic-agnostic magnets" in
+       * tests/search-eval/README.md.
+       *
+       * Inline rather than a named constant — SearchIndexer hashes
+       * `convert.toString()`, the same trap documented on buildTopicsForSearch
+       * below.
+       */
+      pinslip:
+        bill.content.Pinslip && bill.content.Pinslip.length <= 2000
+          ? bill.content.Pinslip
+          : undefined,
+      /** The LLM plain-language description of what the bill does, written by
+       * the `bill_on_document_created` trigger in llm/. Deliberately uncapped,
+       * unlike `pinslip` above: across prod's court 192 these run 166 to 922
+       * characters (median 538), so there is no long-field tail to guard
+       * against. Do not add a cap here by analogy.
+       *
+       * Orders are withheld for the same reason the pinslip cap exists, and
+       * against the same documents. A procedural order ("Extension Order -
+       * Education", "Order relative to authorizing the joint committee on
+       * Education to make an investigation and study") matches a committee
+       * query in title, pinslip and body already; a summary hands it a fourth
+       * field, and `fields_matched` sits in the lowest bits of `_text_match`,
+       * so it outranks the bills actually before that committee. Measured on
+       * "Education Committee": nDCG@10 0.558 -> 0.064 with order summaries
+       * indexed, and back to 0.558 with them withheld — the whole
+       * member-committee cost of this field, and nothing else.
+       *
+       * Only Order and Extension Order. Resolves and constitutional amendment
+       * proposals are legislation people search for; "Bill or nothing" would
+       * be the wrong cut.
+       *
+       * Inline rather than a named constant — SearchIndexer hashes
+       * `convert.toString()`, as on `pinslip` above.
+       */
+      summary:
+        bill.content.LegislationTypeName === "Order" ||
+        bill.content.LegislationTypeName === "Extension Order"
+          ? undefined
+          : bill.summary,
       body: bill.content.DocumentText,
       city: bill.city,
       currentCommittee: bill.currentCommittee?.name,

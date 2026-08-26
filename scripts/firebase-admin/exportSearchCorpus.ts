@@ -1,7 +1,7 @@
 import { last } from "lodash"
 // Imported for the registerConfig side effect.
 import "../../functions/src/bills/search"
-import { getRegisteredConfigs } from "../../functions/src/search/config"
+import { configForAlias } from "../../functions/src/search/config"
 import { corpusDir } from "../search-eval/corpus"
 import { ExportedDoc, writeCorpus } from "../search-eval/corpusFiles"
 import { Script } from "./types"
@@ -30,13 +30,7 @@ export const script: Script = async ({ args }) => {
       "Pass the collection alias, e.g. `run-script exportSearchCorpus --env local bills`"
     )
 
-  const config = getRegisteredConfigs().find(c => c.alias === alias)
-  if (!config)
-    throw Error(
-      `No search config registered for "${alias}". Known: ${getRegisteredConfigs()
-        .map(c => c.alias)
-        .join(", ")}`
-    )
+  const config = configForAlias(alias)
 
   const docs: ExportedDoc[] = []
   let failures = 0
