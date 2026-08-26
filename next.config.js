@@ -1,6 +1,12 @@
 const i18Config = require("./next-i18next.config")
 
 const config = {
+  /** typesense-instantsearch-adapter 3.x ships ESM syntax in .js files whose
+   * package main is not marked "type": "module", so Next's default server
+   * externalization require()s it and node fails on its extensionless relative
+   * imports — 500ing every search page. Transpiling bundles it instead.
+   */
+  transpilePackages: ["typesense-instantsearch-adapter"],
   images: {
     loader: "custom"
   },

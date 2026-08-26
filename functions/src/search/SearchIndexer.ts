@@ -2,7 +2,6 @@ import { Change } from "firebase-functions"
 import { isEqual, last } from "lodash"
 import hash from "object-hash"
 import Collection from "typesense/lib/Typesense/Collection"
-import { ImportResponse } from "typesense/lib/Typesense/Documents"
 import { ImportError, ObjectNotFound } from "typesense/lib/Typesense/Errors"
 import { db, DocumentData, DocumentSnapshot, QuerySnapshot } from "../firebase"
 import { createClient } from "./client"
@@ -83,7 +82,7 @@ export class SearchIndexer {
     if (!afterData || !this.passesFilter(afterData)) {
       if (beforeData && this.passesFilter(beforeData)) {
         const { id } = this.config.convert(beforeData)
-        await (await this.getCollection()).documents().delete(id)
+        await (await this.getCollection()).documents(id).delete()
       }
       return
     }
@@ -150,18 +149,14 @@ export class SearchIndexer {
         await collection.documents().import(docs, { action: "upsert" })
       } catch (e) {
         if (e instanceof ImportError) {
-          const results = e.importResults as unknown as ImportResponse[]
           console.error(
-            results
-              .map(
-                r =>
-                  !r.success && {
-                    code: r.code,
-                    error: r.error,
-                    id: r.document.id
-                  }
-              )
-              .filter(Boolean)
+            e.importResults
+              .filter(r => !r.success)
+              .map(r => ({
+                code: r.code,
+                error: r.error,
+                id: r.id ?? r.document?.id
+              }))
           )
         }
         throw e

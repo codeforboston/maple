@@ -139,8 +139,8 @@
     "runtypes": "6.6.0",
     "sidebar-v2": "^0.4.0",
     "styled-components": "^5.3.3",
-    "typesense": "^1.2.2",
-    "typesense-instantsearch-adapter": "^2.4.0",
+    "typesense": "^3.0.6",
+    "typesense-instantsearch-adapter": "^3.0.2",
     "usehooks-ts": "^2.5.3",
     "web-vitals": "^0.2.4",
     "zod": "^3.20.2"
