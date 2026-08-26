@@ -1,0 +1,10 @@
+{
+  "collection": "bills",
+  "source": "tests/integration/exportedTestData",
+  "count": 7337,
+  "courts": {
+    "192": 7334,
+    "193": 3
+  },
+  "jsonlMd5": "a0499d7bb8597f88dbd737893bcd8a4d"
+}

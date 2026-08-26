@@ -102,3 +102,6 @@ CLAUDE.md
 #gcloud
 .gcloudignore
 
+# search-eval: regenerate with `yarn search-eval:corpus`; labeling sheet is authoring scratch
+tests/search-eval/corpus/bills.jsonl.gz
+tests/search-eval/labeling-sheet.md

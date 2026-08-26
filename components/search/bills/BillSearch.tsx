@@ -23,16 +23,14 @@ import { BillHit } from "./BillHit"
 import { useBillRefinements } from "./useBillRefinements"
 import { SortBy, SortByWithConfigurationItem } from "../SortBy"
 import { getServerConfig, VirtualFilters } from "../common"
+import { billsSearchParams } from "../searchParams"
 import { useBillSort } from "./useBillSort"
 import { FC, useState } from "react"
 import { pathToSearchState, searchStateToUrl } from "../routingHelpers"
 
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
-  additionalSearchParameters: {
-    query_by: "number,title,body",
-    exclude_fields: "body"
-  }
+  additionalSearchParameters: billsSearchParams
 }).searchClient
 
 const extractLastSegmentOfRefinements = (items: any[]) => {
