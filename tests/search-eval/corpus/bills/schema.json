@@ -1,8 +1,16 @@
 {
+  "token_separators": [
+    "-"
+  ],
   "fields": [
     {
       "name": "number",
       "type": "string",
+      "facet": false
+    },
+    {
+      "name": "numberVariants",
+      "type": "string[]",
       "facet": false
     },
     {

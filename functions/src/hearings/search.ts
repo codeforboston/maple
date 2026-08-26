@@ -17,6 +17,14 @@ export const {
   idField: "id",
   filter: data => data.type === "hearing",
   schema: {
+    /** Hyphens do not split tokens by default, so "vote-by-mail" indexes as one
+     * token and the spaced form people type cannot reach it — the two spellings
+     * return disjoint result sets. Splitting on "-" makes each form find both,
+     * and makes the parts individually searchable ("income" reaches
+     * "low-income"). Hyphenated compounds are everywhere in this corpus:
+     * low-income, long-term, well-being, community-based, in-person.
+     */
+    token_separators: ["-"],
     fields: [
       { name: "eventId", type: "int32", facet: false },
       { name: "title", type: "string", facet: false },

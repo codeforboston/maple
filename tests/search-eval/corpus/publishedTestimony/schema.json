@@ -1,9 +1,17 @@
 {
+  "token_separators": [
+    "-"
+  ],
   "fields": [
     {
       "name": "billId",
       "type": "string",
       "facet": true
+    },
+    {
+      "name": "billIdVariants",
+      "type": "string[]",
+      "facet": false
     },
     {
       "name": "court",

@@ -1,6 +1,7 @@
 import { isString } from "lodash"
 import { db } from "../firebase"
 import { createSearchIndexer } from "../search"
+import { billNumberVariants, billNumberVariantsVersion } from "./numberVariants"
 import { Bill, BillTopic } from "./types"
 
 export const {
@@ -12,9 +13,19 @@ export const {
   documentTrigger: `generalCourts/{court}/bills/{id}`,
   alias: "bills",
   idField: "id",
+  convertVersion: billNumberVariantsVersion,
   schema: {
+    /** Hyphens do not split tokens by default, so "vote-by-mail" indexes as one
+     * token and the spaced form people type cannot reach it — the two spellings
+     * return disjoint result sets. Splitting on "-" makes each form find both,
+     * and makes the parts individually searchable ("income" reaches
+     * "low-income"). Hyphenated compounds are everywhere in this corpus:
+     * low-income, long-term, well-being, community-based, in-person.
+     */
+    token_separators: ["-"],
     fields: [
       { name: "number", type: "string", facet: false },
+      { name: "numberVariants", type: "string[]", facet: false },
       { name: "court", type: "int32", facet: true },
       { name: "title", type: "string", facet: false },
       { name: "body", type: "string", facet: false, optional: true },
@@ -53,6 +64,7 @@ export const {
       id: `${bill.court}-${bill.id}`,
       court: bill.court,
       number: bill.id,
+      numberVariants: billNumberVariants(bill.id),
       title: bill.content.Title,
       body: bill.content.DocumentText,
       city: bill.city,

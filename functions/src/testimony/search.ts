@@ -1,4 +1,8 @@
 import { db } from "../firebase"
+import {
+  billNumberVariants,
+  billNumberVariantsVersion
+} from "../bills/numberVariants"
 import { createSearchIndexer } from "../search"
 import { Testimony, TestimonySearchRecord } from "./types"
 
@@ -11,9 +15,19 @@ export const {
   documentTrigger: "users/{uid}/publishedTestimony/{id}",
   alias: "publishedTestimony",
   idField: "id",
+  convertVersion: billNumberVariantsVersion,
   schema: {
+    /** Hyphens do not split tokens by default, so "vote-by-mail" indexes as one
+     * token and the spaced form people type cannot reach it — the two spellings
+     * return disjoint result sets. Splitting on "-" makes each form find both,
+     * and makes the parts individually searchable ("income" reaches
+     * "low-income"). Hyphenated compounds are everywhere in this corpus:
+     * low-income, long-term, well-being, community-based, in-person.
+     */
+    token_separators: ["-"],
     fields: [
       { name: "billId", type: "string", facet: true },
+      { name: "billIdVariants", type: "string[]", facet: false },
       { name: "court", type: "int32", facet: true },
       { name: "position", type: "string", facet: true },
       { name: "content", type: "string", facet: false },
@@ -39,6 +53,7 @@ export const {
     const record: TestimonySearchRecord = {
       id: testimony.id,
       billId: testimony.billId,
+      billIdVariants: billNumberVariants(testimony.billId),
       authorDisplayName: testimony.authorDisplayName,
       court: testimony.court,
       position: testimony.position,

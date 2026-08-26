@@ -2,6 +2,7 @@
  * search pages and the relevance eval harness (scripts/search-eval). Keep this
  * module free of React/Next imports so it can be loaded from ts-node scripts.
  */
+import { SYNONYM_SET_NAME } from "functions/src/search/synonyms"
 import type { TypesenseInstantsearchAdapterOptions } from "typesense-instantsearch-adapter"
 
 type SearchParameters = NonNullable<
@@ -16,16 +17,29 @@ const weighted = (fields: Record<string, number>) => ({
   query_by_weights: Object.values(fields).join(",")
 })
 
+/** Server-level synonym set (Typesense >= 30) applied at query time; every
+ * collection that searches legislative prose wants it. Deploys keep the set
+ * itself current — see functions/src/search/synonyms.ts.
+ */
+const legislativeSynonyms = SYNONYM_SET_NAME
+
 export const billsSearchParams = {
   ...weighted({
     number: 10,
+    numberVariants: 10,
     title: 5,
     primarySponsor: 4,
     cosponsors: 3,
     currentCommittee: 4,
     body: 1
   }),
-  exclude_fields: "body"
+  synonym_sets: legislativeSynonyms,
+  /** numberVariants holds the space-separated form of each bill number (see
+   * functions/src/bills/search.ts). It is a matching artifact, so excluding it
+   * keeps it out of hits and out of the adapter's highlight output, which
+   * defaults to query_by.
+   */
+  exclude_fields: "body,numberVariants"
 } satisfies SearchParameters
 
 /** The app's "Relevance" sort option (see useBillSort.tsx). The eval harness
@@ -35,8 +49,18 @@ export const billsSearchParams = {
 export const billsRelevanceSort = "_text_match:desc,testimonyCount:desc"
 
 export const testimonySearchParams = {
-  ...weighted({ billId: 10, authorDisplayName: 6, content: 3, authorRole: 1 }),
-  exclude_fields: ""
+  ...weighted({
+    billId: 10,
+    billIdVariants: 10,
+    authorDisplayName: 6,
+    content: 3,
+    authorRole: 1
+  }),
+  synonym_sets: legislativeSynonyms,
+  /** A matching artifact, like bills' numberVariants: excluding it keeps it out
+   * of hits and out of the adapter's highlight output, which defaults to
+   * query_by. */
+  exclude_fields: "billIdVariants"
 } satisfies SearchParameters
 
 /** The app's "Relevance" sort option (see useTestimonySort in
@@ -53,7 +77,8 @@ export const hearingsSearchParams = {
     description: 2,
     locationName: 2,
     locationCity: 2
-  })
+  }),
+  synonym_sets: legislativeSynonyms
 } satisfies SearchParameters
 
 /** The app's "Relevance" sort option (see useHearingSort in

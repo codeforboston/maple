@@ -223,6 +223,13 @@
             "contains": "same day registration"
           },
           "grade": 3
+        },
+        {
+          "rule": {
+            "field": "content",
+            "contains": "same day voter registration"
+          },
+          "grade": 3
         }
       ]
     },

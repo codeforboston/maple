@@ -7,15 +7,15 @@
     "serverVersion": "30.2",
     "corpusMd5": "fa6e9fe42e3da564da0bd72eef1e55aa",
     "gitSha": "7e6529b622c9e1b2b45a53add525c355f96a1ba3",
-    "timestamp": "2026-08-19T18:32:18.185Z",
+    "timestamp": "2026-08-19T18:32:18.836Z",
     "sortBy": "_text_match:desc,startsAt:desc",
     "court": 194,
     "skippedQueries": []
   },
   "overall": {
-    "recallAt10": 0.90625,
-    "mrr": 0.9270833333333334,
-    "ndcgAt10": 0.9065328757618745,
+    "recallAt10": 0.96875,
+    "mrr": 0.9739583333333334,
+    "ndcgAt10": 0.9571719707217369,
     "queryCount": 48
   },
   "categories": {
@@ -56,9 +56,9 @@
       "queryCount": 6
     },
     "synonym": {
-      "recallAt10": 0,
-      "mrr": 0,
-      "ndcgAt10": 0,
+      "recallAt10": 1,
+      "mrr": 0.75,
+      "ndcgAt10": 0.8102255193577976,
       "queryCount": 3
     }
   },
@@ -667,8 +667,8 @@
         "hearing-5353",
         "hearing-5334",
         "hearing-5214",
-        "hearing-5747",
-        "hearing-5708"
+        "hearing-5264",
+        "hearing-5234"
       ],
       "relevantCount": 30
     },
@@ -857,14 +857,15 @@
       "category": "synonym",
       "query": "cannabis",
       "metrics": {
-        "recallAt10": 0,
-        "mrr": 0,
-        "ndcgAt10": 0
+        "recallAt10": 1,
+        "mrr": 0.25,
+        "ndcgAt10": 0.43067655807339306
       },
       "top10": [
         "hearing-5530",
         "hearing-5235",
-        "hearing-5165"
+        "hearing-5165",
+        "hearing-5602"
       ],
       "relevantCount": 1
     },
@@ -873,11 +874,15 @@
       "category": "synonym",
       "query": "guns",
       "metrics": {
-        "recallAt10": 0,
-        "mrr": 0,
-        "ndcgAt10": 0
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
       },
-      "top10": [],
+      "top10": [
+        "hearing-5440",
+        "hearing-5321",
+        "hearing-5223"
+      ],
       "relevantCount": 3
     },
     {
@@ -885,11 +890,20 @@
       "category": "synonym",
       "query": "liquor",
       "metrics": {
-        "recallAt10": 0,
-        "mrr": 0,
-        "ndcgAt10": 0
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
       },
-      "top10": [],
+      "top10": [
+        "hearing-5705",
+        "hearing-5692",
+        "hearing-5630",
+        "hearing-5433",
+        "hearing-5395",
+        "hearing-5237",
+        "hearing-5171",
+        "hearing-5416"
+      ],
       "relevantCount": 8
     },
     {

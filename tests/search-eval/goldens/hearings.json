@@ -11,7 +11,10 @@
       "query": "Ways and Means",
       "relevant": [
         {
-          "rule": { "field": "committeeName", "contains": "Ways and Means" },
+          "rule": {
+            "field": "committeeName",
+            "contains": "Ways and Means"
+          },
           "grade": 3
         }
       ]
@@ -22,7 +25,10 @@
       "query": "Judiciary",
       "relevant": [
         {
-          "rule": { "field": "committeeName", "contains": "Judiciary" },
+          "rule": {
+            "field": "committeeName",
+            "contains": "Judiciary"
+          },
           "grade": 3
         }
       ]
@@ -47,7 +53,10 @@
       "query": "Public Health",
       "relevant": [
         {
-          "rule": { "field": "committeeName", "contains": "Public Health" },
+          "rule": {
+            "field": "committeeName",
+            "contains": "Public Health"
+          },
           "grade": 3
         }
       ]
@@ -58,7 +67,10 @@
       "query": "Transportation",
       "relevant": [
         {
-          "rule": { "field": "committeeName", "contains": "Transportation" },
+          "rule": {
+            "field": "committeeName",
+            "contains": "Transportation"
+          },
           "grade": 3
         }
       ]
@@ -69,7 +81,10 @@
       "query": "Housing",
       "relevant": [
         {
-          "rule": { "field": "committeeName", "contains": "Housing" },
+          "rule": {
+            "field": "committeeName",
+            "contains": "Housing"
+          },
           "grade": 3
         }
       ]
@@ -80,7 +95,10 @@
       "query": "Election Laws",
       "relevant": [
         {
-          "rule": { "field": "committeeName", "contains": "Election Laws" },
+          "rule": {
+            "field": "committeeName",
+            "contains": "Election Laws"
+          },
           "grade": 3
         }
       ]
@@ -91,7 +109,10 @@
       "query": "Revenue",
       "relevant": [
         {
-          "rule": { "field": "committeeName", "contains": "Revenue" },
+          "rule": {
+            "field": "committeeName",
+            "contains": "Revenue"
+          },
           "grade": 3
         }
       ]
@@ -116,19 +137,24 @@
       "query": "Municipalities and Regional Government",
       "relevant": [
         {
-          "rule": { "field": "committeeName", "contains": "Municipalities" },
+          "rule": {
+            "field": "committeeName",
+            "contains": "Municipalities"
+          },
           "grade": 3
         }
       ]
     },
-
     {
       "id": "hch-001",
       "category": "chair",
       "query": "Rebecca Rausch",
       "relevant": [
         {
-          "rule": { "field": "chairNames", "equals": "Rebecca L. Rausch" },
+          "rule": {
+            "field": "chairNames",
+            "equals": "Rebecca L. Rausch"
+          },
           "grade": 3
         }
       ]
@@ -139,7 +165,10 @@
       "query": "Cindy Friedman",
       "relevant": [
         {
-          "rule": { "field": "chairNames", "equals": "Cindy F. Friedman" },
+          "rule": {
+            "field": "chairNames",
+            "equals": "Cindy F. Friedman"
+          },
           "grade": 3
         }
       ]
@@ -150,7 +179,10 @@
       "query": "Alice Peisch",
       "relevant": [
         {
-          "rule": { "field": "chairNames", "equals": "Alice Hanlon Peisch" },
+          "rule": {
+            "field": "chairNames",
+            "equals": "Alice Hanlon Peisch"
+          },
           "grade": 3
         }
       ]
@@ -161,7 +193,10 @@
       "query": "Tackey Chan",
       "relevant": [
         {
-          "rule": { "field": "chairNames", "equals": "Tackey Chan" },
+          "rule": {
+            "field": "chairNames",
+            "equals": "Tackey Chan"
+          },
           "grade": 3
         }
       ]
@@ -172,7 +207,10 @@
       "query": "Brendan Crighton",
       "relevant": [
         {
-          "rule": { "field": "chairNames", "equals": "Brendan P. Crighton" },
+          "rule": {
+            "field": "chairNames",
+            "equals": "Brendan P. Crighton"
+          },
           "grade": 3
         }
       ]
@@ -183,18 +221,26 @@
       "query": "Daniel Ryan",
       "relevant": [
         {
-          "rule": { "field": "chairNames", "equals": "Daniel J. Ryan" },
+          "rule": {
+            "field": "chairNames",
+            "equals": "Daniel J. Ryan"
+          },
           "grade": 3
         }
       ]
     },
-
     {
       "id": "hb-001",
       "category": "bill-on-agenda",
       "query": "H2391",
       "relevant": [
-        { "rule": { "field": "billNumbers", "equals": "H2391" }, "grade": 3 }
+        {
+          "rule": {
+            "field": "billNumbers",
+            "equals": "H2391"
+          },
+          "grade": 3
+        }
       ]
     },
     {
@@ -214,7 +260,13 @@
       "category": "bill-on-agenda",
       "query": "S1489",
       "relevant": [
-        { "rule": { "field": "billNumbers", "equals": "S1489" }, "grade": 3 }
+        {
+          "rule": {
+            "field": "billNumbers",
+            "equals": "S1489"
+          },
+          "grade": 3
+        }
       ]
     },
     {
@@ -228,7 +280,13 @@
       "category": "bill-on-agenda",
       "query": "H63",
       "relevant": [
-        { "rule": { "field": "billNumbers", "equals": "H63" }, "grade": 3 }
+        {
+          "rule": {
+            "field": "billNumbers",
+            "equals": "H63"
+          },
+          "grade": 3
+        }
       ]
     },
     {
@@ -242,7 +300,13 @@
       "category": "bill-on-agenda",
       "query": "S6",
       "relevant": [
-        { "rule": { "field": "billNumbers", "equals": "S6" }, "grade": 3 }
+        {
+          "rule": {
+            "field": "billNumbers",
+            "equals": "S6"
+          },
+          "grade": 3
+        }
       ]
     },
     {
@@ -250,7 +314,13 @@
       "category": "bill-on-agenda",
       "query": "H56",
       "relevant": [
-        { "rule": { "field": "billNumbers", "equals": "H56" }, "grade": 3 }
+        {
+          "rule": {
+            "field": "billNumbers",
+            "equals": "H56"
+          },
+          "grade": 3
+        }
       ]
     },
     {
@@ -258,10 +328,15 @@
       "category": "bill-on-agenda",
       "query": "H.2424",
       "relevant": [
-        { "rule": { "field": "billNumbers", "equals": "H2424" }, "grade": 3 }
+        {
+          "rule": {
+            "field": "billNumbers",
+            "equals": "H2424"
+          },
+          "grade": 3
+        }
       ]
     },
-
     {
       "id": "ht-001",
       "category": "agenda-topic",
@@ -313,6 +388,13 @@
           "rule": {
             "anyField": ["agendaTopics", "description"],
             "contains": "disabilit"
+          },
+          "grade": 1
+        },
+        {
+          "rule": {
+            "anyField": ["agendaTopics", "description"],
+            "contains": "disabled"
           },
           "grade": 1
         }
@@ -374,14 +456,16 @@
         }
       ]
     },
-
     {
       "id": "hl-001",
       "category": "location",
       "query": "Gardner Auditorium",
       "relevant": [
         {
-          "rule": { "field": "locationName", "contains": "Gardner" },
+          "rule": {
+            "field": "locationName",
+            "contains": "Gardner"
+          },
           "grade": 3
         }
       ]
@@ -392,7 +476,10 @@
       "query": "Virtual Hearing",
       "relevant": [
         {
-          "rule": { "field": "locationName", "contains": "Virtual" },
+          "rule": {
+            "field": "locationName",
+            "contains": "Virtual"
+          },
           "grade": 3
         }
       ]
@@ -403,7 +490,10 @@
       "query": "Written Testimony Only",
       "relevant": [
         {
-          "rule": { "field": "locationName", "contains": "Written Testimony" },
+          "rule": {
+            "field": "locationName",
+            "contains": "Written Testimony"
+          },
           "grade": 3
         }
       ]
@@ -413,7 +503,13 @@
       "category": "location",
       "query": "UMass Amherst",
       "relevant": [
-        { "rule": { "field": "locationName", "contains": "UMass" }, "grade": 3 }
+        {
+          "rule": {
+            "field": "locationName",
+            "contains": "UMass"
+          },
+          "grade": 3
+        }
       ]
     },
     {
@@ -430,7 +526,6 @@
         }
       ]
     },
-
     {
       "id": "hs-001",
       "category": "synonym",
@@ -473,7 +568,6 @@
         }
       ]
     },
-
     {
       "id": "hm-001",
       "category": "misspelling",

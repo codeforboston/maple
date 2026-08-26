@@ -1,0 +1,1726 @@
+{
+  "meta": {
+    "env": "local",
+    "url": "",
+    "alias": "bills",
+    "collection": "bills_eval",
+    "serverVersion": "30.2",
+    "corpusMd5": "6041d1fed1399eece7aa523428e97397",
+    "gitSha": "c4a843c12cd9c72061ddae203bff02aa4ae2db18",
+    "timestamp": "2026-08-19T20:58:35.665Z",
+    "sortBy": "_text_match:desc,testimonyCount:desc",
+    "court": 192,
+    "skippedQueries": []
+  },
+  "overall": {
+    "recallAt10": 0.8532894736842105,
+    "mrr": 0.9594820384294069,
+    "ndcgAt10": 0.737651675424721,
+    "queryCount": 76
+  },
+  "categories": {
+    "exact-bill-id": {
+      "recallAt10": 1,
+      "mrr": 1,
+      "ndcgAt10": 1,
+      "queryCount": 15
+    },
+    "hyphenation": {
+      "recallAt10": 0.44166666666666665,
+      "mrr": 1,
+      "ndcgAt10": 0.5736344100720298,
+      "queryCount": 6
+    },
+    "member-committee": {
+      "recallAt10": 0.8866666666666667,
+      "mrr": 0.8539682539682539,
+      "ndcgAt10": 0.8641271505214204,
+      "queryCount": 15
+    },
+    "misspelling": {
+      "recallAt10": 0.8699999999999999,
+      "mrr": 1,
+      "ndcgAt10": 0.4985867229196039,
+      "queryCount": 10
+    },
+    "synonym": {
+      "recallAt10": 0.96,
+      "mrr": 1,
+      "ndcgAt10": 0.9727329844310522,
+      "queryCount": 10
+    },
+    "topic": {
+      "recallAt10": 0.78,
+      "mrr": 0.9555555555555555,
+      "ndcgAt10": 0.4972308270259364,
+      "queryCount": 20
+    }
+  },
+  "queries": [
+    {
+      "id": "exact-001",
+      "category": "exact-bill-id",
+      "query": "H.100",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-H100",
+        "192-H1002",
+        "192-H1001",
+        "192-H1000",
+        "192-H1006",
+        "192-H1004",
+        "192-H1003",
+        "192-H1009",
+        "192-H1008",
+        "192-H1007"
+      ],
+      "relevantCount": 1
+    },
+    {
+      "id": "exact-002",
+      "category": "exact-bill-id",
+      "query": "h100",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-H100",
+        "192-H1002",
+        "192-H1001",
+        "192-H1000",
+        "192-H1006",
+        "192-H1004",
+        "192-H1003",
+        "192-H1009",
+        "192-H1008",
+        "192-H1007"
+      ],
+      "relevantCount": 1
+    },
+    {
+      "id": "exact-003",
+      "category": "exact-bill-id",
+      "query": "H 100",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-H100",
+        "192-H1002",
+        "192-H1001",
+        "192-H1000",
+        "192-H1006",
+        "192-H1004",
+        "192-H1003",
+        "192-H1009",
+        "192-H1008",
+        "192-H1007"
+      ],
+      "relevantCount": 1
+    },
+    {
+      "id": "exact-004",
+      "category": "exact-bill-id",
+      "query": "S.9",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-S9",
+        "192-S992",
+        "192-S99",
+        "192-S978",
+        "192-S973",
+        "192-S944",
+        "192-S94",
+        "192-S931",
+        "192-S909",
+        "192-S902"
+      ],
+      "relevantCount": 1
+    },
+    {
+      "id": "exact-005",
+      "category": "exact-bill-id",
+      "query": "s9",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-S9",
+        "192-S992",
+        "192-S99",
+        "192-S978",
+        "192-S973",
+        "192-S944",
+        "192-S94",
+        "192-S931",
+        "192-S909",
+        "192-S902"
+      ],
+      "relevantCount": 1
+    },
+    {
+      "id": "exact-006",
+      "category": "exact-bill-id",
+      "query": "S 2564",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-S2564",
+        "192-S2565"
+      ],
+      "relevantCount": 1
+    },
+    {
+      "id": "exact-007",
+      "category": "exact-bill-id",
+      "query": "S2564",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-S2564"
+      ],
+      "relevantCount": 1
+    },
+    {
+      "id": "exact-008",
+      "category": "exact-bill-id",
+      "query": "H.4374",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-H4374"
+      ],
+      "relevantCount": 1
+    },
+    {
+      "id": "exact-009",
+      "category": "exact-bill-id",
+      "query": "h.73",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-H73",
+        "192-H739",
+        "192-H737",
+        "192-H736",
+        "192-H735",
+        "192-H734",
+        "192-H733",
+        "192-H732",
+        "192-H731",
+        "192-H730"
+      ],
+      "relevantCount": 1
+    },
+    {
+      "id": "exact-010",
+      "category": "exact-bill-id",
+      "query": "H3999",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-H3999"
+      ],
+      "relevantCount": 1
+    },
+    {
+      "id": "exact-011",
+      "category": "exact-bill-id",
+      "query": "S.1333",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-S1333"
+      ],
+      "relevantCount": 1
+    },
+    {
+      "id": "exact-012",
+      "category": "exact-bill-id",
+      "query": "s 2475",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-S2475",
+        "192-H2475"
+      ],
+      "relevantCount": 1
+    },
+    {
+      "id": "exact-013",
+      "category": "exact-bill-id",
+      "query": "H600",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-H600"
+      ],
+      "relevantCount": 1
+    },
+    {
+      "id": "exact-014",
+      "category": "exact-bill-id",
+      "query": "H.1",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-H1",
+        "192-S736",
+        "192-S451",
+        "192-S2759",
+        "192-S1841",
+        "192-S1633",
+        "192-S147",
+        "192-S130",
+        "192-S119",
+        "192-H4154"
+      ],
+      "relevantCount": 1
+    },
+    {
+      "id": "exact-015",
+      "category": "exact-bill-id",
+      "query": "S.1563",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-S1563"
+      ],
+      "relevantCount": 1
+    },
+    {
+      "id": "mc-001",
+      "category": "member-committee",
+      "query": "Diana DiZoglio",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-S1698",
+        "192-S99",
+        "192-S98",
+        "192-S882",
+        "192-S881",
+        "192-S880",
+        "192-S879",
+        "192-S878",
+        "192-S877",
+        "192-S876"
+      ],
+      "relevantCount": 444
+    },
+    {
+      "id": "mc-002",
+      "category": "member-committee",
+      "query": "Bruce Tarr",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-S910",
+        "192-S909",
+        "192-S908",
+        "192-S907",
+        "192-S856",
+        "192-S817",
+        "192-S816",
+        "192-S815",
+        "192-S814",
+        "192-S730"
+      ],
+      "relevantCount": 290
+    },
+    {
+      "id": "mc-003",
+      "category": "member-committee",
+      "query": "Jason Lewis",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-S895",
+        "192-S845",
+        "192-S844",
+        "192-S796",
+        "192-S795",
+        "192-S794",
+        "192-S793",
+        "192-S792",
+        "192-S791",
+        "192-S790"
+      ],
+      "relevantCount": 527
+    },
+    {
+      "id": "mc-004",
+      "category": "member-committee",
+      "query": "Tackey Chan",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-H867",
+        "192-H866",
+        "192-H865",
+        "192-H768",
+        "192-H767",
+        "192-H732",
+        "192-H731",
+        "192-H62",
+        "192-H559",
+        "192-H4388"
+      ],
+      "relevantCount": 198
+    },
+    {
+      "id": "mc-005",
+      "category": "member-committee",
+      "query": "Julian Cyr",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-S2618",
+        "192-S992",
+        "192-S991",
+        "192-S990",
+        "192-S989",
+        "192-S988",
+        "192-S95",
+        "192-S94",
+        "192-S873",
+        "192-S759"
+      ],
+      "relevantCount": 306
+    },
+    {
+      "id": "mc-006",
+      "category": "member-committee",
+      "query": "Cynthia Creem",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-S984",
+        "192-S983",
+        "192-S982",
+        "192-S981",
+        "192-S980",
+        "192-S979",
+        "192-S978",
+        "192-S977",
+        "192-S976",
+        "192-S975"
+      ],
+      "relevantCount": 106
+    },
+    {
+      "id": "mc-007",
+      "category": "member-committee",
+      "query": "Marjorie Decker",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-H881",
+        "192-H774",
+        "192-H570",
+        "192-H569",
+        "192-H568",
+        "192-H567",
+        "192-H566",
+        "192-H565",
+        "192-H4412",
+        "192-H4401"
+      ],
+      "relevantCount": 143
+    },
+    {
+      "id": "mc-008",
+      "category": "member-committee",
+      "query": "Michael Moore",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-S15",
+        "192-S852",
+        "192-S851",
+        "192-S850",
+        "192-S849",
+        "192-S807",
+        "192-S806",
+        "192-S805",
+        "192-S76",
+        "192-S712"
+      ],
+      "relevantCount": 557
+    },
+    {
+      "id": "mc-009",
+      "category": "member-committee",
+      "query": "Patrick O'Connor",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-S902",
+        "192-S854",
+        "192-S853",
+        "192-S78",
+        "192-S720",
+        "192-S719",
+        "192-S718",
+        "192-S717",
+        "192-S716",
+        "192-S715"
+      ],
+      "relevantCount": 663
+    },
+    {
+      "id": "mc-010",
+      "category": "member-committee",
+      "query": "Aaron Michlewitz",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-H95",
+        "192-H4430",
+        "192-H3771",
+        "192-H3720"
+      ],
+      "relevantCount": 4
+    },
+    {
+      "id": "mc-011",
+      "category": "member-committee",
+      "query": "Ways and Means Committee",
+      "metrics": {
+        "recallAt10": 0.5,
+        "mrr": 0.16666666666666666,
+        "ndcgAt10": 0.3510684246681534
+      },
+      "top10": [
+        "192-S1534",
+        "192-S1220",
+        "192-H1968",
+        "192-H629",
+        "192-H3415",
+        "192-S2749",
+        "192-S2747",
+        "192-S2731",
+        "192-S2723",
+        "192-S2708"
+      ],
+      "relevantCount": 715
+    },
+    {
+      "id": "mc-012",
+      "category": "member-committee",
+      "query": "Health Care Financing",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-S2613",
+        "192-H4329",
+        "192-H4328",
+        "192-S820",
+        "192-S819",
+        "192-S817",
+        "192-S816",
+        "192-S813",
+        "192-S810",
+        "192-S806"
+      ],
+      "relevantCount": 264
+    },
+    {
+      "id": "mc-013",
+      "category": "member-committee",
+      "query": "Committee on Revenue",
+      "metrics": {
+        "recallAt10": 0.9,
+        "mrr": 0.5,
+        "ndcgAt10": 0.7799082337019199
+      },
+      "top10": [
+        "192-S2743",
+        "192-S1812",
+        "192-H3085",
+        "192-H3081",
+        "192-H2973",
+        "192-H2928",
+        "192-H2895",
+        "192-H2826",
+        "192-S788",
+        "192-S1997"
+      ],
+      "relevantCount": 111
+    },
+    {
+      "id": "mc-014",
+      "category": "member-committee",
+      "query": "Education Committee",
+      "metrics": {
+        "recallAt10": 0.5,
+        "mrr": 1,
+        "ndcgAt10": 0.5582604437617528
+      },
+      "top10": [
+        "192-S1220",
+        "192-H1968",
+        "192-S2769",
+        "192-S2756",
+        "192-S2755",
+        "192-S2749",
+        "192-S2747",
+        "192-S362",
+        "192-S358",
+        "192-S319"
+      ],
+      "relevantCount": 63
+    },
+    {
+      "id": "mc-015",
+      "category": "member-committee",
+      "query": "Telecommunications Utilities and Energy",
+      "metrics": {
+        "recallAt10": 0.4,
+        "mrr": 0.14285714285714285,
+        "ndcgAt10": 0.2726701556894781
+      },
+      "top10": [
+        "192-S2715",
+        "192-S2711",
+        "192-S2647",
+        "192-H4488",
+        "192-H4455",
+        "192-H4400",
+        "192-S604",
+        "192-S2515",
+        "192-S2473",
+        "192-S2237"
+      ],
+      "relevantCount": 120
+    },
+    {
+      "id": "topic-001",
+      "category": "topic",
+      "query": "gun control",
+      "metrics": {
+        "recallAt10": 0.4,
+        "mrr": 1,
+        "ndcgAt10": 0.17571068025797132
+      },
+      "top10": [
+        "192-H43",
+        "192-H2635",
+        "192-H1529",
+        "192-S965",
+        "192-S942",
+        "192-S939",
+        "192-S547",
+        "192-S1618",
+        "192-S1615",
+        "192-S1130"
+      ],
+      "relevantCount": 93
+    },
+    {
+      "id": "topic-002",
+      "category": "topic",
+      "query": "mental health",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 0.3170853252047272
+      },
+      "top10": [
+        "192-S820",
+        "192-S636",
+        "192-S1318",
+        "192-S1310",
+        "192-S1300",
+        "192-S1297",
+        "192-S1284",
+        "192-S1283",
+        "192-S1267",
+        "192-S1257"
+      ],
+      "relevantCount": 66
+    },
+    {
+      "id": "topic-003",
+      "category": "topic",
+      "query": "climate change",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 0.4491790547278348
+      },
+      "top10": [
+        "192-S571",
+        "192-S2737",
+        "192-S1796",
+        "192-H877",
+        "192-H2908",
+        "192-H2833",
+        "192-H258",
+        "192-H2159",
+        "192-S1853",
+        "192-H2890"
+      ],
+      "relevantCount": 27
+    },
+    {
+      "id": "topic-004",
+      "category": "topic",
+      "query": "offshore wind",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 0.6186468626657726
+      },
+      "top10": [
+        "192-S2227",
+        "192-S2154",
+        "192-H953",
+        "192-H4348",
+        "192-H3310",
+        "192-H3303",
+        "192-H3302",
+        "192-H3266",
+        "192-H2924",
+        "192-H4524"
+      ],
+      "relevantCount": 12
+    },
+    {
+      "id": "topic-005",
+      "category": "topic",
+      "query": "marijuana",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 0.3170853252047272
+      },
+      "top10": [
+        "192-S2664",
+        "192-S2662",
+        "192-S2661",
+        "192-S2660",
+        "192-H4507",
+        "192-H4440",
+        "192-S77",
+        "192-S76",
+        "192-S74",
+        "192-S73"
+      ],
+      "relevantCount": 57
+    },
+    {
+      "id": "topic-006",
+      "category": "topic",
+      "query": "minimum wage",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 0.902688816176951
+      },
+      "top10": [
+        "192-S1176",
+        "192-H1994",
+        "192-S1159",
+        "192-H2043",
+        "192-S1213",
+        "192-S1179",
+        "192-H1971",
+        "192-H1964",
+        "192-H1959",
+        "192-S805"
+      ],
+      "relevantCount": 4
+    },
+    {
+      "id": "topic-007",
+      "category": "topic",
+      "query": "charter schools",
+      "metrics": {
+        "recallAt10": 0.8,
+        "mrr": 1,
+        "ndcgAt10": 0.6172182802301824
+      },
+      "top10": [
+        "192-S371",
+        "192-S353",
+        "192-S343",
+        "192-H712",
+        "192-H696",
+        "192-S386",
+        "192-S372",
+        "192-S286",
+        "192-H718",
+        "192-H672"
+      ],
+      "relevantCount": 13
+    },
+    {
+      "id": "topic-008",
+      "category": "topic",
+      "query": "affordable housing",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 0.3170853252047272
+      },
+      "top10": [
+        "192-S868",
+        "192-S867",
+        "192-H1377",
+        "192-H1373",
+        "192-S903",
+        "192-S895",
+        "192-S888",
+        "192-S882",
+        "192-S2025",
+        "192-S1985"
+      ],
+      "relevantCount": 40
+    },
+    {
+      "id": "topic-009",
+      "category": "topic",
+      "query": "homelessness",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 0.43812463509980126
+      },
+      "top10": [
+        "192-S874",
+        "192-S82",
+        "192-S142",
+        "192-S110",
+        "192-H3959",
+        "192-H3838",
+        "192-H3778",
+        "192-H264",
+        "192-H229",
+        "192-H1436"
+      ],
+      "relevantCount": 26
+    },
+    {
+      "id": "topic-010",
+      "category": "topic",
+      "query": "opioid addiction",
+      "metrics": {
+        "recallAt10": 0.4,
+        "mrr": 1,
+        "ndcgAt10": 0.7945202298211209
+      },
+      "top10": [
+        "192-H2086",
+        "192-H2071",
+        "192-S2",
+        "192-S347",
+        "192-S2472",
+        "192-S2467",
+        "192-H2097",
+        "192-H2405",
+        "192-H3796",
+        "192-H2101"
+      ],
+      "relevantCount": 21
+    },
+    {
+      "id": "topic-011",
+      "category": "topic",
+      "query": "student loan forgiveness",
+      "metrics": {
+        "recallAt10": 0.3,
+        "mrr": 1,
+        "ndcgAt10": 0.48664114167177874
+      },
+      "top10": [
+        "192-S1827",
+        "192-H2883",
+        "192-H1320",
+        "192-H3030",
+        "192-H1366",
+        "192-S2580"
+      ],
+      "relevantCount": 21
+    },
+    {
+      "id": "topic-012",
+      "category": "topic",
+      "query": "domestic violence",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 0.3170853252047272
+      },
+      "top10": [
+        "192-S951",
+        "192-S702",
+        "192-S2678",
+        "192-S2417",
+        "192-S190",
+        "192-S176",
+        "192-S1123",
+        "192-S1076",
+        "192-S1023",
+        "192-S1015"
+      ],
+      "relevantCount": 26
+    },
+    {
+      "id": "topic-013",
+      "category": "topic",
+      "query": "sexual assault",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 0.3170853252047272
+      },
+      "top10": [
+        "192-S939",
+        "192-S2678",
+        "192-S190",
+        "192-S176",
+        "192-S1488",
+        "192-S1134",
+        "192-S1087",
+        "192-S1073",
+        "192-H4330",
+        "192-H4013"
+      ],
+      "relevantCount": 26
+    },
+    {
+      "id": "topic-014",
+      "category": "topic",
+      "query": "solar energy",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 0.47907112408275354
+      },
+      "top10": [
+        "192-S2174",
+        "192-H4044",
+        "192-H3346",
+        "192-H3319",
+        "192-H3260",
+        "192-S2208",
+        "192-S2203",
+        "192-S2180",
+        "192-S2168",
+        "192-S2145"
+      ],
+      "relevantCount": 34
+    },
+    {
+      "id": "topic-015",
+      "category": "topic",
+      "query": "eviction",
+      "metrics": {
+        "recallAt10": 0.5,
+        "mrr": 1,
+        "ndcgAt10": 0.5933275909929555
+      },
+      "top10": [
+        "192-S921",
+        "192-H4505",
+        "192-H1808",
+        "192-H1911",
+        "192-S904",
+        "192-S891",
+        "192-S886",
+        "192-S883",
+        "192-S874",
+        "192-S865"
+      ],
+      "relevantCount": 24
+    },
+    {
+      "id": "topic-016",
+      "category": "topic",
+      "query": "vaccines",
+      "metrics": {
+        "recallAt10": 0.2,
+        "mrr": 1,
+        "ndcgAt10": 0.7237527203934739
+      },
+      "top10": [
+        "192-H2411",
+        "192-H2394",
+        "192-S2626",
+        "192-S2622",
+        "192-S251",
+        "192-S2472",
+        "192-S2467",
+        "192-S2079",
+        "192-S2",
+        "192-S1755"
+      ],
+      "relevantCount": 12
+    },
+    {
+      "id": "topic-017",
+      "category": "topic",
+      "query": "telehealth",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 0.6310385047070085
+      },
+      "top10": [
+        "192-S678",
+        "192-H125",
+        "192-H1101",
+        "192-S770",
+        "192-S766",
+        "192-S682",
+        "192-S2774",
+        "192-S2656",
+        "192-S2",
+        "192-S1470"
+      ],
+      "relevantCount": 3
+    },
+    {
+      "id": "topic-018",
+      "category": "topic",
+      "query": "voting by mail",
+      "metrics": {
+        "recallAt10": 0.6,
+        "mrr": 1,
+        "ndcgAt10": 0.40293031154000103
+      },
+      "top10": [
+        "192-S28",
+        "192-H71",
+        "192-H73",
+        "192-S484",
+        "192-S451",
+        "192-H834",
+        "192-H805",
+        "192-H3950",
+        "192-S459",
+        "192-H4367"
+      ],
+      "relevantCount": 5
+    },
+    {
+      "id": "topic-019",
+      "category": "topic",
+      "query": "school lunch",
+      "metrics": {
+        "recallAt10": 0.4,
+        "mrr": 0.1111111111111111,
+        "ndcgAt10": 0.04633996212748669
+      },
+      "top10": [
+        "192-S363",
+        "192-S349",
+        "192-S314",
+        "192-H714",
+        "192-H686",
+        "192-H580",
+        "192-H564",
+        "192-H547",
+        "192-S298",
+        "192-S2532"
+      ],
+      "relevantCount": 5
+    },
+    {
+      "id": "topic-020",
+      "category": "topic",
+      "query": "renewable energy",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-H3269",
+        "192-H2145",
+        "192-S590",
+        "192-S2738",
+        "192-S2153",
+        "192-S1940",
+        "192-H3923",
+        "192-H3708",
+        "192-H3335",
+        "192-H3330"
+      ],
+      "relevantCount": 21
+    },
+    {
+      "id": "syn-001",
+      "category": "synonym",
+      "query": "firearms",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-S942",
+        "192-S2762",
+        "192-S1614",
+        "192-S1602",
+        "192-S1568",
+        "192-S1563",
+        "192-S1562",
+        "192-S1561",
+        "192-S1537",
+        "192-H43"
+      ],
+      "relevantCount": 93
+    },
+    {
+      "id": "syn-002",
+      "category": "synonym",
+      "query": "guns",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-S942",
+        "192-S2762",
+        "192-S1614",
+        "192-S1602",
+        "192-S1568",
+        "192-S1563",
+        "192-S1562",
+        "192-S1561",
+        "192-S1537",
+        "192-H43"
+      ],
+      "relevantCount": 93
+    },
+    {
+      "id": "syn-003",
+      "category": "synonym",
+      "query": "educator",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-H19",
+        "192-S366",
+        "192-S2748",
+        "192-S1953",
+        "192-S1791",
+        "192-S1778",
+        "192-S1721",
+        "192-S1673",
+        "192-H682",
+        "192-H681"
+      ],
+      "relevantCount": 39
+    },
+    {
+      "id": "syn-004",
+      "category": "synonym",
+      "query": "teachers",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-H19",
+        "192-S366",
+        "192-S2748",
+        "192-S1953",
+        "192-S1791",
+        "192-S1778",
+        "192-S1721",
+        "192-S1673",
+        "192-H682",
+        "192-H681"
+      ],
+      "relevantCount": 39
+    },
+    {
+      "id": "syn-005",
+      "category": "synonym",
+      "query": "cannabis",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-S2664",
+        "192-S2662",
+        "192-S2661",
+        "192-S2660",
+        "192-H4507",
+        "192-H4440",
+        "192-S77",
+        "192-S76",
+        "192-S74",
+        "192-S73"
+      ],
+      "relevantCount": 57
+    },
+    {
+      "id": "syn-006",
+      "category": "synonym",
+      "query": "doctors",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-S740",
+        "192-S330",
+        "192-S210",
+        "192-S1457",
+        "192-S1306",
+        "192-S1211",
+        "192-H2402",
+        "192-H2367",
+        "192-H2318",
+        "192-H2258"
+      ],
+      "relevantCount": 15
+    },
+    {
+      "id": "syn-007",
+      "category": "synonym",
+      "query": "elderly",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-S878",
+        "192-S1948",
+        "192-H760",
+        "192-H730",
+        "192-H2911",
+        "192-H2846",
+        "192-H2820",
+        "192-H2773",
+        "192-S900",
+        "192-S399"
+      ],
+      "relevantCount": 27
+    },
+    {
+      "id": "syn-008",
+      "category": "synonym",
+      "query": "senior citizens",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-S878",
+        "192-S1948",
+        "192-H760",
+        "192-H730",
+        "192-H723",
+        "192-H2911",
+        "192-H2846",
+        "192-H2820",
+        "192-H2773",
+        "192-S900"
+      ],
+      "relevantCount": 41
+    },
+    {
+      "id": "syn-009",
+      "category": "synonym",
+      "query": "liquor",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "192-S40",
+        "192-S2788",
+        "192-S2556",
+        "192-S2511",
+        "192-S2509",
+        "192-S2507",
+        "192-S2506",
+        "192-S2504",
+        "192-S2501",
+        "192-S2500"
+      ],
+      "relevantCount": 82
+    },
+    {
+      "id": "syn-010",
+      "category": "synonym",
+      "query": "childcare",
+      "metrics": {
+        "recallAt10": 0.6,
+        "mrr": 1,
+        "ndcgAt10": 0.727329844310522
+      },
+      "top10": [
+        "192-S339",
+        "192-H649",
+        "192-H2884",
+        "192-H200",
+        "192-H1590",
+        "192-S1912",
+        "192-S852",
+        "192-S822",
+        "192-S358",
+        "192-S349"
+      ],
+      "relevantCount": 15
+    },
+    {
+      "id": "mis-001",
+      "category": "misspelling",
+      "query": "mental helth",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 0.3170853252047272
+      },
+      "top10": [
+        "192-S820",
+        "192-S636",
+        "192-S1318",
+        "192-S1310",
+        "192-S1300",
+        "192-S1297",
+        "192-S1284",
+        "192-S1283",
+        "192-S1267",
+        "192-S1257"
+      ],
+      "relevantCount": 66
+    },
+    {
+      "id": "mis-002",
+      "category": "misspelling",
+      "query": "clmate change",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 0.4491790547278348
+      },
+      "top10": [
+        "192-S571",
+        "192-S2737",
+        "192-S1796",
+        "192-H877",
+        "192-H2908",
+        "192-H2833",
+        "192-H258",
+        "192-H2159",
+        "192-S1853",
+        "192-H2890"
+      ],
+      "relevantCount": 27
+    },
+    {
+      "id": "mis-003",
+      "category": "misspelling",
+      "query": "marijuanna",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 0.3170853252047272
+      },
+      "top10": [
+        "192-S76",
+        "192-S74",
+        "192-S73",
+        "192-S64",
+        "192-S2663",
+        "192-S2529",
+        "192-S1828",
+        "192-S1583",
+        "192-H4026",
+        "192-H3079"
+      ],
+      "relevantCount": 57
+    },
+    {
+      "id": "mis-004",
+      "category": "misspelling",
+      "query": "afordable housing",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 0.3170853252047272
+      },
+      "top10": [
+        "192-S868",
+        "192-S867",
+        "192-H1377",
+        "192-H1373",
+        "192-S903",
+        "192-S895",
+        "192-S888",
+        "192-S882",
+        "192-S2025",
+        "192-S1985"
+      ],
+      "relevantCount": 40
+    },
+    {
+      "id": "mis-005",
+      "category": "misspelling",
+      "query": "homelesness",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 0.43812463509980126
+      },
+      "top10": [
+        "192-S874",
+        "192-S82",
+        "192-S142",
+        "192-S110",
+        "192-H3959",
+        "192-H3838",
+        "192-H3778",
+        "192-H264",
+        "192-H229",
+        "192-H1436"
+      ],
+      "relevantCount": 26
+    },
+    {
+      "id": "mis-006",
+      "category": "misspelling",
+      "query": "opiod",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 0.6104531109861133
+      },
+      "top10": [
+        "192-S347",
+        "192-S1304",
+        "192-S1302",
+        "192-H2496",
+        "192-H2405",
+        "192-H2110",
+        "192-H2096",
+        "192-H2086",
+        "192-H2071",
+        "192-H2068"
+      ],
+      "relevantCount": 21
+    },
+    {
+      "id": "mis-007",
+      "category": "misspelling",
+      "query": "domestic violance",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 0.3170853252047272
+      },
+      "top10": [
+        "192-S951",
+        "192-S702",
+        "192-S2678",
+        "192-S2417",
+        "192-S190",
+        "192-S176",
+        "192-S1123",
+        "192-S1076",
+        "192-S1023",
+        "192-S1015"
+      ],
+      "relevantCount": 26
+    },
+    {
+      "id": "mis-008",
+      "category": "misspelling",
+      "query": "evicton",
+      "metrics": {
+        "recallAt10": 0.5,
+        "mrr": 1,
+        "ndcgAt10": 0.5933275909929555
+      },
+      "top10": [
+        "192-S921",
+        "192-H4505",
+        "192-H1808",
+        "192-H1911",
+        "192-S904",
+        "192-S891",
+        "192-S886",
+        "192-S883",
+        "192-S874",
+        "192-S865"
+      ],
+      "relevantCount": 24
+    },
+    {
+      "id": "mis-009",
+      "category": "misspelling",
+      "query": "vacines",
+      "metrics": {
+        "recallAt10": 0.2,
+        "mrr": 1,
+        "ndcgAt10": 0.7237527203934739
+      },
+      "top10": [
+        "192-H2411",
+        "192-H2394",
+        "192-S2626",
+        "192-S2622",
+        "192-S251",
+        "192-S2472",
+        "192-S2467",
+        "192-S2079",
+        "192-S2",
+        "192-S1755"
+      ],
+      "relevantCount": 12
+    },
+    {
+      "id": "mis-010",
+      "category": "misspelling",
+      "query": "minimun wage",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 0.902688816176951
+      },
+      "top10": [
+        "192-S1176",
+        "192-H1994",
+        "192-S1159",
+        "192-H2043",
+        "192-S1213",
+        "192-S1179",
+        "192-H1971",
+        "192-H1964",
+        "192-H1959",
+        "192-S805"
+      ],
+      "relevantCount": 4
+    },
+    {
+      "id": "hyp-001",
+      "category": "hyphenation",
+      "query": "low income",
+      "metrics": {
+        "recallAt10": 0.6,
+        "mrr": 1,
+        "ndcgAt10": 0.727329844310522
+      },
+      "top10": [
+        "192-S97",
+        "192-H560",
+        "192-S1830",
+        "192-H4481",
+        "192-H3526",
+        "192-H2939",
+        "192-H1158",
+        "192-S901",
+        "192-S883",
+        "192-S873"
+      ],
+      "relevantCount": 22
+    },
+    {
+      "id": "hyp-002",
+      "category": "hyphenation",
+      "query": "long term care",
+      "metrics": {
+        "recallAt10": 0.8,
+        "mrr": 1,
+        "ndcgAt10": 0.8701249883466593
+      },
+      "top10": [
+        "192-S412",
+        "192-S133",
+        "192-S659",
+        "192-S400",
+        "192-H749",
+        "192-H736",
+        "192-H735",
+        "192-H3020",
+        "192-S807",
+        "192-S766"
+      ],
+      "relevantCount": 16
+    },
+    {
+      "id": "hyp-003",
+      "category": "hyphenation",
+      "query": "well being",
+      "metrics": {
+        "recallAt10": 0.1,
+        "mrr": 1,
+        "ndcgAt10": 0.22009176629808017
+      },
+      "top10": [
+        "192-S100",
+        "192-S2761",
+        "192-S2667",
+        "192-H947",
+        "192-H4102",
+        "192-H352",
+        "192-H1094",
+        "192-S1475",
+        "192-H297",
+        "192-H2372"
+      ],
+      "relevantCount": 13
+    },
+    {
+      "id": "hyp-004",
+      "category": "hyphenation",
+      "query": "decision making",
+      "metrics": {
+        "recallAt10": 0.4,
+        "mrr": 1,
+        "ndcgAt10": 0.5637884576902256
+      },
+      "top10": [
+        "192-S978",
+        "192-H272",
+        "192-H1779",
+        "192-H1497",
+        "192-S982",
+        "192-S650",
+        "192-S645",
+        "192-S480",
+        "192-S285",
+        "192-S2078"
+      ],
+      "relevantCount": 11
+    },
+    {
+      "id": "hyp-005",
+      "category": "hyphenation",
+      "query": "zero emission vehicles",
+      "metrics": {
+        "recallAt10": 0.25,
+        "mrr": 1,
+        "ndcgAt10": 0.41253177989255346
+      },
+      "top10": [
+        "192-H4134",
+        "192-S2225",
+        "192-S2265",
+        "192-S2230",
+        "192-S2229",
+        "192-S2136",
+        "192-S1371",
+        "192-H3288",
+        "192-H2355",
+        "192-H1162"
+      ],
+      "relevantCount": 8
+    },
+    {
+      "id": "hyp-006",
+      "category": "hyphenation",
+      "query": "post traumatic stress",
+      "metrics": {
+        "recallAt10": 0.5,
+        "mrr": 1,
+        "ndcgAt10": 0.647939623894138
+      },
+      "top10": [
+        "192-S2403",
+        "192-H2112",
+        "192-H2091",
+        "192-H2456",
+        "192-S1653",
+        "192-H2822",
+        "192-S2580"
+      ],
+      "relevantCount": 8
+    }
+  ]
+}

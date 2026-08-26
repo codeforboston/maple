@@ -159,15 +159,18 @@ score. Prefer "solitary confinement" and "same day voter registration" over
 recording the collection, server version, corpus md5 and git sha it was produced
 from. Current:
 
-| collection         | queries | nDCG@10 | weakest categories             |
-| ------------------ | ------- | ------- | ------------------------------ |
-| bills              | 70      | 0.752   | topic 0.497, misspelling 0.499 |
-| hearings           | 48      | 0.957   | agenda-topic 0.842             |
-| publishedTestimony | 39      | 0.940   | topic 0.861, misspelling 0.943 |
+| collection         | queries | nDCG@10 | weakest categories                |
+| ------------------ | ------- | ------- | ---------------------------------- |
+| bills              | 76      | 0.754   | misspelling 0.496, topic 0.503     |
+| hearings           | 48      | 0.957   | synonym 0.810, agenda-topic 0.842  |
+| publishedTestimony | 39      | 0.980   | misspelling 0.943, topic 0.971     |
 
-Hearings and testimony each landed two measured changes: the legislative synonym
-set (synonym 0.000 → 0.810 and 0.673 → 0.968) and, for testimony only,
-bill-number variants (bill-id 0.848 → 1.000).
+Landed and measured: the legislative synonym set on hearings and testimony
+(synonym 0.000 → 0.810 and 0.673 → 0.968), bill-number variants on testimony
+(bill-id 0.848 → 1.000), hyphen tokenization on all three (bills
+hyphenation 0.574 → 0.955, testimony topic +0.083), and synonym head terms
+for `alcohol`/`climate`/`vehicles` (#90) on all three (bills 0.766 → 0.754,
+a known and accepted cost — see below; hearings and testimony unaffected).
 
 ### What these goldens have already settled
 
@@ -186,7 +189,47 @@ bill-number variants (bill-id 0.848 → 1.000).
   S2391 — `hearing-5226`, with 46 unrelated bills, becomes a false positive.
   Bills and testimony are safe: one variant per document, so tokens cannot
   combine across neighbours.
-- **Typo tolerance masks synonym defects.** `liquor` appears to reach the
+- **A category cannot reward what it never asks for.** Hyphen tokenization first
+  measured at −0.002 on bills, because none of the 70 bills queries contained a
+  hyphenated phrase: the goldens could see the rank reshuffle it caused but not
+  the matches it unlocked. Six `hyphenation` queries later, the same change
+  measured +0.028 overall and +0.381 on that category. When a change scores
+  slightly negative, check whether anything in the set actually exercises it
+  before believing the number.
+- **Typo tolerance masks synonym defects.** `liquor` appeared to reach the
   "Alcohol" hearings, but only because the expansion "alcoholic" is two edits
-  from "alcohol"; at `num_typos=0` it finds nothing. Verify synonym work with
-  typos off, or a broken set will look healthy.
+  from "alcohol"; at `num_typos=0` it found nothing. The actual defect (#90):
+  legislative synonym sets omitted their own head term (`alcohol`, `climate`,
+  `vehicles` were never in their own `synonyms` array), so a query for the
+  head term never triggered the group at all. Fixed by adding the head term
+  to each array. Verify synonym work with typos off, or a broken set will
+  look healthy.
+- **Mixing single-word and multi-word entries in one synonym group inflates
+  single-word matches.** Fixing #90 above dropped bills' `liquor` golden
+  (`syn-009`) from 1.000 to near-zero nDCG, and it isn't a golden-coverage
+  gap like the hyphenation case — it's a real Typesense scoring quirk, traced
+  to source. For a single-token query, `words_present` credit for a
+  synonym-matched document is `syn_orig_num_tokens` — the *maximum* token
+  length across every member of the resolved synonym group, not the length
+  of what actually matched (`index.cpp`, `score_results2` /
+  `syn_orig_num_tokens` computation). The `alcohol` group has two 2-word
+  phrases (`"alcoholic beverages"`, `"alcoholic beverage"`), so every
+  single-word match in that group — e.g. "alcohol" when you search "liquor"
+  — is credited as if 2 words matched, while the literal query match stays
+  correctly at 1. That component sits in the highest bits of `_text_match`,
+  so it dominates: general "alcohol" bills outrank literal "liquor" bills
+  wholesale, confirmed by decoding the raw scores and by reproducing/clearing
+  the effect with a stripped-down synonym set. `demote_synonym_match` does
+  not fix this — it operates on the lowest bits of the same score and never
+  gets a chance to matter. There's no clean fix: dropping the phrase entries
+  removes the inflation, but 62 of the 63 bills that say "alcoholic
+  beverage(s)" don't separately say "alcohol" or "liquor" anywhere, so that
+  would trade a scoring quirk for real lost recall. Kept the group as-is and
+  updated `syn-009` to grade literal `liquor`/`alcoholic beverage` matches at
+  3 and general `alcohol` matches at 1, reflecting genuine relevance rather
+  than the old (accidentally-narrow) expectation — nDCG on that query stays
+  low (0.143) because the *ranking* is still quirky, but recall and MRR
+  correctly show the fix works. `vehicles` mixes `"motor vehicle(s)"` the
+  same way, but that regression (`hyp-005`, a 3-token query) isn't this bug —
+  the inflation formula only fires for single-token queries — and doesn't have
+  a known fix either; documented as an accepted cost.

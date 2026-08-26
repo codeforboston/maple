@@ -44,7 +44,8 @@ export const evalCollections: Record<string, EvalCollection> = {
       "topic",
       "synonym",
       "misspelling",
-      "member-committee"
+      "member-committee",
+      "hyphenation"
     ]
   },
   hearings: {

@@ -3,6 +3,10 @@ import yargs, { Arguments } from "yargs"
 import { hideBin } from "yargs/helpers"
 import { createClient } from "../functions/src/search/client"
 import {
+  SYNONYM_SET_NAME,
+  upsertLegislativeSynonyms
+} from "../functions/src/search/synonyms"
+import {
   TypesenseConnectionArgs,
   resolveClient,
   typesenseEnvs
@@ -44,6 +48,8 @@ yargs(hideBin(process.argv))
     {},
     async (args: Args) => {
       const client = resolveClient(args)
+      // Independent of the alias walk below; starts now, printed at the end.
+      const synonymSetsPromise = client.synonymSets().retrieve()
 
       const { version } = await client.debug.retrieve()
       console.log(`server:  ${version}`)
@@ -74,12 +80,32 @@ yargs(hideBin(process.argv))
       for (const { name, num_documents } of orphans) {
         console.log(`(orphan) ${name}  ${num_documents} docs`)
       }
+
+      /** Server state the searches reference by name; a missing set means
+       * every `synonym_sets` search runs with synonyms silently off. */
+      const synonymSets = await synonymSetsPromise
+      for (const { name, items } of synonymSets) {
+        console.log(`synonyms ${name}  ${items.length} items`)
+      }
+      if (!synonymSets.some(s => s.name === SYNONYM_SET_NAME)) {
+        console.log(`(missing) synonym set "${SYNONYM_SET_NAME}"`)
+      }
     }
   )
   .command("list-keys", "list keys", {}, async (args: Args) => {
     const client = resolveClient(args)
     console.log(await client.keys().retrieve())
   })
+  .command(
+    "upsert-synonyms",
+    "upsert the legislative synonym set from functions/src/search/synonyms.ts (deploys also do this, via checkSearchIndexVersion)",
+    {},
+    async (args: Args) => {
+      const client = resolveClient(args)
+      const { name, items } = await upsertLegislativeSynonyms(client)
+      console.log(`Upserted synonym set "${name}" with ${items} items`)
+    }
+  )
   .command(
     "delete-key <id>",
     "list keys",
