@@ -146,9 +146,7 @@
         "mrr": 1,
         "ndcgAt10": 0.22009176629808017
       },
-      "top10": [
-        "sSa8ZLDXwVOR5PRBLzOF0"
-      ],
+      "top10": ["sSa8ZLDXwVOR5PRBLzOF0"],
       "relevantCount": 28
     },
     {

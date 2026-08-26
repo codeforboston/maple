@@ -438,9 +438,7 @@
         "mrr": 1,
         "ndcgAt10": 1
       },
-      "top10": [
-        "hearing-5111"
-      ],
+      "top10": ["hearing-5111"],
       "relevantCount": 1
     },
     {
@@ -452,9 +450,7 @@
         "mrr": 1,
         "ndcgAt10": 1
       },
-      "top10": [
-        "hearing-5111"
-      ],
+      "top10": ["hearing-5111"],
       "relevantCount": 1
     },
     {
@@ -466,9 +462,7 @@
         "mrr": 1,
         "ndcgAt10": 1
       },
-      "top10": [
-        "hearing-5111"
-      ],
+      "top10": ["hearing-5111"],
       "relevantCount": 1
     },
     {
@@ -480,9 +474,7 @@
         "mrr": 1,
         "ndcgAt10": 1
       },
-      "top10": [
-        "hearing-5111"
-      ],
+      "top10": ["hearing-5111"],
       "relevantCount": 1
     },
     {
@@ -494,9 +486,7 @@
         "mrr": 1,
         "ndcgAt10": 1
       },
-      "top10": [
-        "hearing-5111"
-      ],
+      "top10": ["hearing-5111"],
       "relevantCount": 1
     },
     {
@@ -528,9 +518,7 @@
         "mrr": 1,
         "ndcgAt10": 1
       },
-      "top10": [
-        "hearing-5113"
-      ],
+      "top10": ["hearing-5113"],
       "relevantCount": 1
     },
     {
@@ -582,9 +570,7 @@
         "mrr": 1,
         "ndcgAt10": 1
       },
-      "top10": [
-        "hearing-5111"
-      ],
+      "top10": ["hearing-5111"],
       "relevantCount": 1
     },
     {
@@ -642,11 +628,7 @@
         "mrr": 1,
         "ndcgAt10": 0.46900009332067477
       },
-      "top10": [
-        "hearing-5461",
-        "hearing-5210",
-        "hearing-5390"
-      ],
+      "top10": ["hearing-5461", "hearing-5210", "hearing-5390"],
       "relevantCount": 21
     },
     {
@@ -727,9 +709,7 @@
         "mrr": 1,
         "ndcgAt10": 1
       },
-      "top10": [
-        "hearing-5091"
-      ],
+      "top10": ["hearing-5091"],
       "relevantCount": 1
     },
     {
@@ -831,10 +811,7 @@
         "mrr": 1,
         "ndcgAt10": 1
       },
-      "top10": [
-        "hearing-5575",
-        "hearing-5095"
-      ],
+      "top10": ["hearing-5575", "hearing-5095"],
       "relevantCount": 2
     },
     {
@@ -846,10 +823,7 @@
         "mrr": 1,
         "ndcgAt10": 1
       },
-      "top10": [
-        "hearing-5672",
-        "hearing-5747"
-      ],
+      "top10": ["hearing-5672", "hearing-5747"],
       "relevantCount": 2
     },
     {
@@ -861,12 +835,7 @@
         "mrr": 0.25,
         "ndcgAt10": 0.43067655807339306
       },
-      "top10": [
-        "hearing-5530",
-        "hearing-5235",
-        "hearing-5165",
-        "hearing-5602"
-      ],
+      "top10": ["hearing-5530", "hearing-5235", "hearing-5165", "hearing-5602"],
       "relevantCount": 1
     },
     {
@@ -878,11 +847,7 @@
         "mrr": 1,
         "ndcgAt10": 1
       },
-      "top10": [
-        "hearing-5440",
-        "hearing-5321",
-        "hearing-5223"
-      ],
+      "top10": ["hearing-5440", "hearing-5321", "hearing-5223"],
       "relevantCount": 3
     },
     {

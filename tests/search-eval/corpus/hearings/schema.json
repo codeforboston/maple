@@ -1,7 +1,5 @@
 {
-  "token_separators": [
-    "-"
-  ],
+  "token_separators": ["-"],
   "fields": [
     {
       "name": "eventId",

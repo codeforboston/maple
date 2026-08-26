@@ -39,7 +39,13 @@ export const legislativeSynonymItems: SynonymItemSchema[] = [
     oneWay(root, "childcare")
   ),
   oneWay("healthcare", "health care"),
-  multiWay("oui", "dui", "dwi", "drunk driving", "operating under the influence"),
+  multiWay(
+    "oui",
+    "dui",
+    "dwi",
+    "drunk driving",
+    "operating under the influence"
+  ),
   multiWay("mbta", "massachusetts bay transportation authority"),
   oneWay("public transit", "mbta"),
   ...["servicemember", "service member"].map(root =>

@@ -9,8 +9,5 @@
   },
   "jsonlMd5": "2f6c3a70929df36f4ffa373a44486cf7",
   "orderBy": "publishedAt:desc",
-  "redacted": [
-    "authorUid",
-    "fullName"
-  ]
+  "redacted": ["authorUid", "fullName"]
 }
