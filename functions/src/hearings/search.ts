@@ -27,7 +27,8 @@ type HearingSearchRecord = {
 
 export const {
   syncToSearchIndex: syncHearingToSearchIndex,
-  upgradeSearchIndex: upgradeHearingSearchIndex
+  upgradeSearchIndex: upgradeHearingSearchIndex,
+  runBackfillChunk: runHearingBackfillChunk
 } = createSearchIndexer<HearingSearchRecord>({
   sourceCollection: db.collection("events").where("type", "==", "hearing"),
   documentTrigger: "events/{eventId}",

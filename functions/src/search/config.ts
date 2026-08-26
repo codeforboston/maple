@@ -12,6 +12,12 @@ export type CollectionConfig<T extends BaseRecord = BaseRecord> = {
   readonly idField: string
   readonly convert: (data: DocumentData) => T
   readonly filter?: (data: DocumentData) => boolean
+  /** Bump to force a reindex when the indexed output changed but `convert`'s
+   * own source did not — the collection name hashes `convert.toString()`, which
+   * covers none of the helpers, validators or defaults `convert` imports from
+   * other modules. See searchCollectionName in ./collectionName.ts.
+   */
+  readonly convertVersion?: string | number
 }
 
 const registered: CollectionConfig[] = []

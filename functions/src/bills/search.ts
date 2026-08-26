@@ -5,7 +5,8 @@ import { Bill, BillTopic } from "./types"
 
 export const {
   syncToSearchIndex: syncBillToSearchIndex,
-  upgradeSearchIndex: upgradeBillSearchIndex
+  upgradeSearchIndex: upgradeBillSearchIndex,
+  runBackfillChunk: runBillBackfillChunk
 } = createSearchIndexer({
   sourceCollection: db.collectionGroup("bills"),
   documentTrigger: `generalCourts/{court}/bills/{id}`,
@@ -71,6 +72,13 @@ export const {
   }
 })
 
+/** Called from `convert`, so the collection-name hash does not see this
+ * function's body (it hashes `convert.toString()` only). Rewriting it changes
+ * what gets indexed without scheduling a reindex — which is what happened in
+ * ce137bdc, leaving the live topic facets in the pre-Nov-2024 format until an
+ * unrelated schema change finally forced a rebuild. Set `convertVersion` on the
+ * config below when you edit this, or inline it into `convert`.
+ */
 const buildTopicsForSearch = (billTopics: BillTopic[] = []) => {
   const categoriesSorted = billTopics.map(t => t.category).sort()
 

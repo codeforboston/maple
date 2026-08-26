@@ -38,6 +38,44 @@ yargs(hideBin(process.argv))
       console.log("Created", key.value)
     }
   )
+  .command(
+    "status",
+    "print the server version, every alias with its live collection and document count, and any orphaned collections",
+    {},
+    async (args: Args) => {
+      const client = resolveClient(args)
+
+      const { version } = await client.debug.retrieve()
+      console.log(`server:  ${version}`)
+
+      const { aliases } = await client.aliases().retrieve()
+      const live = new Set(aliases.map(a => a.collection_name))
+
+      if (aliases.length === 0) {
+        console.log("aliases: none — nothing is being served")
+      }
+      for (const { name, collection_name } of aliases) {
+        const { num_documents } = await client
+          .collections(collection_name)
+          .retrieve()
+        console.log(`${name} -> ${collection_name}  ${num_documents} docs`)
+      }
+
+      /** A collection with no alias pointing at it is a backfill that never
+       * reached `upgradeAlias` — a run that failed, or one superseded by a
+       * later deploy before it finished. The backfill resumes from its cursor
+       * rather than from the first batch, so an orphan that is still growing is
+       * a run in progress; one that is not is wreckage. `yarn firebase-admin
+       * run-script searchUpgradeStatus` says which, and why.
+       */
+      const orphans = (await client.collections().retrieve()).filter(
+        c => !live.has(c.name)
+      )
+      for (const { name, num_documents } of orphans) {
+        console.log(`(orphan) ${name}  ${num_documents} docs`)
+      }
+    }
+  )
   .command("list-keys", "list keys", {}, async (args: Args) => {
     const client = resolveClient(args)
     console.log(await client.keys().retrieve())

@@ -4,7 +4,8 @@ import { Testimony, TestimonySearchRecord } from "./types"
 
 export const {
   syncToSearchIndex: syncTestimonyToSearchIndex,
-  upgradeSearchIndex: upgradeTestimonySearchIndex
+  upgradeSearchIndex: upgradeTestimonySearchIndex,
+  runBackfillChunk: runTestimonyBackfillChunk
 } = createSearchIndexer<TestimonySearchRecord>({
   sourceCollection: db.collectionGroup("publishedTestimony"),
   documentTrigger: "users/{uid}/publishedTestimony/{id}",

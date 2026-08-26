@@ -7,7 +7,7 @@ import { nanoid } from "nanoid"
 import { CollectionAliasSchema } from "typesense/lib/Typesense/Aliases"
 import { Timestamp } from "../../functions/src/firebase"
 import { createClient } from "../../functions/src/search/client"
-import { SearchIndexer } from "../../functions/src/search/SearchIndexer"
+import { upgradePath } from "../../functions/src/search/backfillRun"
 import { testDb } from "../testUtils"
 import { createFakeBill } from "./common"
 
@@ -75,9 +75,7 @@ describe.skip("Upgrades", () => {
   }
 
   async function lastUpgradeTime(): Promise<Timestamp> {
-    const existingUpgrade = await testDb
-      .doc(SearchIndexer.upgradePath(testAlias))
-      .get()
+    const existingUpgrade = await testDb.doc(upgradePath(testAlias)).get()
     expect(existingUpgrade.exists).toBeTruthy()
     return existingUpgrade.data()!.createdAt
   }
