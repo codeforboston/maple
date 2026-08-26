@@ -5,7 +5,8 @@ changes ship with a number attached instead of a hunch.
 
 Scored with capped recall@10, MRR and nDCG@10 (exponential gain) over a golden
 query set, against a frozen corpus snapshot seeded into a dedicated local
-collection. Harness lives in `scripts/search-eval`.
+collection. Harness lives in `scripts/search-eval`. Shipping a measured
+change: see [`docs/search-deployment.md`](../../docs/search-deployment.md).
 
 ## The loop
 
