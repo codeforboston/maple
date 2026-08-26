@@ -1,6 +1,7 @@
 import { execSync } from "child_process"
 import { writeFileSync } from "fs"
 import { join } from "path"
+import type { SearchParams } from "typesense"
 import yargs, { Arguments } from "yargs"
 import { hideBin } from "yargs/helpers"
 import { billsSearchParams } from "../../components/search/searchParams"
@@ -44,25 +45,26 @@ const resolveCollection = (args: Args) =>
 
 const includeFields = "id,court,number,title,primarySponsor,currentCommittee"
 
+/** The typesense client's own search params, with the fields every eval
+ * search must pin made required. New ranking knobs added to
+ * components/search/searchParams.ts flow through without edits here.
+ */
+type EvalSearchParams = SearchParams<CorpusDoc> & {
+  q: string
+  query_by: string
+  per_page: number
+}
+
 function createSearcher(args: Args, collection: string) {
   const client = resolveClient(args)
   return {
     client,
-    search: async (params: {
-      q: string
-      query_by: string
-      per_page: number
-      query_by_weights?: string
-      num_typos?: string
-      drop_tokens_threshold?: number
-      sort_by?: string
-      filter_by?: string
-    }): Promise<CorpusDoc[]> => {
+    search: async (params: EvalSearchParams): Promise<CorpusDoc[]> => {
       const result = await client
-        .collections(collection)
+        .collections<CorpusDoc>(collection)
         .documents()
         .search({ include_fields: includeFields, ...params })
-      return (result.hits ?? []).map(h => h.document as CorpusDoc)
+      return (result.hits ?? []).map(h => h.document)
     }
   }
 }

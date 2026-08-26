@@ -8,6 +8,7 @@ import {
   formatCourtSubtitle
 } from "../courtSessions"
 import { useMemo, useRef } from "react"
+import { hearingsSearchParams } from "../searchParams"
 
 /* carbon copy of type in functions/src/hearings/search.ts */
 type HearingSearchRecord = {
@@ -89,11 +90,7 @@ export const HearingSearch = () => {
           }
         }
       }}
-      searchParameters={{
-        query_by:
-          "title,description,agendaTopics,billNumbers,chairNames,locationName,locationCity",
-        sort_by: "startsAt:asc"
-      }}
+      searchParameters={hearingsSearchParams}
       hitComponent={HearingHit}
       filterPanelConfig={{
         filters: [
