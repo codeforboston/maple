@@ -12,58 +12,78 @@ type HouseRollCallVote = {
   highlighted: boolean
 }
 
-function parseTime(timeStr: string): Date {
+function parseTime(timeStr: string): Date | string {
   const time = DateTime.fromFormat(timeStr, "M/d/yyyy h:mm a", {
     zone: timeZone
   })
 
   if (!time.isValid) {
-    throw new Error(`Invalid date/time: ${time.invalidExplanation}`)
+    return `Invalid date/time: ${time.invalidExplanation}`
   }
 
   return time.toJSDate()
 }
 
-function parseVote(
-  nameLine: string,
-  statusLine: string
-): HouseRollCallVote | string {
-  let entry = {
-    afterVote: false,
-    highlighted: false
+function parseVoteLines(
+  lines: string[],
+  expectedVoteCount: number
+): HouseRollCallVote[] | string {
+  const results = []
+  const votes: ("Yea" | "Nay" | "Abstain")[] = []
+  for (const line of lines) {
+    if (line.match(/^[YNX]*$/)) {
+      for (const char of line) {
+        if (char === "Y") {
+          votes.push("Yea")
+        } else if (char === "N") {
+          votes.push("Nay")
+        } else if (char === "X") {
+          votes.push("Abstain")
+        }
+      }
+    }
   }
-  if (nameLine[nameLine.length - 1] == "*") {
-    entry.afterVote = true
-    nameLine = nameLine.slice(0, -1).trimEnd()
+  if (votes.length !== expectedVoteCount) {
+    return `Expected ${expectedVoteCount} votes; found ${votes.length} votes`
   }
-  if (/^--.*--$/.test(nameLine)) {
-    nameLine = nameLine.slice(2, -2).trim()
-    entry.highlighted = true
+  let nextVote = 0
+  let i = 0
+  for (; i < lines.length; i++) {
+    if (nextVote >= votes.length) {
+      break
+    }
+    let line = lines[i]
+    if (line.match(/^[YNX]*$/)) {
+      continue
+    }
+    let entry = {
+      afterVote: false,
+      highlighted: false
+    }
+    if (line[line.length - 1] == "*") {
+      entry.afterVote = true
+      line = line.slice(0, -1).trimEnd()
+    }
+    if (/^--.*--$/.test(line)) {
+      line = line.slice(2, -2).trim()
+      entry.highlighted = true
+    }
+
+    let initial
+    let lastName
+    const nameMatch = line.match(/^([^,]*),? ([a-zA-Z])\.$/)
+    if (nameMatch !== null) {
+      initial = nameMatch[2]
+      lastName = nameMatch[1]
+    } else {
+      initial = null
+      lastName = line
+    }
+    results.push({ vote: votes[nextVote], lastName, initial, ...entry })
+    nextVote += 1
   }
 
-  let initial
-  let lastName
-  const nameMatch = nameLine.match(/^([^,]*),? ([a-zA-Z])\.$/)
-  if (nameMatch !== null) {
-    initial = nameMatch[2]
-    lastName = nameMatch[1]
-  } else {
-    initial = null
-    lastName = nameLine
-  }
-
-  let vote: RollCallResponse
-  if (statusLine === "Y") {
-    vote = "Yea"
-  } else if (statusLine === "N") {
-    vote = "Nay"
-  } else if (statusLine === "X") {
-    vote = "Abstain"
-  } else {
-    return `${statusLine} could not be understood as a vote`
-  }
-
-  return { vote, lastName, initial, ...entry }
+  return results
 }
 
 type RollCall = {
@@ -141,7 +161,7 @@ function parseVotes(number: number, text: string): RollCall | string {
     .map(line => line.trim())
     .filter(Boolean)
   const untilFirstVote = lines.findIndex(
-    line => line == "Y" || line == "N" || line == "X"
+    line => line.match(/^[YNX]+$/) !== null
   )
   const lastIntroLine = untilFirstVote - 2
 
@@ -154,21 +174,16 @@ function parseVotes(number: number, text: string): RollCall | string {
   }
   const { question, timeStr, billNumber, yeas, nays, nv } = result
   const time = parseTime(timeStr)
+  if (typeof time === "string") {
+    return `Error interpreting time string ${timeStr}: ${time}`
+  }
 
-  const results = []
-  for (let i = untilFirstVote - 1; i < lines.length; i += 2) {
-    let nameLine = lines[i]
-    const statusLine = lines[i + 1]
-
-    if (statusLine === undefined) {
-      break
-    }
-
-    const thisVote = parseVote(nameLine, statusLine)
-    if (typeof thisVote === "string") {
-      return thisVote
-    }
-    results.push(thisVote)
+  const results = parseVoteLines(
+    lines.slice(untilFirstVote - 1),
+    yeas + nays + nv
+  )
+  if (typeof results === "string") {
+    return `Error interpreting pdf for house roll call ${number}: ${results}`
   }
 
   const bill = billNumber ? `H${billNumber}` : null
