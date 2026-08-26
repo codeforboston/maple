@@ -39,9 +39,11 @@ export const testimonySearchParams = {
   exclude_fields: ""
 } satisfies SearchParameters
 
-/** Hearings always sort by startsAt (no _text_match sort option), so these
- * weights govern which documents match and typo/tie behavior, not ordering.
+/** The app's "Relevance" sort option (see useTestimonySort in
+ * testimony/TestimonySearch.tsx), and the sort the eval harness must use.
  */
+export const testimonyRelevanceSort = "_text_match:desc,publishedAt:desc"
+
 export const hearingsSearchParams = {
   ...weighted({
     billNumbers: 10,
@@ -51,6 +53,16 @@ export const hearingsSearchParams = {
     description: 2,
     locationName: 2,
     locationCity: 2
-  }),
-  sort_by: "startsAt:asc"
+  })
 } satisfies SearchParameters
+
+/** The app's "Relevance" sort option (see useHearingSort in
+ * hearings/HearingSearch.tsx). Every other hearings sort is date-ordered, so
+ * this is the only one under which text ranking is observable — and the only
+ * one the eval harness can score.
+ *
+ * No sort_by is pinned in hearingsSearchParams above: the adapter derives it
+ * from the "hearings/sort/<sort_by>" index name of the selected option, which
+ * takes precedence over additionalSearchParameters.
+ */
+export const hearingsRelevanceSort = "_text_match:desc,startsAt:desc"

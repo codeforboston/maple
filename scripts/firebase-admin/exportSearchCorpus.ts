@@ -1,26 +1,44 @@
-import { createHash } from "crypto"
-import { mkdirSync, writeFileSync } from "fs"
 import { last } from "lodash"
-import { join } from "path"
-import { gzipSync } from "zlib"
+// Imported for the registerConfig side effect.
 import "../../functions/src/bills/search"
 import { getRegisteredConfigs } from "../../functions/src/search/config"
+import { corpusDir } from "../search-eval/corpus"
+import { ExportedDoc, writeCorpus } from "../search-eval/corpusFiles"
 import { Script } from "./types"
 
-const outDir = join(__dirname, "../../tests/search-eval/corpus")
 const batchSize = 500
 
-/** Extracts the bills search corpus from Firestore (run under
- * `firebase emulators:exec --import tests/integration/exportedTestData` via
- * `yarn search-eval:corpus`) using the production search converter, so the
- * eval harness indexes exactly what the app's search pipeline would.
+/** Extracts a search corpus from the emulator, seeded from the committed test
+ * fixture, using the production search converter — so the eval harness indexes
+ * exactly what the app's search pipeline would.
+ *
+ * This is the bills path (`yarn search-eval:corpus`). It uses the admin SDK,
+ * which bypasses security rules; an unauthenticated collectionGroup("bills")
+ * read is denied because the bills rule is path-scoped to generalCourts/**.
+ *
+ * Hearings and testimony come from a live project instead — the fixture holds
+ * ~21 hearings and lorem-ipsum testimony — and need no credentials at all:
+ *
+ *   yarn search-eval corpus --env prod --alias hearings
+ *
+ * See tests/search-eval/README.md.
  */
-export const script: Script = async () => {
-  const config = getRegisteredConfigs().find(c => c.alias === "bills")
-  if (!config) throw Error("bills search config not registered")
+export const script: Script = async ({ args }) => {
+  const alias: string = args.argv?.[0]
+  if (!alias)
+    throw Error(
+      "Pass the collection alias, e.g. `run-script exportSearchCorpus --env local bills`"
+    )
 
-  const docs: { id: string; court: number }[] = []
-  const lines = new Map<string, string>()
+  const config = getRegisteredConfigs().find(c => c.alias === alias)
+  if (!config)
+    throw Error(
+      `No search config registered for "${alias}". Known: ${getRegisteredConfigs()
+        .map(c => c.alias)
+        .join(", ")}`
+    )
+
+  const docs: ExportedDoc[] = []
   let failures = 0
 
   let token: string | undefined = ""
@@ -36,9 +54,7 @@ export const script: Script = async () => {
       try {
         const data = d.data()
         if (config.filter && !config.filter(data)) continue
-        const doc = config.convert(data) as { id: string; court: number }
-        docs.push(doc)
-        lines.set(doc.id, JSON.stringify(doc))
+        docs.push(config.convert(data) as ExportedDoc)
       } catch (error: any) {
         failures++
         console.error(`Failed to convert ${d.ref.path}: ${error.message}`)
@@ -46,40 +62,16 @@ export const script: Script = async () => {
     }
   }
 
-  const jsonl =
-    Array.from(lines.keys())
-      .sort()
-      .map(id => lines.get(id))
-      .join("\n") + "\n"
-
-  const courts: Record<string, number> = {}
-  for (const doc of docs) {
-    const court = String(doc.court)
-    courts[court] = (courts[court] ?? 0) + 1
-  }
-
-  mkdirSync(outDir, { recursive: true })
-  writeFileSync(join(outDir, "bills.jsonl.gz"), gzipSync(jsonl))
-  writeFileSync(
-    join(outDir, "schema.json"),
-    JSON.stringify(config.schema, null, 2) + "\n"
-  )
-  writeFileSync(
-    join(outDir, "meta.json"),
-    JSON.stringify(
-      {
-        collection: "bills",
-        source: "tests/integration/exportedTestData",
-        count: lines.size,
-        courts,
-        jsonlMd5: createHash("md5").update(jsonl).digest("hex")
-      },
-      null,
-      2
-    ) + "\n"
-  )
+  const count = writeCorpus({
+    alias,
+    source: "tests/integration/exportedTestData",
+    docs,
+    schema: config.schema
+  })
 
   console.log(
-    `Wrote ${lines.size} docs to ${outDir} (${failures} conversion failures)`
+    `Wrote ${count} docs to ${corpusDir(
+      alias
+    )} (${failures} conversion failures)`
   )
 }

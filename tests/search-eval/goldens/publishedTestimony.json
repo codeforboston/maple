@@ -1,0 +1,525 @@
+{
+  "collection": "publishedTestimony",
+  "defaults": {
+    "sort_by": "_text_match:desc,publishedAt:desc",
+    "courtFilter": true
+  },
+  "queries": [
+    {
+      "id": "tb-001",
+      "category": "bill-id",
+      "query": "S531",
+      "relevant": [
+        {
+          "rule": {
+            "field": "billId",
+            "equals": "S531"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "tb-002",
+      "category": "bill-id",
+      "query": "S 531",
+      "sameAs": "tb-001"
+    },
+    {
+      "id": "tb-003",
+      "category": "bill-id",
+      "query": "S.531",
+      "sameAs": "tb-001"
+    },
+    {
+      "id": "tb-004",
+      "category": "bill-id",
+      "query": "H4351",
+      "relevant": [
+        {
+          "rule": {
+            "field": "billId",
+            "equals": "H4351"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "tb-005",
+      "category": "bill-id",
+      "query": "H 4351",
+      "sameAs": "tb-004"
+    },
+    {
+      "id": "tb-006",
+      "category": "bill-id",
+      "query": "S505",
+      "relevant": [
+        {
+          "rule": {
+            "field": "billId",
+            "equals": "S505"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "tb-007",
+      "category": "bill-id",
+      "query": "H2057",
+      "relevant": [
+        {
+          "rule": {
+            "field": "billId",
+            "equals": "H2057"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "tb-008",
+      "category": "bill-id",
+      "query": "H.1405",
+      "relevant": [
+        {
+          "rule": {
+            "field": "billId",
+            "equals": "H1405"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "ta-001",
+      "category": "author",
+      "query": "Progressive Massachusetts",
+      "relevant": [
+        {
+          "rule": {
+            "field": "authorDisplayName",
+            "equals": "Progressive Massachusetts"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "ta-002",
+      "category": "author",
+      "query": "League of Women Voters",
+      "relevant": [
+        {
+          "rule": {
+            "field": "authorDisplayName",
+            "equals": "League of Women Voters of Massachusetts"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "ta-003",
+      "category": "author",
+      "query": "T Stephen Jones",
+      "relevant": [
+        {
+          "rule": {
+            "field": "authorDisplayName",
+            "equals": "T Stephen Jones"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "ta-004",
+      "category": "author",
+      "query": "Elaine Almquist",
+      "relevant": [
+        {
+          "rule": {
+            "field": "authorDisplayName",
+            "equals": "Elaine F. Almquist"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "ta-005",
+      "category": "author",
+      "query": "Partners in Democracy",
+      "relevant": [
+        {
+          "rule": {
+            "field": "authorDisplayName",
+            "equals": "Partners in Democracy"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "ta-006",
+      "category": "author",
+      "query": "Commission on the Status of Women",
+      "relevant": [
+        {
+          "rule": {
+            "field": "authorDisplayName",
+            "contains": "Commission on the Status of Women"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "tt-001",
+      "category": "topic",
+      "query": "ranked choice voting",
+      "relevant": [
+        {
+          "rule": {
+            "field": "billId",
+            "equals": "S531"
+          },
+          "grade": 3
+        },
+        {
+          "rule": {
+            "field": "content",
+            "contains": "ranked choice"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "tt-002",
+      "category": "topic",
+      "query": "rent control",
+      "relevant": [
+        {
+          "rule": {
+            "field": "content",
+            "contains": "rent control"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "tt-003",
+      "category": "topic",
+      "query": "same day voter registration",
+      "relevant": [
+        {
+          "rule": {
+            "field": "content",
+            "contains": "same day registration"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "tt-004",
+      "category": "topic",
+      "query": "vote by mail",
+      "relevant": [
+        {
+          "rule": {
+            "field": "content",
+            "contains": "vote by mail"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "tt-005",
+      "category": "topic",
+      "query": "solitary confinement",
+      "relevant": [
+        {
+          "rule": {
+            "field": "content",
+            "contains": "solitary confinement"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "tt-006",
+      "category": "topic",
+      "query": "eviction",
+      "relevant": [
+        {
+          "rule": {
+            "field": "content",
+            "contains": "eviction"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "tt-007",
+      "category": "topic",
+      "query": "zoning",
+      "relevant": [
+        {
+          "rule": {
+            "field": "content",
+            "contains": "zoning"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "tt-008",
+      "category": "topic",
+      "query": "fossil fuels",
+      "relevant": [
+        {
+          "rule": {
+            "field": "content",
+            "contains": "fossil fuel"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "tt-009",
+      "category": "topic",
+      "query": "gender affirming care",
+      "relevant": [
+        {
+          "rule": {
+            "field": "content",
+            "contains": "gender affirming"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "tt-010",
+      "category": "topic",
+      "query": "language access",
+      "relevant": [
+        {
+          "rule": {
+            "field": "content",
+            "contains": "language access"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "tt-011",
+      "category": "topic",
+      "query": "parole",
+      "relevant": [
+        {
+          "rule": {
+            "field": "content",
+            "contains": "parole"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "tt-012",
+      "category": "topic",
+      "query": "homelessness",
+      "relevant": [
+        {
+          "rule": {
+            "field": "content",
+            "contains": "homeless"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "ts-001",
+      "category": "synonym",
+      "query": "renters",
+      "relevant": [
+        {
+          "rule": {
+            "field": "content",
+            "contains": "tenant"
+          },
+          "grade": 1
+        },
+        {
+          "rule": {
+            "field": "content",
+            "contains": "renter"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "ts-002",
+      "category": "synonym",
+      "query": "tenants",
+      "relevant": [
+        {
+          "rule": {
+            "field": "content",
+            "contains": "tenant"
+          },
+          "grade": 1
+        },
+        {
+          "rule": {
+            "field": "content",
+            "contains": "renter"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "ts-003",
+      "category": "synonym",
+      "query": "teachers",
+      "relevant": [
+        {
+          "rule": {
+            "field": "content",
+            "contains": "educator"
+          },
+          "grade": 1
+        },
+        {
+          "rule": {
+            "field": "content",
+            "contains": "teacher"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "ts-004",
+      "category": "synonym",
+      "query": "doctor",
+      "relevant": [
+        {
+          "rule": {
+            "field": "content",
+            "contains": "physician"
+          },
+          "grade": 1
+        },
+        {
+          "rule": {
+            "field": "content",
+            "contains": "doctor"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "ts-005",
+      "category": "synonym",
+      "query": "servicemember",
+      "relevant": [
+        {
+          "rule": {
+            "field": "content",
+            "contains": "veteran"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "ts-006",
+      "category": "synonym",
+      "query": "opiate",
+      "relevant": [
+        {
+          "rule": {
+            "field": "content",
+            "contains": "opioid"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "ts-007",
+      "category": "synonym",
+      "query": "clean energy",
+      "relevant": [
+        {
+          "rule": {
+            "field": "content",
+            "contains": "renewable energy"
+          },
+          "grade": 1
+        },
+        {
+          "rule": {
+            "field": "content",
+            "contains": "clean energy"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "tm-001",
+      "category": "misspelling",
+      "query": "progresive massachusets",
+      "sameAs": "ta-001"
+    },
+    {
+      "id": "tm-002",
+      "category": "misspelling",
+      "query": "leage of women voters",
+      "sameAs": "ta-002"
+    },
+    {
+      "id": "tm-003",
+      "category": "misspelling",
+      "query": "rankd choice voting",
+      "sameAs": "tt-001"
+    },
+    {
+      "id": "tm-004",
+      "category": "misspelling",
+      "query": "evicton",
+      "sameAs": "tt-006"
+    },
+    {
+      "id": "tm-005",
+      "category": "misspelling",
+      "query": "zonning",
+      "sameAs": "tt-007"
+    },
+    {
+      "id": "tm-006",
+      "category": "misspelling",
+      "query": "solitary confinment",
+      "sameAs": "tt-005"
+    }
+  ]
+}

@@ -3,21 +3,18 @@ import { join } from "path"
 import {
   Array as A,
   Boolean as B,
-  Literal as L,
   Number as N,
   Optional,
   Record as R,
   Static,
-  String as S,
-  Union
+  String as S
 } from "runtypes"
+import { resolveEvalCollection } from "./collections"
 import { CorpusDoc } from "./corpus"
 import { Judgments } from "./metrics"
 
-export const goldensPath = join(
-  __dirname,
-  "../../tests/search-eval/goldens/bills.json"
-)
+export const goldensPath = (alias: string) =>
+  join(__dirname, `../../tests/search-eval/goldens/${alias}.json`)
 
 const Rule = R({
   field: Optional(S),
@@ -32,17 +29,11 @@ const RelevantEntry = R({
   grade: N
 })
 
-export const Category = Union(
-  L("exact-bill-id"),
-  L("topic"),
-  L("synonym"),
-  L("misspelling"),
-  L("member-committee")
-)
-
 const GoldenQuery = R({
   id: S,
-  category: Category,
+  /** Validated against the collection's allowlist in loadGoldens — the
+   * meaningful categories differ per collection. */
+  category: S,
   query: S,
   relevant: Optional(A(RelevantEntry)),
   sameAs: Optional(S),
@@ -59,12 +50,30 @@ export type GoldenQuery = Static<typeof GoldenQuery>
 export type GoldenSet = Static<typeof GoldenSet>
 export type Rule = Static<typeof Rule>
 
-export function loadGoldens(): GoldenSet {
-  const goldens = GoldenSet.check(JSON.parse(readFileSync(goldensPath, "utf8")))
+export function loadGoldens(alias: string): GoldenSet {
+  const collection = resolveEvalCollection(alias)
+  const goldens = GoldenSet.check(
+    JSON.parse(readFileSync(goldensPath(alias), "utf8"))
+  )
+
+  // A golden set scored under a sort the app cannot select measures an ordering
+  // no user ever sees. Hearings is the cautionary case: every sort option there
+  // was date-ordered, so nDCG measured recency.
+  if (goldens.defaults.sort_by !== collection.relevanceSort)
+    throw Error(
+      `${alias} goldens sort "${goldens.defaults.sort_by}" does not match the app's relevance sort "${collection.relevanceSort}" (components/search/searchParams.ts)`
+    )
+
   const ids = new Set(goldens.queries.map(q => q.id))
   if (ids.size !== goldens.queries.length)
     throw Error("Duplicate query ids in golden set")
   for (const q of goldens.queries) {
+    if (!collection.categories.includes(q.category))
+      throw Error(
+        `Query ${q.id} has unknown category "${
+          q.category
+        }" for ${alias}. Known: ${collection.categories.join(", ")}`
+      )
     if (!q.relevant && !q.sameAs)
       throw Error(`Query ${q.id} has neither relevant labels nor sameAs`)
     if (q.sameAs && !ids.has(q.sameAs))

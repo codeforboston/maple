@@ -1,5 +1,5 @@
 {
-  "collection": "bills",
+  "alias": "bills",
   "source": "tests/integration/exportedTestData",
   "count": 7337,
   "courts": {

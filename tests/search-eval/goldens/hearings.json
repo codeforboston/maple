@@ -1,0 +1,514 @@
+{
+  "collection": "hearings",
+  "defaults": {
+    "sort_by": "_text_match:desc,startsAt:desc",
+    "courtFilter": true
+  },
+  "queries": [
+    {
+      "id": "hc-001",
+      "category": "committee",
+      "query": "Ways and Means",
+      "relevant": [
+        {
+          "rule": { "field": "committeeName", "contains": "Ways and Means" },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hc-002",
+      "category": "committee",
+      "query": "Judiciary",
+      "relevant": [
+        {
+          "rule": { "field": "committeeName", "contains": "Judiciary" },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hc-003",
+      "category": "committee",
+      "query": "Financial Services",
+      "relevant": [
+        {
+          "rule": {
+            "field": "committeeName",
+            "contains": "Financial Services"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hc-004",
+      "category": "committee",
+      "query": "Public Health",
+      "relevant": [
+        {
+          "rule": { "field": "committeeName", "contains": "Public Health" },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hc-005",
+      "category": "committee",
+      "query": "Transportation",
+      "relevant": [
+        {
+          "rule": { "field": "committeeName", "contains": "Transportation" },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hc-006",
+      "category": "committee",
+      "query": "Housing",
+      "relevant": [
+        {
+          "rule": { "field": "committeeName", "contains": "Housing" },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hc-007",
+      "category": "committee",
+      "query": "Election Laws",
+      "relevant": [
+        {
+          "rule": { "field": "committeeName", "contains": "Election Laws" },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hc-008",
+      "category": "committee",
+      "query": "Revenue",
+      "relevant": [
+        {
+          "rule": { "field": "committeeName", "contains": "Revenue" },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hc-009",
+      "category": "committee",
+      "query": "Consumer Protection",
+      "relevant": [
+        {
+          "rule": {
+            "field": "committeeName",
+            "contains": "Consumer Protection"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hc-010",
+      "category": "committee",
+      "query": "Municipalities and Regional Government",
+      "relevant": [
+        {
+          "rule": { "field": "committeeName", "contains": "Municipalities" },
+          "grade": 3
+        }
+      ]
+    },
+
+    {
+      "id": "hch-001",
+      "category": "chair",
+      "query": "Rebecca Rausch",
+      "relevant": [
+        {
+          "rule": { "field": "chairNames", "equals": "Rebecca L. Rausch" },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hch-002",
+      "category": "chair",
+      "query": "Cindy Friedman",
+      "relevant": [
+        {
+          "rule": { "field": "chairNames", "equals": "Cindy F. Friedman" },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hch-003",
+      "category": "chair",
+      "query": "Alice Peisch",
+      "relevant": [
+        {
+          "rule": { "field": "chairNames", "equals": "Alice Hanlon Peisch" },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hch-004",
+      "category": "chair",
+      "query": "Tackey Chan",
+      "relevant": [
+        {
+          "rule": { "field": "chairNames", "equals": "Tackey Chan" },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hch-005",
+      "category": "chair",
+      "query": "Brendan Crighton",
+      "relevant": [
+        {
+          "rule": { "field": "chairNames", "equals": "Brendan P. Crighton" },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hch-006",
+      "category": "chair",
+      "query": "Daniel Ryan",
+      "relevant": [
+        {
+          "rule": { "field": "chairNames", "equals": "Daniel J. Ryan" },
+          "grade": 3
+        }
+      ]
+    },
+
+    {
+      "id": "hb-001",
+      "category": "bill-on-agenda",
+      "query": "H2391",
+      "relevant": [
+        { "rule": { "field": "billNumbers", "equals": "H2391" }, "grade": 3 }
+      ]
+    },
+    {
+      "id": "hb-002",
+      "category": "bill-on-agenda",
+      "query": "H 2391",
+      "sameAs": "hb-001"
+    },
+    {
+      "id": "hb-003",
+      "category": "bill-on-agenda",
+      "query": "H.2391",
+      "sameAs": "hb-001"
+    },
+    {
+      "id": "hb-004",
+      "category": "bill-on-agenda",
+      "query": "S1489",
+      "relevant": [
+        { "rule": { "field": "billNumbers", "equals": "S1489" }, "grade": 3 }
+      ]
+    },
+    {
+      "id": "hb-005",
+      "category": "bill-on-agenda",
+      "query": "S 1489",
+      "sameAs": "hb-004"
+    },
+    {
+      "id": "hb-006",
+      "category": "bill-on-agenda",
+      "query": "H63",
+      "relevant": [
+        { "rule": { "field": "billNumbers", "equals": "H63" }, "grade": 3 }
+      ]
+    },
+    {
+      "id": "hb-007",
+      "category": "bill-on-agenda",
+      "query": "H 63",
+      "sameAs": "hb-006"
+    },
+    {
+      "id": "hb-008",
+      "category": "bill-on-agenda",
+      "query": "S6",
+      "relevant": [
+        { "rule": { "field": "billNumbers", "equals": "S6" }, "grade": 3 }
+      ]
+    },
+    {
+      "id": "hb-009",
+      "category": "bill-on-agenda",
+      "query": "H56",
+      "relevant": [
+        { "rule": { "field": "billNumbers", "equals": "H56" }, "grade": 3 }
+      ]
+    },
+    {
+      "id": "hb-010",
+      "category": "bill-on-agenda",
+      "query": "H.2424",
+      "relevant": [
+        { "rule": { "field": "billNumbers", "equals": "H2424" }, "grade": 3 }
+      ]
+    },
+
+    {
+      "id": "ht-001",
+      "category": "agenda-topic",
+      "query": "home rule petitions",
+      "relevant": [
+        {
+          "rule": {
+            "anyField": ["agendaTopics", "description"],
+            "contains": "Home Rule"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "ht-002",
+      "category": "agenda-topic",
+      "query": "budget hearing",
+      "relevant": [
+        {
+          "rule": {
+            "anyField": ["agendaTopics", "description"],
+            "contains": "Budget Hearing"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "ht-003",
+      "category": "agenda-topic",
+      "query": "miscellaneous matters",
+      "relevant": [
+        {
+          "rule": {
+            "anyField": ["agendaTopics", "description"],
+            "contains": "Miscellaneous"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "ht-004",
+      "category": "agenda-topic",
+      "query": "disabilities",
+      "relevant": [
+        {
+          "rule": {
+            "anyField": ["agendaTopics", "description"],
+            "contains": "disabilit"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "ht-005",
+      "category": "agenda-topic",
+      "query": "public safety",
+      "relevant": [
+        {
+          "rule": {
+            "anyField": ["agendaTopics", "description"],
+            "contains": "Public Safety"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "ht-006",
+      "category": "agenda-topic",
+      "query": "late files",
+      "relevant": [
+        {
+          "rule": {
+            "anyField": ["agendaTopics", "description"],
+            "contains": "Late File"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "ht-007",
+      "category": "agenda-topic",
+      "query": "health care cost growth benchmark",
+      "relevant": [
+        {
+          "rule": {
+            "anyField": ["agendaTopics", "description"],
+            "contains": "Cost Growth"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "ht-008",
+      "category": "agenda-topic",
+      "query": "climate",
+      "relevant": [
+        {
+          "rule": {
+            "anyField": ["agendaTopics", "description"],
+            "contains": "climate"
+          },
+          "grade": 1
+        }
+      ]
+    },
+
+    {
+      "id": "hl-001",
+      "category": "location",
+      "query": "Gardner Auditorium",
+      "relevant": [
+        {
+          "rule": { "field": "locationName", "contains": "Gardner" },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hl-002",
+      "category": "location",
+      "query": "Virtual Hearing",
+      "relevant": [
+        {
+          "rule": { "field": "locationName", "contains": "Virtual" },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hl-003",
+      "category": "location",
+      "query": "Written Testimony Only",
+      "relevant": [
+        {
+          "rule": { "field": "locationName", "contains": "Written Testimony" },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hl-004",
+      "category": "location",
+      "query": "UMass Amherst",
+      "relevant": [
+        { "rule": { "field": "locationName", "contains": "UMass" }, "grade": 3 }
+      ]
+    },
+    {
+      "id": "hl-005",
+      "category": "location",
+      "query": "Northampton",
+      "relevant": [
+        {
+          "rule": {
+            "anyField": ["locationName", "locationCity"],
+            "contains": "Northampton"
+          },
+          "grade": 3
+        }
+      ]
+    },
+
+    {
+      "id": "hs-001",
+      "category": "synonym",
+      "query": "cannabis",
+      "relevant": [
+        {
+          "rule": {
+            "anyField": ["agendaTopics", "description"],
+            "contains": "marijuana"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hs-002",
+      "category": "synonym",
+      "query": "guns",
+      "relevant": [
+        {
+          "rule": {
+            "anyField": ["agendaTopics", "description"],
+            "contains": "firearm"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hs-003",
+      "category": "synonym",
+      "query": "liquor",
+      "relevant": [
+        {
+          "rule": {
+            "anyField": ["agendaTopics", "description"],
+            "contains": "alcohol"
+          },
+          "grade": 3
+        }
+      ]
+    },
+
+    {
+      "id": "hm-001",
+      "category": "misspelling",
+      "query": "judicary",
+      "sameAs": "hc-002"
+    },
+    {
+      "id": "hm-002",
+      "category": "misspelling",
+      "query": "transportaton",
+      "sameAs": "hc-005"
+    },
+    {
+      "id": "hm-003",
+      "category": "misspelling",
+      "query": "gardner auditorum",
+      "sameAs": "hl-001"
+    },
+    {
+      "id": "hm-004",
+      "category": "misspelling",
+      "query": "municipalites",
+      "sameAs": "hc-010"
+    },
+    {
+      "id": "hm-005",
+      "category": "misspelling",
+      "query": "consumer protecton",
+      "sameAs": "hc-009"
+    },
+    {
+      "id": "hm-006",
+      "category": "misspelling",
+      "query": "cindy freidman",
+      "sameAs": "hch-002"
+    }
+  ]
+}

@@ -14,6 +14,7 @@ export type EvalResults = {
   meta: {
     env: string
     url: string
+    alias: string
     collection: string
     serverVersion: string
     corpusMd5: string
@@ -57,7 +58,8 @@ const row = (label: string, m: QueryMetrics & { queryCount: number }) => ({
 
 export function printScorecard(results: EvalResults) {
   console.log(
-    `\nSearch relevance scorecard — server ${results.meta.serverVersion}, ` +
+    `\nSearch relevance scorecard — ${results.meta.alias}, ` +
+      `server ${results.meta.serverVersion}, ` +
       `collection ${results.meta.collection}, sort "${results.meta.sortBy}"` +
       (results.meta.court !== undefined ? `, court ${results.meta.court}` : "")
   )
@@ -91,6 +93,10 @@ export function compare(
     `\nComparing ${candidatePath} (server ${candidate.meta.serverVersion})` +
       ` against ${baselinePath} (server ${baseline.meta.serverVersion})`
   )
+  if (baseline.meta.alias !== candidate.meta.alias)
+    console.warn(
+      `WARNING: comparing different collections (${baseline.meta.alias} vs ${candidate.meta.alias})`
+    )
   if (baseline.meta.corpusMd5 !== candidate.meta.corpusMd5)
     console.warn("WARNING: corpus hashes differ — not an apples-to-apples run")
 

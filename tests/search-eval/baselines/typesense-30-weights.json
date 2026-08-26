@@ -2,6 +2,7 @@
   "meta": {
     "env": "local",
     "url": "",
+    "alias": "bills",
     "collection": "bills_eval",
     "serverVersion": "30.2",
     "corpusMd5": "a0499d7bb8597f88dbd737893bcd8a4d",

@@ -25,7 +25,7 @@ import { SearchContainer } from "../SearchContainer"
 import { SearchErrorBoundary } from "../SearchErrorBoundary"
 import { SortBy } from "../SortBy"
 import { getServerConfig, VirtualFilters } from "../common"
-import { testimonySearchParams } from "../searchParams"
+import { testimonyRelevanceSort, testimonySearchParams } from "../searchParams"
 import { TestimonyHit } from "./TestimonyHit"
 import { useTestimonyRefinements } from "./useTestimonyRefinements"
 import { FollowContext, OrgFollowStatus } from "components/shared/FollowContext"
@@ -51,7 +51,7 @@ export const useTestimonySort = () => {
       },
       {
         label: t("sort_by.relevance"),
-        value: "publishedTestimony/sort/_text_match:desc,publishedAt:desc"
+        value: `publishedTestimony/sort/${testimonyRelevanceSort}`
       }
     ],
     [t]

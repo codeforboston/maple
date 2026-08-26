@@ -4,26 +4,7 @@ import { createSearchIndexer } from "../search"
 import { Hearing } from "../events/types"
 import { timeZone } from "../malegislature"
 import { generalCourts, currentGeneralCourt } from "../shared/constants"
-
-type HearingSearchRecord = {
-  id: string
-  eventId: number
-  title: string
-  description?: string
-  startsAt: number
-  month: string
-  year: number
-  committeeCode?: string
-  committeeName?: string
-  locationName?: string
-  locationCity?: string
-  chairNames: string[]
-  agendaTopics: string[]
-  billNumbers: string[]
-  billSlugs: string[]
-  court: number
-  hasVideo: boolean
-}
+import { HearingSearchRecord } from "./types"
 
 export const {
   syncToSearchIndex: syncHearingToSearchIndex,
