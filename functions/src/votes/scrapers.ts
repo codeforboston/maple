@@ -212,6 +212,7 @@ export class HouseRollCallScraper {
     court: number,
     rollCallNumber: number
   ): Promise<string> {
+    court = court - 1
     if (!this.legislators) {
       const legislators = await getHouseLegislators(court)
       if (typeof legislators === "string") {
@@ -293,8 +294,10 @@ export class HouseRollCallScraper {
       currentGeneralCourt,
       rollCallNumber
     )
-    // stop at 404
-    while (!rollcall.startsWith("fetch error")) {
+
+    console.log("entering")
+    while ((this.legislators ?? []).length && rollcall === "success") {
+      console.log(rollCallNumber)
       rollCallNumber += 1
       if (rollcall !== "success") {
         functions.logger.error(

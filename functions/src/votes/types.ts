@@ -48,7 +48,8 @@ export type RollCallResponse = Static<typeof RollCallResponse>
 export const RollCallResponse = Union(
   Literal("Yea"),
   Literal("Nay"),
-  Literal("Abstain")
+  Literal("Abstain"),
+  Literal("Present")
 )
 
 export type RollCallVote = Static<typeof RollCallVote>

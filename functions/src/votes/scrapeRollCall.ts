@@ -29,9 +29,10 @@ function parseVoteLines(
   expectedVoteCount: number
 ): HouseRollCallVote[] | string {
   const results = []
-  const votes: ("Yea" | "Nay" | "Abstain")[] = []
+  let present = 0
+  const votes: ("Yea" | "Nay" | "Abstain" | "Present")[] = []
   for (const line of lines) {
-    if (line.match(/^[YNX]*$/)) {
+    if (line.match(/^[YNPX]*$/)) {
       for (const char of line) {
         if (char === "Y") {
           votes.push("Yea")
@@ -39,11 +40,14 @@ function parseVoteLines(
           votes.push("Nay")
         } else if (char === "X") {
           votes.push("Abstain")
+        } else if (char === "P") {
+          votes.push("Present")
+          present += 1
         }
       }
     }
   }
-  if (votes.length !== expectedVoteCount) {
+  if (votes.length !== expectedVoteCount+present) {
     return `Expected ${expectedVoteCount} votes; found ${votes.length} votes`
   }
   let nextVote = 0
@@ -53,7 +57,7 @@ function parseVoteLines(
       break
     }
     let line = lines[i]
-    if (line.match(/^[YNX]*$/)) {
+    if (line.match(/^[YNPX]*$/)) {
       continue
     }
     let entry = {
@@ -161,7 +165,7 @@ function parseVotes(number: number, text: string): RollCall | string {
     .map(line => line.trim())
     .filter(Boolean)
   const untilFirstVote = lines.findIndex(
-    line => line.match(/^[YNX]+$/) !== null
+    line => line.match(/^[YNPX]+$/) !== null
   )
   const lastIntroLine = untilFirstVote - 2
 
