@@ -1,7 +1,8 @@
 export const LLM_CONFIG = {
-  // Reasoning/generation model (embeddings are handled separately by
-  // Vertex AI text-embedding-005 - see embeddings.ts).
-  openaiModel: "gpt-4o-mini",
+  // Reasoning/generation model. Uses Vertex AI (same GCP credentials as
+  // embeddings — no separate API key required).
+  // text-embedding-005 is still used for embeddings (see embeddings.ts).
+  geminiModel: "gemini-3.7-flash",
   temperature: 0,
   maxOutputTokens: 800,
 

@@ -15,7 +15,7 @@ const Request = z.object({
  * anonymous vs logged-in cost limits can't be spoofed.
  */
 export const askQuestion = functions
-  .runWith({ secrets: ["OPENAI_API_KEY"], timeoutSeconds: 120, memory: "512MB" })
+  .runWith({ timeoutSeconds: 120, memory: "512MB" })
   .https.onCall(async (data, context) => {
     const { question } = checkRequestZod(Request, data)
     const uid = context.auth?.uid

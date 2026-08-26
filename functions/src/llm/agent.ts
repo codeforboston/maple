@@ -1,4 +1,4 @@
-import { ChatOpenAI } from "@langchain/openai"
+import { ChatVertexAI } from "@langchain/google-vertexai"
 import { createReactAgent } from "@langchain/langgraph/prebuilt"
 import { BaseMessage } from "@langchain/core/messages"
 import { vectorSearchTools } from "./vectorSearchTools"
@@ -17,11 +17,13 @@ export async function askAgent(
   question: string,
   options: { recursionLimit: number; maxOutputTokens: number }
 ): Promise<AskAgentResult> {
-  const llm = new ChatOpenAI({
-    model: LLM_CONFIG.openaiModel,
+  const llm = new ChatVertexAI({
+    model: LLM_CONFIG.geminiModel,
     temperature: LLM_CONFIG.temperature,
-    maxTokens: options.maxOutputTokens,
-    apiKey: process.env.OPENAI_API_KEY
+    maxOutputTokens: options.maxOutputTokens
+    // Credentials come from Application Default Credentials (ADC) —
+    // the same GCP service account used by Vertex AI embeddings.
+    // No API key env var required.
   })
 
   const reactAgent = createReactAgent({ llm, tools: vectorSearchTools })
