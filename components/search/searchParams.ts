@@ -77,8 +77,29 @@ export const billsSearchParams = {
 /** The app's "Relevance" sort option (see useBillSort.tsx). The eval harness
  * must use this sort; the UI's default latestTestimonyAt:desc sort does not
  * measure text relevance.
+ *
+ * The `_eval` clause sorts every Order and Extension Order below every other
+ * document. They are procedural — "Extension Order - Education", "Order
+ * relative to authorizing the joint committee on Education to make an
+ * investigation and study" — and they match a committee query in title,
+ * pinslip and body without being what anyone searching a committee wants.
+ * Demoting rather than dropping them scores better than removing them from the
+ * index outright (0.752 against 0.749, member-committee 0.934 against 0.920)
+ * and keeps them findable: no bill shares their number, so "H4394" still
+ * returns the order at rank 1.
+ *
+ * Only Order and Extension Order. Widening it to everything that is not a Bill
+ * scores higher overall (0.756) but demotes Resolves and constitutional
+ * amendment proposals, which are legislation people search for, and it
+ * regresses hyp-006.
+ *
+ * What it does cost is searching for the type by name: "Extension Order
+ * Education" puts bills first and the real orders at rank 26 of 32. The
+ * legislationType refinement (useBillRefinements.tsx) is how a searcher who
+ * wants them gets them back, which is why the facet ships with this sort.
  */
-export const billsRelevanceSort = "_text_match:desc,testimonyCount:desc"
+export const billsRelevanceSort =
+  "_eval(legislationType:!=[`Order`,`Extension Order`]):desc,_text_match:desc,testimonyCount:desc"
 
 export const testimonySearchParams = {
   ...weighted({

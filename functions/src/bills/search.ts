@@ -30,6 +30,7 @@ export const {
       { name: "title", type: "string", facet: false },
       { name: "pinslip", type: "string", facet: false, optional: true },
       { name: "summary", type: "string", facet: false, optional: true },
+      { name: "legislationType", type: "string", facet: true, optional: true },
       { name: "body", type: "string", facet: false, optional: true },
       { name: "city", type: "string", facet: true, optional: true },
       { name: "currentCommittee", type: "string", facet: true, optional: true },
@@ -114,6 +115,9 @@ export const {
         bill.content.LegislationTypeName === "Extension Order"
           ? undefined
           : bill.summary,
+      /** Faceted so procedural documents can be told apart from legislation at
+       * query time rather than dropped at index time — see #95. */
+      legislationType: bill.content.LegislationTypeName ?? undefined,
       body: bill.content.DocumentText,
       city: bill.city,
       currentCommittee: bill.currentCommittee?.name,

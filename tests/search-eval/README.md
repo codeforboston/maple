@@ -180,7 +180,7 @@ from. Current:
 
 | collection         | queries | nDCG@10 | weakest categories                |
 | ------------------ | ------- | ------- | --------------------------------- |
-| bills              | 82      | 0.739   | topic 0.500, misspelling 0.507    |
+| bills              | 82      | 0.752   | topic 0.500, misspelling 0.507    |
 | hearings           | 48      | 0.957   | synonym 0.810, agenda-topic 0.842 |
 | publishedTestimony | 39      | 0.980   | misspelling 0.943, topic 0.971    |
 
@@ -191,8 +191,10 @@ hyphenation 0.574 → 0.955, testimony topic +0.083), synonym head terms
 for `alcohol`/`climate`/`vehicles` (#90) on all three (bills 0.766 → 0.754,
 a known and accepted cost — see below; hearings and testimony unaffected),
 bill pinslip at weight 3 (#87, bills 0.753 → 0.755, topic recall@10 +0.025),
-and the LLM bill summary at weight 2 (#76, bills 0.737 → 0.739 with recall@10
-0.860 → 0.880 and the new `plain-language` category 0.508 → 0.569).
+the LLM bill summary at weight 2 (#76, bills 0.737 → 0.739 with recall@10
+0.860 → 0.880 and the new `plain-language` category 0.508 → 0.569), and sorting
+procedural orders below everything else (#95, bills 0.739 → 0.752,
+member-committee 0.864 → 0.934, nothing else moved at all).
 
 The bills row keeps dropping while bills search keeps improving, because each
 change also adds queries the previous number never had to answer. Compare
@@ -303,6 +305,25 @@ same treatment.
   documents from the index altogether is worth a further +0.010 before any
   ranking change, and member-committee 0.864 → 0.920, but it makes them
   unfindable by number: a product decision, tracked separately.
+
+- **Demote procedural documents; do not drop them.** The follow-up to the
+  bullet above. `billsRelevanceSort` opens with
+  `_eval(legislationType:!=[\`Order\`,\`Extension Order\`]):desc`, which sorts every
+procedural document below every other one. Measured against dropping them from
+the index outright: demotion 0.752 overall / member-committee 0.934, deletion
+0.749 / 0.920. Demotion wins on the number *and* keeps the documents
+reachable, so there is no case left for a `config.filter` here. Three queries
+  moved, all up — mc-015 +0.727, mc-013 +0.220, mc-014 +0.107 — and the other 79
+  are byte-identical.
+
+  Two things the goldens cannot tell you about it, both checked by hand. Lookup
+  by number survives: no bill shares an order's number, so `H4394` still returns
+  the Extension Order at rank 1 even though its whole class is demoted. Searching
+  for the type by name does not: "Extension Order Education" puts bills first and
+  the real orders at rank 26 of 32. Every `exact-bill-id` golden names a real
+  Bill, so the set could not have caught either. That second cost is why the
+  `legislationType` refinement ships with the sort rather than after it —
+  refining to the type lifts the demoted class back.
 
 - **`text_match_type: max_weight` is a dead end here, and the reason is
   instructive.** It looks like the fix for the tiebreak above, and on "zero

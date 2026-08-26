@@ -36,6 +36,12 @@
       "optional": true
     },
     {
+      "name": "legislationType",
+      "type": "string",
+      "facet": true,
+      "optional": true
+    },
+    {
       "name": "body",
       "type": "string",
       "facet": false,
