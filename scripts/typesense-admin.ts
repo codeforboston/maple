@@ -6,6 +6,7 @@ import {
   SYNONYM_SET_NAME,
   upsertLegislativeSynonyms
 } from "../functions/src/search/synonyms"
+import { aliases, evalCollections } from "./search-eval/collections"
 import {
   TypesenseConnectionArgs,
   resolveClient,
@@ -106,6 +107,34 @@ yargs(hideBin(process.argv))
       }
       if (!synonymSets.some(s => s.name === SYNONYM_SET_NAME)) {
         console.log(`(missing) synonym set "${SYNONYM_SET_NAME}"`)
+      }
+    }
+  )
+  .command(
+    "preview-eval-corpus [alias]",
+    "point the local app alias(es) at their _eval collection, so `yarn dev:up`'s running app shows the frozen search-eval corpus instead of the dev-workflow backfill (run `yarn search-eval seed -e local` first). Kept separate from `search-eval seed` so eval runs never touch app aliases as a side effect.",
+    yargs =>
+      yargs.positional("alias", {
+        string: true,
+        choices: aliases,
+        describe: "restrict to one alias; defaults to every eval collection"
+      }),
+    async (args: Args & { alias?: string }) => {
+      const client = resolveClient(args)
+      const targets = args.alias
+        ? [evalCollections[args.alias]]
+        : Object.values(evalCollections)
+      for (const { alias, evalCollection } of targets) {
+        const exists = await client.collections(evalCollection).exists()
+        if (!exists) {
+          throw Error(
+            `"${evalCollection}" doesn't exist yet — run: yarn search-eval seed -e local --alias ${alias}`
+          )
+        }
+        await client
+          .aliases()
+          .upsert(alias, { collection_name: evalCollection })
+        console.log(`${alias} -> ${evalCollection}`)
       }
     }
   )

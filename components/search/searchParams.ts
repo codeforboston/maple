@@ -116,6 +116,13 @@ export const testimonySearchParams = {
     authorRole: 1
   }),
   synonym_sets: legislativeSynonyms,
+  /** TestimonyHit renders content through <Snippet>, which reads Typesense's
+   * windowed `highlight.snippet` regardless of this setting — only the
+   * full-field `highlight.value` that <Highlight> needs is gated by it. No
+   * field here is rendered with <Highlight>, so leaving the adapter's
+   * highlight_full_fields default (every query_by field) would send a second,
+   * full-length marked copy of `content` with every hit for nothing. */
+  highlight_full_fields: "",
   /** A matching artifact, like bills' numberVariants: excluding it keeps it out
    * of hits and out of the adapter's highlight output, which defaults to
    * query_by. */
