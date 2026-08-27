@@ -67,7 +67,7 @@ export type BackfillConfig = z.infer<typeof BackfillConfig>
 export const ChunkDoc = z.object({
   runId: z.string(),
   index: z.number().int().nonnegative(),
-  /** Exclusive `startAfter` value for `idField`; null starts from the top. */
+  /** Exclusive `startAfter` document path; null starts from the top. */
   cursor: z.string().nullable(),
   before: Totals
 })

@@ -1,6 +1,10 @@
 import { last } from "lodash"
-// Imported for the registerConfig side effect.
+// Imported for the registerConfig side effect — all three, so any alias the
+// caller passes resolves rather than only bills.
 import "../../functions/src/bills/search"
+import "../../functions/src/hearings/search"
+import "../../functions/src/testimony/search"
+import type { QueryDocumentSnapshot } from "../../functions/src/firebase"
 import { configForAlias } from "../../functions/src/search/config"
 import { corpusDir } from "../search-eval/corpus"
 import { ExportedDoc, writeCorpus } from "../search-eval/corpusFiles"
@@ -35,16 +39,18 @@ export const script: Script = async ({ args }) => {
   const docs: ExportedDoc[] = []
   let failures = 0
 
-  let token: string | undefined = ""
-  while (token !== undefined) {
-    const batch = await config.sourceCollection
-      .orderBy(config.idField)
-      .startAfter(token)
-      .limit(batchSize)
-      .get()
-    const batchDocs = batch.docs.filter(d => d.exists)
-    token = last(batchDocs)?.id
-    for (const d of batchDocs) {
+  // A snapshot cursor, not the trailing id value: a snapshot carries the
+  // document-name tiebreak, where a value cursor positions after ALL documents
+  // equal to it — and bill numbers repeat across courts in the bills
+  // collection group, so a value cursor would silently drop the rest of a
+  // boundary-straddling group (the same hazard SearchIndexer.listPage
+  // documents).
+  let cursor: QueryDocumentSnapshot | undefined
+  for (;;) {
+    let query = config.sourceCollection.orderBy(config.idField).limit(batchSize)
+    if (cursor) query = query.startAfter(cursor)
+    const batch = await query.get()
+    for (const d of batch.docs) {
       try {
         const data = d.data()
         if (config.filter && !config.filter(data)) continue
@@ -54,6 +60,8 @@ export const script: Script = async ({ args }) => {
         console.error(`Failed to convert ${d.ref.path}: ${error.message}`)
       }
     }
+    cursor = last(batch.docs)
+    if (batch.size < batchSize) break
   }
 
   const count = writeCorpus({

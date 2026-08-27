@@ -1,11 +1,12 @@
 import { Change } from "firebase-functions"
 import { isEqual, last } from "lodash"
 import Collection from "typesense/lib/Typesense/Collection"
-import { ImportError, ObjectNotFound } from "typesense/lib/Typesense/Errors"
+import { ObjectNotFound } from "typesense/lib/Typesense/Errors"
 import {
   db,
   DocumentData,
   DocumentSnapshot,
+  FieldPath,
   QueryDocumentSnapshot
 } from "../firebase"
 import { BackfillConfig, upgradePath } from "./backfillRun"
@@ -25,11 +26,24 @@ import { Timestamp } from "../firebase"
 export const IMPORT_BYTE_BUDGET = 6 * 1024 * 1024
 
 export type BackfillChunkResult = {
-  /** `startAfter` value for the next chunk, or null when the source is spent. */
+  /** Document path the next chunk resumes `startAfter`, or null when the
+   * source is spent. */
   cursor: string | null
   batches: number
   documents: number
   convertFailures: number
+}
+
+/** The id of a failed import's `document`, which the server echoes back as the
+ * original JSONL line (a string) — parsed defensively, for logs only. */
+const failedDocumentId = (document: unknown): string | undefined => {
+  try {
+    return typeof document === "string"
+      ? JSON.parse(document).id
+      : (document as { id?: string } | undefined)?.id
+  } catch {
+    return undefined
+  }
 }
 
 export class SearchIndexer {
@@ -202,7 +216,7 @@ export class SearchIndexer {
   private async importInSlices(docs: any[]) {
     if (!docs.length) return
     const collection = await this.getCollection()
-    let slice: any[] = []
+    let slice: string[] = []
     let bytes = 0
 
     const flush = async () => {
@@ -213,33 +227,43 @@ export class SearchIndexer {
     }
 
     for (const doc of docs) {
-      // Bytes, not string length: the cap is on the encoded body, and `.length`
-      // counts UTF-16 units, which undercounts anything non-ASCII. +1 for the
-      // newline the client joins the JSONL body with.
-      const size = Buffer.byteLength(JSON.stringify(doc)) + 1
+      // Serialized once, here: the same line is measured against the budget
+      // and shipped as the import body, rather than stringified a second time
+      // inside the client. Bytes, not string length: the cap is on the encoded
+      // body, and `.length` counts UTF-16 units, which undercounts anything
+      // non-ASCII. +1 for the JSONL newline.
+      const line = JSON.stringify(doc)
+      const size = Buffer.byteLength(line) + 1
       if (slice.length && bytes + size > IMPORT_BYTE_BUDGET) await flush()
-      slice.push(doc)
+      slice.push(line)
       bytes += size
     }
     await flush()
   }
 
-  private async importDocuments(collection: Collection, docs: any[]) {
-    try {
-      await collection.documents().import(docs, { action: "upsert" })
-    } catch (e) {
-      if (e instanceof ImportError) {
-        console.error(
-          e.importResults
-            .filter(r => !r.success)
-            .map(r => ({
-              code: r.code,
-              error: r.error,
-              id: r.id ?? r.document?.id
-            }))
-        )
-      }
-      throw e
+  /** Imports pre-serialized JSONL lines. The client's string form returns the
+   * raw per-line results WITHOUT throwing ImportError — only its array form
+   * does — so failures are detected here, and must be: a silently rejected
+   * batch would otherwise count as progress. */
+  private async importDocuments(collection: Collection, lines: string[]) {
+    const response = await collection
+      .documents()
+      .import(lines.join("\n"), { action: "upsert" })
+    const failures = String(response)
+      .split("\n")
+      .map(line => JSON.parse(line))
+      .filter(r => r.success === false)
+    if (failures.length) {
+      console.error(
+        failures.map(r => ({
+          code: r.code,
+          error: r.error,
+          id: failedDocumentId(r.document)
+        }))
+      )
+      throw Error(
+        `${failures.length} of ${lines.length} documents failed to import`
+      )
     }
   }
 
@@ -268,24 +292,29 @@ export class SearchIndexer {
   /** One ordered page of the source, with the cursor to resume after it — null
    * once the source is exhausted, which a short page already tells us.
    *
-   * The cursor is the last document's `idField` value, not its document id: the
-   * query orders by `idField`, so that is the value Firestore compares against,
-   * and it is the one that has to survive being written into a chunk document.
+   * Ordered by document name, with the last document's path as the cursor: the
+   * one ordering Firestore always serves without an index, and the one value
+   * unique per document, so it survives being written into a chunk document.
+   * Ordering by `idField` instead would make the persisted value-cursor skip
+   * documents — Firestore positions a value cursor after ALL documents equal
+   * to it, and bills' collectionGroup holds the same bill number once per
+   * general court, adjacent in that ordering, so page boundaries would
+   * silently drop the rest of a boundary-straddling group from the index.
    */
   private async listPage(startAfter: string | null): Promise<{
     docs: QueryDocumentSnapshot[]
     cursor: string | null
   }> {
     let query = this.config.sourceCollection
-      .orderBy(this.config.idField)
+      .orderBy(FieldPath.documentId())
       .limit(this.batchSize)
-    if (startAfter !== null) query = query.startAfter(startAfter)
+    if (startAfter !== null) query = query.startAfter(db.doc(startAfter))
 
     const { docs } = await query.get()
     const tail = docs.length < this.batchSize ? undefined : last(docs)
     return {
       docs,
-      cursor: tail ? tail.get(this.config.idField) ?? tail.id : null
+      cursor: tail ? tail.ref.path : null
     }
   }
 }

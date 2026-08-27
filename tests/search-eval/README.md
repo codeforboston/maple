@@ -309,11 +309,14 @@ same treatment.
 
 - **Demote procedural documents; do not drop them.** The follow-up to the
   bullet above. `billsRelevanceSort` opens with
-  `_eval(legislationType:!=[\`Order\`,\`Extension Order\`]):desc`, which sorts every
-procedural document below every other one. Measured against dropping them from
-the index outright: demotion 0.752 overall / member-committee 0.934, deletion
-0.749 / 0.920. Demotion wins on the number *and* keeps the documents
-reachable, so there is no case left for a `config.filter` here. Three queries
+  `` _eval(legislationType:!=`Order` && legislationType:!=`Extension Order`):desc ``
+  (two `!=` clauses, not the equivalent `!=[...]` list — the string doubles as
+  the InstantSearch index name, and qs parses square brackets in a URL key as
+  nesting, corrupting the routed search state), which sorts every
+  procedural document below every other one. Measured against dropping them from
+  the index outright: demotion 0.752 overall / member-committee 0.934, deletion
+  0.749 / 0.920. Demotion wins on the number _and_ keeps the documents
+  reachable, so there is no case left for a `config.filter` here. Three queries
   moved, all up — mc-015 +0.727, mc-013 +0.220, mc-014 +0.107 — and the other 79
   are byte-identical.
 

@@ -8,12 +8,11 @@ import { mkdirSync, writeFileSync } from "fs"
 import { join } from "path"
 import { gzipSync } from "zlib"
 import type { Schema } from "../../functions/src/search/config"
-import { corpusDir } from "./corpus"
+import { corpusDir, CorpusDoc } from "./corpus"
 
-export type ExportedDoc = { id: string; court: number } & Record<
-  string,
-  unknown
->
+/** One corpus document as an exporter writes it — the same shape the harness
+ * reads back, so writer and reader cannot drift. */
+export type ExportedDoc = CorpusDoc
 
 /** Fields rewritten before a document is written to the corpus. None of them
  * are in the collection's query_by (components/search/searchParams.ts), so

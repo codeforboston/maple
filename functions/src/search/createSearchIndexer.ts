@@ -64,6 +64,26 @@ async function startUpgrade(
   snap: QueryDocumentSnapshot
 ) {
   const { numBatches } = BackfillConfig.parse(snap.data())
+
+  // Deliveries are at-least-once: a replayed create event must not mint a
+  // second runId — overwriting the recorded one would orphan every chunk of
+  // the run already in flight, since each would fail loadRun's runId check.
+  // A replay only makes sure the recorded run has its first chunk, which also
+  // repairs a first delivery that crashed between the two writes below.
+  const existing = (await snap.ref.get()).data()
+  if (existing?.runId) {
+    console.log(
+      `Upgrade ${snap.ref.path} already started (run ${existing.runId}); ensuring chunk 0 exists`
+    )
+    await createChunk(config.alias, {
+      runId: String(existing.runId),
+      index: 0,
+      cursor: null,
+      before: NO_TOTALS
+    })
+    return
+  }
+
   const indexer = new SearchIndexer(config)
   await indexer.beginUpgrade()
   const runId = nanoid()
@@ -77,17 +97,38 @@ async function startUpgrade(
     chunks: 1,
     ...(numBatches === undefined ? {} : { numBatches })
   }
-  await snap.ref.set(
-    { ...run, startedAt: Timestamp.now(), updatedAt: Timestamp.now() },
-    { merge: true }
-  )
+  // update(), not a merge set: if the upgrade document was deleted while this
+  // ran (a rescheduled upgrade), resurrecting it here would collide with the
+  // replacement run's create.
+  await snap.ref.update({
+    ...run,
+    startedAt: Timestamp.now(),
+    updatedAt: Timestamp.now()
+  })
 
   const chunk: ChunkDoc = { runId, index: 0, cursor: null, before: NO_TOTALS }
-  await db.doc(chunkPath(config.alias, 0)).create(chunk)
+  await createChunk(config.alias, chunk)
   console.log(
     `Started backfill of ${run.collectionName} (run ${runId})`,
     numBatches === undefined ? "" : `limited to ${numBatches} batches`
   )
+}
+
+/** Creates a chunk document, treating "it already exists" as success: chunk
+ * events are delivered at least once, so a replayed invocation can find the
+ * successor it already created. Throwing instead would loop failurePolicy's
+ * retries into the age gate, which would mark a healthy run failed. */
+async function createChunk(alias: string, chunk: ChunkDoc) {
+  try {
+    await db.doc(chunkPath(alias, chunk.index)).create(chunk)
+  } catch (e: any) {
+    const alreadyExists =
+      e?.code === 6 || /ALREADY[_-]?EXISTS/i.test(String(e?.message ?? e))
+    if (!alreadyExists) throw e
+    console.log(
+      `Chunk ${chunk.index} of ${alias} already exists; leaving it to its own event`
+    )
+  }
 }
 
 async function advanceBackfill(
@@ -96,25 +137,38 @@ async function advanceBackfill(
   context: EventContext
 ) {
   const { alias } = config
-  const chunk = ChunkDoc.parse(snap.data())
   const runRef = snap.ref.parent.parent!
   const indexer = new SearchIndexer(config)
 
-  const run = await loadRun(runRef, chunk, indexer.targetCollectionName)
-  if (!run) return
-
-  // Only now that the chunk is known to belong to the current run is it safe to
-  // write to the run document — including to fail it.
+  // The age gate runs before anything that can throw — parsing included —
+  // or a persistently unparseable chunk or run document would retry for
+  // failurePolicy's full seven days with the run never marked failed.
+  // Returning without a throw is what ends the retry chain; the run is
+  // additionally failed when the chunk provably belongs to it, since only
+  // then is writing to the run document safe.
   const age = Date.now() - Date.parse(context.timestamp)
   if (age > MAX_EVENT_AGE_MS) {
-    const error = `Chunk ${chunk.index} still failing ${Math.round(
+    const error = `Chunk ${snap.id} of ${alias} still failing ${Math.round(
       age / 60_000
     )} minutes after it was created; giving up`
     console.error(error)
-    // Reported as success, which is what ends the retry chain.
-    await fail(runRef, error)
+    try {
+      const staleChunk = ChunkDoc.parse(snap.data())
+      const staleRun = await loadRun(
+        runRef,
+        staleChunk,
+        indexer.targetCollectionName
+      )
+      if (staleRun) await fail(runRef, error)
+    } catch (e) {
+      console.error(`Could not mark the run failed: ${e}`)
+    }
     return
   }
+
+  const chunk = ChunkDoc.parse(snap.data())
+  const run = await loadRun(runRef, chunk, indexer.targetCollectionName)
+  if (!run) return
 
   try {
     const result = await indexer.backfillChunk({
@@ -153,10 +207,11 @@ async function advanceBackfill(
     switch (next.type) {
       case "done":
         await indexer.finishUpgrade()
-        await runRef.set(
-          { ...progress, status: "done", finishedAt: Timestamp.now() },
-          { merge: true }
-        )
+        await runRef.update({
+          ...progress,
+          status: "done",
+          finishedAt: Timestamp.now()
+        })
         console.log(
           `Backfill of ${run.collectionName} complete after ${totals.batches} batches`
         )
@@ -165,20 +220,23 @@ async function advanceBackfill(
         await fail(runRef, next.error, progress)
         break
       case "next":
-        await runRef.set(
-          { ...progress, chunks: next.chunk.index + 1 },
-          { merge: true }
-        )
-        await db.doc(chunkPath(alias, next.chunk.index)).create(next.chunk)
+        await runRef.update({ ...progress, chunks: next.chunk.index + 1 })
+        await createChunk(alias, next.chunk)
         break
     }
   } catch (e: any) {
     // Recorded for operators, then rethrown so the retry policy sees a failure
-    // and runs this chunk again from the same cursor.
-    await runRef.set(
-      { lastError: String(e?.message ?? e), updatedAt: Timestamp.now() },
-      { merge: true }
-    )
+    // and runs this chunk again from the same cursor. update(), not a merge
+    // set: if the run document was deleted mid-chunk by a rescheduled upgrade,
+    // resurrecting a partial copy of it would break the replacement run.
+    try {
+      await runRef.update({
+        lastError: String(e?.message ?? e),
+        updatedAt: Timestamp.now()
+      })
+    } catch {
+      // Run document gone; the retry's loadRun will drop this chunk.
+    }
     throw e
   }
 }
@@ -223,13 +281,12 @@ async function fail(
   error: string,
   progress: object = {}
 ) {
-  await runRef.set(
-    {
-      ...progress,
-      status: "failed",
-      lastError: error,
-      finishedAt: Timestamp.now()
-    },
-    { merge: true }
-  )
+  // update(), not a merge set, so a deleted run document stays deleted — see
+  // the catch in advanceBackfill.
+  await runRef.update({
+    ...progress,
+    status: "failed",
+    lastError: error,
+    finishedAt: Timestamp.now()
+  })
 }

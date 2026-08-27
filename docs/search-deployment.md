@@ -20,20 +20,6 @@ Confirm with `yarn typesense-admin status --env dev`, which prints each alias,
 the collection it points at and its document count, and the synonym sets the
 server holds — `legislative` with its item count should be there.
 
-## Watching a reindex
-
-A reindex is a chain of chunks, not one long function call, so it is visible
-while it runs and it resumes where it stopped. `yarn firebase-admin run-script
-searchUpgradeStatus --env dev` prints each alias's run: status, target
-collection, documents and batches so far, and the cursor it is working from. A
-cursor that advances between two calls is a healthy run; one that does not, with
-a `last error`, is a stuck one. `typesense-admin status` shows the same run from
-the Typesense side — a growing `(orphan)` collection is the backfill filling its
-new collection before the alias moves.
-
-Bills takes the longest and spans several chunks. Nothing needs retriggering: a
-chunk that times out or fails is retried from its own cursor.
-
 ## Prod
 
 The same shape, but as separate PRs, and prod search is down between the two

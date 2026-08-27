@@ -1,7 +1,7 @@
 {
   "collection": "bills",
   "defaults": {
-    "sort_by": "_eval(legislationType:!=[`Order`,`Extension Order`]):desc,_text_match:desc,testimonyCount:desc",
+    "sort_by": "_eval(legislationType:!=`Order` && legislationType:!=`Extension Order`):desc,_text_match:desc,testimonyCount:desc",
     "courtFilter": true
   },
   "queries": [

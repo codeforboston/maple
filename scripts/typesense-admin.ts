@@ -49,7 +49,14 @@ yargs(hideBin(process.argv))
     async (args: Args) => {
       const client = resolveClient(args)
       // Independent of the alias walk below; starts now, printed at the end.
-      const synonymSetsPromise = client.synonymSets().retrieve()
+      // The catch is attached immediately: a fast rejection (a pre-cutover
+      // 0.24 gateway with no /synonym_sets route, an unreachable host) would
+      // otherwise crash the process as an unhandled rejection before any of
+      // the output below prints.
+      const synonymSetsPromise: Promise<unknown> = client
+        .synonymSets()
+        .retrieve()
+        .catch((e: unknown) => e)
 
       const { version } = await client.debug.retrieve()
       console.log(`server:  ${version}`)
@@ -57,14 +64,22 @@ yargs(hideBin(process.argv))
       const { aliases } = await client.aliases().retrieve()
       const live = new Set(aliases.map(a => a.collection_name))
 
+      // One listing serves both the alias rows and the orphan check, instead
+      // of a round trip per alias plus the listing.
+      const collections = await client.collections().retrieve()
+      const documentCounts = new Map(
+        collections.map(c => [c.name, c.num_documents])
+      )
+
       if (aliases.length === 0) {
         console.log("aliases: none — nothing is being served")
       }
       for (const { name, collection_name } of aliases) {
-        const { num_documents } = await client
-          .collections(collection_name)
-          .retrieve()
-        console.log(`${name} -> ${collection_name}  ${num_documents} docs`)
+        console.log(
+          `${name} -> ${collection_name}  ${
+            documentCounts.get(collection_name) ?? "?"
+          } docs`
+        )
       }
 
       /** A collection with no alias pointing at it is a backfill that never
@@ -74,9 +89,7 @@ yargs(hideBin(process.argv))
        * a run in progress; one that is not is wreckage. `yarn firebase-admin
        * run-script searchUpgradeStatus` says which, and why.
        */
-      const orphans = (await client.collections().retrieve()).filter(
-        c => !live.has(c.name)
-      )
+      const orphans = collections.filter(c => !live.has(c.name))
       for (const { name, num_documents } of orphans) {
         console.log(`(orphan) ${name}  ${num_documents} docs`)
       }
@@ -84,6 +97,10 @@ yargs(hideBin(process.argv))
       /** Server state the searches reference by name; a missing set means
        * every `synonym_sets` search runs with synonyms silently off. */
       const synonymSets = await synonymSetsPromise
+      if (!Array.isArray(synonymSets)) {
+        console.log(`synonym sets unavailable: ${synonymSets}`)
+        return
+      }
       for (const { name, items } of synonymSets) {
         console.log(`synonyms ${name}  ${items.length} items`)
       }

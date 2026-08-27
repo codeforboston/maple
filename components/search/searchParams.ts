@@ -5,7 +5,7 @@
 import { SYNONYM_SET_NAME } from "functions/src/search/synonyms"
 import type { TypesenseInstantsearchAdapterOptions } from "typesense-instantsearch-adapter"
 
-type SearchParameters = NonNullable<
+export type SearchParameters = NonNullable<
   TypesenseInstantsearchAdapterOptions["additionalSearchParameters"]
 >
 
@@ -97,9 +97,15 @@ export const billsSearchParams = {
  * Education" puts bills first and the real orders at rank 26 of 32. The
  * legislationType refinement (useBillRefinements.tsx) is how a searcher who
  * wants them gets them back, which is why the facet ships with this sort.
+ *
+ * Written as two `!=` clauses rather than the equivalent `!=[...]` list form:
+ * this string doubles as the InstantSearch index name, which travels through
+ * the URL as a qs key, and qs parses percent-encoded square brackets in a key
+ * as nesting — mangling the routed uiState so a reload or shared link loses
+ * the query, refinements and sort. No other character here is special to qs.
  */
 export const billsRelevanceSort =
-  "_eval(legislationType:!=[`Order`,`Extension Order`]):desc,_text_match:desc,testimonyCount:desc"
+  "_eval(legislationType:!=`Order` && legislationType:!=`Extension Order`):desc,_text_match:desc,testimonyCount:desc"
 
 export const testimonySearchParams = {
   ...weighted({

@@ -2,7 +2,8 @@ import { CollectionConfig } from "./config"
 import { IMPORT_BYTE_BUDGET, SearchIndexer } from "./SearchIndexer"
 
 jest.mock("../firebase", () => ({
-  db: { doc: jest.fn(), recursiveDelete: jest.fn() },
+  db: { doc: (path: string) => ({ path }), recursiveDelete: jest.fn() },
+  FieldPath: { documentId: () => "__name__" },
   Timestamp: { now: () => ({}) }
 }))
 
@@ -12,29 +13,39 @@ jest.mock("./client", () => ({
     collections: () => ({
       exists: async () => true,
       documents: () => ({
-        import: async (docs: any[]) => {
+        // The indexer sends a pre-serialized JSONL body and reads the raw
+        // per-line results back, like the real client's string form.
+        import: async (body: string) => {
+          const docs = body.split("\n").map(line => JSON.parse(line))
           imports.push(docs)
+          return docs.map(() => JSON.stringify({ success: true })).join("\n")
         }
       })
     })
   })
 }))
 
-/** A source that behaves like an ordered, cursor-paged Firestore query. */
-function fakeSource(docs: { id: string; body: string }[]) {
+/** A source that behaves like an ordered, cursor-paged Firestore query, keyed
+ * by document path the way listPage's documentId() ordering is. `path`
+ * defaults to `id`; give docs distinct paths to model duplicated idField
+ * values (the same bill number in several courts).
+ */
+function fakeSource(docs: { id: string; body: string; path?: string }[]) {
+  const pathOf = (d: { id: string; path?: string }) => d.path ?? d.id
   const build = (startAfter: string | null, pageSize: number): any => ({
     orderBy: () => build(startAfter, pageSize),
     limit: (n: number) => build(startAfter, n),
-    startAfter: (cursor: string) => build(cursor, pageSize),
+    startAfter: (cursor: { path: string }) => build(cursor.path, pageSize),
     get: async () => {
       const rest =
-        startAfter === null ? docs : docs.filter(d => d.id > startAfter)
+        startAfter === null ? docs : docs.filter(d => pathOf(d) > startAfter)
       const page = rest.slice(0, pageSize)
       return {
         size: page.length,
         docs: page.map(d => ({
           exists: true,
-          id: d.id,
+          id: pathOf(d),
+          ref: { path: pathOf(d) },
           data: () => d,
           get: (field: string) => (d as any)[field]
         }))
@@ -129,6 +140,29 @@ describe("backfillChunk", () => {
     expect(result.cursor).toBeNull()
     expect(imports.flat().map(d => d.id)).not.toContain(pad(249))
     expect(imports.flat()[0].id).toBe(pad(250))
+  })
+
+  it("resumes across a boundary that splits documents sharing an idField value", async () => {
+    // Three source docs per idField value — a bill number appearing in three
+    // general courts — with distinct paths. 250 is not a multiple of 3, so the
+    // page boundary lands inside a group; a value cursor on idField would skip
+    // the rest of that group on resume, where the path cursor does not.
+    const grouped = Array.from({ length: 600 }, (_, n) => ({
+      id: `H${pad(Math.floor(n / 3))}`,
+      body: "x",
+      path: pad(n)
+    }))
+    const first = await makeIndexer(grouped).backfillChunk({
+      startAfter: null,
+      maxBatches: 1,
+      budgetMs: 60_000
+    })
+    expect(first.cursor).toBe(pad(249))
+    const resumed = await makeIndexer(grouped).backfillChunk({
+      startAfter: first.cursor!,
+      budgetMs: 60_000
+    })
+    expect(first.documents + resumed.documents).toBe(600)
   })
 
   it("counts documents that fail to convert without aborting the chunk", async () => {

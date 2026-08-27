@@ -101,15 +101,33 @@ export async function seedCollection(
   }
   await client.collections().create({ name: collection, ...schema })
 
+  // Sliced by serialized bytes, not a fixed count: bills carry full `body`
+  // text, and a fixed-count slice can overflow the 10 MB API-gateway payload
+  // cap when seeding a remote collection. Keep in sync with
+  // IMPORT_BYTE_BUDGET in functions/src/search/SearchIndexer.ts — not
+  // imported, because that module would pull firebase-admin into every seed
+  // run. Raw JSONL string form works identically on typesense client 1.x and
+  // 3.x.
+  const importByteBudget = 6 * 1024 * 1024
   const lines = jsonl.split("\n").filter(Boolean)
-  const chunkSize = 1000
-  for (let i = 0; i < lines.length; i += chunkSize) {
-    // Raw JSONL string form works identically on typesense client 1.x and 3.x
+  let slice: string[] = []
+  let bytes = 0
+  const flush = async () => {
+    if (!slice.length) return
     await client
       .collections(collection)
       .documents()
-      .import(lines.slice(i, i + chunkSize).join("\n"), { action: "create" })
+      .import(slice.join("\n"), { action: "create" })
+    slice = []
+    bytes = 0
   }
+  for (const line of lines) {
+    const size = Buffer.byteLength(line) + 1
+    if (slice.length && bytes + size > importByteBudget) await flush()
+    slice.push(line)
+    bytes += size
+  }
+  await flush()
 
   const created = await client.collections(collection).retrieve()
   if (created.num_documents !== docs.length) {

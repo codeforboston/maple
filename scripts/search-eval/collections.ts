@@ -2,7 +2,7 @@
  * the app (components/search/searchParams.ts) so ranking changes there flow
  * into the eval without edits here.
  */
-import type { TypesenseInstantsearchAdapterOptions } from "typesense-instantsearch-adapter"
+import type { SearchParameters } from "../../components/search/searchParams"
 import {
   billsRelevanceSort,
   billsSearchParams,
@@ -11,10 +11,6 @@ import {
   testimonyRelevanceSort,
   testimonySearchParams
 } from "../../components/search/searchParams"
-
-type SearchParameters = NonNullable<
-  TypesenseInstantsearchAdapterOptions["additionalSearchParameters"]
->
 
 export type EvalCollection = {
   /** CollectionConfig.alias — also the corpus directory and golden set name. */
