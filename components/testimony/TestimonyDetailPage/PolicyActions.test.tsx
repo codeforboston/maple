@@ -20,10 +20,16 @@ jest.mock("components/featureFlags", () => ({
   })
 }))
 
+let uid: string | undefined = "user-1"
 jest.mock("components/auth", () => ({
   useAuth: () => ({
-    user: { uid: "user-1" }
+    user: uid ? { uid } : null
   })
+}))
+
+const push = jest.fn()
+jest.mock("next/router", () => ({
+  useRouter: () => ({ push, asPath: "/testimony/abc/1" })
 }))
 
 jest.mock("components/db/api", () => ({
@@ -78,6 +84,8 @@ jest.mock("components/publish", () => ({
 describe("PolicyActions", () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    uid = "user-1"
+    push.mockClear()
     mockFollowsTopic.mockResolvedValue(false)
     mockFollowBill.mockResolvedValue(undefined)
     mockUnfollowBill.mockResolvedValue(undefined)
@@ -122,6 +130,35 @@ describe("PolicyActions", () => {
         id: "25-14"
       })
     })
+    expect(mockFollowBill).not.toHaveBeenCalled()
+  })
+
+  it("sends a logged-out visitor to login instead of following", async () => {
+    uid = undefined
+
+    render(
+      <FollowContext.Provider
+        value={{ followStatus: {}, setFollowStatus: jest.fn() }}
+      >
+        <PolicyActions
+          isReporting={false}
+          setReporting={jest.fn()}
+          isUser={false}
+        />
+      </FollowContext.Provider>
+    )
+
+    fireEvent.click(
+      screen.getByText("Follow Ballot Question 25-14: Should we do the thing?")
+    )
+
+    await waitFor(() => {
+      expect(push).toHaveBeenCalledWith(
+        "/login?redirect=%2Ftestimony%2Fabc%2F1"
+      )
+    })
+
+    expect(mockFollowBallotQuestion).not.toHaveBeenCalled()
     expect(mockFollowBill).not.toHaveBeenCalled()
   })
 })
