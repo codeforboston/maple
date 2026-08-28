@@ -1,4 +1,4 @@
-import { Change } from "firebase-functions"
+import { Change, logger } from "firebase-functions"
 import { isEqual, last } from "lodash"
 import hash from "object-hash"
 import Collection from "typesense/lib/Typesense/Collection"
@@ -43,7 +43,7 @@ export class SearchIndexer {
     try {
       return this.config.filter(data)
     } catch (error) {
-      console.error("Filter function threw", error)
+      logger.error("Filter function threw", error)
       return false
     }
   }
@@ -141,7 +141,7 @@ export class SearchIndexer {
           const doc = convert(data)
           acc.push(doc)
         } catch (error: any) {
-          console.error(`Failed to convert document: ${error.message}`)
+          logger.error(`Failed to convert document: ${error.message}`)
         }
         return acc
       }, [] as any[])
@@ -151,7 +151,7 @@ export class SearchIndexer {
       } catch (e) {
         if (e instanceof ImportError) {
           const results = e.importResults as unknown as ImportResponse[]
-          console.error(
+          logger.error(
             results
               .map(
                 r =>

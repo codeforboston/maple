@@ -6,7 +6,7 @@ export const populateBallotQuestionNotificationEventsHandler = async (
   context: functions.EventContext
 ) => {
   if (!snapshot.after.exists) {
-    console.error("New snapshot does not exist")
+    functions.logger.error("New snapshot does not exist")
     return
   }
 

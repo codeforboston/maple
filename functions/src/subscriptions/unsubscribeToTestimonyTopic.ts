@@ -2,6 +2,7 @@ import { Database } from "../types"
 import { UserRecord } from "firebase-admin/auth"
 import { TopicSubscription } from "./types"
 import { removeTopicSubscription } from "./removeTopicSubscription"
+import { logger } from "firebase-functions"
 
 export const unsubscribeToTestimonyTopic = async ({
   user,
@@ -40,6 +41,6 @@ export const unsubscribeToTestimonyTopic = async ({
     console.log("Debug: Subscription removed successfully")
   } catch (error) {
     // Debug: Log any errors
-    console.error("Debug: Error in unsubscribeToOrgTopic", error)
+    logger.error("Debug: Error in unsubscribeToTestimonyTopic", error)
   }
 }

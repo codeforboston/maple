@@ -1,6 +1,7 @@
 import { Database } from "../types"
 import { UserRecord } from "firebase-admin/auth"
 import { TopicSubscription } from "./types"
+import { logger } from "firebase-functions"
 
 export const removeTopicSubscription = async ({
   user,
@@ -21,6 +22,6 @@ export const removeTopicSubscription = async ({
       .doc(topicName)
       .delete()
   } catch (error: any) {
-    console.error("Error removing topic subscription: ", error)
+    logger.error("Error removing topic subscription: ", error)
   }
 }
