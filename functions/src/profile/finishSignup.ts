@@ -5,7 +5,12 @@ import { checkRequestZod, checkAuth } from "../common"
 import { setRole } from "../auth"
 
 const CreateProfileRequest = z.object({
-  requestedRole: z.enum(["user", "organization", "pendingUpgrade"])
+  requestedRole: z.enum([
+    "user",
+    "organization",
+    "pendingUpgrade",
+    "pendingLegislator"
+  ])
 })
 
 export const finishSignup = functions.https.onCall(async (data, context) => {
@@ -18,6 +23,7 @@ export const finishSignup = functions.https.onCall(async (data, context) => {
     orgCategories,
     notificationFrequency,
     email,
+    memberCode,
     public: isPublic
   } = data
 
@@ -31,6 +37,15 @@ export const finishSignup = functions.https.onCall(async (data, context) => {
       uid,
       newProfile: { fullName, email, orgCategories }
     })
+  } else if (requestedRole === "pendingLegislator") {
+    await setRole({
+      role: "pendingLegislator",
+      auth,
+      db,
+      uid,
+      newProfile: { fullName, email, memberCode }
+    })
+    await db.doc(`/claimedMemberCodes/${memberCode}`).set({ uid })
   } else {
     await setRole({
       role: "user",

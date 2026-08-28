@@ -1,7 +1,9 @@
+import { collection, getDocs } from "firebase/firestore"
 import { Timestamp } from "firebase/firestore"
 import { useMemo } from "react"
 import { useAsync } from "react-async-hook"
 import { currentGeneralCourt } from "functions/src/shared"
+import { firestore } from "../firebase"
 import { loadDoc } from "./common"
 export type CommitteeReference = {
   CommitteeCode: string
@@ -57,6 +59,11 @@ export function useMemberSearch() {
   return { index, loading }
 }
 
+export function useClaimedMemberCodes() {
+  const { result: claimedCodes, loading } = useAsync(getClaimedMemberCodes, [])
+  return { claimedCodes, loading }
+}
+
 async function getMember(
   court: number,
   memberCode?: string
@@ -70,4 +77,9 @@ async function getMemberSearchIndex(): Promise<MemberSearchIndex | undefined> {
   return loadDoc(
     `/generalCourts/${currentGeneralCourt}/indexes/memberSearch`
   ) as any
+}
+
+async function getClaimedMemberCodes(): Promise<Set<string>> {
+  const snap = await getDocs(collection(firestore, "claimedMemberCodes"))
+  return new Set(snap.docs.map(d => d.id))
 }

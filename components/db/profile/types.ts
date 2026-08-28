@@ -46,4 +46,6 @@ export type Profile = {
   phoneVerified?: boolean
   memberId?: string
   website?: string
+  memberCode?: string
+  legislatorBiography?: string
 }

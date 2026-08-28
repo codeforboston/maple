@@ -68,6 +68,11 @@ export type CreateUserWithEmailAndPasswordData = {
   orgCategory?: OrgCategory
 }
 
+export type CreateLegislatorWithEmailAndPasswordData =
+  CreateUserWithEmailAndPasswordData & {
+    memberCode: string
+  }
+
 export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
   return useFirebaseFunction(
     async ({
@@ -100,6 +105,31 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
       }
       await sendEmailVerification(credentials.user)
 
+      return credentials
+    }
+  )
+}
+
+export function useCreateLegislatorWithEmailAndPassword() {
+  return useFirebaseFunction(
+    async ({
+      email,
+      fullName,
+      password,
+      memberCode
+    }: CreateLegislatorWithEmailAndPasswordData) => {
+      const credentials = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      )
+      await finishSignup({
+        requestedRole: "pendingLegislator",
+        fullName,
+        memberCode,
+        email: credentials.user.email
+      })
+      await sendEmailVerification(credentials.user)
       return credentials
     }
   )

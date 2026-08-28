@@ -32,6 +32,10 @@
       "title": "Pending Upgrade",
       "label": "Your Organization Registration is Pending"
     },
+    "pendingLegislator": {
+      "title": "Pending Verification",
+      "label": "Your Legislator Registration is Pending Approval"
+    },
     "signedOut": {
       "title": "Sign In to Add Testimony"
     },

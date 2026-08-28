@@ -33,7 +33,9 @@ const ROLES = [
   "user", // Regular old
   "admin", // Can do anything, set in the db manually for now
   "pendingUpgrade", // Sign up as org, admin has to manually upgrade
-  "organization" // An upgraded organization approved by an admin
+  "organization", // An upgraded organization approved by an admin
+  "pendingLegislator", // Sign up as legislator, admin has to manually approve
+  "legislator" // An approved legislator account
 ] as const
 
 const BodySchema = z.object({
@@ -67,6 +69,15 @@ async function patch(req: NextApiRequest, res: NextApiResponse) {
   // check if the user exists
   try {
     const user = await auth.getUser(uid)
+
+    // When rejecting a pending legislator request, release their claimed member code
+    if (role === "user") {
+      const profileSnap = await db.doc(`/profiles/${uid}`).get()
+      const memberCode = profileSnap.data()?.memberCode
+      if (memberCode) {
+        await db.doc(`/claimedMemberCodes/${memberCode}`).delete()
+      }
+    }
 
     await setRole({
       uid: user.uid,
