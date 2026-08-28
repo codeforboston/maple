@@ -26,9 +26,12 @@ const VECTOR_FIELD = "vector_embedding"
 
 /**
  * Runs a Firestore vector similarity search (COSINE) against the given
- * collection/collectionGroup query.
+ * collection/collectionGroup query. Uses the object-form findNearest API
+ * with distanceResultField so each returned doc carries its COSINE distance
+ * as a virtual field — matching the pattern used by the MCP server's
+ * search_policies in mcp-server/tools.ts.
  *
- * firebase-admin's bundled Firestore client (v7) supports findNearest(), but
+ * firebase-admin's bundled Firestore client (v7) supports this API, but
  * this project's direct @google-cloud/firestore dependency is pinned at v5
  * whose typings predate it. Cast to bridge the gap (same pattern used in
  * search/createVectorIndexer.ts for FieldValue.vector()).
@@ -39,17 +42,22 @@ export async function findNearest(
   limit: number
 ): Promise<QueryDocumentSnapshot<DocumentData>[]> {
   const vectorQuery = query as unknown as {
-    findNearest(
-      field: string,
-      queryVector: number[],
-      options: { limit: number; distanceMeasure: "COSINE" }
-    ): { get(): Promise<{ docs: QueryDocumentSnapshot<DocumentData>[] }> }
+    findNearest(options: {
+      vectorField: string
+      queryVector: number[]
+      distanceMeasure: "COSINE"
+      distanceResultField: string
+      limit: number
+    }): { get(): Promise<{ docs: QueryDocumentSnapshot<DocumentData>[] }> }
   }
 
   const snapshot = await vectorQuery
-    .findNearest(VECTOR_FIELD, embedding, {
-      limit,
-      distanceMeasure: "COSINE"
+    .findNearest({
+      vectorField: VECTOR_FIELD,
+      queryVector: embedding,
+      distanceMeasure: "COSINE",
+      distanceResultField: "distance",
+      limit
     })
     .get()
 
@@ -213,9 +221,11 @@ export async function searchBallotQuestions(
 
 /**
  * Unified semantic search across bills AND ballot questions, sorted by
- * relevance. Runs both queries in parallel (matching the MCP server's
- * search_policies pattern in mcp-server/tools.ts) and merges results by
- * COSINE distance before formatting.
+ * relevance. Follows the same pattern as search_policies in
+ * mcp-server/tools.ts:
+ *   1. Run both queries in parallel with distanceResultField="distance"
+ *   2. Compute relevanceScore = 1 - distance on each doc
+ *   3. Merge and sort by relevanceScore descending — no manual interleave needed
  *
  * Returns a formatted text block ready for LLM consumption, or a
  * "no results" string.
@@ -237,40 +247,32 @@ export async function searchPolicies(
     return "No matching bills or ballot questions found."
   }
 
-  // Attach a numeric distance to each doc for sorting. findNearest returns
-  // docs ordered by distance ascending; assign a rank-based proxy so that
-  // interleaving preserves relative ordering within each result set.
-  type RankedDoc = {
-    rank: number
-    formatted: string
+  // Compute relevanceScore = 1 - distance for each doc, matching the MCP
+  // server's shapeBill/shapeBallotQuestion pattern in mcp-server/tools.ts.
+  // distanceResultField="distance" is set in findNearest above so doc.get()
+  // returns the COSINE distance as a virtual field on each snapshot.
+  function relevanceScore(doc: QueryDocumentSnapshot<DocumentData>): number {
+    const distance = (doc as any).get("distance")
+    return distance != null ? Math.round((1 - distance) * 1000) / 1000 : 0
   }
 
-  const rankedBills: RankedDoc[] = billDocs.map((doc, i) => ({
-    rank: i,
+  type ScoredEntry = { score: number; formatted: string }
+
+  const scoredBills: ScoredEntry[] = billDocs.map(doc => ({
+    score: relevanceScore(doc),
     formatted: `[Bill]\n${formatBillDoc(doc)}`
   }))
 
-  const rankedBqs: RankedDoc[] = bqDocs.map((doc, i) => ({
-    rank: i,
+  const scoredBqs: ScoredEntry[] = bqDocs.map(doc => ({
+    score: relevanceScore(doc),
     formatted: `[Ballot Question]\n${formatBallotQuestionDoc(doc)}`
   }))
 
-  // Merge by interleaving: pick the lower-rank item from each list at each
-  // step, which preserves the relative relevance ordering from Firestore.
-  const merged: string[] = []
-  let bi = 0
-  let qi = 0
-  while (bi < rankedBills.length || qi < rankedBqs.length) {
-    const bill = rankedBills[bi]
-    const bq = rankedBqs[qi]
-    if (!bq || (bill && bill.rank <= bq.rank)) {
-      merged.push(bill.formatted)
-      bi++
-    } else {
-      merged.push(bq.formatted)
-      qi++
-    }
-  }
-
-  return merged.slice(0, topK * 2).join("\n\n")
+  // Merge all results and sort by relevance score descending — same approach
+  // as the MCP server's search_policies merge step.
+  return [...scoredBills, ...scoredBqs]
+    .sort((a, b) => b.score - a.score)
+    .slice(0, topK * 2)
+    .map(entry => entry.formatted)
+    .join("\n\n")
 }
