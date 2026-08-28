@@ -6,7 +6,30 @@ import { createScraper } from "../scraper"
 import { getDocumentWithPdfTextFallback } from "./documentTextFallback"
 import { Bill, MISSING_TIMESTAMP } from "./types"
 
+export const MAX_FIRESTORE_DOC_BYTES = 1_048_576
+
 export { getDocumentWithPdfTextFallback } from "./documentTextFallback"
+
+/**
+ * Drops DocumentText from the bill content when the serialized resource would
+ * exceed Firestore's 1 MiB document size limit. This prevents write failures
+ * for bills with very long extracted PDF text (e.g. H5500 in court 194).
+ */
+export function dropDocumentTextIfTooLarge(
+  resource: Partial<Bill>,
+  court: number,
+  id: string
+): void {
+  const byteLength = Buffer.byteLength(JSON.stringify(resource), "utf8")
+  if (byteLength > MAX_FIRESTORE_DOC_BYTES) {
+    logger.warn(
+      `Bill ${court}/${id} exceeds Firestore size limit (${byteLength} bytes), dropping DocumentText`
+    )
+    if (resource.content) {
+      delete resource.content.DocumentText
+    }
+  }
+}
 
 /**
  * There are around 8000 documents. With 8 batches per day, 20 parallel
@@ -53,6 +76,7 @@ export const { fetchBatch: fetchBillBatch, startBatches: startBillBatches } =
         nextHearingAt: current?.nextHearingAt ?? MISSING_TIMESTAMP
       }
 
+      dropDocumentTextIfTooLarge(resource, court, id)
       return resource
     },
     listIds: (court: number) =>
