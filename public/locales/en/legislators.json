@@ -1,7 +1,6 @@
 {
   "addBio": "Add your biography",
   "billsSponsored": "Bills Sponsored",
-  "billsByTopic": "Bills By Topic",
   "biography": "Biography",
   "canSubmit": "can submit testimony on any bill or ballot question, just like any constituent. Their stance and reasoning are shown exactly as submitted — MAPLE does not edit or editorialize.",
   "contact": "Contact",
@@ -50,6 +49,26 @@
     "democratic": "Democratic Party",
     "party": "Party",
     "republican": "Republican Party"
+  },
+  "profiles": {
+    "bills": "bills",
+    "billsByTopic": "Bills By Topic",
+    "committeePositions": {
+      "committee": "Committee",
+      "header": "Committee Positions",
+      "role": "Role",
+      "since": "Since"
+    },
+    "coSponsor": "co-sponsor",
+    "primarySponsor": "primary sponsor",
+    "recentSponsoredBills": {
+      "bill": "Bill",
+      "header": "Recent Sponsored Bills",
+      "status": "Status",
+      "title": "Title",
+      "topics": "Topics",
+      "viewBills": "View all {{number}} sponsored bills on MAPLE"
+    }
   },
   "stateRepresentative": "State Representative",
   "stateSenator": "State Senator",
