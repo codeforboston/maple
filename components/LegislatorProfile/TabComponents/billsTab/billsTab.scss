@@ -1,0 +1,254 @@
+/* ==========================================================================
+   Targeted Stylesheet: Legislation & Committee UI Components
+   ========================================================================== */
+
+/* --- Base & Typography --- */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #f8fafc;
+  color: #1e293b;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- Section Headers (Small Uppercase Headers) --- */
+.section-header {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+  margin: 1.5rem 0 0.75rem 0;
+}
+
+/* --- Navigation Pill Filter Buttons --- */
+.filter-group {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.filter-btn {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  color: #475569;
+  cursor: pointer;
+}
+
+.filter-btn.active {
+  background-color: #1c39bb;
+  color: #ffffff;
+  border-color: #1c39bb;
+}
+
+/* --- Main Card Container --- */
+.card-container {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.card-header {
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.card-header .title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.card-header .subtitle {
+  font-size: 0.8125rem;
+  color: #64748b;
+}
+
+/* --- Topic Breakdown Rows & Progress Bars --- */
+.topic-row {
+  padding: 1.25rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.topic-row:last-child {
+  border-bottom: none;
+}
+
+.topic-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.topic-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.15rem;
+}
+
+.topic-link {
+  font-size: 0.8125rem;
+  color: #1c39bb;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.topic-link:hover {
+  text-decoration: underline;
+}
+
+.topic-progress-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 60%;
+}
+
+.progress-bar-bg {
+  flex-grow: 1;
+  height: 8px;
+  background-color: #f1f5f9;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background-color: #1c39bb;
+  border-radius: 9999px;
+}
+
+.count-label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #1c39bb;
+  white-space: nowrap;
+}
+
+/* --- Topic Pill Tags --- */
+.tag-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.topic-tag {
+  display: inline-block;
+  background-color: #1c39bb;
+  color: #ffffff;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  padding: 0.3rem 0.8rem;
+  border-radius: 9999px;
+  text-decoration: none;
+}
+
+.topic-tag:hover {
+  background-color: #152c97;
+}
+
+/* --- Tables (Bills & Committee Positions) --- */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.data-table th {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.data-table td {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.9rem;
+  color: #334155;
+  vertical-align: middle;
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.bill-id {
+  font-weight: 700;
+  color: #1c39bb;
+}
+
+.title-cell {
+  color: #475569;
+  max-width: 280px;
+}
+
+/* --- Status & Role Badges --- */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.785rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  text-align: center;
+}
+
+/* Status Colors */
+.badge-in-committee {
+  background-color: #e2e8f0;
+  color: #1e293b;
+}
+
+.badge-passed {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.badge-tabled {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+/* Role Colors */
+.badge-chair {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.badge-member {
+  background-color: #e2e8f0;
+  color: #1e293b;
+}
+
+/* --- Footer Link Row --- */
+.card-footer-link {
+  display: block;
+  text-align: center;
+  padding: 0.9rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1c39bb;
+  border-top: 1px solid #f1f5f9;
+  text-decoration: none;
+}
+
+.card-footer-link:hover {
+  background-color: #f8fafc;
+  text-decoration: underline;
+}
