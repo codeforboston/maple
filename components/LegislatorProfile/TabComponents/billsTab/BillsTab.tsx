@@ -2,10 +2,53 @@ import { TabBlock } from "../../LegislatorComponents"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 
+const BillFilterButtons = () => {
+  ;<div></div>
+}
+
 const BillsByTopic = () => {
   const { t } = useTranslation("legislators")
 
-  return <div>{t("billsByTopic")}</div>
+  return (
+    <StyledBillsByTopic>
+      <StyledBillsByTopicHeader>
+        <StyledBillsByTopicHeaderTitle>
+          {t("profiles.billsByTopic")}
+        </StyledBillsByTopicHeaderTitle>
+        <StyledBillsByTopicHeaderSubtitle>
+          23 {t("profiles.bills")} • {t("profiles.primarySponsor")}
+        </StyledBillsByTopicHeaderSubtitle>
+      </StyledBillsByTopicHeader>
+    </StyledBillsByTopic>
+  )
+}
+
+const RecentBills = () => {
+  const { t } = useTranslation("legislators")
+
+  return (
+    <div>
+      <StyledSubSectionHeaders>
+        {t("profiles.recentSponsoredBills.header")}
+      </StyledSubSectionHeaders>
+      <TabBlock>Body</TabBlock>
+    </div>
+  )
+}
+
+const CommitteePositions = () => {
+  const { t } = useTranslation("legislators")
+
+  return (
+    <div>
+      <StyledSubSectionHeaders>
+        {t("profiles.committeePositions.header")}
+      </StyledSubSectionHeaders>
+      <TabBlock>
+        <StyledSubsectionTable></StyledSubsectionTable>
+      </TabBlock>
+    </div>
+  )
 }
 
 export function BillsTab() {
@@ -30,11 +73,15 @@ export function BillsTab() {
   return (
     <StyledBillsTab>
       <BillsByTopic />
+      <RecentBills />
+      <CommitteePositions />
     </StyledBillsTab>
   )
 }
 
-const StyledBillsTab = styled(TabBlock)`
+const StyledBillsTab = styled.div``
+
+const StyledBillsByTopic = styled(TabBlock)`
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
@@ -49,6 +96,50 @@ const StyledBillsByTopicHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #f1f5f9;
+`
+
+const StyledBillsByTopicHeaderTitle = styled.div`
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+`
+
+const StyledBillsByTopicHeaderSubtitle = styled.div`
+  font-size: 0.8125rem;
+  color: #64748b;
+`
+
+const StyledSubSectionHeaders = styled.div`
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+  margin: 1.5rem 0 0.75rem 0;
+`
+
+const StyledSubsectionTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+`
+
+const StyledSubsectionTableColumnHeader = styled.th`
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+`
+
+const StyledSubsectionTableColumnData = styled.td`
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.9rem;
+  color: #334155;
+  vertical-align: middle;
 `
 
 /* 
