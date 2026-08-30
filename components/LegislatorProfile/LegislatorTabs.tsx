@@ -7,7 +7,7 @@ import styled from "styled-components"
 
 import { Container, Nav } from "../bootstrap"
 
-import { BillsTab } from "./TabComponents/BillsTab"
+import { BillsTab } from "./TabComponents/billsTab/BillsTab"
 import { DistrictTab } from "./TabComponents/DistrictTab"
 import { ElectionsTab } from "./TabComponents/ElectionsTab"
 import { FinanceTab } from "./TabComponents/FinanceTab"
