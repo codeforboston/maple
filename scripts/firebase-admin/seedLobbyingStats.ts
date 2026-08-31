@@ -151,10 +151,26 @@ export const script: Script = async ({ db }) => {
     .set(clientFilingCounts)
 
   for (const [court, billsMap] of Object.entries(billSummaries)) {
-    await db
+    // One small doc per bill, not one JSON blob per court: a court's blob
+    // eventually exceeds Firestore's 1MB field-size limit as its session
+    // accumulates filings (hit at 1,057KB for court 194 with ~5,600 bills).
+    // Per-bill docs have no such ceiling.
+    const parentRef = db
       .collection(STATS_COLLECTION)
       .doc(`billSummaries_${court}`)
-      .set({ data: JSON.stringify(billsMap) })
+    const entries = Object.entries(billsMap)
+    await parentRef.set({
+      billCount: entries.length,
+      updatedAt: new Date().toISOString()
+    })
+    const billsColl = parentRef.collection("bills")
+    for (let i = 0; i < entries.length; i += 400) {
+      const batch = db.batch()
+      for (const [billId, counts] of entries.slice(i, i + 400)) {
+        batch.set(billsColl.doc(billId), counts)
+      }
+      await batch.commit()
+    }
   }
 
   console.log(`Written to ${STATS_COLLECTION}/${STATS_DOC_ID}`)
