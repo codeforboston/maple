@@ -1,6 +1,6 @@
 {
   "runtime": {
-    "nodejs22": {
+    "nodejs18": {
       "apt": {
         "packages": ["ffmpeg"]
       }
