@@ -6,7 +6,7 @@ import { Banner } from "../shared/StyledSharedComponents"
 import { BillNumber, Styled } from "./BillNumber"
 import { BillTestimonies } from "./BillTestimonies"
 import BillTrackerConnectedView from "./BillTracker"
-import { LobbyingTable } from "./LobbyingTable"
+import { LobbyingBillCard } from "components/lobbying/LobbyingBillCard"
 import { Committees, Hearing, Sponsors } from "./SponsorsAndCommittees"
 import { Status } from "./Status"
 import { Summary } from "./Summary"
@@ -99,7 +99,11 @@ export const BillDetails = ({ bill }: BillProps) => {
 
             <BillTestimonies bill={bill} className="mt-4" />
             {flags.lobbyingTable && (
-              <LobbyingTable bill={bill} className="mt-4 pb-1" />
+              <LobbyingBillCard
+                court={bill.court}
+                billId={bill.id}
+                className="mt-4 pb-1"
+              />
             )}
           </Col>
           <Col md={4}>

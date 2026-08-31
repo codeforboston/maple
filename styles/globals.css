@@ -605,3 +605,9 @@
 .finance-spending-group {
   background-color: var(--maple-surface-page, #f4f5f7);
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .recharts-tooltip-wrapper {
+    transition: none !important;
+  }
+}

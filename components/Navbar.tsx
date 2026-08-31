@@ -16,6 +16,7 @@ import {
   NavbarLinkAiTools,
   NavbarLinkEffective,
   NavbarLinkHearings,
+  NavbarLinkLobbying,
   NavbarLinkProcess,
   NavbarLinkWhyUse,
   NavbarLinkEditProfile,
@@ -80,6 +81,9 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           <NavbarLinkHearings handleClick={closeNav} />
         ) : null}
         <NavbarLinkTestimony handleClick={closeNav} />
+        {flags().lobbyingTable ? (
+          <NavbarLinkLobbying handleClick={closeNav} />
+        ) : null}
         {authenticated ? <NavbarLinkNewsfeed handleClick={closeNav} /> : <></>}
         <NavDropdown className={"navLink-primary"} title={t("about")}>
           <NavbarLinkGoals handleClick={closeNav} />
@@ -234,6 +238,12 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
       <div className="align-self-center">
         <NavbarLinkTestimony />
       </div>
+
+      {flags().lobbyingTable ? (
+        <div className={`align-self-center`}>
+          <NavbarLinkLobbying />
+        </div>
+      ) : null}
 
       {authenticated ? (
         <div className="align-self-center">
