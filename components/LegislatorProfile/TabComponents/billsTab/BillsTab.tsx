@@ -1,9 +1,38 @@
 import { TabBlock } from "../../LegislatorComponents"
+import { Button } from "react-bootstrap"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
+import { useMember } from "components/db"
+import { Row, Spinner } from "react-bootstrap"
+import { MemberContent } from "functions/src/members/types"
 
-const BillFilterButtons = () => {
-  ;<div></div>
+const BillFilterButtons = ({
+  member
+}: {
+  member: MemberContent | undefined
+}) => {
+  const { t } = useTranslation("legislators")
+
+  const sponsoredBills = member?.SponsoredBills?.length ?? 0
+  const coSponsoredBills = member?.CoSponsoredBills?.length ?? 0
+  const allBills = sponsoredBills + coSponsoredBills
+
+  return (
+    <StyledButtonFilterGroup>
+      <StyledButtonBase>
+        <div>{sponsoredBills}</div>
+        <div>{t("billsSponsored")}</div>
+      </StyledButtonBase>
+      <StyledButtonBase>
+        <div>{coSponsoredBills}</div>
+        <div>{t("cosponsored")}</div>
+      </StyledButtonBase>
+      <StyledButtonBase>
+        <div>{t("All")}</div>
+        <div>{allBills}</div>
+      </StyledButtonBase>
+    </StyledButtonFilterGroup>
+  )
 }
 
 const BillsByTopic = () => {
@@ -54,6 +83,19 @@ const CommitteePositions = () => {
 export function BillsTab() {
   const { t } = useTranslation("legislators")
 
+  let tempCourt = 194
+  let tempMember = "AMS3"
+
+  const { member, loading: memberLoading } = useMember(tempCourt, tempMember)
+
+  if (memberLoading) {
+    return (
+      <Row>
+        <Spinner animation="border" className="mx-auto" />
+      </Row>
+    )
+  }
+
   // - LAST: bill filter button section
   // 1 - buttons have bill totals for sponsor and cosponsor and all
   // 2 - 'all' is default filter; sponsor + cosponsor being clicked trigger filters on those fields for 'bills by topic'
@@ -72,6 +114,7 @@ export function BillsTab() {
 
   return (
     <StyledBillsTab>
+      <BillFilterButtons member={member} />
       <BillsByTopic />
       <RecentBills />
       <CommitteePositions />
@@ -140,6 +183,25 @@ const StyledSubsectionTableColumnData = styled.td`
   font-size: 0.9rem;
   color: #334155;
   vertical-align: middle;
+`
+
+const StyledButtonFilterGroup = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+`
+
+const StyledButtonBase = styled(Button)`
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  color: #475569;
+  cursor: pointer;
 `
 
 /* 
