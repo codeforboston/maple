@@ -72,6 +72,7 @@ prod-build.env
 infra/dev/typesense-secrets.yml
 infra/prod/typesense-secrets.yml
 
+ /.venv
 .python-version
 __pycache__/
 *.pyc
@@ -102,3 +103,7 @@ CLAUDE.md
 #gcloud
 .gcloudignore
 
+# Python virtual environments
+.venv/
+venv/
+env/
