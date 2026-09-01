@@ -1,0 +1,90 @@
+{
+  "title": "Lobbying Explorer",
+  "subtitle": "Browse Massachusetts lobbying disclosures filed with the Secretary of State.",
+  "subnav": {
+    "label": "LOBBYING EXPLORER",
+    "overview": "Overview"
+  },
+  "pagination": {
+    "prev": "← Prev",
+    "next": "Next →"
+  },
+  "misc": {
+    "disclosures": "Disclosures",
+    "disclosureLink": "Disclosure {{number}}",
+    "viewOnMaple": "View bill on MAPLE →",
+    "total": "total",
+    "generalCourt": "General Court"
+  },
+  "registrantType": {
+    "all": "All types",
+    "lobbyist": "Lobbyist",
+    "employer": "Employer"
+  },
+  "stats": {
+    "totalBills": "Lobbied bills",
+    "totalClients": "Clients",
+    "totalFirms": "Lobbying firms",
+    "totalSpend": "Total compensation reported"
+  },
+  "sections": {
+    "bills": "Bills",
+    "clients": "Clients",
+    "firms": "Lobbying Firms"
+  },
+  "filters": {
+    "session": "Session",
+    "year": "Year",
+    "position": "Position",
+    "allSessions": "All sessions",
+    "allPositions": "All positions",
+    "allTypes": "All types",
+    "search": "Search…"
+  },
+  "position": {
+    "support": "Support",
+    "oppose": "Oppose",
+    "neutral": "Neutral",
+    "none": "No position"
+  },
+  "fields": {
+    "clientName": "Client",
+    "firmName": "Lobbying Firm",
+    "amount": "Compensation",
+    "year": "Year",
+    "filings": "Filings",
+    "bills": "Bills lobbied",
+    "clients": "Clients represented",
+    "bill": "Bill",
+    "positions": "Positions",
+    "activity": "Activity",
+    "sessions": "Sessions",
+    "type": "Type",
+    "firms": "Firms"
+  },
+  "explainers": {
+    "statBills": "Bills that have been the subject of at least one lobbying disclosure.",
+    "statClients": "Organizations that have hired lobbyists to advocate on their behalf.",
+    "statSpend": "Sum of all annual compensation amounts reported by lobbying firms to the Secretary of State.",
+    "bills": "Bills that appear in lobbying disclosures filed with the MA Secretary of State, across all sessions in this dataset.",
+    "clients": "Organizations that retained lobbyists or lobbied on their own behalf, as reported in annual compensation disclosures.",
+    "firms": "Registered lobbyists and employers who filed lobbying disclosures with the MA Secretary of State."
+  },
+  "attribution": "Data from the MA Secretary of State Lobbyist Public Search.",
+  "noData": "No lobbying filings found.",
+  "loading": "Loading lobbying data…",
+  "titles": {
+    "overview": "Lobbying Explorer",
+    "bills": "Lobbied Bills",
+    "clients": "Clients & Sponsors",
+    "firms": "Lobbying Firms",
+    "client": "Client Profile",
+    "firm": "Firm Profile"
+  },
+  "billCard": {
+    "filingCount_one": "{{count}} lobbying filing",
+    "filingCount_other": "{{count}} lobbying filings",
+    "viewAll": "View all lobbying activity →",
+    "showingOf": "Showing {{showing}} of {{total}} filings"
+  }
+}
