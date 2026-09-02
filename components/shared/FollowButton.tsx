@@ -1,5 +1,6 @@
 import { StyledImage } from "components/ProfilePage/StyledProfileComponents"
 import { useTranslation } from "next-i18next"
+import { useRouter } from "next/router"
 import { useEffect, useContext, useMemo, useState } from "react"
 import { Button } from "react-bootstrap"
 import { useAuth } from "../auth"
@@ -86,8 +87,12 @@ export const BaseFollowButton = ({
   confirmUnfollow?: boolean
   displayName?: string
 }) => {
-  const { t } = useTranslation("common")
-  const uid = useAuth().user?.uid
+  const { t } = useTranslation(["profile"])
+
+  const { user } = useAuth()
+  const uid = user?.uid
+  const router = useRouter()
+
   const { followStatus, setFollowStatus } = useContext(FollowContext)
   const [modalAction, setModalAction] = useState<"follow" | "unfollow" | null>(
     null
@@ -111,15 +116,25 @@ export const BaseFollowButton = ({
   }
 
   const isFollowing = followStatus[topicName]
-  const onClick = isFollowing
-    ? () => (confirmUnfollow ? setModalAction("unfollow") : UnfollowClick())
-    : () => (confirmFollow ? setModalAction("follow") : FollowClick())
+  const text = isFollowing ? t("button.following") : t("button.follow")
+  const checkmark = isFollowing ? (
+    <StyledImage src="/check-white.svg" alt="" />
+  ) : null
+  const handleClick = (event: any) => {
+    event.preventDefault()
+    if (!uid) {
+      const currentPath = router.asPath
+      router.push(`/login?redirect=${encodeURIComponent(currentPath)}`)
+      return
+    }
+    isFollowing ? UnfollowClick() : FollowClick()
+  }
 
   return (
     <>
       {!hide && (
         <div className="follow-button">
-          <Button onClick={onClick} className={`btn btn-lg py-1`}>
+          <Button onClick={handleClick} className={`btn btn-lg py-1`}>
             {t(`button.${isFollowing ? "unfollow" : "follow"}`)}
             {isFollowing && <StyledImage src="/check-white.svg" alt="" />}
           </Button>

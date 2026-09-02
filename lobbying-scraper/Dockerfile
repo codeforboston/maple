@@ -5,7 +5,7 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY normalize.py portal.py writer.py scrape.py ./
+COPY archive.py normalize.py portal.py writer.py scrape.py ./
 
 # Cloud Run sets PORT; we don't use it (this is a job, not a server).
 # Cloud Scheduler invokes the container via HTTP POST to /; handle it minimally.
