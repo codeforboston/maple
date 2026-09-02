@@ -91,7 +91,7 @@ export function FinanceTab({ finance }: { finance?: MembersFinance }) {
       label: t("finance.stats.totalRaised"),
       value: formatCurrency(finance.totalRaised),
       subtitle: t("finance.stats.totalRaisedSubtitle", {
-        count: finance.contributorCount ?? 0
+        count: finance.contributionsCount ?? 0
       }),
       footnote: t("finance.stats.totalRaisedFootnote", { date: bankDataAsOf })
     },

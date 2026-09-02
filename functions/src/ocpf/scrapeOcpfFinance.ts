@@ -64,7 +64,7 @@ interface MemberAccumulator {
   startBalance: number
   startBalanceStartDateMs: number // Start_Date (as ms) of the earliest Bank Report (type 70) seen
   depositEndDateMs: number // End_Date (as ms) of the most recent Deposit Report (type 60) seen
-  contributorCount: number
+  contributionsCount: number
   breakdown: {
     individual: MutableBreakdownEntry
     committee: MutableBreakdownEntry
@@ -130,7 +130,7 @@ function newAccumulator(cpfId: number): MemberAccumulator {
     startBalance: 0,
     startBalanceStartDateMs: Infinity,
     depositEndDateMs: 0,
-    contributorCount: 0,
+    contributionsCount: 0,
     breakdown: {
       individual: emptyEntry(),
       committee: emptyEntry(),
@@ -292,7 +292,7 @@ export const scrapeOcpfFinance = functions
         totalSpent: acc.totalSpent,
         cashOnHand: acc.cashOnHand,
         startBalance: acc.startBalance,
-        contributorCount: acc.contributorCount,
+        contributionsCount: acc.contributionsCount,
         lastUpdated: now,
         bankDataAsOf: Timestamp.fromMillis(acc.cashOnHandEndDateMs),
         depositDataAsOf: Timestamp.fromMillis(acc.depositEndDateMs),
@@ -583,7 +583,7 @@ function accumulateItem(
   switch (recordTypeId) {
     case 201: // Individual Contribution
       addTo(acc.breakdown.individual, yb?.individual)
-      acc.contributorCount++
+      acc.contributionsCount++
       if (amount < 200) {
         addTo(acc.breakdown.smallDonors.itemized, yb?.smallDonors?.itemized)
       }
