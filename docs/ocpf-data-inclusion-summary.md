@@ -1,6 +1,8 @@
 ## MAPLE Finance Tab — Data Inclusion Summary
 
-This summarizes what campaign finance data MAPLE uses from OCPF's public bulk data files, what we include vs. exclude, and why, for review by someone who knows MA campaign finance. Source data: OCPF's `reports.txt` (one row per filed report) and `report-items.txt` (one row per individual transaction). Our research and decisions were based on files for the current election cycle only (2025–2026).
+This summarizes what campaign finance data MAPLE uses from OCPF's public bulk data files, what we include vs. exclude, and why.
+
+Source data: OCPF's `reports.txt` (one row per filed report) and `report-items.txt` (one row per individual transaction). Our research and decisions were based on files for the current election cycle only (2025–2026).
 
 ### Report types: what we include/exclude from `reports.txt` (uses blocklist strategy, inclusive by default)
 
