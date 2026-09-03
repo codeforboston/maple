@@ -1,5 +1,7 @@
 import styled from "styled-components"
 
+import * as links from "../links"
+
 import { Biography } from "./SidebarComponents/Biography"
 import { OtherTestimony } from "./SidebarComponents/OtherTestimony"
 import { UpcomingHearings } from "./SidebarComponents/UpcomingHearings"
@@ -9,17 +11,19 @@ export function LegislatorSidebar({
   court,
   legislatorData,
   legislatorId,
-  memberCode
+  memberCode,
+  sponsoredBills
 }: {
   committeeList: any[]
   court: number
   legislatorData: any[]
   legislatorId: string
   memberCode: string
+  sponsoredBills: any[]
 }) {
   return (
     <>
-      <OtherTestimony />
+      <OtherTestimony court={court} sponsoredBills={sponsoredBills} />
       <UpcomingHearings committeeList={committeeList} />
       <Biography
         court={court}
@@ -39,6 +43,16 @@ export const SidebarBlock = styled.div`
   border-width: 1px;
   font-size: 11px;
   padding: 16px;
+`
+
+export const SidebarLink = styled(links.Internal)`
+  font-size: 12px;
+  font-weight: 700;
+  color: #1a3185;
+  padding: 10px;
+  display: block;
+  text-align: center;
+  text-decoration: none;
 `
 
 export const SidebarTitle = styled.div`

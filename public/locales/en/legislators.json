@@ -45,12 +45,18 @@
   "legislators": "Legislators",
   "loading": "Loading district...",
   "noEvents": "This legislator does not have hearings in the near term future",
+  "noTestimony": "This legislator does not yet have testimony for any of their bills",
   "notClaimed": "This legislator has not claimed their MAPLE account",
   "otherTestimony": "Others' testimony on their bills",
   "party": {
     "democratic": "Democratic Party",
     "party": "Party",
     "republican": "Republican Party"
+  },
+  "position": {
+    "endorse": "Endorse",
+    "neutral": "Neutral",
+    "oppose": "Oppose"
   },
   "stateRepresentative": "State Representative",
   "stateSenator": "State Senator",
@@ -66,5 +72,6 @@
   },
   "termsServed": "Terms Served",
   "upcomingHearings": "Upcoming Hearings",
-  "viewAllHearings": "View all hearings"
+  "viewAllHearings": "View all hearings",
+  "viewAllTestimony": "View all testimony"
 }
