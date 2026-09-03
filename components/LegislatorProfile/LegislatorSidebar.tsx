@@ -21,7 +21,7 @@ export function LegislatorSidebar({
 }) {
   return (
     <>
-      <OtherTestimony sponsoredBills={sponsoredBills} />
+      <OtherTestimony court={court} sponsoredBills={sponsoredBills} />
       <UpcomingHearings committeeList={committeeList} />
       <Biography
         court={court}

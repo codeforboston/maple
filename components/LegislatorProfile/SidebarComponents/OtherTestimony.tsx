@@ -4,15 +4,31 @@ import { SidebarBlock, SidebarTitle } from "../LegislatorSidebar"
 
 import { usePublishedTestimonyListing } from "components/db"
 
-export function OtherTestimony({ sponsoredBills }: { sponsoredBills: any[] }) {
+export function OtherTestimony({
+  court,
+  sponsoredBills
+}: {
+  court: number
+  sponsoredBills: any[]
+}) {
   const { t } = useTranslation("legislators")
 
-  console.log("S: ", sponsoredBills)
+  const testimonyOnLegislatorBills: any[] = []
 
-  const bill: string = "H1316"
-  const test = usePublishedTestimonyListing({ billId: bill })
+  sponsoredBills.forEach(bill => {
+    const data = usePublishedTestimonyListing({
+      billId: bill,
+      court: court
+    })
 
-  console.log("Test: ", test)
+    data.items.result?.length
+      ? testimonyOnLegislatorBills.push(data.items.result)
+      : null
+  })
+
+  console.log("X: ", testimonyOnLegislatorBills)
+
+  // console.log("S: ", sponsoredBills)
 
   return (
     <SidebarBlock className="mb-2">
