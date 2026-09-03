@@ -9,17 +9,19 @@ export function LegislatorSidebar({
   court,
   legislatorData,
   legislatorId,
-  memberCode
+  memberCode,
+  sponsoredBills
 }: {
   committeeList: any[]
   court: number
   legislatorData: any[]
   legislatorId: string
   memberCode: string
+  sponsoredBills: any[]
 }) {
   return (
     <>
-      <OtherTestimony />
+      <OtherTestimony sponsoredBills={sponsoredBills} />
       <UpcomingHearings committeeList={committeeList} />
       <Biography
         court={court}
