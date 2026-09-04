@@ -1,0 +1,115 @@
+{
+  "token_separators": ["-"],
+  "fields": [
+    {
+      "name": "number",
+      "type": "string",
+      "facet": false
+    },
+    {
+      "name": "numberVariants",
+      "type": "string[]",
+      "facet": false
+    },
+    {
+      "name": "court",
+      "type": "int32",
+      "facet": true
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "facet": false
+    },
+    {
+      "name": "pinslip",
+      "type": "string",
+      "facet": false,
+      "optional": true
+    },
+    {
+      "name": "summary",
+      "type": "string",
+      "facet": false,
+      "optional": true
+    },
+    {
+      "name": "legislationType",
+      "type": "string",
+      "facet": true,
+      "optional": true
+    },
+    {
+      "name": "body",
+      "type": "string",
+      "facet": false,
+      "optional": true
+    },
+    {
+      "name": "city",
+      "type": "string",
+      "facet": true,
+      "optional": true
+    },
+    {
+      "name": "currentCommittee",
+      "type": "string",
+      "facet": true,
+      "optional": true
+    },
+    {
+      "name": "testimonyCount",
+      "type": "int32"
+    },
+    {
+      "name": "primarySponsor",
+      "type": "string",
+      "facet": true,
+      "optional": true
+    },
+    {
+      "name": "cosponsors",
+      "type": "string[]",
+      "facet": true
+    },
+    {
+      "name": "cosponsorCount",
+      "type": "int32"
+    },
+    {
+      "name": "nextHearingAt",
+      "type": "int64",
+      "optional": true
+    },
+    {
+      "name": "latestTestimonyAt",
+      "type": "int64",
+      "optional": true
+    },
+    {
+      "name": "endorseCount",
+      "type": "int32"
+    },
+    {
+      "name": "opposeCount",
+      "type": "int32"
+    },
+    {
+      "name": "neutralCount",
+      "type": "int32"
+    },
+    {
+      "name": "topics.lvl0",
+      "type": "string[]",
+      "facet": true,
+      "optional": true
+    },
+    {
+      "name": "topics.lvl1",
+      "type": "string[]",
+      "facet": true,
+      "optional": true
+    }
+  ],
+  "default_sorting_field": "testimonyCount"
+}

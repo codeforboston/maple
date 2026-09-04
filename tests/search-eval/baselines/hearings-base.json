@@ -1,0 +1,1004 @@
+{
+  "meta": {
+    "env": "local",
+    "url": "",
+    "alias": "hearings",
+    "collection": "hearings_eval",
+    "serverVersion": "30.2",
+    "corpusMd5": "fa6e9fe42e3da564da0bd72eef1e55aa",
+    "gitSha": "7e6529b622c9e1b2b45a53add525c355f96a1ba3",
+    "timestamp": "2026-08-19T18:32:18.185Z",
+    "sortBy": "_text_match:desc,startsAt:desc",
+    "court": 194,
+    "skippedQueries": []
+  },
+  "overall": {
+    "recallAt10": 0.90625,
+    "mrr": 0.9270833333333334,
+    "ndcgAt10": 0.9065328757618745,
+    "queryCount": 48
+  },
+  "categories": {
+    "agenda-topic": {
+      "recallAt10": 0.825,
+      "mrr": 1,
+      "ndcgAt10": 0.8417087253585072,
+      "queryCount": 8
+    },
+    "bill-on-agenda": {
+      "recallAt10": 1,
+      "mrr": 1,
+      "ndcgAt10": 1,
+      "queryCount": 10
+    },
+    "chair": {
+      "recallAt10": 1,
+      "mrr": 1,
+      "ndcgAt10": 1,
+      "queryCount": 6
+    },
+    "committee": {
+      "recallAt10": 0.99,
+      "mrr": 0.95,
+      "ndcgAt10": 0.977990823370192,
+      "queryCount": 10
+    },
+    "location": {
+      "recallAt10": 1,
+      "mrr": 1,
+      "ndcgAt10": 1,
+      "queryCount": 5
+    },
+    "misspelling": {
+      "recallAt10": 1,
+      "mrr": 1,
+      "ndcgAt10": 1,
+      "queryCount": 6
+    },
+    "synonym": {
+      "recallAt10": 0,
+      "mrr": 0,
+      "ndcgAt10": 0,
+      "queryCount": 3
+    }
+  },
+  "queries": [
+    {
+      "id": "hc-001",
+      "category": "committee",
+      "query": "Ways and Means",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5099",
+        "hearing-5594",
+        "hearing-5585",
+        "hearing-5577",
+        "hearing-5582",
+        "hearing-5584",
+        "hearing-5575",
+        "hearing-5583",
+        "hearing-5546",
+        "hearing-5100"
+      ],
+      "relevantCount": 19
+    },
+    {
+      "id": "hc-002",
+      "category": "committee",
+      "query": "Judiciary",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5639",
+        "hearing-5494",
+        "hearing-5478",
+        "hearing-5452",
+        "hearing-5434",
+        "hearing-5388",
+        "hearing-5358",
+        "hearing-5229",
+        "hearing-5227",
+        "hearing-5216"
+      ],
+      "relevantCount": 13
+    },
+    {
+      "id": "hc-003",
+      "category": "committee",
+      "query": "Financial Services",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5403",
+        "hearing-5721",
+        "hearing-5576",
+        "hearing-5524",
+        "hearing-5473",
+        "hearing-5457",
+        "hearing-5448",
+        "hearing-5439",
+        "hearing-5417",
+        "hearing-5374"
+      ],
+      "relevantCount": 21
+    },
+    {
+      "id": "hc-004",
+      "category": "committee",
+      "query": "Public Health",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5532",
+        "hearing-5390",
+        "hearing-5239",
+        "hearing-5236",
+        "hearing-5222",
+        "hearing-5628",
+        "hearing-5360",
+        "hearing-5221",
+        "hearing-5211",
+        "hearing-5110"
+      ],
+      "relevantCount": 13
+    },
+    {
+      "id": "hc-005",
+      "category": "committee",
+      "query": "Transportation",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5431",
+        "hearing-5407",
+        "hearing-5738",
+        "hearing-5694",
+        "hearing-5634",
+        "hearing-5573",
+        "hearing-5505",
+        "hearing-5454",
+        "hearing-5400",
+        "hearing-5345"
+      ],
+      "relevantCount": 14
+    },
+    {
+      "id": "hc-006",
+      "category": "committee",
+      "query": "Housing",
+      "metrics": {
+        "recallAt10": 0.9,
+        "mrr": 0.5,
+        "ndcgAt10": 0.7799082337019198
+      },
+      "top10": [
+        "hearing-5366",
+        "hearing-5197",
+        "hearing-5750",
+        "hearing-5718",
+        "hearing-5526",
+        "hearing-5474",
+        "hearing-5485",
+        "hearing-5419",
+        "hearing-5367",
+        "hearing-5240"
+      ],
+      "relevantCount": 11
+    },
+    {
+      "id": "hc-007",
+      "category": "committee",
+      "query": "Election Laws",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5224",
+        "hearing-5113",
+        "hearing-5735",
+        "hearing-5627",
+        "hearing-5545",
+        "hearing-5508",
+        "hearing-5451",
+        "hearing-5426",
+        "hearing-5322",
+        "hearing-5151"
+      ],
+      "relevantCount": 10
+    },
+    {
+      "id": "hc-008",
+      "category": "committee",
+      "query": "Revenue",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5178",
+        "hearing-5748",
+        "hearing-5722",
+        "hearing-5687",
+        "hearing-5549",
+        "hearing-5535",
+        "hearing-5479",
+        "hearing-5458",
+        "hearing-5447",
+        "hearing-5427"
+      ],
+      "relevantCount": 19
+    },
+    {
+      "id": "hc-009",
+      "category": "committee",
+      "query": "Consumer Protection",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5147",
+        "hearing-5395",
+        "hearing-5720",
+        "hearing-5692",
+        "hearing-5656",
+        "hearing-5630",
+        "hearing-5541",
+        "hearing-5433",
+        "hearing-5416",
+        "hearing-5357"
+      ],
+      "relevantCount": 13
+    },
+    {
+      "id": "hc-010",
+      "category": "committee",
+      "query": "Municipalities and Regional Government",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5684",
+        "hearing-5572",
+        "hearing-5212",
+        "hearing-5152",
+        "hearing-5741",
+        "hearing-5719",
+        "hearing-5637",
+        "hearing-5516",
+        "hearing-5503",
+        "hearing-5495"
+      ],
+      "relevantCount": 18
+    },
+    {
+      "id": "hch-001",
+      "category": "chair",
+      "query": "Rebecca Rausch",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5744",
+        "hearing-5741",
+        "hearing-5727",
+        "hearing-5719",
+        "hearing-5684",
+        "hearing-5637",
+        "hearing-5581",
+        "hearing-5579",
+        "hearing-5572",
+        "hearing-5238"
+      ],
+      "relevantCount": 15
+    },
+    {
+      "id": "hch-002",
+      "category": "chair",
+      "query": "Cindy Friedman",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5632",
+        "hearing-5603",
+        "hearing-5631",
+        "hearing-5602",
+        "hearing-5601",
+        "hearing-5598",
+        "hearing-5589",
+        "hearing-5597",
+        "hearing-5595",
+        "hearing-5590"
+      ],
+      "relevantCount": 15
+    },
+    {
+      "id": "hch-003",
+      "category": "chair",
+      "query": "Alice Peisch",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5632",
+        "hearing-5603",
+        "hearing-5631",
+        "hearing-5602",
+        "hearing-5601",
+        "hearing-5598",
+        "hearing-5589",
+        "hearing-5597",
+        "hearing-5595",
+        "hearing-5590"
+      ],
+      "relevantCount": 10
+    },
+    {
+      "id": "hch-004",
+      "category": "chair",
+      "query": "Tackey Chan",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5720",
+        "hearing-5692",
+        "hearing-5656",
+        "hearing-5630",
+        "hearing-5541",
+        "hearing-5237",
+        "hearing-5194",
+        "hearing-5171",
+        "hearing-5147"
+      ],
+      "relevantCount": 9
+    },
+    {
+      "id": "hch-005",
+      "category": "chair",
+      "query": "Brendan Crighton",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5738",
+        "hearing-5734",
+        "hearing-5694",
+        "hearing-5634",
+        "hearing-5573",
+        "hearing-5226",
+        "hearing-5195",
+        "hearing-5174",
+        "hearing-5166"
+      ],
+      "relevantCount": 9
+    },
+    {
+      "id": "hch-006",
+      "category": "chair",
+      "query": "Daniel Ryan",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5732",
+        "hearing-5701",
+        "hearing-5658",
+        "hearing-5586",
+        "hearing-5534",
+        "hearing-5206",
+        "hearing-5203",
+        "hearing-5192",
+        "hearing-5177",
+        "hearing-5163"
+      ],
+      "relevantCount": 10
+    },
+    {
+      "id": "hb-001",
+      "category": "bill-on-agenda",
+      "query": "H2391",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": ["hearing-5111"],
+      "relevantCount": 1
+    },
+    {
+      "id": "hb-002",
+      "category": "bill-on-agenda",
+      "query": "H 2391",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": ["hearing-5111"],
+      "relevantCount": 1
+    },
+    {
+      "id": "hb-003",
+      "category": "bill-on-agenda",
+      "query": "H.2391",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": ["hearing-5111"],
+      "relevantCount": 1
+    },
+    {
+      "id": "hb-004",
+      "category": "bill-on-agenda",
+      "query": "S1489",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": ["hearing-5111"],
+      "relevantCount": 1
+    },
+    {
+      "id": "hb-005",
+      "category": "bill-on-agenda",
+      "query": "S 1489",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": ["hearing-5111"],
+      "relevantCount": 1
+    },
+    {
+      "id": "hb-006",
+      "category": "bill-on-agenda",
+      "query": "H63",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5113",
+        "hearing-5396",
+        "hearing-5362",
+        "hearing-5220",
+        "hearing-5189",
+        "hearing-5168",
+        "hearing-5141"
+      ],
+      "relevantCount": 1
+    },
+    {
+      "id": "hb-007",
+      "category": "bill-on-agenda",
+      "query": "H 63",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": ["hearing-5113"],
+      "relevantCount": 1
+    },
+    {
+      "id": "hb-008",
+      "category": "bill-on-agenda",
+      "query": "S6",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5113",
+        "hearing-5475",
+        "hearing-5448",
+        "hearing-5442",
+        "hearing-5439",
+        "hearing-5190"
+      ],
+      "relevantCount": 1
+    },
+    {
+      "id": "hb-009",
+      "category": "bill-on-agenda",
+      "query": "H56",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5458",
+        "hearing-5326",
+        "hearing-5376",
+        "hearing-5459",
+        "hearing-5396",
+        "hearing-5362",
+        "hearing-5189",
+        "hearing-5168"
+      ],
+      "relevantCount": 3
+    },
+    {
+      "id": "hb-010",
+      "category": "bill-on-agenda",
+      "query": "H.2424",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": ["hearing-5111"],
+      "relevantCount": 1
+    },
+    {
+      "id": "ht-001",
+      "category": "agenda-topic",
+      "query": "home rule petitions",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5516",
+        "hearing-5503",
+        "hearing-5462",
+        "hearing-5438",
+        "hearing-5397",
+        "hearing-5368",
+        "hearing-5330",
+        "hearing-5572",
+        "hearing-5541",
+        "hearing-5474"
+      ],
+      "relevantCount": 19
+    },
+    {
+      "id": "ht-002",
+      "category": "agenda-topic",
+      "query": "budget hearing",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5594",
+        "hearing-5546",
+        "hearing-5100",
+        "hearing-5099",
+        "hearing-5098",
+        "hearing-5097",
+        "hearing-5096",
+        "hearing-5095",
+        "hearing-5090",
+        "hearing-5088"
+      ],
+      "relevantCount": 10
+    },
+    {
+      "id": "ht-003",
+      "category": "agenda-topic",
+      "query": "miscellaneous matters",
+      "metrics": {
+        "recallAt10": 0.3,
+        "mrr": 1,
+        "ndcgAt10": 0.46900009332067477
+      },
+      "top10": ["hearing-5461", "hearing-5210", "hearing-5390"],
+      "relevantCount": 21
+    },
+    {
+      "id": "ht-004",
+      "category": "agenda-topic",
+      "query": "disabilities",
+      "metrics": {
+        "recallAt10": 0.3,
+        "mrr": 1,
+        "ndcgAt10": 0.3499667779514209
+      },
+      "top10": [
+        "hearing-5169",
+        "hearing-5728",
+        "hearing-5477",
+        "hearing-5432",
+        "hearing-5377",
+        "hearing-5353",
+        "hearing-5334",
+        "hearing-5214",
+        "hearing-5747",
+        "hearing-5708"
+      ],
+      "relevantCount": 30
+    },
+    {
+      "id": "ht-005",
+      "category": "agenda-topic",
+      "query": "public safety",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5704",
+        "hearing-5638",
+        "hearing-5604",
+        "hearing-5440",
+        "hearing-5409",
+        "hearing-5347",
+        "hearing-5205",
+        "hearing-5167",
+        "hearing-5471",
+        "hearing-5378"
+      ],
+      "relevantCount": 12
+    },
+    {
+      "id": "ht-006",
+      "category": "agenda-topic",
+      "query": "late files",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5744",
+        "hearing-5743",
+        "hearing-5727",
+        "hearing-5719",
+        "hearing-5637",
+        "hearing-5639",
+        "hearing-5627",
+        "hearing-5581",
+        "hearing-5508",
+        "hearing-5524"
+      ],
+      "relevantCount": 40
+    },
+    {
+      "id": "ht-007",
+      "category": "agenda-topic",
+      "query": "health care cost growth benchmark",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": ["hearing-5091"],
+      "relevantCount": 1
+    },
+    {
+      "id": "ht-008",
+      "category": "agenda-topic",
+      "query": "climate",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 0.9147029315959613
+      },
+      "top10": [
+        "hearing-5156",
+        "hearing-5112",
+        "hearing-5690",
+        "hearing-5418",
+        "hearing-5344",
+        "hearing-5300",
+        "hearing-5220",
+        "hearing-5190"
+      ],
+      "relevantCount": 6
+    },
+    {
+      "id": "hl-001",
+      "category": "location",
+      "query": "Gardner Auditorium",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5688",
+        "hearing-5671",
+        "hearing-5594",
+        "hearing-5546",
+        "hearing-5515",
+        "hearing-5471",
+        "hearing-5474",
+        "hearing-5459",
+        "hearing-5458",
+        "hearing-5465"
+      ],
+      "relevantCount": 33
+    },
+    {
+      "id": "hl-002",
+      "category": "location",
+      "query": "Virtual Hearing",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5215",
+        "hearing-5733",
+        "hearing-5714",
+        "hearing-5713",
+        "hearing-5716",
+        "hearing-5712",
+        "hearing-5709",
+        "hearing-5703",
+        "hearing-5699",
+        "hearing-5698"
+      ],
+      "relevantCount": 60
+    },
+    {
+      "id": "hl-003",
+      "category": "location",
+      "query": "Written Testimony Only",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5506",
+        "hearing-5455",
+        "hearing-5704",
+        "hearing-5750",
+        "hearing-5743",
+        "hearing-5748",
+        "hearing-5738",
+        "hearing-5737",
+        "hearing-5726",
+        "hearing-5722"
+      ],
+      "relevantCount": 33
+    },
+    {
+      "id": "hl-004",
+      "category": "location",
+      "query": "UMass Amherst",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": ["hearing-5575", "hearing-5095"],
+      "relevantCount": 2
+    },
+    {
+      "id": "hl-005",
+      "category": "location",
+      "query": "Northampton",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": ["hearing-5672", "hearing-5747"],
+      "relevantCount": 2
+    },
+    {
+      "id": "hs-001",
+      "category": "synonym",
+      "query": "cannabis",
+      "metrics": {
+        "recallAt10": 0,
+        "mrr": 0,
+        "ndcgAt10": 0
+      },
+      "top10": ["hearing-5530", "hearing-5235", "hearing-5165"],
+      "relevantCount": 1
+    },
+    {
+      "id": "hs-002",
+      "category": "synonym",
+      "query": "guns",
+      "metrics": {
+        "recallAt10": 0,
+        "mrr": 0,
+        "ndcgAt10": 0
+      },
+      "top10": [],
+      "relevantCount": 3
+    },
+    {
+      "id": "hs-003",
+      "category": "synonym",
+      "query": "liquor",
+      "metrics": {
+        "recallAt10": 0,
+        "mrr": 0,
+        "ndcgAt10": 0
+      },
+      "top10": [],
+      "relevantCount": 8
+    },
+    {
+      "id": "hm-001",
+      "category": "misspelling",
+      "query": "judicary",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5639",
+        "hearing-5494",
+        "hearing-5478",
+        "hearing-5452",
+        "hearing-5434",
+        "hearing-5388",
+        "hearing-5358",
+        "hearing-5229",
+        "hearing-5227",
+        "hearing-5216"
+      ],
+      "relevantCount": 13
+    },
+    {
+      "id": "hm-002",
+      "category": "misspelling",
+      "query": "transportaton",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5431",
+        "hearing-5407",
+        "hearing-5738",
+        "hearing-5694",
+        "hearing-5634",
+        "hearing-5573",
+        "hearing-5505",
+        "hearing-5454",
+        "hearing-5400",
+        "hearing-5345"
+      ],
+      "relevantCount": 14
+    },
+    {
+      "id": "hm-003",
+      "category": "misspelling",
+      "query": "gardner auditorum",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5688",
+        "hearing-5671",
+        "hearing-5594",
+        "hearing-5546",
+        "hearing-5515",
+        "hearing-5471",
+        "hearing-5474",
+        "hearing-5459",
+        "hearing-5458",
+        "hearing-5465"
+      ],
+      "relevantCount": 33
+    },
+    {
+      "id": "hm-004",
+      "category": "misspelling",
+      "query": "municipalites",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5741",
+        "hearing-5719",
+        "hearing-5684",
+        "hearing-5637",
+        "hearing-5572",
+        "hearing-5516",
+        "hearing-5503",
+        "hearing-5495",
+        "hearing-5462",
+        "hearing-5326"
+      ],
+      "relevantCount": 18
+    },
+    {
+      "id": "hm-005",
+      "category": "misspelling",
+      "query": "consumer protecton",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5147",
+        "hearing-5395",
+        "hearing-5720",
+        "hearing-5692",
+        "hearing-5656",
+        "hearing-5630",
+        "hearing-5541",
+        "hearing-5433",
+        "hearing-5416",
+        "hearing-5357"
+      ],
+      "relevantCount": 13
+    },
+    {
+      "id": "hm-006",
+      "category": "misspelling",
+      "query": "cindy freidman",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "hearing-5632",
+        "hearing-5603",
+        "hearing-5631",
+        "hearing-5602",
+        "hearing-5601",
+        "hearing-5598",
+        "hearing-5589",
+        "hearing-5597",
+        "hearing-5595",
+        "hearing-5590"
+      ],
+      "relevantCount": 15
+    }
+  ]
+}

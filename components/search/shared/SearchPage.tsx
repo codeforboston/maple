@@ -116,13 +116,17 @@ export const SearchPage = <TRecord extends Hit>({
     return Array.from(items)
   }, [filtersWithDefaults, menuAttributes])
 
+  // Keyed on the params' content, not object identity, so an inline
+  // searchParameters literal doesn't recreate the Typesense client per render.
+  const searchParametersKey = JSON.stringify(searchParameters)
   const searchClient = useMemo(
     () =>
       new TypesenseInstantSearchAdapter({
         server: getServerConfig(),
         additionalSearchParameters: searchParameters
       }).searchClient,
-    [searchParameters]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [searchParametersKey]
   )
 
   return (

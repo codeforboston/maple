@@ -1,0 +1,888 @@
+{
+  "meta": {
+    "env": "local",
+    "url": "",
+    "alias": "publishedTestimony",
+    "collection": "publishedTestimony_eval",
+    "serverVersion": "30.2",
+    "corpusMd5": "bd1aa76b61b9803ea9ca90827539d688",
+    "gitSha": "2e037d0c8b1a61d3fe09b8c37a9de94d9c4a076f",
+    "timestamp": "2026-08-19T18:30:11.594Z",
+    "sortBy": "_text_match:desc,publishedAt:desc",
+    "court": 194,
+    "skippedQueries": []
+  },
+  "overall": {
+    "recallAt10": 0.8658119658119657,
+    "mrr": 0.9102564102564102,
+    "ndcgAt10": 0.8556474089088215,
+    "queryCount": 39
+  },
+  "categories": {
+    "author": {
+      "recallAt10": 0.9833333333333334,
+      "mrr": 1,
+      "ndcgAt10": 0.9816590194751601,
+      "queryCount": 6
+    },
+    "bill-id": {
+      "recallAt10": 0.8125,
+      "mrr": 1,
+      "ndcgAt10": 0.8479850279985381,
+      "queryCount": 8
+    },
+    "misspelling": {
+      "recallAt10": 1,
+      "mrr": 1,
+      "ndcgAt10": 0.9429187326594431,
+      "queryCount": 6
+    },
+    "synonym": {
+      "recallAt10": 0.6523809523809524,
+      "mrr": 0.7142857142857143,
+      "ndcgAt10": 0.6730753520197963,
+      "queryCount": 7
+    },
+    "topic": {
+      "recallAt10": 0.9,
+      "mrr": 0.875,
+      "ndcgAt10": 0.8606145622091282,
+      "queryCount": 12
+    }
+  },
+  "queries": [
+    {
+      "id": "tb-001",
+      "category": "bill-id",
+      "query": "S531",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "9OuaIMy4lyzKGM7odk_D1",
+        "CdHtztqVLe6x9PWBICz2F",
+        "jPFcvSFfzB6Z1kN8rZk2J",
+        "YPu6EPQGzTJZkPXfafmD3",
+        "dsFGMNRAMzfNW4bFEwafw",
+        "KYRHh20qkFcJmVbEg1sTg",
+        "92Is4Ysah1wA6bSY62X_z",
+        "PQefJ508_vvqTnoGzp2d0",
+        "VFY12LS1u2OKx1tI7qLk8",
+        "Ol_Hb4XciXTzUH1BRRNWY"
+      ],
+      "relevantCount": 108
+    },
+    {
+      "id": "tb-002",
+      "category": "bill-id",
+      "query": "S 531",
+      "metrics": {
+        "recallAt10": 0.4,
+        "mrr": 1,
+        "ndcgAt10": 0.5637884576902256
+      },
+      "top10": [
+        "1fSJjeB4F2hKx7xktRO00",
+        "O8Q64gYX42olvz7w9NczZ",
+        "0wpvjt7NwI_wHGE47nKbC",
+        "j95dKA76AwuBFdXhKz1Vu"
+      ],
+      "relevantCount": 108
+    },
+    {
+      "id": "tb-003",
+      "category": "bill-id",
+      "query": "S.531",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "9OuaIMy4lyzKGM7odk_D1",
+        "CdHtztqVLe6x9PWBICz2F",
+        "jPFcvSFfzB6Z1kN8rZk2J",
+        "YPu6EPQGzTJZkPXfafmD3",
+        "dsFGMNRAMzfNW4bFEwafw",
+        "KYRHh20qkFcJmVbEg1sTg",
+        "92Is4Ysah1wA6bSY62X_z",
+        "PQefJ508_vvqTnoGzp2d0",
+        "VFY12LS1u2OKx1tI7qLk8",
+        "Ol_Hb4XciXTzUH1BRRNWY"
+      ],
+      "relevantCount": 108
+    },
+    {
+      "id": "tb-004",
+      "category": "bill-id",
+      "query": "H4351",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "8Xjcbln58m_qmfQP05tct",
+        "6zphapXlY5Lp1N13oJMRD",
+        "GXINovmMEERyTJUEbOKEE",
+        "hsbL7POvqXTw2e5DUuTki",
+        "4lMlyTqg1oh8lE4VDSHjs",
+        "6fPT4NSDkgXvTBahF56xt",
+        "3KFRIeToLSmcTd0GnQ9zG",
+        "5V9bzQe2iZNmTALY2Quso",
+        "d2E2LxE3r03TgpgjMG5NX",
+        "9-awIt_tkxdiaPXPhQBB7"
+      ],
+      "relevantCount": 28
+    },
+    {
+      "id": "tb-005",
+      "category": "bill-id",
+      "query": "H 4351",
+      "metrics": {
+        "recallAt10": 0.1,
+        "mrr": 1,
+        "ndcgAt10": 0.22009176629808017
+      },
+      "top10": ["sSa8ZLDXwVOR5PRBLzOF0"],
+      "relevantCount": 28
+    },
+    {
+      "id": "tb-006",
+      "category": "bill-id",
+      "query": "S505",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "q7FABYQzOvfmjegGbYa0-",
+        "Kjme82E2J3xh_iavVpoyc",
+        "AHXLF18qIoNN9O75snH7F",
+        "6K0bAeoxUTX6kGiaaCHLn",
+        "RPZx9woG9hVb3OMFtSQXd",
+        "g_CMBoU8VJyXAB_0n_Hx5",
+        "65VMrIqujcAENO9dZP5Gg",
+        "n214rkLkVmTQngHYGShYa",
+        "c-FkwCtiKzdl1Z_QGZ2zS",
+        "nlIiKUB5qTgGcVEQc2xPz"
+      ],
+      "relevantCount": 7
+    },
+    {
+      "id": "tb-007",
+      "category": "bill-id",
+      "query": "H2057",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "p-Fj1pOglGAmu18SEZVis",
+        "qA3IwUwvx5MxvFbqGc7sd",
+        "uXdD5bXYgaRAla6i9UAxz",
+        "1iLkOnpKnIyMPZ0EJ6q-8",
+        "zQ0790mAoAXDi3wH5EysT",
+        "byQC1IHIabnkVGSLxeQ46"
+      ],
+      "relevantCount": 6
+    },
+    {
+      "id": "tb-008",
+      "category": "bill-id",
+      "query": "H.1405",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "Dc6RugqP0HRxcujz5pLDF",
+        "Fhw90ohV0b4d6-_oJjixg",
+        "c7CaVvPRtM6WP-4puuIL9",
+        "nthww4idwGAivhUavH1KO",
+        "4UdhIwSdZQKYBsulWHTie",
+        "uiCjZ0jMjwTOnF8hRKFNH",
+        "L_gM_T02MsULa-W3BXldU",
+        "biQVm39ND9kHg9rGlmphQ",
+        "QfqfGXsYn0K4Iu_38SGF_"
+      ],
+      "relevantCount": 6
+    },
+    {
+      "id": "ta-001",
+      "category": "author",
+      "query": "Progressive Massachusetts",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "evG1J59pHtD892srT_HSD",
+        "b0L9RQh_NZ2EnnljzCNRj",
+        "pi5rvUyjKlvmMNewnOf_D",
+        "eam7r9I54vLt29Sk6A-6D",
+        "seIDlGYzq_vEasViQdiN2",
+        "8cahVYFjE4R73eGH_2dEF",
+        "K5fegU_C0p1Qnyq4xexmz",
+        "RPlMJNham07rUs9FnZhtw",
+        "dPaqTI3uE2tKfqSjvnjBY",
+        "ECfI2TLNAozLWAJ9mi_nL"
+      ],
+      "relevantCount": 122
+    },
+    {
+      "id": "ta-002",
+      "category": "author",
+      "query": "League of Women Voters",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "QCwx_oImL54_8fifC7dss",
+        "AGusMrxuxEbkyPxIwGxld",
+        "BgMzB0KujpKISNB4_Nprf",
+        "FBWyrabLoxZuH3VMvFMuv",
+        "QATSQq06ilckdBDgUqGwE",
+        "phMMN9IYufTSmNzU97pzD",
+        "lkWCmC3HAy96sThW3Vueb",
+        "LEu7VKw_xaNQHqIFXgFwG",
+        "iL9cYJkGWX4Yq1i2biYf6",
+        "TPgjZsn9vXKQ2aJF0UUEi"
+      ],
+      "relevantCount": 121
+    },
+    {
+      "id": "ta-003",
+      "category": "author",
+      "query": "T Stephen Jones",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "x54aPTzKw4mzfCHDGzvjr",
+        "tKlwe6ivPE1zcoNFvPooU",
+        "7yrt6_JiCsG7N34SdUssW",
+        "uUmrMcsmvHJAJLGdK2_Y4",
+        "il85zcsUI33WROqVNRURb",
+        "q6OliiiesY1xzxmAVjuKY",
+        "9-ITBjvC_UUWw-8HhQa9k",
+        "-01jqkUE2o1lPjijGhV3V",
+        "0ANKQpAgWF-1sSLPY7aq_",
+        "7erqVBGptvNi_KUs-EOp2"
+      ],
+      "relevantCount": 51
+    },
+    {
+      "id": "ta-004",
+      "category": "author",
+      "query": "Elaine Almquist",
+      "metrics": {
+        "recallAt10": 0.9,
+        "mrr": 1,
+        "ndcgAt10": 0.8899541168509599
+      },
+      "top10": [
+        "qkCngGUEqPpW56990vrXS",
+        "zCw3UiFfn7NpEADJF4pFE",
+        "7yrt6_JiCsG7N34SdUssW",
+        "DXt9s5U1LgPRcoT3iaAtb",
+        "Dc6RugqP0HRxcujz5pLDF",
+        "Ns08eB38sg4fXiUVyPIS-",
+        "izBjYVA4sX_hv2LqJNQ7G",
+        "-sYilJcb7FYgM-xPApD-E",
+        "JwZRV5xz-g7VAI7AbHSFS",
+        "ML-T7WWVi7L4Moz961IyO"
+      ],
+      "relevantCount": 23
+    },
+    {
+      "id": "ta-005",
+      "category": "author",
+      "query": "Partners in Democracy",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "1lOiHvfe3gdqKkfVyUX5P",
+        "rxS5QAxVif3dC-cLVF7Bb",
+        "n0cd5-Ga0RBro4CUrGwtZ",
+        "LiqNtrg-sc03SCuN6Z0py",
+        "Pw4c_r2EUikJuKCxrUqah",
+        "NYPkatkLuretCPsXulkdI",
+        "HEQ9nYz14M8UWESrjHJmo",
+        "HhPnj15sNI5XTk_G2DIp4",
+        "hkrlPHtg0Iz-k5bii2aLr",
+        "IayRrND2zy-f2XSd9cjJS"
+      ],
+      "relevantCount": 20
+    },
+    {
+      "id": "ta-006",
+      "category": "author",
+      "query": "Commission on the Status of Women",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "TvuAMRkXLh2xY7zFkUKzt",
+        "Y5DsjTHY-u7Mbf4L7B6JS",
+        "fR53JFa8xQfPTsWmaTzy5",
+        "Fhw90ohV0b4d6-_oJjixg",
+        "NFxoUtF2UXQrkCao7y1mg",
+        "Nc59-_Ck2zDzW7N7LoA8L",
+        "A-9hxql_cZ8vl_duOB8v8",
+        "uZfPyMpEKytkwPxH7vCoe",
+        "_mY95B40agX1xkgaw2Vk0"
+      ],
+      "relevantCount": 6
+    },
+    {
+      "id": "tt-001",
+      "category": "topic",
+      "query": "ranked choice voting",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 0.6575123959566591
+      },
+      "top10": [
+        "B5xcpPPD3VBtvGdzE8hyM",
+        "pQ-NeP4xOzbuhH8fGq9ea",
+        "0pICmOpKXlbDf0APyn1kI",
+        "9OuaIMy4lyzKGM7odk_D1",
+        "CdHtztqVLe6x9PWBICz2F",
+        "jPFcvSFfzB6Z1kN8rZk2J",
+        "YPu6EPQGzTJZkPXfafmD3",
+        "ViYoho0abCQifXHNDbjin",
+        "KYRHh20qkFcJmVbEg1sTg",
+        "92Is4Ysah1wA6bSY62X_z"
+      ],
+      "relevantCount": 121
+    },
+    {
+      "id": "tt-002",
+      "category": "topic",
+      "query": "rent control",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "eam7r9I54vLt29Sk6A-6D",
+        "HEq90V_3KxxP4YSsyIhpT",
+        "rl6IFaDSZ88PYX1IJjA0N",
+        "vVY5uJaW2d_j882fhlQ04",
+        "Z44XOXbB1FmyRaWYwDdCW",
+        "-l-iQxshYz8DF4nrW0dy4",
+        "FeBsBGdvWUVRQIKV6pfsF",
+        "Y5DsjTHY-u7Mbf4L7B6JS"
+      ],
+      "relevantCount": 6
+    },
+    {
+      "id": "tt-003",
+      "category": "topic",
+      "query": "same day voter registration",
+      "metrics": {
+        "recallAt10": 0.8,
+        "mrr": 0.5,
+        "ndcgAt10": 0.6698623505528797
+      },
+      "top10": [
+        "n214rkLkVmTQngHYGShYa",
+        "AHXLF18qIoNN9O75snH7F",
+        "6K0bAeoxUTX6kGiaaCHLn",
+        "RPZx9woG9hVb3OMFtSQXd",
+        "65VMrIqujcAENO9dZP5Gg",
+        "kWt58RStbQMUB7VAqXNCV",
+        "g_CMBoU8VJyXAB_0n_Hx5",
+        "c-FkwCtiKzdl1Z_QGZ2zS",
+        "nlIiKUB5qTgGcVEQc2xPz",
+        "c4TkesyGcrZWBcn07LsTu"
+      ],
+      "relevantCount": 14
+    },
+    {
+      "id": "tt-004",
+      "category": "topic",
+      "query": "vote by mail",
+      "metrics": {
+        "recallAt10": 0,
+        "mrr": 0,
+        "ndcgAt10": 0
+      },
+      "top10": [
+        "U7M6KOrOk3HxXp3HMtxga",
+        "wUCZhFjmgD-gQf1rwlZBO",
+        "uZfPyMpEKytkwPxH7vCoe",
+        "_mY95B40agX1xkgaw2Vk0",
+        "s7YU0Lr8siUL6DZsczrVe",
+        "rZOoRP_eVkKCsB1EQ64tR",
+        "ZFMH6QiRVy_ay0TfHLu_u",
+        "x54aPTzKw4mzfCHDGzvjr",
+        "il85zcsUI33WROqVNRURb",
+        "0f-XBB35ZN3aY4qYD3aIq"
+      ],
+      "relevantCount": 3
+    },
+    {
+      "id": "tt-005",
+      "category": "topic",
+      "query": "solitary confinement",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "eyoxyKQ66yNQLahDj7gbR",
+        "SnR_-S6h2SmLvJkuXf4ie",
+        "p_F4FPB_l6RyZmbNU2Laz",
+        "RF6gia3v4OMWFyp59RwVI"
+      ],
+      "relevantCount": 4
+    },
+    {
+      "id": "tt-006",
+      "category": "topic",
+      "query": "eviction",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "HEq90V_3KxxP4YSsyIhpT",
+        "rl6IFaDSZ88PYX1IJjA0N",
+        "vVY5uJaW2d_j882fhlQ04",
+        "Z44XOXbB1FmyRaWYwDdCW",
+        "C8n-9BfBnF0oODvYkH7BW",
+        "as6Is9LPZ2J-zPMzAJUUu",
+        "jycTZ6dvmsbDtAXhY_52F",
+        "gc8r_z72KmHh3ODDmFiVM",
+        "QSRoYGesdL0MwTdDEH-IB",
+        "lsZSRKcHwgsW_scJjO480"
+      ],
+      "relevantCount": 11
+    },
+    {
+      "id": "tt-007",
+      "category": "topic",
+      "query": "zoning",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "eam7r9I54vLt29Sk6A-6D",
+        "HEq90V_3KxxP4YSsyIhpT",
+        "rl6IFaDSZ88PYX1IJjA0N",
+        "vVY5uJaW2d_j882fhlQ04",
+        "Z44XOXbB1FmyRaWYwDdCW",
+        "U8V-O5oCaJvThKemGgKIH",
+        "p9s_gokSsUZ_z5uyCaRTD",
+        "LN8U2qzdz-L-5K56kVKi3",
+        "-l-iQxshYz8DF4nrW0dy4",
+        "Bs8eththvqbwf63jWoIyz"
+      ],
+      "relevantCount": 12
+    },
+    {
+      "id": "tt-008",
+      "category": "topic",
+      "query": "fossil fuels",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "x54aPTzKw4mzfCHDGzvjr",
+        "il85zcsUI33WROqVNRURb",
+        "q6OliiiesY1xzxmAVjuKY",
+        "0oN1j4dwm8UBbilDIliJ2",
+        "PqQDouJ4kaUN9R0VhSYS0",
+        "RFSu0M5xezxVa1bBt9qve",
+        "l1I8kGowVtz2WPrYovaPV",
+        "GDrFCpA4hAdsIw_Rm5X3X",
+        "-glcyOYtYYPv-IQCOLTu4",
+        "dUExko-64U-IHhp8lyPri"
+      ],
+      "relevantCount": 14
+    },
+    {
+      "id": "tt-009",
+      "category": "topic",
+      "query": "gender affirming care",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "Fhw90ohV0b4d6-_oJjixg",
+        "QddFVr819ct-AL2R1mpSt",
+        "mC9cec9DPZmJh-h0k59pL",
+        "YoMcbg3flFzl2ZuNDBsG4",
+        "qj9B-cAH0m6Zc1tenFcSN",
+        "7C300VIQg4-XGPdTM9dTq"
+      ],
+      "relevantCount": 6
+    },
+    {
+      "id": "tt-010",
+      "category": "topic",
+      "query": "language access",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "JwZRV5xz-g7VAI7AbHSFS",
+        "wJk41fu1FiVBJ1xC8GFBE",
+        "VwGDFqblM0NpNdygg5jj3",
+        "EildpYQGTwzXhlnDEqqJd",
+        "syWoGzG3fuHNKS6tcW2e4",
+        "A2keKEFOnMVvmssvDcBs9",
+        "YZR3tRTH_AxEbmjFrQ1vc",
+        "gtnHu_C21R-d1YXD04drW",
+        "Bs8eththvqbwf63jWoIyz",
+        "WnfgfrLKQDAiUHcNswyT5"
+      ],
+      "relevantCount": 6
+    },
+    {
+      "id": "tt-011",
+      "category": "topic",
+      "query": "parole",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "G2hQLzmZ5GVbZw0IVaWmT",
+        "B0ZfwvCJxhgQPhi1qUWBE",
+        "HWYONHILNhIg1YogNtBis",
+        "tH5mbM__T0n2uCu5qLdPZ",
+        "xWyIDifmJf0c2Qqz08Wu5",
+        "SCSHutdvYlIgGvCAMLGop",
+        "evQA35IoJkYpR0X4mNbcq",
+        "1e-dFpB_PC6uL_lXhALKT",
+        "JWXz3tBMSthD1hbfJlC7a",
+        "VyQaykWaAosNzTi5ZMXVF"
+      ],
+      "relevantCount": 21
+    },
+    {
+      "id": "tt-012",
+      "category": "topic",
+      "query": "homelessness",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "eam7r9I54vLt29Sk6A-6D",
+        "HEq90V_3KxxP4YSsyIhpT",
+        "rl6IFaDSZ88PYX1IJjA0N",
+        "vVY5uJaW2d_j882fhlQ04",
+        "Z44XOXbB1FmyRaWYwDdCW",
+        "C8n-9BfBnF0oODvYkH7BW",
+        "-01jqkUE2o1lPjijGhV3V",
+        "jyGFy24gK9DJU4A5nb_34",
+        "tzuzCzguXwJXggnIRpjH8",
+        "dJZJPWdoBPU9DonfEUVta"
+      ],
+      "relevantCount": 25
+    },
+    {
+      "id": "ts-001",
+      "category": "synonym",
+      "query": "renters",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "eam7r9I54vLt29Sk6A-6D",
+        "lsZSRKcHwgsW_scJjO480",
+        "Kjme82E2J3xh_iavVpoyc",
+        "Bu6Tz_JnL6Qjfyd-pY_-W",
+        "AHXLF18qIoNN9O75snH7F",
+        "jO8-5-ckBJKvogjIleQYa",
+        "-l-iQxshYz8DF4nrW0dy4",
+        "gc8r_z72KmHh3ODDmFiVM",
+        "QSRoYGesdL0MwTdDEH-IB",
+        "1lOiHvfe3gdqKkfVyUX5P"
+      ],
+      "relevantCount": 35
+    },
+    {
+      "id": "ts-002",
+      "category": "synonym",
+      "query": "tenants",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "evG1J59pHtD892srT_HSD",
+        "eam7r9I54vLt29Sk6A-6D",
+        "HEq90V_3KxxP4YSsyIhpT",
+        "rl6IFaDSZ88PYX1IJjA0N",
+        "vVY5uJaW2d_j882fhlQ04",
+        "Z44XOXbB1FmyRaWYwDdCW",
+        "X4C9g3rP9A5tKiBtkiNTF",
+        "C8n-9BfBnF0oODvYkH7BW",
+        "as6Is9LPZ2J-zPMzAJUUu",
+        "jycTZ6dvmsbDtAXhY_52F"
+      ],
+      "relevantCount": 35
+    },
+    {
+      "id": "ts-003",
+      "category": "synonym",
+      "query": "teachers",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "751FZTubP1RtXBZqhCbA9",
+        "C8n-9BfBnF0oODvYkH7BW",
+        "t_edzv3GrkA1_XCF0Ri1-",
+        "jycTZ6dvmsbDtAXhY_52F",
+        "j8eAKtpVbb9Vd05l6TIiX",
+        "2aDdN2OCct1-sOQsBogkd",
+        "JIIYdlaFK2FxxjDA7wg4c",
+        "PqLuEfw8zCdTdaEAumWvT",
+        "Mu2UQm0U3Dr54IOFp8Ldj",
+        "wyrhNVcf3Z4G4JLJWrjUh"
+      ],
+      "relevantCount": 26
+    },
+    {
+      "id": "ts-004",
+      "category": "synonym",
+      "query": "doctor",
+      "metrics": {
+        "recallAt10": 0.9,
+        "mrr": 1,
+        "ndcgAt10": 0.9363792118010483
+      },
+      "top10": [
+        "iL9cYJkGWX4Yq1i2biYf6",
+        "TPgjZsn9vXKQ2aJF0UUEi",
+        "klgcdRRi8wbTeCV7VZRYE",
+        "YZR3tRTH_AxEbmjFrQ1vc",
+        "gtnHu_C21R-d1YXD04drW",
+        "ks5e6tOhqWkvobyCnqqki",
+        "jO8-5-ckBJKvogjIleQYa",
+        "fR53JFa8xQfPTsWmaTzy5",
+        "CwGMam-vtxDaat2fEROIM"
+      ],
+      "relevantCount": 42
+    },
+    {
+      "id": "ts-005",
+      "category": "synonym",
+      "query": "servicemember",
+      "metrics": {
+        "recallAt10": 0,
+        "mrr": 0,
+        "ndcgAt10": 0
+      },
+      "top10": [],
+      "relevantCount": 16
+    },
+    {
+      "id": "ts-006",
+      "category": "synonym",
+      "query": "opiate",
+      "metrics": {
+        "recallAt10": 0,
+        "mrr": 0,
+        "ndcgAt10": 0
+      },
+      "top10": [],
+      "relevantCount": 6
+    },
+    {
+      "id": "ts-007",
+      "category": "synonym",
+      "query": "clean energy",
+      "metrics": {
+        "recallAt10": 0.6666666666666666,
+        "mrr": 1,
+        "ndcgAt10": 0.7751482523375255
+      },
+      "top10": [
+        "il85zcsUI33WROqVNRURb",
+        "q6OliiiesY1xzxmAVjuKY",
+        "0oN1j4dwm8UBbilDIliJ2",
+        "PqQDouJ4kaUN9R0VhSYS0",
+        "EildpYQGTwzXhlnDEqqJd",
+        "syWoGzG3fuHNKS6tcW2e4",
+        "A2keKEFOnMVvmssvDcBs9",
+        "of8VK0lewRoYWyDgfNykB",
+        "dTVPgcuqJZgIhFobes1v-",
+        "LrWaFn2nhuFwxIPk-GuKj"
+      ],
+      "relevantCount": 6
+    },
+    {
+      "id": "tm-001",
+      "category": "misspelling",
+      "query": "progresive massachusets",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "evG1J59pHtD892srT_HSD",
+        "b0L9RQh_NZ2EnnljzCNRj",
+        "pi5rvUyjKlvmMNewnOf_D",
+        "eam7r9I54vLt29Sk6A-6D",
+        "seIDlGYzq_vEasViQdiN2",
+        "8cahVYFjE4R73eGH_2dEF",
+        "K5fegU_C0p1Qnyq4xexmz",
+        "RPlMJNham07rUs9FnZhtw",
+        "dPaqTI3uE2tKfqSjvnjBY",
+        "ECfI2TLNAozLWAJ9mi_nL"
+      ],
+      "relevantCount": 122
+    },
+    {
+      "id": "tm-002",
+      "category": "misspelling",
+      "query": "leage of women voters",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "QCwx_oImL54_8fifC7dss",
+        "AGusMrxuxEbkyPxIwGxld",
+        "BgMzB0KujpKISNB4_Nprf",
+        "FBWyrabLoxZuH3VMvFMuv",
+        "QATSQq06ilckdBDgUqGwE",
+        "phMMN9IYufTSmNzU97pzD",
+        "lkWCmC3HAy96sThW3Vueb",
+        "LEu7VKw_xaNQHqIFXgFwG",
+        "iL9cYJkGWX4Yq1i2biYf6",
+        "TPgjZsn9vXKQ2aJF0UUEi"
+      ],
+      "relevantCount": 121
+    },
+    {
+      "id": "tm-003",
+      "category": "misspelling",
+      "query": "rankd choice voting",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 0.6575123959566591
+      },
+      "top10": [
+        "B5xcpPPD3VBtvGdzE8hyM",
+        "pQ-NeP4xOzbuhH8fGq9ea",
+        "0pICmOpKXlbDf0APyn1kI",
+        "9OuaIMy4lyzKGM7odk_D1",
+        "CdHtztqVLe6x9PWBICz2F",
+        "jPFcvSFfzB6Z1kN8rZk2J",
+        "YPu6EPQGzTJZkPXfafmD3",
+        "ViYoho0abCQifXHNDbjin",
+        "KYRHh20qkFcJmVbEg1sTg",
+        "92Is4Ysah1wA6bSY62X_z"
+      ],
+      "relevantCount": 121
+    },
+    {
+      "id": "tm-004",
+      "category": "misspelling",
+      "query": "evicton",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "HEq90V_3KxxP4YSsyIhpT",
+        "rl6IFaDSZ88PYX1IJjA0N",
+        "vVY5uJaW2d_j882fhlQ04",
+        "Z44XOXbB1FmyRaWYwDdCW",
+        "C8n-9BfBnF0oODvYkH7BW",
+        "as6Is9LPZ2J-zPMzAJUUu",
+        "jycTZ6dvmsbDtAXhY_52F",
+        "gc8r_z72KmHh3ODDmFiVM",
+        "QSRoYGesdL0MwTdDEH-IB",
+        "lsZSRKcHwgsW_scJjO480"
+      ],
+      "relevantCount": 11
+    },
+    {
+      "id": "tm-005",
+      "category": "misspelling",
+      "query": "zonning",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "eam7r9I54vLt29Sk6A-6D",
+        "HEq90V_3KxxP4YSsyIhpT",
+        "rl6IFaDSZ88PYX1IJjA0N",
+        "vVY5uJaW2d_j882fhlQ04",
+        "Z44XOXbB1FmyRaWYwDdCW",
+        "U8V-O5oCaJvThKemGgKIH",
+        "p9s_gokSsUZ_z5uyCaRTD",
+        "LN8U2qzdz-L-5K56kVKi3",
+        "-l-iQxshYz8DF4nrW0dy4",
+        "Bs8eththvqbwf63jWoIyz"
+      ],
+      "relevantCount": 12
+    },
+    {
+      "id": "tm-006",
+      "category": "misspelling",
+      "query": "solitary confinment",
+      "metrics": {
+        "recallAt10": 1,
+        "mrr": 1,
+        "ndcgAt10": 1
+      },
+      "top10": [
+        "eyoxyKQ66yNQLahDj7gbR",
+        "SnR_-S6h2SmLvJkuXf4ie",
+        "p_F4FPB_l6RyZmbNU2Laz",
+        "RF6gia3v4OMWFyp59RwVI"
+      ],
+      "relevantCount": 4
+    }
+  ]
+}
