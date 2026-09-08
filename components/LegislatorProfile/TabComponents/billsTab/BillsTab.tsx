@@ -35,7 +35,7 @@ const BillFilterButtons = ({
   )
 }
 
-const BillsByTopic = () => {
+const BillsByTopic = ({ member }: { member: MemberContent | undefined }) => {
   const { t } = useTranslation("legislators")
 
   return (
@@ -115,7 +115,7 @@ export function BillsTab() {
   return (
     <StyledBillsTab>
       <BillFilterButtons member={member} />
-      <BillsByTopic />
+      <BillsByTopic member={member} />
       <RecentBills />
       <CommitteePositions />
     </StyledBillsTab>
