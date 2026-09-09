@@ -1,0 +1,246 @@
+#!/usr/bin/env bash
+# Rendered by Terraform (pds.tf) into the VM's startup-script metadata. Runs on
+# every boot, and again every few minutes (pds-startup-retry.timer, installed
+# below) until /run/pds/pds.env exists; every step is idempotent. Output lands
+# in the google-startup-scripts.service journal and the serial console.
+#
+# Template variables (project_id, pds_hostname, pds_image, caddy_image,
+# pds_crawlers, blob_bucket, pds_secrets) are interpolated by Terraform; bare
+# $VARS are shell.
+set -euo pipefail
+
+# One run at a time: the retry timer must not race a slow first boot (apt,
+# mkfs). A run that finds the lock held has nothing to do — the holder fetches
+# the secrets itself.
+exec 9>/run/lock/pds-startup
+if ! flock -n 9; then
+  echo "pds-startup: another run holds the lock; skipping"
+  exit 0
+fi
+
+# --- Docker ------------------------------------------------------------------
+# DPkg::Lock::Timeout: the image's apt-daily / unattended-upgrades timers race
+# a first boot for the dpkg lock; without it, `set -e` ends the run before the
+# data disk is mounted or the unit exists.
+APT="apt-get -o DPkg::Lock::Timeout=600"
+if ! command -v docker >/dev/null 2>&1; then
+  $APT update
+  $APT install -y ca-certificates curl
+  install -m 0755 -d /etc/apt/keyrings
+  curl -fsSL --retry 5 https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \
+    > /etc/apt/sources.list.d/docker.list
+  $APT update
+  $APT install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+fi
+
+# --- Data disk ---------------------------------------------------------------
+DISK=/dev/disk/by-id/google-pds-data
+if [ ! -b "$DISK" ]; then
+  echo "pds-startup: data disk $DISK is not attached"
+  exit 1
+fi
+# Format ONLY when blkid positively reports "no filesystem" (exit 2). Exit 0
+# with a type means data; anything else is a failed probe, and formatting on
+# a failed probe is how a disk full of data gets wiped. This guard is what
+# makes reboots and re-runs safe for the PDS's data.
+if fstype=$(blkid -o value -s TYPE "$DISK"); then
+  if [ -z "$fstype" ]; then
+    echo "pds-startup: $DISK has signatures but no filesystem type; refusing to format"
+    exit 1
+  fi
+elif [ $? -eq 2 ]; then
+  mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard "$DISK"
+else
+  echo "pds-startup: blkid could not probe $DISK; refusing to format"
+  exit 1
+fi
+mkdir -p /pds
+if ! grep -q "^$DISK " /etc/fstab; then
+  echo "$DISK /pds ext4 discard,defaults,nofail 0 2" >> /etc/fstab
+fi
+mountpoint -q /pds || mount /pds
+mkdir -p /pds/data /pds/caddy
+# Secrets are rendered into /run (tmpfs): regenerated from Secret Manager on
+# every boot, never on the data disk, never in its snapshots. (dockerd keeps a
+# copy of a container's env in /var/lib/docker on the boot disk, which is not
+# snapshotted — see the README's rule.)
+install -d -m 0700 /run/pds
+
+# --- Compose stack definition ------------------------------------------------
+# Single-host certificate via HTTP-01. If user handles under this hostname are
+# ever wanted, that means a wildcard cert via DNS-01 and a caddy dns plugin —
+# an identity decision, not a startup-script edit.
+cat > /pds/Caddyfile <<EOF
+${pds_hostname} {
+	reverse_proxy pds:3000
+}
+EOF
+
+# Container logs are capped: the boot disk is 10 GB and json-file has no
+# default limit (upstream's installer.sh sets the same cap daemon-wide).
+cat > /pds/compose.yaml <<EOF
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  caddy:
+    image: ${caddy_image}
+    restart: unless-stopped
+    logging: *logging
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Caddy's data dir (Let's Encrypt account + certs) lives on the
+      # persistent disk so VM recreation reuses certs instead of burning
+      # rate limit.
+      - /pds/caddy:/data
+      - /pds/Caddyfile:/etc/caddy/Caddyfile:ro
+  pds:
+    image: ${pds_image}
+    restart: unless-stopped
+    logging: *logging
+    env_file:
+      - /run/pds/pds.env
+    volumes:
+      - /pds/data:/pds/data
+    expose:
+      - "3000"
+EOF
+
+cat > /etc/systemd/system/pds.service <<'EOF'
+[Unit]
+Description=MAPLE atproto PDS (caddy + pds via docker compose)
+Requires=docker.service
+After=docker.service
+# /run is empty at boot; this script writes the env file after fetching the
+# secrets and then starts the unit. Without the condition the unit would race
+# the script at boot and fail on the missing env_file.
+ConditionPathExists=/run/pds/pds.env
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/pds
+ExecStart=/usr/bin/docker compose up -d --remove-orphans
+ExecStop=/usr/bin/docker compose down
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Re-run this script until the env file exists: covers secrets minted after
+# the VM came up (secrets.sh) and a Secret Manager blip at boot, with no
+# reboot and no human in the loop. The condition switches it off afterwards.
+cat > /etc/systemd/system/pds-startup-retry.service <<'EOF'
+[Unit]
+Description=Re-run the PDS startup script until its secrets are available
+ConditionPathExists=!/run/pds/pds.env
+
+[Service]
+Type=oneshot
+# No timeout: a retry that lands on a boot where the docker install never
+# finished has to redo it, and systemd's 90s default would SIGTERM apt
+# mid-transaction, every 3 minutes. The flock at the top is what bounds
+# concurrency here, not a timeout.
+TimeoutStartSec=0
+ExecStart=/usr/bin/google_metadata_script_runner startup
+EOF
+cat > /etc/systemd/system/pds-startup-retry.timer <<'EOF'
+[Unit]
+Description=Retry the PDS startup script every 3 minutes until it has its secrets
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=3min
+
+[Install]
+WantedBy=timers.target
+EOF
+systemctl daemon-reload
+systemctl enable pds.service
+systemctl enable --now pds-startup-retry.timer
+
+# --- Secrets, then start -----------------------------------------------------
+TOKEN=$(curl -sSf --retry 5 --retry-all-errors --retry-delay 2 -H "Metadata-Flavor: Google" \
+  "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token" \
+  | python3 -c 'import json,sys; print(json.load(sys.stdin)["access_token"])')
+
+# Prints the secret on stdout. On failure, logs the HTTP status so a 404 (no
+# version yet: the designed out-of-band state), a 403 (iam.tf's accessor
+# grants not applied yet) and a network failure (000) read differently.
+fetch_secret() {
+  local body code
+  body=$(mktemp)
+  code=$(curl -sS --retry 5 --retry-all-errors --retry-delay 2 -o "$body" -w '%%{http_code}' \
+    -H "Authorization: Bearer $TOKEN" \
+    "https://secretmanager.googleapis.com/v1/projects/${project_id}/secrets/$1/versions/latest:access") || code=000
+  if [ "$code" = 200 ]; then
+    python3 -c 'import base64,json,sys; print(base64.b64decode(json.load(sys.stdin)["payload"]["data"]).decode(), end="")' < "$body"
+    rm -f "$body"
+    return 0
+  fi
+  echo "pds-startup: secret $1: HTTP $code $(tr -d '\n' < "$body" | head -c 200)" >&2
+  rm -f "$body"
+  return "$([ "$code" = 404 ] && echo 44 || echo 1)"
+}
+
+# Fetch each secret exactly once; the missing-check guards the same bytes that
+# get written. (An assignment-with-substitution keeps the fetch's exit status
+# visible, unlike a substitution inside echo. `|| rc=$?` and not an if/fi: the
+# exit status of an `if` whose condition was false is 0, not the condition's,
+# so reading $? after the fi would score every gap as a hard failure.)
+declare -A secret
+missing=0
+failed=0
+for s in ${join(" ", values(pds_secrets))}; do
+  rc=0
+  secret[$s]=$(fetch_secret "$s") || rc=$?
+  if [ "$rc" -ne 0 ]; then
+    missing=1
+    [ "$rc" -eq 44 ] || failed=1
+  fi
+done
+if [ "$missing" -ne 0 ]; then
+  # Not starting the PDS. pds-startup-retry.timer runs this script again in 3
+  # minutes; no reboot needed. Exit status: 0 when every gap is "no version
+  # yet" (secrets.sh not run), non-zero when something is actually broken.
+  echo "pds-startup: not starting pds; retrying in 3 minutes"
+  exit "$failed"
+fi
+
+umask 077
+{
+  echo "PDS_HOSTNAME=${pds_hostname}"
+  echo "PDS_PORT=3000"
+  echo "PDS_DID_PLC_URL=https://plc.directory"
+  echo "PDS_DATA_DIRECTORY=/pds/data"
+  echo "LOG_ENABLED=true"
+  # Blobs go to GCS through its S3-compatible XML API. GCS accepts AWS-style
+  # SigV4 with any region string; "auto" is what Google's own S3-SDK samples
+  # pass. Path-style keeps the bucket out of the TLS hostname.
+  echo "PDS_BLOBSTORE_S3_BUCKET=${blob_bucket}"
+  echo "PDS_BLOBSTORE_S3_ENDPOINT=https://storage.googleapis.com"
+  echo "PDS_BLOBSTORE_S3_REGION=auto"
+  echo "PDS_BLOBSTORE_S3_FORCE_PATH_STYLE=true"
+  # AWS SDK v3 >= 3.729 (the PDS bundles a newer one) sends CRC32 "flexible
+  # checksums" on every PUT by default. GCS's XML API does not implement them
+  # and rejects the signature, so uploads 4xx while /xrpc/_health stays green.
+  # These are the SDK's documented env overrides; CRC32 only when the request
+  # type requires it, which no S3 blobstore call does.
+  echo "AWS_REQUEST_CHECKSUM_CALCULATION=when_required"
+  echo "AWS_RESPONSE_CHECKSUM_VALIDATION=when_required"
+%{ if pds_crawlers != "" ~}
+  echo "PDS_CRAWLERS=${pds_crawlers}"
+%{ endif ~}
+  echo "PDS_INVITE_REQUIRED=true"
+%{ for env_name, secret_id in pds_secrets ~}
+  echo "${env_name}=$${secret[${secret_id}]}"
+%{ endfor ~}
+} > /run/pds/pds.env
+
+systemctl restart pds.service
