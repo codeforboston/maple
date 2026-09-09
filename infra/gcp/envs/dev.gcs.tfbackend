@@ -1,0 +1,4 @@
+# Created by the bootstrap runbook in ../README.md. Bucket names are global —
+# if this one is taken, this file is the one place the name lives.
+bucket = "digital-testimony-dev-tfstate"
+prefix = "atproto"

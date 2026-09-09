@@ -1,0 +1,4 @@
+# Prod state lives in the prod project (ADR 0001). Bucket is created by an
+# owner at prod handoff — see ../README.md.
+bucket = "digital-testimony-prod-tfstate"
+prefix = "atproto"
