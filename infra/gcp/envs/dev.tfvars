@@ -15,3 +15,9 @@ pds_crawlers = "https://bsky.network"
 # GCP_SERVICE_ACCOUNT_KEY (CI.md). Read-only on the state bucket. Set it
 # once that environment exists in codeforboston/maple; null = plans skipped.
 ci_planner = null
+
+# Where dev's alerts go: one person, by email. Prod's pager is prod's own
+# entry, never this one (variables.tf).
+alert_channels = {
+  email = { type = "email", labels = { email_address = "violet@hypha.coop" } }
+}
