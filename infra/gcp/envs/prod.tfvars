@@ -14,3 +14,9 @@ pds_crawlers = "https://bsky.network"
 
 # No CI plans against prod: applies there are rare, human, and reviewed live.
 ci_planner = null
+
+# Where prod's alerts go: the pager, decided at handoff. Deliberately unset
+# (no default): a prod plan refuses to run until someone is on the other end.
+# Email, or a pager's email-integration address, needs nothing else:
+#   alert_channels = { pager = { type = "email", labels = { email_address = "..." } } }
+# A pager that needs a token: see alert_channels in variables.tf first.

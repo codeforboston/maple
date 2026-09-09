@@ -1,5 +1,5 @@
 variable "env" {
-  description = "Environment name (dev or prod). Names things (labels) and selects envs/<env>.gcs.tfbackend for the CI planner's state-bucket grant (locals.tf). Isolation comes from the separate GCP projects, not from this."
+  description = "Environment name (dev or prod). Names things — labels, alert display names and page subjects — and selects envs/<env>.gcs.tfbackend for the CI planner's state-bucket grant (locals.tf). Isolation comes from the separate GCP projects, not from this."
   type        = string
 }
 
@@ -62,5 +62,29 @@ variable "ci_planner" {
   validation {
     condition     = var.ci_planner == null || can(regex("^serviceAccount:[^:]+$", var.ci_planner))
     error_message = "ci_planner must be a serviceAccount: member."
+  }
+}
+
+# Only channel types whose labels hold no secret are built here: a PagerDuty
+# service key or Slack token would land in state, which ADR 0001 forbids.
+# When prod picks such a pager, extend this with an optional token secret per
+# channel fed through the provider's write-only service_key_wo / auth_token_wo
+# from an ephemeral Secret Manager read: the same out-of-band pattern as
+# secrets.sh, and the token never enters state.
+variable "alert_channels" {
+  description = "Where every alert policy in this root notifies, keyed by a short name: the Cloud Monitoring channel type and its labels (email: email_address; pubsub: topic; sms: number). Per environment on purpose: dev must never page whoever is on call for prod. A pager goes in as its email-integration address; a channel-type swap here changes no policy."
+  type = map(object({
+    type   = string
+    labels = map(string)
+  }))
+
+  validation {
+    condition     = length(var.alert_channels) > 0
+    error_message = "at least one alert channel: a policy that notifies nobody looks monitored and is not."
+  }
+
+  validation {
+    condition     = alltrue([for c in values(var.alert_channels) : contains(["email", "pubsub", "sms"], c.type)])
+    error_message = "alert_channels types are email, pubsub or sms: the ones whose labels hold no secret (ADR 0001). A token-bearing type needs the write-only path described above the variable."
   }
 }
