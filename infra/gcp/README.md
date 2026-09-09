@@ -1,7 +1,7 @@
 # atproto PDS on GCP
 
-One Terraform root, one state per environment (`envs/<env>.*`). Applies are human-run.
-Design: [ADR 0001](../../docs/adr/0001-atproto-infra.md).
+One Terraform root, one state per environment (`envs/<env>.*`). Applies are human-run; CI only
+plans. Design: [ADR 0001](../../docs/adr/0001-atproto-infra.md).
 
 ## Permissions
 
@@ -10,7 +10,7 @@ Design: [ADR 0001](../../docs/adr/0001-atproto-infra.md).
   only, and an owner's apply afterwards plans exactly those.
 - **`digital-testimony-prod`**: `roles/dns.admin` for the NS record in the parent zone. Every plan
   reads that zone, so without at least `roles/dns.reader` nothing plans. `roles/owner` there only
-  for the CI planner's zone-reader grant in `iam.tf`.
+  for the CI planner's zone-reader grant in `iam.tf` ([CI.md](CI.md)).
 
 ## Apply
 
@@ -57,3 +57,8 @@ the state bucket (`bootstrap.sh`).
 - **State**: the bucket is versioned; restore the earlier object.
 - **Teardown**: `destroy` refuses by design (`prevent_destroy` on disk, bucket and zone; the VM
   is deletion-protected). Lifting those is its own reviewed change.
+
+## CI
+
+`.github/workflows/terraform-checks.yml`: `fmt`, `validate` and an advisory dev plan on PRs. What
+runs, and the one-time setup the plan needs: [CI.md](CI.md).
