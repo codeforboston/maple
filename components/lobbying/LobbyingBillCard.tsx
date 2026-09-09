@@ -2,8 +2,12 @@ import React from "react"
 import { useTranslation } from "next-i18next"
 import { useLobbyingFilingsForBill } from "components/db/lobbying"
 import { LobbyingFilingsTable } from "./LobbyingFilingsTable"
+import { LobbyingPaginationBar } from "./LobbyingPaginationBar"
+import { usePagination } from "./usePagination"
 import { MAPLE_COLORS } from "./chartTheme"
 import { normalizePosition } from "./LobbyingPositionChip"
+
+const PAGE_SIZE = 10
 
 interface LobbyingBillCardProps {
   court: number
@@ -22,6 +26,10 @@ export const LobbyingBillCard: React.FC<LobbyingBillCardProps> = ({
     status,
     error
   } = useLobbyingFilingsForBill(court, billId)
+  const { page, setPage, pageItems, totalPages, totalItems } = usePagination(
+    filings ?? [],
+    PAGE_SIZE
+  )
 
   if (status === "loading" || status === "not-requested") {
     return (
@@ -87,12 +95,18 @@ export const LobbyingBillCard: React.FC<LobbyingBillCardProps> = ({
       </div>
 
       <LobbyingFilingsTable
-        filings={filings}
+        filings={pageItems}
         showBill={false}
         showClient
         showFirm
         showAmount={false}
-        maxRows={5}
+      />
+      <LobbyingPaginationBar
+        page={page}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        pageSize={PAGE_SIZE}
+        onPage={setPage}
       />
 
       <a href={explorerHref} style={viewAllLinkStyle}>

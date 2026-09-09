@@ -71,8 +71,30 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
                   )}
                 </td>
               )}
-              {showClient && <td style={cellStyle}>{f.clientName}</td>}
-              {showFirm && <td style={cellStyle}>{f.entityName}</td>}
+              {showClient && (
+                <td style={cellStyle}>
+                  <a
+                    href={`/lobbying/clients/${encodeURIComponent(
+                      f.clientNameNorm
+                    )}`}
+                    style={{ color: MAPLE_COLORS.primary }}
+                  >
+                    {f.clientName}
+                  </a>
+                </td>
+              )}
+              {showFirm && (
+                <td style={cellStyle}>
+                  <a
+                    href={`/lobbying/firms/${encodeURIComponent(
+                      f.entityNameNorm
+                    )}`}
+                    style={{ color: MAPLE_COLORS.primary }}
+                  >
+                    {f.entityName}
+                  </a>
+                </td>
+              )}
               {showActivity && (
                 <td style={{ ...cellStyle, color: MAPLE_COLORS.textMuted }}>
                   {f.activityTitle || "—"}

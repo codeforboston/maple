@@ -6,7 +6,7 @@ import { createPage } from "components/page"
 import { createGetStaticTranslationProps } from "components/translations"
 import {
   useLobbyingFilingsForClient,
-  useLobbyingAllRegistrants
+  useLobbyingClientSummary
 } from "components/db/lobbying"
 import { LobbyingFilingsTable } from "components/lobbying/LobbyingFilingsTable"
 import {
@@ -18,42 +18,8 @@ import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
-import type { LobbyingRegistrant } from "functions/src/lobbying/types"
 
 const PAGE_SIZE = 25
-
-function findFirmsForClient(
-  registrants: LobbyingRegistrant[] | undefined,
-  clientNameNorm: string
-): Array<{
-  entityName: string
-  entityNameNorm: string
-  compensation: number | null
-}> {
-  if (!registrants) return []
-  const map = new Map<
-    string,
-    { entityName: string; entityNameNorm: string; compensation: number | null }
-  >()
-  for (const r of registrants) {
-    const match = r.clients.find(c => c.clientNameNorm === clientNameNorm)
-    if (!match) continue
-    if (!map.has(r.entityNameNorm)) {
-      map.set(r.entityNameNorm, {
-        entityName: r.entityName,
-        entityNameNorm: r.entityNameNorm,
-        compensation: null
-      })
-    }
-    const entry = map.get(r.entityNameNorm)!
-    if (match.compensation != null) {
-      entry.compensation = (entry.compensation ?? 0) + match.compensation
-    }
-  }
-  return [...map.values()].sort((a, b) =>
-    a.entityNameNorm.localeCompare(b.entityNameNorm)
-  )
-}
 
 function ClientDetail() {
   const { t } = useTranslation("lobbying")
@@ -68,12 +34,10 @@ function ClientDetail() {
     status: filStatus,
     error: filError
   } = useLobbyingFilingsForClient(clientNameNorm)
-  const { result: registrants, status: regStatus } = useLobbyingAllRegistrants()
+  const { result: clientSummary, status: summaryStatus } =
+    useLobbyingClientSummary(clientNameNorm)
 
-  const firms = useMemo(
-    () => findFirmsForClient(registrants, clientNameNorm),
-    [registrants, clientNameNorm]
-  )
+  const firms = clientSummary?.firms ?? []
 
   const positionCounts = useMemo(() => {
     const counts = { support: 0, oppose: 0, neutral: 0, none: 0 }
@@ -116,8 +80,8 @@ function ClientDetail() {
   const loading =
     filStatus === "loading" ||
     filStatus === "not-requested" ||
-    regStatus === "loading" ||
-    regStatus === "not-requested"
+    summaryStatus === "loading" ||
+    summaryStatus === "not-requested"
 
   const displayName = filings?.[0]?.clientName ?? clientNameNorm
 
