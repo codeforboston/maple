@@ -244,3 +244,22 @@ umask 077
 } > /run/pds/pds.env
 
 systemctl restart pds.service
+
+# --- Ops Agent ---------------------------------------------------------------
+# Host metrics the default GCE set lacks (memory, filesystem usage), for the
+# disk and memory alerts in monitoring-pds.tf; its two roles are already
+# granted in iam.tf. After the PDS start on purpose: nothing above needs it,
+# and a monitoring nicety must never keep the PDS down, so a failure here is
+# logged and left for the next boot rather than ending the run. Google's
+# script adds the apt repo and refreshes it (waiting for the dpkg lock
+# itself); the install goes through $APT like docker's so a wedged lock fails
+# after 600s instead of hanging. Default agent config: host metrics and
+# syslog; container logs stay on the box (compose caps them above).
+if ! dpkg -s google-cloud-ops-agent >/dev/null 2>&1; then
+  if ! { curl -fsSL --retry 5 https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh \
+      -o /run/add-ops-agent-repo.sh \
+    && bash /run/add-ops-agent-repo.sh \
+    && $APT install -y google-cloud-ops-agent; }; then
+    echo "pds-startup: ops agent install failed; no disk/memory metrics until the next boot"
+  fi
+fi

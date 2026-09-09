@@ -47,6 +47,21 @@ the state bucket (`bootstrap.sh`).
 - **Teardown**: `destroy` refuses by design (`prevent_destroy` on disk, bucket and zone; the VM
   is deletion-protected). Lifting those is its own reviewed change.
 
+## Monitoring
+
+Three alerts, all to `alert_channels` in `envs/<env>.tfvars` (dev: one email; prod: the pager, a
+channel-type swap there changes no policy). Subjects start with `[<env>]`, and each page carries
+its own first step; this section is what a page cannot.
+
+- **PDS down** (critical): `https://<pds_hostname>/xrpc/_health` failing from two regions for 5 min.
+  One check covers VM, docker, caddy, cert expiry and DNS, from where the relay stands. Expect one
+  during bring-up: that page is the channel test.
+- **Disk ≥ 80%** on any of the VM's disks, and **memory ≥ 90%** for 10 min, via the Ops Agent the
+  startup script installs (`pds-startup.sh.tftpl`).
+
+Prove it once per environment: `gcloud compute ssh atproto-pds --tunnel-through-iap --zone=us-central1-a`,
+`sudo systemctl stop pds.service`, wait for the page (≤ 6 min), `start` it.
+
 ## CI
 
 `.github/workflows/terraform-checks.yml`: `fmt`, `validate` and an advisory dev plan on PRs. What
