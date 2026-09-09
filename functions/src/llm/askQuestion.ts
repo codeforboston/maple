@@ -15,7 +15,13 @@ const Request = z.object({
  * anonymous vs logged-in cost limits can't be spoofed.
  */
 export const askQuestion = functions
-  .runWith({ timeoutSeconds: 120, memory: "512MB" })
+  // Limit concurrent instances to control cost and rate of external calls.
+  // Make this configurable via the ASKQUESTION_MAX_INSTANCES env var; default to 2.
+  .runWith({
+    timeoutSeconds: 120,
+    memory: "512MB",
+    maxInstances: parseInt(process.env.ASKQUESTION_MAX_INSTANCES || "2", 10)
+  })
   .https.onCall(async (data, context) => {
     const { question } = checkRequestZod(Request, data)
     const uid = context.auth?.uid
