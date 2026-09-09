@@ -1,0 +1,137 @@
+name: Terraform Checks
+
+# fmt/validate for every root in the matrix below on every PR; a dev plan (job
+# summary) for infra/gcp on same-repo PRs. NO workflow applies terraform —
+# applies are human-run (each root's README.md).
+on:
+  pull_request:
+    paths:
+      - infra/gcp/**
+      - .github/workflows/terraform-checks.yml
+      - .github/actions/setup-terraform/**
+  push:
+    branches:
+      - main
+    paths:
+      - infra/gcp/**
+      - .github/workflows/terraform-checks.yml
+      - .github/actions/setup-terraform/**
+
+env:
+  # Keep in lockstep with required_version in each matrix root's versions.tf.
+  TF_VERSION: 1.16.0
+
+jobs:
+  fmt_and_validate_gcp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-terraform
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+      - name: Check formatting
+        run: terraform -chdir=infra/gcp fmt -check -recursive
+      - name: Validate
+        run: |
+          terraform -chdir=infra/gcp init -backend=false -input=false
+          terraform -chdir=infra/gcp validate
+
+  fmt_and_validate_dns:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-terraform
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+      - name: Check formatting
+        run: terraform -chdir=infra/gcp/dns fmt -check -recursive
+      - name: Validate
+        run: |
+          terraform -chdir=infra/gcp/dns init -backend=false -input=false
+          terraform -chdir=infra/gcp/dns validate
+
+  # Whether the plan below can even attempt to run, computed once so plan_dev
+  # itself needs a single job-level `if` instead of repeating this on every
+  # step. A job's own `if` cannot see its own `env:` context (that's set up
+  # after the job is admitted), and secrets.* cannot appear in a job-level
+  # `if` directly either — so the check runs as an ordinary step, in its own
+  # job, and is handed on as a `needs` output instead.
+  check_planner_key:
+    if: github.repository_owner == 'codeforboston' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    environment: terraform-plan
+    outputs:
+      has_key: ${{ steps.check.outputs.has_key }}
+    steps:
+      - id: check
+        run: echo "has_key=${{ secrets.GCP_SERVICE_ACCOUNT_KEY != '' }}" >> "$GITHUB_OUTPUT"
+      - name: No planner key
+        if: steps.check.outputs.has_key != 'true'
+        run: echo "the terraform-plan environment has no GCP_SERVICE_ACCOUNT_KEY yet (infra/gcp/CI.md step 4); plan skipped" >> "$GITHUB_STEP_SUMMARY"
+
+  plan_dev:
+    needs: [fmt_and_validate_gcp, check_planner_key]
+    # Upstream, same-repo PRs only: the terraform-plan environment holding the
+    # planner's GCP_SERVICE_ACCOUNT_KEY lives in codeforboston/maple, and fork
+    # PRs get no secrets either way. (Not `dev`: that environment's deployment
+    # branch policy allows only main, so a PR job bound to it can never start.)
+    # check_planner_key already re-checks the repository/event conditions
+    # (its own `if`), so `has_key` is 'true' only when both hold. An explicit
+    # `if:` replaces the implicit "needs succeeded" gate, so success() is
+    # spelled out here too — otherwise a failing fmt_and_validate_gcp would no
+    # longer block this job.
+    if: success() && needs.check_planner_key.outputs.has_key == 'true'
+    runs-on: ubuntu-latest
+    environment: terraform-plan
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-terraform
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+          # No wrapper: we redirect plan stdout to a file ourselves.
+          terraform_wrapper: "false"
+      - uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+      - uses: google-github-actions/setup-gcloud@v3
+      - name: Check for the state bucket
+        id: bootstrap
+        # Gate on the actual precondition rather than swallowing init errors:
+        # only a missing bucket (not yet bootstrapped, the runbook in
+        # infra/gcp/README.md) skips the plan. A 403 means the planner lacks
+        # its grant (ci_planner in envs/dev.tfvars, iam.tf) — or, bucket names
+        # being global, that another project owns this name — and is red, not
+        # "skipped" forever; so is any other failure. `ls` lists objects, which
+        # the planner's objectViewer allows; `buckets describe` would not be.
+        run: |
+          . infra/gcp/scripts/state_bucket.sh
+          bucket=$(state_bucket infra/gcp/envs/dev.gcs.tfbackend)
+          if err=$(gcloud storage ls "gs://$bucket" 2>&1 >/dev/null); then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          elif grep -q "404\|NotFound\|not found" <<< "$err"; then
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+            echo "state bucket gs://$bucket not bootstrapped yet (see infra/gcp/README.md); plan skipped" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "cannot read gs://$bucket: $err" >&2
+            exit 1
+          fi
+      - name: Init
+        if: steps.bootstrap.outputs.ok == 'true'
+        run: terraform -chdir=infra/gcp init -backend-config=envs/dev.gcs.tfbackend -input=false
+      - name: Plan (dev)
+        if: steps.bootstrap.outputs.ok == 'true'
+        # -lock=false: an advisory CI plan must never leave a stale lock that
+        # blocks a human apply. -refresh=false: the plan is config-vs-state, so
+        # it needs no read access beyond the state bucket and the parent DNS
+        # zone (the data source in dns.tf), which are the planner's two grants.
+        run: |
+          terraform -chdir=infra/gcp plan -var-file=envs/dev.tfvars -input=false -no-color -lock=false -refresh=false > "$RUNNER_TEMP/plan.txt"
+          {
+            echo "### terraform plan — infra/gcp (dev)"
+            echo '<details><summary>plan output</summary>'
+            echo
+            echo '```'
+            head -c 60000 "$RUNNER_TEMP/plan.txt"
+            echo '```'
+            echo '</details>'
+          } >> "$GITHUB_STEP_SUMMARY"
