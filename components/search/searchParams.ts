@@ -134,10 +134,14 @@ export const testimonySearchParams = {
   exclude_fields: "billIdVariants"
 } satisfies SearchParameters
 
-/** The app's "Relevance" sort option (see useTestimonySort in
- * testimony/TestimonySearch.tsx), and the sort the eval harness must use.
+/** The app's "Relevance" sort option for Browse Testimony (see
+ * useTestimonySort in testimony/TestimonySearch.tsx), selected automatically
+ * while the search box has a term, and the sort the eval harness must use.
  */
 export const testimonyRelevanceSort = "_text_match:desc,publishedAt:desc"
+
+/** The sort Browse Testimony runs while the search box is empty. */
+export const testimonyDefaultSort = "publishedAt:desc"
 
 export const hearingsSearchParams = {
   ...weighted({
