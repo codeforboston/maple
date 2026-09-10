@@ -74,9 +74,10 @@ export const billsSearchParams = {
   exclude_fields: "body,numberVariants"
 } satisfies SearchParameters
 
-/** The app's "Relevance" sort option (see useBillSort.tsx). The eval harness
- * must use this sort; the UI's default latestTestimonyAt:desc sort does not
- * measure text relevance.
+/** The app's "Relevance" sort option and the Browse Bills default (see
+ * useBillSort.tsx; BillSearch.tsx pins it as the adapter's sort_by). The eval
+ * harness must use this sort; every other bills sort is a date or a count and
+ * does not measure text relevance.
  *
  * The `_eval` clause sorts every Order and Extension Order below every other
  * document. They are procedural — "Extension Order - Education", "Order
@@ -98,11 +99,11 @@ export const billsSearchParams = {
  * legislationType refinement (useBillRefinements.tsx) is how a searcher who
  * wants them gets them back, which is why the facet ships with this sort.
  *
- * Written as two `!=` clauses rather than the equivalent `!=[...]` list form:
- * this string doubles as the InstantSearch index name, which travels through
- * the URL as a qs key, and qs parses percent-encoded square brackets in a key
- * as nesting — mangling the routed uiState so a reload or shared link loses
- * the query, refinements and sort. No other character here is special to qs.
+ * Written as two `!=` clauses rather than the equivalent `!=[...]` list form.
+ * A sort embedded in an InstantSearch index name becomes a qs key in the URL,
+ * and qs parses percent-encoded square brackets in a key as nesting, mangling
+ * the routed uiState. This string no longer rides in the index name, but the
+ * hearings and testimony relevance sorts do, so all three stay bracket-free.
  */
 export const billsRelevanceSort =
   "_eval(legislationType:!=`Order` && legislationType:!=`Extension Order`):desc,_text_match:desc,testimonyCount:desc"
