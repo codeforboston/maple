@@ -103,7 +103,7 @@ export const billsSearchParams = {
  * A sort embedded in an InstantSearch index name becomes a qs key in the URL,
  * and qs parses percent-encoded square brackets in a key as nesting, mangling
  * the routed uiState. This string no longer rides in the index name, but the
- * hearings and testimony relevance sorts do, so all three stay bracket-free.
+ * hearings relevance sort does, so all three stay bracket-free.
  */
 export const billsRelevanceSort =
   "_eval(legislationType:!=`Order` && legislationType:!=`Extension Order`):desc,_text_match:desc,testimonyCount:desc"
@@ -130,8 +130,9 @@ export const testimonySearchParams = {
   exclude_fields: "billIdVariants"
 } satisfies SearchParameters
 
-/** The app's "Relevance" sort option (see useTestimonySort in
- * testimony/TestimonySearch.tsx), and the sort the eval harness must use.
+/** The app's "Relevance" sort option and the Browse Testimony default (see
+ * useTestimonySort in testimony/TestimonySearch.tsx, which pins it as the
+ * adapter's sort_by), and the sort the eval harness must use.
  */
 export const testimonyRelevanceSort = "_text_match:desc,publishedAt:desc"
 
