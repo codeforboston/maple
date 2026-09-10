@@ -1,0 +1,3 @@
+# Created in README step 2 if it does not exist yet.
+bucket = "digital-testimony-prod-tfstate"
+prefix = "dns"
