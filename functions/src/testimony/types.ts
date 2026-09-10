@@ -1,4 +1,5 @@
 import {
+  Array,
   Boolean,
   InstanceOf,
   Literal as L,
@@ -74,6 +75,9 @@ export const countsByPositions = {
 export const TestimonySearchRecord = R({
   id: RtString,
   billId: RtString,
+  /** Space-separated forms of billId so "S 531" matches. See
+   * functions/src/bills/numberVariants.ts. */
+  billIdVariants: Array(RtString),
   court: Number,
   position: Union(L("endorse"), L("oppose"), L("neutral")),
   content: RtString,

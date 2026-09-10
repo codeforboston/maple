@@ -9,7 +9,7 @@
       "predeploy": ["yarn build:functions"],
       "source": "functions",
       "codebase": "maple",
-      "runtime": "nodejs20",
+      "runtime": "nodejs22",
       "runtimeConfig": ".runtimeconfig.json"
     },
     {

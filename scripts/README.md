@@ -300,6 +300,14 @@ Manages the Typesense search index. Integrates with Firebase secrets to retrieve
 yarn typesense-admin <command> --env <local|dev|prod>
 ```
 
+Unlike the rest of these scripts, `upsert-synonyms` writes **production search
+state**: the deployed `legislative` synonym set must match
+`functions/src/search/synonyms.ts` or synonym relevance silently degrades.
+Deploys keep it current on their own (`checkSearchIndexVersion` upserts it),
+so the command exists for local Typesense and for recovery. Deploy classes,
+ordering rules, and verification live in
+[`docs/search-deployment.md`](../docs/search-deployment.md).
+
 ### Commands
 
 <!-- TODO: document commands (console, create-search-key, list-keys, delete-key) -->

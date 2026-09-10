@@ -41,6 +41,7 @@ export function VirtualFilters({ type }: { type: "bill" | "testimony" }) {
       : [
           "court",
           "currentCommittee",
+          "legislationType",
           "city",
           "primarySponsor",
           "cosponsors",

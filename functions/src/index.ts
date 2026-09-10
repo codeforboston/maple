@@ -3,6 +3,7 @@ export {
   backfillTestimonyCounts,
   fetchBillBatch,
   startBillBatches,
+  runBillBackfillChunk,
   syncBillToSearchIndex,
   updateBillReferences,
   updateBillSearchIndex,
@@ -24,6 +25,7 @@ export {
   scrapeSingleHearingv2
 } from "./events"
 export {
+  runHearingBackfillChunk,
   syncHearingToSearchIndex,
   upgradeHearingSearchIndex
 } from "./hearings/search"
@@ -37,6 +39,7 @@ export { checkSearchIndexVersion, searchHealthCheck } from "./search"
 export {
   deleteTestimony,
   publishTestimony,
+  runTestimonyBackfillChunk,
   syncTestimonyToSearchIndex,
   upgradeTestimonySearchIndex,
   resolveReport as adminResolveReport

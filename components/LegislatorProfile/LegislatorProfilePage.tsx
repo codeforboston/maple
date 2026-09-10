@@ -376,6 +376,7 @@ export function LegislatorProfilePage({
         </Col>
         <Col md="3">
           <LegislatorSidebar
+            committeeList={member.Committees}
             court={court}
             legislatorData={legislatorData}
             legislatorId={legislatorId}

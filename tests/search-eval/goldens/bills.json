@@ -1,0 +1,1446 @@
+{
+  "collection": "bills",
+  "defaults": {
+    "sort_by": "_eval(legislationType:!=`Order` && legislationType:!=`Extension Order`):desc,_text_match:desc,testimonyCount:desc",
+    "courtFilter": true
+  },
+  "queries": [
+    {
+      "id": "exact-001",
+      "category": "exact-bill-id",
+      "query": "H.100",
+      "relevant": [
+        {
+          "rule": {
+            "field": "number",
+            "equals": "H100"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "exact-002",
+      "category": "exact-bill-id",
+      "query": "h100",
+      "relevant": [
+        {
+          "rule": {
+            "field": "number",
+            "equals": "H100"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "exact-003",
+      "category": "exact-bill-id",
+      "query": "H 100",
+      "relevant": [
+        {
+          "rule": {
+            "field": "number",
+            "equals": "H100"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "exact-004",
+      "category": "exact-bill-id",
+      "query": "S.9",
+      "relevant": [
+        {
+          "rule": {
+            "field": "number",
+            "equals": "S9"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "exact-005",
+      "category": "exact-bill-id",
+      "query": "s9",
+      "relevant": [
+        {
+          "rule": {
+            "field": "number",
+            "equals": "S9"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "exact-006",
+      "category": "exact-bill-id",
+      "query": "S 2564",
+      "relevant": [
+        {
+          "rule": {
+            "field": "number",
+            "equals": "S2564"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "exact-007",
+      "category": "exact-bill-id",
+      "query": "S2564",
+      "relevant": [
+        {
+          "rule": {
+            "field": "number",
+            "equals": "S2564"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "exact-008",
+      "category": "exact-bill-id",
+      "query": "H.4374",
+      "relevant": [
+        {
+          "rule": {
+            "field": "number",
+            "equals": "H4374"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "exact-009",
+      "category": "exact-bill-id",
+      "query": "h.73",
+      "relevant": [
+        {
+          "rule": {
+            "field": "number",
+            "equals": "H73"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "exact-010",
+      "category": "exact-bill-id",
+      "query": "H3999",
+      "relevant": [
+        {
+          "rule": {
+            "field": "number",
+            "equals": "H3999"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "exact-011",
+      "category": "exact-bill-id",
+      "query": "S.1333",
+      "relevant": [
+        {
+          "rule": {
+            "field": "number",
+            "equals": "S1333"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "exact-012",
+      "category": "exact-bill-id",
+      "query": "s 2475",
+      "relevant": [
+        {
+          "rule": {
+            "field": "number",
+            "equals": "S2475"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "exact-013",
+      "category": "exact-bill-id",
+      "query": "H600",
+      "relevant": [
+        {
+          "rule": {
+            "field": "number",
+            "equals": "H600"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "exact-014",
+      "category": "exact-bill-id",
+      "query": "H.1",
+      "relevant": [
+        {
+          "rule": {
+            "field": "number",
+            "equals": "H1"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "exact-015",
+      "category": "exact-bill-id",
+      "query": "S.1563",
+      "relevant": [
+        {
+          "rule": {
+            "field": "number",
+            "equals": "S1563"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "mc-001",
+      "category": "member-committee",
+      "query": "Diana DiZoglio",
+      "relevant": [
+        {
+          "rule": {
+            "anyField": ["primarySponsor", "cosponsors"],
+            "equals": "Diana DiZoglio"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "mc-002",
+      "category": "member-committee",
+      "query": "Bruce Tarr",
+      "relevant": [
+        {
+          "rule": {
+            "anyField": ["primarySponsor", "cosponsors"],
+            "equals": "Bruce E. Tarr"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "mc-003",
+      "category": "member-committee",
+      "query": "Jason Lewis",
+      "relevant": [
+        {
+          "rule": {
+            "anyField": ["primarySponsor", "cosponsors"],
+            "equals": "Jason M. Lewis"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "mc-004",
+      "category": "member-committee",
+      "query": "Tackey Chan",
+      "relevant": [
+        {
+          "rule": {
+            "anyField": ["primarySponsor", "cosponsors"],
+            "equals": "Tackey Chan"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "mc-005",
+      "category": "member-committee",
+      "query": "Julian Cyr",
+      "relevant": [
+        {
+          "rule": {
+            "anyField": ["primarySponsor", "cosponsors"],
+            "equals": "Julian Cyr"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "mc-006",
+      "category": "member-committee",
+      "query": "Cynthia Creem",
+      "relevant": [
+        {
+          "rule": {
+            "anyField": ["primarySponsor", "cosponsors"],
+            "equals": "Cynthia Stone Creem"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "mc-007",
+      "category": "member-committee",
+      "query": "Marjorie Decker",
+      "relevant": [
+        {
+          "rule": {
+            "anyField": ["primarySponsor", "cosponsors"],
+            "equals": "Marjorie C. Decker"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "mc-008",
+      "category": "member-committee",
+      "query": "Michael Moore",
+      "relevant": [
+        {
+          "rule": {
+            "anyField": ["primarySponsor", "cosponsors"],
+            "equals": "Michael O. Moore"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "mc-009",
+      "category": "member-committee",
+      "query": "Patrick O'Connor",
+      "relevant": [
+        {
+          "rule": {
+            "anyField": ["primarySponsor", "cosponsors"],
+            "equals": "Patrick M. O'Connor"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "mc-010",
+      "category": "member-committee",
+      "query": "Aaron Michlewitz",
+      "relevant": [
+        {
+          "rule": {
+            "anyField": ["primarySponsor", "cosponsors"],
+            "equals": "Aaron Michlewitz"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "mc-011",
+      "category": "member-committee",
+      "query": "Ways and Means Committee",
+      "relevant": [
+        {
+          "rule": {
+            "field": "currentCommittee",
+            "contains": "Ways and Means"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "mc-012",
+      "category": "member-committee",
+      "query": "Health Care Financing",
+      "relevant": [
+        {
+          "rule": {
+            "field": "currentCommittee",
+            "contains": "Health Care Financing"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "mc-013",
+      "category": "member-committee",
+      "query": "Committee on Revenue",
+      "relevant": [
+        {
+          "rule": {
+            "field": "currentCommittee",
+            "contains": "Committee on Revenue"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "mc-014",
+      "category": "member-committee",
+      "query": "Education Committee",
+      "relevant": [
+        {
+          "rule": {
+            "field": "currentCommittee",
+            "contains": "Education"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "mc-015",
+      "category": "member-committee",
+      "query": "Telecommunications Utilities and Energy",
+      "relevant": [
+        {
+          "rule": {
+            "field": "currentCommittee",
+            "contains": "Telecommunications"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "topic-001",
+      "category": "topic",
+      "query": "gun control",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "firearm"
+          },
+          "grade": 1
+        },
+        {
+          "rule": {
+            "field": "title",
+            "contains": "gun"
+          },
+          "grade": 1
+        },
+        {
+          "docId": "192-H4038",
+          "grade": 3
+        },
+        {
+          "docId": "192-S1563",
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "topic-002",
+      "category": "topic",
+      "query": "mental health",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "mental health"
+          },
+          "grade": 1
+        },
+        {
+          "docId": "192-H1090",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1039",
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "topic-003",
+      "category": "topic",
+      "query": "climate change",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "climate"
+          },
+          "grade": 1
+        },
+        {
+          "docId": "192-S9",
+          "grade": 3
+        },
+        {
+          "docId": "192-H2159",
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "topic-004",
+      "category": "topic",
+      "query": "offshore wind",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "offshore wind"
+          },
+          "grade": 1
+        },
+        {
+          "docId": "192-H3302",
+          "grade": 3
+        },
+        {
+          "docId": "192-H3310",
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "topic-005",
+      "category": "topic",
+      "query": "marijuana",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "marijuana"
+          },
+          "grade": 1
+        },
+        {
+          "rule": {
+            "field": "title",
+            "contains": "cannabis"
+          },
+          "grade": 1
+        },
+        {
+          "docId": "192-H154",
+          "grade": 3
+        },
+        {
+          "docId": "192-H145",
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "topic-006",
+      "category": "topic",
+      "query": "minimum wage",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "minimum wage"
+          },
+          "grade": 1
+        },
+        {
+          "docId": "192-S1176",
+          "grade": 3
+        },
+        {
+          "docId": "192-H2043",
+          "grade": 3
+        },
+        {
+          "docId": "192-H2013",
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "topic-007",
+      "category": "topic",
+      "query": "charter schools",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "charter school"
+          },
+          "grade": 1
+        },
+        {
+          "docId": "192-H712",
+          "grade": 3
+        },
+        {
+          "docId": "192-H696",
+          "grade": 3
+        },
+        {
+          "docId": "192-H676",
+          "grade": 1
+        },
+        {
+          "docId": "192-H598",
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "topic-008",
+      "category": "topic",
+      "query": "affordable housing",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "affordable housing"
+          },
+          "grade": 1
+        },
+        {
+          "docId": "192-H1384",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1386",
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "topic-009",
+      "category": "topic",
+      "query": "homelessness",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "homeless"
+          },
+          "grade": 1
+        },
+        {
+          "docId": "192-H1436",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1385",
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "topic-010",
+      "category": "topic",
+      "query": "opioid addiction",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "opioid"
+          },
+          "grade": 1
+        },
+        {
+          "docId": "192-H2086",
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "topic-011",
+      "category": "topic",
+      "query": "student loan forgiveness",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "student loan"
+          },
+          "grade": 1
+        },
+        {
+          "docId": "192-H1320",
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "topic-012",
+      "category": "topic",
+      "query": "domestic violence",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "domestic violence"
+          },
+          "grade": 1
+        },
+        {
+          "docId": "192-H1643",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1510",
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "topic-013",
+      "category": "topic",
+      "query": "sexual assault",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "sexual assault"
+          },
+          "grade": 1
+        },
+        {
+          "docId": "192-H1644",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1701",
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "topic-014",
+      "category": "topic",
+      "query": "solar energy",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "solar"
+          },
+          "grade": 1
+        },
+        {
+          "docId": "192-H3260",
+          "grade": 3
+        },
+        {
+          "docId": "192-H2164",
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "topic-015",
+      "category": "topic",
+      "query": "eviction",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "evict"
+          },
+          "grade": 1
+        },
+        {
+          "docId": "192-H1808",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1911",
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "topic-016",
+      "category": "topic",
+      "query": "vaccines",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "vaccin"
+          },
+          "grade": 1
+        },
+        {
+          "docId": "192-H2411",
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "topic-017",
+      "category": "topic",
+      "query": "telehealth",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "telehealth"
+          },
+          "grade": 1
+        },
+        {
+          "rule": {
+            "field": "title",
+            "contains": "telemedicine"
+          },
+          "grade": 1
+        },
+        {
+          "docId": "192-H1101",
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "topic-018",
+      "category": "topic",
+      "query": "voting by mail",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "voting by mail"
+          },
+          "grade": 1
+        },
+        {
+          "rule": {
+            "field": "title",
+            "contains": "mail in voting"
+          },
+          "grade": 1
+        },
+        {
+          "docId": "192-H73",
+          "grade": 3
+        },
+        {
+          "docId": "192-H787",
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "topic-019",
+      "category": "topic",
+      "query": "school lunch",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "student nutrition"
+          },
+          "grade": 1
+        },
+        {
+          "docId": "192-H3999",
+          "grade": 3
+        },
+        {
+          "docId": "192-H715",
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "topic-020",
+      "category": "topic",
+      "query": "renewable energy",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "renewable"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "syn-001",
+      "category": "synonym",
+      "query": "firearms",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "firearm"
+          },
+          "grade": 1
+        },
+        {
+          "rule": {
+            "field": "title",
+            "contains": "gun"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "syn-002",
+      "category": "synonym",
+      "query": "guns",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "firearm"
+          },
+          "grade": 1
+        },
+        {
+          "rule": {
+            "field": "title",
+            "contains": "gun"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "syn-003",
+      "category": "synonym",
+      "query": "educator",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "educator"
+          },
+          "grade": 1
+        },
+        {
+          "rule": {
+            "field": "title",
+            "contains": "teacher"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "syn-004",
+      "category": "synonym",
+      "query": "teachers",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "educator"
+          },
+          "grade": 1
+        },
+        {
+          "rule": {
+            "field": "title",
+            "contains": "teacher"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "syn-005",
+      "category": "synonym",
+      "query": "cannabis",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "cannabis"
+          },
+          "grade": 1
+        },
+        {
+          "rule": {
+            "field": "title",
+            "contains": "marijuana"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "syn-006",
+      "category": "synonym",
+      "query": "doctors",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "physician"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "syn-007",
+      "category": "synonym",
+      "query": "elderly",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "elderly"
+          },
+          "grade": 1
+        },
+        {
+          "rule": {
+            "field": "title",
+            "contains": "older adult"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "syn-008",
+      "category": "synonym",
+      "query": "senior citizens",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "senior citizen"
+          },
+          "grade": 1
+        },
+        {
+          "rule": {
+            "field": "title",
+            "contains": "elderly"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "syn-009",
+      "category": "synonym",
+      "query": "liquor",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "liquor"
+          },
+          "grade": 3
+        },
+        {
+          "rule": {
+            "field": "title",
+            "contains": "alcoholic beverage"
+          },
+          "grade": 3
+        },
+        {
+          "rule": {
+            "field": "title",
+            "contains": "alcohol"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "syn-010",
+      "category": "synonym",
+      "query": "childcare",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "childcare"
+          },
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "mis-001",
+      "category": "misspelling",
+      "query": "mental helth",
+      "sameAs": "topic-002"
+    },
+    {
+      "id": "mis-002",
+      "category": "misspelling",
+      "query": "clmate change",
+      "sameAs": "topic-003"
+    },
+    {
+      "id": "mis-003",
+      "category": "misspelling",
+      "query": "marijuanna",
+      "sameAs": "topic-005"
+    },
+    {
+      "id": "mis-004",
+      "category": "misspelling",
+      "query": "afordable housing",
+      "sameAs": "topic-008"
+    },
+    {
+      "id": "mis-005",
+      "category": "misspelling",
+      "query": "homelesness",
+      "sameAs": "topic-009"
+    },
+    {
+      "id": "mis-006",
+      "category": "misspelling",
+      "query": "opiod",
+      "sameAs": "topic-010"
+    },
+    {
+      "id": "mis-007",
+      "category": "misspelling",
+      "query": "domestic violance",
+      "sameAs": "topic-012"
+    },
+    {
+      "id": "mis-008",
+      "category": "misspelling",
+      "query": "evicton",
+      "sameAs": "topic-015"
+    },
+    {
+      "id": "mis-009",
+      "category": "misspelling",
+      "query": "vacines",
+      "sameAs": "topic-016"
+    },
+    {
+      "id": "mis-010",
+      "category": "misspelling",
+      "query": "minimun wage",
+      "sameAs": "topic-006"
+    },
+    {
+      "id": "hyp-001",
+      "category": "hyphenation",
+      "query": "low income",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "low income"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hyp-002",
+      "category": "hyphenation",
+      "query": "long term care",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "long term"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hyp-003",
+      "category": "hyphenation",
+      "query": "well being",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "well being"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hyp-004",
+      "category": "hyphenation",
+      "query": "decision making",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "decision making"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hyp-005",
+      "category": "hyphenation",
+      "query": "zero emission vehicles",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "zero emission"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "hyp-006",
+      "category": "hyphenation",
+      "query": "post traumatic stress",
+      "relevant": [
+        {
+          "rule": {
+            "field": "title",
+            "contains": "post traumatic"
+          },
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "pl-001",
+      "category": "plain-language",
+      "query": "tenants facing eviction",
+      "relevant": [
+        {
+          "docId": "192-H1434",
+          "grade": 3
+        },
+        {
+          "docId": "192-S891",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1436",
+          "grade": 3
+        },
+        {
+          "docId": "192-S874",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1440",
+          "grade": 3
+        },
+        {
+          "docId": "192-S889",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1911",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1808",
+          "grade": 1
+        },
+        {
+          "docId": "192-H4505",
+          "grade": 1
+        },
+        {
+          "docId": "192-S921",
+          "grade": 1
+        },
+        {
+          "docId": "192-H1404",
+          "grade": 1
+        },
+        {
+          "docId": "192-H4354",
+          "grade": 1
+        },
+        {
+          "docId": "192-S944",
+          "grade": 1
+        },
+        {
+          "docId": "192-H4148",
+          "grade": 1
+        },
+        {
+          "docId": "192-S2467",
+          "grade": 1
+        },
+        {
+          "docId": "192-H1378",
+          "grade": 1
+        },
+        {
+          "docId": "192-S886",
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "pl-002",
+      "category": "plain-language",
+      "query": "cap insulin costs",
+      "relevant": [
+        {
+          "docId": "192-H4034",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1055",
+          "grade": 3
+        },
+        {
+          "docId": "192-S2651",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1132",
+          "grade": 1
+        },
+        {
+          "docId": "192-S691",
+          "grade": 1
+        },
+        {
+          "docId": "192-S2537",
+          "grade": 1
+        },
+        {
+          "docId": "192-H729",
+          "grade": 1
+        },
+        {
+          "docId": "192-S2695",
+          "grade": 1
+        },
+        {
+          "docId": "192-S771",
+          "grade": 1
+        },
+        {
+          "docId": "192-S1991",
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "pl-003",
+      "category": "plain-language",
+      "query": "lead in school drinking water",
+      "relevant": [
+        {
+          "docId": "192-H906",
+          "grade": 3
+        },
+        {
+          "docId": "192-S580",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1725",
+          "grade": 1
+        },
+        {
+          "docId": "192-S1056",
+          "grade": 1
+        },
+        {
+          "docId": "192-H939",
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "pl-004",
+      "category": "plain-language",
+      "query": "property tax break for solar",
+      "relevant": [
+        {
+          "docId": "192-H2827",
+          "grade": 3
+        },
+        {
+          "docId": "192-H3000",
+          "grade": 3
+        }
+      ]
+    },
+    {
+      "id": "pl-005",
+      "category": "plain-language",
+      "query": "background checks for gun sales",
+      "relevant": [
+        {
+          "docId": "192-H3729",
+          "grade": 3
+        },
+        {
+          "docId": "192-H3846",
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "id": "pl-006",
+      "category": "plain-language",
+      "query": "limit rent increases",
+      "relevant": [
+        {
+          "docId": "192-H1440",
+          "grade": 3
+        },
+        {
+          "docId": "192-S889",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1404",
+          "grade": 3
+        },
+        {
+          "docId": "192-H4354",
+          "grade": 3
+        },
+        {
+          "docId": "192-H1378",
+          "grade": 1
+        },
+        {
+          "docId": "192-S886",
+          "grade": 1
+        },
+        {
+          "docId": "192-H3721",
+          "grade": 1
+        }
+      ]
+    }
+  ]
+}

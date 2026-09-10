@@ -42,7 +42,11 @@ export type SortByWithConfigurationItem = SortByItem & {
 
 export const SortBy = ({ items }: { items: SortByWithConfigurationItem[] }) => {
   const sortBy = useSortBy({ items }),
-    selected = items.find(i => i.value === sortBy.currentRefinement)!
+    // A routed URL can restore a sort value that no longer exists — an option
+    // renamed since the link was shared. connectSortBy passes it through with
+    // only a dev-mode warning, so fall back to the default option instead of
+    // crashing the page on `.configure` of undefined.
+    selected = items.find(i => i.value === sortBy.currentRefinement) ?? items[0]
   useConfigure(selected.configure ?? {})
   return (
     <StyledSelect

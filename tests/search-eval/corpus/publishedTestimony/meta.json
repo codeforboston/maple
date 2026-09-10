@@ -1,0 +1,13 @@
+{
+  "alias": "publishedTestimony",
+  "source": "prod",
+  "count": 1056,
+  "courts": {
+    "192": 2,
+    "193": 487,
+    "194": 567
+  },
+  "jsonlMd5": "2f6c3a70929df36f4ffa373a44486cf7",
+  "orderBy": "publishedAt:desc",
+  "redacted": ["authorUid", "fullName"]
+}

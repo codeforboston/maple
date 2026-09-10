@@ -1,6 +1,6 @@
 import { Hit } from "instantsearch.js"
 import { useInstantSearch } from "react-instantsearch"
-import { SearchPage } from "../shared"
+import { SearchPage, SortOptionInput } from "../shared"
 import { HearingHit } from "./HearingHit"
 import {
   CURRENT_COURT_NUMBER,
@@ -8,33 +8,20 @@ import {
   formatCourtSubtitle
 } from "../courtSessions"
 import { useMemo, useRef } from "react"
-
-/* carbon copy of type in functions/src/hearings/search.ts */
-type HearingSearchRecord = {
-  id: string
-  eventId: number
-  title: string
-  description?: string
-  startsAt: number
-  month: string
-  year: number
-  committeeCode?: string
-  committeeName?: string
-  locationName?: string
-  locationCity?: string
-  chairNames: string[]
-  agendaTopics: string[]
-  billNumbers: string[]
-  billSlugs: string[]
-  court: number
-  hasVideo: boolean
-}
+import type { HearingSearchRecord } from "functions/src/hearings/types"
+import { hearingsRelevanceSort, hearingsSearchParams } from "../searchParams"
 
 export type HearingHitData = Hit<HearingSearchRecord>
 
-const useHearingSort = () => {
+/** Relevance searches every hearing, past and upcoming. Clearing the window
+ * explicitly is load-bearing: SortBy calls useConfigure(selected.configure ?? {}),
+ * so the previously selected option's startsAt bound has to be overwritten.
+ */
+const noTimeWindow: SortOptionInput["configure"] = { numericRefinements: {} }
+
+const useHearingSort = (): SortOptionInput[] => {
   const now = useRef(new Date().getTime())
-  return useMemo(
+  return useMemo<SortOptionInput[]>(
     () => [
       {
         labelKey: "sort_by.past_newest",
@@ -59,8 +46,11 @@ const useHearingSort = () => {
         }
       },
       {
+        // "upcoming" already owns startsAt:asc, and react-instantsearch needs a
+        // unique index name per sort option — eventId is the tiebreak that
+        // makes this one distinct without changing the ordering users see.
         labelKey: "sort_by.past_oldest",
-        value: "hearings/sort/startsAt:asc,startsAt:asc",
+        value: "hearings/sort/startsAt:asc,eventId:asc",
         configure: {
           numericRefinements: {
             startsAt: {
@@ -68,6 +58,12 @@ const useHearingSort = () => {
             }
           }
         }
+      },
+      {
+        // The only sort under which text ranking is observable.
+        labelKey: "sort_by.relevance",
+        value: `hearings/sort/${hearingsRelevanceSort}`,
+        configure: noTimeWindow
       }
     ],
     []
@@ -89,11 +85,7 @@ export const HearingSearch = () => {
           }
         }
       }}
-      searchParameters={{
-        query_by:
-          "title,description,agendaTopics,billNumbers,chairNames,locationName,locationCity",
-        sort_by: "startsAt:asc"
-      }}
+      searchParameters={hearingsSearchParams}
       hitComponent={HearingHit}
       filterPanelConfig={{
         filters: [

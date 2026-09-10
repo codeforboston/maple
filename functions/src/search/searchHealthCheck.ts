@@ -10,7 +10,7 @@ const connectionTimeoutSeconds = 5,
 export const searchHealthCheck = runWith({
   secrets: ["TYPESENSE_API_KEY"],
   timeoutSeconds: functionTimeoutSeconds,
-  memory: "128MB"
+  memory: "256MB"
 })
   .pubsub.schedule("every 30 minutes")
   .retryConfig({
