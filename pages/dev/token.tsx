@@ -11,10 +11,12 @@
  *   4. Click "Copy" and paste into your curl / MCP client
  */
 
+import { useTranslation } from "next-i18next"
+import React, { useState, useCallback } from "react"
 import { useAuth } from "components/auth"
+import { Internal } from "components/links"
 import { createPage } from "components/page"
 import { createGetStaticTranslationProps } from "components/translations"
-import React, { useState, useCallback } from "react"
 
 function TokenPage() {
   const { user } = useAuth()
@@ -22,6 +24,8 @@ function TokenPage() {
   const [expiry, setExpiry] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const { t } = useTranslation("auth")
 
   const getToken = useCallback(async () => {
     if (!user) return
@@ -50,15 +54,16 @@ function TokenPage() {
   if (!user) {
     return (
       <div style={styles.container}>
-        {/* eslint-disable i18next/no-literal-string */}
-        <h2 style={styles.heading}>Firebase ID Token</h2>
+        <h2 style={styles.heading}>{t("firebaseIdToken")}</h2>
         <p style={styles.warning}>
-          ⚠️ You are not signed in. Please{" "}
-          <a href="/login" style={styles.link}>
-            sign in
-          </a>{" "}
-          first.
-          {/* eslint-enable i18next/no-literal-string */}
+          ⚠️ {t("notSignedIn")}{" "}
+          <Internal
+            href="/login"
+            style={{ ...styles.link, textTransform: "lowercase" }}
+          >
+            {t("signIn")}
+          </Internal>{" "}
+          {t("first")}
         </p>
       </div>
     )
@@ -66,7 +71,7 @@ function TokenPage() {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.heading}>Firebase ID Token</h2>
+      <h2 style={styles.heading}>{t("firebaseIdToken")}</h2>
 
       <p style={styles.meta}>
         Signed in as <strong>{user.email ?? user.uid}</strong>
