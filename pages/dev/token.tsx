@@ -56,13 +56,15 @@ function TokenPage() {
       <div style={styles.container}>
         <h2 style={styles.heading}>{t("firebaseIdToken")}</h2>
         <p style={styles.warning}>
-          ⚠️ {t("notSignedIn")}{" "}
+          ⚠️ {t("notSignedIn")}
+          {"\u00A0"}
           <Internal
             href="/login"
             style={{ ...styles.link, textTransform: "lowercase" }}
           >
             {t("signIn")}
-          </Internal>{" "}
+          </Internal>
+          {"\u00A0"}
           {t("first")}
         </p>
       </div>
