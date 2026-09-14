@@ -46,9 +46,7 @@ const BrowseHearingsPage = createPage({
             {hearings.map(hearing => (
               <tr key={hearing.hid}>
                 <td>
-                  <Link href={`/hearings/${hearing.hid}`}>
-                    {hearing.title}
-                  </Link>
+                  <Link href={`/hearings/${hearing.hid}`}>{hearing.title}</Link>
                 </td>
                 <td>{hearing.date}</td>
                 <td>{hearing.chamber}</td>

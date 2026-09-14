@@ -31,11 +31,13 @@ export type DDUtterance = {
   content: string
   first: string | null
   last: string | null
+  party: string | null
   person_type: string
   pid: number | null
   hid: number
   uid: number
   file_id: string
+  // Offset in seconds from the start of the video identified by `file_id`.
   timestamp: number
   date: number
 }
@@ -77,7 +79,9 @@ export async function fetchDDUtterances(
 
   const body: DDUtterancesResponse = await res.json()
   const utterances = body.data?.utterances ?? []
-  return [...utterances].sort((a, b) => a.timestamp - b.timestamp)
+  // `date` is an absolute epoch timestamp, unlike `timestamp` which resets
+  // per video, so it's the only reliable way to sort across multiple videos.
+  return [...utterances].sort((a, b) => a.date - b.date)
 }
 
 export function speakerName(utterance: DDUtterance): string | null {
