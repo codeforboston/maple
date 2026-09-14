@@ -55,7 +55,7 @@ locals {
     "api A" = { ttl = 14400, rrdatas = ["170.187.161.99"] }
 
     # Squarespace's own Domain Connect discovery record for this domain.
-    "_domainconnect CNAME" = { ttl = 3600, rrdatas = ["_domainconnect.domains.squarespace.com."] }
+    "_domainconnect CNAME" = { ttl = 14400, rrdatas = ["_domainconnect.domains.squarespace.com."] }
 
     # Google domain/site verification CNAME (Search Console or Workspace).
     "islwqbu65xh4 CNAME" = { ttl = 14400, rrdatas = ["gv-qby53dgnrzih2v.dv.googlehosted.com."] }
