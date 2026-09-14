@@ -56,16 +56,16 @@ function TokenPage() {
       <div style={styles.container}>
         <h2 style={styles.heading}>{t("firebaseIdToken")}</h2>
         <p style={styles.warning}>
-          ⚠️ {t("notSignedIn")}
-          {"\u00A0"}
+          {/* eslint-disable i18next/no-literal-string */}
+          ⚠️ {t("notSignedIn")}{" "}
           <Internal
             href="/login"
             style={{ ...styles.link, textTransform: "lowercase" }}
           >
             {t("signIn")}
-          </Internal>
-          {"\u00A0"}
+          </Internal>{" "}
           {t("first")}
+          {/* eslint-enable i18next/no-literal-string */}
         </p>
       </div>
     )
