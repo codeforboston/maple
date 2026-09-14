@@ -5,12 +5,12 @@
 # (the dormant Linode chart under infra/app) stays until its removal is its
 # own change.
 #
-# INCOMPLETE — DO NOT CUT OVER ON THIS FILE ALONE. verify.py (README step
-# 3) fails until every name the live zone serves is here; today it lists
-# CNAMEs, by NSEC3 hash, that are not. Read them off the Squarespace panel in
-# README step 1 and add them. They look like SendGrid's numeric `em<n>`/
-# `url<n>` link-branding hosts for the `u32856346.wl097.sendgrid.net` account
-# the DKIM CNAMEs below point at.
+# The Squarespace panel's remaining names (domain connect discovery, a Google
+# verification CNAME, and SendGrid's numeric `em<n>`/`url<n>` link-branding
+# hosts for the `u32856346.wl097.sendgrid.net` account the DKIM CNAMEs below
+# point at) have been added below. DO NOT CUT OVER ON THIS FILE ALONE without
+# rerunning verify.py (README step 3): it fails until every name the live
+# zone serves is here.
 #
 # The apex NS and SOA are absent because Cloud DNS creates and owns them.
 #
@@ -53,6 +53,18 @@ locals {
 
     # Linode host of the dormant k8s chart (infra/app). Kept as is.
     "api A" = { ttl = 14400, rrdatas = ["170.187.161.99"] }
+
+    # Squarespace's own Domain Connect discovery record for this domain.
+    "_domainconnect CNAME" = { ttl = 3600, rrdatas = ["_domainconnect.domains.squarespace.com."] }
+
+    # Google domain/site verification CNAME (Search Console or Workspace).
+    "islwqbu65xh4 CNAME" = { ttl = 14400, rrdatas = ["gv-qby53dgnrzih2v.dv.googlehosted.com."] }
+
+    # SendGrid link branding / click-tracking hosts for the
+    # u32856346.wl097.sendgrid.net account (see the DKIM CNAMEs above).
+    "32856346 CNAME" = { ttl = 14400, rrdatas = ["sendgrid.net."] }
+    "em4225 CNAME"   = { ttl = 14400, rrdatas = ["u32856346.wl097.sendgrid.net."] }
+    "url4917 CNAME"  = { ttl = 14400, rrdatas = ["sendgrid.net."] }
   }
 }
 
