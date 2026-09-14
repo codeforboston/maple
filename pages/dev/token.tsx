@@ -11,7 +11,7 @@
  *   4. Click "Copy" and paste into your curl / MCP client
  */
 
-import { useTranslation } from "next-i18next"
+import { Trans, useTranslation } from "next-i18next"
 import React, { useState, useCallback } from "react"
 import { useAuth } from "components/auth"
 import { Internal } from "components/links"
@@ -76,16 +76,13 @@ function TokenPage() {
       <h2 style={styles.heading}>{t("firebaseIdToken")}</h2>
 
       <p style={styles.meta}>
-        Signed in as <strong>{user.email ?? user.uid}</strong>
+        {t("signedInAs.1")}
+        <strong>{user.email ?? user.uid}</strong>
       </p>
 
-      <p style={styles.instructions}>
-        Use this token to connect an MCP client (e.g. Claude Code) to the MAPLE
-        MCP server. Paste it into your client config as shown below, then
-        reconnect.
-      </p>
+      <p style={styles.instructions}>{t("signedInAs.2")}</p>
 
-      <h3 style={styles.subheading}>Claude Code / .mcp.json</h3>
+      <h3 style={styles.subheading}>{t("signedInAs.3")}</h3>
       <pre style={styles.code}>
         {`{
   "mcpServers": {
@@ -112,7 +109,12 @@ function TokenPage() {
         )}
       </div>
 
-      {error && <p style={styles.error}>Error: {error}</p>}
+      {error && (
+        <p style={styles.error}>
+          {t("error")}
+          {error}
+        </p>
+      )}
 
       {token && (
         <>
@@ -123,31 +125,28 @@ function TokenPage() {
             onClick={e => (e.target as HTMLTextAreaElement).select()}
           />
           <p style={styles.expiry}>
-            ⏱ Expires: <strong>{expiry}</strong>
+            {t("expires.1")}
+            <strong>{expiry}</strong>
           </p>
         </>
       )}
 
       <div style={styles.infoBox}>
         <p style={styles.infoText}>
-          <strong>⏱ Tokens expire after 1 hour.</strong> Return here and click
-          &ldquo;Refresh Token&rdquo; when yours expires, then update your
-          client config with the new value.
+          <Trans i18nKey="expires.2" components={{ bold: <strong /> }} t={t} />
         </p>
         <p style={styles.infoText}>
-          <strong>🔑 Need a long-lived token?</strong> Organisations and
-          persistent integrations can request an <em>agent key</em> — a
-          non-expiring credential stored in Firestore — from the MAPLE team.
-          Agent keys work in the same{" "}
-          <code style={styles.inlineCode}>Authorization: Bearer</code> header
-          and never need refreshing.
+          <Trans
+            i18nKey="expires.3"
+            components={{ bold: <strong />, italics: <em /> }}
+            t={t}
+          />
+          <code style={styles.inlineCode}>{t("expires.4")}</code>
+          {t("expires.5")}
         </p>
       </div>
 
-      <p style={styles.devNote}>
-        🔒 Do not share your token. It grants access to the MAPLE MCP server on
-        behalf of your account.
-      </p>
+      <p style={styles.devNote}>{t("expires.6")}</p>
     </div>
   )
 }
