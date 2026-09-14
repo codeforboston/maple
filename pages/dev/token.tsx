@@ -50,7 +50,7 @@ function TokenPage() {
   if (!user) {
     return (
       <div style={styles.container}>
-        {/* eslint-disable i18next/no-literal-string --Dev notes don't require internationalization */}
+        {/* eslint-disable i18next/no-literal-string: "warning"* --Dev notes don't require internationalization */}
         <h2 style={styles.heading}>Firebase ID Token</h2>
         <p style={styles.warning}>
           ⚠️ You are not signed in. Please{" "}
@@ -58,7 +58,7 @@ function TokenPage() {
             sign in
           </a>{" "}
           first.
-          {/* eslint-enable react/jsx-no-bind */}
+          {/* eslint-enable i18next/no-literal-string */}
         </p>
       </div>
     )
