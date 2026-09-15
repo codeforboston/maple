@@ -30,7 +30,7 @@
       "smallDonorsSubtitle": "Under $200 contributions",
       "totalRaised": "Total Raised*",
       "totalRaisedFootnote": "*after processing fees, through {{date}}",
-      "totalRaisedSubtitle": "From {{count}} contributors",
+      "totalRaisedSubtitle": "From {{count}} contributions",
       "totalSpent": "Total Spent",
       "totalSpentSubtitle": "As of {{date}}"
     },
