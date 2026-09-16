@@ -19,15 +19,6 @@ export const formatPhoneNumber = (value: string) => {
     `
 }
 
-export function shuffleArray(array: any) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-
-    ;[array[i], array[j]] = [array[j], array[i]]
-  }
-  return array
-}
-
 export const TabBlock = styled.div`
   background-color: white;
   border: 1px #b8c0c9 solid;
