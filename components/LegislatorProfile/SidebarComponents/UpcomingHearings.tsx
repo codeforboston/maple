@@ -78,19 +78,17 @@ export function UpcomingHearings({ committeeList }: { committeeList: any[] }) {
     }
   }
 
-  const LegislatorCommitteCodes = committeeList.map(code => code.CommitteeCode)
+  const LegislatorCommitteeCodes = committeeList.map(code => code.CommitteeCode)
 
   let legislatorEvents: any[] = []
 
   if (events) {
     eventList.forEach(event => {
-      if (LegislatorCommitteCodes.includes(event.code)) {
+      if (LegislatorCommitteeCodes.includes(event.code)) {
         legislatorEvents.push(event)
       }
     })
   }
-
-  console.log("legislatorEvents", legislatorEvents)
 
   return (
     <SidebarBlock className="mb-2">
