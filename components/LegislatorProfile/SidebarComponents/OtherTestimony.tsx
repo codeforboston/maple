@@ -108,6 +108,31 @@ const TestimonyText = styled.div`
   margin-bottom: 3px;
 `
 
+type TestimonyHitRecord = {
+  id: string
+  billId: string
+  court: number
+  position: "endorse" | "oppose" | "neutral"
+  content: string
+  authorDisplayName: string
+  publishedAt: number
+}
+
+function ConfigureParams({
+  court,
+  billIds
+}: {
+  court: number
+  billIds: string[]
+}) {
+  const configure = {
+    hitsPerPage: 3,
+    filters: `court:=${court} && billId:=[${billIds.join(",")}]`
+  } as any
+  useConfigure(configure)
+  return null
+}
+
 export const OtherTestimony = ({
   court,
   sponsoredBills
