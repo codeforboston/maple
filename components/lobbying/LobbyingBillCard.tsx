@@ -68,10 +68,10 @@ export const LobbyingBillCard: React.FC<LobbyingBillCardProps> = ({
   return (
     <div style={cardStyle} className={className}>
       <div style={headerStyle}>
-        <span style={titleStyle}>{t("lobbying:titles.overview")}</span>
-        <span style={countStyle}>
-          {t("lobbying:billCard.filingCount_other", { count: total })}
-        </span>
+        <span style={titleStyle}>{t("lobbying:billCard.title")}</span>
+        <a href={explorerHref} style={viewAllLinkStyle}>
+          {t("lobbying:billCard.viewAll")}
+        </a>
       </div>
 
       <PositionBar counts={counts} total={total} />
@@ -100,6 +100,7 @@ export const LobbyingBillCard: React.FC<LobbyingBillCardProps> = ({
         showClient
         showFirm
         showAmount={false}
+        bordered
       />
       <LobbyingPaginationBar
         page={page}
@@ -107,11 +108,8 @@ export const LobbyingBillCard: React.FC<LobbyingBillCardProps> = ({
         totalItems={totalItems}
         pageSize={PAGE_SIZE}
         onPage={setPage}
+        itemLabel={t("lobbying:billCard.filingsLabel")}
       />
-
-      <a href={explorerHref} style={viewAllLinkStyle}>
-        {t("lobbying:billCard.viewAll")}
-      </a>
     </div>
   )
 }
@@ -225,11 +223,6 @@ const titleStyle: React.CSSProperties = {
   letterSpacing: "0.06em"
 }
 
-const countStyle: React.CSSProperties = {
-  fontSize: 12,
-  color: MAPLE_COLORS.textMuted
-}
-
 const barContainerStyle: React.CSSProperties = {
   display: "flex",
   height: 8,
@@ -259,10 +252,9 @@ const legendItemStyle: React.CSSProperties = {
 }
 
 const viewAllLinkStyle: React.CSSProperties = {
-  display: "block",
-  fontSize: 13,
+  fontSize: 12,
   fontWeight: 600,
   color: MAPLE_COLORS.primary,
   textDecoration: "none",
-  marginTop: "0.5rem"
+  whiteSpace: "nowrap"
 }

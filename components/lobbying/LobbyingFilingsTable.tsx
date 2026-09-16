@@ -14,6 +14,7 @@ interface LobbyingFilingsTableProps {
   showActivity?: boolean
   maxRows?: number
   onViewAll?: () => void
+  bordered?: boolean
 }
 
 export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
@@ -24,7 +25,8 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
   showAmount = true,
   showActivity = false,
   maxRows,
-  onViewAll
+  onViewAll,
+  bordered = false
 }) => {
   const { t } = useTranslation("lobbying")
   const rows = maxRows ? filings.slice(0, maxRows) : filings
@@ -39,7 +41,17 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
   }
 
   return (
-    <div>
+    <div
+      style={
+        bordered
+          ? {
+              border: "1px solid var(--bs-border-color)",
+              borderRadius: 6,
+              overflow: "hidden"
+            }
+          : undefined
+      }
+    >
       <Table hover responsive size="sm" style={tableStyle}>
         <thead>
           <tr style={theadRowStyle}>
@@ -138,8 +150,10 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
 
 const tableStyle: React.CSSProperties = {
   fontSize: 13,
-  color: MAPLE_COLORS.textBody
-}
+  color: MAPLE_COLORS.textBody,
+  "--bs-table-bg": "var(--bs-gray-100)",
+  "--bs-table-hover-bg": "rgba(15, 23, 42, 0.06)"
+} as React.CSSProperties
 
 const theadRowStyle: React.CSSProperties = {
   fontSize: 11,

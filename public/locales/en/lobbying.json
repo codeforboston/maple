@@ -7,7 +7,8 @@
   },
   "pagination": {
     "prev": "← Prev",
-    "next": "Next →"
+    "next": "Next →",
+    "pageNumber": "Page number"
   },
   "misc": {
     "disclosures": "Disclosures",
@@ -82,9 +83,11 @@
     "firm": "Lobbyist Profile"
   },
   "billCard": {
+    "title": "Lobbying Activity",
     "filingCount_one": "{{count}} lobbying filing",
     "filingCount_other": "{{count}} lobbying filings",
     "viewAll": "Open in Lobbying Explorer →",
-    "showingOf": "Showing {{showing}} of {{total}} filings"
+    "showingOf": "Showing {{showing}} of {{total}} filings",
+    "filingsLabel": "Lobbying filings"
   }
 }
