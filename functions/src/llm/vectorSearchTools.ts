@@ -33,6 +33,11 @@ const billsSchema = z.object({
   query: z
     .string()
     .describe("A natural-language description of the bill topic to search for")
+  ,
+  includeFullText: z
+    .boolean()
+    .optional()
+    .describe("If true, include the bill's full text in results (default false).")
 })
 
 export const searchBillsTool = new DynamicStructuredTool({
@@ -43,8 +48,8 @@ export const searchBillsTool = new DynamicStructuredTool({
     "For questions that may involve both bills and ballot questions, prefer search_policies.",
   schema: billsSchema,
   func: async (input: unknown) => {
-    const { query } = input as z.infer<typeof billsSchema>
-    return searchBills(query)
+    const { query, includeFullText } = input as z.infer<typeof billsSchema>
+    return searchBills(query, undefined, includeFullText)
   }
 })
 
@@ -83,6 +88,11 @@ const policiesSchema = z.object({
     .describe(
       "A natural-language description of the policy topic or issue to search for"
     )
+  ,
+  includeFullText: z
+    .boolean()
+    .optional()
+    .describe("If true, include bill full text in bill results (default false).")
 })
 
 export const searchPoliciesTool = new DynamicStructuredTool({
@@ -94,8 +104,8 @@ export const searchPoliciesTool = new DynamicStructuredTool({
     "in a bill, a ballot question, or both.",
   schema: policiesSchema,
   func: async (input: unknown) => {
-    const { query } = input as z.infer<typeof policiesSchema>
-    return searchPolicies(query)
+    const { query, includeFullText } = input as z.infer<typeof policiesSchema>
+    return searchPolicies(query, undefined, includeFullText)
   }
 })
 

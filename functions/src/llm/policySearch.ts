@@ -75,14 +75,29 @@ function truncate(text: string | undefined, length = MAX_SNIPPET_LENGTH): string
   return text.length > length ? `${text.slice(0, length)}...` : text
 }
 
-export function formatBillDoc(doc: QueryDocumentSnapshot<DocumentData>): string {
+export function formatBillDoc(
+  doc: QueryDocumentSnapshot<DocumentData>,
+  includeFullText = false
+): string {
   const data = doc.data()
   const court = doc.ref.parent.parent?.id ?? "unknown"
-  return [
+
+  const parts: string[] = [
     `Bill ${data.id ?? doc.id} (court ${court})`,
-    `Title: ${data.content?.Title ?? "Unknown"}`,
-    `Text: ${truncate(data.content?.DocumentText)}`
-  ].join("\n")
+    `Title: ${data.content?.Title ?? "Unknown"}`
+  ]
+
+  // By default return the short summary (if present). Full text is
+  // potentially large and expensive to include — make it opt-in.
+  if (!includeFullText) {
+    // Use top-level summary when available; otherwise fall back to a
+    // short snippet of the document text.
+    parts.push(`Summary: ${truncate(data.summary ?? data.content?.DocumentText)}`)
+  } else {
+    parts.push(`Text: ${truncate(data.content?.DocumentText)}`)
+  }
+
+  return parts.join("\n")
 }
 
 export function formatBallotQuestionDoc(
@@ -188,14 +203,14 @@ export async function searchTestimony(
  */
 export async function searchBills(
   query: string,
-  topK = LLM_CONFIG.vectorSearchTopK
+  topK = LLM_CONFIG.vectorSearchTopK,
+  includeFullText = false
 ): Promise<string> {
   const embedding = await embedText(query)
   const docs = await findNearest(db.collectionGroup("bills"), embedding, topK)
 
   if (docs.length === 0) return "No matching bills found."
-
-  return docs.map(formatBillDoc).join("\n\n")
+  return docs.map(doc => formatBillDoc(doc, includeFullText)).join("\n\n")
 }
 
 /**
@@ -232,7 +247,8 @@ export async function searchBallotQuestions(
  */
 export async function searchPolicies(
   query: string,
-  topK = LLM_CONFIG.vectorSearchTopK
+  topK = LLM_CONFIG.vectorSearchTopK,
+  includeFullText = false
 ): Promise<string> {
   const embedding = await embedText(query)
 
@@ -260,7 +276,7 @@ export async function searchPolicies(
 
   const scoredBills: ScoredEntry[] = billDocs.map(doc => ({
     score: relevanceScore(doc),
-    formatted: `[Bill]\n${formatBillDoc(doc)}`
+    formatted: `[Bill]\n${formatBillDoc(doc, includeFullText)}`
   }))
 
   const scoredBqs: ScoredEntry[] = bqDocs.map(doc => ({
