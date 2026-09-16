@@ -19,7 +19,7 @@ export function LegislatorSidebar({
   legislatorData: any[]
   legislatorId: string
   memberCode: string
-  sponsoredBills: any[]
+  sponsoredBills?: string[]
 }) {
   return (
     <>

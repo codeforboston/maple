@@ -10,6 +10,21 @@ import styles from "./OtherTestimony.module.css"
 
 import { usePublishedTestimonyListing } from "components/db"
 
+import { DateTime } from "luxon"
+import {
+  InstantSearch,
+  useConfigure,
+  useHits,
+  useInstantSearch
+} from "react-instantsearch"
+import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
+
+import { Spinner } from "components/bootstrap"
+import { formatBillId, truncateText } from "components/formatting"
+import { Internal, maple } from "components/links"
+import { getServerConfig } from "components/search/common"
+import { testimonySearchParams } from "components/search/searchParams"
+
 const TestimonyBlock = styled.div`
   background: #f8f9fa;
   border-radius: 6px;
@@ -98,7 +113,7 @@ export const OtherTestimony = ({
   sponsoredBills
 }: {
   court: number
-  sponsoredBills: any[]
+  sponsoredBills?: string[]
 }) => {
   const { t } = useTranslation("legislators")
 
