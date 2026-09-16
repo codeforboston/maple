@@ -1,23 +1,17 @@
+import { DateTime } from "luxon"
 import { useTranslation } from "next-i18next"
 import { useMemo } from "react"
-import styled from "styled-components"
-
-import { Col } from "../../bootstrap"
-import { shuffleArray } from "../LegislatorComponents"
-import { SidebarBlock, SidebarLink, SidebarTitle } from "../LegislatorSidebar"
-
-import styles from "./OtherTestimony.module.css"
-
-import { usePublishedTestimonyListing } from "components/db"
-
-import { DateTime } from "luxon"
 import {
   InstantSearch,
   useConfigure,
   useHits,
   useInstantSearch
 } from "react-instantsearch"
+import styled from "styled-components"
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
+
+import { Col } from "../../bootstrap"
+import { SidebarBlock, SidebarLink, SidebarTitle } from "../LegislatorSidebar"
 
 import { Spinner } from "components/bootstrap"
 import { formatBillId, truncateText } from "components/formatting"
@@ -91,6 +85,31 @@ function PositionButton(props: { position: string }) {
 
 /* Misc Testimony Components */
 
+const BillLink = styled(Internal)`
+  font-weight: 700;
+  color: #1a3185;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`
+
+const ContentSnippet = styled.div`
+  color: #212529;
+  font-size: 11px;
+  line-height: 1.4;
+`
+
+const DateLine = styled.span`
+  whitespace: "nowrap";
+`
+
+const Interpunct = styled.span`
+  color: #3b3b3b;
+  font-weight: 700;
+`
+
 const TestimonyBorder = styled.div`
   border-bottom: 1px solid #b8c0c9;
 `
@@ -133,92 +152,131 @@ function ConfigureParams({
   return null
 }
 
-export const OtherTestimony = ({
-  court,
-  sponsoredBills
-}: {
-  court: number
-  sponsoredBills?: string[]
-}) => {
-  const { t } = useTranslation("legislators")
+function TestimonyList({ court }: { court: number }) {
+  const { t } = useTranslation(["legislators", "testimony"])
+  const { hits } = useHits<TestimonyHitRecord>()
+  const { status, results } = useInstantSearch()
 
-  const randomBills: any[] = shuffleArray(sponsoredBills)
+  const isLoading =
+    status === "loading" || status === "stalled" || !results._state
+
+  if (isLoading && hits.length === 0) {
+    return (
+      <div className="py-3 text-center text-muted">
+        <Spinner animation="border" size="sm" className="me-2" />
+        <span>{t("loading", { defaultValue: "Loading testimony..." })}</span>
+      </div>
+    )
+  }
+
+  if (hits.length === 0) {
+    return (
+      <div className="py-2 text-muted">
+        {t("noTestimony", {
+          defaultValue: "No testimony found for this legislator's bills."
+        })}
+      </div>
+    )
+  }
 
   return (
-    <SidebarBlock className="mb-2">
-      <SidebarTitle className={`my-1`}>{t("otherTestimony")}</SidebarTitle>
-      {randomBills.map(bill => (
-        <BillTestimonyList key={bill} billId={bill} court={court} />
-      ))}
-      <Col>
-        <TestimonyBorder />
-        <SidebarLink href="/testimony">
-          {t("viewAllTestimony")}
-          {" ↗"}
-        </SidebarLink>
-      </Col>
-    </SidebarBlock>
+    <div>
+      {hits.map(hit => {
+        const publishedDate = hit.publishedAt
+          ? DateTime.fromMillis(hit.publishedAt).toLocaleString(
+              DateTime.DATE_MED
+            )
+          : null
+
+        return (
+          <TestimonyBlock key={hit.id}>
+            <PositionButton position={hit.position} />
+            <TestimonyText>
+              {hit.content && (
+                <ContentSnippet>
+                  <Internal
+                    href={maple.testimony({ publishedId: hit.id })}
+                    className="text-decoration-none text-dark"
+                  >
+                    {truncateText(hit.content, 120)}
+                  </Internal>
+                </ContentSnippet>
+              )}
+            </TestimonyText>
+            <TestimonyMeta>
+              {hit.authorDisplayName || "Anonymous"}
+              <Interpunct>{" · "}</Interpunct>
+              <BillLink
+                href={maple.bill({
+                  court: hit.court ?? court,
+                  id: hit.billId
+                })}
+              >
+                {formatBillId(hit.billId)}
+              </BillLink>
+              <Interpunct>{" · "}</Interpunct>
+              <DateLine style={{ whiteSpace: "nowrap" }}>
+                {publishedDate}
+              </DateLine>
+            </TestimonyMeta>
+          </TestimonyBlock>
+        )
+      })}
+    </div>
   )
 }
 
-const BillTestimonyList = ({
-  billId,
-  court
+export function OtherTestimony({
+  court,
+  sponsoredBills = []
 }: {
-  billId: string
-  court: number
-}) => {
+  court?: number
+  sponsoredBills?: string[]
+}) {
   const { t } = useTranslation("legislators")
 
-  const data = usePublishedTestimonyListing({ billId, court })
-  const length = data?.items?.result?.length ?? 0
-  const hasData = length > 0
+  const billIds = useMemo(() => {
+    return Array.from(new Set(sponsoredBills))
+  }, [sponsoredBills])
 
-  const topTestimonies = useMemo(() => {
-    return data?.items?.result
-      ? [...data.items.result]
-          .sort((a, b) => b.updatedAt.toMillis() - a.updatedAt.toMillis())
-          .slice(0, 1)
-      : []
-  }, [data])
+  const searchClient = useMemo(
+    () =>
+      new TypesenseInstantSearchAdapter({
+        server: getServerConfig(),
+        additionalSearchParameters: testimonySearchParams
+      }).searchClient,
+    []
+  )
 
-  if (!hasData)
-    return <div className="billTestimonyEmpty" style={{ display: "none" }} />
-
-  /* formatted Testimony On Legislator Bills */
-  const formattedTOLB = topTestimonies.map(obj => {
-    const date = new Date(obj.updatedAt.toMillis())
-
-    const monthYear = date.toLocaleString("en-US", {
-      month: "long",
-      year: "numeric",
-      timeZone: "UTC"
-    })
-
-    return {
-      ...obj,
-      formattedDate: monthYear
-    }
-  })
+  const courtNumber = court ?? 193
 
   return (
-    <div className={styles.billTestimonyCard}>
-      {formattedTOLB ? (
-        <>
-          {formattedTOLB.map(t => (
-            <TestimonyBlock key={t.id}>
-              <PositionButton position={t.position} />
-              <TestimonyText>{t.content}</TestimonyText>
-              <TestimonyMeta>
-                {t.authorDisplayName} {" · "} {t.billId} {" · "}
-                {t.formattedDate}
-              </TestimonyMeta>
-            </TestimonyBlock>
-          ))}
-        </>
+    <SidebarBlock className="mb-2">
+      <SidebarTitle className="my-1">{t("otherTestimony")}</SidebarTitle>
+      {billIds.length === 0 ? (
+        <div className="py-2 text-muted">
+          {t("noTestimony", {
+            defaultValue: "No testimony found for this legislator's bills."
+          })}
+        </div>
       ) : (
-        <div>{t("noTestimony")}</div>
+        <>
+          <InstantSearch
+            indexName="publishedTestimony/sort/publishedAt:desc"
+            searchClient={searchClient}
+          >
+            <ConfigureParams court={courtNumber} billIds={billIds} />
+            <TestimonyList court={courtNumber} />
+          </InstantSearch>
+          <Col>
+            <TestimonyBorder />
+            <SidebarLink href="/testimony">
+              {t("viewAllTestimony")}
+              {" ↗"}
+            </SidebarLink>
+          </Col>
+        </>
       )}
-    </div>
+    </SidebarBlock>
   )
 }

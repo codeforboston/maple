@@ -45,7 +45,7 @@
   "legislators": "Legislators",
   "loading": "Loading district...",
   "noEvents": "This legislator does not have hearings in the near term future",
-  "noTestimony": "This legislator does not yet have testimony for any of their bills",
+  "noTestimony": "No testimony found for this legislator's bills.",
   "notClaimed": "This legislator has not claimed their MAPLE account",
   "otherTestimony": "Others' testimony on their bills",
   "party": {
