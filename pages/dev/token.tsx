@@ -138,7 +138,7 @@ function TokenPage() {
         <p style={styles.infoText}>
           <Trans
             i18nKey="expires.3"
-            components={{ bold: <strong />, italics: <em /> }}
+            components={{ bold: <strong />, italics: <i /> }}
             t={t}
           />
           <code style={styles.inlineCode}>{t("expires.4")}</code>
