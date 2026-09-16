@@ -2,6 +2,7 @@ import { Hit } from "instantsearch.js"
 import Link from "next/link"
 import { Trans, useTranslation } from "next-i18next"
 import { Card, Image } from "react-bootstrap"
+import { Snippet } from "react-instantsearch"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 
@@ -12,7 +13,6 @@ import { useFlags } from "components/featureFlags"
 import { formatBillId, truncateText } from "components/formatting"
 import { maple } from "components/links"
 import { FollowUserButton } from "components/shared/FollowButton"
-import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
 
 const StyledCard = styled(Card)`
   background: white;
@@ -217,7 +217,9 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
           </BillBlock>
         </PositionRow>
 
-        <Quote>"{trimContent(hit.content, 220)}"</Quote>
+        <Quote>
+          "<Snippet attribute="content" hit={hit} />"
+        </Quote>
 
         <FooterRow>
           {committee && (

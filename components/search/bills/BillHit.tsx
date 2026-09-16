@@ -1,4 +1,4 @@
-import { Highlight } from "react-instantsearch"
+import { Highlight, Snippet } from "react-instantsearch"
 import {
   faCheckCircle,
   faMinusCircle,
@@ -19,6 +19,11 @@ import { useTranslation } from "next-i18next"
 type BillRecord = {
   number: string
   title: string
+  /** The clerk's petition blurb — see functions/src/bills/search.ts. */
+  pinslip?: string
+  /** The LLM plain-language description — see functions/src/bills/search.ts.
+   * Absent on procedural orders, and on bills the enrichment has not reached. */
+  summary?: string
   city?: string
   court: number
   currentCommittee?: string
@@ -133,9 +138,33 @@ export const DisplayUpcomingHearing = ({
   return null
 }
 
+/** Typesense omits a field from `highlight` when the query did not match it,
+ * and the adapter then falls back to the raw value — so an unguarded
+ * `<Snippet>` would print the petition boilerplate ("By Mr. X of Y, a petition
+ * (accompanied by bill, House, No. N)…") under every result. Show a snippet
+ * only where it explains why this bill is in the list.
+ */
+const matched = (hit: Hit<BillRecord>, attribute: "summary" | "pinslip") => {
+  // A plain string attribute snippets to a single result, never an array.
+  const snippet = hit._snippetResult?.[attribute]
+  return !!snippet && !Array.isArray(snippet) && snippet.matchLevel !== "none"
+}
+
+/** Which blurb to show under the title, or nothing — in priority order, so the
+ * summary wins where both matched: it says what the bill does in plain
+ * language, where the pinslip is the clerk's procedural note. The fallback is
+ * not a rare path — roughly one bill in four on the current court has no
+ * summary yet, because the trigger in llm/ needs DocumentText the scrape has
+ * not always captured (#8), and procedural orders are excluded by the converter
+ * on purpose.
+ */
+const snippetAttribute = (hit: Hit<BillRecord>) =>
+  (["summary", "pinslip"] as const).find(attribute => matched(hit, attribute))
+
 export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
   const url = maple.bill({ id: hit.number, court: hit.court })
   const hearingDate = hit.nextHearingAt && hit.nextHearingAt / 1000 // convert to seconds
+  const snippet = snippetAttribute(hit)
   const { t } = useTranslation("common")
 
   return (
@@ -159,6 +188,11 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
                   {formatBillId(hit.number)} -{" "}
                   <Highlight attribute="title" hit={hit} />
                 </Card.Title>
+                {snippet && (
+                  <div className="mt-1 text-muted">
+                    <Snippet attribute={snippet} hit={hit} />
+                  </div>
+                )}
                 <div className="d-flex justify-content-between flex-column">
                   <span className="blurb">
                     {(() => {

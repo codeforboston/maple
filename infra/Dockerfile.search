@@ -1,3 +1,4 @@
-FROM typesense/typesense:0.24.0
+# Keep in sync with the typesense service image in .github/workflows/repo-checks.yml
+FROM typesense/typesense:30.2
 
 RUN apt update &&  apt install -y curl
