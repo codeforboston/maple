@@ -295,6 +295,79 @@ export function useLobbyingBillSummaries(court: number) {
   return useAsync(fetchLobbyingBillSummaries, [court])
 }
 
+// ── Client / firm summaries (precomputed server-side; see writer.py and
+// seedLobbyingStats.ts). Replaces client-side derivation over
+// useLobbyingAllRegistrants(), which only fetches the first 2,000 of
+// 25,000+ registrant docs and was silently showing an incomplete list. ────
+
+export type ClientSummaryFirm = {
+  entityName: string
+  entityNameNorm: string
+  compensation: number | null
+}
+
+export type ClientSummaryRow = {
+  clientName: string
+  clientNameNorm: string
+  totalCompensation: number | null
+  registrantCount: number
+  firms: ClientSummaryFirm[]
+}
+
+export type FirmSummaryRow = {
+  entityName: string
+  entityNameNorm: string
+  regType: string
+  years: number[]
+  clientCount: number
+}
+
+async function fetchClientSummaries(): Promise<ClientSummaryRow[]> {
+  const snap = await getDocs(
+    collection(
+      firestore,
+      LOBBYING_STATS_COLLECTION,
+      "clientSummaries",
+      "clients"
+    )
+  )
+  return snap.docs.map(d => d.data() as ClientSummaryRow)
+}
+
+async function fetchClientSummary(
+  clientNameNorm: string
+): Promise<ClientSummaryRow | undefined> {
+  const snap = await getDoc(
+    doc(
+      firestore,
+      LOBBYING_STATS_COLLECTION,
+      "clientSummaries",
+      "clients",
+      encodeURIComponent(clientNameNorm)
+    )
+  )
+  return snap.exists() ? (snap.data() as ClientSummaryRow) : undefined
+}
+
+async function fetchFirmSummaries(): Promise<FirmSummaryRow[]> {
+  const snap = await getDocs(
+    collection(firestore, LOBBYING_STATS_COLLECTION, "firmSummaries", "firms")
+  )
+  return snap.docs.map(d => d.data() as FirmSummaryRow)
+}
+
+export function useLobbyingClientSummaries() {
+  return useAsync(fetchClientSummaries, [])
+}
+
+export function useLobbyingClientSummary(clientNameNorm: string) {
+  return useAsync(fetchClientSummary, [clientNameNorm])
+}
+
+export function useLobbyingFirmSummaries() {
+  return useAsync(fetchFirmSummaries, [])
+}
+
 export function useLobbyingBillRows(courts: number[]) {
   const courtsKey = courts.join(",")
   return useAsync(

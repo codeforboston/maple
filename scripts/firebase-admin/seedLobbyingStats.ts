@@ -26,6 +26,43 @@ const REGISTRANTS_COLLECTION = "lobbyingRegistrants"
 const STATS_COLLECTION = "lobbyingMeta"
 const STATS_DOC_ID = "stats"
 
+// Sentinel clientName used for pre-2013 legacy filings where compensation is
+// reported as a single total rather than broken down per client. Must match
+// LEGACY_TOTAL_CLIENT in functions/src/lobbying/types.ts.
+const LEGACY_TOTAL_CLIENT = "_total_salary_"
+
+function isLegacyTotalClient(
+  name: string | undefined,
+  nameNorm: string | undefined
+): boolean {
+  if (!nameNorm || nameNorm === LEGACY_TOTAL_CLIENT) return true
+  if (name === LEGACY_TOTAL_CLIENT) return true
+  const lc = (name ?? "").toLowerCase()
+  return lc.includes("total salaries") || lc.includes("total salary")
+}
+
+type FirmBreakdownEntry = {
+  entityName: string
+  entityNameNorm: string
+  compensation: number | null
+}
+
+type ClientSummary = {
+  clientName: string
+  clientNameNorm: string
+  totalCompensation: number | null
+  registrantCount: number
+  firms: FirmBreakdownEntry[]
+}
+
+type FirmSummary = {
+  entityName: string
+  entityNameNorm: string
+  regType: string
+  years: number[]
+  clientCount: number
+}
+
 export const script: Script = async ({ db }) => {
   console.log("Reading lobbyingFilings…")
   const filingsSnap = await db.collection(FILINGS_COLLECTION).get()
@@ -104,18 +141,103 @@ export const script: Script = async ({ db }) => {
   // Aggregate spend and unique clients from registrant docs.
   // Registrant clients[].compensation is the annual total paid per client
   // relationship — more accurate than the per-bill amount on filings.
+  //
+  // Also builds per-client and per-firm rollups here (over the full
+  // registrants collection) instead of leaving the frontend to derive them
+  // client-side, which previously only fetched the first 2,000 of 25,000+
+  // registrant docs (Firestore query limit) — silently showing an
+  // incomplete client/firm list. See pages/lobbying/clients/index.tsx and
+  // pages/lobbying/firms/index.tsx.
   const clientNorms = new Set<string>()
   const spendByYear: Record<string, number> = {}
+  const clientSummaries: Record<
+    string,
+    ClientSummary & { firmsMap: Record<string, FirmBreakdownEntry> }
+  > = {}
+  const firmSummaries: Record<string, FirmSummary> = {}
+
   for (const doc of registrantsSnap.docs) {
     const d = doc.data()
-    const y = String(d.year)
-    for (const c of d.clients ?? []) {
-      if (c.clientNameNorm) clientNorms.add(c.clientNameNorm)
-      if (c.compensation != null) {
-        spendByYear[y] = (spendByYear[y] ?? 0) + c.compensation
+    const year: number | undefined = d.year
+    const y = String(year)
+    const entityName: string | undefined = d.entityName
+    const entityNorm: string | undefined = d.entityNameNorm
+    const regType: string | undefined = d.regType
+    const clients = d.clients ?? []
+
+    if (entityNorm) {
+      if (!firmSummaries[entityNorm]) {
+        firmSummaries[entityNorm] = {
+          entityName: entityName ?? entityNorm,
+          entityNameNorm: entityNorm,
+          regType: regType ?? "",
+          years: [],
+          clientCount: 0
+        }
+      }
+      const firm = firmSummaries[entityNorm]
+      if (year != null && !firm.years.includes(year)) firm.years.push(year)
+      if (regType) firm.regType = regType
+      // Matches the frontend's prior groupByFirm() semantics exactly: sum
+      // of raw clients[] array length, unfiltered.
+      firm.clientCount += clients.length
+    }
+
+    for (const c of clients) {
+      const norm: string | undefined = c.clientNameNorm
+      const name: string | undefined = c.clientName
+      const comp: number | null | undefined = c.compensation
+
+      if (comp != null) {
+        spendByYear[y] = (spendByYear[y] ?? 0) + comp
+      }
+
+      if (isLegacyTotalClient(name, norm)) continue
+      if (!norm) continue
+
+      clientNorms.add(norm)
+
+      if (!clientSummaries[norm]) {
+        clientSummaries[norm] = {
+          clientName: name ?? norm,
+          clientNameNorm: norm,
+          totalCompensation: null,
+          registrantCount: 0,
+          firms: [],
+          firmsMap: {}
+        }
+      }
+      const cs = clientSummaries[norm]
+      cs.registrantCount++
+      if (comp != null) {
+        cs.totalCompensation = (cs.totalCompensation ?? 0) + comp
+      }
+
+      if (entityNorm) {
+        if (!cs.firmsMap[entityNorm]) {
+          cs.firmsMap[entityNorm] = {
+            entityName: entityName ?? entityNorm,
+            entityNameNorm: entityNorm,
+            compensation: null
+          }
+        }
+        const fb = cs.firmsMap[entityNorm]
+        if (comp != null) {
+          fb.compensation = (fb.compensation ?? 0) + comp
+        }
       }
     }
   }
+
+  for (const cs of Object.values(clientSummaries)) {
+    cs.firms = Object.values(cs.firmsMap).sort((a, b) =>
+      a.entityNameNorm.localeCompare(b.entityNameNorm)
+    )
+  }
+  for (const fs of Object.values(firmSummaries)) {
+    fs.years.sort((a, b) => b - a)
+  }
+
   const totalClients = clientNorms.size
 
   const stats = {
@@ -173,7 +295,49 @@ export const script: Script = async ({ db }) => {
     }
   }
 
+  // Client and firm summaries: same one-small-doc-per-item subcollection
+  // pattern as billSummaries above (avoids the 1MB per-document/field limit
+  // — at ~5,300 clients and ~4,800 firms this is already close to that
+  // ceiling as a single blob/map). Doc IDs are encodeURIComponent(norm), so
+  // the frontend can look up one client/firm directly without fetching the
+  // whole subcollection.
+  const clientParentRef = db.collection(STATS_COLLECTION).doc("clientSummaries")
+  const clientEntries = Object.entries(clientSummaries)
+  await clientParentRef.set({
+    count: clientEntries.length,
+    updatedAt: new Date().toISOString()
+  })
+  const clientsColl = clientParentRef.collection("clients")
+  for (let i = 0; i < clientEntries.length; i += 400) {
+    const batch = db.batch()
+    for (const [norm, { firmsMap: _firmsMap, ...cs }] of clientEntries.slice(
+      i,
+      i + 400
+    )) {
+      batch.set(clientsColl.doc(encodeURIComponent(norm)), cs)
+    }
+    await batch.commit()
+  }
+
+  const firmParentRef = db.collection(STATS_COLLECTION).doc("firmSummaries")
+  const firmEntries = Object.entries(firmSummaries)
+  await firmParentRef.set({
+    count: firmEntries.length,
+    updatedAt: new Date().toISOString()
+  })
+  const firmsColl = firmParentRef.collection("firms")
+  for (let i = 0; i < firmEntries.length; i += 400) {
+    const batch = db.batch()
+    for (const [norm, fs] of firmEntries.slice(i, i + 400)) {
+      batch.set(firmsColl.doc(encodeURIComponent(norm)), fs)
+    }
+    await batch.commit()
+  }
+
   console.log(`Written to ${STATS_COLLECTION}/${STATS_DOC_ID}`)
+  console.log(
+    `  clientSummaries: ${clientEntries.length}, firmSummaries: ${firmEntries.length}`
+  )
   console.log(
     `  entityFilingCounts: ${Object.keys(entityFilingCounts).length} entities`
   )
