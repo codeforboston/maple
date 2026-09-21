@@ -4,9 +4,16 @@ import { logFetchError } from "../common"
 import * as api from "../malegislature"
 import { createScraper } from "../scraper"
 import { getDocumentWithPdfTextFallback } from "./documentTextFallback"
-import { Bill, MISSING_TIMESTAMP } from "./types"
+import { Bill, BillHistory, MISSING_TIMESTAMP } from "./types"
 
 export { getDocumentWithPdfTextFallback } from "./documentTextFallback"
+
+export function isInConferenceCommittee(history: BillHistory): boolean {
+  const lastAction = history.at(-1)?.Action
+  return lastAction != null
+    ? /committee of conference appointed/i.test(lastAction)
+    : false
+}
 
 /**
  * There are around 8000 documents. With 8 batches per day, 20 parallel
@@ -44,6 +51,7 @@ export const { fetchBatch: fetchBillBatch, startBatches: startBillBatches } =
         content,
         history,
         similar,
+        inConferenceCommittee: isInConferenceCommittee(history),
         cosponsorCount: content.Cosponsors.length,
         testimonyCount: current?.testimonyCount ?? 0,
         endorseCount: current?.endorseCount ?? 0,

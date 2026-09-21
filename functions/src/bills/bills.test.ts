@@ -8,6 +8,8 @@ jest.mock("./pdfText", () => ({
 
 import { getDocumentWithPdfTextFallback } from "./documentTextFallback"
 import { extractBillTextFromPdf } from "./pdfText"
+import { isInConferenceCommittee } from "./bills"
+import { BillHistory } from "./types"
 
 const mockedApi = jest.requireMock("../malegislature") as {
   getDocument: jest.Mock
@@ -78,5 +80,35 @@ describe("getDocumentWithPdfTextFallback", () => {
       status: "fetch-error",
       error: "not found"
     })
+  })
+})
+
+describe("isInConferenceCommittee", () => {
+  const action = (Action: string): BillHistory[number] => ({
+    Date: "1/1/2024",
+    Branch: "House",
+    Action
+  })
+
+  it("is true when the last action mentions committee of conference appointed", () => {
+    const history: BillHistory = [
+      action("Referred to the committee on Ways and Means"),
+      action("Committee of conference appointed")
+    ]
+
+    expect(isInConferenceCommittee(history)).toBe(true)
+  })
+
+  it("is false when the last action does not mention it", () => {
+    const history: BillHistory = [
+      action("Committee of conference appointed"),
+      action("Bill passed to be enacted")
+    ]
+
+    expect(isInConferenceCommittee(history)).toBe(false)
+  })
+
+  it("is false for empty history", () => {
+    expect(isInConferenceCommittee([])).toBe(false)
   })
 })
