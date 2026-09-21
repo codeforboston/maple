@@ -38,6 +38,12 @@ export const {
       { name: "body", type: "string", facet: false, optional: true },
       { name: "city", type: "string", facet: true, optional: true },
       { name: "currentCommittee", type: "string", facet: true, optional: true },
+      {
+        name: "inConferenceCommittee",
+        type: "bool",
+        facet: true,
+        optional: true
+      },
       { name: "testimonyCount", type: "int32" },
       { name: "primarySponsor", type: "string", facet: true, optional: true },
       {
@@ -128,6 +134,7 @@ export const {
       body: bill.content.DocumentText,
       city: bill.city,
       currentCommittee: bill.currentCommittee?.name,
+      inConferenceCommittee: bill.inConferenceCommittee,
       testimonyCount: bill.testimonyCount,
       primarySponsor: bill.content.PrimarySponsor?.Name,
       cosponsors: bill.content.Cosponsors.map(m => m.Name).filter(isString),
