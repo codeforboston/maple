@@ -9,7 +9,7 @@ output "pds_static_ip" {
 }
 
 output "pds_blob_bucket" {
-  description = "GCS bucket the PDS stores blobs in; the HMAC key for it is created out of band (README step 3)."
+  description = "GCS bucket the PDS stores blobs in; the HMAC key for it is created out of band by scripts/secrets.sh (README, Apply step 3)."
   value       = google_storage_bucket.pds_blobs.name
 }
 

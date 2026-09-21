@@ -4,7 +4,7 @@
 # SQLite and the actor store and never grows with uploads.
 #
 # The HMAC key is NOT a Terraform resource: google_storage_hmac_key stores the
-# secret in state (ADR 0001). README.md step 3 creates it
+# secret in state (ADR 0001). scripts/secrets.sh creates it (README, Apply step 3)
 # with gcloud for the PDS service account and adds both halves to Secret
 # Manager; the key inherits the account's IAM, granted in iam.tf.
 resource "google_storage_bucket" "pds_blobs" {
