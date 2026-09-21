@@ -1,79 +1,74 @@
 # atproto PDS on GCP
 
-One Terraform root, one state per environment (`envs/<env>.*`). Applies are human-run; CI only
-plans. Design: [ADR 0001](../../docs/adr/0001-atproto-infra.md).
+One Terraform root, one state per environment (`envs/<env>.*`), applied as a whole. Applies are
+human-run; CI only plans. What is in here and why: [DESIGN.md](DESIGN.md). The decision:
+[ADR 0001](../../docs/adr/0001-atproto-infra.md).
 
 ## Permissions
 
-- **The environment's project**: `roles/editor` for every step (it carries `storage.hmacKeys.*`
-  for step 3). `roles/owner` for the grants in `iam.tf`: an editor's apply ends red on the grants
-  only, and an owner's apply afterwards plans exactly those.
-- **`digital-testimony-prod`**: `roles/dns.admin` for the NS record in the parent zone. Every plan
-  reads that zone, so without at least `roles/dns.reader` nothing plans. `roles/owner` there only
-  for the CI planner's zone-reader grant in `iam.tf` ([CI.md](CI.md)).
+- **The environment's project**: `roles/editor` for every step, plus `roles/owner` for the grants
+  in `iam.tf` — an editor's apply ends red on those alone, and an owner's apply afterwards plans
+  exactly them (`iam.tf` says why).
+- **`digital-testimony-prod`**: `roles/dns.admin` for the NS record in the parent zone, and at
+  least `roles/dns.reader` or nothing here plans. `roles/owner` there only for CI ([CI.md](CI.md)).
 
 ## Apply
 
-`infra/gcp/dns` is applied first (this root looks its zone up) and must be live at the registrar
-(`dig +short NS mapletestimony.org` returns Cloud DNS name servers): until then nothing here
-resolves and Caddy cannot get its certificate, however healthy `pds-startup` looks in the serial
-console. The hostname is apply-once (it lands in the DID document of every account the PDS
-creates).
+`infra/gcp/dns` must be applied and live at the registrar first — this root looks its zone up, and
+until the delegation resolves Caddy cannot get a certificate however healthy `pds-startup` looks:
+[dns/README.md](dns/README.md). `pds_hostname` is apply-once (`variables.tf`).
 
 ```sh
 infra/gcp/scripts/bootstrap.sh dev                              # 1. APIs and the state bucket
 terraform -chdir=infra/gcp init -backend-config=envs/dev.gcs.tfbackend
-terraform -chdir=infra/gcp apply -var-file=envs/dev.tfvars       # 2. everything below
-infra/gcp/scripts/secrets.sh dev                                 # 3. the five secret versions; never rotates
-curl https://pds-dev.mapletestimony.org/xrpc/_health             # the VM starts the PDS within 3 min
-gcloud storage ls gs://digital-testimony-dev-atproto-pds-blobs/   # done once one uploadBlob lands here
-gcloud compute instances get-serial-port-output atproto-pds --zone=us-central1-a | grep pds-startup   # if not
+terraform -chdir=infra/gcp apply -var-file=envs/dev.tfvars      # 2. everything in Cost, below
+infra/gcp/scripts/secrets.sh dev                                # 3. secret versions and the blob HMAC key; never rotates
+curl https://pds-dev.mapletestimony.org/xrpc/_health            # green within 3 min of step 2
+gcloud storage ls gs://digital-testimony-dev-atproto-pds-blobs/  # after one uploadBlob lands
 ```
 
-Then delete the record that blob belonged to: the object should leave the bucket. If it stays,
-`docker compose logs pds | grep 'could not delete blobs'` on the box is the trail — the PDS's batch
-delete carries a checksum header GCS's S3 API may not accept (`pds-startup.sh.tftpl`); this is the
-one blobstore call the first deploy has to prove.
-
-Prod: the same with `prod`.
-
-## What gets applied
-
-A static IP and firewall (80/443 open, 22 via IAP); the `atproto-pds` VM with a 20 GB data disk
-snapshotted daily for 14 days; the delegated zone, its A record and the parent NS record; five
-Secret Manager secrets without versions; the blob bucket; the VM's service account and its
-grants. Knobs: `envs/<env>.tfvars`. Not here: secret versions and the HMAC key (`secrets.sh`),
-the state bucket (`bootstrap.sh`).
+Then delete the record that blob belonged to: the object must leave the bucket. That is the one
+blobstore call the first apply has to prove; if it stays, `docker compose logs pds | grep 'could
+not delete blobs'` is the trail. If health never goes green, read the serial console with
+`gcloud compute instances get-serial-port-output atproto-pds --zone=us-central1-a`. Not applied
+here: secret versions and the HMAC key (step 3), the state bucket (step 1). Prod: same with `prod`.
 
 ## Rollback
 
-- **Config**: revert and apply. A startup-script change lands on the next boot:
+- **Config**: revert and apply. A startup-script change lands on the next boot;
   `gcloud compute instances reset atproto-pds --zone=us-central1-a` applies it now.
-- **A secret**: `gcloud secrets versions add <id> --data-file=-`, then re-run the startup script
-  (`gcloud compute ssh atproto-pds --tunnel-through-iap --zone=us-central1-a -- sudo google_metadata_script_runner startup`)
-  or reset the VM; either re-reads every secret and restarts the PDS, nothing is on disk. Disable
-  the old version.
-- **Data**: create a disk from a snapshot and attach it as `pds-data`. Blobs are in the bucket.
-- **State**: the bucket is versioned; restore the earlier object.
-- **Teardown**: `destroy` refuses by design (`prevent_destroy` on disk, bucket and zone; the VM
-  is deletion-protected). Lifting those is its own reviewed change.
+- **A secret**: `gcloud secrets versions add <id> --data-file=-`, then reset the VM or re-run
+  `sudo google_metadata_script_runner startup` over IAP ssh. Either re-reads every secret and
+  restarts the PDS; nothing is on disk. Disable the old version.
+- **Data**: create a disk from a snapshot, attach it as `pds-data`; blobs are in the bucket. State:
+  the bucket is versioned, restore the earlier object.
+- **Teardown**: `destroy` refuses by design — `prevent_destroy` on the durable resources, and the
+  VM is deletion-protected. Lifting those is its own reviewed change.
 
 ## Monitoring
 
-Three alerts, all to `alert_channels` in `envs/<env>.tfvars` (dev: one email; prod: the pager, a
-channel-type swap there changes no policy). Subjects start with `[<env>]`, and each page carries
-its own first step; this section is what a page cannot.
+Alerts go to `alert_channels` in `envs/<env>.tfvars`, subjects prefixed `[<env>]`; thresholds are
+in `monitoring-pds.tf` and each page carries its own first step. Prove the channel once per
+environment: ssh in, `sudo systemctl stop pds.service`, wait for the page (≤ 6 min), `start` it.
+Expect one during bring-up; that page is the test.
 
-- **PDS down** (critical): `https://<pds_hostname>/xrpc/_health` failing from two regions for 5 min.
-  One check covers VM, docker, caddy, cert expiry and DNS, from where the relay stands. Expect one
-  during bring-up: that page is the channel test.
-- **Disk ≥ 80%** on any of the VM's disks, and **memory ≥ 90%** for 10 min, via the Ops Agent the
-  startup script installs (`pds-startup.sh.tftpl`).
+## Cost
 
-Prove it once per environment: `gcloud compute ssh atproto-pds --tunnel-through-iap --zone=us-central1-a`,
-`sudo systemctl stop pds.service`, wait for the page (≤ 6 min), `start` it.
+| Resource                                |        dev |       prod |
+| --------------------------------------- | ---------: | ---------: |
+| `e2-small`, 730 h                       |     $12.23 |     $12.23 |
+| Balanced PD, 30 GiB (10 boot + 20 data) |      $3.00 |      $3.00 |
+| Static external IP, attached            |      $3.65 |      $3.65 |
+| Cloud DNS, one managed zone             |      $0.20 |      $0.20 |
+| **Total**                               | **$19.08** | **$19.08** |
+
+Excluded because they scale with use: snapshots ($0.05/GiB-month retained), blobs
+($0.020/GiB-month, 5 GiB free, nothing prunes them), DNS queries ($0.40/million), egress. Too
+small to table: Secret Manager, the uptime check, alert policies, firewall, service accounts, IAM.
+List prices, us-central1, read 2026-09-21 from the Cloud Billing Catalog API; E2 earns no
+sustained-use discount. Prod is a projection: unapplied, and `alert_channels` is unset there.
 
 ## CI
 
 `.github/workflows/terraform-checks.yml`: `fmt`, `validate` and an advisory dev plan on PRs. What
-runs, and the one-time setup the plan needs: [CI.md](CI.md).
+runs, and the one-time setup it needs: [CI.md](CI.md).

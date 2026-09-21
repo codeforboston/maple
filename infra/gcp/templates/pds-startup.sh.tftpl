@@ -69,8 +69,8 @@ mountpoint -q /pds || mount /pds
 mkdir -p /pds/data /pds/caddy
 # Secrets are rendered into /run (tmpfs): regenerated from Secret Manager on
 # every boot, never on the data disk, never in its snapshots. (dockerd keeps a
-# copy of a container's env in /var/lib/docker on the boot disk, which is not
-# snapshotted — see the README's rule.)
+# copy of a container's env in /var/lib/docker on the boot disk, which the
+# snapshot policy in pds.tf does not cover — it attaches to the data disk only.)
 install -d -m 0700 /run/pds
 
 # --- Compose stack definition ------------------------------------------------
@@ -243,7 +243,7 @@ umask 077
   # it still carries an x-amz-checksum-crc32 header; GCS's XML API has the
   # operation but whether it tolerates the header is unverified. A failure
   # there is logged by the PDS ("could not delete blobs from blobstore") and
-  # leaves objects in the bucket; the README's first-deploy check covers it.
+  # leaves objects in the bucket; the README's Apply check covers it.
   echo "AWS_REQUEST_CHECKSUM_CALCULATION=when_required"
   echo "AWS_RESPONSE_CHECKSUM_VALIDATION=when_required"
 %{ if pds_crawlers != "" ~}

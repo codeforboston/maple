@@ -9,7 +9,7 @@ variable "project_id" {
 }
 
 variable "region" {
-  description = "Region for regional resources. Confirm it matches the project's Firestore location at bootstrap (see README)."
+  description = "Region for regional resources. Confirm it matches the project's Firestore location at bootstrap (scripts/bootstrap.sh prints it)."
   type        = string
   default     = "us-central1"
 }
