@@ -6,8 +6,7 @@ import TabContainer from "react-bootstrap/TabContainer"
 import styled from "styled-components"
 
 import { Container, Nav } from "../bootstrap"
-
-import { BillsTab } from "./TabComponents/billsTab/BillsTab"
+import { BillsTab } from "./TabComponents/BillsTab/BillsTab"
 import { DistrictTab } from "./TabComponents/DistrictTab"
 import { ElectionsTab } from "./TabComponents/ElectionsTab"
 import { FinanceTab } from "./TabComponents/FinanceTab"
@@ -22,6 +21,7 @@ import {
   TabType
 } from "components/EditProfilePage/StyledEditProfileComponents"
 import { MembersFinance } from "components/db/membersFinance"
+import { MemberContent } from "functions/src/members/types"
 
 const tabCategories = {
   priorities: "priorities",
@@ -80,6 +80,7 @@ export function LegislatorTabs({
   districtLoading,
   legislatorData,
   legislatorId,
+  member,
   name,
   finance,
   memberCode
@@ -89,6 +90,7 @@ export function LegislatorTabs({
   districtLoading?: boolean
   legislatorData: any[]
   legislatorId: string
+  member: MemberContent
   name: string
   finance?: MembersFinance
   memberCode: string
@@ -133,7 +135,7 @@ export function LegislatorTabs({
     {
       title: t("tabs.bills"),
       eventKey: tabCategories.bills,
-      content: <BillsTab />
+      content: <BillsTab member={member} />
     },
     {
       title: t("tabs.elections"),
