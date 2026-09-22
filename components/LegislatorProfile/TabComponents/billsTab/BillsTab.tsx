@@ -2,9 +2,15 @@ import { TabBlock } from "../../LegislatorComponents"
 import { Button } from "react-bootstrap"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
-import { useMember } from "components/db"
-import { Row, Spinner } from "react-bootstrap"
 import { MemberContent } from "functions/src/members/types"
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  getFirestore
+} from "firebase/firestore"
+import { useEffect, useState } from "react"
 
 const BillFilterButtons = ({
   member
@@ -37,6 +43,53 @@ const BillFilterButtons = ({
 
 const BillsByTopic = ({ member }: { member: MemberContent | undefined }) => {
   const { t } = useTranslation("legislators")
+  const [topFiveTopics, setTopFiveTopics] = useState<
+    { topic: string; count: number }[]
+  >([])
+
+  useEffect(() => {
+    if (!member?.MemberCode || !member.GeneralCourtNumber) {
+      setTopFiveTopics([])
+      return
+    }
+
+    const loadBillsByTopic = async () => {
+      try {
+        const firestore = getFirestore()
+        const billsRef = collection(
+          firestore,
+          `generalCourts/${member.GeneralCourtNumber}/bills`
+        )
+
+        const q = query(
+          billsRef,
+          where("content.PrimarySponsor.Id", "==", member.MemberCode)
+        )
+
+        const querySnapshot = await getDocs(q)
+        const topicCounts: Record<string, number> = {}
+
+        querySnapshot.forEach(doc => {
+          const bill = doc.data()
+          const primaryTopic = bill.topics?.[0]?.topic ?? "Uncategorized"
+
+          topicCounts[primaryTopic] = (topicCounts[primaryTopic] || 0) + 1
+        })
+
+        setTopFiveTopics(
+          Object.entries(topicCounts)
+            .map(([topic, count]) => ({ topic, count }))
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 5)
+        )
+      } catch (error) {
+        console.error("Unable to load bills by topic:", error)
+        setTopFiveTopics([])
+      }
+    }
+
+    void loadBillsByTopic()
+  }, [member?.MemberCode, member?.GeneralCourtNumber])
 
   return (
     <StyledBillsByTopic>
@@ -45,7 +98,8 @@ const BillsByTopic = ({ member }: { member: MemberContent | undefined }) => {
           {t("profiles.billsByTopic")}
         </StyledBillsByTopicHeaderTitle>
         <StyledBillsByTopicHeaderSubtitle>
-          23 {t("profiles.bills")} • {t("profiles.primarySponsor")}
+          {topFiveTopics.reduce((total, item) => total + item.count, 0)}{" "}
+          {t("profiles.bills")} • {t("profiles.primarySponsor")}
         </StyledBillsByTopicHeaderSubtitle>
       </StyledBillsByTopicHeader>
     </StyledBillsByTopic>
@@ -80,21 +134,11 @@ const CommitteePositions = () => {
   )
 }
 
-export function BillsTab() {
+export function BillsTab({ member }: { member: MemberContent | undefined }) {
   const { t } = useTranslation("legislators")
 
   let tempCourt = 194
   let tempMember = "AMS3"
-
-  const { member, loading: memberLoading } = useMember(tempCourt, tempMember)
-
-  if (memberLoading) {
-    return (
-      <Row>
-        <Spinner animation="border" className="mx-auto" />
-      </Row>
-    )
-  }
 
   // - LAST: bill filter button section
   // 1 - buttons have bill totals for sponsor and cosponsor and all

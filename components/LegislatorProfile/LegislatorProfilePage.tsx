@@ -370,6 +370,7 @@ export function LegislatorProfilePage({
             district={district}
             districtLoading={districtLoading}
             legislatorId={legislatorId}
+            member={member}
             name={member.Name}
             finance={finance}
           />
