@@ -22,6 +22,7 @@ import {
   TabType
 } from "components/EditProfilePage/StyledEditProfileComponents"
 import { MembersFinance } from "components/db/membersFinance"
+import { MemberContent } from "functions/src/members/types"
 
 const tabCategories = {
   priorities: "priorities",
@@ -78,12 +79,14 @@ export function LegislatorTabs({
   district,
   districtLoading,
   legislatorId,
+  member,
   name,
   finance
 }: {
   district?: District | undefined
   districtLoading?: boolean
   legislatorId: string
+  member: MemberContent
   name: string
   finance?: MembersFinance
 }) {
@@ -120,7 +123,7 @@ export function LegislatorTabs({
     {
       title: t("tabs.bills"),
       eventKey: tabCategories.bills,
-      content: <BillsTab />
+      content: <BillsTab member={member} />
     },
     {
       title: t("tabs.elections"),
