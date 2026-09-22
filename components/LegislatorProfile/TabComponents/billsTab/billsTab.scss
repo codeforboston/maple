@@ -21,7 +21,7 @@ body {
   margin: 1.5rem 0 0.75rem 0;
 }
 
-/* --- Navigation Pill Filter Buttons --- */
+
 .filter-group {
   display: flex;
   gap: 0.5rem;
@@ -45,7 +45,7 @@ body {
   border-color: #1c39bb;
 }
 
-/* --- Main Card Container --- */
+
 .card-container {
   background: #ffffff;
   border: 1px solid #e2e8f0;
@@ -109,27 +109,6 @@ body {
   text-decoration: underline;
 }
 
-.topic-progress-container {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  width: 60%;
-}
-
-.progress-bar-bg {
-  flex-grow: 1;
-  height: 8px;
-  background-color: #f1f5f9;
-  border-radius: 9999px;
-  overflow: hidden;
-}
-
-.progress-bar-fill {
-  height: 100%;
-  background-color: #1c39bb;
-  border-radius: 9999px;
-}
-
 .count-label {
   font-size: 0.875rem;
   font-weight: 700;
@@ -160,7 +139,7 @@ body {
   background-color: #152c97;
 }
 
-/* --- Tables (Bills & Committee Positions) --- */
+
 .data-table {
   width: 100%;
   border-collapse: collapse;
