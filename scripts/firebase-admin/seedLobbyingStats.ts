@@ -45,6 +45,7 @@ type FirmBreakdownEntry = {
   entityName: string
   entityNameNorm: string
   compensation: number | null
+  years: number[]
 }
 
 type ClientSummary = {
@@ -218,21 +219,29 @@ export const script: Script = async ({ db }) => {
           cs.firmsMap[entityNorm] = {
             entityName: entityName ?? entityNorm,
             entityNameNorm: entityNorm,
-            compensation: null
+            compensation: null,
+            years: []
           }
         }
         const fb = cs.firmsMap[entityNorm]
         if (comp != null) {
           fb.compensation = (fb.compensation ?? 0) + comp
         }
+        if (year != null && !fb.years.includes(year)) fb.years.push(year)
       }
     }
   }
 
   for (const cs of Object.values(clientSummaries)) {
-    cs.firms = Object.values(cs.firmsMap).sort((a, b) =>
-      a.entityNameNorm.localeCompare(b.entityNameNorm)
-    )
+    for (const fb of Object.values(cs.firmsMap)) {
+      fb.years.sort((a, b) => b - a)
+    }
+    cs.firms = Object.values(cs.firmsMap).sort((a, b) => {
+      const aLatest = a.years[0] ?? 0
+      const bLatest = b.years[0] ?? 0
+      if (aLatest !== bLatest) return bLatest - aLatest
+      return a.entityNameNorm.localeCompare(b.entityNameNorm)
+    })
   }
   for (const fs of Object.values(firmSummaries)) {
     fs.years.sort((a, b) => b - a)

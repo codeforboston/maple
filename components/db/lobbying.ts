@@ -304,6 +304,7 @@ export type ClientSummaryFirm = {
   entityName: string
   entityNameNorm: string
   compensation: number | null
+  years: number[]
 }
 
 export type ClientSummaryRow = {

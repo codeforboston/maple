@@ -174,6 +174,20 @@ function ClientDetail() {
                       >
                         {f.entityName}
                       </a>
+                      {f.years?.length > 0 && (
+                        <span
+                          style={{
+                            color: MAPLE_COLORS.textMuted,
+                            fontSize: 12
+                          }}
+                        >
+                          {" "}
+                          &middot; {t("fields.year")}{" "}
+                          {f.years.length > 1
+                            ? `${f.years[f.years.length - 1]}–${f.years[0]}`
+                            : f.years[0]}
+                        </span>
+                      )}
                       {f.compensation != null && (
                         <span
                           style={{

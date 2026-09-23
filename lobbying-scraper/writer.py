@@ -256,16 +256,22 @@ def compute_stats(db: firestore.Client) -> None:
                         "entityName": entity_name or entity_norm,
                         "entityNameNorm": entity_norm,
                         "compensation": None,
+                        "years": set(),
                     },
                 )
                 if comp is not None:
                     fb["compensation"] = (fb["compensation"] or 0) + comp
+                if year is not None:
+                    fb["years"].add(year)
 
         total_registrants += 1
 
     for cs in client_summaries.values():
+        for fb in cs["firms"].values():
+            fb["years"] = sorted(fb["years"], reverse=True)
         cs["firms"] = sorted(
-            cs["firms"].values(), key=lambda f: f["entityNameNorm"]
+            cs["firms"].values(),
+            key=lambda f: (-(max(f["years"]) if f["years"] else 0), f["entityNameNorm"]),
         )
     for fs in firm_summaries.values():
         fs["years"] = sorted(fs["years"], reverse=True)

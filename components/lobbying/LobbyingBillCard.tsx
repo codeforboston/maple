@@ -6,6 +6,7 @@ import { LobbyingPaginationBar } from "./LobbyingPaginationBar"
 import { usePagination } from "./usePagination"
 import { MAPLE_COLORS } from "./chartTheme"
 import { normalizePosition } from "./LobbyingPositionChip"
+import { BetaTag } from "components/shared/CommonComponents"
 
 const PAGE_SIZE = 10
 
@@ -68,7 +69,10 @@ export const LobbyingBillCard: React.FC<LobbyingBillCardProps> = ({
   return (
     <div style={cardStyle} className={className}>
       <div style={headerStyle}>
-        <span style={titleStyle}>{t("lobbying:billCard.title")}</span>
+        <span style={titleStyle}>
+          {t("lobbying:billCard.title")}
+          <BetaTag>{t("common:beta_feature")}</BetaTag>
+        </span>
         <a href={explorerHref} style={viewAllLinkStyle}>
           {t("lobbying:billCard.viewAll")}
         </a>

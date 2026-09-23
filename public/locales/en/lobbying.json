@@ -5,6 +5,10 @@
     "label": "LOBBYING EXPLORER",
     "overview": "Overview"
   },
+  "banner": {
+    "betaLine1": "MAPLE's lobbying explorer is in beta. Please email",
+    "betaLine2": "with feedback."
+  },
   "pagination": {
     "prev": "← Prev",
     "next": "Next →",
