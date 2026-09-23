@@ -1,5 +1,3 @@
-import { TabBlock } from "../LegislatorComponents"
-
 import { useTranslation } from "next-i18next"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -8,13 +6,31 @@ import styled from "styled-components"
 import { Form } from "../../bootstrap"
 import { Profile, ProfileHook, useProfile } from "../../db"
 import Input from "../../forms/Input"
-import { SidebarBlock, SidebarTitle } from "../LegislatorSidebar"
+import { SubmitButton, TabBlock } from "../LegislatorComponents"
+import { SidebarTitle } from "../LegislatorSidebar"
 
 import { useAuth } from "components/auth"
-import {
-  updateProfile,
-  UpdateProfileData
-} from "components/EditProfilePage/PersonalInfoTab"
+
+type UpdateProfilePriorities = {
+  inTheirOwnWords: string
+}
+
+type Props = {
+  profile: Profile
+  actions: ProfileHook
+  uid?: string
+  setFormUpdated?: any
+  className?: string
+}
+
+async function updatePriorities(
+  { actions }: Props,
+  data: UpdateProfilePriorities
+) {
+  const { updateInTheirOwnWords } = actions
+
+  await updateInTheirOwnWords(data.inTheirOwnWords)
+}
 
 export function PrioritiesTab({
   court,
@@ -72,12 +88,12 @@ function EditablePriorities({
     register,
     formState: { errors, isDirty },
     handleSubmit
-  } = useForm<UpdateProfileData>()
+  } = useForm<UpdateProfilePriorities>()
 
-  const { about }: Profile = profile
+  const { inTheirOwnWords }: Profile = profile
 
   const onSubmit = handleSubmit(async update => {
-    await updateProfile({ profile, actions }, update)
+    await updatePriorities({ profile, actions }, update)
     location.assign(`/legislators/${court}/${memberCode}`)
     setFormUpdated(false)
   })
@@ -90,31 +106,31 @@ function EditablePriorities({
   }, [isDirty, setFormUpdated])
 
   return (
-    <SidebarBlock>
+    <TabBlock>
       Editable Priorities
-      {/* <Form onSubmit={onSubmit}>
+      <Form onSubmit={onSubmit}>
         <div className={`d-flex justify-content-between`}>
           <SidebarTitle className={`align-self-center d-inline my-1`}>
             {t("biography")}
           </SidebarTitle>
-          <BioButton
+          <SubmitButton
             type="submit"
             className={`btn btn-primary d-inline m-1 w-auto`}
             disabled={!formUpdated}
           >
             {t("submit")}
-          </BioButton>
+          </SubmitButton>
         </div>
         <Input
           as="textarea"
-          {...register("aboutYou")}
+          {...register("inTheirOwnWords")}
           style={{ fontSize: "11px", height: "10rem" }}
           className="mt-3"
           label={t("editBio")}
-          defaultValue={about ? about : t("addBio")}
+          defaultValue={inTheirOwnWords ? inTheirOwnWords : t("addBio")}
         />
-      </Form> */}
-    </SidebarBlock>
+      </Form>
+    </TabBlock>
   )
 }
 
@@ -122,26 +138,13 @@ function ReadonlyPriorities({ legislatorData }: { legislatorData: any[] }) {
   const { t } = useTranslation("legislators")
 
   return (
-    <SidebarBlock>
+    <TabBlock>
       <SidebarTitle className={`my-1`}>{t("biography")}</SidebarTitle>
       <div style={{ whiteSpace: "pre-wrap" }}>
-        {legislatorData[0]?.about ? legislatorData[0].about : t("notClaimed")}
+        {legislatorData[0]?.inTheirOwnWords
+          ? legislatorData[0].inTheirOwnWords
+          : t("notClaimed")}
       </div>
-    </SidebarBlock>
+    </TabBlock>
   )
 }
-
-// {
-//   return (
-//     <TabBlock>
-//       <div>In their own words</div>
-//       <div>Key Priorites</div>
-//       <div>
-//         <div>1</div>
-//         <div>2</div>
-//         <div>3</div>
-//       </div>
-//       <div>Last updated ?</div>
-//     </TabBlock>
-//   )
-// }
