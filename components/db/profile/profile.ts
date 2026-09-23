@@ -316,10 +316,10 @@ function updateContactInfo(
   )
 }
 
-function updateInTheirOwnWords(uid: string, inTheirOwnWords: string) {
+function updateAbout(uid: string, about: string) {
   return setDoc(
     profileRef(uid),
-    { inTheirOwnWords: inTheirOwnWords ?? deleteField() },
+    { about: about ?? deleteField() },
     { merge: true }
   )
 }
@@ -340,10 +340,10 @@ function updateBillsFollowing(uid: string, billsFollowing: string[]) {
   )
 }
 
-function updateAbout(uid: string, about: string) {
+function updateInTheirOwnWords(uid: string, inTheirOwnWords: string) {
   return setDoc(
     profileRef(uid),
-    { about: about ?? deleteField() },
+    { inTheirOwnWords: inTheirOwnWords ?? deleteField() },
     { merge: true }
   )
 }
