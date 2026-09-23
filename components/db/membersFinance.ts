@@ -50,7 +50,7 @@ export interface MembersFinance {
   totalRaised: number
   totalSpent: number
   cashOnHand: number
-  contributorCount: number
+  contributionsCount: number
   lastUpdated: Timestamp
   // End_Date of the most recent Bank Report (type 70) — the basis for totalRaised/cashOnHand.
   bankDataAsOf?: Timestamp

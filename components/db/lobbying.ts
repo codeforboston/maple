@@ -276,13 +276,19 @@ export type BillRow = {
 async function fetchLobbyingBillSummaries(
   court: number
 ): Promise<Record<string, BillSummaryEntry>> {
-  const snap = await getDoc(
-    doc(firestore, LOBBYING_STATS_COLLECTION, `billSummaries_${court}`)
+  const snap = await getDocs(
+    collection(
+      firestore,
+      LOBBYING_STATS_COLLECTION,
+      `billSummaries_${court}`,
+      "bills"
+    )
   )
-  if (!snap.exists()) return {}
-  const raw = snap.data() as { data?: string }
-  if (!raw.data) return {}
-  return JSON.parse(raw.data) as Record<string, BillSummaryEntry>
+  const result: Record<string, BillSummaryEntry> = {}
+  snap.docs.forEach(d => {
+    result[d.id] = d.data() as BillSummaryEntry
+  })
+  return result
 }
 
 export function useLobbyingBillSummaries(court: number) {

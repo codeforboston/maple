@@ -38,7 +38,9 @@ from portal import (
 from writer import (
     BACKFILL_DOC,
     BACKFILL_URLS_COLLECTION,
+    PROCESSED_URLS_COLLECTION,
     SCRAPER_DOC,
+    SUMMARY_CACHE_COLLECTION,
     compute_stats,
     write_filings,
     write_registrant,
@@ -46,36 +48,70 @@ from writer import (
 
 
 # ── Cursor helpers ────────────────────────────────────────────────────────────
+#
+# Weekly-mode cursor state lives in subcollections under SCRAPER_DOC, one small
+# doc per URL, mirroring the backfill cursor below. An earlier version stored
+# the entire processed-URL history and summary cache as two fields on a single
+# document; that doc grew past Firestore's 1MB limit once run against the full
+# corpus, silently failing (and thus skipping) every registrant processed
+# after the limit was hit. Per-URL docs have no such ceiling.
 
 
-def _load_live_cursor(db: firestore.Client) -> tuple[set[str], dict[str, list[str]]]:
-    """Return (processedDiscUrls, summaryDiscCache) from the live scraper doc."""
-    doc = db.document(SCRAPER_DOC).get()
-    data = doc.to_dict() or {}
+def _url_hash(url: str) -> str:
+    return hashlib.sha256(url.encode()).hexdigest()[:40]
+
+
+def _is_processed(db: firestore.Client, disc_url: str) -> bool:
+    h = _url_hash(disc_url)
     return (
-        set(data.get("processedDiscUrls", [])),
-        data.get("summaryDiscCache", {}),
+        db.document(SCRAPER_DOC)
+        .collection(PROCESSED_URLS_COLLECTION)
+        .document(h)
+        .get()
+        .exists
     )
 
 
-def _save_live_cursor(
-    db: firestore.Client,
-    processed: set[str],
-    cache: dict[str, list[str]],
+def _mark_processed(db: firestore.Client, disc_url: str) -> None:
+    h = _url_hash(disc_url)
+    db.document(SCRAPER_DOC).collection(PROCESSED_URLS_COLLECTION).document(h).set(
+        {"url": disc_url, "processedAt": datetime.now(tz=timezone.utc).isoformat()}
+    )
+
+
+def _get_cached_disc_urls(db: firestore.Client, summary_url: str) -> list[str] | None:
+    """Cached disclosure URLs for a registrant's summary page, or None if unseen.
+
+    Only consulted for prior years — the current year is always refetched live
+    since its disclosures can still change.
+    """
+    h = _url_hash(summary_url)
+    doc = db.document(SCRAPER_DOC).collection(SUMMARY_CACHE_COLLECTION).document(h).get()
+    if not doc.exists:
+        return None
+    return doc.to_dict().get("discUrls", [])
+
+
+def _cache_disc_urls(
+    db: firestore.Client, summary_url: str, disc_urls: list[str]
 ) -> None:
-    db.document(SCRAPER_DOC).set(
-        {"processedDiscUrls": list(processed), "summaryDiscCache": cache},
-        merge=True,
+    h = _url_hash(summary_url)
+    db.document(SCRAPER_DOC).collection(SUMMARY_CACHE_COLLECTION).document(h).set(
+        {
+            "summaryUrl": summary_url,
+            "discUrls": disc_urls,
+            "cachedAt": datetime.now(tz=timezone.utc).isoformat(),
+        }
     )
 
 
 def _is_backfill_processed(db: firestore.Client, disc_url: str) -> bool:
-    h = hashlib.sha256(disc_url.encode()).hexdigest()[:40]
+    h = _url_hash(disc_url)
     return db.document(BACKFILL_DOC).collection(BACKFILL_URLS_COLLECTION).document(h).get().exists
 
 
 def _mark_backfill_processed(db: firestore.Client, disc_url: str) -> None:
-    h = hashlib.sha256(disc_url.encode()).hexdigest()[:40]
+    h = _url_hash(disc_url)
     db.document(BACKFILL_DOC).collection(BACKFILL_URLS_COLLECTION).document(h).set(
         {"url": disc_url, "processedAt": datetime.now(tz=timezone.utc).isoformat()}
     )
@@ -118,7 +154,7 @@ def run_weekly(
 ) -> int:
     """Incremental weekly check. Returns number of new disclosures processed."""
     current_year = datetime.now(tz=timezone.utc).year
-    processed, cache = _load_live_cursor(db) if db is not None else (set(), {})
+    use_cursor = db is not None and not dry_run
 
     session = make_session()
     new_count = 0
@@ -137,33 +173,33 @@ def run_weekly(
         print(f"  {len(summary_urls)} registrants on portal")
 
         for summary_url in summary_urls:
-            # Use cached disc URLs for prior years; always re-check current year
-            disc_urls = cache.get(summary_url)
-            if disc_urls is None or year == current_year:
+            # Prior years: trust the cache if we have one. Current year:
+            # always refetch live, since its disclosures can still change.
+            disc_urls = None
+            if year != current_year and use_cursor:
+                disc_urls = _get_cached_disc_urls(db, summary_url)
+
+            if disc_urls is None:
                 try:
                     meta = fetch_disclosure_meta(session, summary_url)
                     disc_urls = meta.disclosure_urls
-                    cache[summary_url] = disc_urls
-                    if not dry_run:
-                        _save_live_cursor(db, processed, cache)
+                    if use_cursor:
+                        _cache_disc_urls(db, summary_url, disc_urls)
                 except Exception as e:
                     print(f"  failed to fetch summary {summary_url}: {e}", file=sys.stderr)
                     continue
 
-            new_disc_urls = [u for u in disc_urls if u not in processed]
-            if not new_disc_urls:
-                continue
-
-            for disc_url in new_disc_urls:
+            for disc_url in disc_urls:
+                if use_cursor and _is_processed(db, disc_url):
+                    continue
                 try:
                     comp_n, filing_n = process_disclosure(
                         db, session, summary_url, disc_url, year, dry_run=dry_run
                     )
-                    processed.add(disc_url)
                     new_count += 1
                     print(f"  processed: {comp_n} clients, {filing_n} filings")
-                    if not dry_run:
-                        _save_live_cursor(db, processed, cache)
+                    if use_cursor:
+                        _mark_processed(db, disc_url)
                 except Exception as e:
                     print(f"  failed to process {disc_url}: {e}", file=sys.stderr)
 
@@ -171,17 +207,21 @@ def run_weekly(
 
 
 # ── Historical backfill ───────────────────────────────────────────────────────
-
-
-def _completed_years(db: "firestore.Client") -> set[int]:
-    data = db.document(BACKFILL_DOC).get().to_dict() or {}
-    return set(data.get("completedYears", []))
-
-
-def _mark_year_complete(db: "firestore.Client", year: int) -> None:
-    db.document(BACKFILL_DOC).set(
-        {"completedYears": firestore.ArrayUnion([year])}, merge=True
-    )
+#
+# Correctness here relies entirely on the per-URL cursor (_is_backfill_processed
+# / _mark_backfill_processed below) — every disclosure URL is checked and
+# marked individually, so re-running a backfill is always safe and complete.
+#
+# An earlier version also tracked a per-year "completedYears" flag as a
+# fast-path to skip re-listing a year's registrants at all. That flag was
+# permanent once set, which is wrong for the current (still-accruing) year:
+# a backfill run partway through the year would mark it complete after
+# finding whatever existed at that moment, and every later run would then
+# skip it forever — silently missing every disclosure filed afterward. There
+# is no reliable way to tell "genuinely finished" apart from "happened to be
+# a quiet moment" for a year that's still in progress, so the flag is gone;
+# each run always re-lists every requested year's registrants (one cheap
+# HTTP request per year) and leans on the per-URL cursor for correctness.
 
 
 def run_backfill(
@@ -190,18 +230,15 @@ def run_backfill(
     limit: int | None = None,
     dry_run: bool = False,
 ) -> int:
-    """Full historical backfill using the subcollection cursor. Resumable."""
+    """Full historical backfill using the per-URL subcollection cursor.
+
+    Always resumable and safe to re-run: every disclosure URL is checked
+    individually against the cursor, so no year is ever skipped wholesale.
+    """
     session = make_session()
     total_new = 0
 
-    done = _completed_years(db) if db is not None and not dry_run else set()
-    if done:
-        print(f"Skipping already-completed years: {sorted(done)}")
-
     for year in years:
-        if year in done:
-            continue
-
         print(f"\n── {year} ──")
         try:
             summary_urls = fetch_summary_links(session, year)
@@ -240,8 +277,6 @@ def run_backfill(
                 print(f"  [{i+1}/{len(summary_urls)}] {year_new} new disclosures so far")
 
         print(f"  {year} complete: {year_new} new disclosures")
-        if db is not None and not dry_run and not limit:
-            _mark_year_complete(db, year)
 
     return total_new
 
