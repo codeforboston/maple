@@ -158,7 +158,11 @@ def compute_stats(db: firestore.Client) -> None:
 
     client_norms: set[str] = set()
     spend_by_year: dict[str, float] = {}
-    total_registrants = 0
+    # (entityNameNorm, year) pairs, not a raw per-doc count: a registrant can
+    # now have multiple docs (one per filing period) sharing the same
+    # entity+year, and this stat is shown to users as "Lobbying Firms" — it
+    # must count distinct firm-year registrations, not filing periods.
+    registrant_keys: set[tuple[str, str]] = set()
 
     for doc in _iter_collection(db, REGISTRANTS_COLLECTION):
         d = doc.to_dict()
@@ -170,7 +174,10 @@ def compute_stats(db: firestore.Client) -> None:
             comp = c.get("compensation")
             if comp is not None and year:
                 spend_by_year[year] = spend_by_year.get(year, 0) + comp
-        total_registrants += 1
+        entity_norm = d.get("entityNameNorm")
+        if entity_norm:
+            registrant_keys.add((entity_norm, year))
+    total_registrants = len(registrant_keys)
 
     stats = {
         "totalFilings": total_filings,
@@ -226,7 +233,7 @@ def write_registrant(
     if not meta.entity_name or meta.year is None:
         return
 
-    doc_id = registrant_id(meta.entity_name, meta.year)
+    doc_id = registrant_id(meta.entity_name, meta.year, detail.period_start)
     ref = db.collection(REGISTRANTS_COLLECTION).document(doc_id)
 
     clients = [
@@ -247,6 +254,8 @@ def write_registrant(
         "regType": meta.reg_type,
         "clients": clients,
         "legacyTotalCompensation": detail.legacy_total_compensation,
+        "periodStart": detail.period_start,
+        "periodEnd": detail.period_end,
         "disclosureUrls": firestore.ArrayUnion([disc_url]),
         "fetchedAt": _now(),
     }

@@ -1,8 +1,10 @@
 """Offline reparse driver: re-ingests raw HTML from the GCS archive.
 
 Downloads archived CompleteDisclosure pages from GCS, re-runs the pure parsers
-against them, and writes results back to Firestore. Use this when parser logic
-has changed and historical data needs to be re-ingested without re-scraping.
+against them, and writes both the registrant (compensation/client roster) and
+filing (bill-level activity) documents back to Firestore. Use this when parser
+logic has changed, or when registrant documents need reprocessing under a
+corrected write path, without re-scraping the live portal.
 
 For each archived disclosure page the driver looks up the corresponding
 registrant document in Firestore (via the disclosureUrls array) to obtain the
@@ -28,7 +30,7 @@ from google.cloud.storage import Blob
 
 import archive
 from portal import DisclosureMeta, parse_disclosure_detail
-from writer import REGISTRANTS_COLLECTION, write_filings
+from writer import REGISTRANTS_COLLECTION, write_filings, write_registrant
 
 _PROCESSED_META_KEY = "reparse-processed"
 
@@ -116,6 +118,7 @@ def run(limit: int | None, dry_run: bool) -> None:
         )
 
         if not dry_run:
+            write_registrant(db, meta, detail, url)
             write_filings(db, meta, detail)
             _mark_processed(blob)
 

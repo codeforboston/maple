@@ -13,8 +13,20 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from portal import BillActivity, Compensation, DisclosureDetail, DisclosureMeta
-from writer import write_registrant, write_filings
+from portal import (
+    BillActivity,
+    Compensation,
+    DisclosureDetail,
+    DisclosureMeta,
+    registrant_id,
+)
+from writer import (
+    write_registrant,
+    write_filings,
+    compute_stats,
+    REGISTRANTS_COLLECTION,
+    STATS_DOC_ID,
+)
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -112,6 +124,73 @@ def test_registrant_skipped_when_year_none():
     doc_ref.set.assert_not_called()
 
 
+def test_write_registrant_includes_period_fields():
+    """periodStart/periodEnd from DisclosureDetail must land on the written doc."""
+    db, doc_ref = _make_db()
+    detail = DisclosureDetail(
+        compensation=[Compensation(client_name="Client A", amount=1000.0)],
+        bills=[],
+        period_start="2024-01-01",
+        period_end="2024-06-30",
+    )
+    with patch("writer.firestore.ArrayUnion", side_effect=lambda x: x):
+        write_registrant(db, _meta(), detail, "https://example.com/disc")
+
+    data = _captured_data(doc_ref)
+    assert data["periodStart"] == "2024-01-01"
+    assert data["periodEnd"] == "2024-06-30"
+
+
+def test_write_registrant_period_fields_none_when_unparsed():
+    """A DisclosureDetail with no parsed period must write periodStart/periodEnd
+    as None rather than omitting them or crashing."""
+    db, doc_ref = _make_db()
+    detail = DisclosureDetail(compensation=[], bills=[])
+    with patch("writer.firestore.ArrayUnion", side_effect=lambda x: x):
+        write_registrant(db, _meta(), detail, "https://example.com/disc")
+
+    data = _captured_data(doc_ref)
+    assert data["periodStart"] is None
+    assert data["periodEnd"] is None
+
+
+# ── registrant_id (the core bug fix) ────────────────────────────────────────
+
+
+def test_registrant_id_differs_by_period():
+    """Two different filing periods for the same entity+year must no longer
+    collide onto the same Firestore doc id — this is the exact bug that
+    caused a second period's write to silently overwrite the first's clients[]."""
+    id_h1 = registrant_id("Acme Lobbying LLC", 2024, "2024-01-01")
+    id_h2 = registrant_id("Acme Lobbying LLC", 2024, "2024-07-01")
+    assert id_h1 != id_h2
+
+
+def test_registrant_id_same_period_is_idempotent():
+    """Re-processing the exact same period must produce the same id (safe,
+    idempotent re-write), not a new doc each time."""
+    a = registrant_id("Acme Lobbying LLC", 2024, "2024-01-01")
+    b = registrant_id("Acme Lobbying LLC", 2024, "2024-01-01")
+    assert a == b
+
+
+def test_registrant_id_falls_back_without_period():
+    """When period parsing fails (None), registrant_id must still produce a
+    stable id rather than crash — malformed pages degrade gracefully."""
+    a = registrant_id("Acme Lobbying LLC", 2024, None)
+    b = registrant_id("Acme Lobbying LLC", 2024, None)
+    assert a == b
+    assert a != registrant_id("Acme Lobbying LLC", 2024, "2024-01-01")
+
+
+def test_registrant_id_no_period_arg_matches_none():
+    """Calling with the old 2-arg signature must match explicitly passing None,
+    so any remaining 2-arg call sites keep working identically."""
+    assert registrant_id("Acme Lobbying LLC", 2024) == registrant_id(
+        "Acme Lobbying LLC", 2024, None
+    )
+
+
 # ── write_filings ─────────────────────────────────────────────────────────────
 
 
@@ -141,3 +220,83 @@ def test_write_filings_returns_zero_when_no_bills():
     count = write_filings(db, _meta(), detail)
     assert count == 0
     db.batch.assert_not_called()
+
+
+# ── compute_stats: not dropping data across split period docs ──────────────
+
+
+def _fake_doc(data: dict) -> MagicMock:
+    doc = MagicMock()
+    doc.to_dict.return_value = data
+    return doc
+
+
+def _make_stats_db():
+    """A MagicMock db where db.collection(STATS_COLLECTION).document(doc_id)
+    returns a distinct, inspectable mock per doc_id (unlike the single shared
+    mock _make_db() gives write_registrant's single-write callers)."""
+    db = MagicMock()
+    doc_mocks: dict[str, MagicMock] = {}
+
+    def _document(doc_id):
+        return doc_mocks.setdefault(doc_id, MagicMock())
+
+    db.collection.return_value.document.side_effect = _document
+    return db, doc_mocks
+
+
+def test_compute_stats_registrant_count_deduped_across_periods():
+    """Splitting one entity-year into two period docs (the fix's whole point)
+    must not double-count totalRegistrants — it must count distinct
+    (entity, year) registrations, not raw docs, since it's shown to users as
+    the "Lobbying Firms" stat on the overview page."""
+    db, doc_mocks = _make_stats_db()
+    registrants = [
+        _fake_doc({
+            "entityNameNorm": "ACME LOBBYING",
+            "year": 2024,
+            "clients": [{"clientNameNorm": "CLIENT A", "compensation": 1000.0}],
+        }),
+        _fake_doc({
+            "entityNameNorm": "ACME LOBBYING",
+            "year": 2024,
+            "clients": [{"clientNameNorm": "CLIENT A", "compensation": 2000.0}],
+        }),
+    ]
+
+    def _iter(_db, collection_name):
+        if collection_name == REGISTRANTS_COLLECTION:
+            return iter(registrants)
+        return iter([])
+
+    with patch("writer._iter_collection", side_effect=_iter):
+        compute_stats(db)
+
+    stats = doc_mocks[STATS_DOC_ID].set.call_args[0][0]
+    assert stats["totalRegistrants"] == 1, (
+        "two period-docs for the same entity+year must count as one registrant"
+    )
+    # And compensation from both periods must both be reflected — the fix's
+    # actual point, not just an inflation guard.
+    assert stats["spendByYear"]["2024"] == pytest.approx(3000.0)
+
+
+def test_compute_stats_registrant_count_not_deduped_across_different_entities():
+    """Sanity check on the other direction: genuinely distinct entities must
+    still be counted separately, not accidentally collapsed."""
+    db, doc_mocks = _make_stats_db()
+    registrants = [
+        _fake_doc({"entityNameNorm": "ACME LOBBYING", "year": 2024, "clients": []}),
+        _fake_doc({"entityNameNorm": "BETA LOBBYING", "year": 2024, "clients": []}),
+    ]
+
+    def _iter(_db, collection_name):
+        if collection_name == REGISTRANTS_COLLECTION:
+            return iter(registrants)
+        return iter([])
+
+    with patch("writer._iter_collection", side_effect=_iter):
+        compute_stats(db)
+
+    stats = doc_mocks[STATS_DOC_ID].set.call_args[0][0]
+    assert stats["totalRegistrants"] == 2
