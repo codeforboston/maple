@@ -68,26 +68,26 @@ function EditablePriorities({
   memberCode: string
   profile: Profile
 }) {
-  // const {
-  //   register,
-  //   formState: { errors, isDirty },
-  //   handleSubmit
-  // } = useForm<UpdateProfileData>()
+  const {
+    register,
+    formState: { errors, isDirty },
+    handleSubmit
+  } = useForm<UpdateProfileData>()
 
-  // const { about }: Profile = profile
+  const { about }: Profile = profile
 
-  // const onSubmit = handleSubmit(async update => {
-  //   await updateProfile({ profile, actions }, update)
-  //   location.assign(`/legislators/${court}/${memberCode}`)
-  //   setFormUpdated(false)
-  // })
+  const onSubmit = handleSubmit(async update => {
+    await updateProfile({ profile, actions }, update)
+    location.assign(`/legislators/${court}/${memberCode}`)
+    setFormUpdated(false)
+  })
 
-  // const { t } = useTranslation("legislators")
-  // const [formUpdated, setFormUpdated] = useState(false)
+  const { t } = useTranslation("legislators")
+  const [formUpdated, setFormUpdated] = useState(false)
 
-  // useEffect(() => {
-  //   setFormUpdated(isDirty)
-  // }, [isDirty, setFormUpdated])
+  useEffect(() => {
+    setFormUpdated(isDirty)
+  }, [isDirty, setFormUpdated])
 
   return (
     <SidebarBlock>
