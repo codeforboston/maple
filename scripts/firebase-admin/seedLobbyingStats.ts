@@ -106,6 +106,11 @@ export const script: Script = async ({ db }) => {
   // relationship — more accurate than the per-bill amount on filings.
   const clientNorms = new Set<string>()
   const spendByYear: Record<string, number> = {}
+  // (entityNameNorm, year) pairs, not a raw doc count: a registrant can have
+  // multiple docs (one per filing period) sharing the same entity+year, and
+  // this stat is shown to users as "Lobbying Firms" — it must count distinct
+  // firm-year registrations, not filing periods.
+  const registrantKeys = new Set<string>()
   for (const doc of registrantsSnap.docs) {
     const d = doc.data()
     const y = String(d.year)
@@ -115,12 +120,13 @@ export const script: Script = async ({ db }) => {
         spendByYear[y] = (spendByYear[y] ?? 0) + c.compensation
       }
     }
+    if (d.entityNameNorm) registrantKeys.add(`${d.entityNameNorm}|${y}`)
   }
   const totalClients = clientNorms.size
 
   const stats = {
     totalFilings: filingsSnap.size,
-    totalRegistrants: registrantsSnap.size,
+    totalRegistrants: registrantKeys.size,
     totalClients,
     totalBillsWithFilings: bills.size,
     courtsWithData: [...courts].sort((a, b) => a - b),

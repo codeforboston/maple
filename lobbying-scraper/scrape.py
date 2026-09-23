@@ -12,9 +12,14 @@ Environment variables:
   FIRESTORE_EMULATOR_HOST — set to use the local emulator (e.g. localhost:8080)
 
 CLI flags (for local / backfill use):
-  --year YEAR     Only process this year (default: current + prior)
-  --limit N       Max registrants per year (for testing)
-  --dry-run       Fetch and parse but do not write to Firestore
+  --year YEAR       Only process this year (default: current + prior)
+  --limit N         Max registrants per year (for testing)
+  --dry-run         Fetch and parse but do not write to Firestore
+  --use-archive     Backfill only: check the GCS archive before any live
+                     fetch, skipping the live request (and its rate-limit
+                     delay) entirely on a cache hit. Never used by weekly
+                     mode — see run_weekly()'s docstring for why.
+  --workers N       Backfill only: concurrent worker threads (default 20)
 """
 
 from __future__ import annotations
@@ -24,6 +29,7 @@ import hashlib
 import json
 import os
 import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 
 from google.cloud import firestore
@@ -45,6 +51,8 @@ from writer import (
     write_filings,
     write_registrant,
 )
+
+_DEFAULT_BACKFILL_WORKERS = 20
 
 
 # ── Cursor helpers ────────────────────────────────────────────────────────────
@@ -127,13 +135,14 @@ def process_disclosure(
     disc_url: str,
     year: int,
     dry_run: bool = False,
+    use_archive: bool = False,
 ) -> tuple[int, int]:
     """Fetch one disclosure page and write registrant + filing documents.
 
     Returns (compensation_rows, filing_rows).
     """
-    meta = fetch_disclosure_meta(session, summary_url)
-    detail = fetch_disclosure_detail(session, disc_url, year)
+    meta = fetch_disclosure_meta(session, summary_url, use_archive=use_archive)
+    detail = fetch_disclosure_detail(session, disc_url, year, use_archive=use_archive)
 
     if dry_run or db is None:
         return len(detail.compensation), len(detail.bills)
@@ -152,7 +161,14 @@ def run_weekly(
     limit: int | None = None,
     dry_run: bool = False,
 ) -> int:
-    """Incremental weekly check. Returns number of new disclosures processed."""
+    """Incremental weekly check. Returns number of new disclosures processed.
+
+    Deliberately has no use_archive parameter and must never gain one: this
+    always live-fetches the current year's Summary.aspx page, since a
+    lobbyist can add a new disclosure link there mid-year. Serving a cached
+    copy would silently hide newly-filed disclosures. Only run_backfill()
+    (historical, already-published years) is archive-aware.
+    """
     current_year = datetime.now(tz=timezone.utc).year
     use_cursor = db is not None and not dry_run
 
@@ -224,16 +240,75 @@ def run_weekly(
 # HTTP request per year) and leans on the per-URL cursor for correctness.
 
 
+def _backfill_one_summary_url(
+    db: "firestore.Client | None",
+    year: int,
+    summary_url: str,
+    dry_run: bool,
+    use_archive: bool,
+) -> tuple[int, list[str]]:
+    """Process one registrant's summary page and all its disclosures.
+
+    Each call gets its own requests.Session (make_session() is cheap — no
+    network call) rather than sharing one across worker threads, since
+    requests.Session isn't documented as safe for concurrent use.
+
+    Returns (processed_count, error_messages).
+    """
+    session = make_session()
+    try:
+        meta = fetch_disclosure_meta(session, summary_url, use_archive=use_archive)
+    except Exception as e:
+        return 0, [f"failed to fetch summary {summary_url}: {e}"]
+
+    processed = 0
+    errors: list[str] = []
+    for disc_url in meta.disclosure_urls:
+        if db is not None and not dry_run and _is_backfill_processed(db, disc_url):
+            continue
+        try:
+            process_disclosure(
+                db,
+                session,
+                summary_url,
+                disc_url,
+                year,
+                dry_run=dry_run,
+                use_archive=use_archive,
+            )
+            if not dry_run:
+                _mark_backfill_processed(db, disc_url)
+            processed += 1
+        except Exception as e:
+            errors.append(f"failed to process {disc_url}: {e}")
+    return processed, errors
+
+
 def run_backfill(
     db: "firestore.Client | None",
     years: list[int],
     limit: int | None = None,
     dry_run: bool = False,
+    use_archive: bool = False,
+    workers: int = _DEFAULT_BACKFILL_WORKERS,
 ) -> int:
     """Full historical backfill using the per-URL subcollection cursor.
 
     Always resumable and safe to re-run: every disclosure URL is checked
     individually against the cursor, so no year is ever skipped wholesale.
+
+    Each summary_url's work (fetch its meta, process each of its disclosure
+    URLs) runs in a thread pool. This is safe to do concurrently against the
+    live, rate-limited MA SoS portal specifically because use_archive=True
+    is the expected way to run this at scale: with near-total archive
+    coverage (see docs/lobbying-disclosure-ingestion.md), the overwhelming
+    majority of _get() calls are served from the GCS cache and never touch
+    the live portal or its rate limiter at all — concurrency only affects
+    Firestore/GCS-bound work. The small residual set of genuine cache misses
+    (pages the archive doesn't have) can still land concurrently across
+    threads without the shared rate limit coordinating between them; given
+    how few of those there are in practice, this is an accepted minor risk
+    rather than something worth a cross-thread rate limiter.
     """
     session = make_session()
     total_new = 0
@@ -251,30 +326,24 @@ def run_backfill(
 
         print(f"  {len(summary_urls)} registrants on portal")
         year_new = 0
+        done = 0
 
-        for i, summary_url in enumerate(summary_urls):
-            try:
-                meta = fetch_disclosure_meta(session, summary_url)
-            except Exception as e:
-                print(f"  [{i+1}/{len(summary_urls)}] failed to fetch summary: {e}", file=sys.stderr)
-                continue
-
-            for disc_url in meta.disclosure_urls:
-                if db is not None and not dry_run and _is_backfill_processed(db, disc_url):
-                    continue
-                try:
-                    comp_n, filing_n = process_disclosure(
-                        db, session, summary_url, disc_url, year, dry_run=dry_run
-                    )
-                    if not dry_run:
-                        _mark_backfill_processed(db, disc_url)
-                    total_new += 1
-                    year_new += 1
-                except Exception as e:
-                    print(f"  failed to process {disc_url}: {e}", file=sys.stderr)
-
-            if (i + 1) % 50 == 0 or i + 1 == len(summary_urls):
-                print(f"  [{i+1}/{len(summary_urls)}] {year_new} new disclosures so far")
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            futures = {
+                pool.submit(
+                    _backfill_one_summary_url, db, year, summary_url, dry_run, use_archive
+                ): summary_url
+                for summary_url in summary_urls
+            }
+            for future in as_completed(futures):
+                processed, errors = future.result()
+                year_new += processed
+                total_new += processed
+                for msg in errors:
+                    print(f"  {msg}", file=sys.stderr)
+                done += 1
+                if done % 50 == 0 or done == len(summary_urls):
+                    print(f"  [{done}/{len(summary_urls)}] {year_new} new disclosures so far")
 
         print(f"  {year} complete: {year_new} new disclosures")
 
@@ -294,6 +363,17 @@ def main() -> None:
         choices=["weekly", "backfill"],
         default="weekly",
         help="weekly: incremental check; backfill: full history with subcollection cursor",
+    )
+    p.add_argument(
+        "--use-archive",
+        action="store_true",
+        help="backfill only: check the GCS archive before any live fetch",
+    )
+    p.add_argument(
+        "--workers",
+        type=int,
+        default=_DEFAULT_BACKFILL_WORKERS,
+        help=f"backfill only: concurrent worker threads (default {_DEFAULT_BACKFILL_WORKERS})",
     )
     args = p.parse_args()
 
@@ -316,7 +396,14 @@ def main() -> None:
         else:
             print(f"\nDone: {n} new disclosures written.")
     else:
-        n = run_backfill(db, years, limit=args.limit, dry_run=args.dry_run)
+        n = run_backfill(
+            db,
+            years,
+            limit=args.limit,
+            dry_run=args.dry_run,
+            use_archive=args.use_archive,
+            workers=args.workers,
+        )
         print(f"\nBackfill complete: {n} new disclosures written.")
 
     # Recompute aggregate stats after any run that wrote new data.

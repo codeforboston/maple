@@ -21,6 +21,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from portal import (
     _parse_amount,
+    _parse_period,
     parse_disclosure_detail,
     parse_summary,
     year_to_general_court,
@@ -120,6 +121,36 @@ def test_modern_individual_per_client_comp():
     assert all(
         c.client_name not in ("Total amount", "") for c in detail.compensation
     )
+
+
+@pytest.mark.parametrize("fix,year,_c,_n,_b,_e", DISCLOSURE_CASES)
+def test_parse_period(fix, year, _c, _n, _b, _e):
+    """The reporting-period label (MM/DD/YYYY - MM/DD/YYYY) must parse to a
+    valid ISO (start, end) pair whose start falls in the fixture's year, for
+    every one of the four HTML format eras — this is what registrant_id()
+    relies on to key documents per filing period instead of colliding two
+    periods of the same entity-year onto one doc."""
+    detail = parse_disclosure_detail(_soup(f"{fix}_disc"), year)
+    assert detail.period_start is not None, f"{fix}: period_start should parse"
+    assert detail.period_end is not None, f"{fix}: period_end should parse"
+    assert detail.period_start <= detail.period_end
+    assert detail.period_start.startswith(str(year)), f"{fix}: unexpected period_start {detail.period_start!r}"
+
+
+def test_parse_period_returns_none_on_missing_label():
+    """A page with no lblYear element must return None, not raise or guess —
+    registrant_id() falls back to its pre-fix entity+year-only key in that case."""
+    soup = BeautifulSoup("<html><body>no reporting period here</body></html>", "html.parser")
+    assert _parse_period(soup) is None
+
+
+def test_parse_period_returns_none_on_unrecognized_format():
+    """A malformed/unexpected label text must return None rather than a wrong pair."""
+    soup = BeautifulSoup(
+        '<html><body><span id="ContentPlaceHolder1_lblYear">2007</span></body></html>',
+        "html.parser",
+    )
+    assert _parse_period(soup) is None
 
 
 # ── Summary page parsing ──────────────────────────────────────────────────────
