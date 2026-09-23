@@ -100,7 +100,7 @@ def test_backfill_relists_every_year_on_every_run():
         side_effect=lambda session, year: summary_links.get(year, []),
     ) as fetch_links, patch(
         "scrape.fetch_disclosure_meta",
-        side_effect=lambda session, url: meta_by_url[url],
+        side_effect=lambda session, url, use_archive=False: meta_by_url[url],
     ):
         scrape.run_backfill(db, years=[2020, 2021, 2022])
         scrape.run_backfill(db, years=[2020, 2021, 2022])
@@ -124,7 +124,7 @@ def test_backfill_does_not_write_completed_years_anywhere():
         side_effect=lambda session, year: summary_links.get(year, []),
     ), patch(
         "scrape.fetch_disclosure_meta",
-        side_effect=lambda session, url: meta_by_url[url],
+        side_effect=lambda session, url, use_archive=False: meta_by_url[url],
     ), patch(
         "scrape.fetch_disclosure_detail", return_value=DisclosureDetail()
     ), patch(
@@ -163,7 +163,7 @@ def test_backfill_regression_partial_year_then_real_data_appears():
         side_effect=lambda session, year: [summary_url],
     ) as fetch_links_2, patch(
         "scrape.fetch_disclosure_meta",
-        side_effect=lambda session, url: _meta(url, [disc_url]),
+        side_effect=lambda session, url, use_archive=False: _meta(url, [disc_url]),
     ), patch(
         "scrape.fetch_disclosure_detail", return_value=DisclosureDetail()
     ), patch(
@@ -192,7 +192,7 @@ def test_backfill_skips_already_processed_disclosures_but_not_the_year():
             side_effect=lambda session, year: [summary_url],
         ), patch(
             "scrape.fetch_disclosure_meta",
-            side_effect=lambda session, url: meta_by_url[url],
+            side_effect=lambda session, url, use_archive=False: meta_by_url[url],
         ), patch(
             "scrape.fetch_disclosure_detail", return_value=DisclosureDetail()
         ), patch(
@@ -220,7 +220,7 @@ def test_backfill_dry_run_never_touches_firestore():
         side_effect=lambda session, year: [summary_url],
     ), patch(
         "scrape.fetch_disclosure_meta",
-        side_effect=lambda session, url: meta_by_url[url],
+        side_effect=lambda session, url, use_archive=False: meta_by_url[url],
     ), patch(
         "scrape.fetch_disclosure_detail", return_value=DisclosureDetail()
     ):
@@ -228,6 +228,64 @@ def test_backfill_dry_run_never_touches_firestore():
 
     assert n == 1
     assert db.store == {}
+
+
+def test_backfill_threads_use_archive_through_fetch_calls():
+    """run_backfill(use_archive=True) must pass it to both fetch_disclosure_meta
+    and fetch_disclosure_detail — this is what makes the archive-aware path
+    actually skip live requests for cached pages."""
+    db = FakeFirestore()
+    summary_url = "https://x/summary/a"
+    disc_url = "https://x/disc/1"
+    meta_by_url = {summary_url: _meta(summary_url, [disc_url])}
+
+    with patch("scrape.make_session", return_value=None), patch(
+        "scrape.fetch_summary_links",
+        side_effect=lambda session, year: [summary_url],
+    ), patch(
+        "scrape.fetch_disclosure_meta",
+        side_effect=lambda session, url, use_archive=False: meta_by_url[url],
+    ) as fetch_meta, patch(
+        "scrape.fetch_disclosure_detail", return_value=DisclosureDetail()
+    ) as fetch_detail, patch(
+        "scrape.write_registrant", return_value=None
+    ), patch(
+        "scrape.write_filings", return_value=0
+    ):
+        scrape.run_backfill(db, years=[2024], use_archive=True)
+
+    assert fetch_meta.call_args_list[0][1].get("use_archive") is True
+    assert fetch_detail.call_args_list[0][1].get("use_archive") is True
+
+
+def test_backfill_processes_multiple_summary_urls_concurrently():
+    """Sanity check for the thread-pool version: every summary_url's
+    disclosure(s) get processed exactly once, regardless of completion order."""
+    db = FakeFirestore()
+    summary_urls = [f"https://x/summary/{i}" for i in range(10)]
+    meta_by_url = {
+        su: _meta(su, [f"{su}/disc/1"]) for su in summary_urls
+    }
+
+    with patch("scrape.make_session", return_value=None), patch(
+        "scrape.fetch_summary_links",
+        side_effect=lambda session, year: summary_urls,
+    ), patch(
+        "scrape.fetch_disclosure_meta",
+        side_effect=lambda session, url, use_archive=False: meta_by_url[url],
+    ), patch(
+        "scrape.fetch_disclosure_detail", return_value=DisclosureDetail()
+    ), patch(
+        "scrape.write_registrant", return_value=None
+    ), patch(
+        "scrape.write_filings", return_value=0
+    ):
+        n = scrape.run_backfill(db, years=[2024], workers=4)
+
+    assert n == 10
+    for su in summary_urls:
+        h = scrape._url_hash(f"{su}/disc/1")
+        assert f"{scrape.BACKFILL_DOC}/{scrape.BACKFILL_URLS_COLLECTION}/{h}" in db.store
 
 
 # ── run_weekly: subcollection cursor (Bug 1 fix) sanity checks ───────────────
@@ -245,7 +303,7 @@ def test_weekly_skips_already_processed_disclosure():
             side_effect=lambda session, y: [summary_url],
         ), patch(
             "scrape.fetch_disclosure_meta",
-            side_effect=lambda session, url: meta_by_url[url],
+            side_effect=lambda session, url, use_archive=False: meta_by_url[url],
         ), patch(
             "scrape.fetch_disclosure_detail", return_value=DisclosureDetail()
         ), patch(
@@ -274,7 +332,7 @@ def test_weekly_caches_prior_year_but_not_current_year():
         side_effect=lambda session, y: [summary_url],
     ), patch(
         "scrape.fetch_disclosure_meta",
-        side_effect=lambda session, url: _meta(url, []),
+        side_effect=lambda session, url, use_archive=False: _meta(url, []),
     ) as fetch_meta:
         # Prior year twice: second call should hit the cache, not refetch.
         scrape.run_weekly(db, years=[prior_year])
@@ -301,7 +359,7 @@ def test_weekly_cursor_doc_never_exceeds_a_few_small_fields():
         side_effect=lambda session, y: [summary_url],
     ), patch(
         "scrape.fetch_disclosure_meta",
-        side_effect=lambda session, url: meta_by_url[url],
+        side_effect=lambda session, url, use_archive=False: meta_by_url[url],
     ), patch(
         "scrape.fetch_disclosure_detail", return_value=DisclosureDetail()
     ), patch(
@@ -320,3 +378,26 @@ def test_weekly_cursor_doc_never_exceeds_a_few_small_fields():
         p for p in db.store if p.startswith(scrape.SCRAPER_DOC + "/")
     ]
     assert len(subcollection_paths) >= 2  # one processedUrls doc, one summaryCache doc
+
+
+def test_weekly_never_passes_use_archive():
+    """Regression guard for the correctness constraint in run_weekly()'s own
+    docstring: it must never enable archive reads, since the current year's
+    Summary.aspx page can gain new disclosure links mid-year and a cached
+    copy would silently hide them. Guards against a future refactor
+    accidentally threading use_archive through run_weekly() the way it's
+    threaded through run_backfill()."""
+    db = FakeFirestore()
+    summary_url = "https://x/summary/a"
+    meta_by_url = {summary_url: _meta(summary_url, [])}
+
+    with patch("scrape.make_session", return_value=None), patch(
+        "scrape.fetch_summary_links",
+        side_effect=lambda session, y: [summary_url],
+    ), patch(
+        "scrape.fetch_disclosure_meta",
+        side_effect=lambda session, url, use_archive=False: meta_by_url[url],
+    ) as fetch_meta:
+        scrape.run_weekly(db, years=[2020])
+
+    assert fetch_meta.call_args[1].get("use_archive", False) is False

@@ -172,7 +172,17 @@ def make_session() -> requests.Session:
     return s
 
 
-def _get(session: requests.Session, url: str) -> BeautifulSoup:
+def _get(session: requests.Session, url: str, use_archive: bool = False) -> BeautifulSoup:
+    # Archive-first is opt-in and must stay that way: run_weekly() relies on
+    # always live-fetching the current year's Summary.aspx page (new
+    # disclosure links can appear there mid-year), so it never passes
+    # use_archive=True. Only run_backfill() (historical, already-published
+    # years) opts in.
+    if use_archive:
+        cached = archive.load_page(url)
+        if cached is not None:
+            return BeautifulSoup(cached, "html.parser")
+
     for attempt in range(_MAX_RETRIES):
         time.sleep(_REQUEST_DELAY * (2 ** attempt) if attempt else _REQUEST_DELAY)
         try:
@@ -287,8 +297,10 @@ def parse_summary(soup: BeautifulSoup) -> DisclosureMeta:
     )
 
 
-def fetch_disclosure_meta(session: requests.Session, summary_url: str) -> DisclosureMeta:
-    return parse_summary(_get(session, summary_url))
+def fetch_disclosure_meta(
+    session: requests.Session, summary_url: str, use_archive: bool = False
+) -> DisclosureMeta:
+    return parse_summary(_get(session, summary_url, use_archive=use_archive))
 
 
 def _parse_amount(text: str) -> Optional[float]:
@@ -549,9 +561,9 @@ def parse_disclosure_detail(soup: BeautifulSoup, year: int) -> DisclosureDetail:
 
 
 def fetch_disclosure_detail(
-    session: requests.Session, disc_url: str, year: int
+    session: requests.Session, disc_url: str, year: int, use_archive: bool = False
 ) -> DisclosureDetail:
-    return parse_disclosure_detail(_get(session, disc_url), year)
+    return parse_disclosure_detail(_get(session, disc_url, use_archive=use_archive), year)
 
 
 def year_from_disc_url(url: str) -> Optional[int]:
