@@ -12,6 +12,7 @@ import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
+import { matchesSearch } from "components/lobbying/searchMatch"
 
 const PAGE_SIZE = 50
 
@@ -99,8 +100,7 @@ function LobbyingFirmsTable() {
   const filtered = useMemo(() => {
     return firmsWithCounts.filter(f => {
       if (regTypeFilter !== "all" && f.regType !== regTypeFilter) return false
-      if (search && !f.entityName.toLowerCase().includes(search.toLowerCase()))
-        return false
+      if (search && !matchesSearch(f.entityName, search)) return false
       return true
     })
   }, [firmsWithCounts, regTypeFilter, search])

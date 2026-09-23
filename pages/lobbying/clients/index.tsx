@@ -12,6 +12,7 @@ import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
+import { matchesSearch } from "components/lobbying/searchMatch"
 
 const PAGE_SIZE = 50
 
@@ -94,9 +95,7 @@ function LobbyingClientsTable() {
   const filtered = useMemo(
     () =>
       search
-        ? clientsWithCounts.filter(c =>
-            c.clientName.toLowerCase().includes(search.toLowerCase())
-          )
+        ? clientsWithCounts.filter(c => matchesSearch(c.clientName, search))
         : clientsWithCounts,
     [clientsWithCounts, search]
   )
