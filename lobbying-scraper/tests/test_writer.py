@@ -191,6 +191,24 @@ def test_registrant_id_no_period_arg_matches_none():
     )
 
 
+def test_registrant_id_no_period_matches_pre_fix_hash_exactly():
+    """Regression test for a real bug caught during the historical reparse:
+    the no-period fallback must produce byte-for-byte the same hash as the
+    original pre-period-aware scheme (hashlib.sha256(f"{year}|{entity_name}")),
+    not merely "some stable id". An earlier version of this function added an
+    unconditional trailing separator ("{year}|{entity_name}|") even when no
+    period was known, which changed the hash and caused reparse to write a
+    spurious duplicate doc instead of falling back onto the original one for
+    any page whose reporting period failed to parse (found via two real
+    2005-era entities in dev, Mayforth Group and Peter C Chisholm)."""
+    import hashlib
+
+    entity_name = "Mayforth Group, LLC"
+    year = 2005
+    pre_fix_id = hashlib.sha256(f"{year}|{entity_name}".encode()).hexdigest()[:40]
+    assert registrant_id(entity_name, year, None) == pre_fix_id
+
+
 # ── write_filings ─────────────────────────────────────────────────────────────
 
 

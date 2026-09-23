@@ -135,7 +135,11 @@ def construct_bill_id(chamber: str, raw_bill_number: str) -> Optional[str]:
 
 
 def registrant_id(entity_name: str, year: int, period_start: Optional[str] = None) -> str:
-    key = f"{year}|{entity_name}|{period_start or ''}"
+    # No trailing separator when period_start is unknown: this must produce
+    # the exact same hash as the pre-period-aware scheme (f"{year}|{entity_name}")
+    # so pages whose period fails to parse fall back onto the same doc a prior
+    # run already wrote, instead of spawning a spurious near-duplicate.
+    key = f"{year}|{entity_name}|{period_start}" if period_start else f"{year}|{entity_name}"
     return hashlib.sha256(key.encode()).hexdigest()[:40]
 
 
