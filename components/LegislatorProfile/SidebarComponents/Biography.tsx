@@ -1,7 +1,6 @@
 import { useTranslation } from "next-i18next"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import styled from "styled-components"
 
 import { Form } from "../../bootstrap"
 import { Profile, ProfileHook, useProfile } from "../../db"
