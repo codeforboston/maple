@@ -10,7 +10,7 @@ import { SubmitButton, TabBlock } from "../LegislatorComponents"
 
 import { useAuth } from "components/auth"
 
-import CommerceIcon from "../../../public/SmartTagIcons/Commerce"
+import CommerceIcon from "../../../public/SmartTagIcons/blue-variants/Commerce"
 
 type UpdateProfilePriorities = {
   inTheirOwnWords: string
@@ -122,7 +122,9 @@ function EditablePriorities({
   const [formUpdated, setFormUpdated] = useState(false)
   const { t } = useTranslation("legislators")
 
-  const [selectedOption, setSelectedOption] = useState<IconType | "">("")
+  const [selectedOption, setSelectedOption] = useState<IconType | "">(
+    inTheirOwnWords === "commerce" ? inTheirOwnWords : ""
+  )
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedOption(e.target.value as IconType | "")
   }
