@@ -64,7 +64,7 @@ export function TestimonyTab({
 
   // testing mode uses Maple test account
   // "8P5Ar8NyAcNEVJMTexezXvRbept2" for Maple test data
-  if ((testMode = true)) {
+  if (testMode === true) {
     legislatorId = "8P5Ar8NyAcNEVJMTexezXvRbept2"
   }
 
