@@ -9,6 +9,7 @@ import {
   getFirestore
 } from "firebase/firestore"
 import { Bill } from "functions/src/bills/types"
+import { BillsTabContainer } from "./BillsTabContainer"
 
 export const BillsTab = ({ member }: { member: Member }) => {
   const [bills, setBills] = useState<Bill[]>([])
@@ -30,7 +31,6 @@ export const BillsTab = ({ member }: { member: Member }) => {
         const courtNumber = member.content.GeneralCourtNumber
         const memberCode = member.content.MemberCode
 
-        // 1. Fetch the member document directly
         const memberDocRef = doc(
           firestore,
           `generalCourts/${courtNumber}/members/${memberCode}`
@@ -46,7 +46,6 @@ export const BillsTab = ({ member }: { member: Member }) => {
         const sponsored = memberData.SponsoredBills || []
         const cosponsored = memberData.CoSponsoredBills || []
 
-        // Combine arrays and remove duplicate Bill IDs
         const allBillIds = Array.from(new Set([...sponsored, ...cosponsored]))
 
         if (allBillIds.length === 0) {
@@ -54,7 +53,6 @@ export const BillsTab = ({ member }: { member: Member }) => {
           return
         }
 
-        // 2. Fetch the corresponding bill documents concurrently
         const billPromises = allBillIds.map(async billId => {
           const billDocRef = doc(
             firestore,
@@ -91,15 +89,5 @@ export const BillsTab = ({ member }: { member: Member }) => {
     return <div>Error loading bills.</div>
   }
 
-  console.log(bills, "are bill")
-  return (
-    <div>
-      <h1>Sum bills</h1>
-      {bills.map(bill => (
-        <div key={bill.id ?? bill.content?.Pinslip ?? Math.random()}>
-          {bill.content?.Title ?? bill.content?.Pinslip ?? bill.id}
-        </div>
-      ))}
-    </div>
-  )
+  return <BillsTabContainer member={member.content} />
 }
