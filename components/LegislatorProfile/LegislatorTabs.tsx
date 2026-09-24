@@ -6,8 +6,7 @@ import TabContainer from "react-bootstrap/TabContainer"
 import styled from "styled-components"
 
 import { Container, Nav } from "../bootstrap"
-
-import { BillsTab } from "./TabComponents/billsTab/BillsTab"
+import { BillsTab } from "./TabComponents/BillsTab/BillsTab"
 import { DistrictTab } from "./TabComponents/DistrictTab"
 import { ElectionsTab } from "./TabComponents/ElectionsTab"
 import { FinanceTab } from "./TabComponents/FinanceTab"
