@@ -79,13 +79,15 @@ export function LegislatorTabs({
   districtLoading,
   legislatorId,
   name,
-  finance
+  finance,
+  testMode
 }: {
   district?: District | undefined
   districtLoading?: boolean
   legislatorId: string
   name: string
   finance?: MembersFinance
+  testMode: boolean
 }) {
   const router = useRouter()
   const { t } = useTranslation("legislators")
@@ -140,7 +142,13 @@ export function LegislatorTabs({
     {
       title: t("tabs.testimony"),
       eventKey: tabCategories.testimony,
-      content: <TestimonyTab legislatorId={legislatorId} name={name} />
+      content: (
+        <TestimonyTab
+          legislatorId={legislatorId}
+          name={name}
+          testMode={testMode}
+        />
+      )
     },
     {
       title: t("tabs.votes"),

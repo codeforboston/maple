@@ -52,13 +52,21 @@ function Disclaimer({ fullname }: { fullname?: string }) {
 
 export function TestimonyTab({
   legislatorId,
-  name
+  name,
+  testMode
 }: {
   legislatorId: string
   name: string
+  testMode: boolean
 }) {
   const { t } = useTranslation("testimony")
   const { user } = useAuth()
+
+  // testing mode uses Maple test account
+  // "8P5Ar8NyAcNEVJMTexezXvRbept2" for Maple test data
+  if ((testMode = true)) {
+    legislatorId = "8P5Ar8NyAcNEVJMTexezXvRbept2"
+  }
 
   const testimony = usePublishedTestimonyListing({
     uid: legislatorId
