@@ -1,73 +1,60 @@
 import { MemberContent } from "functions/src/members/types"
 import { useTranslation } from "next-i18next"
-import { useState, useEffect } from "react"
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  getFirestore
-} from "firebase/firestore"
 import {
   StyledBillsByTopic,
   StyledBillsByTopicHeader,
   StyledBillsByTopicHeaderSubtitle,
   StyledBillsByTopicHeaderTitle
 } from "../StyledComponents/BillStyledComponents"
+import { Bill } from "functions/src/bills/types"
+
+type TopicGroup = {
+  topic: string
+  count: number
+  bills: Bill[]
+}
 
 export const BillsByTopic = ({
-  member
+  member,
+  bills
 }: {
   member: MemberContent | undefined
+  bills: Bill[]
 }) => {
   const { t } = useTranslation("legislators")
-  const [topFiveTopics, setTopFiveTopics] = useState<
-    { topic: string; count: number }[]
-  >([])
 
-  useEffect(() => {
-    if (!member?.MemberCode || !member.GeneralCourtNumber) {
-      setTopFiveTopics([])
-      return
-    }
+  const topicGroups = Object.values(
+    bills.reduce<Record<string, TopicGroup>>((groups, bill) => {
+      const topic = bill.topics?.[0]?.topic
 
-    const loadBillsByTopic = async () => {
-      try {
-        const firestore = getFirestore()
-        const billsRef = collection(
-          firestore,
-          `generalCourts/${member.GeneralCourtNumber}/bills`
-        )
-
-        const q = query(
-          billsRef,
-          where("content.PrimarySponsor.Id", "==", member.MemberCode)
-        )
-
-        const querySnapshot = await getDocs(q)
-        const topicCounts: Record<string, number> = {}
-
-        querySnapshot.forEach(doc => {
-          const bill = doc.data()
-          const primaryTopic = bill.topics?.[0]?.topic ?? "Uncategorized"
-
-          topicCounts[primaryTopic] = (topicCounts[primaryTopic] || 0) + 1
-        })
-
-        setTopFiveTopics(
-          Object.entries(topicCounts)
-            .map(([topic, count]) => ({ topic, count }))
-            .sort((a, b) => b.count - a.count)
-            .slice(0, 5)
-        )
-      } catch (error) {
-        console.error("Unable to load bills by topic:", error)
-        setTopFiveTopics([])
+      if (topic) {
+        const group = groups[topic] ?? { topic, count: 0, bills: [] }
+        group.count += 1
+        group.bills.push(bill)
+        groups[topic] = group
       }
-    }
 
-    void loadBillsByTopic()
-  }, [member?.MemberCode, member?.GeneralCourtNumber])
+      return groups
+    }, {})
+  )
+    .sort((groupA, groupB) => groupB.count - groupA.count)
+    .slice(0, 5)
+    .map(group => ({
+      ...group,
+      subtopics: Object.entries(
+        group.bills.reduce<Record<string, number>>((counts, bill) => {
+          const subtopic = bill.topics?.[1]?.topic
+
+          if (subtopic) {
+            counts[subtopic] = (counts[subtopic] ?? 0) + 1
+          }
+
+          return counts
+        }, {})
+      )
+        .sort(([, countA], [, countB]) => countB - countA)
+        .slice(0, 4)
+    }))
 
   return (
     <StyledBillsByTopic>
@@ -76,9 +63,22 @@ export const BillsByTopic = ({
           {t("profiles.billsByTopic")}
         </StyledBillsByTopicHeaderTitle>
         <StyledBillsByTopicHeaderSubtitle>
-          {topFiveTopics.reduce((total, item) => total + item.count, 0)}{" "}
           {t("profiles.bills")} • {t("profiles.primarySponsor")}
         </StyledBillsByTopicHeaderSubtitle>
+        <div>
+          {topicGroups.map(group => (
+            <div key={group.topic}>
+              <p>
+                {group.topic}: {group.count}
+              </p>
+              {group.subtopics.map(([subtopic, count]) => (
+                <p key={subtopic}>
+                  {subtopic}: {count}
+                </p>
+              ))}
+            </div>
+          ))}
+        </div>
       </StyledBillsByTopicHeader>
     </StyledBillsByTopic>
   )

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Member } from "functions/src/members/types"
+import { MemberContent } from "functions/src/members/types"
 import {
   collection,
   query,
@@ -11,13 +11,13 @@ import {
 import { Bill } from "functions/src/bills/types"
 import { BillsTabContainer } from "./BillsTabContainer"
 
-export const BillsTab = ({ member }: { member: Member }) => {
-  const [bills, setBills] = useState<Bill[]>([])
+export const BillsTab = ({ member }: { member: MemberContent }) => {
+  const [allBills, setBills] = useState<Bill[]>([])
   const [loading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<boolean>(false)
 
   useEffect(() => {
-    if (!member?.content?.GeneralCourtNumber || !member?.content?.MemberCode) {
+    if (!member?.GeneralCourtNumber || !member?.MemberCode) {
       setBills([])
       return
     }
@@ -28,8 +28,8 @@ export const BillsTab = ({ member }: { member: Member }) => {
 
       try {
         const firestore = getFirestore()
-        const courtNumber = member.content.GeneralCourtNumber
-        const memberCode = member.content.MemberCode
+        const courtNumber = member.GeneralCourtNumber
+        const memberCode = member.MemberCode
 
         const memberDocRef = doc(
           firestore,
@@ -43,8 +43,8 @@ export const BillsTab = ({ member }: { member: Member }) => {
         }
 
         const memberData = memberSnapshot.data()
-        const sponsored = memberData.SponsoredBills || []
-        const cosponsored = memberData.CoSponsoredBills || []
+        const sponsored = memberData.content.SponsoredBills || []
+        const cosponsored = memberData.content.CoSponsoredBills || []
 
         const allBillIds = Array.from(new Set([...sponsored, ...cosponsored]))
 
@@ -68,7 +68,6 @@ export const BillsTab = ({ member }: { member: Member }) => {
 
         const resolvedBills = await Promise.all(billPromises)
 
-        // Filter out null values in case a referenced bill doesn't exist
         setBills(resolvedBills.filter((b): b is Bill => b !== null))
       } catch (err) {
         console.error("Error retrieving member's bills:", err)
@@ -79,7 +78,7 @@ export const BillsTab = ({ member }: { member: Member }) => {
     }
 
     void getBills()
-  }, [member?.content?.GeneralCourtNumber, member?.content?.MemberCode])
+  }, [member?.GeneralCourtNumber, member?.MemberCode])
 
   if (loading) {
     return <div>Loading bills...</div>
@@ -89,5 +88,5 @@ export const BillsTab = ({ member }: { member: Member }) => {
     return <div>Error loading bills.</div>
   }
 
-  return <BillsTabContainer member={member.content} />
+  return <BillsTabContainer member={member} bills={allBills} />
 }
