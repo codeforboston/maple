@@ -10,6 +10,8 @@ import { SubmitButton, TabBlock } from "../LegislatorComponents"
 
 import { useAuth } from "components/auth"
 
+import CommerceIcon from "../../../public/SmartTagIcons/Commerce"
+
 type UpdateProfilePriorities = {
   inTheirOwnWords: string
 }
@@ -44,6 +46,12 @@ const PriorityWords = styled.div`
   font-style: italic;
 `
 
+const SVG_MAP = {
+  commerce: <CommerceIcon width="24" height="24" />
+}
+
+type IconType = keyof typeof SVG_MAP
+
 async function updatePriorities(
   { actions }: Props,
   data: UpdateProfilePriorities
@@ -76,7 +84,7 @@ export function PrioritiesTab({
 
   console.log("leg data: ", legislatorData)
 
-  if (userResult.profile && pageOwner) {
+  if (userResult.profile && !pageOwner) {
     // the user is the legislator who owns this page
     // therefore they get edit privledges
     return (
@@ -114,6 +122,11 @@ function EditablePriorities({
   const [formUpdated, setFormUpdated] = useState(false)
   const { t } = useTranslation("legislators")
 
+  const [selectedOption, setSelectedOption] = useState<IconType | "">("")
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedOption(e.target.value as IconType | "")
+  }
+
   const onSubmit = handleSubmit(async update => {
     await updatePriorities({ profile, actions }, update)
     location.assign(`/legislators/${court}/${memberCode}`)
@@ -124,30 +137,72 @@ function EditablePriorities({
     setFormUpdated(isDirty)
   }, [isDirty, setFormUpdated])
 
+  console.log("S: ", selectedOption)
+
   return (
-    <PriorityBlock>
-      <Form onSubmit={onSubmit}>
-        <div className={`d-flex justify-content-between`}>
-          <PriorityTitle className={`align-self-center d-inline my-1`}>
-            {t("inTheirOwnWords")}
-          </PriorityTitle>
-          <SubmitButton
-            type="submit"
-            className={`btn btn-primary d-inline m-1 w-auto`}
-            disabled={!formUpdated}
-          >
-            {t("submit")}
-          </SubmitButton>
-        </div>
-        <Input
-          as="textarea"
-          {...register("inTheirOwnWords")}
-          className="mt-3"
-          label={t("editWords")}
-          defaultValue={inTheirOwnWords ? inTheirOwnWords : t("addWords")}
-        />
-      </Form>
-    </PriorityBlock>
+    <>
+      {/* <PriorityBlock>
+        <Form onSubmit={onSubmit}>
+          <div className={`d-flex justify-content-between`}>
+            <PriorityTitle className={`align-self-center d-inline my-1`}>
+              {t("inTheirOwnWords")}
+            </PriorityTitle>
+            <SubmitButton
+              type="submit"
+              className={`btn btn-primary d-inline m-1 w-auto`}
+              disabled={!formUpdated}
+            >
+              {t("submit")}
+            </SubmitButton>
+          </div>
+          <Input
+            as="textarea"
+            {...register("inTheirOwnWords")}
+            className="mt-3"
+            label={t("editWords")}
+            defaultValue={inTheirOwnWords ? inTheirOwnWords : t("addWords")}
+          />
+        </Form>
+      </PriorityBlock> */}
+      <PriorityBlock>
+        <div>Test: {inTheirOwnWords}</div>
+        <Form onSubmit={onSubmit}>
+          <div className={`d-flex justify-content-between`}>
+            <PriorityTitle className={`align-self-center d-inline my-1`}>
+              {t("inTheirOwnWords")}
+            </PriorityTitle>
+            <select
+              className="form-select"
+              {...register("inTheirOwnWords")}
+              id="choices"
+              // name="selected_option"
+              value={selectedOption}
+              onChange={handleChange}
+              required
+            >
+              <option value="" selected disabled>
+                Open this select menu
+              </option>
+              <option value="commerce">Commerce</option>
+              <option value="2">Option Two</option>
+              <option value="3">Option Three</option>
+            </select>
+            <SubmitButton
+              type="submit"
+              className={`btn btn-primary d-inline m-1 w-auto`}
+              // disabled={!formUpdated}
+            >
+              {t("submit")}
+            </SubmitButton>
+          </div>
+
+          {selectedOption ? SVG_MAP[selectedOption] : <>no icon</>}
+          {SVG_MAP["commerce"]}
+          <CommerceIcon width="24" height="24" />
+        </Form>
+        <CommerceIcon width="24" height="24" />
+      </PriorityBlock>
+    </>
   )
 }
 
