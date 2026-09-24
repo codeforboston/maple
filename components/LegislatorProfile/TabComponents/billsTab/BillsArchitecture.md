@@ -2,6 +2,13 @@ LEGISLATORS
 
 HAS MANY:
 
+1(CONTAINER(1 - ALL bills query))
+2(CONTAINER: BILLS(2))
+3(BILLS BY TOPIC)
+3(RECENT BILLS)
+2(CONTAINER: COMMITTEES(1))
+3(COMMITTEE POSITIONS)
+
 :BILLS
 --> retrieve for current court only
 --> require: topics lvl.0 & lvl.1
