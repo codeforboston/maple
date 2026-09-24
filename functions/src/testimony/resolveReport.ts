@@ -1,4 +1,4 @@
-import * as functions from "firebase-functions"
+import { onCall } from "firebase-functions/v2/https"
 import { db } from "../firebase"
 import { z } from "zod"
 import { fail, checkRequestZod, checkAuth, checkAdmin } from "../common"
@@ -17,67 +17,68 @@ export type Response = {
   status: "success" | "report-already-resolved" | "testimony-already-removed"
 }
 
-export const resolveReport = functions.https.onCall(
-  async (data, context): Promise<Response> => {
-    checkAuth(context, false)
-    checkAdmin(context)
+export const resolveReport = onCall(async (request): Promise<Response> => {
+  checkAuth(request, false)
+  checkAdmin(request)
 
-    const { reportId, resolution, reason } = checkRequestZod(Request, data)
+  const { reportId, resolution, reason } = checkRequestZod(
+    Request,
+    request.data
+  )
 
-    // 1. Get the report document
-    const reportRef = db.collection("reports").doc(reportId)
-    const report = await reportRef.get()
-    if (!report.exists) throw fail("not-found", "Report not found")
-    if (report.data()?.resolution) return { status: "report-already-resolved" }
+  // 1. Get the report document
+  const reportRef = db.collection("reports").doc(reportId)
+  const report = await reportRef.get()
+  if (!report.exists) throw fail("not-found", "Report not found")
+  if (report.data()?.resolution) return { status: "report-already-resolved" }
 
-    // 2. Get the testimony document
-    const { testimonyId } = report.data() ?? {}
-    const res = await db
-      .collectionGroup("publishedTestimony")
-      .where("id", "==", testimonyId)
-      .get()
+  // 2. Get the testimony document
+  const { testimonyId } = report.data() ?? {}
+  const res = await db
+    .collectionGroup("publishedTestimony")
+    .where("id", "==", testimonyId)
+    .get()
 
-    const rawTestimony = first(res.docs)?.data()
-    console.log("res", testimonyId, rawTestimony, res.docs.length)
-    if (!rawTestimony) return { status: "testimony-already-removed" }
-    const testimony = Testimony.check(rawTestimony)
+  const rawTestimony = first(res.docs)?.data()
+  console.log("res", testimonyId, rawTestimony, res.docs.length)
+  if (!rawTestimony) return { status: "testimony-already-removed" }
+  const testimony = Testimony.check(rawTestimony)
 
-    // 3. Get the moderator's profile document
-    const moderatorUid = context.auth!.uid
-    const moderatorName = await db
-      .doc(`profiles/${moderatorUid}`)
-      .get()
-      .then(d => d.data()?.fullName)
+  // 3. Get the moderator's profile document
+  const moderatorUid = request.auth!.uid
+  const moderatorName = await db
+    .doc(`profiles/${moderatorUid}`)
+    .get()
+    .then(d => d.data()?.fullName)
 
-    // ***archived testiomny Id === published testimony Id***
+  // ***archived testiomny Id === published testimony Id***
 
-    // 4 Get the archived testimony document
-    // const archivedTestimonyId = await db
-    //   .collection(`/users/${testimony.authorUid}/archivedTestimony`)
-    //   .where("billId", "==", testimony.billId)
-    //   .where("court", "==", testimony.court)
-    //   .where("version", "==", testimony.version)
-    //   .limit(1)
-    //   .get()
-    //   .then(snap => {
-    //     if (snap.empty) return testimony.id // throw fail("not-found", "Archived testimony not found")
-    //     return snap.docs[0].id
-    //   })
+  // 4 Get the archived testimony document
+  // const archivedTestimonyId = await db
+  //   .collection(`/users/${testimony.authorUid}/archivedTestimony`)
+  //   .where("billId", "==", testimony.billId)
+  //   .where("court", "==", testimony.court)
+  //   .where("version", "==", testimony.version)
+  //   .limit(1)
+  //   .get()
+  //   .then(snap => {
+  //     if (snap.empty) return testimony.id // throw fail("not-found", "Archived testimony not found")
+  //     return snap.docs[0].id
+  //   })
 
-    // 5. Update the report
-    const resolutionObj: any = {
-      resolution,
-      moderatorUid,
-      resolvedAt: new Date(),
-      authorUid: testimony.authorUid,
-      archivedTestimonyId: testimonyId
-    }
-    if (reason) resolutionObj.reason = reason
-    if (moderatorName) resolutionObj.moderatorName = moderatorName
-
-    await reportRef.update({
-      resolution: resolutionObj
-    })
-    return { status: "success" }
+  // 5. Update the report
+  const resolutionObj: any = {
+    resolution,
+    moderatorUid,
+    resolvedAt: new Date(),
+    authorUid: testimony.authorUid,
+    archivedTestimonyId: testimonyId
   }
-)
+  if (reason) resolutionObj.reason = reason
+  if (moderatorName) resolutionObj.moderatorName = moderatorName
+
+  await reportRef.update({
+    resolution: resolutionObj
+  })
+  return { status: "success" }
+})

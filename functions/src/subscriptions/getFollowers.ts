@@ -1,11 +1,12 @@
 import { getFirestore } from "firebase-admin/firestore"
-import * as functions from "firebase-functions"
+import { onCall, HttpsError } from "firebase-functions/v2/https"
+import * as logger from "firebase-functions/logger"
 import { checkAuth } from "../common"
 
-export const getFollowers = functions.https.onCall(async (_, context) => {
-  const uid = checkAuth(context, false)
+export const getFollowers = onCall(async request => {
+  const uid = checkAuth(request, false)
 
-  functions.logger.log(`[getFollowers] Finding followers for user UID: ${uid}`)
+  logger.log(`[getFollowers] Finding followers for user UID: ${uid}`)
 
   return await getFirestore()
     .collectionGroup("activeTopicSubscriptions")
@@ -19,17 +20,13 @@ export const getFollowers = functions.https.onCall(async (_, context) => {
             .filter((id): id is string => id !== uid)
         )
       )
-      functions.logger.log(
+      logger.log(
         `[getFollowers] Found ${followerIds.length} followers for user UID: ${uid}`
       )
       return followerIds
     })
     .catch(error => {
-      functions.logger.error("[getFollowers] Caught error:", error)
-      throw new functions.https.HttpsError(
-        "internal",
-        "Failed to retrieve followers.",
-        error
-      )
+      logger.error("[getFollowers] Caught error:", error)
+      throw new HttpsError("internal", "Failed to retrieve followers.", error)
     })
 })
