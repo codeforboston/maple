@@ -7,6 +7,7 @@ import { Nav, NavDropdown } from "./bootstrap"
 import { useProfile } from "./db"
 import { NavLink } from "./Navlink"
 import { Wrap } from "./links"
+import { BetaTag } from "./shared/CommonComponents"
 
 export const DESKTOP_NAV_ITEM_CLASS = "desktop-navbar-link px-3 py-1"
 
@@ -158,6 +159,7 @@ export const NavbarLinkLobbying: React.FC<
         {...other}
       >
         {t("navigation.lobbying")}
+        <BetaTag>{t("beta_feature")}</BetaTag>
       </NavLink>
     </Nav.Item>
   )

@@ -4,7 +4,7 @@ import { Col, Container, Row } from "components/bootstrap"
 import { createPage } from "components/page"
 import { createGetStaticTranslationProps } from "components/translations"
 import {
-  useLobbyingAllRegistrants,
+  useLobbyingFirmSummaries,
   useLobbyingEntityFilingCounts
 } from "components/db/lobbying"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
@@ -12,7 +12,7 @@ import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
-import type { LobbyingRegistrant } from "functions/src/lobbying/types"
+import { matchesSearch } from "components/lobbying/searchMatch"
 
 const PAGE_SIZE = 50
 
@@ -59,34 +59,10 @@ function SortTh({
 type FirmRow = {
   entityName: string
   entityNameNorm: string
-  registrantId: string
   regType: string
   years: number[]
   clientCount: number
   totalFilings: number | undefined
-}
-
-function groupByFirm(registrants: LobbyingRegistrant[] | undefined): FirmRow[] {
-  if (!registrants) return []
-  const map = new Map<string, FirmRow>()
-  for (const r of registrants) {
-    if (!map.has(r.entityNameNorm)) {
-      map.set(r.entityNameNorm, {
-        entityName: r.entityName,
-        entityNameNorm: r.entityNameNorm,
-        registrantId: r.registrantId,
-        regType: r.regType,
-        years: [],
-        clientCount: 0,
-        totalFilings: undefined
-      })
-    }
-    const row = map.get(r.entityNameNorm)!
-    if (!row.years.includes(r.year)) row.years.push(r.year)
-    row.clientCount += r.clients.length
-  }
-  for (const row of map.values()) row.years.sort((a, b) => b - a)
-  return [...map.values()]
 }
 
 function LobbyingFirmsTable() {
@@ -107,22 +83,24 @@ function LobbyingFirmsTable() {
     }
   }
 
-  const { result: registrants, status, error } = useLobbyingAllRegistrants()
+  const { result: summaries, status, error } = useLobbyingFirmSummaries()
   const { result: filCounts } = useLobbyingEntityFilingCounts()
-  const firms = useMemo(() => groupByFirm(registrants), [registrants])
-  const firmsWithCounts = useMemo(
-    () =>
-      filCounts
-        ? firms.map(f => ({ ...f, totalFilings: filCounts[f.entityNameNorm] }))
-        : firms,
-    [firms, filCounts]
-  )
+  const firmsWithCounts = useMemo<FirmRow[]>(() => {
+    if (!summaries) return []
+    return summaries.map(f => ({
+      entityName: f.entityName,
+      entityNameNorm: f.entityNameNorm,
+      regType: f.regType,
+      years: f.years,
+      clientCount: f.clientCount,
+      totalFilings: filCounts?.[f.entityNameNorm]
+    }))
+  }, [summaries, filCounts])
 
   const filtered = useMemo(() => {
     return firmsWithCounts.filter(f => {
       if (regTypeFilter !== "all" && f.regType !== regTypeFilter) return false
-      if (search && !f.entityName.toLowerCase().includes(search.toLowerCase()))
-        return false
+      if (search && !matchesSearch(f.entityName, search)) return false
       return true
     })
   }, [firmsWithCounts, regTypeFilter, search])

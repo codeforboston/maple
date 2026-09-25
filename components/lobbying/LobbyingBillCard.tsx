@@ -2,8 +2,13 @@ import React from "react"
 import { useTranslation } from "next-i18next"
 import { useLobbyingFilingsForBill } from "components/db/lobbying"
 import { LobbyingFilingsTable } from "./LobbyingFilingsTable"
+import { LobbyingPaginationBar } from "./LobbyingPaginationBar"
+import { usePagination } from "./usePagination"
 import { MAPLE_COLORS } from "./chartTheme"
 import { normalizePosition } from "./LobbyingPositionChip"
+import { BetaTag } from "components/shared/CommonComponents"
+
+const PAGE_SIZE = 10
 
 interface LobbyingBillCardProps {
   court: number
@@ -22,6 +27,10 @@ export const LobbyingBillCard: React.FC<LobbyingBillCardProps> = ({
     status,
     error
   } = useLobbyingFilingsForBill(court, billId)
+  const { page, setPage, pageItems, totalPages, totalItems } = usePagination(
+    filings ?? [],
+    PAGE_SIZE
+  )
 
   if (status === "loading" || status === "not-requested") {
     return (
@@ -60,10 +69,13 @@ export const LobbyingBillCard: React.FC<LobbyingBillCardProps> = ({
   return (
     <div style={cardStyle} className={className}>
       <div style={headerStyle}>
-        <span style={titleStyle}>{t("lobbying:titles.overview")}</span>
-        <span style={countStyle}>
-          {t("lobbying:billCard.filingCount_other", { count: total })}
+        <span style={titleStyle}>
+          {t("lobbying:billCard.title")}
+          <BetaTag>{t("common:beta_feature")}</BetaTag>
         </span>
+        <a href={explorerHref} style={viewAllLinkStyle}>
+          {t("lobbying:billCard.viewAll")}
+        </a>
       </div>
 
       <PositionBar counts={counts} total={total} />
@@ -87,17 +99,21 @@ export const LobbyingBillCard: React.FC<LobbyingBillCardProps> = ({
       </div>
 
       <LobbyingFilingsTable
-        filings={filings}
+        filings={pageItems}
         showBill={false}
         showClient
         showFirm
         showAmount={false}
-        maxRows={5}
+        bordered
       />
-
-      <a href={explorerHref} style={viewAllLinkStyle}>
-        {t("lobbying:billCard.viewAll")}
-      </a>
+      <LobbyingPaginationBar
+        page={page}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        pageSize={PAGE_SIZE}
+        onPage={setPage}
+        itemLabel={t("lobbying:billCard.filingsLabel")}
+      />
     </div>
   )
 }
@@ -211,11 +227,6 @@ const titleStyle: React.CSSProperties = {
   letterSpacing: "0.06em"
 }
 
-const countStyle: React.CSSProperties = {
-  fontSize: 12,
-  color: MAPLE_COLORS.textMuted
-}
-
 const barContainerStyle: React.CSSProperties = {
   display: "flex",
   height: 8,
@@ -245,10 +256,9 @@ const legendItemStyle: React.CSSProperties = {
 }
 
 const viewAllLinkStyle: React.CSSProperties = {
-  display: "block",
-  fontSize: 13,
+  fontSize: 12,
   fontWeight: 600,
   color: MAPLE_COLORS.primary,
   textDecoration: "none",
-  marginTop: "0.5rem"
+  whiteSpace: "nowrap"
 }
