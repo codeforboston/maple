@@ -1,5 +1,6 @@
 import {
   Array,
+  Boolean,
   InstanceOf,
   Number,
   Optional,
@@ -332,7 +333,8 @@ export const Bill = withDefaults(
     currentCommittee: Optional(CurrentCommittee),
     city: Optional(String),
     topics: Optional(Array(BillTopic)),
-    summary: Optional(String)
+    summary: Optional(String),
+    inConferenceCommittee: Optional(Boolean)
   }),
   {
     court: 0,
@@ -347,6 +349,7 @@ export const Bill = withDefaults(
     history: [],
     similar: [],
     topics: [],
-    hearingIds: []
+    hearingIds: [],
+    inConferenceCommittee: false
   }
 )
