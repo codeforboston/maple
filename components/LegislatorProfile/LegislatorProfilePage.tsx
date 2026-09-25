@@ -110,6 +110,14 @@ export function LegislatorProfilePage({
   court: number
   memberCode: string
 }) {
+  // testing mode using AMS3 for Mass. API data
+  // and Maple test account "8P5Ar8NyAcNEVJMTexezXvRbept2" for Maple test data
+  let testMode = false
+  if (memberCode === "DEV*") {
+    testMode = true
+    memberCode = "AMS3"
+  }
+
   const { user } = useAuth()
   const { member, loading: memberLoading } = useMember(court, memberCode)
   const { district, loading: districtLoading } = useDistrict(
@@ -372,6 +380,7 @@ export function LegislatorProfilePage({
             legislatorId={legislatorId}
             name={member.Name}
             finance={finance}
+            testMode={testMode}
           />
         </Col>
         <Col md="3">
