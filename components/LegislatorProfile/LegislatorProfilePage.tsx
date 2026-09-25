@@ -367,11 +367,14 @@ export function LegislatorProfilePage({
       <Row className={`mt-4`}>
         <Col md="9">
           <LegislatorTabs
+            court={court}
             district={district}
             districtLoading={districtLoading}
+            legislatorData={legislatorData}
             legislatorId={legislatorId}
             name={member.Name}
             finance={finance}
+            memberCode={memberCode}
           />
         </Col>
         <Col md="3">

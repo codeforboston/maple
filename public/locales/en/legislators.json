@@ -1,5 +1,6 @@
 {
   "addBio": "Add your biography",
+  "addWords": "Add your own words",
   "billsSponsored": "Bills Sponsored",
   "biography": "Biography",
   "canSubmit": "can submit testimony on any bill or ballot question, just like any constituent. Their stance and reasoning are shown exactly as submitted — MAPLE does not edit or editorialize.",
@@ -7,6 +8,7 @@
   "cosponsored": "Cosponsored",
   "districtDetails": "District details are not available yet.",
   "editBio": "Edit your biography",
+  "editWords": "Edit `In Their Own Words`",
   "finance": {
     "breakdown": {
       "candidateFunds": "Candidate's own funds",
@@ -42,6 +44,7 @@
   },
   "fundsRaised": "Funds Raised",
   "home": "Home",
+  "inTheirOwnWords": "In their own words",
   "legislators": "Legislators",
   "loading": "Loading district...",
   "noEvents": "This legislator does not have hearings in the near term future",
@@ -71,6 +74,7 @@
     "votes": "Votes"
   },
   "termsServed": "Terms Served",
+  "textLimit": "text is too long; please use 250 characters or less",
   "upcomingHearings": "Upcoming Hearings",
   "viewAllHearings": "View all hearings",
   "viewAllTestimony": "View all testimony"

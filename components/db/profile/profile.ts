@@ -31,6 +31,7 @@ type ProfileState = {
   updatingProfileImage: boolean
   updatingSocial: Record<keyof SocialLinks, boolean>
   updatingBillsFollowing: boolean
+  updatingInTheirOwnWords: boolean
   profile: Profile | undefined
 }
 
@@ -70,6 +71,7 @@ export function useProfile() {
           mastodon: false
         },
         updatingBillsFollowing: false,
+        updatingInTheirOwnWords: false,
         profile
       }
     )
@@ -201,6 +203,13 @@ export function useProfile() {
           await updateBillsFollowing(uid, billsFollowing)
           dispatch({ updatingBillsFollowing: false })
         }
+      },
+      updateInTheirOwnWords: async (inTheirOwnWords: string) => {
+        if (uid) {
+          dispatch({ updatingInTheirOwnWords: true })
+          await updateInTheirOwnWords(uid, inTheirOwnWords)
+          dispatch({ updatingInTheirOwnWords: false })
+        }
       }
     }),
     [uid, state.updatingSocial, state.updatingContactInfo, profile]
@@ -327,6 +336,14 @@ function updateBillsFollowing(uid: string, billsFollowing: string[]) {
   return setDoc(
     profileRef(uid),
     { billsFollowing: billsFollowing ?? deleteField() },
+    { merge: true }
+  )
+}
+
+function updateInTheirOwnWords(uid: string, inTheirOwnWords: string) {
+  return setDoc(
+    profileRef(uid),
+    { inTheirOwnWords: inTheirOwnWords ?? deleteField() },
     { merge: true }
   )
 }

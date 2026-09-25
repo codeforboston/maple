@@ -1,11 +1,11 @@
 import { useTranslation } from "next-i18next"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import styled from "styled-components"
 
 import { Form } from "../../bootstrap"
 import { Profile, ProfileHook, useProfile } from "../../db"
 import Input from "../../forms/Input"
+import { SubmitButton } from "../LegislatorComponents"
 import { SidebarBlock, SidebarTitle } from "../LegislatorSidebar"
 
 import { useAuth } from "components/auth"
@@ -13,11 +13,6 @@ import {
   updateProfile,
   UpdateProfileData
 } from "components/EditProfilePage/PersonalInfoTab"
-
-const BioButton = styled.button`
-  font-size: 9px;
-  padding: 2px;
-`
 
 export function Biography({
   court,
@@ -97,13 +92,13 @@ function EditableBiography({
           <SidebarTitle className={`align-self-center d-inline my-1`}>
             {t("biography")}
           </SidebarTitle>
-          <BioButton
+          <SubmitButton
             type="submit"
             className={`btn btn-primary d-inline m-1 w-auto`}
             disabled={!formUpdated}
           >
             {t("submit")}
-          </BioButton>
+          </SubmitButton>
         </div>
         <Input
           as="textarea"
