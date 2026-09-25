@@ -4,6 +4,7 @@ import { BillTopic, CurrentCommittee } from "../functions/src/bills/types"
 import { Testimony } from "components/db/testimony"
 import { Bill, MemberContent } from "./db"
 import { formatBillId } from "./formatting"
+import { billsDefaultIndex } from "./search/bills/useBillSort"
 import { TFunction } from "next-i18next"
 
 type LinkProps = PropsWithChildren<
@@ -145,9 +146,10 @@ export const twitterShareLink = (publication: Testimony, t: TFunction) => {
 }
 
 export const billSearchByTopicLink = (court: number, topic: BillTopic) => {
+  // Routed uiState is keyed by the page's index name.
   const params = {
-    "bills/sort/latestTestimonyAt:desc[multiselectHierarchicalMenu][topics.lvl1][0]": `${topic.category} > ${topic.topic}`,
-    "bills/sort/latestTestimonyAt:desc[refinementList][court][0]": `${court}`
+    [`${billsDefaultIndex}[multiselectHierarchicalMenu][topics.lvl1][0]`]: `${topic.category} > ${topic.topic}`,
+    [`${billsDefaultIndex}[refinementList][court][0]`]: `${court}`
   }
-  return `/bills?${new URLSearchParams(params).toString()}`
+  return `${maple.billSearch()}?${new URLSearchParams(params).toString()}`
 }
