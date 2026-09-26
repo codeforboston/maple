@@ -151,11 +151,19 @@ export const script: Script = async ({ db }) => {
   // pages/lobbying/firms/index.tsx.
   const clientNorms = new Set<string>()
   const spendByYear: Record<string, number> = {}
+  // (entityNameNorm, year) pairs, not a raw doc count: a registrant can have
+  // multiple docs (one per filing period) sharing the same entity+year, and
+  // this stat is shown to users as "Lobbying Firms" — it must count distinct
+  // firm-year registrations, not filing periods.
+  const registrantKeys = new Set<string>()
   const clientSummaries: Record<
     string,
     ClientSummary & { firmsMap: Record<string, FirmBreakdownEntry> }
   > = {}
-  const firmSummaries: Record<string, FirmSummary> = {}
+  const firmSummaries: Record<
+    string,
+    FirmSummary & { clientNormsSet: Set<string> }
+  > = {}
 
   for (const doc of registrantsSnap.docs) {
     const d = doc.data()
@@ -173,15 +181,13 @@ export const script: Script = async ({ db }) => {
           entityNameNorm: entityNorm,
           regType: regType ?? "",
           years: [],
-          clientCount: 0
+          clientCount: 0,
+          clientNormsSet: new Set()
         }
       }
       const firm = firmSummaries[entityNorm]
       if (year != null && !firm.years.includes(year)) firm.years.push(year)
       if (regType) firm.regType = regType
-      // Matches the frontend's prior groupByFirm() semantics exactly: sum
-      // of raw clients[] array length, unfiltered.
-      firm.clientCount += clients.length
     }
 
     for (const c of clients) {
@@ -197,6 +203,14 @@ export const script: Script = async ({ db }) => {
       if (!norm) continue
 
       clientNorms.add(norm)
+      if (entityNorm) {
+        // A set, not a running sum of clients.length: a registrant can now
+        // have multiple docs (one per filing period) for the same
+        // entity+year, and this is shown to users as "Clients represented"
+        // — it must count distinct clients, not filing periods or repeat
+        // appearances across years.
+        firmSummaries[entityNorm].clientNormsSet.add(norm)
+      }
 
       if (!clientSummaries[norm]) {
         clientSummaries[norm] = {
@@ -209,7 +223,6 @@ export const script: Script = async ({ db }) => {
         }
       }
       const cs = clientSummaries[norm]
-      cs.registrantCount++
       if (comp != null) {
         cs.totalCompensation = (cs.totalCompensation ?? 0) + comp
       }
@@ -230,6 +243,7 @@ export const script: Script = async ({ db }) => {
         if (year != null && !fb.years.includes(year)) fb.years.push(year)
       }
     }
+    if (d.entityNameNorm) registrantKeys.add(`${d.entityNameNorm}|${y}`)
   }
 
   for (const cs of Object.values(clientSummaries)) {
@@ -242,8 +256,14 @@ export const script: Script = async ({ db }) => {
       if (aLatest !== bLatest) return bLatest - aLatest
       return a.entityNameNorm.localeCompare(b.entityNameNorm)
     })
+    // A count of distinct firms (cs.firms is already deduped by
+    // entityNameNorm), not a running per-doc count — same period-doc
+    // inflation concern as firm clientCount above. Labeled "Lobbyists" on
+    // the clients page.
+    cs.registrantCount = cs.firms.length
   }
   for (const fs of Object.values(firmSummaries)) {
+    fs.clientCount = fs.clientNormsSet.size
     fs.years.sort((a, b) => b - a)
   }
 
@@ -251,7 +271,7 @@ export const script: Script = async ({ db }) => {
 
   const stats = {
     totalFilings: filingsSnap.size,
-    totalRegistrants: registrantsSnap.size,
+    totalRegistrants: registrantKeys.size,
     totalClients,
     totalBillsWithFilings: bills.size,
     courtsWithData: [...courts].sort((a, b) => a - b),
@@ -337,7 +357,10 @@ export const script: Script = async ({ db }) => {
   const firmsColl = firmParentRef.collection("firms")
   for (let i = 0; i < firmEntries.length; i += 400) {
     const batch = db.batch()
-    for (const [norm, fs] of firmEntries.slice(i, i + 400)) {
+    for (const [
+      norm,
+      { clientNormsSet: _clientNormsSet, ...fs }
+    ] of firmEntries.slice(i, i + 400)) {
       batch.set(firmsColl.doc(encodeURIComponent(norm)), fs)
     }
     await batch.commit()

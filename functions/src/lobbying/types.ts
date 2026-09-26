@@ -5,7 +5,6 @@ import {
   Literal,
   Number,
   Null,
-  Optional,
   Record,
   Static,
   String,
@@ -40,8 +39,8 @@ export const LobbyingRegistrant = Record({
   regType: Union(Literal("Lobbyist"), Literal("Employer")),
   clients: Array(LobbyingClient),
   legacyTotalCompensation: Null.Or(Number),
-  periodStart: Optional(Null.Or(String)),
-  periodEnd: Optional(Null.Or(String)),
+  periodStart: Null.Or(String),
+  periodEnd: Null.Or(String),
   disclosureUrls: Array(String),
   fetchedAt: InstanceOf(Timestamp)
 })
