@@ -99,6 +99,8 @@ class DisclosureDetail:
     compensation: list[Compensation] = field(default_factory=list)
     bills: list[BillActivity] = field(default_factory=list)
     legacy_total_compensation: Optional[float] = None
+    period_start: Optional[str] = None
+    period_end: Optional[str] = None
 
 
 # ── Derived-value helpers ─────────────────────────────────────────────────────
@@ -132,8 +134,12 @@ def construct_bill_id(chamber: str, raw_bill_number: str) -> Optional[str]:
         return None
 
 
-def registrant_id(entity_name: str, year: int) -> str:
-    key = f"{year}|{entity_name}"
+def registrant_id(entity_name: str, year: int, period_start: Optional[str] = None) -> str:
+    # No trailing separator when period_start is unknown: this must produce
+    # the exact same hash as the pre-period-aware scheme (f"{year}|{entity_name}")
+    # so pages whose period fails to parse fall back onto the same doc a prior
+    # run already wrote, instead of spawning a spurious near-duplicate.
+    key = f"{year}|{entity_name}|{period_start}" if period_start else f"{year}|{entity_name}"
     return hashlib.sha256(key.encode()).hexdigest()[:40]
 
 
@@ -166,7 +172,17 @@ def make_session() -> requests.Session:
     return s
 
 
-def _get(session: requests.Session, url: str) -> BeautifulSoup:
+def _get(session: requests.Session, url: str, use_archive: bool = False) -> BeautifulSoup:
+    # Archive-first is opt-in and must stay that way: run_weekly() relies on
+    # always live-fetching the current year's Summary.aspx page (new
+    # disclosure links can appear there mid-year), so it never passes
+    # use_archive=True. Only run_backfill() (historical, already-published
+    # years) opts in.
+    if use_archive:
+        cached = archive.load_page(url)
+        if cached is not None:
+            return BeautifulSoup(cached, "html.parser")
+
     for attempt in range(_MAX_RETRIES):
         time.sleep(_REQUEST_DELAY * (2 ** attempt) if attempt else _REQUEST_DELAY)
         try:
@@ -281,8 +297,10 @@ def parse_summary(soup: BeautifulSoup) -> DisclosureMeta:
     )
 
 
-def fetch_disclosure_meta(session: requests.Session, summary_url: str) -> DisclosureMeta:
-    return parse_summary(_get(session, summary_url))
+def fetch_disclosure_meta(
+    session: requests.Session, summary_url: str, use_archive: bool = False
+) -> DisclosureMeta:
+    return parse_summary(_get(session, summary_url, use_archive=use_archive))
 
 
 def _parse_amount(text: str) -> Optional[float]:
@@ -295,6 +313,31 @@ def _parse_amount(text: str) -> Optional[float]:
 
 def _grid_rows(table: Tag) -> list:
     return table.find_all("tr", class_=lambda c: c and "Grid" in c and "Header" not in c)
+
+
+_PERIOD_RE = re.compile(
+    r"(\d{2})/(\d{2})/(\d{4})\s*-\s*(\d{2})/(\d{2})/(\d{4})"
+)
+
+
+def _parse_period(soup: BeautifulSoup) -> Optional[tuple[str, str]]:
+    """Parse the disclosure's reporting period from CompleteDisclosure.aspx.
+
+    The `ContentPlaceHolder1_lblYear` element holds a "MM/DD/YYYY - MM/DD/YYYY"
+    range on this page type (distinct from Summary.aspx, where the same id
+    holds a bare year). Confirmed stable in this format across all four HTML
+    eras via live fetches spanning 2005-2022. Returns (start, end) as ISO
+    YYYY-MM-DD strings, or None if the label is missing or doesn't match —
+    callers must fall back gracefully rather than assume this always succeeds.
+    """
+    el = soup.find(id="ContentPlaceHolder1_lblYear")
+    if not el:
+        return None
+    m = _PERIOD_RE.search(el.get_text(strip=True))
+    if not m:
+        return None
+    sm, sd, sy, em, ed, ey = m.groups()
+    return f"{sy}-{sm}-{sd}", f"{ey}-{em}-{ed}"
 
 
 def parse_disclosure_detail(soup: BeautifulSoup, year: int) -> DisclosureDetail:
@@ -323,6 +366,8 @@ def parse_disclosure_detail(soup: BeautifulSoup, year: int) -> DisclosureDetail:
     compensation: list[Compensation] = []
     bills: list[BillActivity] = []
     gc = year_to_general_court(year)
+    period = _parse_period(soup)
+    period_start, period_end = period if period else (None, None)
 
     # ── Modern / Hybrid: per-client activity tables ───────────────────────────
     comp_table = soup.find(
@@ -397,7 +442,12 @@ def parse_disclosure_detail(soup: BeautifulSoup, year: int) -> DisclosureDetail:
                 compensation.append(Compensation(client_name=cn, amount=amt))
 
     if comp_table or bills:
-        return DisclosureDetail(compensation=compensation, bills=bills)
+        return DisclosureDetail(
+            compensation=compensation,
+            bills=bills,
+            period_start=period_start,
+            period_end=period_end,
+        )
 
     # ── Legacy format (2005-2013): single grdvActivities table ───────────────
     act_table = soup.find("table", id=lambda x: x and x.endswith("grdvActivities"))
@@ -498,15 +548,22 @@ def parse_disclosure_detail(soup: BeautifulSoup, year: int) -> DisclosureDetail:
                     compensation=compensation,
                     bills=bills,
                     legacy_total_compensation=total,
+                    period_start=period_start,
+                    period_end=period_end,
                 )
 
-    return DisclosureDetail(compensation=compensation, bills=bills)
+    return DisclosureDetail(
+        compensation=compensation,
+        bills=bills,
+        period_start=period_start,
+        period_end=period_end,
+    )
 
 
 def fetch_disclosure_detail(
-    session: requests.Session, disc_url: str, year: int
+    session: requests.Session, disc_url: str, year: int, use_archive: bool = False
 ) -> DisclosureDetail:
-    return parse_disclosure_detail(_get(session, disc_url), year)
+    return parse_disclosure_detail(_get(session, disc_url, use_archive=use_archive), year)
 
 
 def year_from_disc_url(url: str) -> Optional[int]:

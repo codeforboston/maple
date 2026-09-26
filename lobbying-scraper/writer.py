@@ -183,7 +183,11 @@ def compute_stats(db: firestore.Client) -> None:
 
     client_norms: set[str] = set()
     spend_by_year: dict[str, float] = {}
-    total_registrants = 0
+    # (entityNameNorm, year) pairs, not a raw per-doc count: a registrant can
+    # now have multiple docs (one per filing period) sharing the same
+    # entity+year, and this stat is shown to users as "Lobbying Firms" — it
+    # must count distinct firm-year registrations, not filing periods.
+    registrant_keys: set[tuple[str, str]] = set()
 
     # Per-client and per-firm rollups, computed here (over the full,
     # paginated registrants scan) instead of client-side in the frontend,
@@ -211,16 +215,13 @@ def compute_stats(db: firestore.Client) -> None:
                     "entityNameNorm": entity_norm,
                     "regType": reg_type or "",
                     "years": set(),
-                    "clientCount": 0,
+                    "clientNorms": set(),
                 },
             )
             if year is not None:
                 firm["years"].add(year)
             if reg_type:
                 firm["regType"] = reg_type
-            # Matches the frontend's prior groupByFirm() semantics exactly:
-            # sum of raw clients[] array length, unfiltered.
-            firm["clientCount"] += len(clients)
 
         for c in clients:
             norm = c.get("clientNameNorm")
@@ -234,6 +235,13 @@ def compute_stats(db: firestore.Client) -> None:
                 continue
 
             client_norms.add(norm)
+            if entity_norm:
+                # A set, not a running sum of len(clients): a registrant can
+                # now have multiple docs (one per filing period) for the same
+                # entity+year, and this is shown to users as "Clients
+                # represented" — it must count distinct clients, not filing
+                # periods or repeat appearances across years.
+                firm_summaries[entity_norm]["clientNorms"].add(norm)
 
             cs = client_summaries.setdefault(
                 norm,
@@ -245,7 +253,6 @@ def compute_stats(db: firestore.Client) -> None:
                     "firms": {},
                 },
             )
-            cs["registrantCount"] += 1
             if comp is not None:
                 cs["totalCompensation"] = (cs["totalCompensation"] or 0) + comp
 
@@ -264,9 +271,16 @@ def compute_stats(db: firestore.Client) -> None:
                 if year is not None:
                     fb["years"].add(year)
 
-        total_registrants += 1
+        if entity_norm:
+            registrant_keys.add((entity_norm, year))
+    total_registrants = len(registrant_keys)
 
     for cs in client_summaries.values():
+        # A set of distinct firms (cs["firms"] is already keyed by
+        # entityNameNorm), not a running per-doc count — same period-doc
+        # inflation concern as firm clientCount above. Labeled "Lobbyists" on
+        # the clients page.
+        cs["registrantCount"] = len(cs["firms"])
         for fb in cs["firms"].values():
             fb["years"] = sorted(fb["years"], reverse=True)
         cs["firms"] = sorted(
@@ -274,6 +288,7 @@ def compute_stats(db: firestore.Client) -> None:
             key=lambda f: (-(max(f["years"]) if f["years"] else 0), f["entityNameNorm"]),
         )
     for fs in firm_summaries.values():
+        fs["clientCount"] = len(fs.pop("clientNorms"))
         fs["years"] = sorted(fs["years"], reverse=True)
 
     stats = {
@@ -366,7 +381,7 @@ def write_registrant(
     if not meta.entity_name or meta.year is None:
         return
 
-    doc_id = registrant_id(meta.entity_name, meta.year)
+    doc_id = registrant_id(meta.entity_name, meta.year, detail.period_start)
     ref = db.collection(REGISTRANTS_COLLECTION).document(doc_id)
 
     clients = [
@@ -387,6 +402,8 @@ def write_registrant(
         "regType": meta.reg_type,
         "clients": clients,
         "legacyTotalCompensation": detail.legacy_total_compensation,
+        "periodStart": detail.period_start,
+        "periodEnd": detail.period_end,
         "disclosureUrls": firestore.ArrayUnion([disc_url]),
         "fetchedAt": _now(),
     }
