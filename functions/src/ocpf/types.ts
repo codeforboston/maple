@@ -82,7 +82,7 @@ export interface MembersFinance {
   // i.e. cash on hand at the start of the current election cycle.
   // TODO: Surface this on the Finance tab.
   startBalance: number
-  contributorCount: number // count of type-201 rows (row = one itemized contribution)
+  contributionsCount: number // count of type-201 rows (row = one itemized contribution)
   lastUpdated: FirebaseFirestore.Timestamp
   // End_Date of the most recent Bank Report (type 70) — the basis for totalRaised/cashOnHand.
   bankDataAsOf?: FirebaseFirestore.Timestamp

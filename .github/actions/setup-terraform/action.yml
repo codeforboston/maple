@@ -1,0 +1,27 @@
+name: Set up Terraform
+description: Pinned Terraform CLI plus a cached provider plugin directory (hashicorp/google is one of the largest providers in the registry).
+inputs:
+  terraform_version:
+    description: Terraform CLI version. Keep in lockstep with required_version in the root's versions.tf (the calling workflow names it).
+    required: true
+  terraform_wrapper:
+    description: Install the setup-terraform stdout wrapper (off for jobs that redirect plan output themselves).
+    required: false
+    default: "true"
+runs:
+  using: composite
+  steps:
+    - uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ${{ inputs.terraform_version }}
+        terraform_wrapper: ${{ inputs.terraform_wrapper }}
+    - name: Enable provider plugin cache
+      shell: bash
+      run: |
+        mkdir -p "$HOME/.terraform.d/plugin-cache"
+        echo "TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache" >> "$GITHUB_ENV"
+    - uses: actions/cache@v4
+      with:
+        path: ~/.terraform.d/plugin-cache
+        key: terraform-providers-${{ hashFiles('infra/gcp/**/.terraform.lock.hcl') }}
+        restore-keys: terraform-providers-

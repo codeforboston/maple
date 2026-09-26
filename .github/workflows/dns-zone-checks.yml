@@ -1,0 +1,37 @@
+name: DNS Zone Checks
+
+# fmt/validate for the mapletestimony.org zone root. No plan: the zone's
+# project has no CI planner, and no workflow applies terraform — applies are
+# human-run (infra/gcp/dns/README.md).
+on:
+  pull_request:
+    paths:
+      - infra/gcp/dns/**
+      - .github/workflows/dns-zone-checks.yml
+      - .github/actions/setup-terraform/**
+  push:
+    branches:
+      - main
+    paths:
+      - infra/gcp/dns/**
+      - .github/workflows/dns-zone-checks.yml
+      - .github/actions/setup-terraform/**
+
+env:
+  # Keep in lockstep with required_version in infra/gcp/dns/versions.tf.
+  TF_VERSION: 1.16.0
+
+jobs:
+  fmt_and_validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-terraform
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+      - name: Check formatting
+        run: terraform -chdir=infra/gcp/dns fmt -check -recursive
+      - name: Validate
+        run: |
+          terraform -chdir=infra/gcp/dns init -backend=false -input=false
+          terraform -chdir=infra/gcp/dns validate

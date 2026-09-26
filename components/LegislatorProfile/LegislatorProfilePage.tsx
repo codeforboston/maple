@@ -381,6 +381,7 @@ export function LegislatorProfilePage({
             legislatorData={legislatorData}
             legislatorId={legislatorId}
             memberCode={memberCode}
+            sponsoredBills={member.SponsoredBills}
           />
         </Col>
       </Row>

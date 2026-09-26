@@ -87,9 +87,24 @@ function FirmDetail() {
     ).values()
   ].sort((a, b) => a.clientNameNorm.localeCompare(b.clientNameNorm))
 
-  const allDisclosureUrls = [
-    ...new Set((registrants ?? []).flatMap(r => r.disclosureUrls))
-  ]
+  // One entry per URL, labeled with the reporting period of the registrant
+  // doc it came from (when known — older, not-yet-reprocessed docs may not
+  // have one, so this falls back to just the year). Sorted most-recent-first.
+  const allDisclosures = [
+    ...new Map(
+      (registrants ?? []).flatMap(r =>
+        r.disclosureUrls.map(url => [
+          url,
+          {
+            url,
+            periodStart: r.periodStart,
+            periodEnd: r.periodEnd,
+            year: r.year
+          }
+        ])
+      )
+    ).values()
+  ].sort((a, b) => (b.periodStart ?? "").localeCompare(a.periodStart ?? ""))
 
   const positionCounts = { support: 0, oppose: 0, neutral: 0, none: 0 }
   for (const f of filings ?? []) positionCounts[normalizePosition(f.position)]++
@@ -206,21 +221,21 @@ function FirmDetail() {
                 </ul>
               )}
 
-              {allDisclosureUrls.length > 0 && (
+              {allDisclosures.length > 0 && (
                 <>
                   <h5 style={{ ...sectionHeadStyle, marginTop: "1.5rem" }}>
                     {t("misc.disclosures")}
                   </h5>
                   <ul style={{ paddingLeft: "1.25rem", fontSize: 12 }}>
-                    {allDisclosureUrls.map((url, i) => (
-                      <li key={i} style={{ marginBottom: "0.35rem" }}>
+                    {allDisclosures.map((d, i) => (
+                      <li key={d.url} style={{ marginBottom: "0.35rem" }}>
                         <a
-                          href={url}
+                          href={d.url}
                           target="_blank"
                           rel="noreferrer"
                           style={{ color: MAPLE_COLORS.primary }}
                         >
-                          {t("misc.disclosureLink", { number: i + 1 })}
+                          {formatDisclosureLabel(d, t, i)}
                         </a>
                       </li>
                     ))}
@@ -269,6 +284,25 @@ function FirmDetail() {
       </Container>
     </>
   )
+}
+
+// Older registrant docs (not yet reprocessed with a parsed reporting period)
+// fall back to just the year, then to a plain numbered label as a last resort.
+function formatDisclosureLabel(
+  d: { periodStart?: string | null; periodEnd?: string | null; year: number },
+  t: (key: string, opts?: Record<string, unknown>) => string,
+  index: number
+): string {
+  if (d.periodStart && d.periodEnd) {
+    return `${formatIsoDate(d.periodStart)} – ${formatIsoDate(d.periodEnd)}`
+  }
+  if (d.year) return `${t("fields.year")} ${d.year}`
+  return t("misc.disclosureLink", { number: index + 1 })
+}
+
+function formatIsoDate(iso: string): string {
+  const [y, m, day] = iso.split("-").map(Number)
+  return `${m}/${day}/${y}`
 }
 
 export default createPage({
