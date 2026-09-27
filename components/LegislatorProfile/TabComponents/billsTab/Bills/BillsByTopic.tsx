@@ -4,7 +4,13 @@ import {
   StyledBillsByTopic,
   StyledBillsByTopicHeader,
   StyledBillsByTopicHeaderSubtitle,
-  StyledBillsByTopicHeaderTitle
+  StyledBillsByTopicHeaderTitle,
+  StyledCountLabel,
+  StyledSubtopicContainer,
+  StyledTopicMeta,
+  StyledTopicName,
+  StyledTopicRow,
+  StyledSubtopicTag
 } from "../StyledComponents/BillStyledComponents"
 import { Bill } from "functions/src/bills/types"
 
@@ -63,23 +69,25 @@ export const BillsByTopic = ({
           {t("profiles.billsByTopic")}
         </StyledBillsByTopicHeaderTitle>
         <StyledBillsByTopicHeaderSubtitle>
-          {t("profiles.bills")} • {t("profiles.primarySponsor")}
+          {bills.length} {t("profiles.bills")} • {t("profiles.primarySponsor")}
         </StyledBillsByTopicHeaderSubtitle>
-        <div>
-          {topicGroups.map(group => (
-            <div key={group.topic}>
-              <p>
-                {group.topic}: {group.count}
-              </p>
-              {group.subtopics.map(([subtopic, count]) => (
-                <p key={subtopic}>
-                  {subtopic}: {count}
-                </p>
-              ))}
-            </div>
-          ))}
-        </div>
       </StyledBillsByTopicHeader>
+      <div>
+        {topicGroups.map(group => (
+          <StyledTopicRow key={group.topic}>
+            <StyledTopicMeta>
+              <StyledTopicName>{group.topic}</StyledTopicName>
+              <a>Browse bills</a>
+              <StyledCountLabel>{group.count} bills</StyledCountLabel>
+            </StyledTopicMeta>
+            <StyledSubtopicContainer>
+              {group.subtopics.map(([subtopic]) => (
+                <StyledSubtopicTag key={subtopic}>{subtopic}</StyledSubtopicTag>
+              ))}
+            </StyledSubtopicContainer>
+          </StyledTopicRow>
+        ))}
+      </div>
     </StyledBillsByTopic>
   )
 }
