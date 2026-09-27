@@ -43,8 +43,6 @@ export const StyledBillsByTopicHeaderSubtitle = styled.div`
   color: #64748b;
 `
 
-
-
 export const StyledTopicRow = styled.div`
   padding: 1.25rem;
   border-bottom: 1px solid #f1f5f9;
@@ -55,6 +53,17 @@ export const StyledTopicName = styled.div`
   font-weight: 700;
   color: #0f172a;
   margin-bottom: 0.15rem;
+`
+
+export const StyledTopicNameBox = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+export const StyledNameBoxLink = styled.a`
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #0f172a;
 `
 
 export const StyledTopicMeta = styled.div`
@@ -154,21 +163,21 @@ export const StyledButtonFilterGroup = styled.div`
   margin-bottom: 1rem;
 `
 
-export const StyledButtonBase = styled(Button)`
+export const StyledButtonBase = styled(Button)<{ $selected?: boolean }>`
   display: flex;
   gap: 0.5rem;
   padding: 0.4rem 0.9rem;
   font-size: 0.875rem;
   font-weight: 600;
   border-radius: 6px;
-  border: 1px solid #cbd5e1;
-  background-color: #ffffff;
-  color: #475569;
+  border: 1px solid ${({ $selected }) => ($selected ? "#1c39bb" : "#cbd5e1")};
+  background-color: ${({ $selected }) => ($selected ? "#1c39bb" : "#ffffff")};
+  color: ${({ $selected }) => ($selected ? "#ffffff" : "#475569")};
   cursor: pointer;
 `
 
 /* --- Footer Link Row --- */
-export const StyledRecentBillsFooter = styled.div`
+export const StyledRecentBillsFooter = styled.a`
   display: block;
   text-align: center;
   padding: 0.9rem;
@@ -180,5 +189,6 @@ export const StyledRecentBillsFooter = styled.div`
   &:hover {
     background-color: #f8fafc;
     text-decoration: underline;
+    cursor: pointer;
   }
 `
