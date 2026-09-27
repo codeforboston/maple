@@ -11,7 +11,6 @@ import {
   StyledTitleCell
 } from "../StyledComponents/BillStyledComponents"
 import { Bill } from "functions/src/bills/types"
-import { Table } from "react-bootstrap"
 
 export const RecentBills = ({ bills }: { bills: Bill[] }) => {
   const { t } = useTranslation("legislators")
@@ -28,13 +27,13 @@ export const RecentBills = ({ bills }: { bills: Bill[] }) => {
           <thead>
             <tr>
               <StyledSubsectionTableColumnHeader>
-                Bill
+                {t("profiles.recentSponsoredBills.bill")}
               </StyledSubsectionTableColumnHeader>
               <StyledSubsectionTableColumnHeader>
-                Title
+                {t("profiles.recentSponsoredBills.title")}
               </StyledSubsectionTableColumnHeader>
               <StyledSubsectionTableColumnHeader>
-                Topics
+                {t("profiles.recentSponsoredBills.topics")}
               </StyledSubsectionTableColumnHeader>
             </tr>
           </thead>
@@ -57,7 +56,9 @@ export const RecentBills = ({ bills }: { bills: Bill[] }) => {
           </tbody>
         </StyledSubsectionTable>
         <StyledRecentBillsFooter>
-          View all {bills.length} sponsored bills on MAPLE
+          {t("profiles.recentSponsoredBills.viewBills", {
+            number: bills.length ?? 0
+          })}
         </StyledRecentBillsFooter>
       </TabBlock>
     </div>

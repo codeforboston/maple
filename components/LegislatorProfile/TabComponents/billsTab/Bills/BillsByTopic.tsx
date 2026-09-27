@@ -1,4 +1,4 @@
-import { MemberContent } from "functions/src/members/types"
+import { useState } from "react"
 import { useTranslation } from "next-i18next"
 import {
   StyledBillsByTopic,
@@ -10,11 +10,19 @@ import {
   StyledTopicMeta,
   StyledTopicName,
   StyledTopicRow,
-  StyledSubtopicTag
+  StyledSubtopicTag,
+  StyledTopicNameBox,
+  StyledTopicLink
 } from "../StyledComponents/BillStyledComponents"
 import { Bill } from "functions/src/bills/types"
-import { BillFilterButtons } from "./BillFilterButtons"
-import { TabBlock } from "components/LegislatorProfile/LegislatorComponents"
+import { BillFilter, BillFilterButtons } from "./BillFilterButtons"
+import { ArrowRightIcon } from "components/learn/icons"
+
+type BillGroups = {
+  all: Bill[]
+  sponsored: Bill[]
+  cosponsored: Bill[]
+}
 
 type TopicGroup = {
   topic: string
@@ -22,8 +30,21 @@ type TopicGroup = {
   bills: Bill[]
 }
 
-const BillsByTopicContainer = ({ bills }: { bills: Bill[] }) => {
+const BillsByTopicContainer = ({
+  bills,
+  selectedFilter
+}: {
+  bills: Bill[]
+  selectedFilter: BillFilter
+}) => {
   const { t } = useTranslation("legislators")
+  const arrow = <ArrowRightIcon sx={{ fontSize: "1.125rem" }} />
+  const filterLabel =
+    selectedFilter === "all"
+      ? t("All")
+      : selectedFilter === "sponsored"
+      ? t("profiles.primarySponsor")
+      : t("profiles.coSponsor")
 
   const topicGroups = Object.values(
     bills.reduce<Record<string, TopicGroup>>((groups, bill) => {
@@ -65,14 +86,17 @@ const BillsByTopicContainer = ({ bills }: { bills: Bill[] }) => {
           {t("profiles.billsByTopic")}
         </StyledBillsByTopicHeaderTitle>
         <StyledBillsByTopicHeaderSubtitle>
-          {bills.length} {t("profiles.bills")} • {t("profiles.primarySponsor")}
+          {bills.length} {t("profiles.bills")} • {filterLabel}
         </StyledBillsByTopicHeaderSubtitle>
       </StyledBillsByTopicHeader>
       <div>
         {topicGroups.map(group => (
           <StyledTopicRow key={group.topic}>
             <StyledTopicMeta>
-              <StyledTopicName>{group.topic}</StyledTopicName>
+              <StyledTopicNameBox>
+                <StyledTopicName>{group.topic}</StyledTopicName>
+                <StyledTopicLink>Browse bills {arrow}</StyledTopicLink>
+              </StyledTopicNameBox>
               <StyledCountLabel>{group.count} bills</StyledCountLabel>
             </StyledTopicMeta>
             <StyledSubtopicContainer>
@@ -87,11 +111,21 @@ const BillsByTopicContainer = ({ bills }: { bills: Bill[] }) => {
   )
 }
 
-export const BillsByTopic = ({ bills }: { bills: Bill[] }) => {
+export const BillsByTopic = ({ billGroups }: { billGroups: BillGroups }) => {
+  const [selectedFilter, setSelectedFilter] = useState<BillFilter>("all")
+  const selectedBills = billGroups[selectedFilter]
+
   return (
     <>
-      <BillFilterButtons />
-      <BillsByTopicContainer bills={bills} />
+      <BillFilterButtons
+        bills={billGroups}
+        selectedFilter={selectedFilter}
+        onSelectFilter={setSelectedFilter}
+      />
+      <BillsByTopicContainer
+        bills={selectedBills}
+        selectedFilter={selectedFilter}
+      />
     </>
   )
 }

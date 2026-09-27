@@ -1,32 +1,59 @@
-import { MemberContent } from "functions/src/members/types"
 import { useTranslation } from "next-i18next"
 import {
   StyledButtonFilterGroup,
   StyledButtonBase
 } from "../StyledComponents/BillStyledComponents"
+import { Bill } from "functions/src/bills/types"
+
+type BillGroups = {
+  all: Bill[]
+  sponsored: Bill[]
+  cosponsored: Bill[]
+}
+
+export type BillFilter = keyof BillGroups
 
 export const BillFilterButtons = ({
-  member
+  bills,
+  selectedFilter,
+  onSelectFilter
 }: {
-  member: MemberContent | undefined
+  bills: BillGroups
+  selectedFilter: BillFilter
+  onSelectFilter: (filter: BillFilter) => void
 }) => {
   const { t } = useTranslation("legislators")
 
-  const sponsoredBills = member?.SponsoredBills?.length ?? 0
-  const coSponsoredBills = member?.CoSponsoredBills?.length ?? 0
-  const allBills = sponsoredBills + coSponsoredBills
+  const sponsoredBills = bills.sponsored.length
+  const coSponsoredBills = bills.cosponsored.length
+  const allBills = bills.all.length
 
   return (
     <StyledButtonFilterGroup>
-      <StyledButtonBase>
+      <StyledButtonBase
+        type="button"
+        $selected={selectedFilter === "sponsored"}
+        aria-pressed={selectedFilter === "sponsored"}
+        onClick={() => onSelectFilter("sponsored")}
+      >
         <div>{sponsoredBills}</div>
         <div>{t("billsSponsored")}</div>
       </StyledButtonBase>
-      <StyledButtonBase>
+      <StyledButtonBase
+        type="button"
+        $selected={selectedFilter === "cosponsored"}
+        aria-pressed={selectedFilter === "cosponsored"}
+        onClick={() => onSelectFilter("cosponsored")}
+      >
         <div>{coSponsoredBills}</div>
         <div>{t("cosponsored")}</div>
       </StyledButtonBase>
-      <StyledButtonBase>
+      <StyledButtonBase
+        type="button"
+        $selected={selectedFilter === "all"}
+        aria-pressed={selectedFilter === "all"}
+        onClick={() => onSelectFilter("all")}
+      >
         <div>{t("All")}</div>
         <div>{allBills}</div>
       </StyledButtonBase>
