@@ -22,7 +22,7 @@ export function BillsTabContainer({
   return (
     <StyledBillsTab>
       <BillsByTopic member={member} bills={bills} />
-      <RecentBills />
+      <RecentBills bills={bills} />
       <CommitteePositions />
     </StyledBillsTab>
   )
