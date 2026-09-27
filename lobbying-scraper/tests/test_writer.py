@@ -18,6 +18,7 @@ from portal import (
     Compensation,
     DisclosureDetail,
     DisclosureMeta,
+    filing_id,
     registrant_id,
 )
 from writer import (
@@ -238,6 +239,80 @@ def test_write_filings_returns_zero_when_no_bills():
     count = write_filings(db, _meta(), detail)
     assert count == 0
     db.batch.assert_not_called()
+
+
+def test_write_filings_uses_period_start_in_id():
+    """write_filings must thread detail.period_start into filing_id, so two
+    periods reporting the same bill+position no longer collide onto one doc
+    (the filings analogue of the registrant_id collision bug)."""
+    db = MagicMock()
+    batch = MagicMock()
+    db.batch.return_value = batch
+    documented_ids = []
+    db.collection.return_value.document.side_effect = lambda doc_id: documented_ids.append(doc_id) or MagicMock()
+
+    bill = BillActivity("Client A", "House Bill", "100", "H100", "An Act", "Support", None)
+
+    write_filings(
+        db,
+        _meta(),
+        DisclosureDetail(compensation=[], bills=[bill], period_start="2024-01-01"),
+    )
+    write_filings(
+        db,
+        _meta(),
+        DisclosureDetail(compensation=[], bills=[bill], period_start="2024-07-01"),
+    )
+
+    assert len(documented_ids) == 2
+    assert documented_ids[0] != documented_ids[1]
+
+
+# ── filing_id (the filings analogue of the registrant_id collision fix) ────
+
+
+def test_filing_id_differs_by_period():
+    """The same bill+client+chamber+position within one general court must no
+    longer collide across reporting periods — previously this made the second
+    period's write silently overwrite the first's filing doc (and its
+    arbitrary, last-write-wins "year" field)."""
+    id_h1 = filing_id("Acme Lobbying LLC", "Client A", "House Bill", "H100", 194, "Support", "2024-01-01")
+    id_h2 = filing_id("Acme Lobbying LLC", "Client A", "House Bill", "H100", 194, "Support", "2024-07-01")
+    assert id_h1 != id_h2
+
+
+def test_filing_id_same_period_is_idempotent():
+    a = filing_id("Acme Lobbying LLC", "Client A", "House Bill", "H100", 194, "Support", "2024-01-01")
+    b = filing_id("Acme Lobbying LLC", "Client A", "House Bill", "H100", 194, "Support", "2024-01-01")
+    assert a == b
+
+
+def test_filing_id_falls_back_without_period():
+    a = filing_id("Acme Lobbying LLC", "Client A", "House Bill", "H100", 194, "Support", None)
+    b = filing_id("Acme Lobbying LLC", "Client A", "House Bill", "H100", 194, "Support", None)
+    assert a == b
+    assert a != filing_id("Acme Lobbying LLC", "Client A", "House Bill", "H100", 194, "Support", "2024-01-01")
+
+
+def test_filing_id_no_period_arg_matches_none():
+    """Calling with the old 6-arg signature must match explicitly passing
+    period_start=None, so the one existing call site keeps working identically
+    whenever a period fails to parse."""
+    assert filing_id("Acme Lobbying LLC", "Client A", "House Bill", "H100", 194, "Support") == filing_id(
+        "Acme Lobbying LLC", "Client A", "House Bill", "H100", 194, "Support", None
+    )
+
+
+def test_filing_id_no_period_matches_pre_fix_hash_exactly():
+    """The no-period fallback must produce byte-for-byte the same hash as the
+    original pre-period-aware scheme, so a page whose period fails to parse
+    still falls onto whatever doc a prior run already wrote instead of
+    spawning a spurious duplicate."""
+    import hashlib
+
+    key = "|".join(["Acme Lobbying LLC", "Client A", "House Bill", "H100", "194", "Support"])
+    pre_fix_id = hashlib.sha256(key.encode()).hexdigest()[:40]
+    assert filing_id("Acme Lobbying LLC", "Client A", "House Bill", "H100", 194, "Support", None) == pre_fix_id
 
 
 # ── compute_stats: not dropping data across split period docs ──────────────

@@ -435,6 +435,7 @@ def write_filings(
             bill.bill_id,
             gc,
             bill.position,
+            detail.period_start,
         )
         ref = db.collection(FILINGS_COLLECTION).document(fid)
         doc = {

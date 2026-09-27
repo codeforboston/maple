@@ -150,11 +150,22 @@ def filing_id(
     bill_id: Optional[str],
     general_court: int,
     position: str,
+    period_start: Optional[str] = None,
 ) -> str:
-    key = "|".join([
+    # No trailing separator when period_start is unknown, matching
+    # registrant_id's fallback: a general court spans two reporting years, and
+    # the same bill/position is commonly re-reported across multiple periods
+    # within it. Without period_start, filings from different periods collide
+    # on this id and silently overwrite each other (last write wins), which
+    # also makes the doc's "year" field arbitrary rather than reflecting a
+    # specific filing.
+    parts = [
         entity_name, client_name, chamber,
         bill_id or "__null__", str(general_court), position,
-    ])
+    ]
+    if period_start:
+        parts.append(period_start)
+    key = "|".join(parts)
     return hashlib.sha256(key.encode()).hexdigest()[:40]
 
 
