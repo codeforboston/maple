@@ -11,14 +11,24 @@ import {
 import { Bill } from "functions/src/bills/types"
 import { BillsTabContainer } from "./BillsTabContainer"
 
+type BillGroups = {
+  all: Bill[]
+  sponsored: Bill[]
+  cosponsored: Bill[]
+}
+
 export const BillsTab = ({ member }: { member: MemberContent }) => {
-  const [allBills, setBills] = useState<Bill[]>([])
+  const [billGroups, setBillGroups] = useState<BillGroups>({
+    all: [],
+    sponsored: [],
+    cosponsored: []
+  })
   const [loading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<boolean>(false)
 
   useEffect(() => {
     if (!member?.GeneralCourtNumber || !member?.MemberCode) {
-      setBills([])
+      setBillGroups({ all: [], sponsored: [], cosponsored: [] })
       return
     }
 
@@ -38,18 +48,22 @@ export const BillsTab = ({ member }: { member: MemberContent }) => {
         const memberSnapshot = await getDoc(memberDocRef)
 
         if (!memberSnapshot.exists()) {
-          setBills([])
+          setBillGroups({ all: [], sponsored: [], cosponsored: [] })
           return
         }
 
         const memberData = memberSnapshot.data()
         const sponsored = memberData.content.SponsoredBills || []
         const cosponsored = memberData.content.CoSponsoredBills || []
+        const sponsoredIds = new Set<string>(sponsored)
+        const cosponsoredIds = new Set<string>(cosponsored)
 
-        const allBillIds = Array.from(new Set([...sponsored, ...cosponsored]))
+        const allBillIds = Array.from(
+          new Set([...sponsoredIds, ...cosponsoredIds])
+        )
 
         if (allBillIds.length === 0) {
-          setBills([])
+          setBillGroups({ all: [], sponsored: [], cosponsored: [] })
           return
         }
 
@@ -67,8 +81,13 @@ export const BillsTab = ({ member }: { member: MemberContent }) => {
         })
 
         const resolvedBills = await Promise.all(billPromises)
+        const all = resolvedBills.filter((bill): bill is Bill => bill !== null)
 
-        setBills(resolvedBills.filter((b): b is Bill => b !== null))
+        setBillGroups({
+          all,
+          sponsored: all.filter(bill => sponsoredIds.has(bill.id)),
+          cosponsored: all.filter(bill => cosponsoredIds.has(bill.id))
+        })
       } catch (err) {
         console.error("Error retrieving member's bills:", err)
         setError(true)
@@ -88,5 +107,5 @@ export const BillsTab = ({ member }: { member: MemberContent }) => {
     return <div>Error loading bills.</div>
   }
 
-  return <BillsTabContainer member={member} bills={allBills} />
+  return <BillsTabContainer member={member} bills={billGroups} />
 }

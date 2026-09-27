@@ -13,6 +13,8 @@ import {
   StyledSubtopicTag
 } from "../StyledComponents/BillStyledComponents"
 import { Bill } from "functions/src/bills/types"
+import { BillFilterButtons } from "./BillFilterButtons"
+import { TabBlock } from "components/LegislatorProfile/LegislatorComponents"
 
 type TopicGroup = {
   topic: string
@@ -20,13 +22,7 @@ type TopicGroup = {
   bills: Bill[]
 }
 
-export const BillsByTopic = ({
-  member,
-  bills
-}: {
-  member: MemberContent | undefined
-  bills: Bill[]
-}) => {
+const BillsByTopicContainer = ({ bills }: { bills: Bill[] }) => {
   const { t } = useTranslation("legislators")
 
   const topicGroups = Object.values(
@@ -77,7 +73,6 @@ export const BillsByTopic = ({
           <StyledTopicRow key={group.topic}>
             <StyledTopicMeta>
               <StyledTopicName>{group.topic}</StyledTopicName>
-              <a>Browse bills</a>
               <StyledCountLabel>{group.count} bills</StyledCountLabel>
             </StyledTopicMeta>
             <StyledSubtopicContainer>
@@ -89,5 +84,14 @@ export const BillsByTopic = ({
         ))}
       </div>
     </StyledBillsByTopic>
+  )
+}
+
+export const BillsByTopic = ({ bills }: { bills: Bill[] }) => {
+  return (
+    <>
+      <BillFilterButtons />
+      <BillsByTopicContainer bills={bills} />
+    </>
   )
 }

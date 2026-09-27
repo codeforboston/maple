@@ -10,20 +10,26 @@ import { RecentBills } from "./Bills/RecentBills"
 import { CommitteePositions } from "./Committees/CommitteePositions"
 import { Bill } from "functions/src/bills/types"
 
+type BillGroups = {
+  all: Bill[]
+  sponsored: Bill[]
+  cosponsored: Bill[]
+}
+
 export function BillsTabContainer({
   member,
   bills
 }: {
   member: MemberContent | undefined
-  bills: Bill[]
+  bills: BillGroups
 }) {
   const { t } = useTranslation("legislators")
 
   return (
     <StyledBillsTab>
-      <BillsByTopic member={member} bills={bills} />
-      <RecentBills bills={bills} />
-      <CommitteePositions />
+      <BillsByTopic member={member} bills={bills.all} />
+      <RecentBills bills={bills.sponsored} />
+      <CommitteePositions member={member} />
     </StyledBillsTab>
   )
 }

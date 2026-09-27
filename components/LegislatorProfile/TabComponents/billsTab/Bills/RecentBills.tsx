@@ -1,6 +1,15 @@
 import { TabBlock } from "components/LegislatorProfile/LegislatorComponents"
 import { useTranslation } from "next-i18next"
-import { StyledSubSectionHeaders } from "../StyledComponents/BillStyledComponents"
+import {
+  StyledBillId,
+  StyledRecentBillsFooter,
+  StyledSubSectionHeaders,
+  StyledSubsectionTable,
+  StyledSubsectionTableColumnData,
+  StyledSubsectionTableColumnHeader,
+  StyledSubtopicTag,
+  StyledTitleCell
+} from "../StyledComponents/BillStyledComponents"
 import { Bill } from "functions/src/bills/types"
 import { Table } from "react-bootstrap"
 
@@ -15,24 +24,41 @@ export const RecentBills = ({ bills }: { bills: Bill[] }) => {
         {t("profiles.recentSponsoredBills.header")}
       </StyledSubSectionHeaders>
       <TabBlock>
-        <Table>
+        <StyledSubsectionTable>
           <thead>
             <tr>
-              <th>Bill</th>
-              <th>Title</th>
-              <th>Topics</th>
+              <StyledSubsectionTableColumnHeader>
+                Bill
+              </StyledSubsectionTableColumnHeader>
+              <StyledSubsectionTableColumnHeader>
+                Title
+              </StyledSubsectionTableColumnHeader>
+              <StyledSubsectionTableColumnHeader>
+                Topics
+              </StyledSubsectionTableColumnHeader>
             </tr>
           </thead>
           <tbody>
             {lastFiveSponsoredBills.map(bill => (
               <tr>
-                <td>{bill.id}</td>
-                <td>{bill.content.Title}</td>
-                <td>{bill.topics ? bill.topics[1].topic : ""}</td>
+                <StyledSubsectionTableColumnData>
+                  <StyledBillId>{bill.id}</StyledBillId>
+                </StyledSubsectionTableColumnData>
+                <StyledSubsectionTableColumnData>
+                  <StyledTitleCell>{bill.content.Title}</StyledTitleCell>
+                </StyledSubsectionTableColumnData>
+                <StyledSubsectionTableColumnData>
+                  <StyledSubtopicTag>
+                    {bill.topics ? bill.topics[1].topic : ""}
+                  </StyledSubtopicTag>
+                </StyledSubsectionTableColumnData>
               </tr>
             ))}
           </tbody>
-        </Table>
+        </StyledSubsectionTable>
+        <StyledRecentBillsFooter>
+          View all {bills.length} sponsored bills on MAPLE
+        </StyledRecentBillsFooter>
       </TabBlock>
     </div>
   )

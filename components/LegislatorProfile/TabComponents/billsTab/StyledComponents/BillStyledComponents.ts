@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Button } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 import { TabBlock } from "components/LegislatorProfile/LegislatorComponents";
 
 export const StyledBillsTab = styled.div``
@@ -97,13 +97,12 @@ export const StyledSubtopicTag = styled.div`
   }
 `
 
-
-
 /* --- Tables (Bills & Committee Positions) --- */
 export const StyledSubsectionTable = styled.table`
   width: 100%;
   border-collapse: collapse;
   text-align: left;
+  background-color: white;
 `
 
 export const StyledSubsectionTableColumnHeader = styled.th`
@@ -123,6 +122,30 @@ export const StyledSubsectionTableColumnData = styled.td`
   color: #334155;
   vertical-align: middle;
 `
+
+export const StyledBillId = styled.div`
+  font-weight: 700;
+  color: #1c39bb;
+`
+
+export const StyledTitleCell = styled.div`
+  color: #475569;
+  max-width: 280px;
+`
+
+export const StyledBadge = styled.div`
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.785rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  text-align: center;
+`
+
+export const StyledMemberPill = styled.div``
+
+export const StyledChairPill = styled.div``
+
 /* --- Navigation Pill Filter Buttons --- */
 
 export const StyledButtonFilterGroup = styled.div`
@@ -142,4 +165,20 @@ export const StyledButtonBase = styled(Button)`
   background-color: #ffffff;
   color: #475569;
   cursor: pointer;
+`
+
+/* --- Footer Link Row --- */
+export const StyledRecentBillsFooter = styled.div`
+  display: block;
+  text-align: center;
+  padding: 0.9rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1c39bb;
+  border-top: 1px solid #f1f5f9;
+  text-decoration: none;
+  &:hover {
+    background-color: #f8fafc;
+    text-decoration: underline;
+  }
 `
