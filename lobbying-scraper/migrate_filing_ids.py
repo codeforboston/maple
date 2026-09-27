@@ -57,29 +57,37 @@ def _process_blob_write(db: firestore.Client, blob: Blob) -> tuple[str, list[str
     if "CompleteDisclosure" not in url:
         return "skipped", []
 
-    meta = _meta_for_disc_url(db, url)
-    if meta is None or meta.year is None:
-        return "skipped", []
-
+    # The whole per-blob operation (GCS read, parse, and both Firestore
+    # writes) is one try/except: a transient network blip on any of these
+    # steps must not propagate out of the worker. An uncaught exception here
+    # would surface via future.result() in run_write's main loop and abort
+    # accounting for every other in-flight/queued blob (ThreadPoolExecutor
+    # keeps running already-submitted work regardless, via shutdown(wait=True)
+    # on context exit, but the crashed accounting loop stops recording ids for
+    # any of it) — this happened for real during prod's first attempt.
     try:
+        meta = _meta_for_disc_url(db, url)
+        if meta is None or meta.year is None:
+            return "skipped", []
+
         html = blob.download_as_text(encoding="utf-8")
         soup = BeautifulSoup(html, "html.parser")
         detail = parse_disclosure_detail(soup, meta.year)
+
+        gc = year_to_general_court(meta.year)
+        fids = [
+            filing_id(
+                meta.entity_name, bill.client_name, bill.chamber, bill.bill_id,
+                gc, bill.position, detail.period_start,
+            )
+            for bill in detail.bills
+        ]
+
+        write_registrant(db, meta, detail, url)
+        write_filings(db, meta, detail)
     except Exception as exc:
-        print(f"  ERROR parsing {url}: {exc}")
+        print(f"  ERROR processing {url}: {exc}")
         return "error", []
-
-    gc = year_to_general_court(meta.year)
-    fids = [
-        filing_id(
-            meta.entity_name, bill.client_name, bill.chamber, bill.bill_id,
-            gc, bill.position, detail.period_start,
-        )
-        for bill in detail.bills
-    ]
-
-    write_registrant(db, meta, detail, url)
-    write_filings(db, meta, detail)
 
     return "processed", fids
 
@@ -100,7 +108,16 @@ def run_write(limit: int | None, workers: int, out_path: str) -> None:
     with ThreadPoolExecutor(max_workers=workers) as pool, open(out_path, "w") as out:
         futures = {pool.submit(_process_blob_write, db, blob): blob for blob in blobs}
         for future in as_completed(futures):
-            status, fids = future.result()
+            try:
+                status, fids = future.result()
+            except Exception as exc:
+                # Belt-and-suspenders: _process_blob_write already catches
+                # everything internally, but a future must never be allowed
+                # to kill this accounting loop for the remaining blobs.
+                blob = futures[future]
+                url = (blob.metadata or {}).get("source-url", blob.name)
+                print(f"  ERROR (uncaught) processing {url}: {exc}")
+                status, fids = "error", []
             if status == "processed":
                 processed += 1
                 for fid in fids:
@@ -132,12 +149,26 @@ def run_cleanup(ids_path: str, execute: bool) -> None:
     db = firestore.Client()
     stale_refs = []
     total = 0
-    for doc in db.collection(FILINGS_COLLECTION).select([]).stream():
-        total += 1
-        if doc.id not in correct_ids:
-            stale_refs.append(doc.reference)
-        if total % 50000 == 0:
-            print(f"  scanned {total}, stale so far {len(stale_refs)}")
+    page_size = 5000
+    last_snapshot = None
+    while True:
+        query = (
+            db.collection(FILINGS_COLLECTION)
+            .select([])
+            .order_by("__name__")
+            .limit(page_size)
+        )
+        if last_snapshot is not None:
+            query = query.start_after(last_snapshot)
+        page = list(query.stream())
+        if not page:
+            break
+        for doc in page:
+            total += 1
+            if doc.id not in correct_ids:
+                stale_refs.append(doc.reference)
+        last_snapshot = page[-1]
+        print(f"  scanned {total}, stale so far {len(stale_refs)}")
 
     print(f"\nScanned {total} total filing docs. Stale (pre-fix) docs to delete: {len(stale_refs)}")
     if not execute:
