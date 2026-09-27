@@ -43,8 +43,6 @@ export const StyledBillsByTopicHeaderSubtitle = styled.div`
   color: #64748b;
 `
 
-
-
 export const StyledTopicRow = styled.div`
   padding: 1.25rem;
   border-bottom: 1px solid #f1f5f9;
@@ -55,6 +53,17 @@ export const StyledTopicName = styled.div`
   font-weight: 700;
   color: #0f172a;
   margin-bottom: 0.15rem;
+`
+
+export const StyledTopicNameBox = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+export const StyledNameBoxLink = styled.a`
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #0f172a;
 `
 
 export const StyledTopicMeta = styled.div`

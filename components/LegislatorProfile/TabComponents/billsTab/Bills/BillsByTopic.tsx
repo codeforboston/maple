@@ -10,10 +10,13 @@ import {
   StyledTopicMeta,
   StyledTopicName,
   StyledTopicRow,
-  StyledSubtopicTag
+  StyledSubtopicTag,
+  StyledTopicNameBox,
+  StyledTopicLink
 } from "../StyledComponents/BillStyledComponents"
 import { Bill } from "functions/src/bills/types"
 import { BillFilter, BillFilterButtons } from "./BillFilterButtons"
+import { ArrowRightIcon } from "components/learn/icons"
 
 type BillGroups = {
   all: Bill[]
@@ -29,6 +32,7 @@ type TopicGroup = {
 
 const BillsByTopicContainer = ({ bills }: { bills: Bill[] }) => {
   const { t } = useTranslation("legislators")
+  const arrow = <ArrowRightIcon sx={{ fontSize: "1.125rem" }} />
 
   const topicGroups = Object.values(
     bills.reduce<Record<string, TopicGroup>>((groups, bill) => {
@@ -77,7 +81,10 @@ const BillsByTopicContainer = ({ bills }: { bills: Bill[] }) => {
         {topicGroups.map(group => (
           <StyledTopicRow key={group.topic}>
             <StyledTopicMeta>
-              <StyledTopicName>{group.topic}</StyledTopicName>
+              <StyledTopicNameBox>
+                <StyledTopicName>{group.topic}</StyledTopicName>
+                <StyledTopicLink>Browse bills {arrow}</StyledTopicLink>
+              </StyledTopicNameBox>
               <StyledCountLabel>{group.count} bills</StyledCountLabel>
             </StyledTopicMeta>
             <StyledSubtopicContainer>
