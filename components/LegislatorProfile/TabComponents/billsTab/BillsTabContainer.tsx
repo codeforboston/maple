@@ -27,7 +27,7 @@ export function BillsTabContainer({
 
   return (
     <StyledBillsTab>
-      <BillsByTopic member={member} bills={bills.all} />
+      <BillsByTopic bills={bills.all} billGroups={bills} />
       <RecentBills bills={bills.sponsored} />
       <CommitteePositions member={member} />
     </StyledBillsTab>

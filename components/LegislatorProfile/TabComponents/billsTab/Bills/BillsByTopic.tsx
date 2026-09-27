@@ -1,4 +1,3 @@
-import { MemberContent } from "functions/src/members/types"
 import { useTranslation } from "next-i18next"
 import {
   StyledBillsByTopic,
@@ -14,7 +13,12 @@ import {
 } from "../StyledComponents/BillStyledComponents"
 import { Bill } from "functions/src/bills/types"
 import { BillFilterButtons } from "./BillFilterButtons"
-import { TabBlock } from "components/LegislatorProfile/LegislatorComponents"
+
+type BillGroups = {
+  all: Bill[]
+  sponsored: Bill[]
+  cosponsored: Bill[]
+}
 
 type TopicGroup = {
   topic: string
@@ -87,10 +91,16 @@ const BillsByTopicContainer = ({ bills }: { bills: Bill[] }) => {
   )
 }
 
-export const BillsByTopic = ({ bills }: { bills: Bill[] }) => {
+export const BillsByTopic = ({
+  bills,
+  billGroups
+}: {
+  bills: Bill[]
+  billGroups: BillGroups
+}) => {
   return (
     <>
-      <BillFilterButtons />
+      <BillFilterButtons bills={billGroups} />
       <BillsByTopicContainer bills={bills} />
     </>
   )

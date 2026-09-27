@@ -168,7 +168,7 @@ export const StyledButtonBase = styled(Button)`
 `
 
 /* --- Footer Link Row --- */
-export const StyledRecentBillsFooter = styled.div`
+export const StyledRecentBillsFooter = styled.a`
   display: block;
   text-align: center;
   padding: 0.9rem;
@@ -180,5 +180,6 @@ export const StyledRecentBillsFooter = styled.div`
   &:hover {
     background-color: #f8fafc;
     text-decoration: underline;
+    cursor: pointer;
   }
 `

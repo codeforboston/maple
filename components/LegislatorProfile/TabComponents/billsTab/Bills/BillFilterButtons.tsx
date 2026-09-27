@@ -1,20 +1,22 @@
-import { MemberContent } from "functions/src/members/types"
 import { useTranslation } from "next-i18next"
 import {
   StyledButtonFilterGroup,
   StyledButtonBase
 } from "../StyledComponents/BillStyledComponents"
+import { Bill } from "functions/src/bills/types"
 
-export const BillFilterButtons = ({
-  member
-}: {
-  member: MemberContent | undefined
-}) => {
+type BillGroups = {
+  all: Bill[]
+  sponsored: Bill[]
+  cosponsored: Bill[]
+}
+
+export const BillFilterButtons = ({ bills }: { bills: BillGroups }) => {
   const { t } = useTranslation("legislators")
 
-  const sponsoredBills = member?.SponsoredBills?.length ?? 0
-  const coSponsoredBills = member?.CoSponsoredBills?.length ?? 0
-  const allBills = sponsoredBills + coSponsoredBills
+  const sponsoredBills = bills.sponsored.length
+  const coSponsoredBills = bills.cosponsored.length
+  const allBills = bills.all.length
 
   return (
     <StyledButtonFilterGroup>
