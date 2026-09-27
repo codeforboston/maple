@@ -154,16 +154,16 @@ export const StyledButtonFilterGroup = styled.div`
   margin-bottom: 1rem;
 `
 
-export const StyledButtonBase = styled(Button)`
+export const StyledButtonBase = styled(Button)<{ $selected?: boolean }>`
   display: flex;
   gap: 0.5rem;
   padding: 0.4rem 0.9rem;
   font-size: 0.875rem;
   font-weight: 600;
   border-radius: 6px;
-  border: 1px solid #cbd5e1;
-  background-color: #ffffff;
-  color: #475569;
+  border: 1px solid ${({ $selected }) => ($selected ? "#1c39bb" : "#cbd5e1")};
+  background-color: ${({ $selected }) => ($selected ? "#1c39bb" : "#ffffff")};
+  color: ${({ $selected }) => ($selected ? "#ffffff" : "#475569")};
   cursor: pointer;
 `
 

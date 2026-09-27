@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { useTranslation } from "next-i18next"
 import {
   StyledBillsByTopic,
@@ -12,7 +13,7 @@ import {
   StyledSubtopicTag
 } from "../StyledComponents/BillStyledComponents"
 import { Bill } from "functions/src/bills/types"
-import { BillFilterButtons } from "./BillFilterButtons"
+import { BillFilter, BillFilterButtons } from "./BillFilterButtons"
 
 type BillGroups = {
   all: Bill[]
@@ -91,17 +92,18 @@ const BillsByTopicContainer = ({ bills }: { bills: Bill[] }) => {
   )
 }
 
-export const BillsByTopic = ({
-  bills,
-  billGroups
-}: {
-  bills: Bill[]
-  billGroups: BillGroups
-}) => {
+export const BillsByTopic = ({ billGroups }: { billGroups: BillGroups }) => {
+  const [selectedFilter, setSelectedFilter] = useState<BillFilter>("all")
+  const selectedBills = billGroups[selectedFilter]
+
   return (
     <>
-      <BillFilterButtons bills={billGroups} />
-      <BillsByTopicContainer bills={bills} />
+      <BillFilterButtons
+        bills={billGroups}
+        selectedFilter={selectedFilter}
+        onSelectFilter={setSelectedFilter}
+      />
+      <BillsByTopicContainer bills={selectedBills} />
     </>
   )
 }

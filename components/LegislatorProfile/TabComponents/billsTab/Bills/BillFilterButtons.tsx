@@ -11,7 +11,17 @@ type BillGroups = {
   cosponsored: Bill[]
 }
 
-export const BillFilterButtons = ({ bills }: { bills: BillGroups }) => {
+export type BillFilter = keyof BillGroups
+
+export const BillFilterButtons = ({
+  bills,
+  selectedFilter,
+  onSelectFilter
+}: {
+  bills: BillGroups
+  selectedFilter: BillFilter
+  onSelectFilter: (filter: BillFilter) => void
+}) => {
   const { t } = useTranslation("legislators")
 
   const sponsoredBills = bills.sponsored.length
@@ -20,15 +30,30 @@ export const BillFilterButtons = ({ bills }: { bills: BillGroups }) => {
 
   return (
     <StyledButtonFilterGroup>
-      <StyledButtonBase>
+      <StyledButtonBase
+        type="button"
+        $selected={selectedFilter === "sponsored"}
+        aria-pressed={selectedFilter === "sponsored"}
+        onClick={() => onSelectFilter("sponsored")}
+      >
         <div>{sponsoredBills}</div>
         <div>{t("billsSponsored")}</div>
       </StyledButtonBase>
-      <StyledButtonBase>
+      <StyledButtonBase
+        type="button"
+        $selected={selectedFilter === "cosponsored"}
+        aria-pressed={selectedFilter === "cosponsored"}
+        onClick={() => onSelectFilter("cosponsored")}
+      >
         <div>{coSponsoredBills}</div>
         <div>{t("cosponsored")}</div>
       </StyledButtonBase>
-      <StyledButtonBase>
+      <StyledButtonBase
+        type="button"
+        $selected={selectedFilter === "all"}
+        aria-pressed={selectedFilter === "all"}
+        onClick={() => onSelectFilter("all")}
+      >
         <div>{t("All")}</div>
         <div>{allBills}</div>
       </StyledButtonBase>
