@@ -141,12 +141,31 @@ def run_write(limit: int | None, workers: int, out_path: str) -> None:
     )
 
 
-def run_cleanup(ids_path: str, execute: bool) -> None:
+def run_cleanup(
+    ids_path: str,
+    execute: bool,
+    project: str | None,
+    expect_ids: int | None,
+    expect_stale: int | None,
+) -> None:
+    if execute and (project is None or expect_ids is None or expect_stale is None):
+        raise SystemExit(
+            "--execute requires --project, --expect-ids and --expect-stale "
+            "(copy the counts from a dry run) so nothing outside the verified "
+            "stale set can be deleted."
+        )
+
     with open(ids_path) as f:
         correct_ids = {line.strip() for line in f if line.strip()}
     print(f"Loaded {len(correct_ids)} correct filing_ids from {ids_path}")
+    # A truncated or wrong ids file would make every correct doc look stale.
+    if expect_ids is not None and len(correct_ids) != expect_ids:
+        raise SystemExit(
+            f"ABORT: ids file has {len(correct_ids)} ids, expected {expect_ids}. Nothing deleted."
+        )
 
-    db = firestore.Client()
+    db = firestore.Client(project=project) if project else firestore.Client()
+    print(f"Target project: {db.project}")
     stale_refs = []
     total = 0
     page_size = 5000
@@ -172,8 +191,22 @@ def run_cleanup(ids_path: str, execute: bool) -> None:
 
     print(f"\nScanned {total} total filing docs. Stale (pre-fix) docs to delete: {len(stale_refs)}")
     if not execute:
-        print("Dry run — nothing deleted. Re-run with --execute to delete.")
+        print(
+            "Dry run — nothing deleted. To delete, re-run with --execute"
+            f" --project {db.project} --expect-ids {len(correct_ids)}"
+            f" --expect-stale {len(stale_refs)}"
+        )
         return
+
+    # Any change since the dry run (e.g. a scraper run writing filings) means
+    # the delete set is no longer the verified one.
+    if len(stale_refs) != expect_stale:
+        raise SystemExit(
+            f"ABORT: found {len(stale_refs)} stale docs, expected {expect_stale}. Nothing deleted."
+        )
+    for ref in stale_refs:
+        if ref.parent.id != FILINGS_COLLECTION or ref.parent.parent is not None:
+            raise SystemExit(f"ABORT: unexpected doc path {ref.path}. Nothing deleted.")
 
     batch = db.batch()
     count = 0
@@ -197,6 +230,9 @@ def main() -> None:
     p.add_argument("--workers", type=int, default=_DEFAULT_WORKERS)
     p.add_argument("--ids-file", default="/tmp/correct_filing_ids.txt")
     p.add_argument("--execute", action="store_true", help="cleanup phase: actually delete stale docs")
+    p.add_argument("--project", default=None, help="cleanup phase: target project (required with --execute)")
+    p.add_argument("--expect-ids", type=int, default=None, help="cleanup phase: required id count in --ids-file")
+    p.add_argument("--expect-stale", type=int, default=None, help="cleanup phase: required stale count from the dry run")
     args = p.parse_args()
 
     if not os.environ.get("ARCHIVE_RAW"):
@@ -205,7 +241,7 @@ def main() -> None:
     if args.phase == "write":
         run_write(args.limit, args.workers, args.ids_file)
     elif args.phase == "cleanup":
-        run_cleanup(args.ids_file, args.execute)
+        run_cleanup(args.ids_file, args.execute, args.project, args.expect_ids, args.expect_stale)
     elif args.phase == "stats":
         compute_stats(firestore.Client())
 
