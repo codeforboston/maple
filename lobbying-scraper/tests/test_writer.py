@@ -573,3 +573,26 @@ def test_compute_stats_firm_summary_lists_lobbyists_across_periods():
     firms = {d["entityNameNorm"]: d for d in _batch_set_dicts_with_key(db, "clientCount")}
     assert firms["TREMONT STRATEGIES GROUP"]["lobbyists"] == ["Chet Atkins", "Jason Aluia", "Michael Bergan"]
     assert firms["SOLO PERSON"]["lobbyists"] == []
+
+
+def test_compute_stats_prunes_stale_firm_summaries():
+    """A firm summary left from an earlier run (e.g. a lobbyist whose
+    records are now credited to their firm) must be removed, or it keeps
+    appearing in the firms list and search."""
+    db, doc_mocks = _make_stats_db()
+    registrants = [_fake_doc({"entityName": "Acme", "entityNameNorm": "ACME",
+                              "regType": "Employer", "year": 2025, "clients": []})]
+
+    def _iter(_db, collection_name):
+        return iter(registrants if collection_name == REGISTRANTS_COLLECTION else [])
+
+    keep_ref, stale_ref = MagicMock(id="ACME"), MagicMock(id="CHET%20ATKINS")
+    doc_mocks["firmSummaries"] = MagicMock()
+    doc_mocks["firmSummaries"].collection.return_value.list_documents.return_value = [keep_ref, stale_ref]
+
+    with patch("writer._iter_collection", side_effect=_iter):
+        compute_stats(db)
+
+    deleted = [c[0][0] for c in db.batch.return_value.delete.call_args_list]
+    assert stale_ref in deleted
+    assert keep_ref not in deleted

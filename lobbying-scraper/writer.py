@@ -119,6 +119,23 @@ def _normalize_position(raw: str | None) -> str:
     return "none"
 
 
+def _prune_stale(db: firestore.Client, coll_ref, keep: set[str]) -> int:
+    """Delete docs in a summary subcollection that this run didn't write.
+    Summaries are fully regenerated each run, so a doc left over from an
+    earlier run (a firm or client that no longer has records) is stale and
+    would otherwise keep appearing in the lists."""
+    stale = [ref for ref in coll_ref.list_documents() if ref.id not in keep]
+    batch = db.batch()
+    for i, ref in enumerate(stale, 1):
+        batch.delete(ref)
+        if i % 400 == 0:
+            batch.commit()
+            batch = db.batch()
+    if len(stale) % 400:
+        batch.commit()
+    return len(stale)
+
+
 def compute_stats(db: firestore.Client) -> None:
     """Recompute and write the lobbyingMeta/stats singleton from raw collections."""
     print("\nRecomputing stats…")
@@ -312,6 +329,7 @@ def compute_stats(db: firestore.Client) -> None:
     db.collection(STATS_COLLECTION).document("clientFilingCounts").set(
         client_filing_counts
     )
+    pruned = 0
     for gc, bills_map in bill_summaries.items():
         # One small doc per bill, not one JSON blob per court: a court's blob
         # eventually exceeds Firestore's 1MB field-size limit as its session
@@ -332,6 +350,7 @@ def compute_stats(db: firestore.Client) -> None:
                 batch = db.batch()
         if count % 400 != 0:
             batch.commit()
+        pruned += _prune_stale(db, bills_coll, set(bills_map))
 
     # Client and firm summaries: same one-small-doc-per-item subcollection
     # pattern as billSummaries above (avoids the 1MB per-document/field
@@ -352,6 +371,7 @@ def compute_stats(db: firestore.Client) -> None:
             batch = db.batch()
     if count % 400 != 0:
         batch.commit()
+    pruned += _prune_stale(db, client_coll, {_doc_id_for_norm(n) for n in client_summaries})
 
     firm_parent = db.collection(STATS_COLLECTION).document("firmSummaries")
     firm_parent.set({"count": len(firm_summaries), "updatedAt": _now().isoformat()})
@@ -366,13 +386,15 @@ def compute_stats(db: firestore.Client) -> None:
             batch = db.batch()
     if count % 400 != 0:
         batch.commit()
+    pruned += _prune_stale(db, firm_coll, {_doc_id_for_norm(n) for n in firm_summaries})
 
     print(
         f"  stats written: {total_filings} filings, "
         f"{total_registrants} registrants, {len(client_norms)} clients, "
         f"{len(entity_filing_counts)} entities, {len(client_filing_counts)} client norms, "
         f"bill summaries for courts {sorted(bill_summaries.keys())}, "
-        f"{len(client_summaries)} client summaries, {len(firm_summaries)} firm summaries"
+        f"{len(client_summaries)} client summaries, {len(firm_summaries)} firm summaries, "
+        f"{pruned} stale summary docs removed"
     )
 
 
