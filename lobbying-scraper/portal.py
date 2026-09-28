@@ -332,6 +332,16 @@ def _grid_rows(table: Tag) -> list:
     return table.find_all("tr", class_=lambda c: c and "Grid" in c and "Header" not in c)
 
 
+# Summary rows the portal appends to compensation tables ("Total salaries
+# received" on modern pages). Matched exactly: real clients can contain
+# "total" (e.g. "ADP TotalSource").
+_TOTAL_ROW_RE = re.compile(r"^total( amount| salar(y|ies)( received| paid)?)?$", re.IGNORECASE)
+
+
+def _is_total_row(name: str) -> bool:
+    return bool(_TOTAL_ROW_RE.match(name.strip()))
+
+
 _PERIOD_RE = re.compile(
     r"(\d{2})/(\d{2})/(\d{4})\s*-\s*(\d{2})/(\d{2})/(\d{4})"
 )
@@ -443,7 +453,7 @@ def _parse_disclosure_content(soup: BeautifulSoup, year: int) -> DisclosureDetai
     if comp_table:
         for row in _grid_rows(comp_table):
             cells = [td.get_text(strip=True) for td in row.find_all("td")]
-            if len(cells) >= 2:
+            if len(cells) >= 2 and not _is_total_row(cells[0]):
                 compensation.append(Compensation(
                     client_name=cells[0],
                     amount=_parse_amount(cells[1]),
