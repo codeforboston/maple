@@ -1,11 +1,4 @@
-export {
-  modifyAccount,
-  modifyAccountV2,
-  createFakeOrg,
-  createFakeOrgV2,
-  createFakeTestimony,
-  createFakeTestimonyV2
-} from "./auth"
+export { modifyAccountV2, createFakeOrgV2, createFakeTestimonyV2 } from "./auth"
 export {
   backfillTestimonyCounts,
   fetchBillBatch,
@@ -28,7 +21,6 @@ export {
   scrapeVideos,
   scrapeSessions,
   scrapeSpecialEvents,
-  scrapeSingleHearing,
   scrapeSingleHearingv2
 } from "./events"
 export {
@@ -41,22 +33,14 @@ export {
   fetchMemberBatch,
   startMemberBatches
 } from "./members"
-export {
-  completePhoneVerification,
-  completePhoneVerificationV2,
-  finishSignup,
-  finishSignupV2
-} from "./profile"
+export { completePhoneVerificationV2, finishSignupV2 } from "./profile"
 export { checkSearchIndexVersion, searchHealthCheck } from "./search"
 export {
-  deleteTestimony,
   deleteTestimonyV2,
-  publishTestimony,
   publishTestimonyV2,
   runTestimonyBackfillChunk,
   syncTestimonyToSearchIndex,
   upgradeTestimonySearchIndex,
-  resolveReport as adminResolveReport,
   resolveReportV2 as adminResolveReportV2
 } from "./testimony"
 export {
@@ -70,15 +54,10 @@ export {
 } from "./notifications"
 
 export {
-  followBill,
   followBillV2,
-  unfollowBill,
   unfollowBillV2,
-  followUser,
   followUserV2,
-  unfollowUser,
   unfollowUserV2,
-  getFollowers,
   getFollowersV2
 } from "./subscriptions"
 export { scrapeElections } from "./legislators"

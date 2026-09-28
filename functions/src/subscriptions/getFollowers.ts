@@ -1,11 +1,10 @@
-import * as functions from "firebase-functions"
 import { getFirestore } from "firebase-admin/firestore"
 import { onCall, HttpsError } from "firebase-functions/v2/https"
 import type { CallableRequest } from "firebase-functions/v2/https"
 import * as logger from "firebase-functions/logger"
 import { checkAuth } from "../common"
 
-const handleGetFollowers = async (request: CallableRequest) => {
+export const getFollowersV2 = onCall(async (request: CallableRequest) => {
   const uid = checkAuth(request, false)
 
   logger.log(`[getFollowers] Finding followers for user UID: ${uid}`)
@@ -31,9 +30,4 @@ const handleGetFollowers = async (request: CallableRequest) => {
       logger.error("[getFollowers] Caught error:", error)
       throw new HttpsError("internal", "Failed to retrieve followers.", error)
     })
-}
-
-export const getFollowers = functions.https.onCall((data, context) =>
-  handleGetFollowers({ data, auth: context.auth } as CallableRequest)
-)
-export const getFollowersV2 = onCall(handleGetFollowers)
+})

@@ -1,4 +1,3 @@
-import * as functions from "firebase-functions"
 import { DocumentReference, DocumentSnapshot } from "@google-cloud/firestore"
 import { onCall } from "firebase-functions/v2/https"
 import type { CallableRequest } from "firebase-functions/v2/https"
@@ -22,7 +21,7 @@ const INITIAL_VERSION = 1,
   MAX_EDITS = 5,
   MAX_VERSION = INITIAL_VERSION + MAX_EDITS
 
-const handlePublishTestimony = async (request: CallableRequest) => {
+export const publishTestimonyV2 = onCall(async (request: CallableRequest) => {
   const checkEmailVerification = true
   const uid = checkAuth(request, checkEmailVerification)
   const { draftId } = checkRequest(PublishTestimonyRequest, request.data)
@@ -41,12 +40,7 @@ const handlePublishTestimony = async (request: CallableRequest) => {
   await attachments.applyPublish(output.attachments)
 
   return { publicationId: output.publicationId }
-}
-
-export const publishTestimony = functions.https.onCall((data, context) =>
-  handlePublishTestimony({ data, auth: context.auth } as CallableRequest)
-)
-export const publishTestimonyV2 = onCall(handlePublishTestimony)
+})
 
 type TransactionOutput = {
   publicationId: string
