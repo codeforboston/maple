@@ -7,7 +7,7 @@ import axios from "axios"
 import unzipper from "unzipper"
 import * as readline from "readline"
 import { db, Timestamp } from "../firebase"
-import { currentGeneralCourt } from "../shared"
+import { currentGeneralCourt, generalCourts } from "../shared"
 import {
   OcpfMemberMapping,
   MembersFinance,
@@ -22,7 +22,11 @@ const TEST_CPF_ID: number | null = null // For testing, can use 16883,  Rebecca 
 
 const OCPF_BASE_URL = "https://ocpf2.blob.core.windows.net/downloads/data2"
 
-const YEARS = ["2025", "2026"]
+const currentCourt = generalCourts[currentGeneralCourt]
+if (!currentCourt) {
+  throw new Error(`No general court entry for court ${currentGeneralCourt}`)
+}
+const YEARS = [currentCourt.FirstYear, currentCourt.SecondYear].map(String)
 
 // Annual rollup report types to be excluded.
 // Including these would double-count both receipts and expeditures.
