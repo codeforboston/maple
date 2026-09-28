@@ -21,7 +21,9 @@ from portal import (
     filing_id,
     registrant_id,
 )
+from normalize import normalize_entity_name
 from writer import (
+    registrant_doc,
     write_registrant,
     write_filings,
     compute_stats,
@@ -484,3 +486,66 @@ def test_compute_stats_client_summary_registrant_count_deduped_across_periods():
     client_docs = _batch_set_dicts_with_key(db, "registrantCount")
     assert len(client_docs) == 1
     assert client_docs[0]["registrantCount"] == 1
+
+
+# ── Attribution: firm disclosures are credited to the firm ──────────────────
+
+
+def _firm_detail():
+    return DisclosureDetail(
+        compensation=[Compensation(client_name="Client A", amount=1000.0)],
+        bills=[BillActivity("Client A", "House Bill", "100", "H100", "An Act", "Support", None)],
+        period_start="2025-01-01",
+        period_end="2025-06-30",
+        filer_type="Employer",
+        filer_name="Tremont Strategies Group LLC",
+        lobbyists=["Chet Atkins", "Jason Aluia"],
+    )
+
+
+def test_registrant_doc_credits_firm_page_to_firm():
+    lobbyist_meta = _meta(entity_name="Chet Atkins", year=2025, reg_type="Lobbyist")
+    doc_id, data = registrant_doc(lobbyist_meta, _firm_detail())
+    assert data["entityName"] == "Tremont Strategies Group LLC"
+    assert data["regType"] == "Employer"
+    assert data["lobbyists"] == ["Chet Atkins", "Jason Aluia"]
+    assert data["lobbyistsNorm"] == [normalize_entity_name("Chet Atkins"), normalize_entity_name("Jason Aluia")]
+    assert doc_id == registrant_id("Tremont Strategies Group LLC", 2025, "2025-01-01")
+
+
+def test_registrant_doc_same_for_any_linking_summary():
+    """Reached via the firm's summary or any lobbyist's, the page must map to
+    one registrant doc — the root cause of dev/prod attribution drift."""
+    detail = _firm_detail()
+    ids = {
+        registrant_doc(_meta(entity_name=n, year=2025, reg_type=t), detail)[0]
+        for n, t in [("Chet Atkins", "Lobbyist"), ("Jason Aluia", "Lobbyist"),
+                     ("Tremont Strategies Group LLC", "Employer")]
+    }
+    assert len(ids) == 1
+
+
+def test_registrant_doc_individual_page_unchanged():
+    detail = DisclosureDetail(compensation=[], bills=[], period_start="2025-01-01",
+                              filer_type="Lobbyist")
+    _, data = registrant_doc(_meta(entity_name="Melissa Brooke Stacy", reg_type="Lobbyist"), detail)
+    assert data["entityName"] == "Melissa Brooke Stacy"
+    assert data["regType"] == "Lobbyist"
+    assert data["lobbyists"] == []
+
+
+def test_write_filings_credits_firm_page_to_firm():
+    db = MagicMock()
+    db.batch.return_value = MagicMock()
+    written = []
+    db.collection.return_value.document.side_effect = lambda doc_id: MagicMock(id=doc_id)
+    db.batch.return_value.set.side_effect = lambda ref, doc: written.append((ref.id, doc))
+
+    detail = _firm_detail()
+    write_filings(db, _meta(entity_name="Chet Atkins", year=2025, reg_type="Lobbyist"), detail)
+
+    (fid, doc), = written
+    assert doc["entityName"] == "Tremont Strategies Group LLC"
+    bill = detail.bills[0]
+    assert fid == filing_id("Tremont Strategies Group LLC", bill.client_name, bill.chamber,
+                            bill.bill_id, 194, bill.position, "2025-01-01")

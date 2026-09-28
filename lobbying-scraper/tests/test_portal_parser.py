@@ -20,10 +20,12 @@ from bs4 import BeautifulSoup
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from portal import (
+    DisclosureMeta,
     _parse_amount,
     _parse_period,
     parse_disclosure_detail,
     parse_summary,
+    resolve_filer,
     year_to_general_court,
 )
 
@@ -211,3 +213,63 @@ def test_executive_rows_have_null_bill_id():
     executive = [b for b in detail.bills if b.chamber == "Executive"]
     if executive:
         assert all(b.bill_id is None for b in executive)
+
+
+# ── Filer attribution (who filed the page, read from the page itself) ────────
+
+FILER_CASES = [
+    # fixture, filer_type, filer_name, lobbyists
+    ("2007e_disc", "Employer", "Ventry Associates, LLP", ["Dennis M Murphy", "Anthony A Abdelahad"]),
+    ("2011e_disc", "Employer", "ML Strategies, LLC", None),
+    ("2016e_disc", "Employer", "Murphy Donoghue Partners", None),
+    ("2024e_disc", "Employer", "21c, LLC", ["Hugh R. Jones, III"]),
+    ("2011i_disc", "Lobbyist", None, []),
+    # Captured from lobbyist Anthony Arthur Abdelahad's summary page, but the
+    # disclosure it links to is his firm's.
+    ("2024i_disc", "Employer", "Ventry Associates, LLP",
+     ["Dennis Michael Murphy", "Anthony Arthur Abdelahad", "Charles McCoy White"]),
+]
+
+
+@pytest.mark.parametrize("fix,filer_type,filer_name,lobbyists", FILER_CASES)
+def test_filer_parsed_from_page(fix, filer_type, filer_name, lobbyists):
+    detail = parse_disclosure_detail(_soup(fix), 2024)
+    assert detail.filer_type == filer_type
+    assert detail.filer_name == filer_name
+    if lobbyists is not None:
+        assert detail.lobbyists == lobbyists
+    if filer_type == "Employer":
+        assert detail.lobbyists, "firm disclosures list the lobbyists they paid"
+        assert not any("Total" in n for n in detail.lobbyists)
+
+
+def test_resolve_filer_credits_firm_page_to_firm():
+    """A firm's disclosure reached via one of its lobbyists' summary pages
+    must be credited to the firm, not that lobbyist."""
+    meta = parse_summary(_soup("2024i_summ"))
+    assert (meta.entity_name, meta.reg_type) == ("Anthony Arthur Abdelahad", "Lobbyist")
+    resolved = resolve_filer(meta, parse_disclosure_detail(_soup("2024i_disc"), 2024))
+    assert (resolved.entity_name, resolved.reg_type, resolved.year) == (
+        "Ventry Associates, LLP", "Employer", 2024,
+    )
+
+
+def test_resolve_filer_keeps_individual_registrant():
+    """Individual pages keep the summary's full registered name."""
+    meta = parse_summary(_soup("2011i_summ"))
+    resolved = resolve_filer(meta, parse_disclosure_detail(_soup("2011i_disc"), 2011))
+    assert resolved == meta
+
+
+def test_resolve_filer_is_independent_of_which_summary_linked_the_page():
+    """The firm's own summary and a lobbyist's summary must credit its
+    disclosure to the same registrant."""
+    detail = parse_disclosure_detail(_soup("2024i_disc"), 2024)
+    via_lobbyist = resolve_filer(parse_summary(_soup("2024i_summ")), detail)
+    via_firm = resolve_filer(
+        DisclosureMeta(entity_name="Ventry Associates, LLP", year=2024, reg_type="Employer"),
+        detail,
+    )
+    assert (via_lobbyist.entity_name, via_lobbyist.reg_type) == (
+        via_firm.entity_name, via_firm.reg_type,
+    )
