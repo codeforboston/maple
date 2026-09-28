@@ -30,9 +30,21 @@ type TopicGroup = {
   bills: Bill[]
 }
 
-const BillsByTopicContainer = ({ bills }: { bills: Bill[] }) => {
+const BillsByTopicContainer = ({
+  bills,
+  selectedFilter
+}: {
+  bills: Bill[]
+  selectedFilter: BillFilter
+}) => {
   const { t } = useTranslation("legislators")
   const arrow = <ArrowRightIcon sx={{ fontSize: "1.125rem" }} />
+  const filterLabel =
+    selectedFilter === "all"
+      ? t("All")
+      : selectedFilter === "sponsored"
+      ? t("profiles.primarySponsor")
+      : t("profiles.coSponsor")
 
   const topicGroups = Object.values(
     bills.reduce<Record<string, TopicGroup>>((groups, bill) => {
@@ -74,7 +86,7 @@ const BillsByTopicContainer = ({ bills }: { bills: Bill[] }) => {
           {t("profiles.billsByTopic")}
         </StyledBillsByTopicHeaderTitle>
         <StyledBillsByTopicHeaderSubtitle>
-          {bills.length} {t("profiles.bills")} • {t("profiles.primarySponsor")}
+          {bills.length} {t("profiles.bills")} • {filterLabel}
         </StyledBillsByTopicHeaderSubtitle>
       </StyledBillsByTopicHeader>
       <div>
@@ -110,7 +122,10 @@ export const BillsByTopic = ({ billGroups }: { billGroups: BillGroups }) => {
         selectedFilter={selectedFilter}
         onSelectFilter={setSelectedFilter}
       />
-      <BillsByTopicContainer bills={selectedBills} />
+      <BillsByTopicContainer
+        bills={selectedBills}
+        selectedFilter={selectedFilter}
+      />
     </>
   )
 }
