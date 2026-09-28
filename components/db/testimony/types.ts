@@ -87,14 +87,14 @@ export type WithId<T> = { id: string; value: T }
 export const deleteTestimony = httpsCallable<
   { publicationId: string },
   { deleted: boolean }
->(functions, "deleteTestimony")
+>(functions, "deleteTestimonyV2")
 
 export const publishTestimony = httpsCallable<
   { draftId: string },
   { publicationId: string }
->(functions, "publishTestimony")
+>(functions, "publishTestimonyV2")
 
 export const resolveReport = httpsCallable<report.Request, report.Response>(
   functions,
-  "adminResolveReport"
+  "adminResolveReportV2"
 )

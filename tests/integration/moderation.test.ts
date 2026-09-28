@@ -29,12 +29,12 @@ import { fakeUser } from "components/moderation/setUp/MockRecords"
 const deleteTestimony = httpsCallable<
   { uid: string; publicationId: string },
   { deleted: boolean }
->(functions, "deleteTestimony")
+>(functions, "deleteTestimonyV2")
 
 const publishTestimony = httpsCallable<
   { draftId: string },
   { publicationId: string }
->(functions, "publishTestimony")
+>(functions, "publishTestimonyV2")
 
 let adminUid: string
 let billId: string
@@ -164,7 +164,7 @@ describe("moderate testimony", () => {
 
 const modifyAccount = httpsCallable<{ uid: string; role: Role }, void>(
   functions,
-  "modifyAccount"
+  "modifyAccountV2"
 )
 
 describe("admins can modify user accounts", () => {
