@@ -14,7 +14,7 @@ pds_crawlers = "https://bsky.network"
 # The service account behind the terraform-plan GitHub environment's
 # GCP_SERVICE_ACCOUNT_KEY (CI.md). Read-only on the state bucket. Set it
 # once that environment exists in codeforboston/maple; null = plans skipped.
-ci_planner = null
+ci_planner = "serviceAccount:atproto-ci-planner@digital-testimony-dev.iam.gserviceaccount.com"
 
 # Where dev's alerts go: one person, by email. Prod's pager is prod's own
 # entry, never this one (variables.tf).

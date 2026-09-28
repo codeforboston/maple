@@ -14,11 +14,23 @@ plan on is one-time work for an owner of both GCP projects (`digital-testimony-d
      --display-name="terraform plan from GitHub Actions"
    ```
 
-2. **Its two grants.** In `envs/dev.tfvars` set
-   `ci_planner = "serviceAccount:atproto-ci-planner@digital-testimony-dev.iam.gserviceaccount.com"`,
-   merge it like any other change, and apply as an owner of both projects (see Permissions; the
-   grants are the `ci_planner_*` members in `iam.tf`: read-only on the state bucket and on the
-   parent DNS zone's project).
+2. **Its two grants.** Both are read-only and live in `iam.tf`. They switch on when `ci_planner` is
+   set:
+
+   - `ci_planner_state_reader`: the dev state bucket, in `digital-testimony-dev`.
+   - `ci_planner_parent_zone_reader`: the parent DNS zone, which is in **`digital-testimony-prod`**.
+     A dev apply writes this grant into prod.
+
+   To land them:
+
+   1. In `envs/dev.tfvars`, change `ci_planner = null` to
+      `ci_planner = "serviceAccount:atproto-ci-planner@digital-testimony-dev.iam.gserviceaccount.com"`.
+   2. Open a PR and merge it. Nothing applies on merge.
+   3. As an owner of both projects, run
+      `terraform -chdir=infra/gcp apply -var-file=envs/dev.tfvars`. If dev matches main, the plan
+      adds only these two. If the apply is run by an owner of dev only, the bucket grant lands, the zone
+      grant fails, and step 5 names the error.
+
 3. **A key.** The one step outside Terraform, so the key material never enters state. Outside the
    working tree too — a service-account private key sitting in the repo is one `git add -A` away
    from being committed:
