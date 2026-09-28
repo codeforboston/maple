@@ -96,6 +96,29 @@ def snapshot_owners(db: firestore.Client) -> dict[str, list[DisclosureMeta]]:
     return owners
 
 
+def load_or_snapshot_owners(db: firestore.Client, path: str) -> dict[str, list[DisclosureMeta]]:
+    """Ownership must come from the registrants as they were before the
+    migration: the write phase overwrites registrant docs, so re-reading them
+    after a partial run would silently drop pages that run didn't process.
+    The first run saves the snapshot; later runs reuse it."""
+    if os.path.exists(path):
+        with open(path) as f:
+            raw = json.load(f)
+        print(f"Loaded ownership snapshot {path}")
+    else:
+        raw = {
+            url: [[m.entity_name, m.year, m.reg_type] for m in metas]
+            for url, metas in snapshot_owners(db).items()
+        }
+        with open(path, "w") as f:
+            json.dump(raw, f)
+        print(f"Saved ownership snapshot {path}")
+    return {
+        url: [DisclosureMeta(entity_name=o[0], year=o[1], reg_type=o[2]) for o in metas]
+        for url, metas in raw.items()
+    }
+
+
 def choose_owner(owners: list[DisclosureMeta]) -> DisclosureMeta:
     """Deterministic pick among the registrants linking a page. Firm pages
     are re-credited from the page itself, so this only decides individual
@@ -139,7 +162,7 @@ def run_write(project: str, out_prefix: str, workers: int, limit: int | None) ->
     db = firestore.Client(project=project)
     print(f"Target project: {db.project}")
 
-    owners = snapshot_owners(db)
+    owners = load_or_snapshot_owners(db, f"{out_prefix}.owners.json")
     print(f"Snapshot: {len(owners)} disclosure URLs listed by registrants")
 
     os.environ["GOOGLE_CLOUD_PROJECT"] = project
@@ -186,10 +209,14 @@ def run_write(project: str, out_prefix: str, workers: int, limit: int | None) ->
             if done % 2000 == 0 or done == len(pages):
                 print(f"  [{done}/{len(pages)}] {counts}, {len(all_fids)} filing ids, {len(registrants)} registrants")
 
-    print(f"\nWriting {len(registrants)} registrant docs (full overwrite)…")
+    # A registrant doc is overwritten with the URLs of the pages processed in
+    # this run, so a partial run (--limit) would drop its other pages' URLs.
+    to_write = {} if limit is not None else registrants
+    print(f"\nWriting {len(to_write)} registrant docs (full overwrite)"
+          + (" — skipped for a --limit run" if limit is not None else "") + "…")
     coll = db.collection(REGISTRANTS_COLLECTION)
     batch, n = db.batch(), 0
-    for rid, entry in registrants.items():
+    for rid, entry in to_write.items():
         doc = dict(entry["data"], disclosureUrls=sorted(entry["urls"]), fetchedAt=firestore.SERVER_TIMESTAMP)
         batch.set(coll.document(rid), doc)
         n += 1
@@ -227,6 +254,8 @@ def run_cleanup(project: str, out_prefix: str, collection: str, execute: bool,
     # Anything the write phase couldn't regenerate would look stale and be
     # deleted, so refuse unless every listed page was accounted for.
     blockers = {k: summary[k] for k in ("error", "unattributable", "missing_from_archive") if summary[k]}
+    if summary["processed"] != summary["listed_urls"]:
+        blockers["pages_not_processed"] = summary["listed_urls"] - summary["processed"]
     if summary["project"] != project:
         blockers["summary_project"] = summary["project"]
     if summary.get("limit") is not None:
