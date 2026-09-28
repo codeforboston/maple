@@ -1,4 +1,3 @@
-import * as functions from "firebase-functions"
 import { onCall } from "firebase-functions/v2/https"
 import type { CallableRequest } from "firebase-functions/v2/https"
 import { db, auth } from "../firebase"
@@ -10,7 +9,7 @@ const CreateProfileRequest = z.object({
   requestedRole: z.enum(["user", "organization", "pendingUpgrade"])
 })
 
-const handleFinishSignup = async (request: CallableRequest) => {
+export const finishSignupV2 = onCall(async (request: CallableRequest) => {
   const uid = checkAuth(request, false)
 
   const { requestedRole } = checkRequestZod(CreateProfileRequest, request.data)
@@ -42,9 +41,4 @@ const handleFinishSignup = async (request: CallableRequest) => {
       newProfile: { fullName, notificationFrequency, email, public: isPublic }
     })
   }
-}
-
-export const finishSignup = functions.https.onCall((data, context) =>
-  handleFinishSignup({ data, auth: context.auth } as CallableRequest)
-)
-export const finishSignupV2 = onCall(handleFinishSignup)
+})

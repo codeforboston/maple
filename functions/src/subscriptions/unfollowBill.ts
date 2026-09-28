@@ -1,11 +1,10 @@
-import * as functions from "firebase-functions"
 import { onCall, HttpsError } from "firebase-functions/v2/https"
 import type { CallableRequest } from "firebase-functions/v2/https"
 import { unsubscribeToBillTopic } from "./unsubscribeToBillTopic"
 import { getAuth, UserRecord } from "firebase-admin/auth"
 import { getFirestore, Firestore } from "firebase-admin/firestore"
 
-const handleUnfollowBill = async (request: CallableRequest) => {
+export const unfollowBillV2 = onCall(async (request: CallableRequest) => {
   if (!request.auth) {
     // Throwing an HttpsError so that the client gets the error details.
     throw new HttpsError(
@@ -89,9 +88,4 @@ const handleUnfollowBill = async (request: CallableRequest) => {
       details: error.message
     })
   }
-}
-
-export const unfollowBill = functions.https.onCall((data, context) =>
-  handleUnfollowBill({ data, auth: context.auth } as CallableRequest)
-)
-export const unfollowBillV2 = onCall(handleUnfollowBill)
+})

@@ -1,4 +1,3 @@
-import * as functions from "firebase-functions"
 import { DocumentSnapshot } from "@google-cloud/firestore"
 import { onCall } from "firebase-functions/v2/https"
 import type { CallableRequest } from "firebase-functions/v2/https"
@@ -24,7 +23,7 @@ const DeleteTestimonyRequest = Record({
   publicationId: Id
 })
 
-const handleDeleteTestimony = async (request: CallableRequest) => {
+export const deleteTestimonyV2 = onCall(async (request: CallableRequest) => {
   checkAuth(request)
 
   // Only admins can delete testimony. Previously we used the caller's UID to
@@ -38,12 +37,7 @@ const handleDeleteTestimony = async (request: CallableRequest) => {
   )
 
   return performDeleteTestimony(uid, publicationId)
-}
-
-export const deleteTestimony = functions.https.onCall((data, context) =>
-  handleDeleteTestimony({ data, auth: context.auth } as CallableRequest)
-)
-export const deleteTestimonyV2 = onCall(handleDeleteTestimony)
+})
 
 export const performDeleteTestimony = async (
   authorUid: string,
