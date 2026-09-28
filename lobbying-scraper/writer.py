@@ -217,10 +217,12 @@ def compute_stats(db: firestore.Client) -> None:
                     "regType": reg_type or "",
                     "years": set(),
                     "clientNorms": set(),
+                    "lobbyists": set(),
                 },
             )
             if year is not None:
                 firm["years"].add(year)
+            firm["lobbyists"].update(d.get("lobbyists") or [])
             if reg_type:
                 firm["regType"] = reg_type
 
@@ -291,6 +293,8 @@ def compute_stats(db: firestore.Client) -> None:
     for fs in firm_summaries.values():
         fs["clientCount"] = len(fs.pop("clientNorms"))
         fs["years"] = sorted(fs["years"], reverse=True)
+        # Lets the firms list find a firm by the name of a lobbyist it employs.
+        fs["lobbyists"] = sorted(fs["lobbyists"])
 
     stats = {
         "totalFilings": total_filings,

@@ -549,3 +549,27 @@ def test_write_filings_credits_firm_page_to_firm():
     bill = detail.bills[0]
     assert fid == filing_id("Tremont Strategies Group LLC", bill.client_name, bill.chamber,
                             bill.bill_id, 194, bill.position, "2025-01-01")
+
+
+def test_compute_stats_firm_summary_lists_lobbyists_across_periods():
+    """Firm summaries carry the union of lobbyists named in the firm's
+    disclosures, so the firms list can find a firm by a lobbyist's name."""
+    db, _ = _make_stats_db()
+    base = {"entityName": "Tremont Strategies Group LLC", "entityNameNorm": "TREMONT STRATEGIES GROUP",
+            "regType": "Employer", "year": 2025, "clients": []}
+    registrants = [
+        _fake_doc({**base, "lobbyists": ["Jason Aluia", "Chet Atkins"]}),
+        _fake_doc({**base, "lobbyists": ["Chet Atkins", "Michael Bergan"]}),
+        _fake_doc({"entityName": "Solo Person", "entityNameNorm": "SOLO PERSON",
+                   "regType": "Lobbyist", "year": 2025, "clients": []}),
+    ]
+
+    def _iter(_db, collection_name):
+        return iter(registrants if collection_name == REGISTRANTS_COLLECTION else [])
+
+    with patch("writer._iter_collection", side_effect=_iter):
+        compute_stats(db)
+
+    firms = {d["entityNameNorm"]: d for d in _batch_set_dicts_with_key(db, "clientCount")}
+    assert firms["TREMONT STRATEGIES GROUP"]["lobbyists"] == ["Chet Atkins", "Jason Aluia", "Michael Bergan"]
+    assert firms["SOLO PERSON"]["lobbyists"] == []

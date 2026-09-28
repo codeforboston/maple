@@ -321,6 +321,8 @@ export type FirmSummaryRow = {
   regType: string
   years: number[]
   clientCount: number
+  // Lobbyists named in the firm's disclosures; absent on older summaries.
+  lobbyists?: string[]
 }
 
 async function fetchClientSummaries(): Promise<ClientSummaryRow[]> {

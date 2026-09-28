@@ -19,7 +19,8 @@
     "disclosureLink": "Disclosure {{number}}",
     "viewOnMaple": "View bill on MAPLE →",
     "total": "total",
-    "generalCourt": "General Court"
+    "generalCourt": "General Court",
+    "matchedLobbyists": "Lobbyist: {{names}}"
   },
   "registrantType": {
     "all": "All types",
@@ -35,7 +36,8 @@
   "sections": {
     "bills": "Bills",
     "clients": "Clients",
-    "firms": "Lobbyists"
+    "firms": "Lobbyists",
+    "firmLobbyists": "Lobbyists employed"
   },
   "filters": {
     "session": "Session",

@@ -62,6 +62,7 @@ type FirmSummary = {
   regType: string
   years: number[]
   clientCount: number
+  lobbyists: string[]
 }
 
 export const script: Script = async ({ db }) => {
@@ -162,7 +163,7 @@ export const script: Script = async ({ db }) => {
   > = {}
   const firmSummaries: Record<
     string,
-    FirmSummary & { clientNormsSet: Set<string> }
+    FirmSummary & { clientNormsSet: Set<string>; lobbyistsSet: Set<string> }
   > = {}
 
   for (const doc of registrantsSnap.docs) {
@@ -182,11 +183,15 @@ export const script: Script = async ({ db }) => {
           regType: regType ?? "",
           years: [],
           clientCount: 0,
-          clientNormsSet: new Set()
+          lobbyists: [],
+          clientNormsSet: new Set(),
+          lobbyistsSet: new Set()
         }
       }
       const firm = firmSummaries[entityNorm]
       if (year != null && !firm.years.includes(year)) firm.years.push(year)
+      for (const name of (d.lobbyists as string[] | undefined) ?? [])
+        firm.lobbyistsSet.add(name)
       if (regType) firm.regType = regType
     }
 
@@ -265,6 +270,7 @@ export const script: Script = async ({ db }) => {
   for (const fs of Object.values(firmSummaries)) {
     fs.clientCount = fs.clientNormsSet.size
     fs.years.sort((a, b) => b - a)
+    fs.lobbyists = [...fs.lobbyistsSet].sort()
   }
 
   const totalClients = clientNorms.size
@@ -359,7 +365,7 @@ export const script: Script = async ({ db }) => {
     const batch = db.batch()
     for (const [
       norm,
-      { clientNormsSet: _clientNormsSet, ...fs }
+      { clientNormsSet: _clientNormsSet, lobbyistsSet: _lobbyistsSet, ...fs }
     ] of firmEntries.slice(i, i + 400)) {
       batch.set(firmsColl.doc(encodeURIComponent(norm)), fs)
     }
