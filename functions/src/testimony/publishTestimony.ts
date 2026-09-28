@@ -1,5 +1,7 @@
+import * as functions from "firebase-functions"
 import { DocumentReference, DocumentSnapshot } from "@google-cloud/firestore"
 import { onCall } from "firebase-functions/v2/https"
+import type { CallableRequest } from "firebase-functions/v2/https"
 import * as logger from "firebase-functions/logger"
 import { nanoid } from "nanoid"
 import { Record } from "runtypes"
@@ -20,7 +22,7 @@ const INITIAL_VERSION = 1,
   MAX_EDITS = 5,
   MAX_VERSION = INITIAL_VERSION + MAX_EDITS
 
-export const publishTestimony = onCall(async request => {
+const handlePublishTestimony = async (request: CallableRequest) => {
   const checkEmailVerification = true
   const uid = checkAuth(request, checkEmailVerification)
   const { draftId } = checkRequest(PublishTestimonyRequest, request.data)
@@ -39,7 +41,12 @@ export const publishTestimony = onCall(async request => {
   await attachments.applyPublish(output.attachments)
 
   return { publicationId: output.publicationId }
-})
+}
+
+export const publishTestimony = functions.https.onCall((data, context) =>
+  handlePublishTestimony({ data, auth: context.auth } as CallableRequest)
+)
+export const publishTestimonyV2 = onCall(handlePublishTestimony)
 
 type TransactionOutput = {
   publicationId: string

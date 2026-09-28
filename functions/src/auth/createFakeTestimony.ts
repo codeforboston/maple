@@ -1,4 +1,6 @@
+import * as functions from "firebase-functions"
 import { onCall } from "firebase-functions/v2/https"
+import type { CallableRequest } from "firebase-functions/v2/https"
 import { checkAdmin, checkAuth } from "../common"
 import { auth, db } from "../firebase"
 import { Testimony } from "../testimony/types"
@@ -7,7 +9,7 @@ import { Timestamp } from "../firebase"
 // for populating admin module for testing & demonstration--alert--no auth checked here.
 //@TODO: remove
 
-export const createFakeTestimony = onCall(async request => {
+const handleCreateFakeTestimony = async (request: CallableRequest) => {
   console.log("running fake testimony")
   checkAuth(request, false)
   checkAdmin(request)
@@ -51,4 +53,9 @@ export const createFakeTestimony = onCall(async request => {
   await testRef.set(testimony)
 
   return { uid: uid, tid: id }
-})
+}
+
+export const createFakeTestimony = functions.https.onCall((data, context) =>
+  handleCreateFakeTestimony({ data, auth: context.auth } as CallableRequest)
+)
+export const createFakeTestimonyV2 = onCall(handleCreateFakeTestimony)

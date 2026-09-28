@@ -1,11 +1,13 @@
+import * as functions from "firebase-functions"
 import { onCall } from "firebase-functions/v2/https"
+import type { CallableRequest } from "firebase-functions/v2/https"
 import { checkAdmin, checkAuth } from "../common"
 import { auth, db } from "../firebase"
 
 // for populating admin module for testing & demonstration
 //@TODO: remove
 
-export const createFakeOrg = onCall(async request => {
+const handleCreateFakeOrg = async (request: CallableRequest) => {
   checkAuth(request, false)
   checkAdmin(request)
 
@@ -31,4 +33,9 @@ export const createFakeOrg = onCall(async request => {
   console.log(authUser)
 
   return { ...authUser, uid: userRecord.uid }
-})
+}
+
+export const createFakeOrg = functions.https.onCall((data, context) =>
+  handleCreateFakeOrg({ data, auth: context.auth } as CallableRequest)
+)
+export const createFakeOrgV2 = onCall(handleCreateFakeOrg)

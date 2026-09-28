@@ -1,4 +1,6 @@
+import * as functions from "firebase-functions"
 import { onCall } from "firebase-functions/v2/https"
+import type { CallableRequest } from "firebase-functions/v2/https"
 import { db } from "../firebase"
 import { z } from "zod"
 import { fail, checkRequestZod, checkAuth, checkAdmin } from "../common"
@@ -17,7 +19,9 @@ export type Response = {
   status: "success" | "report-already-resolved" | "testimony-already-removed"
 }
 
-export const resolveReport = onCall(async (request): Promise<Response> => {
+const handleResolveReport = async (
+  request: CallableRequest
+): Promise<Response> => {
   checkAuth(request, false)
   checkAdmin(request)
 
@@ -81,4 +85,9 @@ export const resolveReport = onCall(async (request): Promise<Response> => {
     resolution: resolutionObj
   })
   return { status: "success" }
-})
+}
+
+export const resolveReport = functions.https.onCall((data, context) =>
+  handleResolveReport({ data, auth: context.auth } as CallableRequest)
+)
+export const resolveReportV2 = onCall(handleResolveReport)

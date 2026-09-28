@@ -8,9 +8,9 @@ export * from "../../functions/src/auth/types"
 export const finishSignup = httpsCallable<
   { requestedRole: Role } | Partial<Profile>,
   void
->(functions, "finishSignup")
+>(functions, "finishSignupV2")
 
 export const completePhoneVerification = httpsCallable<
   void,
   { phoneVerified: true }
->(functions, "completePhoneVerification")
+>(functions, "completePhoneVerificationV2")

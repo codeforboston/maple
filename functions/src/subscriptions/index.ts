@@ -1,8 +1,19 @@
 // import the functions
-import { followBill } from "./followBill"
-import { unfollowBill } from "./unfollowBill"
-import { followUser } from "./followUser"
-import { unfollowUser } from "./unfollowUser"
-import { getFollowers } from "./getFollowers"
+import { followBill, followBillV2 } from "./followBill"
+import { unfollowBill, unfollowBillV2 } from "./unfollowBill"
+import { followUser, followUserV2 } from "./followUser"
+import { unfollowUser, unfollowUserV2 } from "./unfollowUser"
+import { getFollowers, getFollowersV2 } from "./getFollowers"
 // export the functions
-export { followBill, unfollowBill, followUser, unfollowUser, getFollowers }
+export {
+  followBill,
+  followBillV2,
+  unfollowBill,
+  unfollowBillV2,
+  followUser,
+  followUserV2,
+  unfollowUser,
+  unfollowUserV2,
+  getFollowers,
+  getFollowersV2
+}

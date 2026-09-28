@@ -1,4 +1,6 @@
+import * as functions from "firebase-functions"
 import { onCall } from "firebase-functions/v2/https"
+import type { CallableRequest } from "firebase-functions/v2/https"
 import { db, auth } from "../firebase"
 import { z } from "zod"
 import { checkRequestZod, checkAuth, checkAdmin } from "../common"
@@ -11,7 +13,7 @@ const Request = z.object({
   role: ZRole
 })
 
-export const modifyAccount = onCall(async request => {
+const handleModifyAccount = async (request: CallableRequest) => {
   checkAuth(request, false)
   checkAdmin(request)
 
@@ -20,4 +22,9 @@ export const modifyAccount = onCall(async request => {
   console.log(`Setting role for ${uid} to ${role}`)
 
   await setRole({ role, auth, db, uid })
-})
+}
+
+export const modifyAccount = functions.https.onCall((data, context) =>
+  handleModifyAccount({ data, auth: context.auth } as CallableRequest)
+)
+export const modifyAccountV2 = onCall(handleModifyAccount)
