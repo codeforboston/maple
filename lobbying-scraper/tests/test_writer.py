@@ -596,3 +596,13 @@ def test_compute_stats_prunes_stale_firm_summaries():
     deleted = [c[0][0] for c in db.batch.return_value.delete.call_args_list]
     assert stale_ref in deleted
     assert keep_ref not in deleted
+
+
+def test_compute_stats_overwrites_stats_doc():
+    """The stats doc must be fully replaced: a merge keeps spendByYear years
+    this run no longer produces (it left stale 2005-2009 figures in dev)."""
+    db, doc_mocks = _make_stats_db()
+    with patch("writer._iter_collection", side_effect=lambda _db, _name: iter([])):
+        compute_stats(db)
+    call = doc_mocks[STATS_DOC_ID].set.call_args
+    assert not call[1].get("merge"), "stats doc must not be written with merge"

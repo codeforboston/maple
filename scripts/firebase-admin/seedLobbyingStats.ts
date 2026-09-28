@@ -295,7 +295,9 @@ export const script: Script = async ({ db }) => {
   await db
     .collection(STATS_COLLECTION)
     .doc(STATS_DOC_ID)
-    .set(stats, { merge: true })
+    // Full overwrite, not merge: a merge keeps map keys (e.g. a spendByYear
+    // year) that this run no longer produces, so stale values never go away.
+    .set(stats)
 
   await db
     .collection(STATS_COLLECTION)

@@ -322,7 +322,9 @@ def compute_stats(db: firestore.Client) -> None:
         "spendByYear": spend_by_year,
         "filingsByYear": filings_by_year,
     }
-    db.collection(STATS_COLLECTION).document(STATS_DOC_ID).set(stats, merge=True)
+    # Full overwrite, not merge: a merge keeps map keys (e.g. a spendByYear
+    # year) that this run no longer produces, so stale values never go away.
+    db.collection(STATS_COLLECTION).document(STATS_DOC_ID).set(stats)
     db.collection(STATS_COLLECTION).document("entityFilingCounts").set(
         entity_filing_counts
     )
