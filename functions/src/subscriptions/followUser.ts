@@ -1,11 +1,10 @@
-import * as functions from "firebase-functions"
 import { onCall, HttpsError } from "firebase-functions/v2/https"
 import type { CallableRequest } from "firebase-functions/v2/https"
 import { subscribeToTestimonyTopic } from "./subscribeToTestimonyTopic"
 import { getAuth, UserRecord } from "firebase-admin/auth"
 import { getFirestore, Firestore } from "firebase-admin/firestore"
 
-const handleFollowUser = async (request: CallableRequest) => {
+export const followUserV2 = onCall(async (request: CallableRequest) => {
   // Debug: Log the received data
   console.log("Debug: Data received in followOrg:", request.data)
 
@@ -34,9 +33,4 @@ const handleFollowUser = async (request: CallableRequest) => {
       details: error.message
     })
   }
-}
-
-export const followUser = functions.https.onCall((data, context) =>
-  handleFollowUser({ data, auth: context.auth } as CallableRequest)
-)
-export const followUserV2 = onCall(handleFollowUser)
+})
