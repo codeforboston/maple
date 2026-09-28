@@ -185,6 +185,11 @@ export const scrapeOcpfFinanceV2 = onRequestV2(
 
     // ── A. Load member mapping ─────────────────────────────────────────────
     const mappingDoc = await db.doc("/config/ocpfMemberMapping").get()
+    if (!mappingDoc.exists) {
+      functions.logger.warn(
+        "config/ocpfMemberMapping not found; no members will be processed"
+      )
+    }
     const mapping = (mappingDoc.data() ?? {}) as OcpfMemberMapping
 
     // Build cpfId → memberCode reverse map
