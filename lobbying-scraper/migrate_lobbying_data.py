@@ -107,7 +107,14 @@ def _process_page(db: firestore.Client, blob: Blob, owner: DisclosureMeta, url: 
     # One try/except around the whole page so a transient network error can't
     # escape to future.result() and abort the accounting loop.
     try:
-        soup = BeautifulSoup(blob.download_as_text(encoding="utf-8"), "html.parser")
+        for attempt in range(3):
+            try:
+                html = blob.download_as_text(encoding="utf-8")
+                break
+            except Exception:
+                if attempt == 2:
+                    raise
+        soup = BeautifulSoup(html, "html.parser")
         detail = parse_disclosure_detail(soup, owner.year)
         built = registrant_doc(owner, detail)
         if built is None:
