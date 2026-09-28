@@ -1,4 +1,6 @@
 import * as functions from "firebase-functions"
+import { onCall } from "firebase-functions/v2/https"
+import type { CallableRequest } from "firebase-functions/v2/https"
 import { db, auth } from "../firebase"
 import { z } from "zod"
 import { checkRequestZod, checkAuth } from "../common"
@@ -8,10 +10,10 @@ const CreateProfileRequest = z.object({
   requestedRole: z.enum(["user", "organization", "pendingUpgrade"])
 })
 
-export const finishSignup = functions.https.onCall(async (data, context) => {
-  const uid = checkAuth(context, false)
+const handleFinishSignup = async (request: CallableRequest) => {
+  const uid = checkAuth(request, false)
 
-  const { requestedRole } = checkRequestZod(CreateProfileRequest, data)
+  const { requestedRole } = checkRequestZod(CreateProfileRequest, request.data)
 
   const {
     fullName,
@@ -19,7 +21,7 @@ export const finishSignup = functions.https.onCall(async (data, context) => {
     notificationFrequency,
     email,
     public: isPublic
-  } = data
+  } = request.data
 
   // Only an admin can approve organizations, after they've signed up initially
   // There's a nextjs api route: PATCH /users/<uid> {"role": <role>}
@@ -40,4 +42,9 @@ export const finishSignup = functions.https.onCall(async (data, context) => {
       newProfile: { fullName, notificationFrequency, email, public: isPublic }
     })
   }
-})
+}
+
+export const finishSignup = functions.https.onCall((data, context) =>
+  handleFinishSignup({ data, auth: context.auth } as CallableRequest)
+)
+export const finishSignupV2 = onCall(handleFinishSignup)

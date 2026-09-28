@@ -30,7 +30,7 @@ export const FollowersTab = ({
     try {
       const { data: profileIds } = await httpsCallable<void, string[]>(
         functions,
-        "getFollowers"
+        "getFollowersV2"
       )()
       setState({
         items: profileIds.map(profileId => ({ profileId })),

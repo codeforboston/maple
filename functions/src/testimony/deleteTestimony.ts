@@ -1,5 +1,8 @@
+import * as functions from "firebase-functions"
 import { DocumentSnapshot } from "@google-cloud/firestore"
-import { https, logger } from "firebase-functions"
+import { onCall } from "firebase-functions/v2/https"
+import type { CallableRequest } from "firebase-functions/v2/https"
+import * as logger from "firebase-functions/logger"
 import { Record } from "runtypes"
 import { BallotQuestion } from "../ballotQuestions/types"
 import { Bill } from "../bills/types"
@@ -21,18 +24,26 @@ const DeleteTestimonyRequest = Record({
   publicationId: Id
 })
 
-export const deleteTestimony = https.onCall(async (data, context) => {
-  checkAuth(context)
+const handleDeleteTestimony = async (request: CallableRequest) => {
+  checkAuth(request)
 
   // Only admins can delete testimony. Previously we used the caller's UID to
   // select the testimony to delete, but admins need to be able to delete other
   // users testimony so we require the uid to be specified in the request.
-  checkAdmin(context)
+  checkAdmin(request)
 
-  const { uid, publicationId } = checkRequest(DeleteTestimonyRequest, data)
+  const { uid, publicationId } = checkRequest(
+    DeleteTestimonyRequest,
+    request.data
+  )
 
   return performDeleteTestimony(uid, publicationId)
-})
+}
+
+export const deleteTestimony = functions.https.onCall((data, context) =>
+  handleDeleteTestimony({ data, auth: context.auth } as CallableRequest)
+)
+export const deleteTestimonyV2 = onCall(handleDeleteTestimony)
 
 export const performDeleteTestimony = async (
   authorUid: string,

@@ -30,7 +30,7 @@ export type ReportResolution = {
 
 export const modifyAccount = httpsCallable<{ uid: string; role: Role }, void>(
   functions,
-  "modifyAccount"
+  "modifyAccountV2"
 )
 
 type Request = { uid: string; fullName: string; email: string }
@@ -38,10 +38,10 @@ type Response = { uid: string; tid: string }
 
 export const createFakeOrg = httpsCallable<Request, void>(
   functions,
-  "createFakeOrg"
+  "createFakeOrgV2"
 )
 
 export const createFakeTestimony = httpsCallable<Request, Response>(
   functions,
-  "createFakeTestimony"
+  "createFakeTestimonyV2"
 )
