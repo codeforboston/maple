@@ -1,6 +1,1 @@
-export {
-  scrapeHouseRollCalls,
-  scrapeSenateRollCalls,
-  HouseRollCallScraper,
-  SenateRollCallScraper
-} from "./scrapers"
+export { scrapeHouseRollCalls, HouseRollCallScraper } from "./scrapers"
