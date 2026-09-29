@@ -62,17 +62,14 @@ export {
 } from "./subscriptions"
 export { scrapeElections } from "./legislators"
 
-export { transcription, transcriptionV2 } from "./webhooks"
+export { transcriptionV2 } from "./webhooks"
 
-export { matchOcpfMembers, matchOcpfMembersV2 } from "./ocpf/matchOcpfMembers"
-export {
-  scrapeOcpfFinance,
-  scrapeOcpfFinanceV2
-} from "./ocpf/scrapeOcpfFinance"
+export { matchOcpfMembersV2 } from "./ocpf/matchOcpfMembers"
+export { scrapeOcpfFinanceV2 } from "./ocpf/scrapeOcpfFinance"
 
 export * from "./triggerPubsubFunction"
 
-export { mcpProxy, mcpProxyV2 } from "./mcp/proxy"
+export { mcpProxyV2 } from "./mcp/proxy"
 
 // Export the health check last so it is loaded last.
 export * from "./healthCheck"

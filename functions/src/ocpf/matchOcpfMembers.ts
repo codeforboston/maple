@@ -1,7 +1,5 @@
-import * as functions from "firebase-functions/v1"
 import { onRequest as onRequestV2 } from "firebase-functions/v2/https"
 import * as logger from "firebase-functions/logger"
-import type { Request, Response } from "express"
 import { getAuth } from "firebase-admin/auth"
 import axios from "axios"
 import unzipper from "unzipper"
@@ -16,10 +14,7 @@ import {
   OcpfMemberMappingFlagsEntry
 } from "./types"
 
-const matchOcpfMembersHandler = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const matchOcpfMembersV2 = onRequestV2(async (req, res) => {
   if (req.method !== "POST") {
     res.status(405).send("Method Not Allowed. Use POST.")
     return
@@ -148,12 +143,7 @@ const matchOcpfMembersHandler = async (
     unmatched_members: unmatched,
     ambiguous_members: ambiguous
   })
-}
-
-export const matchOcpfMembers = functions.https.onRequest(
-  matchOcpfMembersHandler
-)
-export const matchOcpfMembersV2 = onRequestV2(matchOcpfMembersHandler)
+})
 
 async function downloadAndParseFilers(): Promise<OcpfFilerRow[]> {
   const response = await axios.get(
