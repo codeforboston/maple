@@ -28,30 +28,63 @@ if (!currentCourt) {
 }
 const YEARS = [currentCourt.FirstYear, currentCourt.SecondYear].map(String)
 
-// Annual rollup report types to be excluded.
-// Including these would double-count both receipts and expeditures.
-// Note: 32, 36, 45, and 52 not relevant to individual legislators, but not harmful to exclude
-const YEAR_END_REPORT_TYPE_IDS = new Set([
-  11, // Year-End Report (Depository)
-  24, // Year-End Report (Non-Depository)
-  32, // Year-End Report (PAC)
-  36, // IEPAC Year-End Report
-  45, // Year-End Report (Ballot Question Committee)
-  52, // Year-End Report (Local Party Committee)
-  113 // Year-End Report (Municipal)
-])
+// How each OCPF report type (reports.txt Report_Type_ID) is used:
+//   totals     — Receipts_Total/Expenditures_Total feed totalRaised/totalSpent;
+//                items and Receipts_Unitemized_Total are also used
+//   itemsOnly  — items and Receipts_Unitemized_Total used; totals excluded
+//                because the same money is already in a "totals" report
+//   yearEnd    — annual rollup: totals excluded (duplicate the periodic
+//                reports) but stored for the yearEndCheck reconciliation;
+//                in-kind items only
+//   lifecycle  — rollup of a non-calendar period: totals excluded, in-kind
+//                items only
+//   skip       — nothing used
+// Types missing from this map are treated as itemsOnly and logged for review.
+//
+// Year-End and lifecycle reports are the main place in-kind contributions
+// (401/402/403) are itemized — Deposit and Bank Reports carry none. Their
+// other items and Receipts_Unitemized_Total must be ignored: Transition-In
+// reports also carry 201/204/206 items, and Year-End Receipts_Unitemized_Total
+// holds the full annual receipts. Verified empirically (2025–2026): no in-kind
+// item appears on more than one report type.
+type ReportHandling = "totals" | "itemsOnly" | "yearEnd" | "lifecycle" | "skip"
 
-// Committee lifecycle reports: like Year-End reports, these roll up a date
-// range already covered by periodic Bank Reports (verified empirically —
-// CPF 16576's Dissolution Report exactly matched the sum of two Bank Reports
-// covering the same period, $1,583.64). Kept separate from
-// YEAR_END_REPORT_TYPE_IDS because their date range doesn't align to a
-// calendar year, so they shouldn't feed the yearEndCheck reconciliation.
-const LIFECYCLE_REPORT_TYPE_IDS = new Set([
-  12, // Dissolution Report
-  14, // Transition-Out Report
-  15 // Transition-In Report
-])
+const REPORT_TYPE_HANDLING: Record<number, ReportHandling> = {
+  70: "totals", // Bank Report — all activity through the depository account
+  13: "totals", // External Activity Report — activity outside the depository, not in Bank Reports
+
+  60: "itemsOnly", // Deposit Report — gross amounts; same money appears net-of-fees in the Bank Report
+  61: "itemsOnly", // Late Contribution Report — pre-election disclosure; the money is deposited and bank-reported
+  63: "itemsOnly", // Subvendor Report — itemizes spending already in the Bank Report
+  65: "itemsOnly", // Payroll Itemization Report — itemizes spending already in the Bank Report
+
+  // 32, 36, 45, 52 and 113 are not filed by individual legislators, but listed
+  // so they're never treated as unclassified
+  11: "yearEnd", // Year-End Report (Depository)
+  24: "yearEnd", // Year-End Report (Non-Depository)
+  32: "yearEnd", // Year-End Report (PAC)
+  36: "yearEnd", // IEPAC Year-End Report
+  45: "yearEnd", // Year-End Report (Ballot Question Committee)
+  52: "yearEnd", // Year-End Report (Local Party Committee)
+  113: "yearEnd", // Year-End Report (Municipal)
+
+  // Verified empirically: CPF 16576's Dissolution Report exactly matched the
+  // sum of two Bank Reports covering the same period ($1,583.64)
+  12: "lifecycle", // Dissolution Report
+  14: "lifecycle", // Transition-Out Report
+  15: "lifecycle", // Transition-In Report
+
+  // Supplemental: itemize spending the depository bank already captured in the
+  // Bank Report's Expenditures_Total. Verified empirically — summed Bank
+  // Reports matched the Year-End Report without these. Their items (354
+  // Credit Card Sub-Items, 351 Reimbursement Sub-Items) aren't used.
+  80: "skip", // Credit Card Report
+  90: "skip" // Reimbursement Report
+}
+
+// In-kind item record types (Individual, Committee, Union, Aggregated
+// un-itemized) — the only items read from Year-End/Dissolution/Transition reports
+const IN_KIND_RECORD_TYPE_IDS = new Set([401, 402, 403, 420])
 
 // ── Accumulator types ─────────────────────────────────────────────────────────
 
@@ -60,24 +93,31 @@ interface MutableBreakdownEntry {
   amount: number
 }
 
-interface MemberAccumulator {
-  cpfId: number
+interface MutableBreakdown {
+  individual: MutableBreakdownEntry
+  committee: MutableBreakdownEntry
+  union: MutableBreakdownEntry
+  unitemized: { amount: number }
+  smallDonors: { itemized: MutableBreakdownEntry }
+  processingFees: MutableBreakdownEntry
+}
+
+interface YearAccumulator {
   totalRaised: number
   totalSpent: number
+  breakdown: MutableBreakdown
+}
+
+// totalRaised/totalSpent/breakdown are accumulated per year only; the
+// cycle-wide values written to Firestore are the sum of the years.
+interface MemberAccumulator {
+  cpfId: number
   cashOnHand: number
   cashOnHandEndDateMs: number // End_Date (as ms) of the most recent Bank Report (type 70) seen
   startBalance: number
   startBalanceStartDateMs: number // Start_Date (as ms) of the earliest Bank Report (type 70) seen
   depositEndDateMs: number // End_Date (as ms) of the most recent Deposit Report (type 60) seen
   contributionsCount: number
-  breakdown: {
-    individual: MutableBreakdownEntry
-    committee: MutableBreakdownEntry
-    union: MutableBreakdownEntry
-    unitemized: { amount: number }
-    smallDonors: { itemized: MutableBreakdownEntry }
-    processingFees: MutableBreakdownEntry
-  }
   candidateFunds: {
     loans: MutableBreakdownEntry
     contributions: MutableBreakdownEntry
@@ -88,62 +128,64 @@ interface MemberAccumulator {
     union: MutableBreakdownEntry
     unitemized: { amount: number }
   }
-  years: Record<
-    string,
-    {
-      totalRaised: number
-      totalSpent: number
-      breakdown: {
-        individual: MutableBreakdownEntry
-        committee: MutableBreakdownEntry
-        union: MutableBreakdownEntry
-        unitemized: { amount: number }
-        smallDonors: { itemized: MutableBreakdownEntry }
-        processingFees: MutableBreakdownEntry
-      }
-    }
-  >
+  years: Record<string, YearAccumulator>
   yearEndCheck: Record<
     string,
     { receiptsTotal: number; expendituresTotal: number } | null
   >
+  // Raw Receipts_Total/Expenditures_Total summed from "totals" reports
+  // (REPORT_TYPE_HANDLING), before item-level adjustments (204, 331/332) — what Year-End
+  // Reports are compared against
+  reportTotals: Record<string, { receipts: number; expenditures: number }>
+  // 204 items, applied after all years are parsed so they can be cut off at
+  // the final cashOnHandEndDateMs
+  pendingNonContributionReceipts: {
+    dateMs: number
+    amount: number
+    year: string
+  }[]
 }
 
 function emptyEntry(): MutableBreakdownEntry {
   return { count: 0, amount: 0 }
 }
 
+function sumEntries(entries: MutableBreakdownEntry[]): MutableBreakdownEntry {
+  return {
+    count: entries.reduce((n, e) => n + e.count, 0),
+    amount: entries.reduce((n, e) => n + e.amount, 0)
+  }
+}
+
+function sumBreakdowns(breakdowns: MutableBreakdown[]): MutableBreakdown {
+  return {
+    individual: sumEntries(breakdowns.map(b => b.individual)),
+    committee: sumEntries(breakdowns.map(b => b.committee)),
+    union: sumEntries(breakdowns.map(b => b.union)),
+    unitemized: {
+      amount: breakdowns.reduce((n, b) => n + b.unitemized.amount, 0)
+    },
+    smallDonors: {
+      itemized: sumEntries(breakdowns.map(b => b.smallDonors.itemized))
+    },
+    processingFees: sumEntries(breakdowns.map(b => b.processingFees))
+  }
+}
+
 function newAccumulator(cpfId: number): MemberAccumulator {
-  const yearInit = () => ({
+  const yearInit = (): YearAccumulator => ({
     totalRaised: 0,
     totalSpent: 0,
-    breakdown: {
-      individual: emptyEntry(),
-      committee: emptyEntry(),
-      union: emptyEntry(),
-      unitemized: { amount: 0 },
-      smallDonors: { itemized: emptyEntry() },
-      processingFees: emptyEntry()
-    }
+    breakdown: sumBreakdowns([]) // all zeros
   })
   return {
     cpfId,
-    totalRaised: 0,
-    totalSpent: 0,
     cashOnHand: 0,
     cashOnHandEndDateMs: 0,
     startBalance: 0,
     startBalanceStartDateMs: Infinity,
     depositEndDateMs: 0,
     contributionsCount: 0,
-    breakdown: {
-      individual: emptyEntry(),
-      committee: emptyEntry(),
-      union: emptyEntry(),
-      unitemized: { amount: 0 },
-      smallDonors: { itemized: emptyEntry() },
-      processingFees: emptyEntry()
-    },
     candidateFunds: { loans: emptyEntry(), contributions: emptyEntry() },
     inKind: {
       individual: emptyEntry(),
@@ -152,7 +194,11 @@ function newAccumulator(cpfId: number): MemberAccumulator {
       unitemized: { amount: 0 }
     },
     years: Object.fromEntries(YEARS.map(y => [y, yearInit()])),
-    yearEndCheck: Object.fromEntries(YEARS.map(y => [y, null]))
+    yearEndCheck: Object.fromEntries(YEARS.map(y => [y, null])),
+    reportTotals: Object.fromEntries(
+      YEARS.map(y => [y, { receipts: 0, expenditures: 0 }])
+    ),
+    pendingNonContributionReceipts: []
   }
 }
 
@@ -186,7 +232,7 @@ export const scrapeOcpfFinanceV2 = onRequestV2(
     // ── A. Load member mapping ─────────────────────────────────────────────
     const mappingDoc = await db.doc("/config/ocpfMemberMapping").get()
     if (!mappingDoc.exists) {
-      functions.logger.warn(
+      logger.warn(
         "config/ocpfMemberMapping not found; no members will be processed"
       )
     }
@@ -221,6 +267,9 @@ export const scrapeOcpfFinanceV2 = onRequestV2(
 
     // reportId → memberCode, for joining with report-items
     const reportIdToMemberCode = new Map<number, string>()
+    // Subset of registered reports (Year-End, Dissolution/Transition) whose
+    // items are read for in-kind records only
+    const inKindOnlyReportIds = new Set<number>()
 
     for (const year of YEARS) {
       const url = `${OCPF_BASE_URL}/ocpf-${year}-reports.zip`
@@ -231,11 +280,34 @@ export const scrapeOcpfFinanceV2 = onRequestV2(
         year,
         cpfIdToMemberCode,
         accumulators,
-        reportIdToMemberCode
+        reportIdToMemberCode,
+        inKindOnlyReportIds
       )
 
       logger.info(`Streaming report-items for ${year}`)
-      await streamReportItems(buf, reportIdToMemberCode, accumulators, year)
+      await streamReportItems(
+        buf,
+        reportIdToMemberCode,
+        inKindOnlyReportIds,
+        accumulators,
+        year
+      )
+    }
+
+    // ── Non-contribution receipts (204): subtract from totalRaised ────────
+    // Bank/External Activity Report Receipts_Total includes this cash since it was received, but
+    // OCPF's own public "Receipts" figure nets it out. Only items dated on or
+    // before the latest Bank Report's End_Date are subtracted: later ones
+    // aren't in any Bank Report yet, and ocpf.us doesn't subtract them either.
+    // Verified empirically against ocpf.us: CPF 16883 (Rausch) matched 2026 YTD
+    // Receipts to the penny ($101.39 subtracted), and CPF 14454
+    // (Brownsberger) only matched once a $1.90 item dated after his latest
+    // Bank Report was left out.
+    for (const acc of accumulators.values()) {
+      for (const item of acc.pendingNonContributionReceipts) {
+        if (item.dateMs > acc.cashOnHandEndDateMs) continue
+        acc.years[item.year].totalRaised -= item.amount
+      }
     }
 
     // ── Reconciliation: year-end report vs. summed periodic totals ────────
@@ -245,24 +317,28 @@ export const scrapeOcpfFinanceV2 = onRequestV2(
     // This check runs only once a year-end report exists (i.e.
     // after the calendar year closes) and compares it against what we've summed.
     //
-    // Verified empirically (CPF 16883, 2025): summed Bank Report totals matched
-    // the Year-End Report exactly ($104,770.60), confirming the type-60 skip
-    // logic below does not double-count totalRaised/totalSpent. A mismatch here
-    // would point to some other report type being mis-handled — do not ignore
-    // it, investigate before trusting the displayed totals.
+    // Compared against reportTotals (raw report sums), not totalRaised/
+    // totalSpent: Year-End Receipts_Total includes 204 cash and excludes
+    // 331/332 out-of-pocket items, the same as the periodic reports.
     //
-    // Note: this only reconciles totalRaised/totalSpent (report-level totals).
-    // It does NOT catch the separate, known gap between totalRaised (Bank
-    // Report, after payment-processor fees) and the Contribution Breakdown
-    // categories total (Deposit Report items, before deduction of fees). This gap is
-    // found by record type 319 (processing fees), which
-    // is currently unhandled in accumulateItem's switch.
+    // Verified empirically (2025): summed Bank Report totals matched the
+    // Year-End Report for 409 of 413 legislators (e.g. CPF 16883, exactly
+    // $104,770.60), and Bank + External Activity totals matched for every
+    // legislator with out-of-pocket items. A mismatch here would point to some
+    // report type being mis-handled — do not ignore it, investigate before
+    // trusting the displayed totals.
+    //
+    // Note: this only reconciles report-level totals. It does NOT catch the
+    // separate, known gap between totalRaised (Bank Report, after
+    // payment-processor fees) and the Contribution Breakdown categories total
+    // (Deposit Report items, before deduction of fees). That gap is tracked
+    // via record type 319 (breakdown.processingFees).
     for (const [memberCode, acc] of accumulators) {
       for (const year of YEARS) {
         const check = acc.yearEndCheck[year]
         if (!check) continue
-        const summedRaised = acc.years[year]?.totalRaised ?? 0
-        const summedSpent = acc.years[year]?.totalSpent ?? 0
+        const summedRaised = acc.reportTotals[year]?.receipts ?? 0
+        const summedSpent = acc.reportTotals[year]?.expenditures ?? 0
         const raisedDiff = Math.abs(check.receiptsTotal - summedRaised)
         const spentDiff = Math.abs(check.expendituresTotal - summedSpent)
         if (raisedDiff > 0.02 || spentDiff > 0.02) {
@@ -296,17 +372,20 @@ export const scrapeOcpfFinanceV2 = onRequestV2(
       const doc = db.doc(
         `/generalCourts/${currentGeneralCourt}/membersFinance/${memberCode}`
       )
+      const yearAccs = Object.values(acc.years)
       const data: MembersFinance = {
         ocpfCpfId: acc.cpfId,
-        totalRaised: acc.totalRaised,
-        totalSpent: acc.totalSpent,
+        totalRaised: yearAccs.reduce((n, y) => n + y.totalRaised, 0),
+        totalSpent: yearAccs.reduce((n, y) => n + y.totalSpent, 0),
         cashOnHand: acc.cashOnHand,
         startBalance: acc.startBalance,
         contributionsCount: acc.contributionsCount,
         lastUpdated: now,
         bankDataAsOf: Timestamp.fromMillis(acc.cashOnHandEndDateMs),
         depositDataAsOf: Timestamp.fromMillis(acc.depositEndDateMs),
-        breakdown: acc.breakdown as MembersFinanceBreakdown,
+        breakdown: sumBreakdowns(
+          yearAccs.map(y => y.breakdown)
+        ) as MembersFinanceBreakdown,
         candidateFunds: acc.candidateFunds as MembersFinanceCandidateFunds,
         inKind: acc.inKind as MembersFinanceInKind,
         years: Object.fromEntries(
@@ -360,7 +439,8 @@ const REPORT_COLUMN_ALIASES: Record<string, string[]> = {
 const ITEM_COLUMN_ALIASES: Record<string, string[]> = {
   reportId: ["report_id"],
   recordTypeId: ["record_type_id"],
-  amount: ["amount"]
+  amount: ["amount"],
+  date: ["date"]
 }
 
 function buildIndex(
@@ -395,7 +475,8 @@ async function parseReports(
   year: string,
   cpfIdToMemberCode: Map<number, string>,
   accumulators: Map<string, MemberAccumulator>,
-  reportIdToMemberCode: Map<number, string>
+  reportIdToMemberCode: Map<number, string>,
+  inKindOnlyReportIds: Set<number>
 ): Promise<void> {
   const directory = await unzipper.Open.buffer(buf)
   const entry = directory.files.find(
@@ -409,6 +490,7 @@ async function parseReports(
   const idx = buildIndex(rawHeaders, REPORT_COLUMN_ALIASES)
 
   let matched = 0
+  const warnedReportTypeIds = new Set<number>()
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i]
     if (!line.trim()) continue
@@ -434,55 +516,38 @@ async function parseReports(
       accumulators.set(memberCode, acc)
     }
 
-    if (YEAR_END_REPORT_TYPE_IDS.has(reportTypeId)) {
-      // Annual rollup — skip accumulation to avoid double-counting the periodic
-      // totals already summed above. Store for the reconciliation check below.
-      if (acc.yearEndCheck[year] === null) {
-        acc.yearEndCheck[year] = { receiptsTotal, expendituresTotal }
-      }
-      matched++
-      continue
+    matched++
+    const handling = REPORT_TYPE_HANDLING[reportTypeId]
+    if (handling === undefined && !warnedReportTypeIds.has(reportTypeId)) {
+      warnedReportTypeIds.add(reportTypeId)
+      logger.warn(
+        "Unclassified OCPF report type — treated as itemsOnly (totals excluded); classify it in REPORT_TYPE_HANDLING",
+        { reportTypeId, reportId, memberCode, year }
+      )
     }
 
-    if (LIFECYCLE_REPORT_TYPE_IDS.has(reportTypeId)) {
-      // Dissolution/Transition rollup — same double-counting risk as Year-End,
-      // but not tied to a calendar year, so skipped without feeding yearEndCheck.
-      matched++
-      continue
-    }
-
-    // Credit Card (type 80) and Reimbursement (type 90) reports are supplemental:
-    // they itemize spending that the depository bank already captured as bank
-    // transactions in the monthly Bank Report's Expenditures_Total. Verified
-    // empirically — for two members the sum of all Bank Reports matched the
-    // Year-End Report exactly without including type 80/90 amounts, confirming
-    // their Expenditures_Total is already counted. Their items (354 Credit Card
-    // Sub-Items, 351 Reimbursement Sub-Items) are not used by accumulateItem(),
-    // so there is no reason to register their report IDs.
-    if (reportTypeId === 80 || reportTypeId === 90) {
-      matched++
-      continue
-    }
+    if (handling === "skip") continue
 
     reportIdToMemberCode.set(reportId, memberCode)
 
-    // Deposit Reports (type 60) carry gross contribution amounts (before fees).
-    // The same money appears net-of-fees in Bank Report (type 70) Receipts_Total,
-    // so adding both would double-count. Skip the totals for type 60 but keep
-    // its report_id registered (for 201/202/203/204 item-level breakdown) and
-    // its unitemized amount (Bank Reports have blank for that field).
-    if (reportTypeId !== 60) {
-      acc.totalRaised += receiptsTotal
-      acc.totalSpent += expendituresTotal
-    }
-    acc.breakdown.unitemized.amount += receiptsUnitemized
-
-    if (acc.years[year]) {
-      if (reportTypeId !== 60) {
-        acc.years[year].totalRaised += receiptsTotal
-        acc.years[year].totalSpent += expendituresTotal
+    if (handling === "yearEnd" || handling === "lifecycle") {
+      inKindOnlyReportIds.add(reportId)
+      if (handling === "yearEnd" && acc.yearEndCheck[year] === null) {
+        acc.yearEndCheck[year] = { receiptsTotal, expendituresTotal }
       }
-      acc.years[year].breakdown.unitemized.amount += receiptsUnitemized
+      continue
+    }
+
+    // Every remaining report has its unitemized amount counted (Deposit
+    // Reports supply it; Bank Reports have blank for that field)
+    const yearAcc = acc.years[year]
+    yearAcc.breakdown.unitemized.amount += receiptsUnitemized
+
+    if (handling === "totals") {
+      yearAcc.totalRaised += receiptsTotal
+      yearAcc.totalSpent += expendituresTotal
+      acc.reportTotals[year].receipts += receiptsTotal
+      acc.reportTotals[year].expenditures += expendituresTotal
     }
 
     // Report_Type_ID 70 = Bank Report — use End_Balance from the report with the latest End_Date
@@ -502,13 +567,11 @@ async function parseReports(
     }
     // Deposit Reports are filed more frequently than Bank Reports, so this
     // date is normally later — tracked to show readers why the Contributions
-    // Breakdown (sourced from Deposit Reports) and Total Raised (sourced from
-    // Bank Reports) can reflect different "as of" dates.
+    // Breakdown (sourced mainly from Deposit Report items) and Total Raised
+    // (sourced mainly from Bank Reports) can reflect different "as of" dates.
     if (reportTypeId === 60 && endDateMs > acc.depositEndDateMs) {
       acc.depositEndDateMs = endDateMs
     }
-
-    matched++
   }
 
   logger.info(`Parsed reports.txt for ${year}`, { matched })
@@ -517,6 +580,7 @@ async function parseReports(
 async function streamReportItems(
   buf: Buffer,
   reportIdToMemberCode: Map<number, string>,
+  inKindOnlyReportIds: Set<number>,
   accumulators: Map<string, MemberAccumulator>,
   year: string
 ): Promise<void> {
@@ -559,9 +623,18 @@ async function streamReportItems(
     }
 
     const recordTypeId = parseInt(col(cols, idx.recordTypeId), 10)
+    if (
+      inKindOnlyReportIds.has(reportId) &&
+      !IN_KIND_RECORD_TYPE_IDS.has(recordTypeId)
+    ) {
+      skipped++
+      continue
+    }
     const amount = parseFloat(col(cols, idx.amount)) || 0
+    const date = col(cols, idx.date)
+    const dateMs = date ? new Date(date).getTime() : NaN
 
-    accumulateItem(acc, recordTypeId, amount, year)
+    accumulateItem(acc, recordTypeId, amount, dateMs, year)
     processed++
   }
 
@@ -575,52 +648,54 @@ function accumulateItem(
   acc: MemberAccumulator,
   recordTypeId: number,
   amount: number,
+  dateMs: number,
   year: string
 ): void {
-  const addTo = (
-    entry: MutableBreakdownEntry,
-    alsoYearBreakdown?: MutableBreakdownEntry
-  ) => {
+  const addTo = (entry: MutableBreakdownEntry) => {
     entry.count++
     entry.amount += amount
-    if (alsoYearBreakdown) {
-      alsoYearBreakdown.count++
-      alsoYearBreakdown.amount += amount
-    }
   }
 
-  const yb = acc.years[year]?.breakdown
+  const yearAcc = acc.years[year]
+  const yb = yearAcc.breakdown
 
   switch (recordTypeId) {
     case 201: // Individual Contribution
-      addTo(acc.breakdown.individual, yb?.individual)
+      addTo(yb.individual)
       acc.contributionsCount++
       if (amount < 200) {
-        addTo(acc.breakdown.smallDonors.itemized, yb?.smallDonors?.itemized)
+        addTo(yb.smallDonors.itemized)
       }
       break
     case 202: // Committee Contribution
-      addTo(acc.breakdown.committee, yb?.committee)
+      addTo(yb.committee)
       break
     case 203: // Union/Association Contribution
-      addTo(acc.breakdown.union, yb?.union)
+      addTo(yb.union)
       break
     case 204: // Non-contribution receipt (refunds, misc.) — not real fundraising.
-      // Bank Report Receipts_Total (summed into totalRaised in parseReports)
-      // includes this cash since it did hit the bank, but OCPF's own public
-      // "Receipts" figure nets it out. Subtract here, once identified, to
-      // match that definition. Verified empirically against ocpf.us: for
-      // CPF 16883 (Rausch), totalRaised minus this exact amount ($101.39)
-      // matched the site's displayed 2026 YTD Receipts to the penny.
-      acc.totalRaised -= amount
-      if (acc.years[year]) acc.years[year].totalRaised -= amount
+      // Subtracted from totalRaised once all years are parsed (see handler),
+      // so the cutoff uses the final Bank Report End_Date.
+      acc.pendingNonContributionReceipts.push({ dateMs, amount, year })
       break
-    case 206: // Candidate Loan
-    case 331: // Out-of-pocket expense (as loan)
+    case 206: // Candidate Loan (cash — already in the Receipts_Total of the Bank or External Activity Report it was deposited/reported on)
       addTo(acc.candidateFunds.loans)
       break
+    // Out-of-pocket expenses: the candidate paid a campaign expense personally,
+    // so the money never reaches the bank and no report's Receipts_Total or
+    // Expenditures_Total includes it. OCPF counts it as both a receipt and an
+    // expenditure. Verified empirically against ocpf.us 2026 YTD: CPF 19876
+    // (Saccardo, 332 items) and CPF 19678 (Loughran, 331 items) matched to the
+    // penny only with these amounts added to both totals.
+    case 331: // Out-of-pocket expense (as loan)
     case 332: // Out-of-pocket expense (as contribution)
-      addTo(acc.candidateFunds.contributions)
+      addTo(
+        recordTypeId === 331
+          ? acc.candidateFunds.loans
+          : acc.candidateFunds.contributions
+      )
+      yearAcc.totalRaised += amount
+      yearAcc.totalSpent += amount
       break
     case 401: // Individual In-kind
       addTo(acc.inKind.individual)
@@ -635,7 +710,7 @@ function accumulateItem(
       acc.inKind.unitemized.amount += amount
       break
     case 319: // Payment-processor fee (see breakdown.processingFees doc comment)
-      addTo(acc.breakdown.processingFees, yb?.processingFees)
+      addTo(yb.processingFees)
       break
     // 205 (Bank Interest) and 220 (Aggregated un-itemized) totals sourced from reports.txt, not items
     default:
