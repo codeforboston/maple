@@ -1,4 +1,7 @@
-import * as functions from "firebase-functions"
+import * as functions from "firebase-functions/v1"
+import { onRequest as onRequestV2 } from "firebase-functions/v2/https"
+import * as logger from "firebase-functions/logger"
+import type { Request, Response } from "express"
 import { getAuth } from "firebase-admin/auth"
 import axios from "axios"
 import unzipper from "unzipper"
@@ -13,7 +16,10 @@ import {
   OcpfMemberMappingFlagsEntry
 } from "./types"
 
-export const matchOcpfMembers = functions.https.onRequest(async (req, res) => {
+const matchOcpfMembersHandler = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   if (req.method !== "POST") {
     res.status(405).send("Method Not Allowed. Use POST.")
     return
@@ -83,7 +89,7 @@ export const matchOcpfMembers = functions.https.onRequest(async (req, res) => {
       // and another person with same last name is running for original office).
     } else if (candidates.length === 1 && firstNameMatches.length === 0) {
       ambiguous.push({ memberCode: member.MemberCode, name: member.Name })
-      functions.logger.warn(
+      logger.warn(
         "Ambiguous OCPF match. Single last name match but first name did not align.",
         {
           memberCode: member.MemberCode,
@@ -98,7 +104,7 @@ export const matchOcpfMembers = functions.https.onRequest(async (req, res) => {
       )
     } else if (candidates.length === 0) {
       unmatched.push({ memberCode: member.MemberCode, name: member.Name })
-      functions.logger.warn("No OCPF match.", {
+      logger.warn("No OCPF match.", {
         memberCode: member.MemberCode,
         name: member.Name,
         district: member.District,
@@ -106,7 +112,7 @@ export const matchOcpfMembers = functions.https.onRequest(async (req, res) => {
       })
     } else {
       ambiguous.push({ memberCode: member.MemberCode, name: member.Name })
-      functions.logger.warn("Ambiguous OCPF match.", {
+      logger.warn("Ambiguous OCPF match.", {
         memberCode: member.MemberCode,
         name: member.Name,
         district: member.District,
@@ -127,7 +133,7 @@ export const matchOcpfMembers = functions.https.onRequest(async (req, res) => {
   await db.doc("/config/ocpfMemberMapping").set(mapping, { merge: true })
   await db.doc("/config/ocpfMemberMappingFlags").set(flags)
 
-  functions.logger.info("matchOcpfMembers complete", {
+  logger.info("matchOcpfMembers complete", {
     matched: Object.keys(mapping).length,
     unmatched: unmatched.length,
     ambiguous: ambiguous.length
@@ -142,7 +148,12 @@ export const matchOcpfMembers = functions.https.onRequest(async (req, res) => {
     unmatched_members: unmatched,
     ambiguous_members: ambiguous
   })
-})
+}
+
+export const matchOcpfMembers = functions.https.onRequest(
+  matchOcpfMembersHandler
+)
+export const matchOcpfMembersV2 = onRequestV2(matchOcpfMembersHandler)
 
 async function downloadAndParseFilers(): Promise<OcpfFilerRow[]> {
   const response = await axios.get(
@@ -151,7 +162,7 @@ async function downloadAndParseFilers(): Promise<OcpfFilerRow[]> {
   )
 
   const buffer = Buffer.from(response.data as ArrayBuffer)
-  functions.logger.info("Downloaded ocpf-filers.zip", {
+  logger.info("Downloaded ocpf-filers.zip", {
     status: response.status,
     contentType: response.headers["content-type"],
     bytes: buffer.length,
@@ -172,7 +183,7 @@ async function downloadAndParseFilers(): Promise<OcpfFilerRow[]> {
   const lines = text.split(/\r?\n/)
 
   const rawHeaders = lines[0].split("\t").map(h => h.trim())
-  functions.logger.info("OCPF filers headers", { headers: rawHeaders })
+  logger.info("OCPF filers headers", { headers: rawHeaders })
 
   const colIndex = buildColumnIndex(rawHeaders, [
     "cpfId",
@@ -209,7 +220,7 @@ async function downloadAndParseFilers(): Promise<OcpfFilerRow[]> {
     })
   }
 
-  functions.logger.info("Parsed active state legislators from OCPF", {
+  logger.info("Parsed active state legislators from OCPF", {
     count: filers.length
   })
   return filers
