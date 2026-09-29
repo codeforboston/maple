@@ -1,6 +1,9 @@
 // TODO: After validating output against the OCPF website, flip to:
 // export const scrapeOcpfFinance = functions.pubsub.schedule("every 24 hours").onRun(...)
-import * as functions from "firebase-functions"
+import * as functions from "firebase-functions/v1"
+import { onRequest as onRequestV2 } from "firebase-functions/v2/https"
+import * as logger from "firebase-functions/logger"
+import type { Request, Response } from "express"
 import { getAuth } from "firebase-admin/auth"
 import axios from "axios"
 import unzipper from "unzipper"
@@ -153,178 +156,187 @@ function newAccumulator(cpfId: number): MemberAccumulator {
 
 // ── Cloud Function ────────────────────────────────────────────────────────────
 
-export const scrapeOcpfFinance = functions
-  .runWith({ timeoutSeconds: 540, memory: "512MB" })
-  .https.onRequest(async (req, res) => {
-    if (req.method !== "POST") {
-      res.status(405).send("Method Not Allowed. Use POST.")
+const scrapeOcpfFinanceHandler = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  if (req.method !== "POST") {
+    res.status(405).send("Method Not Allowed. Use POST.")
+    return
+  }
+  if (process.env.FUNCTIONS_EMULATOR !== "true") {
+    const authHeader = req.headers.authorization
+    if (!authHeader?.startsWith("Bearer ")) {
+      res.status(401).send("Unauthorized")
       return
     }
-    if (process.env.FUNCTIONS_EMULATOR !== "true") {
-      const authHeader = req.headers.authorization
-      if (!authHeader?.startsWith("Bearer ")) {
-        res.status(401).send("Unauthorized")
+    try {
+      const decoded = await getAuth().verifyIdToken(authHeader.slice(7))
+      if (decoded["role"] !== "admin") {
+        res.status(403).send("Forbidden")
         return
       }
-      try {
-        const decoded = await getAuth().verifyIdToken(authHeader.slice(7))
-        if (decoded["role"] !== "admin") {
-          res.status(403).send("Forbidden")
-          return
-        }
-      } catch {
-        res.status(401).send("Unauthorized")
-        return
-      }
+    } catch {
+      res.status(401).send("Unauthorized")
+      return
     }
+  }
 
-    // ── A. Load member mapping ─────────────────────────────────────────────
-    const mappingDoc = await db.doc("/config/ocpfMemberMapping").get()
-    const mapping = (mappingDoc.data() ?? {}) as OcpfMemberMapping
+  // ── A. Load member mapping ─────────────────────────────────────────────
+  const mappingDoc = await db.doc("/config/ocpfMemberMapping").get()
+  const mapping = (mappingDoc.data() ?? {}) as OcpfMemberMapping
 
-    // Build cpfId → memberCode reverse map
-    let cpfIdToMemberCode = new Map<number, string>(
-      Object.entries(mapping).map(([memberCode, entry]) => [
-        entry.cpfId,
-        memberCode
-      ])
+  // Build cpfId → memberCode reverse map
+  let cpfIdToMemberCode = new Map<number, string>(
+    Object.entries(mapping).map(([memberCode, entry]) => [
+      entry.cpfId,
+      memberCode
+    ])
+  )
+
+  if (TEST_CPF_ID !== null) {
+    cpfIdToMemberCode = new Map(
+      [...cpfIdToMemberCode.entries()].filter(
+        ([cpfId]) => cpfId === TEST_CPF_ID
+      )
+    )
+    logger.info("TEST MODE: filtering to single member", {
+      cpfId: TEST_CPF_ID
+    })
+  }
+
+  logger.info("Loaded member mapping", {
+    totalMembers: Object.keys(mapping).length,
+    activeInRun: cpfIdToMemberCode.size
+  })
+
+  // ── B. Download each year's ZIP; parse reports.txt then report-items.txt ──
+  const accumulators = new Map<string, MemberAccumulator>()
+
+  // reportId → memberCode, for joining with report-items
+  const reportIdToMemberCode = new Map<number, string>()
+
+  for (const year of YEARS) {
+    const url = `${OCPF_BASE_URL}/ocpf-${year}-reports.zip`
+    logger.info(`Downloading ${url}`)
+    const buf = await downloadBuffer(url)
+    await parseReports(
+      buf,
+      year,
+      cpfIdToMemberCode,
+      accumulators,
+      reportIdToMemberCode
     )
 
-    if (TEST_CPF_ID !== null) {
-      cpfIdToMemberCode = new Map(
-        [...cpfIdToMemberCode.entries()].filter(
-          ([cpfId]) => cpfId === TEST_CPF_ID
-        )
-      )
-      functions.logger.info("TEST MODE: filtering to single member", {
-        cpfId: TEST_CPF_ID
-      })
-    }
+    logger.info(`Streaming report-items for ${year}`)
+    await streamReportItems(buf, reportIdToMemberCode, accumulators, year)
+  }
 
-    functions.logger.info("Loaded member mapping", {
-      totalMembers: Object.keys(mapping).length,
-      activeInRun: cpfIdToMemberCode.size
-    })
-
-    // ── B. Download each year's ZIP; parse reports.txt then report-items.txt ──
-    const accumulators = new Map<string, MemberAccumulator>()
-
-    // reportId → memberCode, for joining with report-items
-    const reportIdToMemberCode = new Map<number, string>()
-
+  // ── Reconciliation: year-end report vs. summed periodic totals ────────
+  // Year-end reports (type 11, etc.) are excluded from accumulation because
+  // their Receipts_Total/Expenditures_Total are annual rollups that duplicate
+  // the periodic (Bank Report) totals.
+  // This check runs only once a year-end report exists (i.e.
+  // after the calendar year closes) and compares it against what we've summed.
+  //
+  // Verified empirically (CPF 16883, 2025): summed Bank Report totals matched
+  // the Year-End Report exactly ($104,770.60), confirming the type-60 skip
+  // logic below does not double-count totalRaised/totalSpent. A mismatch here
+  // would point to some other report type being mis-handled — do not ignore
+  // it, investigate before trusting the displayed totals.
+  //
+  // Note: this only reconciles totalRaised/totalSpent (report-level totals).
+  // It does NOT catch the separate, known gap between totalRaised (Bank
+  // Report, after payment-processor fees) and the Contribution Breakdown
+  // categories total (Deposit Report items, before deduction of fees). This gap is
+  // found by record type 319 (processing fees), which
+  // is currently unhandled in accumulateItem's switch.
+  for (const [memberCode, acc] of accumulators) {
     for (const year of YEARS) {
-      const url = `${OCPF_BASE_URL}/ocpf-${year}-reports.zip`
-      functions.logger.info(`Downloading ${url}`)
-      const buf = await downloadBuffer(url)
-      await parseReports(
-        buf,
-        year,
-        cpfIdToMemberCode,
-        accumulators,
-        reportIdToMemberCode
-      )
-
-      functions.logger.info(`Streaming report-items for ${year}`)
-      await streamReportItems(buf, reportIdToMemberCode, accumulators, year)
-    }
-
-    // ── Reconciliation: year-end report vs. summed periodic totals ────────
-    // Year-end reports (type 11, etc.) are excluded from accumulation because
-    // their Receipts_Total/Expenditures_Total are annual rollups that duplicate
-    // the periodic (Bank Report) totals.
-    // This check runs only once a year-end report exists (i.e.
-    // after the calendar year closes) and compares it against what we've summed.
-    //
-    // Verified empirically (CPF 16883, 2025): summed Bank Report totals matched
-    // the Year-End Report exactly ($104,770.60), confirming the type-60 skip
-    // logic below does not double-count totalRaised/totalSpent. A mismatch here
-    // would point to some other report type being mis-handled — do not ignore
-    // it, investigate before trusting the displayed totals.
-    //
-    // Note: this only reconciles totalRaised/totalSpent (report-level totals).
-    // It does NOT catch the separate, known gap between totalRaised (Bank
-    // Report, after payment-processor fees) and the Contribution Breakdown
-    // categories total (Deposit Report items, before deduction of fees). This gap is
-    // found by record type 319 (processing fees), which
-    // is currently unhandled in accumulateItem's switch.
-    for (const [memberCode, acc] of accumulators) {
-      for (const year of YEARS) {
-        const check = acc.yearEndCheck[year]
-        if (!check) continue
-        const summedRaised = acc.years[year]?.totalRaised ?? 0
-        const summedSpent = acc.years[year]?.totalSpent ?? 0
-        const raisedDiff = Math.abs(check.receiptsTotal - summedRaised)
-        const spentDiff = Math.abs(check.expendituresTotal - summedSpent)
-        if (raisedDiff > 0.02 || spentDiff > 0.02) {
-          functions.logger.warn(
-            "Year-end totals mismatch — investigate periodic report accumulation",
-            {
-              memberCode,
-              year,
-              yearEnd: {
-                receiptsTotal: check.receiptsTotal,
-                expendituresTotal: check.expendituresTotal
-              },
-              summed: {
-                receiptsTotal: summedRaised,
-                expendituresTotal: summedSpent
-              },
-              diff: { receipts: raisedDiff, expenditures: spentDiff }
-            }
-          )
-        }
-      }
-    }
-
-    // ── C. Write Firestore docs ───────────────────────────────────────────
-    const now = Timestamp.now()
-    // Firestore batches are limited to 500 operations. MA general courts have ~200 members
-    // so this is fine, but if we ever exceed 500 members this will need to be chunked.
-    const batch = db.batch()
-
-    for (const [memberCode, acc] of accumulators) {
-      const doc = db.doc(
-        `/generalCourts/${currentGeneralCourt}/membersFinance/${memberCode}`
-      )
-      const data: MembersFinance = {
-        ocpfCpfId: acc.cpfId,
-        totalRaised: acc.totalRaised,
-        totalSpent: acc.totalSpent,
-        cashOnHand: acc.cashOnHand,
-        startBalance: acc.startBalance,
-        contributionsCount: acc.contributionsCount,
-        lastUpdated: now,
-        bankDataAsOf: Timestamp.fromMillis(acc.cashOnHandEndDateMs),
-        depositDataAsOf: Timestamp.fromMillis(acc.depositEndDateMs),
-        breakdown: acc.breakdown as MembersFinanceBreakdown,
-        candidateFunds: acc.candidateFunds as MembersFinanceCandidateFunds,
-        inKind: acc.inKind as MembersFinanceInKind,
-        years: Object.fromEntries(
-          Object.entries(acc.years).map(([y, yd]) => [
-            y,
-            {
-              totalRaised: yd.totalRaised,
-              totalSpent: yd.totalSpent,
-              breakdown: yd.breakdown as MembersFinanceBreakdown,
-              finalized: acc.yearEndCheck[y] !== null
-            } as MembersFinanceYearData
-          ])
+      const check = acc.yearEndCheck[year]
+      if (!check) continue
+      const summedRaised = acc.years[year]?.totalRaised ?? 0
+      const summedSpent = acc.years[year]?.totalSpent ?? 0
+      const raisedDiff = Math.abs(check.receiptsTotal - summedRaised)
+      const spentDiff = Math.abs(check.expendituresTotal - summedSpent)
+      if (raisedDiff > 0.02 || spentDiff > 0.02) {
+        logger.warn(
+          "Year-end totals mismatch — investigate periodic report accumulation",
+          {
+            memberCode,
+            year,
+            yearEnd: {
+              receiptsTotal: check.receiptsTotal,
+              expendituresTotal: check.expendituresTotal
+            },
+            summed: {
+              receiptsTotal: summedRaised,
+              expendituresTotal: summedSpent
+            },
+            diff: { receipts: raisedDiff, expenditures: spentDiff }
+          }
         )
       }
-      batch.set(doc, data)
     }
+  }
 
-    await batch.commit()
+  // ── C. Write Firestore docs ───────────────────────────────────────────
+  const now = Timestamp.now()
+  // Firestore batches are limited to 500 operations. MA general courts have ~200 members
+  // so this is fine, but if we ever exceed 500 members this will need to be chunked.
+  const batch = db.batch()
 
-    functions.logger.info("scrapeOcpfFinance complete", {
-      processed: accumulators.size,
-      years: YEARS
-    })
+  for (const [memberCode, acc] of accumulators) {
+    const doc = db.doc(
+      `/generalCourts/${currentGeneralCourt}/membersFinance/${memberCode}`
+    )
+    const data: MembersFinance = {
+      ocpfCpfId: acc.cpfId,
+      totalRaised: acc.totalRaised,
+      totalSpent: acc.totalSpent,
+      cashOnHand: acc.cashOnHand,
+      startBalance: acc.startBalance,
+      contributionsCount: acc.contributionsCount,
+      lastUpdated: now,
+      bankDataAsOf: Timestamp.fromMillis(acc.cashOnHandEndDateMs),
+      depositDataAsOf: Timestamp.fromMillis(acc.depositEndDateMs),
+      breakdown: acc.breakdown as MembersFinanceBreakdown,
+      candidateFunds: acc.candidateFunds as MembersFinanceCandidateFunds,
+      inKind: acc.inKind as MembersFinanceInKind,
+      years: Object.fromEntries(
+        Object.entries(acc.years).map(([y, yd]) => [
+          y,
+          {
+            totalRaised: yd.totalRaised,
+            totalSpent: yd.totalSpent,
+            breakdown: yd.breakdown as MembersFinanceBreakdown,
+            finalized: acc.yearEndCheck[y] !== null
+          } as MembersFinanceYearData
+        ])
+      )
+    }
+    batch.set(doc, data)
+  }
 
-    res.status(200).json({
-      results: { processed: accumulators.size, years: YEARS }
-    })
+  await batch.commit()
+
+  logger.info("scrapeOcpfFinance complete", {
+    processed: accumulators.size,
+    years: YEARS
   })
+
+  res.status(200).json({
+    results: { processed: accumulators.size, years: YEARS }
+  })
+}
+
+export const scrapeOcpfFinance = functions
+  .runWith({ timeoutSeconds: 540, memory: "512MB" })
+  .https.onRequest(scrapeOcpfFinanceHandler)
+export const scrapeOcpfFinanceV2 = onRequestV2(
+  { timeoutSeconds: 540, memory: "512MiB" },
+  scrapeOcpfFinanceHandler
+)
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -500,7 +512,7 @@ async function parseReports(
     matched++
   }
 
-  functions.logger.info(`Parsed reports.txt for ${year}`, { matched })
+  logger.info(`Parsed reports.txt for ${year}`, { matched })
 }
 
 async function streamReportItems(
@@ -554,7 +566,7 @@ async function streamReportItems(
     processed++
   }
 
-  functions.logger.info(`Streamed report-items.txt for ${year}`, {
+  logger.info(`Streamed report-items.txt for ${year}`, {
     processed,
     skipped
   })
