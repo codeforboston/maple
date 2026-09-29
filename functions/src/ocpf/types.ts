@@ -72,10 +72,16 @@ export interface MembersFinanceYearData {
 // Firestore: /generalCourts/{court}/membersFinance/{memberCode}
 export interface MembersFinance {
   ocpfCpfId: number
-  // Net receipts: Bank Report Receipts_Total, minus non-contribution
-  // receipts (type 204 — refunds/misc from Deposit Reports). Matches OCPF's own public
-  // "Receipts" definition.
+  // Net receipts for current 2 yr session: Receipts_Total of Bank Reports (type 70) and External
+  // Activity Reports (type 13), plus candidate out-of-pocket expenses (item
+  // types 331/332), minus non-contribution receipts (item type 204 —
+  // refunds/misc) dated on or before bankDataAsOf. 
+  // Matches OCPF's own public "Receipts" definition.
   totalRaised: number
+  // Expenditures_Total for current 2 yr session: Includes Bank Reports (type 70) and External Activity
+  // Reports (type 13), plus candidate out-of-pocket expenses (item types
+  // 331/332). 
+  // Matches OCPF's own public "Expenditures" definition.
   totalSpent: number
   cashOnHand: number
   // Start_Balance of the earliest Bank Report (type 70) in the tracked window,
