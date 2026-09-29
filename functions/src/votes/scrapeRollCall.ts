@@ -47,7 +47,7 @@ function parseVoteLines(
       }
     }
   }
-  if (votes.length !== expectedVoteCount+present) {
+  if (votes.length !== expectedVoteCount + present) {
     return `Expected ${expectedVoteCount} votes; found ${votes.length} votes`
   }
   let nextVote = 0
