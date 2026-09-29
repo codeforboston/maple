@@ -68,8 +68,6 @@ export { transcription } from "./webhooks"
 export { matchOcpfMembers } from "./ocpf/matchOcpfMembers"
 export { scrapeOcpfFinance } from "./ocpf/scrapeOcpfFinance"
 
-export { triggerLobbyingScraper } from "./lobbying"
-
 export * from "./triggerPubsubFunction"
 
 export { mcpProxy } from "./mcp/proxy"
