@@ -4,7 +4,7 @@
 // Creates a notification document in the user's notification feed for each active subscription.
 
 // Import necessary Firebase modules
-import * as functions from "firebase-functions"
+import { onDocumentWritten } from "firebase-functions/v2/firestore"
 import { getFirestore } from "firebase-admin/firestore"
 import { Timestamp } from "../firebase"
 import { BillHistoryUpdateNotification } from "./types"
@@ -13,10 +13,11 @@ import { BillHistoryUpdateNotification } from "./types"
 const db = getFirestore()
 
 // Define the populateBillNotificationEvents function
-export const populateBillHistoryNotificationEvents = functions.firestore
-  .document("/generalCourts/{court}/bills/{billId}")
-  .onWrite(async (snapshot, context) => {
-    if (!snapshot.after.exists) {
+export const populateBillHistoryNotificationEvents = onDocumentWritten(
+  "/generalCourts/{court}/bills/{billId}",
+  async event => {
+    const snapshot = event.data
+    if (!snapshot || !snapshot.after.exists) {
       console.error("New snapshot does not exist")
       return
     }
@@ -26,7 +27,7 @@ export const populateBillHistoryNotificationEvents = functions.firestore
     const oldData = snapshot.before.data()
     const newData = snapshot.after.data()
 
-    const { court } = context.params
+    const { court } = event.params
 
     // Create a notification event
     const createNotificationEvent = async (
@@ -109,4 +110,5 @@ export const populateBillHistoryNotificationEvents = functions.firestore
         await createNotificationEvent(newData)
       }
     }
-  })
+  }
+)
