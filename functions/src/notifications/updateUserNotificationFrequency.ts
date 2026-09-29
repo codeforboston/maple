@@ -1,52 +1,50 @@
-const functions = require("firebase-functions")
-import * as admin from "firebase-admin"
+import { onDocumentWritten } from "firebase-functions/v2/firestore"
+import { db } from "../firebase"
 import { getNextDigestAt } from "./helpers"
 
-export const updateUserNotificationFrequency = functions.firestore
-  .document("profiles/{userId}")
-  .onWrite(
-    async (
-      change: { before: { data: () => any }; after: { data: () => any } },
-      context: { params: { userId: any } }
-    ) => {
-      const userId = context.params.userId
-      const docBeforeChange = change.before.data()
-      const docAfterChange = change.after.data()
+export const updateUserNotificationFrequency = onDocumentWritten(
+  "profiles/{userId}",
+  async event => {
+    const change = event.data
+    if (!change) return
 
-      const isAnUpdate =
-        docBeforeChange &&
-        docBeforeChange.notificationFrequency !==
-          docAfterChange.notificationFrequency
+    const userId = event.params.userId
+    const docBeforeChange = change.before.data()
+    const docAfterChange = change.after.data()
 
-      const isACreation = docBeforeChange === undefined
+    const isAnUpdate =
+      docBeforeChange &&
+      docBeforeChange.notificationFrequency !==
+        docAfterChange?.notificationFrequency
 
-      if (!isAnUpdate && !isACreation) {
-        console.warn(
-          `Not an update or creation for userId: ${userId}, function will return without changes.`
-        )
-        return null
-      }
+    const isACreation = docBeforeChange === undefined
 
-      const notificationFrequency = docAfterChange.notificationFrequency
-
-      // Check if notification frequency is undefined
-      if (!notificationFrequency) {
-        console.log(`Notification frequency for user ${userId} is undefined.`)
-        return null
-      }
-
-      // Update the profile document to include the computed `nextDigestAt`
-      await admin
-        .firestore()
-        .collection("profiles")
-        .doc(userId)
-        .set(
-          {
-            nextDigestAt: getNextDigestAt(notificationFrequency)
-          },
-          { merge: true }
-        )
-
+    if (!isAnUpdate && !isACreation) {
+      console.warn(
+        `Not an update or creation for userId: ${userId}, function will return without changes.`
+      )
       return null
     }
-  )
+
+    const notificationFrequency = docAfterChange?.notificationFrequency
+
+    // Check if notification frequency is undefined
+    if (!notificationFrequency) {
+      console.log(`Notification frequency for user ${userId} is undefined.`)
+      return null
+    }
+
+    // Update the profile document to include the computed `nextDigestAt`
+    await db
+      .collection("profiles")
+      .doc(userId)
+      .set(
+        {
+          nextDigestAt: getNextDigestAt(notificationFrequency)
+        },
+        { merge: true }
+      )
+
+    return null
+  }
+)

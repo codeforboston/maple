@@ -101,6 +101,12 @@ class DisclosureDetail:
     legacy_total_compensation: Optional[float] = None
     period_start: Optional[str] = None
     period_end: Optional[str] = None
+    # Who filed this page, read from the page itself. "Employer" pages are a
+    # lobbyist entity's (firm's) disclosure; "Lobbyist" pages an individual's.
+    filer_type: Optional[str] = None
+    filer_name: Optional[str] = None
+    # Lobbyists the firm reports paying (entity disclosures only).
+    lobbyists: list[str] = field(default_factory=list)
 
 
 # ── Derived-value helpers ─────────────────────────────────────────────────────
@@ -150,11 +156,22 @@ def filing_id(
     bill_id: Optional[str],
     general_court: int,
     position: str,
+    period_start: Optional[str] = None,
 ) -> str:
-    key = "|".join([
+    # No trailing separator when period_start is unknown, matching
+    # registrant_id's fallback: a general court spans two reporting years, and
+    # the same bill/position is commonly re-reported across multiple periods
+    # within it. Without period_start, filings from different periods collide
+    # on this id and silently overwrite each other (last write wins), which
+    # also makes the doc's "year" field arbitrary rather than reflecting a
+    # specific filing.
+    parts = [
         entity_name, client_name, chamber,
         bill_id or "__null__", str(general_court), position,
-    ])
+    ]
+    if period_start:
+        parts.append(period_start)
+    key = "|".join(parts)
     return hashlib.sha256(key.encode()).hexdigest()[:40]
 
 
@@ -315,6 +332,16 @@ def _grid_rows(table: Tag) -> list:
     return table.find_all("tr", class_=lambda c: c and "Grid" in c and "Header" not in c)
 
 
+# Summary rows the portal appends to compensation tables ("Total salaries
+# received" on modern pages). Matched exactly: real clients can contain
+# "total" (e.g. "ADP TotalSource").
+_TOTAL_ROW_RE = re.compile(r"^total( amount| salar(y|ies)( received| paid)?)?$", re.IGNORECASE)
+
+
+def _is_total_row(name: str) -> bool:
+    return bool(_TOTAL_ROW_RE.match(name.strip()))
+
+
 _PERIOD_RE = re.compile(
     r"(\d{2})/(\d{2})/(\d{4})\s*-\s*(\d{2})/(\d{2})/(\d{4})"
 )
@@ -340,8 +367,57 @@ def _parse_period(soup: BeautifulSoup) -> Optional[tuple[str, str]]:
     return f"{sy}-{sm}-{sd}", f"{ey}-{em}-{ed}"
 
 
+def _parse_filer(soup: BeautifulSoup) -> tuple[Optional[str], Optional[str], list[str]]:
+    """Return (filer_type, filer_name, lobbyists) as stated on the page.
+
+    The header label distinguishes a firm's "Lobbyist Entity disclosure" from
+    an individual "Lobbyist disclosure". Firm pages name the firm in
+    lblEntityCompany and list the lobbyists it paid in grdvSalaryPaid (same
+    ids in every era, 2005 onward).
+    """
+    header = soup.find(id="ContentPlaceHolder1_lblDisclosureHeader")
+    header_text = header.get_text(" ", strip=True) if header else ""
+    if "Entity" in header_text:
+        company = soup.find(id=lambda i: i and i.endswith("lblEntityCompany"))
+        name = company.get_text(" ", strip=True) if company else ""
+        lobbyists = [
+            el.get_text(" ", strip=True)
+            for el in soup.find_all(id=lambda i: i and "grdvSalaryPaid_Label2_" in i)
+        ]
+        return "Employer", name or None, [n for n in lobbyists if n]
+    if "Lobbyist" in header_text:
+        return "Lobbyist", None, []
+    return None, None, []
+
+
+def resolve_filer(meta: DisclosureMeta, detail: DisclosureDetail) -> DisclosureMeta:
+    """Credit a disclosure to the filer named on the page.
+
+    The portal links a firm's disclosure from each of its lobbyists' summary
+    pages as well as the firm's own, so the summary a page was reached from
+    doesn't identify who filed it. Firm pages are credited to the firm;
+    individual pages keep the summary's registrant, whose name is the full
+    registered name (the page itself only splits first/last).
+    """
+    if detail.filer_type == "Employer" and detail.filer_name:
+        return DisclosureMeta(
+            entity_name=detail.filer_name,
+            year=meta.year,
+            reg_type="Employer",
+            disclosure_urls=meta.disclosure_urls,
+        )
+    return meta
+
+
 def parse_disclosure_detail(soup: BeautifulSoup, year: int) -> DisclosureDetail:
-    """Parse a CompleteDisclosure page. Pure function — no I/O.
+    """Parse a CompleteDisclosure page, including who filed it. Pure function."""
+    detail = _parse_disclosure_content(soup, year)
+    detail.filer_type, detail.filer_name, detail.lobbyists = _parse_filer(soup)
+    return detail
+
+
+def _parse_disclosure_content(soup: BeautifulSoup, year: int) -> DisclosureDetail:
+    """Parse a CompleteDisclosure page's compensation and bills.
 
     Four HTML format eras (detected by table IDs):
 
@@ -377,7 +453,7 @@ def parse_disclosure_detail(soup: BeautifulSoup, year: int) -> DisclosureDetail:
     if comp_table:
         for row in _grid_rows(comp_table):
             cells = [td.get_text(strip=True) for td in row.find_all("td")]
-            if len(cells) >= 2:
+            if len(cells) >= 2 and not _is_total_row(cells[0]):
                 compensation.append(Compensation(
                     client_name=cells[0],
                     amount=_parse_amount(cells[1]),

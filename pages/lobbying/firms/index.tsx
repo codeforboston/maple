@@ -63,6 +63,9 @@ type FirmRow = {
   years: number[]
   clientCount: number
   totalFilings: number | undefined
+  lobbyists: string[]
+  // Lobbyists whose name matched the search when the firm's own name didn't.
+  matchedLobbyists: string[]
 }
 
 function LobbyingFirmsTable() {
@@ -93,16 +96,26 @@ function LobbyingFirmsTable() {
       regType: f.regType,
       years: f.years,
       clientCount: f.clientCount,
-      totalFilings: filCounts?.[f.entityNameNorm]
+      totalFilings: filCounts?.[f.entityNameNorm],
+      lobbyists: f.lobbyists ?? [],
+      matchedLobbyists: []
     }))
   }, [summaries, filCounts])
 
+  // A firm's disclosures are credited to the firm, so a lobbyist who only
+  // appears on a firm's disclosures is found through the firm.
   const filtered = useMemo(() => {
-    return firmsWithCounts.filter(f => {
-      if (regTypeFilter !== "all" && f.regType !== regTypeFilter) return false
-      if (search && !matchesSearch(f.entityName, search)) return false
-      return true
-    })
+    const rows: FirmRow[] = []
+    for (const f of firmsWithCounts) {
+      if (regTypeFilter !== "all" && f.regType !== regTypeFilter) continue
+      if (!search || matchesSearch(f.entityName, search)) {
+        rows.push(f)
+        continue
+      }
+      const matchedLobbyists = f.lobbyists.filter(n => matchesSearch(n, search))
+      if (matchedLobbyists.length > 0) rows.push({ ...f, matchedLobbyists })
+    }
+    return rows
   }, [firmsWithCounts, regTypeFilter, search])
 
   const sorted = useMemo(() => {
@@ -222,6 +235,18 @@ function LobbyingFirmsTable() {
                       >
                         {f.entityName}
                       </a>
+                      {f.matchedLobbyists.length > 0 && (
+                        <div
+                          style={{
+                            color: MAPLE_COLORS.textMuted,
+                            fontSize: 12
+                          }}
+                        >
+                          {t("misc.matchedLobbyists", {
+                            names: f.matchedLobbyists.join(", ")
+                          })}
+                        </div>
+                      )}
                     </td>
                     <td style={tdStyle}>{f.regType}</td>
                     <td

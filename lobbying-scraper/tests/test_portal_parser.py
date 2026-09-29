@@ -20,10 +20,12 @@ from bs4 import BeautifulSoup
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from portal import (
+    DisclosureMeta,
     _parse_amount,
     _parse_period,
     parse_disclosure_detail,
     parse_summary,
+    resolve_filer,
     year_to_general_court,
 )
 
@@ -48,8 +50,8 @@ DISCLOSURE_CASES = [
     ("2007e", 2007,         0.0,   0,    2, "legacy 2005-2008: entity total in legacy_total_compensation"),
     ("2011e", 2011, 641_243.00,  23,    4, "legacy 2009-2013: per-client Compensation received column"),
     ("2016e", 2016, 990_474.00,  30, 1357, "hybrid 2014-2018: Panel1 div totals"),
-    ("2024e", 2024, 115_000.00,   5,   22, "modern 2019+: grdvClientPaidToEntity"),
-    ("2024i", 2024, 1_095_200.0, 17,  135, "modern 2019+ individual"),
+    ("2024e", 2024,  57_500.00,   4,   22, "modern 2019+: grdvClientPaidToEntity"),
+    ("2024i", 2024, 547_600.15,  16,  135, "modern 2019+ (a firm disclosure; see FILER_CASES)"),
     ("2011i", 2011,  18_518.00,   1,    0, "legacy 2009-2013 individual"),
 ]
 
@@ -64,12 +66,14 @@ def test_compensation_total_and_counts(fix, year, exp_comp, n_clients, n_bills, 
 
 @pytest.mark.parametrize("fix,year,_c,_n,_b,_e", DISCLOSURE_CASES)
 def test_no_total_amount_artifact(fix, year, _c, _n, _b, _e):
-    """The legacy individual summary row (client_name == 'Total amount') must
-    never be captured as a real client — that bug inflated 2010-2013 comp rows."""
+    """Summary rows ('Total amount' on legacy individual pages, 'Total salaries
+    received' on modern pages) must never be captured as clients — each
+    doubled or inflated that page's compensation."""
     detail = parse_disclosure_detail(_soup(f"{fix}_disc"), year)
     bad = [
         c for c in detail.compensation
-        if c.client_name in ("Total amount", "Total", "")
+        if not c.client_name or c.client_name.lower().startswith("total ")
+        or c.client_name.lower() == "total"
     ]
     assert not bad, f"{fix} produced summary-row artifacts: {bad}"
 
@@ -211,3 +215,86 @@ def test_executive_rows_have_null_bill_id():
     executive = [b for b in detail.bills if b.chamber == "Executive"]
     if executive:
         assert all(b.bill_id is None for b in executive)
+
+
+# ── Filer attribution (who filed the page, read from the page itself) ────────
+
+FILER_CASES = [
+    # fixture, filer_type, filer_name, lobbyists
+    ("2007e_disc", "Employer", "Ventry Associates, LLP", ["Dennis M Murphy", "Anthony A Abdelahad"]),
+    ("2011e_disc", "Employer", "ML Strategies, LLC", None),
+    ("2016e_disc", "Employer", "Murphy Donoghue Partners", None),
+    ("2024e_disc", "Employer", "21c, LLC", ["Hugh R. Jones, III"]),
+    ("2011i_disc", "Lobbyist", None, []),
+    # Captured from lobbyist Anthony Arthur Abdelahad's summary page, but the
+    # disclosure it links to is his firm's.
+    ("2024i_disc", "Employer", "Ventry Associates, LLP",
+     ["Dennis Michael Murphy", "Anthony Arthur Abdelahad", "Charles McCoy White"]),
+]
+
+
+@pytest.mark.parametrize("fix,filer_type,filer_name,lobbyists", FILER_CASES)
+def test_filer_parsed_from_page(fix, filer_type, filer_name, lobbyists):
+    detail = parse_disclosure_detail(_soup(fix), 2024)
+    assert detail.filer_type == filer_type
+    assert detail.filer_name == filer_name
+    if lobbyists is not None:
+        assert detail.lobbyists == lobbyists
+    if filer_type == "Employer":
+        assert detail.lobbyists, "firm disclosures list the lobbyists they paid"
+        assert not any("Total" in n for n in detail.lobbyists)
+
+
+def test_resolve_filer_credits_firm_page_to_firm():
+    """A firm's disclosure reached via one of its lobbyists' summary pages
+    must be credited to the firm, not that lobbyist."""
+    meta = parse_summary(_soup("2024i_summ"))
+    assert (meta.entity_name, meta.reg_type) == ("Anthony Arthur Abdelahad", "Lobbyist")
+    resolved = resolve_filer(meta, parse_disclosure_detail(_soup("2024i_disc"), 2024))
+    assert (resolved.entity_name, resolved.reg_type, resolved.year) == (
+        "Ventry Associates, LLP", "Employer", 2024,
+    )
+
+
+def test_resolve_filer_keeps_individual_registrant():
+    """Individual pages keep the summary's full registered name."""
+    meta = parse_summary(_soup("2011i_summ"))
+    resolved = resolve_filer(meta, parse_disclosure_detail(_soup("2011i_disc"), 2011))
+    assert resolved == meta
+
+
+def test_resolve_filer_is_independent_of_which_summary_linked_the_page():
+    """The firm's own summary and a lobbyist's summary must credit its
+    disclosure to the same registrant."""
+    detail = parse_disclosure_detail(_soup("2024i_disc"), 2024)
+    via_lobbyist = resolve_filer(parse_summary(_soup("2024i_summ")), detail)
+    via_firm = resolve_filer(
+        DisclosureMeta(entity_name="Ventry Associates, LLP", year=2024, reg_type="Employer"),
+        detail,
+    )
+    assert (via_lobbyist.entity_name, via_lobbyist.reg_type) == (
+        via_firm.entity_name, via_firm.reg_type,
+    )
+
+
+@pytest.mark.parametrize("fix", ["2024e_disc", "2024i_disc"])
+def test_modern_compensation_matches_page_total(fix):
+    """The page's own "Total salaries received" row must equal the sum of the
+    parsed clients, i.e. the total row is excluded, not counted as a client."""
+    soup = _soup(fix)
+    table = soup.find("table", id=lambda x: x and "grdvClientPaidToEntity" in x)
+    total_row = [
+        [td.get_text(strip=True) for td in tr.find_all("td")]
+        for tr in table.find_all("tr")
+        if tr.find("td") and tr.find("td").get_text(strip=True).startswith("Total")
+    ]
+    page_total = float(total_row[0][1].replace("$", "").replace(",", ""))
+    detail = parse_disclosure_detail(soup, 2024)
+    assert _comp_total(detail) == pytest.approx(page_total, abs=0.01)
+
+
+def test_client_named_like_total_is_kept():
+    """Only exact summary labels are dropped; a real client such as
+    "ADP TotalSource" must stay."""
+    detail = parse_disclosure_detail(_soup("2016e_disc"), 2016)
+    assert any(c.client_name == "ADP TotalSource" for c in detail.compensation)

@@ -20,6 +20,7 @@ from portal import (
     DisclosureMeta,
     filing_id,
     registrant_id,
+    resolve_filer,
     year_to_general_court,
 )
 
@@ -116,6 +117,23 @@ def _normalize_position(raw: str | None) -> str:
     if s.startswith("neutral") or s.startswith("monitor"):
         return "neutral"
     return "none"
+
+
+def _prune_stale(db: firestore.Client, coll_ref, keep: set[str]) -> int:
+    """Delete docs in a summary subcollection that this run didn't write.
+    Summaries are fully regenerated each run, so a doc left over from an
+    earlier run (a firm or client that no longer has records) is stale and
+    would otherwise keep appearing in the lists."""
+    stale = [ref for ref in coll_ref.list_documents() if ref.id not in keep]
+    batch = db.batch()
+    for i, ref in enumerate(stale, 1):
+        batch.delete(ref)
+        if i % 400 == 0:
+            batch.commit()
+            batch = db.batch()
+    if len(stale) % 400:
+        batch.commit()
+    return len(stale)
 
 
 def compute_stats(db: firestore.Client) -> None:
@@ -216,10 +234,12 @@ def compute_stats(db: firestore.Client) -> None:
                     "regType": reg_type or "",
                     "years": set(),
                     "clientNorms": set(),
+                    "lobbyists": set(),
                 },
             )
             if year is not None:
                 firm["years"].add(year)
+            firm["lobbyists"].update(d.get("lobbyists") or [])
             if reg_type:
                 firm["regType"] = reg_type
 
@@ -290,6 +310,8 @@ def compute_stats(db: firestore.Client) -> None:
     for fs in firm_summaries.values():
         fs["clientCount"] = len(fs.pop("clientNorms"))
         fs["years"] = sorted(fs["years"], reverse=True)
+        # Lets the firms list find a firm by the name of a lobbyist it employs.
+        fs["lobbyists"] = sorted(fs["lobbyists"])
 
     stats = {
         "totalFilings": total_filings,
@@ -300,13 +322,16 @@ def compute_stats(db: firestore.Client) -> None:
         "spendByYear": spend_by_year,
         "filingsByYear": filings_by_year,
     }
-    db.collection(STATS_COLLECTION).document(STATS_DOC_ID).set(stats, merge=True)
+    # Full overwrite, not merge: a merge keeps map keys (e.g. a spendByYear
+    # year) that this run no longer produces, so stale values never go away.
+    db.collection(STATS_COLLECTION).document(STATS_DOC_ID).set(stats)
     db.collection(STATS_COLLECTION).document("entityFilingCounts").set(
         entity_filing_counts
     )
     db.collection(STATS_COLLECTION).document("clientFilingCounts").set(
         client_filing_counts
     )
+    pruned = 0
     for gc, bills_map in bill_summaries.items():
         # One small doc per bill, not one JSON blob per court: a court's blob
         # eventually exceeds Firestore's 1MB field-size limit as its session
@@ -327,6 +352,7 @@ def compute_stats(db: firestore.Client) -> None:
                 batch = db.batch()
         if count % 400 != 0:
             batch.commit()
+        pruned += _prune_stale(db, bills_coll, set(bills_map))
 
     # Client and firm summaries: same one-small-doc-per-item subcollection
     # pattern as billSummaries above (avoids the 1MB per-document/field
@@ -347,6 +373,7 @@ def compute_stats(db: firestore.Client) -> None:
             batch = db.batch()
     if count % 400 != 0:
         batch.commit()
+    pruned += _prune_stale(db, client_coll, {_doc_id_for_norm(n) for n in client_summaries})
 
     firm_parent = db.collection(STATS_COLLECTION).document("firmSummaries")
     firm_parent.set({"count": len(firm_summaries), "updatedAt": _now().isoformat()})
@@ -361,29 +388,28 @@ def compute_stats(db: firestore.Client) -> None:
             batch = db.batch()
     if count % 400 != 0:
         batch.commit()
+    pruned += _prune_stale(db, firm_coll, {_doc_id_for_norm(n) for n in firm_summaries})
 
     print(
         f"  stats written: {total_filings} filings, "
         f"{total_registrants} registrants, {len(client_norms)} clients, "
         f"{len(entity_filing_counts)} entities, {len(client_filing_counts)} client norms, "
         f"bill summaries for courts {sorted(bill_summaries.keys())}, "
-        f"{len(client_summaries)} client summaries, {len(firm_summaries)} firm summaries"
+        f"{len(client_summaries)} client summaries, {len(firm_summaries)} firm summaries, "
+        f"{pruned} stale summary docs removed"
     )
 
 
-def write_registrant(
-    db: firestore.Client,
-    meta: DisclosureMeta,
-    detail: DisclosureDetail,
-    disc_url: str,
-) -> None:
-    """Upsert a LobbyingRegistrant document."""
+def registrant_doc(
+    meta: DisclosureMeta, detail: DisclosureDetail
+) -> tuple[str, dict] | None:
+    """Build (doc_id, fields) for the registrant that filed this disclosure,
+    excluding disclosureUrls and fetchedAt. None if it can't be attributed."""
+    meta = resolve_filer(meta, detail)
     if not meta.entity_name or meta.year is None:
-        return
+        return None
 
     doc_id = registrant_id(meta.entity_name, meta.year, detail.period_start)
-    ref = db.collection(REGISTRANTS_COLLECTION).document(doc_id)
-
     clients = [
         {
             "clientName": c.client_name,
@@ -404,10 +430,26 @@ def write_registrant(
         "legacyTotalCompensation": detail.legacy_total_compensation,
         "periodStart": detail.period_start,
         "periodEnd": detail.period_end,
-        "disclosureUrls": firestore.ArrayUnion([disc_url]),
-        "fetchedAt": _now(),
+        "lobbyists": detail.lobbyists,
+        "lobbyistsNorm": [normalize_entity_name(n) for n in detail.lobbyists],
     }
-    ref.set(data, merge=True)
+    return doc_id, data
+
+
+def write_registrant(
+    db: firestore.Client,
+    meta: DisclosureMeta,
+    detail: DisclosureDetail,
+    disc_url: str,
+) -> None:
+    """Upsert the LobbyingRegistrant document for whoever filed this disclosure."""
+    built = registrant_doc(meta, detail)
+    if built is None:
+        return
+    doc_id, data = built
+    data["disclosureUrls"] = firestore.ArrayUnion([disc_url])
+    data["fetchedAt"] = _now()
+    db.collection(REGISTRANTS_COLLECTION).document(doc_id).set(data, merge=True)
 
 
 def write_filings(
@@ -416,6 +458,7 @@ def write_filings(
     detail: DisclosureDetail,
 ) -> int:
     """Batch-write LobbyingFiling documents. Returns the number written."""
+    meta = resolve_filer(meta, detail)
     if not meta.entity_name or meta.year is None or not detail.bills:
         return 0
 
@@ -435,6 +478,7 @@ def write_filings(
             bill.bill_id,
             gc,
             bill.position,
+            detail.period_start,
         )
         ref = db.collection(FILINGS_COLLECTION).document(fid)
         doc = {
