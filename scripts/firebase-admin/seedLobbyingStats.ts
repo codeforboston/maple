@@ -62,6 +62,7 @@ type FirmSummary = {
   regType: string
   years: number[]
   clientCount: number
+  lobbyists: string[]
 }
 
 export const script: Script = async ({ db }) => {
@@ -162,7 +163,7 @@ export const script: Script = async ({ db }) => {
   > = {}
   const firmSummaries: Record<
     string,
-    FirmSummary & { clientNormsSet: Set<string> }
+    FirmSummary & { clientNormsSet: Set<string>; lobbyistsSet: Set<string> }
   > = {}
 
   for (const doc of registrantsSnap.docs) {
@@ -182,11 +183,15 @@ export const script: Script = async ({ db }) => {
           regType: regType ?? "",
           years: [],
           clientCount: 0,
-          clientNormsSet: new Set()
+          lobbyists: [],
+          clientNormsSet: new Set(),
+          lobbyistsSet: new Set()
         }
       }
       const firm = firmSummaries[entityNorm]
       if (year != null && !firm.years.includes(year)) firm.years.push(year)
+      for (const name of (d.lobbyists as string[] | undefined) ?? [])
+        firm.lobbyistsSet.add(name)
       if (regType) firm.regType = regType
     }
 
@@ -265,6 +270,7 @@ export const script: Script = async ({ db }) => {
   for (const fs of Object.values(firmSummaries)) {
     fs.clientCount = fs.clientNormsSet.size
     fs.years.sort((a, b) => b - a)
+    fs.lobbyists = [...fs.lobbyistsSet].sort()
   }
 
   const totalClients = clientNorms.size
@@ -289,7 +295,9 @@ export const script: Script = async ({ db }) => {
   await db
     .collection(STATS_COLLECTION)
     .doc(STATS_DOC_ID)
-    .set(stats, { merge: true })
+    // Full overwrite, not merge: a merge keeps map keys (e.g. a spendByYear
+    // year) that this run no longer produces, so stale values never go away.
+    .set(stats)
 
   await db
     .collection(STATS_COLLECTION)
@@ -300,6 +308,23 @@ export const script: Script = async ({ db }) => {
     .collection(STATS_COLLECTION)
     .doc("clientFilingCounts")
     .set(clientFilingCounts)
+
+  // Summaries are fully regenerated each run; delete docs this run didn't
+  // write (e.g. a firm or client that no longer has records), or they keep
+  // appearing in the lists. Mirrors _prune_stale in lobbying-scraper/writer.py.
+  let pruned = 0
+  const pruneStale = async (
+    coll: FirebaseFirestore.CollectionReference,
+    keep: Set<string>
+  ) => {
+    const stale = (await coll.listDocuments()).filter(ref => !keep.has(ref.id))
+    for (let i = 0; i < stale.length; i += 400) {
+      const batch = db.batch()
+      for (const ref of stale.slice(i, i + 400)) batch.delete(ref)
+      await batch.commit()
+    }
+    pruned += stale.length
+  }
 
   for (const [court, billsMap] of Object.entries(billSummaries)) {
     // One small doc per bill, not one JSON blob per court: a court's blob
@@ -322,6 +347,7 @@ export const script: Script = async ({ db }) => {
       }
       await batch.commit()
     }
+    await pruneStale(billsColl, new Set(Object.keys(billsMap)))
   }
 
   // Client and firm summaries: same one-small-doc-per-item subcollection
@@ -347,6 +373,10 @@ export const script: Script = async ({ db }) => {
     }
     await batch.commit()
   }
+  await pruneStale(
+    clientsColl,
+    new Set(Object.keys(clientSummaries).map(encodeURIComponent))
+  )
 
   const firmParentRef = db.collection(STATS_COLLECTION).doc("firmSummaries")
   const firmEntries = Object.entries(firmSummaries)
@@ -359,16 +389,20 @@ export const script: Script = async ({ db }) => {
     const batch = db.batch()
     for (const [
       norm,
-      { clientNormsSet: _clientNormsSet, ...fs }
+      { clientNormsSet: _clientNormsSet, lobbyistsSet: _lobbyistsSet, ...fs }
     ] of firmEntries.slice(i, i + 400)) {
       batch.set(firmsColl.doc(encodeURIComponent(norm)), fs)
     }
     await batch.commit()
   }
+  await pruneStale(
+    firmsColl,
+    new Set(Object.keys(firmSummaries).map(encodeURIComponent))
+  )
 
   console.log(`Written to ${STATS_COLLECTION}/${STATS_DOC_ID}`)
   console.log(
-    `  clientSummaries: ${clientEntries.length}, firmSummaries: ${firmEntries.length}`
+    `  clientSummaries: ${clientEntries.length}, firmSummaries: ${firmEntries.length}, stale summary docs removed: ${pruned}`
   )
   console.log(
     `  entityFilingCounts: ${Object.keys(entityFilingCounts).length} entities`

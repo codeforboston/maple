@@ -19,7 +19,8 @@
     "disclosureLink": "Disclosure {{number}}",
     "viewOnMaple": "View bill on MAPLE →",
     "total": "total",
-    "generalCourt": "General Court"
+    "generalCourt": "General Court",
+    "matchedLobbyists": "Lobbyist: {{names}}"
   },
   "registrantType": {
     "all": "All types",
@@ -35,7 +36,8 @@
   "sections": {
     "bills": "Bills",
     "clients": "Clients",
-    "firms": "Lobbyists"
+    "firms": "Lobbyists",
+    "firmLobbyists": "Lobbyists employed"
   },
   "filters": {
     "session": "Session",
@@ -73,7 +75,8 @@
     "statSpend": "Sum of all annual compensation amounts reported by lobbyists to the Secretary of State.",
     "bills": "Bills that appear in lobbying disclosures filed with the MA Secretary of State, across all sessions in this dataset.",
     "clients": "Organizations that retained lobbyists or lobbied on their own behalf, as reported in annual compensation disclosures.",
-    "firms": "Registered lobbyists and employers who filed lobbying disclosures with the MA Secretary of State."
+    "firms": "Registered lobbyists and employers who filed lobbying disclosures with the MA Secretary of State.",
+    "spendNotReported": "Spending isn't shown for {{years}}: disclosures from those years don't report compensation by client."
   },
   "attribution": "Data from the MA Secretary of State Lobbyist Public Search.",
   "noData": "No lobbying filings found.",

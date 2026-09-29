@@ -87,6 +87,10 @@ function FirmDetail() {
     ).values()
   ].sort((a, b) => a.clientNameNorm.localeCompare(b.clientNameNorm))
 
+  const lobbyists = [
+    ...new Set((registrants ?? []).flatMap(r => r.lobbyists ?? []))
+  ].sort((a, b) => a.localeCompare(b))
+
   // One entry per URL, labeled with the reporting period of the registrant
   // doc it came from (when known — older, not-yet-reprocessed docs may not
   // have one, so this falls back to just the year). Sorted most-recent-first.
@@ -219,6 +223,21 @@ function FirmDetail() {
                     </li>
                   ))}
                 </ul>
+              )}
+
+              {lobbyists.length > 0 && (
+                <>
+                  <h5 style={{ ...sectionHeadStyle, marginTop: "1.5rem" }}>
+                    {t("sections.firmLobbyists")}
+                  </h5>
+                  <ul style={{ paddingLeft: "1.25rem", fontSize: 13 }}>
+                    {lobbyists.map(name => (
+                      <li key={name} style={{ marginBottom: "0.35rem" }}>
+                        {name}
+                      </li>
+                    ))}
+                  </ul>
+                </>
               )}
 
               {allDisclosures.length > 0 && (
