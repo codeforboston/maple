@@ -9,7 +9,7 @@ import {
   getFirestore
 } from "firebase/firestore"
 import { Bill } from "functions/src/bills/types"
-import { BillsTabContainer } from "./BillsTabContainer"
+import { BillsTabContainer } from "./BillsTab/BillsTabContainer"
 
 type BillGroups = {
   all: Bill[]

@@ -39,7 +39,7 @@ export const RecentBills = ({ bills }: { bills: Bill[] }) => {
           </thead>
           <tbody>
             {lastFiveSponsoredBills.map(bill => (
-              <tr>
+              <tr key={bill.id}>
                 <StyledSubsectionTableColumnData>
                   <StyledBillId>{bill.id}</StyledBillId>
                 </StyledSubsectionTableColumnData>

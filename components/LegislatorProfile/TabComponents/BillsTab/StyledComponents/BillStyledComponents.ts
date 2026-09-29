@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { Button, Table } from "react-bootstrap";
-import { TabBlock } from "components/LegislatorProfile/LegislatorComponents";
+import styled from "styled-components"
+import { Button, Table } from "react-bootstrap"
+import { TabBlock } from "components/LegislatorProfile/LegislatorComponents"
 
 export const StyledBillsTab = styled.div``
 
