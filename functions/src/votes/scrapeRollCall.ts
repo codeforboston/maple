@@ -223,22 +223,6 @@ export async function getHouseRollCall(
   return { downloadUrl: url, ...votes }
 }
 
-// Used to collect senate legislator ids
-export async function getSenateLegislators(
-  court: number
-): Promise<Set<string>> {
-  const snapshot = await db.collection(`generalCourts/${court}/members`).get()
-
-  const result: Set<string> = new Set()
-  for (const doc of snapshot.docs) {
-    const data = doc.data()
-    if (data.content.Branch === "Senate") {
-      result.add(data.id)
-    }
-  }
-  return result
-}
-
 // Used to cross-reference legislator names to ids
 // Returns a [legislator name as present on pdfs, legislator id][] | error
 export async function getHouseLegislators(

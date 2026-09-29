@@ -4,7 +4,6 @@ import {
   HouseRollCallScraper,
   SenateRollCallScraper
 } from "functions/src/votes"
-import { getSenateLegislators } from "functions/src/votes/scrapeRollCall"
 
 const Args = Record({
   court: Number,

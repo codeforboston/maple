@@ -63,7 +63,7 @@ export {
 export { scrapeElections } from "./legislators"
 
 export { transcriptionV2 } from "./webhooks"
-export { scrapeHouseRollCalls } from "./votes"
+export { scrapeHouseRollCalls, scrapeSenateRollCalls } from "./votes"
 
 export { matchOcpfMembersV2 } from "./ocpf/matchOcpfMembers"
 export { scrapeOcpfFinanceV2 } from "./ocpf/scrapeOcpfFinance"

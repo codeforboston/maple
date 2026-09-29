@@ -61,6 +61,18 @@ export const RollCallVote = Record({
   branch: Branch
 })
 
+// Roll call API provides less information -
+// most importantly, it does not have the associated bill
+export type SenateRollCall = Static<typeof SenateRollCall>
+export const SenateRollCall = Record({
+  type: VoteType,
+  generalCourtNumber: Number,
+  branch: Branch,
+  rollCallNumber: Number,
+  questionMotion: Union(String, Null),
+  downloadUrl: String
+})
+
 export type HouseRollCall = Static<typeof HouseRollCall>
 export const HouseRollCall = Record({
   type: VoteType,
