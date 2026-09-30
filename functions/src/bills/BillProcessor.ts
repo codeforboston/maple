@@ -24,12 +24,16 @@ export default abstract class BillProcessor {
     topic: string,
     timeoutSeconds = 120
   ) {
-    return onMessagePublished({ topic, timeoutSeconds }, async event => {
-      const message = event.data.message
-      if (message.json.run !== true)
-        throw Error('Expected { "run": true } message')
-      await new Processor(message.json).run()
-    })
+    return onMessagePublished(
+      // v2 pubsub triggers default to us-east1; pin to match the rest of the deployment
+      { topic, timeoutSeconds, region: "us-central1" },
+      async event => {
+        const message = event.data.message
+        if (message.json.run !== true)
+          throw Error('Expected { "run": true } message')
+        await new Processor(message.json).run()
+      }
+    )
   }
 
   static scheduled(
