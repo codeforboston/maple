@@ -1,5 +1,6 @@
 import { QuerySnapshot } from "@google-cloud/firestore"
 import { runWith } from "firebase-functions"
+import { onMessagePublished } from "firebase-functions/v2/pubsub"
 import { City } from "../cities/types"
 import { Committee } from "../committees/types"
 import { DocUpdate } from "../common"
@@ -23,13 +24,12 @@ export default abstract class BillProcessor {
     topic: string,
     timeoutSeconds = 120
   ) {
-    return runWith({ timeoutSeconds })
-      .pubsub.topic(topic)
-      .onPublish(async message => {
-        if (message.json.run !== true)
-          throw Error('Expected { "run": true } message')
-        await new Processor(message.json).run()
-      })
+    return onMessagePublished({ topic, timeoutSeconds }, async event => {
+      const message = event.data.message
+      if (message.json.run !== true)
+        throw Error('Expected { "run": true } message')
+      await new Processor(message.json).run()
+    })
   }
 
   static scheduled(
