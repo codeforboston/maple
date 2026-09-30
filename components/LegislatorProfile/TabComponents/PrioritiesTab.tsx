@@ -3,21 +3,37 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import styled from "styled-components"
 
+import CommerceIcon from "../../../public/SmartTagIcons/blue-variants/Commerce"
+import CrimeAndLawEnforcementIcon from "public/SmartTagIcons/blue-variants/Crime-and-Law-Enforcement"
+import EconomicsAndPublicFinanceIcon from "public/SmartTagIcons/blue-variants/Economics-and-Public-Finance"
+
 import { Form } from "../../bootstrap"
-import { Profile, ProfileHook, useProfile } from "../../db"
+import { ProfileHook, useProfile } from "../../db"
 import Input from "../../forms/Input"
 import { SubmitButton, TabBlock } from "../LegislatorComponents"
 
 import { useAuth } from "components/auth"
 
-import CommerceIcon from "../../../public/SmartTagIcons/blue-variants/Commerce"
+const SVG_MAP = {
+  commerce: <CommerceIcon width="24" height="24" />,
+  crime: <CrimeAndLawEnforcementIcon width="24" height="24" />,
+  economics: <EconomicsAndPublicFinanceIcon width="24" height="24" />
+}
+
+export type IconType = keyof typeof SVG_MAP
+
+type ProfilePriorities = {
+  inTheirOwnWords?: string
+  priorityOneIcon?: IconType
+}
 
 type UpdateProfilePriorities = {
   inTheirOwnWords: string
+  priorityOneIcon: IconType
 }
 
 type Props = {
-  profile: Profile
+  profile: ProfilePriorities
   actions: ProfileHook
   uid?: string
   setFormUpdated?: any
@@ -46,19 +62,14 @@ const PriorityWords = styled.div`
   font-style: italic;
 `
 
-const SVG_MAP = {
-  commerce: <CommerceIcon width="24" height="24" />
-}
-
-type IconType = keyof typeof SVG_MAP
-
 async function updatePriorities(
   { actions }: Props,
   data: UpdateProfilePriorities
 ) {
-  const { updateInTheirOwnWords } = actions
+  const { updateInTheirOwnWords, updatePriorityOneIcon } = actions
 
   await updateInTheirOwnWords(data.inTheirOwnWords)
+  await updatePriorityOneIcon(data.priorityOneIcon)
 }
 
 export function PrioritiesTab({
@@ -109,22 +120,23 @@ function EditablePriorities({
   actions: ProfileHook
   court: number
   memberCode: string
-  profile: Profile
+  profile: ProfilePriorities
 }) {
   const {
     register,
     formState: { errors, isDirty },
     handleSubmit
   } = useForm<UpdateProfilePriorities>()
-  const { inTheirOwnWords }: Profile = profile
+  const { inTheirOwnWords, priorityOneIcon }: ProfilePriorities = profile
   const [formUpdated, setFormUpdated] = useState(false)
   const { t } = useTranslation("legislators")
 
-  const [selectedOption, setSelectedOption] = useState<IconType | "">(
-    inTheirOwnWords === "commerce" ? inTheirOwnWords : ""
+  const currentOneOption = priorityOneIcon || "commerce"
+  const [selectedOneOption, setSelectedOneOption] = useState<IconType>(
+    priorityOneIcon ? priorityOneIcon : "commerce"
   )
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedOption(e.target.value as IconType | "")
+    setSelectedOneOption(e.target.value as IconType)
   }
 
   const onSubmit = handleSubmit(async update => {
@@ -137,11 +149,13 @@ function EditablePriorities({
     setFormUpdated(isDirty)
   }, [isDirty, setFormUpdated])
 
-  console.log("S: ", selectedOption)
+  console.log("S1: ", selectedOneOption)
+  // console.log("S2: ", selectedTwoOption)
+  // console.log("S3: ", selectedThreeOption)
 
   return (
     <>
-      {/* <PriorityBlock>
+      <PriorityBlock>
         <Form onSubmit={onSubmit}>
           <div className={`d-flex justify-content-between`}>
             <PriorityTitle className={`align-self-center d-inline my-1`}>
@@ -163,44 +177,39 @@ function EditablePriorities({
             defaultValue={inTheirOwnWords ? inTheirOwnWords : t("addWords")}
           />
         </Form>
-      </PriorityBlock> */}
+      </PriorityBlock>
       <PriorityBlock>
-        <div>Test: {inTheirOwnWords}</div>
+        <div>Select an Icon and Test for Priority One</div>
+        <div>{SVG_MAP[currentOneOption]} Current Icon</div>
+        <div>{SVG_MAP[selectedOneOption]} Selected Icon</div>
         <Form onSubmit={onSubmit}>
           <div className={`d-flex justify-content-between`}>
             <PriorityTitle className={`align-self-center d-inline my-1`}>
-              {t("inTheirOwnWords")}
+              {/* {t("priorityOneIcon")} */}Select:
             </PriorityTitle>
             <select
               className="form-select"
-              {...register("inTheirOwnWords")}
+              {...register("priorityOneIcon")}
               id="choices"
-              // name="selected_option"
-              value={selectedOption}
+              value={selectedOneOption}
               onChange={handleChange}
               required
             >
-              <option value="" selected disabled>
-                Open this select menu
+              <option value="" disabled>
+                Select Menu
               </option>
               <option value="commerce">Commerce</option>
-              <option value="2">Option Two</option>
-              <option value="3">Option Three</option>
+              <option value="crime">Crime and Law Enforcement</option>
+              <option value="economics">Economics And Public Finance</option>
             </select>
             <SubmitButton
               type="submit"
               className={`btn btn-primary d-inline m-1 w-auto`}
-              // disabled={!formUpdated}
             >
               {t("submit")}
             </SubmitButton>
           </div>
-
-          {selectedOption ? SVG_MAP[selectedOption] : <>no icon</>}
-          {SVG_MAP["commerce"]}
-          <CommerceIcon width="24" height="24" />
         </Form>
-        <CommerceIcon width="24" height="24" />
       </PriorityBlock>
     </>
   )
@@ -223,7 +232,14 @@ function ReadonlyPriorities({ legislatorData }: { legislatorData: any[] }) {
           </PriorityWords>
         </PriorityBlock>
       ) : (
-        <></>
+        <PriorityBlock>
+          <PriorityTitle className={`my-1`}>
+            {t("inTheirOwnWords")}
+          </PriorityTitle>
+          <PriorityWords style={{ whiteSpace: "pre-wrap" }}>
+            {t("inTheirOwnWordsEmpty")}
+          </PriorityWords>
+        </PriorityBlock>
       )}
     </>
   )

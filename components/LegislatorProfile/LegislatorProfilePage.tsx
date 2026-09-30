@@ -257,7 +257,7 @@ export function LegislatorProfilePage({
                 <></>
               )}
 
-              {legislatorData[0]?.social.twitter ? (
+              {legislatorData[0]?.social?.twitter ? (
                 <a
                   href={legislatorData[0].social.twitter}
                   className="pe-2"
@@ -271,7 +271,7 @@ export function LegislatorProfilePage({
                 <></>
               )}
 
-              {legislatorData[0]?.social.linkedIn ? (
+              {legislatorData[0]?.social?.linkedIn ? (
                 <a
                   href={legislatorData[0].social.linkedIn}
                   className="pe-2"
@@ -285,7 +285,7 @@ export function LegislatorProfilePage({
                 <></>
               )}
 
-              {legislatorData[0]?.social.blueSky ? (
+              {legislatorData[0]?.social?.blueSky ? (
                 <a
                   href={legislatorData[0].social.blueSky}
                   className="pe-2"
@@ -299,7 +299,7 @@ export function LegislatorProfilePage({
                 <></>
               )}
 
-              {legislatorData[0]?.social.mastodon ? (
+              {legislatorData[0]?.social?.mastodon ? (
                 <a
                   href={legislatorData[0].social.mastodon}
                   className="pe-2"

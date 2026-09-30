@@ -14,6 +14,7 @@ import { useProfileState } from "./redux"
 import { Profile, ProfileMember, SocialLinks, ContactInfo } from "./types"
 import { cleanSocialLinks, cleanOrgURL } from "./urlCleanup"
 import { updateUserDisplayNameTestimonies } from "../testimony/updateUserTestimonies"
+import { IconType } from "components/LegislatorProfile/TabComponents/PrioritiesTab"
 
 export type ProfileHook = ReturnType<typeof useProfile>
 
@@ -32,6 +33,7 @@ type ProfileState = {
   updatingSocial: Record<keyof SocialLinks, boolean>
   updatingBillsFollowing: boolean
   updatingInTheirOwnWords: boolean
+  updatingpriorityOneIcon: boolean
   profile: Profile | undefined
 }
 
@@ -72,6 +74,7 @@ export function useProfile() {
         },
         updatingBillsFollowing: false,
         updatingInTheirOwnWords: false,
+        updatingpriorityOneIcon: false,
         profile
       }
     )
@@ -210,6 +213,13 @@ export function useProfile() {
           await updateInTheirOwnWords(uid, inTheirOwnWords)
           dispatch({ updatingInTheirOwnWords: false })
         }
+      },
+      updatePriorityOneIcon: async (priorityOneIcon: IconType) => {
+        if (uid) {
+          dispatch({ updatingpriorityOneIcon: true })
+          await updatePriorityOneIcon(uid, priorityOneIcon)
+          dispatch({ updatingpriorityOneIcon: false })
+        }
       }
     }),
     [uid, state.updatingSocial, state.updatingContactInfo, profile]
@@ -344,6 +354,14 @@ function updateInTheirOwnWords(uid: string, inTheirOwnWords: string) {
   return setDoc(
     profileRef(uid),
     { inTheirOwnWords: inTheirOwnWords ?? deleteField() },
+    { merge: true }
+  )
+}
+
+function updatePriorityOneIcon(uid: string, priorityOneIcon: IconType) {
+  return setDoc(
+    profileRef(uid),
+    { priorityOneIcon: priorityOneIcon ?? deleteField() },
     { merge: true }
   )
 }
