@@ -7,7 +7,12 @@ import { upsertLegislativeSynonyms } from "./synonyms"
 /** Schedules index upgrades for each config/alias(bills/hearing/testimony) if necessary. Requires a message
  * wtih content `{ "check": true}` */
 export const checkSearchIndexVersion = onMessagePublished(
-  { topic: "checkSearchIndexVersion", secrets: ["TYPESENSE_API_KEY"] },
+  {
+    topic: "checkSearchIndexVersion",
+    secrets: ["TYPESENSE_API_KEY"],
+    // v2 pubsub triggers default to us-east1; pin to match the rest of the deployment
+    region: "us-central1"
+  },
   async event => {
     const message = event.data.message
     if (message.json.check !== true)
