@@ -1,5 +1,6 @@
 import "@testing-library/jest-dom"
 import { fireEvent, render, screen } from "@testing-library/react"
+import { MemberContent } from "functions/src/members/types"
 
 import { LegislatorTabs } from "./LegislatorTabs"
 
@@ -29,11 +30,18 @@ jest.mock("next-i18next", () => ({
   })
 }))
 
+const mockMember = {
+  GeneralCourtNumber: 194,
+  MemberCode: "ABC123"
+} as MemberContent
+
 jest.mock("./TabComponents/PrioritiesTab", () => ({
   PrioritiesTab: () => null
 }))
-jest.mock("./TabComponents/BillsTab", () => ({
-  BillsTab: () => null
+jest.mock("./TabComponents/BillsTab/BillsTab", () => ({
+  BillsTab: ({ member }: { member: MemberContent }) => (
+    <div data-testid="bills-tab-content">{member.MemberCode}</div>
+  )
 }))
 jest.mock("./TabComponents/ElectionsTab", () => ({
   ElectionsTab: () => null
@@ -52,7 +60,13 @@ jest.mock("./TabComponents/VotesTab", () => ({
 }))
 
 const renderTabs = () =>
-  render(<LegislatorTabs legislatorId="legislator-id" name="Test Legislator" />)
+  render(
+    <LegislatorTabs
+      legislatorId="legislator-id"
+      member={mockMember}
+      name="Test Legislator"
+    />
+  )
 
 describe("LegislatorTabs", () => {
   beforeEach(() => {
@@ -79,7 +93,11 @@ describe("LegislatorTabs", () => {
 
     mockRouter = { ...mockRouter, isReady: true }
     rerender(
-      <LegislatorTabs legislatorId="legislator-id" name="Test Legislator" />
+      <LegislatorTabs
+        legislatorId="legislator-id"
+        member={mockMember}
+        name="Test Legislator"
+      />
     )
 
     expect(screen.getByRole("tab", { name: "Elections" })).toHaveAttribute(
@@ -130,12 +148,17 @@ describe("LegislatorTabs", () => {
 
     mockRouter = { ...mockRouter, asPath: "/legislators/194/ABC1#bills" }
     rerender(
-      <LegislatorTabs legislatorId="legislator-id" name="Test Legislator" />
+      <LegislatorTabs
+        legislatorId="legislator-id"
+        member={mockMember}
+        name="Test Legislator"
+      />
     )
 
     expect(screen.getByRole("tab", { name: "Bills" })).toHaveAttribute(
       "aria-selected",
       "true"
     )
+    expect(screen.getByTestId("bills-tab-content")).toHaveTextContent("ABC123")
   })
 })
