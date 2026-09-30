@@ -1,5 +1,6 @@
 import axios, { AxiosError } from "axios"
 import { logger, runWith } from "firebase-functions"
+import { onSchedule } from "firebase-functions/v2/scheduler"
 import { last } from "lodash"
 import { db, DocumentData, FieldValue, Timestamp } from "./firebase"
 import { currentGeneralCourt } from "./shared"
@@ -78,9 +79,9 @@ export function createScraper<T>({
   resourcesPerBatch: number
   batchesPerRun: number
 }) {
-  const startBatches = runWith({ timeoutSeconds: startBatchTimeout })
-    .pubsub.schedule(startBatchSchedule)
-    .onRun(async () => {
+  const startBatches = onSchedule(
+    { schedule: startBatchSchedule, timeoutSeconds: startBatchTimeout },
+    async () => {
       const scraper = await db.doc(`/scrapers/${resourceName}`).get(),
         lastId = scraper.data()?.lastId ?? "",
         court = currentGeneralCourt,
@@ -108,7 +109,8 @@ export function createScraper<T>({
       })
 
       await writer.close()
-    })
+    }
+  )
 
   /**
    * Fetches document content and writes it to firestore for application
