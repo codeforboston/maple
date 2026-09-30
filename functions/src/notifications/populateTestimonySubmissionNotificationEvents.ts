@@ -4,7 +4,7 @@
 // Creates a notification document in the user's notification feed for each active subscription.
 
 // Import necessary Firebase modules
-import * as functions from "firebase-functions"
+import { onDocumentWritten } from "firebase-functions/v2/firestore"
 import { getFirestore } from "firebase-admin/firestore"
 import { Timestamp } from "../firebase"
 import { TestimonySubmissionNotification } from "./types"
@@ -13,10 +13,11 @@ import { TestimonySubmissionNotification } from "./types"
 const db = getFirestore()
 
 // Define the populateOrgNotificationEvents function
-export const populateTestimonySubmissionNotificationEvents = functions.firestore
-  .document("/users/{userId}/publishedTestimony/{testimonyId}")
-  .onWrite(async (snapshot, context) => {
-    if (!snapshot.after.exists) {
+export const populateTestimonySubmissionNotificationEvents = onDocumentWritten(
+  "/users/{userId}/publishedTestimony/{testimonyId}",
+  async event => {
+    const snapshot = event.data
+    if (!snapshot || !snapshot.after.exists) {
       console.error("New snapshot does not exist")
       return
     }
@@ -44,7 +45,7 @@ export const populateTestimonySubmissionNotificationEvents = functions.firestore
 
         userId: newData?.authorUid,
         userRole: newData?.authorRole,
-        testimonyId: context.params.testimonyId,
+        testimonyId: event.params.testimonyId,
         testimonyUser: newData?.fullName,
         testimonyPosition: newData?.position,
         testimonyContent: newData?.content,
@@ -97,4 +98,5 @@ export const populateTestimonySubmissionNotificationEvents = functions.firestore
           })
       }
     }
-  })
+  }
+)

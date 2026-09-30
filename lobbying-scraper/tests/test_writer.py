@@ -13,8 +13,23 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from portal import BillActivity, Compensation, DisclosureDetail, DisclosureMeta
-from writer import write_registrant, write_filings
+from portal import (
+    BillActivity,
+    Compensation,
+    DisclosureDetail,
+    DisclosureMeta,
+    filing_id,
+    registrant_id,
+)
+from normalize import normalize_entity_name
+from writer import (
+    registrant_doc,
+    write_registrant,
+    write_filings,
+    compute_stats,
+    REGISTRANTS_COLLECTION,
+    STATS_DOC_ID,
+)
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -112,6 +127,91 @@ def test_registrant_skipped_when_year_none():
     doc_ref.set.assert_not_called()
 
 
+def test_write_registrant_includes_period_fields():
+    """periodStart/periodEnd from DisclosureDetail must land on the written doc."""
+    db, doc_ref = _make_db()
+    detail = DisclosureDetail(
+        compensation=[Compensation(client_name="Client A", amount=1000.0)],
+        bills=[],
+        period_start="2024-01-01",
+        period_end="2024-06-30",
+    )
+    with patch("writer.firestore.ArrayUnion", side_effect=lambda x: x):
+        write_registrant(db, _meta(), detail, "https://example.com/disc")
+
+    data = _captured_data(doc_ref)
+    assert data["periodStart"] == "2024-01-01"
+    assert data["periodEnd"] == "2024-06-30"
+
+
+def test_write_registrant_period_fields_none_when_unparsed():
+    """A DisclosureDetail with no parsed period must write periodStart/periodEnd
+    as None rather than omitting them or crashing."""
+    db, doc_ref = _make_db()
+    detail = DisclosureDetail(compensation=[], bills=[])
+    with patch("writer.firestore.ArrayUnion", side_effect=lambda x: x):
+        write_registrant(db, _meta(), detail, "https://example.com/disc")
+
+    data = _captured_data(doc_ref)
+    assert data["periodStart"] is None
+    assert data["periodEnd"] is None
+
+
+# ── registrant_id (the core bug fix) ────────────────────────────────────────
+
+
+def test_registrant_id_differs_by_period():
+    """Two different filing periods for the same entity+year must no longer
+    collide onto the same Firestore doc id — this is the exact bug that
+    caused a second period's write to silently overwrite the first's clients[]."""
+    id_h1 = registrant_id("Acme Lobbying LLC", 2024, "2024-01-01")
+    id_h2 = registrant_id("Acme Lobbying LLC", 2024, "2024-07-01")
+    assert id_h1 != id_h2
+
+
+def test_registrant_id_same_period_is_idempotent():
+    """Re-processing the exact same period must produce the same id (safe,
+    idempotent re-write), not a new doc each time."""
+    a = registrant_id("Acme Lobbying LLC", 2024, "2024-01-01")
+    b = registrant_id("Acme Lobbying LLC", 2024, "2024-01-01")
+    assert a == b
+
+
+def test_registrant_id_falls_back_without_period():
+    """When period parsing fails (None), registrant_id must still produce a
+    stable id rather than crash — malformed pages degrade gracefully."""
+    a = registrant_id("Acme Lobbying LLC", 2024, None)
+    b = registrant_id("Acme Lobbying LLC", 2024, None)
+    assert a == b
+    assert a != registrant_id("Acme Lobbying LLC", 2024, "2024-01-01")
+
+
+def test_registrant_id_no_period_arg_matches_none():
+    """Calling with the old 2-arg signature must match explicitly passing None,
+    so any remaining 2-arg call sites keep working identically."""
+    assert registrant_id("Acme Lobbying LLC", 2024) == registrant_id(
+        "Acme Lobbying LLC", 2024, None
+    )
+
+
+def test_registrant_id_no_period_matches_pre_fix_hash_exactly():
+    """Regression test for a real bug caught during the historical reparse:
+    the no-period fallback must produce byte-for-byte the same hash as the
+    original pre-period-aware scheme (hashlib.sha256(f"{year}|{entity_name}")),
+    not merely "some stable id". An earlier version of this function added an
+    unconditional trailing separator ("{year}|{entity_name}|") even when no
+    period was known, which changed the hash and caused reparse to write a
+    spurious duplicate doc instead of falling back onto the original one for
+    any page whose reporting period failed to parse (found via two real
+    2005-era entities in dev, Mayforth Group and Peter C Chisholm)."""
+    import hashlib
+
+    entity_name = "Mayforth Group, LLC"
+    year = 2005
+    pre_fix_id = hashlib.sha256(f"{year}|{entity_name}".encode()).hexdigest()[:40]
+    assert registrant_id(entity_name, year, None) == pre_fix_id
+
+
 # ── write_filings ─────────────────────────────────────────────────────────────
 
 
@@ -141,3 +241,368 @@ def test_write_filings_returns_zero_when_no_bills():
     count = write_filings(db, _meta(), detail)
     assert count == 0
     db.batch.assert_not_called()
+
+
+def test_write_filings_uses_period_start_in_id():
+    """write_filings must thread detail.period_start into filing_id, so two
+    periods reporting the same bill+position no longer collide onto one doc
+    (the filings analogue of the registrant_id collision bug)."""
+    db = MagicMock()
+    batch = MagicMock()
+    db.batch.return_value = batch
+    documented_ids = []
+    db.collection.return_value.document.side_effect = lambda doc_id: documented_ids.append(doc_id) or MagicMock()
+
+    bill = BillActivity("Client A", "House Bill", "100", "H100", "An Act", "Support", None)
+
+    write_filings(
+        db,
+        _meta(),
+        DisclosureDetail(compensation=[], bills=[bill], period_start="2024-01-01"),
+    )
+    write_filings(
+        db,
+        _meta(),
+        DisclosureDetail(compensation=[], bills=[bill], period_start="2024-07-01"),
+    )
+
+    assert len(documented_ids) == 2
+    assert documented_ids[0] != documented_ids[1]
+
+
+# ── filing_id (the filings analogue of the registrant_id collision fix) ────
+
+
+def test_filing_id_differs_by_period():
+    """The same bill+client+chamber+position within one general court must no
+    longer collide across reporting periods — previously this made the second
+    period's write silently overwrite the first's filing doc (and its
+    arbitrary, last-write-wins "year" field)."""
+    id_h1 = filing_id("Acme Lobbying LLC", "Client A", "House Bill", "H100", 194, "Support", "2024-01-01")
+    id_h2 = filing_id("Acme Lobbying LLC", "Client A", "House Bill", "H100", 194, "Support", "2024-07-01")
+    assert id_h1 != id_h2
+
+
+def test_filing_id_same_period_is_idempotent():
+    a = filing_id("Acme Lobbying LLC", "Client A", "House Bill", "H100", 194, "Support", "2024-01-01")
+    b = filing_id("Acme Lobbying LLC", "Client A", "House Bill", "H100", 194, "Support", "2024-01-01")
+    assert a == b
+
+
+def test_filing_id_falls_back_without_period():
+    a = filing_id("Acme Lobbying LLC", "Client A", "House Bill", "H100", 194, "Support", None)
+    b = filing_id("Acme Lobbying LLC", "Client A", "House Bill", "H100", 194, "Support", None)
+    assert a == b
+    assert a != filing_id("Acme Lobbying LLC", "Client A", "House Bill", "H100", 194, "Support", "2024-01-01")
+
+
+def test_filing_id_no_period_arg_matches_none():
+    """Calling with the old 6-arg signature must match explicitly passing
+    period_start=None, so the one existing call site keeps working identically
+    whenever a period fails to parse."""
+    assert filing_id("Acme Lobbying LLC", "Client A", "House Bill", "H100", 194, "Support") == filing_id(
+        "Acme Lobbying LLC", "Client A", "House Bill", "H100", 194, "Support", None
+    )
+
+
+def test_filing_id_no_period_matches_pre_fix_hash_exactly():
+    """The no-period fallback must produce byte-for-byte the same hash as the
+    original pre-period-aware scheme, so a page whose period fails to parse
+    still falls onto whatever doc a prior run already wrote instead of
+    spawning a spurious duplicate."""
+    import hashlib
+
+    key = "|".join(["Acme Lobbying LLC", "Client A", "House Bill", "H100", "194", "Support"])
+    pre_fix_id = hashlib.sha256(key.encode()).hexdigest()[:40]
+    assert filing_id("Acme Lobbying LLC", "Client A", "House Bill", "H100", 194, "Support", None) == pre_fix_id
+
+
+# ── compute_stats: not dropping data across split period docs ──────────────
+
+
+def _fake_doc(data: dict) -> MagicMock:
+    doc = MagicMock()
+    doc.to_dict.return_value = data
+    return doc
+
+
+def _make_stats_db():
+    """A MagicMock db where db.collection(STATS_COLLECTION).document(doc_id)
+    returns a distinct, inspectable mock per doc_id (unlike the single shared
+    mock _make_db() gives write_registrant's single-write callers)."""
+    db = MagicMock()
+    doc_mocks: dict[str, MagicMock] = {}
+
+    def _document(doc_id):
+        return doc_mocks.setdefault(doc_id, MagicMock())
+
+    db.collection.return_value.document.side_effect = _document
+    return db, doc_mocks
+
+
+def test_compute_stats_registrant_count_deduped_across_periods():
+    """Splitting one entity-year into two period docs (the fix's whole point)
+    must not double-count totalRegistrants — it must count distinct
+    (entity, year) registrations, not raw docs, since it's shown to users as
+    the "Lobbying Firms" stat on the overview page."""
+    db, doc_mocks = _make_stats_db()
+    registrants = [
+        _fake_doc({
+            "entityNameNorm": "ACME LOBBYING",
+            "year": 2024,
+            "clients": [{"clientNameNorm": "CLIENT A", "compensation": 1000.0}],
+        }),
+        _fake_doc({
+            "entityNameNorm": "ACME LOBBYING",
+            "year": 2024,
+            "clients": [{"clientNameNorm": "CLIENT A", "compensation": 2000.0}],
+        }),
+    ]
+
+    def _iter(_db, collection_name):
+        if collection_name == REGISTRANTS_COLLECTION:
+            return iter(registrants)
+        return iter([])
+
+    with patch("writer._iter_collection", side_effect=_iter):
+        compute_stats(db)
+
+    stats = doc_mocks[STATS_DOC_ID].set.call_args[0][0]
+    assert stats["totalRegistrants"] == 1, (
+        "two period-docs for the same entity+year must count as one registrant"
+    )
+    # And compensation from both periods must both be reflected — the fix's
+    # actual point, not just an inflation guard.
+    assert stats["spendByYear"]["2024"] == pytest.approx(3000.0)
+
+
+def test_compute_stats_registrant_count_not_deduped_across_different_entities():
+    """Sanity check on the other direction: genuinely distinct entities must
+    still be counted separately, not accidentally collapsed."""
+    db, doc_mocks = _make_stats_db()
+    registrants = [
+        _fake_doc({"entityNameNorm": "ACME LOBBYING", "year": 2024, "clients": []}),
+        _fake_doc({"entityNameNorm": "BETA LOBBYING", "year": 2024, "clients": []}),
+    ]
+
+    def _iter(_db, collection_name):
+        if collection_name == REGISTRANTS_COLLECTION:
+            return iter(registrants)
+        return iter([])
+
+    with patch("writer._iter_collection", side_effect=_iter):
+        compute_stats(db)
+
+    stats = doc_mocks[STATS_DOC_ID].set.call_args[0][0]
+    assert stats["totalRegistrants"] == 2
+
+
+def _batch_set_dicts_with_key(db: MagicMock, key: str) -> list[dict]:
+    """Every dict passed to batch.set(ref, doc) across all of compute_stats'
+    batched writes (bills, then clients, then firms all share one mocked
+    db.batch() return value) that contains the given key — used to pull out
+    just the client- or firm-summary docs without needing a fully faithful
+    collection/subcollection mock."""
+    return [
+        call[0][1]
+        for call in db.batch.return_value.set.call_args_list
+        if isinstance(call[0][1], dict) and key in call[0][1]
+    ]
+
+
+def test_compute_stats_firm_summary_client_count_deduped_across_periods():
+    """New in this merge: firm_summaries[...]['clientCount'] (labeled
+    "Clients represented" on /lobbying/firms) must count distinct clients,
+    not double-count because the same firm+year now spans two period docs."""
+    db, _ = _make_stats_db()
+    registrants = [
+        _fake_doc({
+            "entityName": "Acme Lobbying",
+            "entityNameNorm": "ACME LOBBYING",
+            "regType": "Employer",
+            "year": 2024,
+            "clients": [
+                {"clientNameNorm": "CLIENT A", "clientName": "Client A", "compensation": 1000.0}
+            ],
+        }),
+        _fake_doc({
+            "entityName": "Acme Lobbying",
+            "entityNameNorm": "ACME LOBBYING",
+            "regType": "Employer",
+            "year": 2024,
+            "clients": [
+                {"clientNameNorm": "CLIENT A", "clientName": "Client A", "compensation": 2000.0}
+            ],
+        }),
+    ]
+
+    def _iter(_db, collection_name):
+        if collection_name == REGISTRANTS_COLLECTION:
+            return iter(registrants)
+        return iter([])
+
+    with patch("writer._iter_collection", side_effect=_iter):
+        compute_stats(db)
+
+    firm_docs = _batch_set_dicts_with_key(db, "clientCount")
+    assert len(firm_docs) == 1
+    assert firm_docs[0]["clientCount"] == 1
+
+
+def test_compute_stats_client_summary_registrant_count_deduped_across_periods():
+    """New in this merge: client_summaries[...]['registrantCount'] (labeled
+    "Lobbyists" on /lobbying/clients) must count distinct firms, not
+    double-count because the same firm+year now spans two period docs."""
+    db, _ = _make_stats_db()
+    registrants = [
+        _fake_doc({
+            "entityName": "Acme Lobbying",
+            "entityNameNorm": "ACME LOBBYING",
+            "regType": "Employer",
+            "year": 2024,
+            "clients": [
+                {"clientNameNorm": "CLIENT A", "clientName": "Client A", "compensation": 1000.0}
+            ],
+        }),
+        _fake_doc({
+            "entityName": "Acme Lobbying",
+            "entityNameNorm": "ACME LOBBYING",
+            "regType": "Employer",
+            "year": 2024,
+            "clients": [
+                {"clientNameNorm": "CLIENT A", "clientName": "Client A", "compensation": 2000.0}
+            ],
+        }),
+    ]
+
+    def _iter(_db, collection_name):
+        if collection_name == REGISTRANTS_COLLECTION:
+            return iter(registrants)
+        return iter([])
+
+    with patch("writer._iter_collection", side_effect=_iter):
+        compute_stats(db)
+
+    client_docs = _batch_set_dicts_with_key(db, "registrantCount")
+    assert len(client_docs) == 1
+    assert client_docs[0]["registrantCount"] == 1
+
+
+# ── Attribution: firm disclosures are credited to the firm ──────────────────
+
+
+def _firm_detail():
+    return DisclosureDetail(
+        compensation=[Compensation(client_name="Client A", amount=1000.0)],
+        bills=[BillActivity("Client A", "House Bill", "100", "H100", "An Act", "Support", None)],
+        period_start="2025-01-01",
+        period_end="2025-06-30",
+        filer_type="Employer",
+        filer_name="Tremont Strategies Group LLC",
+        lobbyists=["Chet Atkins", "Jason Aluia"],
+    )
+
+
+def test_registrant_doc_credits_firm_page_to_firm():
+    lobbyist_meta = _meta(entity_name="Chet Atkins", year=2025, reg_type="Lobbyist")
+    doc_id, data = registrant_doc(lobbyist_meta, _firm_detail())
+    assert data["entityName"] == "Tremont Strategies Group LLC"
+    assert data["regType"] == "Employer"
+    assert data["lobbyists"] == ["Chet Atkins", "Jason Aluia"]
+    assert data["lobbyistsNorm"] == [normalize_entity_name("Chet Atkins"), normalize_entity_name("Jason Aluia")]
+    assert doc_id == registrant_id("Tremont Strategies Group LLC", 2025, "2025-01-01")
+
+
+def test_registrant_doc_same_for_any_linking_summary():
+    """Reached via the firm's summary or any lobbyist's, the page must map to
+    one registrant doc — the root cause of dev/prod attribution drift."""
+    detail = _firm_detail()
+    ids = {
+        registrant_doc(_meta(entity_name=n, year=2025, reg_type=t), detail)[0]
+        for n, t in [("Chet Atkins", "Lobbyist"), ("Jason Aluia", "Lobbyist"),
+                     ("Tremont Strategies Group LLC", "Employer")]
+    }
+    assert len(ids) == 1
+
+
+def test_registrant_doc_individual_page_unchanged():
+    detail = DisclosureDetail(compensation=[], bills=[], period_start="2025-01-01",
+                              filer_type="Lobbyist")
+    _, data = registrant_doc(_meta(entity_name="Melissa Brooke Stacy", reg_type="Lobbyist"), detail)
+    assert data["entityName"] == "Melissa Brooke Stacy"
+    assert data["regType"] == "Lobbyist"
+    assert data["lobbyists"] == []
+
+
+def test_write_filings_credits_firm_page_to_firm():
+    db = MagicMock()
+    db.batch.return_value = MagicMock()
+    written = []
+    db.collection.return_value.document.side_effect = lambda doc_id: MagicMock(id=doc_id)
+    db.batch.return_value.set.side_effect = lambda ref, doc: written.append((ref.id, doc))
+
+    detail = _firm_detail()
+    write_filings(db, _meta(entity_name="Chet Atkins", year=2025, reg_type="Lobbyist"), detail)
+
+    (fid, doc), = written
+    assert doc["entityName"] == "Tremont Strategies Group LLC"
+    bill = detail.bills[0]
+    assert fid == filing_id("Tremont Strategies Group LLC", bill.client_name, bill.chamber,
+                            bill.bill_id, 194, bill.position, "2025-01-01")
+
+
+def test_compute_stats_firm_summary_lists_lobbyists_across_periods():
+    """Firm summaries carry the union of lobbyists named in the firm's
+    disclosures, so the firms list can find a firm by a lobbyist's name."""
+    db, _ = _make_stats_db()
+    base = {"entityName": "Tremont Strategies Group LLC", "entityNameNorm": "TREMONT STRATEGIES GROUP",
+            "regType": "Employer", "year": 2025, "clients": []}
+    registrants = [
+        _fake_doc({**base, "lobbyists": ["Jason Aluia", "Chet Atkins"]}),
+        _fake_doc({**base, "lobbyists": ["Chet Atkins", "Michael Bergan"]}),
+        _fake_doc({"entityName": "Solo Person", "entityNameNorm": "SOLO PERSON",
+                   "regType": "Lobbyist", "year": 2025, "clients": []}),
+    ]
+
+    def _iter(_db, collection_name):
+        return iter(registrants if collection_name == REGISTRANTS_COLLECTION else [])
+
+    with patch("writer._iter_collection", side_effect=_iter):
+        compute_stats(db)
+
+    firms = {d["entityNameNorm"]: d for d in _batch_set_dicts_with_key(db, "clientCount")}
+    assert firms["TREMONT STRATEGIES GROUP"]["lobbyists"] == ["Chet Atkins", "Jason Aluia", "Michael Bergan"]
+    assert firms["SOLO PERSON"]["lobbyists"] == []
+
+
+def test_compute_stats_prunes_stale_firm_summaries():
+    """A firm summary left from an earlier run (e.g. a lobbyist whose
+    records are now credited to their firm) must be removed, or it keeps
+    appearing in the firms list and search."""
+    db, doc_mocks = _make_stats_db()
+    registrants = [_fake_doc({"entityName": "Acme", "entityNameNorm": "ACME",
+                              "regType": "Employer", "year": 2025, "clients": []})]
+
+    def _iter(_db, collection_name):
+        return iter(registrants if collection_name == REGISTRANTS_COLLECTION else [])
+
+    keep_ref, stale_ref = MagicMock(id="ACME"), MagicMock(id="CHET%20ATKINS")
+    doc_mocks["firmSummaries"] = MagicMock()
+    doc_mocks["firmSummaries"].collection.return_value.list_documents.return_value = [keep_ref, stale_ref]
+
+    with patch("writer._iter_collection", side_effect=_iter):
+        compute_stats(db)
+
+    deleted = [c[0][0] for c in db.batch.return_value.delete.call_args_list]
+    assert stale_ref in deleted
+    assert keep_ref not in deleted
+
+
+def test_compute_stats_overwrites_stats_doc():
+    """The stats doc must be fully replaced: a merge keeps spendByYear years
+    this run no longer produces (it left stale 2005-2009 figures in dev)."""
+    db, doc_mocks = _make_stats_db()
+    with patch("writer._iter_collection", side_effect=lambda _db, _name: iter([])):
+        compute_stats(db)
+    call = doc_mocks[STATS_DOC_ID].set.call_args
+    assert not call[1].get("merge"), "stats doc must not be written with merge"

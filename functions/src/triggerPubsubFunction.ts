@@ -1,5 +1,6 @@
 import { PubSub } from "@google-cloud/pubsub"
-import * as functions from "firebase-functions"
+import { onRequest as onRequestV2 } from "firebase-functions/v2/https"
+import type { Request, Response } from "express"
 
 const projectId = process.env.GCLOUD_PROJECT
 const pubsubClient = new PubSub({ projectId })
@@ -13,30 +14,33 @@ if (process.env.FUNCTIONS_EMULATOR === "true") {
    *
    * See https://github.com/firebase/firebase-tools/issues/2034#issuecomment-845351980
    */
-  exports.triggerPubsubFunction = functions.https.onRequest(
-    async (request, response) => {
-      let topic: string
-      if (request.query.scheduled) {
-        topic = `projects/${projectId}/topics/firebase-schedule-${request.query.scheduled}`
-      } else if (request.query.pubsub) {
-        topic = `projects/${projectId}/topics/${request.query.pubsub}`
-      } else {
-        response
-          .status(400)
-          .set("Access-Control-Allow-Origin", "*")
-          .send(
-            "Error: Include `scheduled` query parameter for scheduled triggers or `pubsub` for pubsub triggers.\n"
-          )
-        return
-      }
-
-      const data = (request.query.data as string) ?? "trigger"
-      const publisher = pubsubClient.topic(topic).publisher
-      await publisher.publishMessage({ data: Buffer.from(data) })
+  const triggerPubsubFunctionHandler = async (
+    request: Request,
+    response: Response
+  ): Promise<void> => {
+    let topic: string
+    if (request.query.scheduled) {
+      topic = `projects/${projectId}/topics/firebase-schedule-${request.query.scheduled}`
+    } else if (request.query.pubsub) {
+      topic = `projects/${projectId}/topics/${request.query.pubsub}`
+    } else {
       response
-        .status(200)
+        .status(400)
         .set("Access-Control-Allow-Origin", "*")
-        .send("Fired PubSub\n")
+        .send(
+          "Error: Include `scheduled` query parameter for scheduled triggers or `pubsub` for pubsub triggers.\n"
+        )
+      return
     }
-  )
+
+    const data = (request.query.data as string) ?? "trigger"
+    const publisher = pubsubClient.topic(topic).publisher
+    await publisher.publishMessage({ data: Buffer.from(data) })
+    response
+      .status(200)
+      .set("Access-Control-Allow-Origin", "*")
+      .send("Fired PubSub\n")
+  }
+
+  exports.triggerPubsubFunction = onRequestV2(triggerPubsubFunctionHandler)
 }

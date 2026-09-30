@@ -4,7 +4,7 @@
 // Creates a notification document in the user's notification feed for each active subscription.
 
 // Import necessary Firebase modules
-import * as functions from "firebase-functions"
+import { onDocumentWritten } from "firebase-functions/v2/firestore"
 import { getFirestore } from "firebase-admin/firestore"
 import { Timestamp } from "../firebase"
 import {
@@ -101,11 +101,11 @@ const createNotificationFields = (
 }
 
 // Define the publishNotifications function
-export const publishNotifications = functions.firestore
-  .document("/notificationEvents/{topicEventId}")
-  .onWrite(async (snapshot, context) => {
+export const publishNotifications = onDocumentWritten(
+  "/notificationEvents/{topicEventId}",
+  async event => {
     // Get the newly created topic event data
-    const topic = snapshot?.after.data() as
+    const topic = event.data?.after.data() as
       | BillHistoryUpdateNotification
       | TestimonySubmissionNotification
       | BallotQuestionUpdateNotification
@@ -208,4 +208,5 @@ export const publishNotifications = functions.firestore
     await handleNotifications(topic)
 
     notificationPromises.push(batch.commit())
-  })
+  }
+)

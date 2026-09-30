@@ -1,10 +1,11 @@
-import * as functions from "firebase-functions"
+import { onCall } from "firebase-functions/v2/https"
+import type { CallableRequest } from "firebase-functions/v2/https"
 import { db, auth } from "../firebase"
 import { checkAuth, fail } from "../common"
 
-export const completePhoneVerification = functions.https.onCall(
-  async (_, context) => {
-    const uid = checkAuth(context)
+export const completePhoneVerificationV2 = onCall(
+  async (request: CallableRequest) => {
+    const uid = checkAuth(request)
 
     const user = await auth.getUser(uid)
     const hasPhone = user.providerData?.some(p => p.providerId === "phone")

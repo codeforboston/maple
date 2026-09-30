@@ -1,4 +1,5 @@
-import * as functions from "firebase-functions"
+import { onRequest as onRequestV2 } from "firebase-functions/v2/https"
+import * as logger from "firebase-functions/logger"
 
 /**
  * Firebase Function proxy for the MAPLE MCP server on Cloud Run.
@@ -11,9 +12,9 @@ import * as functions from "firebase-functions"
  *   Proxy  → Authorization: Bearer <GOOGLE_ID_TOKEN>  (Cloud Run IAM)
  *            X-Maple-Authorization: Bearer <MAPLE_TOKEN>  (MCP auth middleware)
  */
-export const mcpProxy = functions
-  .runWith({ timeoutSeconds: 30, memory: "256MB" })
-  .https.onRequest(async (req, res) => {
+export const mcpProxyV2 = onRequestV2(
+  { timeoutSeconds: 30, memory: "256MiB" },
+  async (req, res) => {
     const mcpUrl = process.env.MCP_SERVER_URL
     if (!mcpUrl) {
       res.status(503).json({ error: "MCP service not configured" })
@@ -77,9 +78,10 @@ export const mcpProxy = functions
       if (ct) res.setHeader("Content-Type", ct)
       res.end(Buffer.from(responseBody))
     } catch (err) {
-      functions.logger.error("MCP proxy error", err)
+      logger.error("MCP proxy error", err)
       if (!res.headersSent) {
         res.status(502).json({ error: "Bad Gateway" })
       }
     }
-  })
+  }
+)

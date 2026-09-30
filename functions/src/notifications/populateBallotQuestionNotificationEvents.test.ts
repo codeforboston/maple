@@ -1,9 +1,7 @@
 import { populateBallotQuestionNotificationEventsHandler } from "./populateBallotQuestionNotificationEvents"
 
-jest.mock("firebase-functions", () => ({
-  firestore: {
-    document: jest.fn().mockReturnValue({ onWrite: jest.fn() })
-  }
+jest.mock("firebase-functions/v2/firestore", () => ({
+  onDocumentWritten: jest.fn()
 }))
 
 jest.mock("../firebase", () => ({
@@ -43,7 +41,14 @@ const makeSnapshot = (before: object | null, after: object | null) => ({
   after: { exists: after !== null, data: () => after }
 })
 
-const makeContext = (id = "25-01") => ({ params: { id } })
+const makeEvent = (
+  before: object | null,
+  after: object | null,
+  id = "25-01"
+) => ({
+  data: makeSnapshot(before, after),
+  params: { id }
+})
 
 beforeEach(() => {
   jest.clearAllMocks()
@@ -51,37 +56,28 @@ beforeEach(() => {
 
 describe("populateBallotQuestionNotificationEventsHandler", () => {
   it("does nothing when after snapshot does not exist", async () => {
-    const snapshot = makeSnapshot(makeBqData("expectedOnBallot"), null)
-    await populateBallotQuestionNotificationEventsHandler(
-      snapshot as any,
-      makeContext() as any
-    )
+    const event = makeEvent(makeBqData("expectedOnBallot"), null)
+    await populateBallotQuestionNotificationEventsHandler(event as any)
     expect(mockDb.collection).not.toHaveBeenCalled()
   })
 
   it("does nothing when ballotStatus is unchanged", async () => {
-    const snapshot = makeSnapshot(
+    const event = makeEvent(
       makeBqData("expectedOnBallot"),
       makeBqData("expectedOnBallot")
     )
-    await populateBallotQuestionNotificationEventsHandler(
-      snapshot as any,
-      makeContext() as any
-    )
+    await populateBallotQuestionNotificationEventsHandler(event as any)
     expect(mockDb.collection).not.toHaveBeenCalled()
   })
 
   it("creates a new notificationEvent when status changes and none exists", async () => {
     setupCollection(true)
 
-    const snapshot = makeSnapshot(
+    const event = makeEvent(
       makeBqData("expectedOnBallot"),
       makeBqData("accepted")
     )
-    await populateBallotQuestionNotificationEventsHandler(
-      snapshot as any,
-      makeContext() as any
-    )
+    await populateBallotQuestionNotificationEventsHandler(event as any)
 
     expect(mockAdd).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -99,14 +95,11 @@ describe("populateBallotQuestionNotificationEventsHandler", () => {
     const existingDocId = "existing-event-id"
     setupCollection(false, [{ id: existingDocId }])
 
-    const snapshot = makeSnapshot(
+    const event = makeEvent(
       makeBqData("expectedOnBallot"),
       makeBqData("rejected")
     )
-    await populateBallotQuestionNotificationEventsHandler(
-      snapshot as any,
-      makeContext() as any
-    )
+    await populateBallotQuestionNotificationEventsHandler(event as any)
 
     expect(mockDoc).toHaveBeenCalledWith(existingDocId)
     expect(mockUpdate).toHaveBeenCalledWith(

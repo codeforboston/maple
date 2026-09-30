@@ -15,12 +15,12 @@ import { terminateFirebase, testDb } from "../testUtils"
 const publishTestimony = httpsCallable<
   { draftId: string },
   { publicationId: string }
->(functions, "publishTestimony")
+>(functions, "publishTestimonyV2")
 
 const deleteTestimony = httpsCallable<
   { publicationId: string },
   { deleted: boolean }
->(functions, "deleteTestimony")
+>(functions, "deleteTestimonyV2")
 
 jest.setTimeout(30000)
 

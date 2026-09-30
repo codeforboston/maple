@@ -5,6 +5,7 @@ import {
   Literal,
   Number,
   Null,
+  Optional,
   Record,
   Static,
   String,
@@ -39,6 +40,12 @@ export const LobbyingRegistrant = Record({
   regType: Union(Literal("Lobbyist"), Literal("Employer")),
   clients: Array(LobbyingClient),
   legacyTotalCompensation: Null.Or(Number),
+  periodStart: Null.Or(String),
+  periodEnd: Null.Or(String),
+  // Lobbyists a firm reports paying (Employer registrants only; empty for
+  // individual lobbyists). Absent on docs written before firm attribution.
+  lobbyists: Optional(Array(String)),
+  lobbyistsNorm: Optional(Array(String)),
   disclosureUrls: Array(String),
   fetchedAt: InstanceOf(Timestamp)
 })

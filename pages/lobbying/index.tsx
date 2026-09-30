@@ -111,7 +111,9 @@ function StatsBar({ stats }: { stats: LobbyingStats | undefined }) {
 
 // ── Spend + filings chart ─────────────────────────────────────────────────────
 
-type YearRow = { year: number; spend: number; filings: number }
+// spend is null for years whose disclosures didn't report per-client
+// compensation (2005–2009), so the chart shows no bar rather than $0.
+type YearRow = { year: number; spend: number | null; filings: number }
 
 function buildYearData(stats: LobbyingStats): YearRow[] {
   const years = new Set([
@@ -121,7 +123,7 @@ function buildYearData(stats: LobbyingStats): YearRow[] {
   return [...years]
     .map(y => ({
       year: Number(y),
-      spend: stats.spendByYear[y] ?? 0,
+      spend: stats.spendByYear[y] ?? null,
       filings: stats.filingsByYear[y] ?? 0
     }))
     .filter(r => r.year >= 2005)
@@ -131,6 +133,7 @@ function buildYearData(stats: LobbyingStats): YearRow[] {
 function SpendFilingsChart({ stats }: { stats: LobbyingStats | undefined }) {
   const { t } = useTranslation("lobbying")
   const data = useMemo(() => (stats ? buildYearData(stats) : []), [stats])
+  const unreportedYears = data.filter(r => r.spend === null).map(r => r.year)
   const reducedMotion = usePrefersReducedMotion()
 
   if (!stats || data.length === 0) return null
@@ -225,8 +228,26 @@ function SpendFilingsChart({ stats }: { stats: LobbyingStats | undefined }) {
           </ComposedChart>
         </ResponsiveContainer>
       </div>
+      {unreportedYears.length > 0 && (
+        <p
+          style={{ color: MAPLE_COLORS.textMuted, fontSize: 12, marginTop: 8 }}
+        >
+          {t("explainers.spendNotReported", {
+            years: formatYearRange(unreportedYears)
+          })}
+        </p>
+      )}
     </ChartContainer>
   )
+}
+
+// "2005–2009" for a contiguous run, otherwise a comma-separated list.
+function formatYearRange(years: number[]): string {
+  const first = years[0]
+  const last = years[years.length - 1]
+  const contiguous = last - first === years.length - 1
+  if (years.length > 1 && contiguous) return `${first}–${last}`
+  return years.join(", ")
 }
 
 // ── Page ──────────────────────────────────────────────────────────────────────
