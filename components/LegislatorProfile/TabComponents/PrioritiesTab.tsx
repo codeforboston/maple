@@ -28,6 +28,8 @@ type ProfilePriorities = {
   priorityOneText?: string
   priorityTwoIcon?: IconType
   priorityTwoText?: string
+  priorityThreeIcon?: IconType
+  priorityThreeText?: string
 }
 
 type UpdateProfilePriorities = {
@@ -36,6 +38,8 @@ type UpdateProfilePriorities = {
   priorityOneText: string
   priorityTwoIcon: IconType
   priorityTwoText: string
+  priorityThreeIcon: IconType
+  priorityThreeText: string
 }
 
 type Props = {
@@ -90,7 +94,9 @@ async function updatePriorities(
     updatePriorityOneIcon,
     updatePriorityOneText,
     updatePriorityTwoIcon,
-    updatePriorityTwoText
+    updatePriorityTwoText,
+    updatePriorityThreeIcon,
+    updatePriorityThreeText
   } = actions
 
   await updateInTheirOwnWords(data.inTheirOwnWords)
@@ -98,6 +104,8 @@ async function updatePriorities(
   await updatePriorityOneText(data.priorityOneText)
   await updatePriorityTwoIcon(data.priorityTwoIcon)
   await updatePriorityTwoText(data.priorityTwoText)
+  await updatePriorityThreeIcon(data.priorityThreeIcon)
+  await updatePriorityThreeText(data.priorityThreeText)
 }
 
 export function PrioritiesTab({
@@ -160,23 +168,25 @@ function EditablePriorities({
     priorityOneIcon,
     priorityOneText,
     priorityTwoIcon,
-    priorityTwoText
+    priorityTwoText,
+    priorityThreeIcon,
+    priorityThreeText
   }: ProfilePriorities = profile
   const [formUpdated, setFormUpdated] = useState(false)
   const { t } = useTranslation("legislators")
 
   const currentOneOption = priorityOneIcon || "commerce"
   const currentTwoOption = priorityTwoIcon || "commerce"
-  // const currentThreeOption = priorityThreeIcon || "commerce"
+  const currentThreeOption = priorityThreeIcon || "commerce"
   const [selectedOneOption, setSelectedOneOption] = useState<IconType>(
     priorityOneIcon ? priorityOneIcon : "commerce"
   )
   const [selectedTwoOption, setSelectedTwoOption] = useState<IconType>(
     priorityTwoIcon ? priorityTwoIcon : "commerce"
   )
-  // const [selectedThreeOption, setSelectedThreeOption] = useState<IconType>(
-  //   priorityThreeIcon ? priorityThreeIcon : "commerce"
-  // )
+  const [selectedThreeOption, setSelectedThreeOption] = useState<IconType>(
+    priorityThreeIcon ? priorityThreeIcon : "commerce"
+  )
 
   const handleOneChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedOneOption(e.target.value as IconType)
@@ -184,9 +194,9 @@ function EditablePriorities({
   const handleTwoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedTwoOption(e.target.value as IconType)
   }
-  // const handleThreeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  //   setSelectedThreeOption(e.target.value as IconType)
-  // }
+  const handleThreeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedThreeOption(e.target.value as IconType)
+  }
 
   const onSubmit = handleSubmit(async update => {
     await updatePriorities({ profile, actions }, update)
@@ -197,10 +207,6 @@ function EditablePriorities({
   useEffect(() => {
     setFormUpdated(isDirty)
   }, [isDirty, setFormUpdated])
-
-  console.log("S1: ", selectedOneOption)
-  console.log("S2: ", selectedTwoOption)
-  // console.log("S3: ", selectedThreeOption)
 
   return (
     <>
@@ -340,19 +346,19 @@ function EditablePriorities({
             </SubmitButton>
           </div>
 
-          {/* <div className="mb-2">{SVG_MAP[currentOneOption]} Current Icon</div>
+          <div className="mb-2">{SVG_MAP[currentThreeOption]} Current Icon</div>
 
           <div className="d-flex align-items-center justify-content-between">
             <div className="me-3 text-nowrap">
-              {SVG_MAP[selectedOneOption]} Selected Icon
+              {SVG_MAP[selectedThreeOption]} Selected Icon
             </div>
 
             <select
               className="form-select"
-              {...register("priorityOneIcon")}
+              {...register("priorityThreeIcon")}
               id="choices"
-              value={selectedOneOption}
-              onChange={handleOneChange}
+              value={selectedThreeOption}
+              onChange={handleThreeChange}
               required
             >
               <MenuOptions />
@@ -362,13 +368,15 @@ function EditablePriorities({
           <div>
             <Input
               as="textarea"
-              {...register("priorityOneText")}
+              {...register("priorityThreeText")}
               style={{ fontSize: "11px", height: "10rem" }}
               className="mt-2"
               label={"Edit Text:"}
-              defaultValue={priorityOneText ? priorityOneText : t("addWords")}
+              defaultValue={
+                priorityThreeText ? priorityThreeText : t("addWords")
+              }
             />
-          </div> */}
+          </div>
         </Form>
       </PriorityBlock>
     </>
