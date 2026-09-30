@@ -14,6 +14,27 @@ import {
   UpdateProfileData
 } from "components/EditProfilePage/PersonalInfoTab"
 
+type UpdateProfileBiography = {
+  aboutYou: string
+}
+
+type Props = {
+  profile: Profile
+  actions: ProfileHook
+  uid?: string
+  setFormUpdated?: any
+  className?: string
+}
+
+async function updateBiography(
+  { actions }: Props,
+  data: UpdateProfileBiography
+) {
+  const { updateAbout } = actions
+
+  await updateAbout(data.aboutYou)
+}
+
 export function Biography({
   court,
   legislatorData,
@@ -68,12 +89,12 @@ function EditableBiography({
     register,
     formState: { errors, isDirty },
     handleSubmit
-  } = useForm<UpdateProfileData>()
+  } = useForm<UpdateProfileBiography>()
 
   const { about }: Profile = profile
 
   const onSubmit = handleSubmit(async update => {
-    await updateProfile({ profile, actions }, update)
+    await updateBiography({ profile, actions }, update)
     location.assign(`/legislators/${court}/${memberCode}`)
     setFormUpdated(false)
   })

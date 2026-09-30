@@ -84,7 +84,7 @@ export function PrioritiesTab({
 
   console.log("leg data: ", legislatorData)
 
-  if (userResult.profile && !pageOwner) {
+  if (userResult.profile && pageOwner) {
     // the user is the legislator who owns this page
     // therefore they get edit privledges
     return (
