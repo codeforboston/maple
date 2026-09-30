@@ -67,11 +67,11 @@ export class AssemblyAIHandler extends AssemblyAIHandlerBase {
         error: any
       }
   > {
-    if (!process.env.FUNCTIONS_API_BASE) {
+    if (!process.env.TRANSCRIPTION_WEBHOOK_URL) {
       return {
         status: "error",
         type: "transcription",
-        error: "process.env.FUNCTIONS_API_BASE is not set"
+        error: "process.env.TRANSCRIPTION_WEBHOOK_URL is not set"
       }
     }
 
@@ -99,12 +99,7 @@ export class AssemblyAIHandler extends AssemblyAIHandlerBase {
         audio:
           // test with: "https://assemblyaiusercontent.com/playground/aKUqpEtmYmI.flac",
           audioUrl,
-        webhook_url:
-          // make sure process.env.FUNCTIONS_API_BASE equals
-          // https://us-central1-digital-testimony-prod.cloudfunctions.net
-          // on prod. test with:
-          // "https://ngrokid.ngrok-free.app/demo-dtp/us-central1/transcriptionV2",
-          `${process.env.FUNCTIONS_API_BASE}/transcriptionV2`,
+        webhook_url: process.env.TRANSCRIPTION_WEBHOOK_URL,
         speaker_labels: true,
         webhook_auth_header_name: "x-maple-webhook",
         webhook_auth_header_value: newToken
