@@ -9,10 +9,6 @@ import { SubmitButton } from "../LegislatorComponents"
 import { SidebarBlock, SidebarTitle } from "../LegislatorSidebar"
 
 import { useAuth } from "components/auth"
-import {
-  updateProfile,
-  UpdateProfileData
-} from "components/EditProfilePage/PersonalInfoTab"
 
 type UpdateProfileBiography = {
   aboutYou: string

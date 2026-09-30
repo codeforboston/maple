@@ -248,10 +248,10 @@ export function LegislatorProfilePage({
             )}
 
             <div>
-              {legislatorData[0]?.social.twitter ||
-              legislatorData[0]?.social.linkedIn ||
-              legislatorData[0]?.social.blueSky ||
-              legislatorData[0]?.social.mastodon ? (
+              {legislatorData[0]?.social?.twitter ||
+              legislatorData[0]?.social?.linkedIn ||
+              legislatorData[0]?.social?.blueSky ||
+              legislatorData[0]?.social?.mastodon ? (
                 <span className="px-2">·</span>
               ) : (
                 <></>
