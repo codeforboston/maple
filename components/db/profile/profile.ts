@@ -33,7 +33,8 @@ type ProfileState = {
   updatingSocial: Record<keyof SocialLinks, boolean>
   updatingBillsFollowing: boolean
   updatingInTheirOwnWords: boolean
-  updatingpriorityOneIcon: boolean
+  updatingPriorityOneIcon: boolean
+  updatingPriorityOneText: boolean
   profile: Profile | undefined
 }
 
@@ -74,7 +75,8 @@ export function useProfile() {
         },
         updatingBillsFollowing: false,
         updatingInTheirOwnWords: false,
-        updatingpriorityOneIcon: false,
+        updatingPriorityOneIcon: false,
+        updatingPriorityOneText: false,
         profile
       }
     )
@@ -216,9 +218,16 @@ export function useProfile() {
       },
       updatePriorityOneIcon: async (priorityOneIcon: IconType) => {
         if (uid) {
-          dispatch({ updatingpriorityOneIcon: true })
+          dispatch({ updatingPriorityOneIcon: true })
           await updatePriorityOneIcon(uid, priorityOneIcon)
-          dispatch({ updatingpriorityOneIcon: false })
+          dispatch({ updatingPriorityOneIcon: false })
+        }
+      },
+      updatePriorityOneText: async (priorityOneText: string) => {
+        if (uid) {
+          dispatch({ updatingPriorityOneText: true })
+          await updatePriorityOneText(uid, priorityOneText)
+          dispatch({ updatingPriorityOneText: false })
         }
       }
     }),
@@ -362,6 +371,14 @@ function updatePriorityOneIcon(uid: string, priorityOneIcon: IconType) {
   return setDoc(
     profileRef(uid),
     { priorityOneIcon: priorityOneIcon ?? deleteField() },
+    { merge: true }
+  )
+}
+
+function updatePriorityOneText(uid: string, priorityOneText: string) {
+  return setDoc(
+    profileRef(uid),
+    { priorityOneText: priorityOneText ?? deleteField() },
     { merge: true }
   )
 }

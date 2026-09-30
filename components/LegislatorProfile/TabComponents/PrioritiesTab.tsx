@@ -25,11 +25,13 @@ export type IconType = keyof typeof SVG_MAP
 type ProfilePriorities = {
   inTheirOwnWords?: string
   priorityOneIcon?: IconType
+  priorityOneText?: string
 }
 
 type UpdateProfilePriorities = {
   inTheirOwnWords: string
   priorityOneIcon: IconType
+  priorityOneText: string
 }
 
 type Props = {
@@ -66,10 +68,15 @@ async function updatePriorities(
   { actions }: Props,
   data: UpdateProfilePriorities
 ) {
-  const { updateInTheirOwnWords, updatePriorityOneIcon } = actions
+  const {
+    updateInTheirOwnWords,
+    updatePriorityOneIcon,
+    updatePriorityOneText
+  } = actions
 
   await updateInTheirOwnWords(data.inTheirOwnWords)
   await updatePriorityOneIcon(data.priorityOneIcon)
+  await updatePriorityOneText(data.priorityOneText)
 }
 
 export function PrioritiesTab({
@@ -127,7 +134,11 @@ function EditablePriorities({
     formState: { errors, isDirty },
     handleSubmit
   } = useForm<UpdateProfilePriorities>()
-  const { inTheirOwnWords, priorityOneIcon }: ProfilePriorities = profile
+  const {
+    inTheirOwnWords,
+    priorityOneIcon,
+    priorityOneText
+  }: ProfilePriorities = profile
   const [formUpdated, setFormUpdated] = useState(false)
   const { t } = useTranslation("legislators")
 
@@ -135,6 +146,7 @@ function EditablePriorities({
   const [selectedOneOption, setSelectedOneOption] = useState<IconType>(
     priorityOneIcon ? priorityOneIcon : "commerce"
   )
+
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedOneOption(e.target.value as IconType)
   }
@@ -172,6 +184,7 @@ function EditablePriorities({
           <Input
             as="textarea"
             {...register("inTheirOwnWords")}
+            style={{ fontSize: "11px", height: "10rem" }}
             className="mt-3"
             label={t("editWords")}
             defaultValue={inTheirOwnWords ? inTheirOwnWords : t("addWords")}
@@ -179,14 +192,25 @@ function EditablePriorities({
         </Form>
       </PriorityBlock>
       <PriorityBlock>
-        <div>Select an Icon and Test for Priority One</div>
-        <div>{SVG_MAP[currentOneOption]} Current Icon</div>
-        <div>{SVG_MAP[selectedOneOption]} Selected Icon</div>
         <Form onSubmit={onSubmit}>
-          <div className={`d-flex justify-content-between`}>
+          <div className="d-flex justify-content-between">
             <PriorityTitle className={`align-self-center d-inline my-1`}>
-              {/* {t("priorityOneIcon")} */}Select:
+              Select an Icon and Text for Priority One
             </PriorityTitle>
+            <SubmitButton
+              type="submit"
+              className={`btn btn-primary d-inline m-1 w-auto`}
+            >
+              {t("submit")}
+            </SubmitButton>
+          </div>
+
+          <div className="mb-2">{SVG_MAP[currentOneOption]} Current Icon</div>
+
+          <div className="d-flex align-items-center justify-content-between">
+            <div className="me-3 text-nowrap">
+              {SVG_MAP[selectedOneOption]} Selected Icon
+            </div>
             <select
               className="form-select"
               {...register("priorityOneIcon")}
@@ -202,12 +226,16 @@ function EditablePriorities({
               <option value="crime">Crime and Law Enforcement</option>
               <option value="economics">Economics And Public Finance</option>
             </select>
-            <SubmitButton
-              type="submit"
-              className={`btn btn-primary d-inline m-1 w-auto`}
-            >
-              {t("submit")}
-            </SubmitButton>
+          </div>
+          <div>
+            <Input
+              as="textarea"
+              {...register("priorityOneText")}
+              style={{ fontSize: "11px", height: "10rem" }}
+              className="mt-2"
+              label={"Edit Text:"}
+              defaultValue={priorityOneText ? priorityOneText : t("addWords")}
+            />
           </div>
         </Form>
       </PriorityBlock>
