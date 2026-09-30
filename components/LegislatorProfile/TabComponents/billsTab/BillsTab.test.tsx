@@ -2,7 +2,7 @@ import React from "react"
 import { render, screen, waitFor } from "@testing-library/react"
 import { doc, getDoc, getFirestore } from "firebase/firestore"
 import { MemberContent } from "functions/src/members/types"
-import { BillsTab } from "./BillsTab"
+import { BillsTab } from "../BillsTab"
 
 jest.mock("firebase/firestore", () => ({
   doc: jest.fn((_db, path) => ({ path })),
