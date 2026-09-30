@@ -1,6 +1,6 @@
 import { QuerySnapshot } from "@google-cloud/firestore"
-import { runWith } from "firebase-functions"
 import { onMessagePublished } from "firebase-functions/v2/pubsub"
+import { onSchedule } from "firebase-functions/v2/scheduler"
 import { City } from "../cities/types"
 import { Committee } from "../committees/types"
 import { DocUpdate } from "../common"
@@ -41,9 +41,7 @@ export default abstract class BillProcessor {
     schedule = "every 24 hours",
     timeoutSeconds = 120
   ) {
-    return runWith({ timeoutSeconds })
-      .pubsub.schedule(schedule)
-      .onRun(() => new Processor().run())
+    return onSchedule({ schedule, timeoutSeconds }, () => new Processor().run())
   }
 
   private async run() {

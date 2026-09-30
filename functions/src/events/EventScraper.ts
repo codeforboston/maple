@@ -1,4 +1,5 @@
-import { RuntimeOptions, runWith } from "firebase-functions/v1"
+import type { MemoryOption } from "firebase-functions/v2"
+import { onSchedule } from "firebase-functions/v2/scheduler"
 import { DateTime } from "luxon"
 import { logFetchError } from "../common"
 import { db, Timestamp } from "../firebase"
@@ -23,10 +24,10 @@ export abstract class EventScraper<ListItem, Event extends BaseEvent> {
     schedule: string,
     timeout: number,
     {
-      memory = "256MB",
+      memory = "256MiB",
       pastEventCutoff = { days: 8 }
     }: {
-      memory?: RuntimeOptions["memory"]
+      memory?: MemoryOption
       pastEventCutoff?: Duration
     } = {}
   ) {
@@ -37,14 +38,16 @@ export abstract class EventScraper<ListItem, Event extends BaseEvent> {
   }
 
   get function() {
-    return runWith({
-      timeoutSeconds: this.timeout,
-      secrets: ["ASSEMBLY_API_KEY"],
-      memory: this.memory,
-      maxInstances: 1
-    })
-      .pubsub.schedule(this.schedule)
-      .onRun(() => this.run())
+    return onSchedule(
+      {
+        schedule: this.schedule,
+        timeoutSeconds: this.timeout,
+        secrets: ["ASSEMBLY_API_KEY"],
+        memory: this.memory,
+        maxInstances: 1
+      },
+      () => this.run()
+    )
   }
 
   abstract listEvents(): Promise<ListItem[]>
