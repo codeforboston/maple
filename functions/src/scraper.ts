@@ -1,5 +1,6 @@
 import axios, { AxiosError } from "axios"
-import { logger, runWith } from "firebase-functions"
+import { logger } from "firebase-functions"
+import { onDocumentCreated } from "firebase-functions/v2/firestore"
 import { onSchedule } from "firebase-functions/v2/scheduler"
 import { last } from "lodash"
 import { db, DocumentData, FieldValue, Timestamp } from "./firebase"
@@ -116,9 +117,15 @@ export function createScraper<T>({
    * Fetches document content and writes it to firestore for application
    * consumption.
    */
-  const fetchBatch = runWith({ timeoutSeconds: fetchBatchTimeout })
-    .firestore.document(`/scrapers/${resourceName}/batches/{batchId}`)
-    .onCreate(async snap => {
+  const fetchBatch = onDocumentCreated(
+    {
+      document: `/scrapers/${resourceName}/batches/{batchId}`,
+      timeoutSeconds: fetchBatchTimeout
+    },
+    async event => {
+      const snap = event.data
+      if (!snap) return
+
       const batch = snap.data() as Batch,
         court = batch.court,
         writer = db.bulkWriter()
@@ -154,7 +161,8 @@ export function createScraper<T>({
       }
 
       await writer.close()
-    })
+    }
+  )
 
   return { startBatches, fetchBatch }
 }
