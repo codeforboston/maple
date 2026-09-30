@@ -35,6 +35,8 @@ type ProfileState = {
   updatingInTheirOwnWords: boolean
   updatingPriorityOneIcon: boolean
   updatingPriorityOneText: boolean
+  updatingPriorityTwoIcon: boolean
+  updatingPriorityTwoText: boolean
   profile: Profile | undefined
 }
 
@@ -77,6 +79,8 @@ export function useProfile() {
         updatingInTheirOwnWords: false,
         updatingPriorityOneIcon: false,
         updatingPriorityOneText: false,
+        updatingPriorityTwoIcon: false,
+        updatingPriorityTwoText: false,
         profile
       }
     )
@@ -229,6 +233,20 @@ export function useProfile() {
           await updatePriorityOneText(uid, priorityOneText)
           dispatch({ updatingPriorityOneText: false })
         }
+      },
+      updatePriorityTwoIcon: async (priorityTwoIcon: IconType) => {
+        if (uid) {
+          dispatch({ updatingPriorityTwoIcon: true })
+          await updatePriorityTwoIcon(uid, priorityTwoIcon)
+          dispatch({ updatingPriorityTwoIcon: false })
+        }
+      },
+      updatePriorityTwoText: async (priorityTwoText: string) => {
+        if (uid) {
+          dispatch({ updatingPriorityTwoText: true })
+          await updatePriorityTwoText(uid, priorityTwoText)
+          dispatch({ updatingPriorityTwoText: false })
+        }
       }
     }),
     [uid, state.updatingSocial, state.updatingContactInfo, profile]
@@ -379,6 +397,22 @@ function updatePriorityOneText(uid: string, priorityOneText: string) {
   return setDoc(
     profileRef(uid),
     { priorityOneText: priorityOneText ?? deleteField() },
+    { merge: true }
+  )
+}
+
+function updatePriorityTwoIcon(uid: string, priorityTwoIcon: IconType) {
+  return setDoc(
+    profileRef(uid),
+    { priorityTwoIcon: priorityTwoIcon ?? deleteField() },
+    { merge: true }
+  )
+}
+
+function updatePriorityTwoText(uid: string, priorityTwoText: string) {
+  return setDoc(
+    profileRef(uid),
+    { priorityTwoText: priorityTwoText ?? deleteField() },
     { merge: true }
   )
 }
