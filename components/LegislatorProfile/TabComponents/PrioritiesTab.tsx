@@ -3,10 +3,6 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import styled from "styled-components"
 
-import CommerceIcon from "../../../public/SmartTagIcons/blue-variants/Commerce"
-import CrimeAndLawEnforcementIcon from "public/SmartTagIcons/blue-variants/Crime-and-Law-Enforcement"
-import EconomicsAndPublicFinanceIcon from "public/SmartTagIcons/blue-variants/Economics-and-Public-Finance"
-
 import { Form } from "../../bootstrap"
 import { ProfileHook, useProfile } from "../../db"
 import Input from "../../forms/Input"
@@ -14,10 +10,34 @@ import { SubmitButton, TabBlock } from "../LegislatorComponents"
 
 import { useAuth } from "components/auth"
 
+import CommerceIcon from "public/SmartTagIcons/blue-variants/Commerce"
+import CrimeAndLawEnforcementIcon from "public/SmartTagIcons/blue-variants/Crime-and-Law-Enforcement"
+import EconomicsAndPublicFinanceIcon from "public/SmartTagIcons/blue-variants/Economics-and-Public-Finance"
+import EducationIcon from "public/SmartTagIcons/blue-variants/Education"
+import EmergencyManagementIcon from "public/SmartTagIcons/blue-variants/Emergency-Management"
+import EnergyIcon from "public/SmartTagIcons/blue-variants/Energy"
+import EnvironmentalProtectionIcon from "public/SmartTagIcons/blue-variants/Environmental-Protection"
+import FamiliesIcon from "public/SmartTagIcons/blue-variants/Families"
+import FoodDrugsAndAlcoholIcon from "public/SmartTagIcons/blue-variants/Food-Drugs-and-Alcohol"
+import GovernmentOperationsAndElectionsIcon from "public/SmartTagIcons/blue-variants/Government-Operations-and-Elections"
+import HealthcareIcon from "public/SmartTagIcons/blue-variants/Healthcare"
+import HousingAndCommunityDevelopmentIcon from "public/SmartTagIcons/blue-variants/Housing-and-Community-Development"
+import ImmigrantsAndForeignNationalsIcon from "public/SmartTagIcons/blue-variants/Immigrants-and-Foreign-Nationals"
+
 const SVG_MAP = {
   commerce: <CommerceIcon width="24" height="24" />,
   crime: <CrimeAndLawEnforcementIcon width="24" height="24" />,
-  economics: <EconomicsAndPublicFinanceIcon width="24" height="24" />
+  economics: <EconomicsAndPublicFinanceIcon width="24" height="24" />,
+  education: <EducationIcon width="24" height="24" />,
+  emergency: <EmergencyManagementIcon width="24" height="24" />,
+  energy: <EnergyIcon width="24" height="24" />,
+  environment: <EnvironmentalProtectionIcon width="24" height="24" />,
+  families: <FamiliesIcon width="24" height="24" />,
+  fda: <FoodDrugsAndAlcoholIcon width="24" height="24" />,
+  government: <GovernmentOperationsAndElectionsIcon width="24" height="24" />,
+  healthcare: <HealthcareIcon width="24" height="24" />,
+  housing: <HousingAndCommunityDevelopmentIcon width="24" height="24" />,
+  immigrants: <ImmigrantsAndForeignNationalsIcon width="24" height="24" />
 }
 
 export type IconType = keyof typeof SVG_MAP
@@ -80,7 +100,17 @@ function MenuOptions() {
       </option>
       <option value="commerce">Commerce</option>
       <option value="crime">Crime and Law Enforcement</option>
-      <option value="economics">Economics And Public Finance</option>
+      <option value="economics">Economics and Public Finance</option>
+      <option value="education">Education</option>
+      <option value="emergency">Emergency Management</option>
+      <option value="energy">Energy</option>
+      <option value="environment">Environmental Protection</option>
+      <option value="families">Families</option>
+      <option value="fda">Food Drugs and Alcohol</option>
+      <option value="government">Government Operations and Elections</option>
+      <option value="healthcare">Healthcare</option>
+      <option value="housing">Housing and Community Development</option>
+      <option value="immigrants">Immigrants and Foreign Nationals</option>
     </>
   )
 }
