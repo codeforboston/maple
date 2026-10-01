@@ -14,8 +14,25 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from portal import DisclosureDetail, DisclosureMeta
+import pytest
+
+from portal import DisclosureDetail, DisclosureMeta, Registration
 import scrape
+
+
+@pytest.fixture(autouse=True)
+def _fetch_summary_via_meta_mock(monkeypatch):
+    """scrape fetches a registration page once via fetch_summary (disclosure
+    links + full registration). Tests mock fetch_disclosure_meta, so derive
+    fetch_summary from that mock at call time, with no registration."""
+    monkeypatch.setattr(
+        scrape,
+        "fetch_summary",
+        lambda session, url, use_archive=False: (
+            scrape.fetch_disclosure_meta(session, url, use_archive=use_archive),
+            None,
+        ),
+    )
 
 
 # ── Fake Firestore ────────────────────────────────────────────────────────────
@@ -401,3 +418,21 @@ def test_weekly_never_passes_use_archive():
         scrape.run_weekly(db, years=[2020])
 
     assert fetch_meta.call_args[1].get("use_archive", False) is False
+
+
+def test_registrations_are_saved_by_weekly_and_backfill():
+    """Both modes save the registration from each registration page they
+    fetch, so lobbyists whose firm files for them are still recorded."""
+    db = FakeFirestore()
+    summary_url = "https://portal.test/Summary.aspx?s=1"
+    reg = Registration(url=summary_url, name="Carlo Basile", year=2026, reg_type="Lobbyist")
+    saved = []
+    with patch("scrape.make_session", return_value=None), patch(
+        "scrape.fetch_summary_links", side_effect=lambda session, year: [summary_url]
+    ), patch(
+        "scrape.fetch_summary",
+        side_effect=lambda session, url, use_archive=False: (_meta(url, []), reg),
+    ), patch("scrape.write_registration", side_effect=lambda db, r: saved.append(r)):
+        scrape.run_weekly(db, [2026])
+        scrape.run_backfill(db, [2026], workers=1)
+    assert saved == [reg, reg]

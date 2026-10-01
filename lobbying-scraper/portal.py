@@ -109,6 +109,30 @@ class DisclosureDetail:
     lobbyists: list[str] = field(default_factory=list)
 
 
+@dataclass
+class RegistrationParty:
+    """A lobbyist, employing firm or client listed on a registration page."""
+    name: str
+    url: Optional[str] = None      # that party's own registration page, when known
+    amount: Optional[float] = None
+    start_date: Optional[str] = None
+    end_date: Optional[str] = None
+    purpose: Optional[str] = None
+
+
+@dataclass
+class Registration:
+    """One registration page (Summary.aspx): a lobbyist or firm in one year."""
+    url: str
+    name: str
+    year: int
+    reg_type: str                  # "Lobbyist" | "Employer" (a "Lobbyist Entity")
+    lobbyists: list[RegistrationParty] = field(default_factory=list)
+    employers: list[RegistrationParty] = field(default_factory=list)
+    clients: list[RegistrationParty] = field(default_factory=list)
+    disclosure_urls: list[str] = field(default_factory=list)
+
+
 # ── Derived-value helpers ─────────────────────────────────────────────────────
 
 
@@ -147,6 +171,12 @@ def registrant_id(entity_name: str, year: int, period_start: Optional[str] = Non
     # run already wrote, instead of spawning a spurious near-duplicate.
     key = f"{year}|{entity_name}|{period_start}" if period_start else f"{year}|{entity_name}"
     return hashlib.sha256(key.encode()).hexdigest()[:40]
+
+
+def registration_id(name: str, year: int, reg_type: str) -> str:
+    # Keyed by name, not page URL: before 2019 the portal served several
+    # identical pages per firm per year, which must map to one registration.
+    return hashlib.sha256(f"registration|{reg_type}|{year}|{name}".encode()).hexdigest()[:40]
 
 
 def filing_id(
@@ -318,6 +348,75 @@ def fetch_disclosure_meta(
     session: requests.Session, summary_url: str, use_archive: bool = False
 ) -> DisclosureMeta:
     return parse_summary(_get(session, summary_url, use_archive=use_archive))
+
+
+def _iso_date(text: str) -> Optional[str]:
+    m = re.match(r"^(\d{1,2})/(\d{1,2})/(\d{4})$", text.strip())
+    if not m:
+        return None
+    mo, d, y = m.groups()
+    return f"{y}-{int(mo):02d}-{int(d):02d}"
+
+
+def _parties(soup: BeautifulSoup, repeater: str, link_id: str, amount_id: str,
+             employment_id: str, keep_urls: bool) -> list[RegistrationParty]:
+    """Read one repeater section (e.g. a firm's lobbyists) of a registration page."""
+    prefix = f"ContentPlaceHolder1_{repeater}_"
+    parties = []
+    for link in soup.find_all(id=re.compile(rf"^{prefix}{link_id}_\d+$")):
+        i = link["id"].rsplit("_", 1)[1]
+        amount = soup.find(id=f"{prefix}{amount_id}_{i}")
+        emp = f"{prefix}{employment_id}_{i}_"
+        start = soup.find(id=re.compile(rf"^{emp}lblEmploymentDate_\d+$"))
+        end = soup.find(id=re.compile(rf"^{emp}lblTerminationDate_\d+$"))
+        purpose = soup.find(id=re.compile(rf"^{emp}lblPurposeOfEmp_\d+$"))
+        href = link.get("href")
+        parties.append(RegistrationParty(
+            name=link.get_text(" ", strip=True),
+            url=(href if href.startswith("http") else BASE_URL + href) if href and keep_urls else None,
+            amount=_parse_amount(amount.get_text(strip=True)) if amount else None,
+            start_date=_iso_date(start.get_text(strip=True)) if start else None,
+            end_date=_iso_date(end.get_text(strip=True)) if end else None,
+            purpose=purpose.get_text(" ", strip=True) or None if purpose else None,
+        ))
+    return [p for p in parties if p.name]
+
+
+def parse_registration(soup: BeautifulSoup, url: str) -> Optional[Registration]:
+    """Parse a registration page (Summary.aspx). Pure function — no I/O.
+
+    Returns None for a page without a registrant name: the portal sometimes
+    serves an "An Error Occurred" page in place of a registration.
+    """
+    meta = parse_summary(soup)
+    if not meta.entity_name or meta.year is None:
+        return None
+    # Before 2019 the lobbyist links on a firm's page point to duplicate copies
+    # of the firm's own page (the old portal listed a firm once per lobbyist),
+    # not to the lobbyists' registrations, so only later links identify people.
+    lobbyist_urls = meta.year >= 2019
+    return Registration(
+        url=url,
+        name=meta.entity_name,
+        year=meta.year,
+        reg_type=meta.reg_type,
+        lobbyists=_parties(soup, "RptLobbyistInfo", "hlnkClientInformation", "lblAmount",
+                           "RptLobbyistEmploymentInfo", keep_urls=lobbyist_urls),
+        employers=_parties(soup, "RptEntity", "hlnkEntityInformation", "lblEAmount",
+                           "RptEntityEmploymentInfo", keep_urls=True),
+        clients=_parties(soup, "RptClient", "hlnkClientInformation", "lblAmount",
+                         "RptClientEmploymentInfo", keep_urls=False),
+        disclosure_urls=meta.disclosure_urls,
+    )
+
+
+def fetch_summary(
+    session: requests.Session, summary_url: str, use_archive: bool = False
+) -> tuple[DisclosureMeta, Optional[Registration]]:
+    """Fetch a registration page once; return its disclosure links and the
+    full registration (None if the portal served an error page)."""
+    soup = _get(session, summary_url, use_archive=use_archive)
+    return parse_summary(soup), parse_registration(soup, summary_url)
 
 
 def _parse_amount(text: str) -> Optional[float]:
