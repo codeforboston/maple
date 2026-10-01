@@ -11,6 +11,7 @@ import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
 import { normalizePosition } from "components/lobbying/LobbyingPositionChip"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
+import { SosSourceLink } from "components/lobbying/SosSourceLink"
 import type { LobbyingFiling } from "functions/src/lobbying/types"
 import styles from "components/lobbying/lobbying.module.css"
 
@@ -145,6 +146,7 @@ function BillFilingsPage() {
     sorted,
     PAGE_SIZE
   )
+  const showSource = pageItems.some(f => f.disclosureUrl)
 
   useEffect(() => {
     setPage(1)
@@ -266,6 +268,7 @@ function BillFilingsPage() {
                           dir={sortDir}
                           onSort={handleSort}
                         />
+                        {showSource && <th>{t("fields.source")}</th>}
                       </tr>
                     </thead>
                     <tbody>
@@ -302,6 +305,11 @@ function BillFilingsPage() {
                             </span>
                           </td>
                           <td style={cellStyle}>{f.year}</td>
+                          {showSource && (
+                            <td style={cellStyle}>
+                              <SosSourceLink href={f.disclosureUrl} />
+                            </td>
+                          )}
                         </tr>
                       ))}
                     </tbody>

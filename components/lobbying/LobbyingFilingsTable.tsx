@@ -4,6 +4,7 @@ import { useTranslation } from "next-i18next"
 import type { LobbyingFiling } from "functions/src/lobbying/types"
 import { LobbyingPositionChip } from "./LobbyingPositionChip"
 import { MAPLE_COLORS } from "./chartTheme"
+import { SosSourceLink } from "./SosSourceLink"
 
 interface LobbyingFilingsTableProps {
   filings: LobbyingFiling[]
@@ -31,6 +32,7 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
   const { t } = useTranslation("lobbying")
   const rows = maxRows ? filings.slice(0, maxRows) : filings
   const truncated = maxRows != null && filings.length > maxRows
+  const showSource = rows.some(f => f.disclosureUrl)
 
   if (filings.length === 0) {
     return (
@@ -64,6 +66,7 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
               <th style={{ textAlign: "right" }}>{t("fields.amount")}</th>
             )}
             <th>{t("fields.year")}</th>
+            {showSource && <th>{t("fields.source")}</th>}
           </tr>
         </thead>
         <tbody>
@@ -127,6 +130,11 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
                 </td>
               )}
               <td style={cellStyle}>{f.year}</td>
+              {showSource && (
+                <td style={cellStyle}>
+                  <SosSourceLink href={f.disclosureUrl} />
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

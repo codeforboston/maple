@@ -13,6 +13,7 @@ import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 import { matchesSearch } from "components/lobbying/searchMatch"
+import { regTypeLabel } from "components/lobbying/regTypeLabel"
 
 const PAGE_SIZE = 50
 
@@ -66,6 +67,8 @@ type FirmRow = {
   lobbyists: string[]
   // Lobbyists whose name matched the search when the firm's own name didn't.
   matchedLobbyists: string[]
+  employers: string[]
+  hasFilings: boolean
 }
 
 function LobbyingFirmsTable() {
@@ -98,7 +101,9 @@ function LobbyingFirmsTable() {
       clientCount: f.clientCount,
       totalFilings: filCounts?.[f.entityNameNorm],
       lobbyists: f.lobbyists ?? [],
-      matchedLobbyists: []
+      matchedLobbyists: [],
+      employers: f.employers ?? [],
+      hasFilings: f.hasFilings ?? true
     }))
   }, [summaries, filCounts])
 
@@ -247,8 +252,18 @@ function LobbyingFirmsTable() {
                           })}
                         </div>
                       )}
+                      {f.employers.length > 0 && (
+                        <div
+                          style={{
+                            color: MAPLE_COLORS.textMuted,
+                            fontSize: 12
+                          }}
+                        >
+                          {t("misc.atFirms", { firms: f.employers.join(", ") })}
+                        </div>
+                      )}
                     </td>
-                    <td style={tdStyle}>{f.regType}</td>
+                    <td style={tdStyle}>{regTypeLabel(f.regType, t)}</td>
                     <td
                       style={{
                         ...tdStyle,
@@ -260,7 +275,9 @@ function LobbyingFirmsTable() {
                         ? f.years[0]
                         : `${f.years[f.years.length - 1]}–${f.years[0]}`}
                     </td>
-                    <td style={tdStyle}>{f.clientCount}</td>
+                    <td style={tdStyle}>
+                      {f.hasFilings ? f.clientCount : "—"}
+                    </td>
                     <td style={{ ...tdStyle, color: MAPLE_COLORS.textMuted }}>
                       {f.totalFilings !== undefined ? f.totalFilings : "—"}
                     </td>
