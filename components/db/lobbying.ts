@@ -295,8 +295,8 @@ export function useLobbyingBillSummaries(court: number) {
   return useAsync(fetchLobbyingBillSummaries, [court])
 }
 
-// ── Client / firm summaries (precomputed server-side; see writer.py and
-// seedLobbyingStats.ts). Replaces client-side derivation over
+// ── Client / firm summaries (precomputed server-side by compute_stats in
+// lobbying-scraper/writer.py). Replaces client-side derivation over
 // useLobbyingAllRegistrants(), which only fetches the first 2,000 of
 // 25,000+ registrant docs and was silently showing an incomplete list. ────
 

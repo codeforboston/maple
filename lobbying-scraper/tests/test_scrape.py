@@ -436,3 +436,19 @@ def test_registrations_are_saved_by_weekly_and_backfill():
         scrape.run_weekly(db, [2026])
         scrape.run_backfill(db, [2026], workers=1)
     assert saved == [reg, reg]
+
+
+def test_stats_mode_only_recomputes_stats(monkeypatch):
+    """--mode stats recomputes lobbyingMeta without fetching or scraping."""
+    calls = []
+    monkeypatch.setattr(sys, "argv", ["scrape.py", "--mode", "stats"])
+    with patch("scrape.firestore.Client", return_value="db"), patch(
+        "scrape.compute_stats", side_effect=lambda db: calls.append(db)
+    ), patch("scrape.run_weekly") as weekly, patch("scrape.run_backfill") as backfill, patch(
+        "scrape.fetch_summary_links"
+    ) as links:
+        scrape.main()
+    assert calls == ["db"]
+    weekly.assert_not_called()
+    backfill.assert_not_called()
+    links.assert_not_called()

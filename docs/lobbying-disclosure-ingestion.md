@@ -134,6 +134,7 @@ interface LobbyingFiling {
   activityTitle: string // bill title (legislative) or meeting description (executive)
   position: string // "Support" | "Oppose" | "Neutral" | etc.; empty for executive
   amount: number | null // compensation allocated to this activity
+  disclosureUrl: string // the SoS disclosure page this activity was reported on
   fetchedAt: Timestamp
 }
 ```
@@ -172,6 +173,43 @@ interface LobbyingFiling {
   }
 ]
 ```
+
+### `/lobbyingRegistrations/{registrationId}`
+
+One doc per registration page (`Summary.aspx`): a lobbyist or lobbyist entity
+in one year. It records people who never file a disclosure themselves because
+the entity employing them files on their behalf. `registrationId` is a hash of
+`registration|{regType}|{year}|{name}`; before 2019 the portal served one
+identical page per firm per lobbyist, and those collapse into one doc.
+
+```typescript
+interface RegistrationParty {
+  name: string
+  nameNorm: string
+  sourceUrl: string | null // that party's registration page (lobbyists: 2019+ only)
+  amount: number | null // salary paid / received, or client compensation
+  startDate: string | null // ISO date
+  endDate: string | null
+  purpose: string | null // clients only
+}
+
+interface LobbyingRegistration {
+  registrationId: string
+  name: string
+  nameNorm: string
+  year: number
+  regType: "Lobbyist" | "Employer" // "Employer" = SoS "Lobbyist Entity"
+  lobbyists: RegistrationParty[] // entities: lobbyists they employ
+  employers: RegistrationParty[] // individuals: entities employing them (2019+)
+  clients: RegistrationParty[]
+  disclosureUrls: string[]
+  sourceUrls: string[] // the registration page(s) on the SoS website
+  fetchedAt: Timestamp
+}
+```
+
+The frontend doesn't read this collection directly: `compute_stats` rolls each
+person's or entity's registrations into its `lobbyingMeta/firmSummaries` doc.
 
 ### Constructing `billId` from Raw Portal Data
 
@@ -244,16 +282,23 @@ normalized form.
    `PLLC`.
 6. **Remove "THE"** — whole-word removal anywhere in the string (not just as a
    leading prefix).
-7. **Ampersand → AND** — replace `&` with `AND`.
-8. **Fix known typo** — replace `ASSICIATES` with `ASSOCIATES` (legacy portal
-   data).
-9. **Remove professional suffix phrases** — whole-phrase removal of: `LAW
-OFFICE OF`, `AND ASSOCIATES`, `& ASSOCIATES`, `AND ASSOC`, `ATTORNEY AT
-LAW`, `ATTORNEY@LAW`, `ATTORNET AT LAW`, `AND PARTNERS`, `PUBLIC POLICY
-GROUP`, `LEGISLATIVE SERVICES`, `POLICY GROUP`, `ASSOCIATES`, `COUNSELLORS
-AT LAW`.
-10. **Collapse whitespace** — replace runs of whitespace with a single space and
+7. **Ampersand → AND** — replace `&` with `AND` (spaced, so `A&B` and
+   `A & B` match), and `ATTORNEY@LAW` with `ATTORNEY AT LAW`.
+8. **Split glued suffix** — `XYZASSOCIATES` → `XYZ ASSOCIATES`.
+9. **Fix known portal typos** — `ASSICIATES` → `ASSOCIATES`, `ATTORNET` →
+   `ATTORNEY`.
+10. **Remove descriptive phrases** — whole-word removal of: `LAW OFFICE OF`,
+    `AND ASSOCIATES`, `AND ASSOC`, `ATTORNEY AT LAW`, `AND PARTNERS`, `PUBLIC
+POLICY GROUP`, `LEGISLATIVE SERVICES`, `POLICY GROUP`, `ASSOCIATES`,
+    `COUNSELLORS AT LAW`, so variants of one firm's name group together —
+    **unless that would leave a single word**. A bare surname would merge
+    different firms that share it (e.g. `X Associates`, `X Legislative
+Services` and `X Policy Group`), so in that case the descriptor is kept
+    (with `AND ASSOCIATES` shortened to `ASSOCIATES`).
+11. **Collapse whitespace** — replace runs of whitespace with a single space and
     strip leading/trailing whitespace.
+
+The implementation is `lobbying-scraper/normalize.py`.
 
 ### Usage
 
@@ -443,6 +488,16 @@ gcloud scheduler jobs create http maple-lobbying-weekly \
   --http-method=POST \
   --oauth-service-account-email=<scheduler-sa>@<project>.iam.gserviceaccount.com \
   --location=us-central1
+```
+
+## Recomputing Stats
+
+`lobbyingMeta` (overview stats, the Lobbyists and Clients lists, per-bill
+summaries) is recomputed automatically at the end of any scraper run that
+writes new data. To recompute it by hand from what's already in Firestore:
+
+```bash
+GOOGLE_CLOUD_PROJECT=<project> python3 scrape.py --mode stats
 ```
 
 ## Historical Backfill

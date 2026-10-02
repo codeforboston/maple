@@ -20,6 +20,8 @@ CLI flags (for local / backfill use):
                      delay) entirely on a cache hit. Never used by weekly
                      mode — see run_weekly()'s docstring for why.
   --workers N       Backfill only: concurrent worker threads (default 20)
+  --mode stats      Only recompute lobbyingMeta (stats and list summaries)
+                     from what's already in Firestore; fetches nothing.
 """
 
 from __future__ import annotations
@@ -366,9 +368,10 @@ def main() -> None:
     p.add_argument("--dry-run", action="store_true")
     p.add_argument(
         "--mode",
-        choices=["weekly", "backfill"],
+        choices=["weekly", "backfill", "stats"],
         default="weekly",
-        help="weekly: incremental check; backfill: full history with subcollection cursor",
+        help="weekly: incremental check; backfill: full history with subcollection cursor; "
+        "stats: only recompute lobbyingMeta from existing data",
     )
     p.add_argument(
         "--use-archive",
@@ -394,6 +397,12 @@ def main() -> None:
 
     project = os.environ.get("GOOGLE_CLOUD_PROJECT")
     db = firestore.Client(project=project) if not args.dry_run else None
+
+    if args.mode == "stats":
+        if db is None:
+            p.error("--mode stats writes lobbyingMeta; it can't be a dry run")
+        compute_stats(db)
+        return
 
     if args.mode == "weekly":
         n = run_weekly(db, years, limit=args.limit, dry_run=args.dry_run)
