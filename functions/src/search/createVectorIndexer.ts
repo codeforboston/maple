@@ -1,4 +1,4 @@
-import { onDocumentWritten } from "firebase-functions/v2/firestore"
+import { runWith } from "firebase-functions"
 import * as admin from "firebase-admin"
 import { FieldValue } from "firebase-admin/firestore"
 import { PredictionServiceClient, helpers } from "@google-cloud/aiplatform"
@@ -16,15 +16,12 @@ export function createVectorIndexer(config: VectorIndexerConfig) {
   const publisher = "google"
   const model = "text-embedding-005"
 
-  return onDocumentWritten(
-    {
-      document: config.documentTrigger,
-      timeoutSeconds: 60,
-      memory: "512MiB"
-    },
-    async event => {
-      const change = event.data
-      if (!change) return
+  return runWith({
+    timeoutSeconds: 60,
+    memory: "512MB"
+  })
+    .firestore.document(config.documentTrigger)
+    .onWrite(async change => {
       const data = change.after.exists ? change.after.data() : null
       if (!data) return // Deleted
 
@@ -106,6 +103,5 @@ export function createVectorIndexer(config: VectorIndexerConfig) {
         [config.vectorField]: fieldValue.vector(embedding),
         [`${config.vectorField}_hash`]: textHash // Store hash to track changes
       })
-    }
-  )
+    })
 }
