@@ -12,15 +12,15 @@ from normalize import normalize_entity_name as norm  # noqa: E402
 
 @pytest.mark.parametrize("a,b", [
     # One firm under several spellings, or renamed with a descriptive suffix.
-    ("Smith, Costello & Crawford", "Smith Costello & Crawford Public Policy Group, LLC"),
-    ("Lynch & Fierro", "Lynch and Fierro, Counsellors at Law"),
-    ("O'Neill and Associates", "O’Neill and Partners, LLC"),
-    ("Delaney & Associates, INC", "Delaney and Associates, Inc"),
-    ("Glynn Assiciates", "Glynn Associates"),
-    ("JajugaAssociates", "Jajuga Associates"),
-    ("Michael Muse, Attornet at Law", "Michael Muse Attorney at Law"),
-    ("Morrison&Foerster", "Morrison & Foerster LLP"),
-    ("C&J Bus Lines", "C & J Bus Lines, Inc."),
+    ("Barlow, Finch & Kerr", "Barlow Finch & Kerr Public Policy Group, LLC"),
+    ("Ward & Pell", "Ward and Pell, Counsellors at Law"),
+    ("O'Dowd and Associates", "O’Dowd and Partners, LLC"),
+    ("Hartwell & Associates, INC", "Hartwell and Associates, Inc"),
+    ("Corbin Assiciates", "Corbin Associates"),
+    ("TrevaniAssociates", "Trevani Associates"),
+    ("Dana Pruitt, Attornet at Law", "Dana Pruitt Attorney at Law"),
+    ("Halden&Voss", "Halden & Voss LLP"),
+    ("R&T Bus Lines", "R & T Bus Lines, Inc."),
 ])
 def test_variants_of_one_name_match(a, b):
     assert norm(a) == norm(b)
@@ -28,22 +28,22 @@ def test_variants_of_one_name_match(a, b):
 
 @pytest.mark.parametrize("a,b", [
     # Different firms that share a surname must stay apart.
-    ("Delaney and Associates, Inc", "Delaney Legislative Services, Inc."),
-    ("Delaney Policy Group", "Delaney Legislative Services, Inc."),
-    ("Delaney Policy Group", "Delaney & Associates, INC"),
+    ("Hartwell and Associates, Inc", "Hartwell Legislative Services, Inc."),
+    ("Hartwell Policy Group", "Hartwell Legislative Services, Inc."),
+    ("Hartwell Policy Group", "Hartwell & Associates, INC"),
 ])
 def test_firms_sharing_a_surname_stay_distinct(a, b):
     assert norm(a) != norm(b)
 
 
 def test_bare_surname_firm_keeps_its_descriptor():
-    assert norm("Delaney Legislative Services, Inc.") == "DELANEY LEGISLATIVE SERVICES"
-    assert norm("Delaney & Associates") == "DELANEY ASSOCIATES"
+    assert norm("Hartwell Legislative Services, Inc.") == "HARTWELL LEGISLATIVE SERVICES"
+    assert norm("Hartwell & Associates") == "HARTWELL ASSOCIATES"
 
 
 def test_people_unchanged():
-    assert norm("Carlo Basile") == "CARLO BASILE"
-    assert norm("Hugh R. Jones, III") == "HUGH R JONES III"
+    assert norm("Jordan Ellery") == "JORDAN ELLERY"
+    assert norm("Avery T. Nolan, III") == "AVERY T NOLAN III"
 
 
 def test_whole_words_only():

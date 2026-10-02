@@ -227,8 +227,8 @@ FILER_CASES = [
     ("2016e_disc", "Employer", "Murphy Donoghue Partners", None),
     ("2024e_disc", "Employer", "21c, LLC", ["Hugh R. Jones, III"]),
     ("2011i_disc", "Lobbyist", None, []),
-    # Captured from lobbyist Anthony Arthur Abdelahad's summary page, but the
-    # disclosure it links to is his firm's.
+    # Captured from an individual lobbyist's summary page, but the disclosure
+    # it links to is their firm's.
     ("2024i_disc", "Employer", "Ventry Associates, LLP",
      ["Dennis Michael Murphy", "Anthony Arthur Abdelahad", "Charles McCoy White"]),
 ]

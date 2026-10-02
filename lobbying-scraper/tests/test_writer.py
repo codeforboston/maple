@@ -204,11 +204,11 @@ def test_registrant_id_no_period_matches_pre_fix_hash_exactly():
     unconditional trailing separator ("{year}|{entity_name}|") even when no
     period was known, which changed the hash and caused reparse to write a
     spurious duplicate doc instead of falling back onto the original one for
-    any page whose reporting period failed to parse (found via two real
-    2005-era entities in dev, Mayforth Group and Peter C Chisholm)."""
+    any page whose reporting period failed to parse (found via two 2005-era
+    entities in dev)."""
     import hashlib
 
-    entity_name = "Mayforth Group, LLC"
+    entity_name = "Pemberton Group, LLC"
     year = 2005
     pre_fix_id = hashlib.sha256(f"{year}|{entity_name}".encode()).hexdigest()[:40]
     assert registrant_id(entity_name, year, None) == pre_fix_id
@@ -382,22 +382,22 @@ def test_compute_stats_lists_lobbyists_who_only_register():
     but must still be listed, with their firm and SoS registration page."""
     db, _ = _make_stats_db()
     registrations = [
-        _fake_doc({"name": "Carlo Basile", "nameNorm": "CARLO BASILE", "regType": "Lobbyist", "year": 2024,
+        _fake_doc({"name": "Jordan Ellery", "nameNorm": "JORDAN ELLERY", "regType": "Lobbyist", "year": 2024,
                    "sourceUrls": ["https://sos.test/2024"],
-                   "employers": [{"name": "Smith, Costello & Crawford"}]}),
-        _fake_doc({"name": "Carlo Basile", "nameNorm": "CARLO BASILE", "regType": "Lobbyist", "year": 2025,
+                   "employers": [{"name": "Barlow, Finch & Kerr"}]}),
+        _fake_doc({"name": "Jordan Ellery", "nameNorm": "JORDAN ELLERY", "regType": "Lobbyist", "year": 2025,
                    "sourceUrls": ["https://sos.test/2025"],
-                   "employers": [{"name": "Smith, Costello & Crawford"}]}),
+                   "employers": [{"name": "Barlow, Finch & Kerr"}]}),
     ]
 
     with patch("writer._iter_collection", side_effect=_stats_iter(registrations=registrations)):
         compute_stats(db)
 
     firms = {d["entityNameNorm"]: d for d in _batch_set_dicts_with_key(db, "clientCount")}
-    basile = firms["CARLO BASILE"]
+    basile = firms["JORDAN ELLERY"]
     assert basile["regType"] == "Lobbyist"
     assert basile["years"] == [2025, 2024]
-    assert basile["employers"] == ["Smith, Costello & Crawford"]
+    assert basile["employers"] == ["Barlow, Finch & Kerr"]
     assert basile["hasFilings"] is False
     assert basile["sourceUrl"] == "https://sos.test/2025"
 
@@ -503,19 +503,19 @@ def _firm_detail():
         period_start="2025-01-01",
         period_end="2025-06-30",
         filer_type="Employer",
-        filer_name="Tremont Strategies Group LLC",
-        lobbyists=["Chet Atkins", "Jason Aluia"],
+        filer_name="Larkspur Strategies Group LLC",
+        lobbyists=["Riley Okafor", "Morgan Tate"],
     )
 
 
 def test_registrant_doc_credits_firm_page_to_firm():
-    lobbyist_meta = _meta(entity_name="Chet Atkins", year=2025, reg_type="Lobbyist")
+    lobbyist_meta = _meta(entity_name="Riley Okafor", year=2025, reg_type="Lobbyist")
     doc_id, data = registrant_doc(lobbyist_meta, _firm_detail())
-    assert data["entityName"] == "Tremont Strategies Group LLC"
+    assert data["entityName"] == "Larkspur Strategies Group LLC"
     assert data["regType"] == "Employer"
-    assert data["lobbyists"] == ["Chet Atkins", "Jason Aluia"]
-    assert data["lobbyistsNorm"] == [normalize_entity_name("Chet Atkins"), normalize_entity_name("Jason Aluia")]
-    assert doc_id == registrant_id("Tremont Strategies Group LLC", 2025, "2025-01-01")
+    assert data["lobbyists"] == ["Riley Okafor", "Morgan Tate"]
+    assert data["lobbyistsNorm"] == [normalize_entity_name("Riley Okafor"), normalize_entity_name("Morgan Tate")]
+    assert doc_id == registrant_id("Larkspur Strategies Group LLC", 2025, "2025-01-01")
 
 
 def test_registrant_doc_same_for_any_linking_summary():
@@ -524,8 +524,8 @@ def test_registrant_doc_same_for_any_linking_summary():
     detail = _firm_detail()
     ids = {
         registrant_doc(_meta(entity_name=n, year=2025, reg_type=t), detail)[0]
-        for n, t in [("Chet Atkins", "Lobbyist"), ("Jason Aluia", "Lobbyist"),
-                     ("Tremont Strategies Group LLC", "Employer")]
+        for n, t in [("Riley Okafor", "Lobbyist"), ("Morgan Tate", "Lobbyist"),
+                     ("Larkspur Strategies Group LLC", "Employer")]
     }
     assert len(ids) == 1
 
@@ -533,8 +533,8 @@ def test_registrant_doc_same_for_any_linking_summary():
 def test_registrant_doc_individual_page_unchanged():
     detail = DisclosureDetail(compensation=[], bills=[], period_start="2025-01-01",
                               filer_type="Lobbyist")
-    _, data = registrant_doc(_meta(entity_name="Melissa Brooke Stacy", reg_type="Lobbyist"), detail)
-    assert data["entityName"] == "Melissa Brooke Stacy"
+    _, data = registrant_doc(_meta(entity_name="Taylor Brooke Vance", reg_type="Lobbyist"), detail)
+    assert data["entityName"] == "Taylor Brooke Vance"
     assert data["regType"] == "Lobbyist"
     assert data["lobbyists"] == []
 
@@ -547,14 +547,14 @@ def test_write_filings_credits_firm_page_to_firm():
     db.batch.return_value.set.side_effect = lambda ref, doc: written.append((ref.id, doc))
 
     detail = _firm_detail()
-    write_filings(db, _meta(entity_name="Chet Atkins", year=2025, reg_type="Lobbyist"), detail,
+    write_filings(db, _meta(entity_name="Riley Okafor", year=2025, reg_type="Lobbyist"), detail,
                   "https://example.test/tremont")
 
     (fid, doc), = written
-    assert doc["entityName"] == "Tremont Strategies Group LLC"
+    assert doc["entityName"] == "Larkspur Strategies Group LLC"
     assert doc["disclosureUrl"] == "https://example.test/tremont"
     bill = detail.bills[0]
-    assert fid == filing_id("Tremont Strategies Group LLC", bill.client_name, bill.chamber,
+    assert fid == filing_id("Larkspur Strategies Group LLC", bill.client_name, bill.chamber,
                             bill.bill_id, 194, bill.position, "2025-01-01")
 
 
@@ -562,11 +562,11 @@ def test_compute_stats_firm_summary_lists_lobbyists_across_periods():
     """Firm summaries carry the union of lobbyists named in the firm's
     disclosures, so the firms list can find a firm by a lobbyist's name."""
     db, _ = _make_stats_db()
-    base = {"entityName": "Tremont Strategies Group LLC", "entityNameNorm": "TREMONT STRATEGIES GROUP",
+    base = {"entityName": "Larkspur Strategies Group LLC", "entityNameNorm": "LARKSPUR STRATEGIES GROUP",
             "regType": "Employer", "year": 2025, "clients": []}
     registrants = [
-        _fake_doc({**base, "lobbyists": ["Jason Aluia", "Chet Atkins"]}),
-        _fake_doc({**base, "lobbyists": ["Chet Atkins", "Michael Bergan"]}),
+        _fake_doc({**base, "lobbyists": ["Morgan Tate", "Riley Okafor"]}),
+        _fake_doc({**base, "lobbyists": ["Riley Okafor", "Casey Lindqvist"]}),
         _fake_doc({"entityName": "Solo Person", "entityNameNorm": "SOLO PERSON",
                    "regType": "Lobbyist", "year": 2025, "clients": []}),
     ]
@@ -578,7 +578,7 @@ def test_compute_stats_firm_summary_lists_lobbyists_across_periods():
         compute_stats(db)
 
     firms = {d["entityNameNorm"]: d for d in _batch_set_dicts_with_key(db, "clientCount")}
-    assert firms["TREMONT STRATEGIES GROUP"]["lobbyists"] == ["Chet Atkins", "Jason Aluia", "Michael Bergan"]
+    assert firms["LARKSPUR STRATEGIES GROUP"]["lobbyists"] == ["Casey Lindqvist", "Morgan Tate", "Riley Okafor"]
     assert firms["SOLO PERSON"]["lobbyists"] == []
 
 
@@ -618,42 +618,42 @@ def test_compute_stats_overwrites_stats_doc():
 def test_registration_doc_shape_and_id():
     from portal import Registration, RegistrationParty
     reg = Registration(
-        url="https://sos.test/a", name="Carlo Basile", year=2024, reg_type="Lobbyist",
-        employers=[RegistrationParty(name="Smith, Costello & Crawford", url="https://sos.test/scc",
+        url="https://sos.test/a", name="Jordan Ellery", year=2024, reg_type="Lobbyist",
+        employers=[RegistrationParty(name="Barlow, Finch & Kerr", url="https://sos.test/scc",
                                      amount=100.0, start_date="2024-01-01")],
         disclosure_urls=["https://sos.test/d1"],
     )
     doc_id, data = registration_doc(reg)
-    assert data["nameNorm"] == "CARLO BASILE"
-    assert data["employers"][0]["nameNorm"] == "SMITH COSTELLO AND CRAWFORD"
+    assert data["nameNorm"] == "JORDAN ELLERY"
+    assert data["employers"][0]["nameNorm"] == "BARLOW FINCH AND KERR"
     assert data["employers"][0]["sourceUrl"] == "https://sos.test/scc"
     assert data["disclosureUrls"] == ["https://sos.test/d1"]
     # A duplicate page (another URL, same registrant and year) is the same doc.
-    dup = Registration(url="https://sos.test/b", name="Carlo Basile", year=2024, reg_type="Lobbyist")
+    dup = Registration(url="https://sos.test/b", name="Jordan Ellery", year=2024, reg_type="Lobbyist")
     assert registration_doc(dup)[0] == doc_id
 
 
 def test_compute_stats_rolls_up_registrations_for_profiles():
     db, _ = _make_stats_db()
     registrations = [
-        _fake_doc({"name": "Carlo Basile", "nameNorm": "CARLO BASILE", "regType": "Lobbyist", "year": 2024,
+        _fake_doc({"name": "Jordan Ellery", "nameNorm": "JORDAN ELLERY", "regType": "Lobbyist", "year": 2024,
                    "sourceUrls": ["https://sos.test/cb24"],
-                   "employers": [{"name": "Smith, Costello & Crawford", "nameNorm": "SMITH COSTELLO AND CRAWFORD"}]}),
-        _fake_doc({"name": "Smith, Costello & Crawford", "nameNorm": "SMITH COSTELLO AND CRAWFORD",
+                   "employers": [{"name": "Barlow, Finch & Kerr", "nameNorm": "BARLOW FINCH AND KERR"}]}),
+        _fake_doc({"name": "Barlow, Finch & Kerr", "nameNorm": "BARLOW FINCH AND KERR",
                    "regType": "Employer", "year": 2024, "sourceUrls": ["https://sos.test/scc24"],
-                   "lobbyists": [{"name": "Carlo Basile", "nameNorm": "CARLO BASILE"},
+                   "lobbyists": [{"name": "Jordan Ellery", "nameNorm": "JORDAN ELLERY"},
                                  {"name": "Pat Unregistered", "nameNorm": "PAT UNREGISTERED"}]}),
     ]
     with patch("writer._iter_collection", side_effect=_stats_iter(registrations=registrations)):
         compute_stats(db)
 
     firms = {d["entityNameNorm"]: d for d in _batch_set_dicts_with_key(db, "clientCount")}
-    (basile_reg,) = firms["CARLO BASILE"]["registrations"]
+    (basile_reg,) = firms["JORDAN ELLERY"]["registrations"]
     assert basile_reg["year"] == 2024 and basile_reg["sourceUrl"] == "https://sos.test/cb24"
     assert basile_reg["employers"] == [
-        {"name": "Smith, Costello & Crawford", "nameNorm": "SMITH COSTELLO AND CRAWFORD", "hasProfile": True}
+        {"name": "Barlow, Finch & Kerr", "nameNorm": "BARLOW FINCH AND KERR", "hasProfile": True}
     ]
-    (scc_reg,) = firms["SMITH COSTELLO AND CRAWFORD"]["registrations"]
+    (scc_reg,) = firms["BARLOW FINCH AND KERR"]["registrations"]
     assert [(p["name"], p["hasProfile"]) for p in scc_reg["lobbyists"]] == [
-        ("Carlo Basile", True), ("Pat Unregistered", False)
+        ("Jordan Ellery", True), ("Pat Unregistered", False)
     ]

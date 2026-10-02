@@ -22,7 +22,7 @@ const LEGAL_ENTITY_RE =
 const THE_RE = /\bTHE\b/g
 
 // Descriptive phrases dropped so variants of one firm's name group together
-// ("Smith, Costello & Crawford" / "... Public Policy Group, LLC").
+// ("Barlow, Finch & Kerr" / "... Public Policy Group, LLC").
 const MISC_PHRASES = [
   "LAW OFFICE OF",
   "AND ASSOCIATES",
@@ -66,7 +66,7 @@ export function normalizeEntityName(raw: string | null | undefined): string {
   x = x.replace(/&/g, " AND ") // Step 7: ampersand → AND (spaced: "A&B")
   x = x.split("ATTORNEY@LAW").join("ATTORNEY AT LAW")
 
-  x = x.replace(GLUED_ASSOCIATES_RE, "$1 $2") // Step 8: "JAJUGAASSOCIATES"
+  x = x.replace(GLUED_ASSOCIATES_RE, "$1 $2") // Step 8: "TREVANIASSOCIATES"
   for (const [typo, fix] of TYPOS) x = x.replace(typo, fix) // Step 9: typos
 
   const base = x.replace(/\s+/g, " ").trim()
@@ -74,8 +74,8 @@ export function normalizeEntityName(raw: string | null | undefined): string {
   for (const re of MISC_RES) stripped = stripped.replace(re, " ") // Step 10
   stripped = stripped.replace(/\s+/g, " ").trim()
   // Stripping descriptive words would leave a bare surname, which merges
-  // different firms (Delaney Associates, Delaney Legislative Services, Delaney
-  // Policy Group), so keep the descriptor in that case.
+  // different firms (Hartwell Associates, Hartwell Legislative Services,
+  // Hartwell Policy Group), so keep the descriptor in that case.
   if (stripped.split(" ").filter(Boolean).length < 2) {
     return base.replace(AND_ASSOCIATES_RE, "ASSOCIATES")
   }

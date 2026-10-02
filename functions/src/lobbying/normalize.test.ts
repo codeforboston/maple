@@ -4,40 +4,37 @@ import { normalizeEntityName as norm } from "./normalize"
 // implementations must agree.
 describe("normalizeEntityName", () => {
   it.each([
-    [
-      "Smith, Costello & Crawford",
-      "Smith Costello & Crawford Public Policy Group, LLC"
-    ],
-    ["Lynch & Fierro", "Lynch and Fierro, Counsellors at Law"],
-    ["O'Neill and Associates", "O’Neill and Partners, LLC"],
-    ["Delaney & Associates, INC", "Delaney and Associates, Inc"],
-    ["Glynn Assiciates", "Glynn Associates"],
-    ["JajugaAssociates", "Jajuga Associates"],
-    ["Michael Muse, Attornet at Law", "Michael Muse Attorney at Law"],
-    ["Morrison&Foerster", "Morrison & Foerster LLP"],
-    ["C&J Bus Lines", "C & J Bus Lines, Inc."]
+    ["Barlow, Finch & Kerr", "Barlow Finch & Kerr Public Policy Group, LLC"],
+    ["Ward & Pell", "Ward and Pell, Counsellors at Law"],
+    ["O'Dowd and Associates", "O’Dowd and Partners, LLC"],
+    ["Hartwell & Associates, INC", "Hartwell and Associates, Inc"],
+    ["Corbin Assiciates", "Corbin Associates"],
+    ["TrevaniAssociates", "Trevani Associates"],
+    ["Dana Pruitt, Attornet at Law", "Dana Pruitt Attorney at Law"],
+    ["Halden&Voss", "Halden & Voss LLP"],
+    ["R&T Bus Lines", "R & T Bus Lines, Inc."]
   ])("groups %s with %s", (a, b) => {
     expect(norm(a)).toBe(norm(b))
   })
 
   it.each([
-    ["Delaney and Associates, Inc", "Delaney Legislative Services, Inc."],
-    ["Delaney Policy Group", "Delaney Legislative Services, Inc."],
-    ["Delaney Policy Group", "Delaney & Associates, INC"]
+    ["Hartwell and Associates, Inc", "Hartwell Legislative Services, Inc."],
+    ["Hartwell Policy Group", "Hartwell Legislative Services, Inc."],
+    ["Hartwell Policy Group", "Hartwell & Associates, INC"]
   ])("keeps %s apart from %s", (a, b) => {
     expect(norm(a)).not.toBe(norm(b))
   })
 
   it("keeps a bare-surname firm's descriptor", () => {
-    expect(norm("Delaney Legislative Services, Inc.")).toBe(
-      "DELANEY LEGISLATIVE SERVICES"
+    expect(norm("Hartwell Legislative Services, Inc.")).toBe(
+      "HARTWELL LEGISLATIVE SERVICES"
     )
-    expect(norm("Delaney & Associates")).toBe("DELANEY ASSOCIATES")
+    expect(norm("Hartwell & Associates")).toBe("HARTWELL ASSOCIATES")
   })
 
   it("leaves people's names alone", () => {
-    expect(norm("Carlo Basile")).toBe("CARLO BASILE")
-    expect(norm("Hugh R. Jones, III")).toBe("HUGH R JONES III")
+    expect(norm("Jordan Ellery")).toBe("JORDAN ELLERY")
+    expect(norm("Avery T. Nolan, III")).toBe("AVERY T NOLAN III")
   })
 
   it("removes phrases as whole words only", () => {

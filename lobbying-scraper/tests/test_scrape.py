@@ -425,7 +425,7 @@ def test_registrations_are_saved_by_weekly_and_backfill():
     fetch, so lobbyists whose firm files for them are still recorded."""
     db = FakeFirestore()
     summary_url = "https://portal.test/Summary.aspx?s=1"
-    reg = Registration(url=summary_url, name="Carlo Basile", year=2026, reg_type="Lobbyist")
+    reg = Registration(url=summary_url, name="Jordan Ellery", year=2026, reg_type="Lobbyist")
     saved = []
     with patch("scrape.make_session", return_value=None), patch(
         "scrape.fetch_summary_links", side_effect=lambda session, year: [summary_url]

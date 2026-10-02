@@ -16,7 +16,7 @@ _THE_RE = re.compile(r"\bTHE\b")
 _WS_RE = re.compile(r"\s+")
 
 # Descriptive phrases dropped so variants of one firm's name group together
-# ("Smith, Costello & Crawford" / "... Public Policy Group, LLC").
+# ("Barlow, Finch & Kerr" / "... Public Policy Group, LLC").
 _MISC_PHRASES = [
     "LAW OFFICE OF",
     "AND ASSOCIATES",
@@ -50,7 +50,7 @@ def normalize_entity_name(raw: str | None) -> str:
     x = _THE_RE.sub(" ", x)               # 6. remove THE anywhere
     x = x.replace("&", " AND ")           # 7. ampersand → AND (spaced: "A&B")
     x = x.replace("ATTORNEY@LAW", "ATTORNEY AT LAW")
-    x = _GLUED_ASSOCIATES_RE.sub(r"\1 \2", x)  # 8. "JAJUGAASSOCIATES"
+    x = _GLUED_ASSOCIATES_RE.sub(r"\1 \2", x)  # 8. "TREVANIASSOCIATES"
     for typo, fix in _TYPOS:              # 9. known portal typos
         x = typo.sub(fix, x)
     base = _WS_RE.sub(" ", x).strip()
@@ -59,7 +59,7 @@ def normalize_entity_name(raw: str | None) -> str:
         stripped = phrase.sub(" ", stripped)
     stripped = _WS_RE.sub(" ", stripped).strip()
     # ...unless that leaves a bare surname, which would merge different firms
-    # (Delaney Associates, Delaney Legislative Services, Delaney Policy Group).
+    # (Hartwell Associates, Hartwell Legislative Services, Hartwell Policy Group).
     if len(stripped.split()) < 2:
         return _AND_ASSOCIATES_RE.sub("ASSOCIATES", base)
     return stripped
