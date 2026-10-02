@@ -20,6 +20,8 @@ CLI flags (for local / backfill use):
                      delay) entirely on a cache hit. Never used by weekly
                      mode — see run_weekly()'s docstring for why.
   --workers N       Backfill only: concurrent worker threads (default 20)
+  --mode stats      Only recompute lobbyingMeta (stats and list summaries)
+                     from what's already in Firestore; fetches nothing.
 """
 
 from __future__ import annotations
@@ -38,6 +40,7 @@ from portal import (
     FIRST_YEAR,
     fetch_disclosure_detail,
     fetch_disclosure_meta,
+    fetch_summary,
     fetch_summary_links,
     make_session,
 )
@@ -50,6 +53,7 @@ from writer import (
     compute_stats,
     write_filings,
     write_registrant,
+    write_registration,
 )
 
 _DEFAULT_BACKFILL_WORKERS = 20
@@ -148,7 +152,7 @@ def process_disclosure(
         return len(detail.compensation), len(detail.bills)
 
     write_registrant(db, meta, detail, disc_url)
-    n_filings = write_filings(db, meta, detail)
+    n_filings = write_filings(db, meta, detail, disc_url)
     return len(detail.compensation), n_filings
 
 
@@ -197,10 +201,12 @@ def run_weekly(
 
             if disc_urls is None:
                 try:
-                    meta = fetch_disclosure_meta(session, summary_url)
+                    meta, registration = fetch_summary(session, summary_url)
                     disc_urls = meta.disclosure_urls
                     if use_cursor:
                         _cache_disc_urls(db, summary_url, disc_urls)
+                        if registration is not None:
+                            write_registration(db, registration)
                 except Exception as e:
                     print(f"  failed to fetch summary {summary_url}: {e}", file=sys.stderr)
                     continue
@@ -257,9 +263,11 @@ def _backfill_one_summary_url(
     """
     session = make_session()
     try:
-        meta = fetch_disclosure_meta(session, summary_url, use_archive=use_archive)
+        meta, registration = fetch_summary(session, summary_url, use_archive=use_archive)
     except Exception as e:
         return 0, [f"failed to fetch summary {summary_url}: {e}"]
+    if db is not None and not dry_run and registration is not None:
+        write_registration(db, registration)
 
     processed = 0
     errors: list[str] = []
@@ -360,9 +368,10 @@ def main() -> None:
     p.add_argument("--dry-run", action="store_true")
     p.add_argument(
         "--mode",
-        choices=["weekly", "backfill"],
+        choices=["weekly", "backfill", "stats"],
         default="weekly",
-        help="weekly: incremental check; backfill: full history with subcollection cursor",
+        help="weekly: incremental check; backfill: full history with subcollection cursor; "
+        "stats: only recompute lobbyingMeta from existing data",
     )
     p.add_argument(
         "--use-archive",
@@ -388,6 +397,12 @@ def main() -> None:
 
     project = os.environ.get("GOOGLE_CLOUD_PROJECT")
     db = firestore.Client(project=project) if not args.dry_run else None
+
+    if args.mode == "stats":
+        if db is None:
+            p.error("--mode stats writes lobbyingMeta; it can't be a dry run")
+        compute_stats(db)
+        return
 
     if args.mode == "weekly":
         n = run_weekly(db, years, limit=args.limit, dry_run=args.dry_run)

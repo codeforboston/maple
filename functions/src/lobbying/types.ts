@@ -69,6 +69,9 @@ export const LobbyingFiling = Record({
   activityTitle: String,
   position: String,
   amount: Null.Or(Number),
+  // The SoS disclosure page this activity was reported on (absent on filings
+  // written before it was recorded).
+  disclosureUrl: Optional(String),
   fetchedAt: InstanceOf(Timestamp)
 })
 
@@ -90,6 +93,8 @@ export const LobbyingPositionCounts = Record({
 export type LobbyingStats = Static<typeof LobbyingStats>
 export const LobbyingStats = Record({
   totalFilings: Number,
+  // Distinct registered individual lobbyists (entities excluded); the field
+  // keeps its old name so deployed frontends keep working.
   totalRegistrants: Number,
   totalClients: Number,
   totalBillsWithFilings: Number,
