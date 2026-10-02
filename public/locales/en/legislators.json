@@ -58,6 +58,26 @@
     "neutral": "Neutral",
     "oppose": "Oppose"
   },
+  "profiles": {
+    "bills": "bills",
+    "billsByTopic": "Bills By Topic",
+    "committeePositions": {
+      "committee": "Committee",
+      "header": "Committee Positions",
+      "role": "Role",
+      "since": "Since"
+    },
+    "coSponsor": "co-sponsor",
+    "primarySponsor": "primary sponsor",
+    "recentSponsoredBills": {
+      "bill": "Bill",
+      "header": "Recent Sponsored Bills",
+      "status": "Status",
+      "title": "Title",
+      "topics": "Topics",
+      "viewBills": "View all {{number}} sponsored bills on MAPLE"
+    }
+  },
   "stateRepresentative": "State Representative",
   "stateSenator": "State Senator",
   "submit": "Submit",
