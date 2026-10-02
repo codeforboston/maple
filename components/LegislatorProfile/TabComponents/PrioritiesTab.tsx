@@ -23,6 +23,14 @@ import GovernmentOperationsAndElectionsIcon from "public/SmartTagIcons/blue-vari
 import HealthcareIcon from "public/SmartTagIcons/blue-variants/Healthcare"
 import HousingAndCommunityDevelopmentIcon from "public/SmartTagIcons/blue-variants/Housing-and-Community-Development"
 import ImmigrantsAndForeignNationalsIcon from "public/SmartTagIcons/blue-variants/Immigrants-and-Foreign-Nationals"
+import LaborAndEmploymentIcon from "public/SmartTagIcons/blue-variants/Labor-and-Employment"
+import LawAndJudiciaryIcon from "public/SmartTagIcons/blue-variants/Law-and-Judiciary"
+import PublicAndNaturalResourcesIcon from "public/SmartTagIcons/blue-variants/Public-and-Natural-Resources"
+import SocialServicesIcon from "public/SmartTagIcons/blue-variants/Social-Services"
+import SportsAndRecreationIcon from "public/SmartTagIcons/blue-variants/Sports-and-Recreation"
+import TaxationIcon from "public/SmartTagIcons/blue-variants/Taxation"
+import TechnologyAndCommunicationsIcon from "public/SmartTagIcons/blue-variants/Technology-and-Communications"
+import TransportationAndPublicWorksIcon from "public/SmartTagIcons/blue-variants/Transportation-and-Public-Works"
 
 const SVG_MAP = {
   commerce: <CommerceIcon width="24" height="24" />,
@@ -37,7 +45,15 @@ const SVG_MAP = {
   government: <GovernmentOperationsAndElectionsIcon width="24" height="24" />,
   healthcare: <HealthcareIcon width="24" height="24" />,
   housing: <HousingAndCommunityDevelopmentIcon width="24" height="24" />,
-  immigrants: <ImmigrantsAndForeignNationalsIcon width="24" height="24" />
+  immigrants: <ImmigrantsAndForeignNationalsIcon width="24" height="24" />,
+  labor: <LaborAndEmploymentIcon width="24" height="24" />,
+  law: <LawAndJudiciaryIcon width="24" height="24" />,
+  publicResources: <PublicAndNaturalResourcesIcon width="24" height="24" />,
+  social: <SocialServicesIcon width="24" height="24" />,
+  sports: <SportsAndRecreationIcon width="24" height="24" />,
+  taxation: <TaxationIcon width="24" height="24" />,
+  technology: <TechnologyAndCommunicationsIcon width="24" height="24" />,
+  transportation: <TransportationAndPublicWorksIcon width="24" height="24" />
 }
 
 export type IconType = keyof typeof SVG_MAP
@@ -111,6 +127,14 @@ function MenuOptions() {
       <option value="healthcare">Healthcare</option>
       <option value="housing">Housing and Community Development</option>
       <option value="immigrants">Immigrants and Foreign Nationals</option>
+      <option value="labor">Labor and Employment</option>
+      <option value="law">Law and Judiciary</option>
+      <option value="publicResources">Public and Natural Resources</option>
+      <option value="social">Social Services</option>
+      <option value="sports">Sports and Recreation</option>
+      <option value="taxation">Taxation</option>
+      <option value="technology">Technology and Communications</option>
+      <option value="transportation">Transportation and Public Works</option>
     </>
   )
 }
