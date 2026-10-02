@@ -268,7 +268,9 @@ function BillFilingsPage() {
                           dir={sortDir}
                           onSort={handleSort}
                         />
-                        {showSource && <th>{t("fields.source")}</th>}
+                        {showSource && (
+                          <th style={thStyle}>{t("fields.source")}</th>
+                        )}
                       </tr>
                     </thead>
                     <tbody>

@@ -21,10 +21,10 @@
     "total": "total",
     "generalCourt": "General Court",
     "matchedLobbyists": "Lobbyist: {{names}}",
-    "viewOnSos": "SoS ↗",
+    "viewOnSos": "SoS ↗︎",
     "viewOnSosLabel": "View the original on the MA Secretary of State's website",
     "atFirms": "at {{firms}}",
-    "registrationYear": "{{year}} registration ↗",
+    "registrationYear": "{{year}} registration ↗︎",
     "filesThroughFirm": "{{name}} doesn't file lobbying disclosures directly; the entity that employs them reports this work. See its page for bills and clients."
   },
   "registrantType": {

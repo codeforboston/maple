@@ -657,3 +657,18 @@ def test_compute_stats_rolls_up_registrations_for_profiles():
     assert [(p["name"], p["hasProfile"]) for p in scc_reg["lobbyists"]] == [
         ("Jordan Ellery", True), ("Pat Unregistered", False)
     ]
+
+
+def test_compute_stats_employer_listed_once_across_spellings():
+    """An employer spelled differently across years is one employer, shown
+    with its most recent spelling."""
+    db, _ = _make_stats_db()
+    registrations = [
+        _fake_doc({"name": "Jordan Ellery", "nameNorm": "JORDAN ELLERY", "regType": "Lobbyist", "year": year,
+                   "employers": [{"name": spelling, "nameNorm": "BARLOW FINCH AND KERR"}]})
+        for year, spelling in [(2020, "Barlow Finch & Kerr"), (2023, "Barlow, Finch & Kerr Public Policy Group, LLC")]
+    ]
+    with patch("writer._iter_collection", side_effect=_stats_iter(registrations=registrations)):
+        compute_stats(db)
+    firms = {d["entityNameNorm"]: d for d in _batch_set_dicts_with_key(db, "clientCount")}
+    assert firms["JORDAN ELLERY"]["employers"] == ["Barlow, Finch & Kerr Public Policy Group, LLC"]

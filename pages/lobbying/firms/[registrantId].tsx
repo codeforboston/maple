@@ -155,8 +155,12 @@ function FirmDetail() {
                     : `${years[years.length - 1]}–${years[0]}`}
                 </>
               )}
-              &nbsp;·&nbsp; {filings?.length ?? "—"}{" "}
-              {t("fields.filings").toLowerCase()}
+              {!filesThroughEmployer && (
+                <>
+                  &nbsp;·&nbsp; {filings?.length ?? "—"}{" "}
+                  {t("fields.filings").toLowerCase()}
+                </>
+              )}
               {totalCompensation > 0 && (
                 <>
                   &nbsp;·&nbsp;{" "}
@@ -196,27 +200,39 @@ function FirmDetail() {
                   {t("misc.filesThroughFirm", { name })}
                 </p>
               )}
-              <LobbyingFilingsTable
-                filings={pageItems}
-                showBill
-                showClient
-                showFirm={false}
-                showAmount
-              />
-              <LobbyingPaginationBar
-                page={page}
-                totalPages={totalPages}
-                totalItems={totalItems}
-                pageSize={PAGE_SIZE}
-                onPage={setPage}
-              />
+              {!filesThroughEmployer && (
+                <>
+                  <LobbyingFilingsTable
+                    filings={pageItems}
+                    showBill
+                    showClient
+                    showFirm={false}
+                    showAmount
+                  />
+                  <LobbyingPaginationBar
+                    page={page}
+                    totalPages={totalPages}
+                    totalItems={totalItems}
+                    pageSize={PAGE_SIZE}
+                    onPage={setPage}
+                  />
+                </>
+              )}
             </Col>
 
             {/* Right: clients + disclosure links */}
             <Col md={4}>
-              <h5 style={sectionHeadStyle}>{t("sections.clients")}</h5>
+              {/* A lobbyist whose employer files has no clients of their own;
+                  the note on the left explains where to look instead. */}
+              {(allClients.length > 0 || !filesThroughEmployer) && (
+                <h5 style={sectionHeadStyle}>{t("sections.clients")}</h5>
+              )}
               {allClients.length === 0 ? (
-                <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 13 }}>—</p>
+                !filesThroughEmployer && (
+                  <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 13 }}>
+                    —
+                  </p>
+                )
               ) : (
                 <ul style={{ paddingLeft: "1.25rem", fontSize: 13 }}>
                   {allClients.map(c => (

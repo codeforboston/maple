@@ -324,9 +324,15 @@ def compute_stats(db: firestore.Client) -> None:
         if year is not None:
             entry["years"].add(year)
         entry["lobbyists"].update(p["name"] for p in d.get("lobbyists", []) if p.get("name"))
-        entry.setdefault("employers", set()).update(
-            p["name"] for p in d.get("employers", []) if p.get("name")
-        )
+        # One entry per employing entity (an entity's name is often spelled
+        # differently from year to year), shown with its latest spelling.
+        employers = entry.setdefault("employers", {})
+        for p in d.get("employers", []):
+            if not p.get("name"):
+                continue
+            key = p.get("nameNorm") or normalize_entity_name(p["name"])
+            if key not in employers or (year or 0) >= employers[key][0]:
+                employers[key] = (year or 0, p["name"])
         urls = sorted(d.get("sourceUrls") or [])
         if urls and year is not None and year >= latest_registration.get(norm, (0, ""))[0]:
             latest_registration[norm] = (year, urls[0])
@@ -365,7 +371,9 @@ def compute_stats(db: firestore.Client) -> None:
         fs["lobbyists"] = sorted(fs["lobbyists"])
         # Firms a lobbyist is registered under (from 2019, when individual
         # registrations name their employer).
-        fs["employers"] = sorted(fs.get("employers", set()))
+        fs["employers"] = [
+            name for _, name in sorted(fs.get("employers", {}).values(), key=lambda e: (-e[0], e[1]))
+        ]
         fs["hasFilings"] = fs["entityNameNorm"] in filer_norms
         fs["sourceUrl"] = latest_registration.get(fs["entityNameNorm"], (0, None))[1]
         regs = sorted(fs.get("registrations", []), key=lambda r: -(r["year"] or 0))
