@@ -429,13 +429,12 @@ amount is available for these years.
 ```
 functions/src/lobbying/
   types.ts     — Runtypes schema definitions for LobbyingRegistrant, LobbyingFiling
-  normalize.ts — Entity name normalization pipeline (also used client-side)
   index.ts     — Re-exports
 
 lobbying-scraper/
-  scrape.py           — Entry point: --mode weekly (incremental) | --mode backfill
+  scrape.py           — Entry point: --mode weekly (incremental) | backfill | stats
   portal.py           — HTTP fetch wrappers + pure HTML parsers for all 4 format eras
-  normalize.py        — Port of normalize.ts
+  normalize.py        — Entity name normalization pipeline
   writer.py           — Firestore document construction + writes
   archive.py          — GCS raw-HTML archive (write-only; enabled by ARCHIVE_RAW=1)
   reparse_archive.py  — Offline driver to re-ingest archived HTML into Firestore
@@ -565,11 +564,10 @@ Note: bill-join queries should always filter on `chamber` (or check
 | File                                  | Status     | Notes                                                            |
 | ------------------------------------- | ---------- | ---------------------------------------------------------------- |
 | `functions/src/lobbying/types.ts`     | ✅ Done    | Firestore schema types; imported by future frontend code         |
-| `functions/src/lobbying/normalize.ts` | ✅ Done    | Normalization pipeline; also ported to `normalize.py`            |
-| `functions/src/lobbying/index.ts`     | ✅ Done    | Re-exports types and normalize                                   |
+| `functions/src/lobbying/index.ts`     | ✅ Done    | Re-exports types                                                 |
 | `firestore.rules`                     | ✅ Done    |                                                                  |
 | `firestore.indexes.json`              | ✅ Done    |                                                                  |
-| `lobbying-scraper/normalize.py`       | ✅ Done    | Port of normalize.ts                                             |
+| `lobbying-scraper/normalize.py`       | ✅ Done    | Entity name normalization pipeline                               |
 | `lobbying-scraper/portal.py`          | ✅ Done    | All 4 format eras; pure parsers separated from fetch wrappers    |
 | `lobbying-scraper/writer.py`          | ✅ Done    | Firestore document construction                                  |
 | `lobbying-scraper/scrape.py`          | ✅ Done    | Entry point; `--mode weekly` and `--mode backfill`               |

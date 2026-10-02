@@ -1,7 +1,7 @@
 """Entity name normalization pipeline.
 
-Mirrored in functions/src/lobbying/normalize.ts. Steps must be applied in
-this exact order — changing the order produces different (incorrect) output.
+Steps must be applied in this exact order — changing the order produces
+different (incorrect) output.
 """
 
 from __future__ import annotations
