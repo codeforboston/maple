@@ -55,6 +55,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import time
 
 # archive.py reads ARCHIVE_RAW when imported; refetch-errors relies on it to
 # save re-fetched pages.
@@ -149,36 +150,37 @@ def choose_owner(owners: list[DisclosureMeta]) -> DisclosureMeta:
     return sorted(owners, key=lambda m: (m.reg_type != "Lobbyist", m.entity_name))[0]
 
 
+def _process_page_once(db: firestore.Client, blob: Blob, owner: DisclosureMeta, url: str) -> dict:
+    soup = BeautifulSoup(_download(blob), "html.parser")
+    detail = parse_disclosure_detail(soup, owner.year)
+    built = registrant_doc(owner, detail)
+    if built is None:
+        return {"status": "unattributable", "url": url}
+    rid, data = built
+    filer = resolve_filer(owner, detail)
+    gc = year_to_general_court(filer.year)
+    fids = [
+        filing_id(filer.entity_name, b.client_name, b.chamber, b.bill_id,
+                  gc, b.position, detail.period_start)
+        for b in detail.bills
+    ]
+    write_filings(db, owner, detail, url)
+    return {"status": "processed", "url": url, "rid": rid, "data": data, "fids": fids,
+            "reattributed": filer.entity_name != owner.entity_name}
+
+
 def _process_page(db: firestore.Client, blob: Blob, owner: DisclosureMeta, url: str) -> dict:
-    # One try/except around the whole page so a transient network error can't
-    # escape to future.result() and abort the accounting loop.
-    try:
-        for attempt in range(3):
-            try:
-                html = blob.download_as_text(encoding="utf-8")
-                break
-            except Exception:
-                if attempt == 2:
-                    raise
-        soup = BeautifulSoup(html, "html.parser")
-        detail = parse_disclosure_detail(soup, owner.year)
-        built = registrant_doc(owner, detail)
-        if built is None:
-            return {"status": "unattributable", "url": url}
-        rid, data = built
-        filer = resolve_filer(owner, detail)
-        gc = year_to_general_court(filer.year)
-        fids = [
-            filing_id(filer.entity_name, b.client_name, b.chamber, b.bill_id,
-                      gc, b.position, detail.period_start)
-            for b in detail.bills
-        ]
-        write_filings(db, owner, detail, url)
-        return {"status": "processed", "url": url, "rid": rid, "data": data, "fids": fids,
-                "reattributed": filer.entity_name != owner.entity_name}
-    except Exception as exc:
-        print(f"  ERROR processing {url}: {exc}")
-        return {"status": "error", "url": url}
+    # Retry the whole page (read, parse, writes are all idempotent) so a brief
+    # network outage doesn't leave it stale, and never let an exception escape
+    # to future.result(), which would abort the accounting loop.
+    for attempt in range(3):
+        try:
+            return _process_page_once(db, blob, owner, url)
+        except Exception as exc:
+            if attempt == 2:
+                print(f"  ERROR processing {url}: {exc}")
+                return {"status": "error", "url": url}
+            time.sleep(5 * 2 ** attempt)
 
 
 def run_write(project: str, out_prefix: str, workers: int, limit: int | None) -> None:
@@ -423,15 +425,25 @@ def run_refetch_errors(project: str, workers: int, execute: bool) -> None:
     def check(page):
         blob, url = page
         try:
-            return url if _is_error_page(_download(blob)) else None
+            return url, _is_error_page(_download(blob))
         except Exception:
-            return None
+            return url, None
 
+    bad, unchecked = [], []
     with ThreadPoolExecutor(max_workers=workers) as pool:
-        bad = [u for u in pool.map(check, pages) if u]
+        for done, (url, is_error) in enumerate(pool.map(check, pages), 1):
+            if is_error:
+                bad.append(url)
+            elif is_error is None:
+                unchecked.append(url)
+            if done % 10000 == 0 or done == len(pages):
+                print(f"  [{done}/{len(pages)}] {len(bad)} error pages, {len(unchecked)} unchecked")
     print(f"Error pages stored in place of content: {len(bad)}")
     for url in bad:
         print("  ", url)
+    if unchecked:
+        # A failed download says nothing about the page; rerun to check these.
+        print(f"Could not download {len(unchecked)} pages to check them; rerun the scan.")
     if not execute:
         print("Dry run — nothing fetched. Re-run with --execute to re-fetch them from the portal.")
         return
