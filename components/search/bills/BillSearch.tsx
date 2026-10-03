@@ -23,14 +23,20 @@ import { BillHit } from "./BillHit"
 import { useBillRefinements } from "./useBillRefinements"
 import { SortBy, SortByWithConfigurationItem } from "../SortBy"
 import { getServerConfig, VirtualFilters } from "../common"
-import { billsSearchParams } from "../searchParams"
-import { useBillSort } from "./useBillSort"
+import { billsRelevanceSort, billsSearchParams } from "../searchParams"
+import { billsDefaultIndex, useBillSort } from "./useBillSort"
 import { FC, useState } from "react"
 import { pathToSearchState, searchStateToUrl } from "../routingHelpers"
 
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
-  additionalSearchParameters: billsSearchParams
+  // sort_by only reaches Typesense under the default option, whose index name
+  // (billsDefaultIndex) has no sort segment; every other option's
+  // "bills/sort/<sort_by>" index name overrides it in the adapter.
+  additionalSearchParameters: {
+    ...billsSearchParams,
+    sort_by: billsRelevanceSort
+  }
 }).searchClient
 
 const extractLastSegmentOfRefinements = (items: any[]) => {
@@ -61,13 +67,12 @@ const extractLastSegmentOfRefinements = (items: any[]) => {
 
 export const BillSearch = () => {
   const items = useBillSort()
-  const initialSortByValue = items[0].value
   return (
     <SearchErrorBoundary>
       <InstantSearch
-        indexName={initialSortByValue}
+        indexName={billsDefaultIndex}
         initialUiState={{
-          [initialSortByValue]: {
+          [billsDefaultIndex]: {
             refinementList: { court: [String(currentGeneralCourt)] }
           }
         }}

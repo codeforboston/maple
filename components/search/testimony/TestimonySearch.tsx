@@ -32,9 +32,23 @@ import { FollowContext, OrgFollowStatus } from "components/shared/FollowContext"
 import { pathToSearchState, searchStateToUrl } from "../routingHelpers"
 import { useTranslation } from "next-i18next"
 
+/** The InstantSearch index name of the default (Relevance) sort: the bare
+ * collection, with the sort pinned on the adapter below, the same way Browse
+ * Bills does it (see billsDefaultIndex in bills/useBillSort.tsx). With no
+ * query every document's text match is equal, so the landing page falls
+ * through to the sort's publishedAt:desc tiebreak and reads newest-first.
+ */
+export const testimonyDefaultIndex = "publishedTestimony"
+
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
-  additionalSearchParameters: testimonySearchParams
+  // sort_by only reaches Typesense under the default option, whose index name
+  // has no sort segment; the other options' "publishedTestimony/sort/<sort_by>"
+  // index names override it in the adapter.
+  additionalSearchParameters: {
+    ...testimonySearchParams,
+    sort_by: testimonyRelevanceSort
+  }
 }).searchClient
 
 export const useTestimonySort = () => {
@@ -42,16 +56,16 @@ export const useTestimonySort = () => {
   const items: SortByItem[] = useMemo(
     () => [
       {
+        label: t("sort_by.relevance"),
+        value: testimonyDefaultIndex
+      },
+      {
         label: t("sort_by.newest"),
         value: "publishedTestimony/sort/publishedAt:desc"
       },
       {
         label: t("sort_by.oldest"),
         value: "publishedTestimony/sort/publishedAt:asc"
-      },
-      {
-        label: t("sort_by.relevance"),
-        value: `publishedTestimony/sort/${testimonyRelevanceSort}`
       }
     ],
     [t]
@@ -60,13 +74,12 @@ export const useTestimonySort = () => {
 }
 
 export const TestimonySearch = () => {
-  const initialSortByValue = useTestimonySort()[0].value
   return (
     <SearchErrorBoundary>
       <InstantSearch
-        indexName={initialSortByValue}
+        indexName={testimonyDefaultIndex}
         initialUiState={{
-          [initialSortByValue]: {
+          [testimonyDefaultIndex]: {
             refinementList: { court: [String(currentGeneralCourt)] }
           }
         }}
