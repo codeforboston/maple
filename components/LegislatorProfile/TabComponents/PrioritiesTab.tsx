@@ -156,32 +156,50 @@ const PriorityWords = styled.div`
 `
 
 function MenuOptions() {
+  const { t } = useTranslation("common")
+
   return (
     <>
       <option value="" disabled>
-        Select Menu
+        {t("bill.icon.selectMenu")}
       </option>
-      <option value="commerce">Commerce</option>
-      <option value="crime">Crime and Law Enforcement</option>
-      <option value="economics">Economics and Public Finance</option>
-      <option value="education">Education</option>
-      <option value="emergency">Emergency Management</option>
-      <option value="energy">Energy</option>
-      <option value="environment">Environmental Protection</option>
-      <option value="families">Families</option>
-      <option value="fda">Food Drugs and Alcohol</option>
-      <option value="government">Government Operations and Elections</option>
-      <option value="healthcare">Healthcare</option>
-      <option value="housing">Housing and Community Development</option>
-      <option value="immigrants">Immigrants and Foreign Nationals</option>
-      <option value="labor">Labor and Employment</option>
-      <option value="law">Law and Judiciary</option>
-      <option value="publicResources">Public and Natural Resources</option>
-      <option value="social">Social Services</option>
-      <option value="sports">Sports and Recreation</option>
-      <option value="taxation">Taxation</option>
-      <option value="technology">Technology and Communications</option>
-      <option value="transportation">Transportation and Public Works</option>
+      <option value="commerce">{t("bill.icon.commerce")}</option>
+      <option value="crime">{t("bill.icon.crime_and_law_enforcement")}</option>
+      <option value="economics">
+        {t("bill.icon.economics_and_public_finance")}
+      </option>
+      <option value="education">{t("bill.icon.education")}</option>
+      <option value="emergency">{t("bill.icon.emergency_management")}</option>
+      <option value="energy">{t("bill.icon.energy")}</option>
+      <option value="environment">
+        {t("bill.icon.environmental_protection")}
+      </option>
+      <option value="families">{t("bill.icon.families")}</option>
+      <option value="fda">{t("bill.icon.food_drugs_and_alcohol")}</option>
+      <option value="government">
+        {t("bill.icon.government_operations_and_elections")}
+      </option>
+      <option value="healthcare">{t("bill.icon.healthcare")}</option>
+      <option value="housing">
+        {t("bill.icon.housing_and_community_development")}
+      </option>
+      <option value="immigrants">
+        {t("bill.icon.immigrants_and_foreign_nationals")}
+      </option>
+      <option value="labor">{t("bill.icon.labor_and_employment")}</option>
+      <option value="law">{t("bill.icon.law_and_judiciary")}</option>
+      <option value="publicResources">
+        {t("bill.icon.public_and_natural_resources")}
+      </option>
+      <option value="social">{t("bill.icon.social_services")}</option>
+      <option value="sports">{t("bill.icon.sports_and_recreation")}</option>
+      <option value="taxation">{t("bill.icon.taxation")}</option>
+      <option value="technology">
+        {t("bill.icon.technology_and_communications")}
+      </option>
+      <option value="transportation">
+        {t("bill.icon.transportation_and_public_works")}
+      </option>
     </>
   )
 }
@@ -338,13 +356,14 @@ function EditablePriorities({
         </Form>
       </PriorityBlock>
 
-      <PriorityTitleAlt>Key priorities</PriorityTitleAlt>
+      <PriorityTitleAlt>{t("keyPriorities")}</PriorityTitleAlt>
 
       <PriorityBlockAlt>
         <Form onSubmit={onSubmit}>
           <div className="d-flex justify-content-between">
             <PriorityTitle className={`align-self-center d-inline my-1`}>
-              Select an Icon and Text for Priority One
+              {t("selectIconAndText")}
+              {t("priorityOne")}
             </PriorityTitle>
 
             <SubmitButton
@@ -355,11 +374,13 @@ function EditablePriorities({
             </SubmitButton>
           </div>
 
-          <div className="mb-2">{SVG_MAP[currentOneOption]} Current Icon</div>
+          <div className="mb-2">
+            {SVG_MAP[currentOneOption]} {t("currentIcon")}
+          </div>
 
           <div className="d-flex align-items-center justify-content-between">
             <div className="me-3 text-nowrap">
-              {SVG_MAP[selectedOneOption]} Selected Icon
+              {SVG_MAP[selectedOneOption]} {t("selectedIcon")}
             </div>
 
             <select
@@ -391,7 +412,8 @@ function EditablePriorities({
         <Form onSubmit={onSubmit}>
           <div className="d-flex justify-content-between">
             <PriorityTitle className={`align-self-center d-inline my-1`}>
-              Select an Icon and Text for Priority Two
+              {t("selectIconAndText")}
+              {t("priorityTwo")}
             </PriorityTitle>
 
             <SubmitButton
@@ -402,11 +424,13 @@ function EditablePriorities({
             </SubmitButton>
           </div>
 
-          <div className="mb-2">{SVG_MAP[currentTwoOption]} Current Icon</div>
+          <div className="mb-2">
+            {SVG_MAP[currentTwoOption]} {t("currentIcon")}
+          </div>
 
           <div className="d-flex align-items-center justify-content-between">
             <div className="me-3 text-nowrap">
-              {SVG_MAP[selectedTwoOption]} Selected Icon
+              {SVG_MAP[selectedTwoOption]} {t("selectedIcon")}
             </div>
 
             <select
@@ -438,7 +462,8 @@ function EditablePriorities({
         <Form onSubmit={onSubmit}>
           <div className="d-flex justify-content-between">
             <PriorityTitle className={`align-self-center d-inline my-1`}>
-              Select an Icon and Text for Priority Three
+              {t("selectIconAndText")}
+              {t("priorityThree")}
             </PriorityTitle>
 
             <SubmitButton
@@ -449,11 +474,13 @@ function EditablePriorities({
             </SubmitButton>
           </div>
 
-          <div className="mb-2">{SVG_MAP[currentThreeOption]} Current Icon</div>
+          <div className="mb-2">
+            {SVG_MAP[currentThreeOption]} {t("currentIcon")}
+          </div>
 
           <div className="d-flex align-items-center justify-content-between">
             <div className="me-3 text-nowrap">
-              {SVG_MAP[selectedThreeOption]} Selected Icon
+              {SVG_MAP[selectedThreeOption]} {t("selectedIcon")}
             </div>
 
             <select
@@ -489,8 +516,6 @@ function EditablePriorities({
 function ReadonlyPriorities({ legislatorData }: { legislatorData: any[] }) {
   const { t } = useTranslation("legislators")
 
-  console.log("LD: ", legislatorData[0])
-
   const priorityOneIcon: IconType =
     legislatorData[0]?.priorityOneIcon || "commerce"
   const priorityTwoIcon: IconType =
@@ -522,7 +547,7 @@ function ReadonlyPriorities({ legislatorData }: { legislatorData: any[] }) {
         </PriorityWords>
       </PriorityBlock>
 
-      <PriorityTitleAlt>Key priorities</PriorityTitleAlt>
+      <PriorityTitleAlt>{t("keyPriorities")}</PriorityTitleAlt>
 
       <Row>
         <Col md="4">
