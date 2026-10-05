@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import styled from "styled-components"
 
-import { Form } from "../../bootstrap"
+import { Col, Form, Row } from "../../bootstrap"
 import { ProfileHook, useProfile } from "../../db"
 import Input from "../../forms/Input"
 import { SubmitButton, TabBlock } from "../LegislatorComponents"
@@ -86,10 +86,37 @@ type Props = {
   className?: string
 }
 
+const IconBlock = styled.div`
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #d1d6e7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+`
+
 const PriorityBlock = styled(TabBlock)`
   border-left: 4px solid #1a3185;
   margin-bottom: 10px;
   padding: 14px 16px;
+`
+
+const PriorityBlockAlt = styled(TabBlock)`
+  background: #fff;
+  border-radius: 8px;
+  padding: 14px;
+  border-top: 3px solid #1a3185;
+`
+
+const PriorityDesc = styled.div`
+  font-size: 12px;
+  color: #6c757d;
+  line-height: 1.5;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 `
 
 const PriorityTitle = styled.div`
@@ -99,6 +126,26 @@ const PriorityTitle = styled.div`
   text-transform: uppercase;
   letter-spacing: 0.06em;
   margin-bottom: 6px;
+`
+
+const PriorityTitleAlt = styled.div`
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #6c757d;
+  margin: 16px 0 8px;
+`
+
+const PriorityTitleAlt2 = styled.div`
+  font-size: 13px;
+  font-weight: 700;
+  color: #0b0a3e;
+  margin-bottom: 3px;
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
 `
 
 const PriorityWords = styled.div`
@@ -291,7 +338,9 @@ function EditablePriorities({
         </Form>
       </PriorityBlock>
 
-      <PriorityBlock>
+      <PriorityTitleAlt>Key priorities</PriorityTitleAlt>
+
+      <PriorityBlockAlt>
         <Form onSubmit={onSubmit}>
           <div className="d-flex justify-content-between">
             <PriorityTitle className={`align-self-center d-inline my-1`}>
@@ -336,9 +385,9 @@ function EditablePriorities({
             />
           </div>
         </Form>
-      </PriorityBlock>
+      </PriorityBlockAlt>
 
-      <PriorityBlock>
+      <PriorityBlockAlt>
         <Form onSubmit={onSubmit}>
           <div className="d-flex justify-content-between">
             <PriorityTitle className={`align-self-center d-inline my-1`}>
@@ -383,9 +432,9 @@ function EditablePriorities({
             />
           </div>
         </Form>
-      </PriorityBlock>
+      </PriorityBlockAlt>
 
-      <PriorityBlock>
+      <PriorityBlockAlt>
         <Form onSubmit={onSubmit}>
           <div className="d-flex justify-content-between">
             <PriorityTitle className={`align-self-center d-inline my-1`}>
@@ -432,13 +481,22 @@ function EditablePriorities({
             />
           </div>
         </Form>
-      </PriorityBlock>
+      </PriorityBlockAlt>
     </>
   )
 }
 
 function ReadonlyPriorities({ legislatorData }: { legislatorData: any[] }) {
   const { t } = useTranslation("legislators")
+
+  console.log("LD: ", legislatorData[0])
+
+  const priorityOneIcon: IconType =
+    legislatorData[0]?.priorityOneIcon || "commerce"
+  const priorityTwoIcon: IconType =
+    legislatorData[0]?.priorityTwoIcon || "commerce"
+  const priorityThreeIcon: IconType =
+    legislatorData[0]?.priorityThreeIcon || "commerce"
 
   return (
     <>
@@ -448,17 +506,62 @@ function ReadonlyPriorities({ legislatorData }: { legislatorData: any[] }) {
         <PriorityWords style={{ whiteSpace: "pre-wrap" }}>
           <span>&ldquo;</span>
 
-          {legislatorData[0]?.inTheirOwnWords
-            ? legislatorData[0].inTheirOwnWords
-            : t("inTheirOwnWordsEmpty")}
+          {/* if Data is either empty   *
+           * or has the default value:  *
+           *                            *
+           * return the empty message   *
+           *                            *
+           * otherwise return the Data */}
+
+          {!legislatorData[0]?.inTheirOwnWords ||
+          legislatorData[0]?.inTheirOwnWords === "Add your own words"
+            ? t("inTheirOwnWordsEmpty")
+            : !legislatorData[0]?.inTheirOwnWords}
 
           <span>&rdquo;</span>
         </PriorityWords>
       </PriorityBlock>
 
-      <PriorityBlock>
-        <PriorityTitle className={`my-1`}>Priority One</PriorityTitle>
-      </PriorityBlock>
+      <PriorityTitleAlt>Key priorities</PriorityTitleAlt>
+
+      <Row>
+        <Col md="4">
+          {!legislatorData[0]?.priorityOneText ||
+          legislatorData[0]?.priorityOneText === "Add your own words" ? (
+            <></>
+          ) : (
+            <PriorityBlockAlt>
+              <IconBlock>{SVG_MAP[priorityOneIcon]}</IconBlock>
+              <PriorityTitleAlt2>{priorityOneIcon}</PriorityTitleAlt2>
+              <PriorityDesc>{legislatorData[0].priorityOneText}</PriorityDesc>
+            </PriorityBlockAlt>
+          )}
+        </Col>
+        <Col md="4">
+          {!legislatorData[0]?.priorityTwoText ||
+          legislatorData[0]?.priorityTwoText === "Add your own words" ? (
+            <></>
+          ) : (
+            <PriorityBlockAlt>
+              <IconBlock>{SVG_MAP[priorityTwoIcon]}</IconBlock>
+              <PriorityTitleAlt2>{priorityTwoIcon}</PriorityTitleAlt2>
+              <PriorityDesc>{legislatorData[0].priorityTwoText}</PriorityDesc>
+            </PriorityBlockAlt>
+          )}
+        </Col>
+        <Col md="4">
+          {!legislatorData[0]?.priorityThreeText ||
+          legislatorData[0]?.priorityThreeText === "Add your own words" ? (
+            <></>
+          ) : (
+            <PriorityBlockAlt>
+              <IconBlock>{SVG_MAP[priorityThreeIcon]}</IconBlock>
+              <PriorityTitleAlt2>{priorityThreeIcon}</PriorityTitleAlt2>
+              <PriorityDesc>{legislatorData[0].priorityThreeText}</PriorityDesc>
+            </PriorityBlockAlt>
+          )}
+        </Col>
+      </Row>
     </>
   )
 }
