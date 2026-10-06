@@ -53,8 +53,9 @@ export interface MembersFinance {
   contributionsCount: number
   uniqueContributorsCount: number
   lastUpdated: Timestamp
-  // End_Date of the most recent Bank Report (type 70) — the basis for totalRaised/cashOnHand.
-  // Missing if the member has no Bank Report.
+  // End_Date of the most recent Bank Report (type 70), across all depository
+  // accounts — the basis for totalRaised/cashOnHand. Missing if the member
+  // has no Bank Report.
   bankDataAsOf?: Timestamp
   // End_Date of the most recent Deposit Report (type 60) — the basis for the
   // breakdown categories. Normally later than bankDataAsOf, since Deposit

@@ -108,14 +108,24 @@ interface YearAccumulator {
   breakdown: MutableBreakdown
 }
 
+// One depository account's earliest and latest Bank Report (type 70)
+interface BankAccount {
+  startDateMs: number // Start_Date (as ms) of this account's earliest Bank Report
+  startBalance: number
+  endDateMs: number // End_Date (as ms) of this account's latest Bank Report
+  endBalance: number
+}
+
 // totalRaised/totalSpent/breakdown are accumulated per year only; the
 // cycle-wide values written to Firestore are the sum of the years.
 interface MemberAccumulator {
   cpfId: number
-  cashOnHand: number
-  cashOnHandEndDateMs: number // End_Date (as ms) of the most recent Bank Report (type 70) seen
-  startBalance: number
-  startBalanceStartDateMs: number // Start_Date (as ms) of the earliest Bank Report (type 70) seen
+  // Keyed by OCPF_Depository_Bank_Name. A committee can have more than one
+  // depository account, each with its own monthly Bank Report — e.g. when
+  // moving to a new bank, both are open for a few months. Cash on hand and
+  // start balance are summed across accounts (see cashOnHand/startBalance).
+  bankAccounts: Map<string, BankAccount>
+  latestBankEndDateMs: number // End_Date (as ms) of the most recent Bank Report, across all accounts
   depositEndDateMs: number // End_Date (as ms) of the most recent Deposit Report (type 60) seen
   // Both span the whole 2-year election cycle, not per year, and cover
   // itemized individual, committee and union contributions (201/202/203)
@@ -141,7 +151,7 @@ interface MemberAccumulator {
   // Reports are compared against
   reportTotals: Record<string, { receipts: number; expenditures: number }>
   // 204 items, applied after all years are parsed so they can be cut off at
-  // the final cashOnHandEndDateMs
+  // the final latestBankEndDateMs
   pendingNonContributionReceipts: {
     dateMs: number
     amount: number
@@ -183,10 +193,8 @@ function newAccumulator(cpfId: number): MemberAccumulator {
   })
   return {
     cpfId,
-    cashOnHand: 0,
-    cashOnHandEndDateMs: 0,
-    startBalance: 0,
-    startBalanceStartDateMs: Infinity,
+    bankAccounts: new Map(),
+    latestBankEndDateMs: 0,
     depositEndDateMs: 0,
     contributionsCount: 0,
     contributorKeys: new Set(),
@@ -204,6 +212,29 @@ function newAccumulator(cpfId: number): MemberAccumulator {
     ),
     pendingNonContributionReceipts: []
   }
+}
+
+// Sum of each account's latest End_Balance. A closed account's last report
+// ends at 0, so it drops out naturally. Verified empirically against ocpf.us
+// 2026 YTD: CPF 16625 (Friedman, Leader Bank + Eastern Bank) matched
+// ($105,253.36) only when both accounts were summed.
+function cashOnHand(acc: MemberAccumulator): number {
+  let total = 0
+  for (const account of acc.bankAccounts.values()) total += account.endBalance
+  return total
+}
+
+// Sum of Start_Balance for every account whose first Bank Report starts on
+// the earliest Start_Date, i.e. cash on hand at the start of the election
+// cycle. An account opened later starts with money already counted in the
+// others, so it's excluded. Verified empirically: CPF 14454 (Brownsberger)
+// had two accounts on 1/1/2025 ($0 and $191,941.54).
+function startBalance(acc: MemberAccumulator): number {
+  const accounts = [...acc.bankAccounts.values()]
+  const earliest = Math.min(...accounts.map(a => a.startDateMs))
+  return accounts
+    .filter(a => a.startDateMs === earliest)
+    .reduce((n, a) => n + a.startBalance, 0)
 }
 
 // ── Cloud Function ────────────────────────────────────────────────────────────
@@ -309,7 +340,7 @@ export const scrapeOcpfFinanceV2 = onRequestV2(
     // Bank Report was left out.
     for (const acc of accumulators.values()) {
       for (const item of acc.pendingNonContributionReceipts) {
-        if (item.dateMs > acc.cashOnHandEndDateMs) continue
+        if (item.dateMs > acc.latestBankEndDateMs) continue
         acc.years[item.year].totalRaised -= item.amount
       }
     }
@@ -381,14 +412,14 @@ export const scrapeOcpfFinanceV2 = onRequestV2(
         ocpfCpfId: acc.cpfId,
         totalRaised: yearAccs.reduce((n, y) => n + y.totalRaised, 0),
         totalSpent: yearAccs.reduce((n, y) => n + y.totalSpent, 0),
-        cashOnHand: acc.cashOnHand,
-        startBalance: acc.startBalance,
+        cashOnHand: cashOnHand(acc),
+        startBalance: startBalance(acc),
         contributionsCount: acc.contributionsCount,
         uniqueContributorsCount: acc.contributorKeys.size,
         lastUpdated: now,
         // Omitted when the member has no report of that type
-        ...(acc.cashOnHandEndDateMs > 0 && {
-          bankDataAsOf: Timestamp.fromMillis(acc.cashOnHandEndDateMs)
+        ...(acc.latestBankEndDateMs > 0 && {
+          bankDataAsOf: Timestamp.fromMillis(acc.latestBankEndDateMs)
         }),
         ...(acc.depositEndDateMs > 0 && {
           depositDataAsOf: Timestamp.fromMillis(acc.depositEndDateMs)
@@ -441,6 +472,7 @@ const REPORT_COLUMN_ALIASES: Record<string, string[]> = {
   receiptsUnitemizedTotal: ["receipts_unitemized_total"],
   expendituresTotal: ["expenditures_total"],
   startBalance: ["start_balance"],
+  bankName: ["ocpf_depository_bank_name"],
   endBalance: ["end_balance"],
   startDate: ["start_date"],
   endDate: ["end_date"]
@@ -563,20 +595,33 @@ async function parseReports(
       acc.reportTotals[year].expenditures += expendituresTotal
     }
 
-    // Report_Type_ID 70 = Bank Report — use End_Balance from the report with the latest End_Date
     const endDate = col(cols, idx.endDate)
     const endDateMs = endDate ? new Date(endDate).getTime() : 0
-    if (reportTypeId === 70 && endDateMs > acc.cashOnHandEndDateMs) {
-      acc.cashOnHand = endBalance
-      acc.cashOnHandEndDateMs = endDateMs
-    }
-    // Start_Balance from the Bank Report with the earliest Start_Date, i.e. cash
-    // on hand at the start of the election cycle.
-    const startDate = col(cols, idx.startDate)
-    const startDateMs = startDate ? new Date(startDate).getTime() : Infinity
-    if (reportTypeId === 70 && startDateMs < acc.startBalanceStartDateMs) {
-      acc.startBalance = startBalance
-      acc.startBalanceStartDateMs = startDateMs
+    // Report_Type_ID 70 = Bank Report — track each account's earliest and
+    // latest report for startBalance/cashOnHand
+    if (reportTypeId === 70) {
+      const startDate = col(cols, idx.startDate)
+      const startDateMs = startDate ? new Date(startDate).getTime() : Infinity
+      const bankName = col(cols, idx.bankName)
+      const account = acc.bankAccounts.get(bankName)
+      if (!account) {
+        acc.bankAccounts.set(bankName, {
+          startDateMs,
+          startBalance,
+          endDateMs,
+          endBalance
+        })
+      } else {
+        if (startDateMs < account.startDateMs) {
+          account.startDateMs = startDateMs
+          account.startBalance = startBalance
+        }
+        if (endDateMs > account.endDateMs) {
+          account.endDateMs = endDateMs
+          account.endBalance = endBalance
+        }
+      }
+      acc.latestBankEndDateMs = Math.max(acc.latestBankEndDateMs, endDateMs)
     }
     // Deposit Reports are filed more frequently than Bank Reports, so this
     // date is normally later — tracked to show readers why the Contributions
