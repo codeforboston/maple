@@ -117,7 +117,10 @@ interface MemberAccumulator {
   startBalance: number
   startBalanceStartDateMs: number // Start_Date (as ms) of the earliest Bank Report (type 70) seen
   depositEndDateMs: number // End_Date (as ms) of the most recent Deposit Report (type 60) seen
+  // Both span the whole 2-year election cycle, not per year, and cover
+  // itemized individual, committee and union contributions (201/202/203)
   contributionsCount: number
+  contributorKeys: Set<string> // see contributorKey()
   candidateFunds: {
     loans: MutableBreakdownEntry
     contributions: MutableBreakdownEntry
@@ -186,6 +189,7 @@ function newAccumulator(cpfId: number): MemberAccumulator {
     startBalanceStartDateMs: Infinity,
     depositEndDateMs: 0,
     contributionsCount: 0,
+    contributorKeys: new Set(),
     candidateFunds: { loans: emptyEntry(), contributions: emptyEntry() },
     inKind: {
       individual: emptyEntry(),
@@ -380,9 +384,15 @@ export const scrapeOcpfFinanceV2 = onRequestV2(
         cashOnHand: acc.cashOnHand,
         startBalance: acc.startBalance,
         contributionsCount: acc.contributionsCount,
+        uniqueContributorsCount: acc.contributorKeys.size,
         lastUpdated: now,
-        bankDataAsOf: Timestamp.fromMillis(acc.cashOnHandEndDateMs),
-        depositDataAsOf: Timestamp.fromMillis(acc.depositEndDateMs),
+        // Omitted when the member has no report of that type
+        ...(acc.cashOnHandEndDateMs > 0 && {
+          bankDataAsOf: Timestamp.fromMillis(acc.cashOnHandEndDateMs)
+        }),
+        ...(acc.depositEndDateMs > 0 && {
+          depositDataAsOf: Timestamp.fromMillis(acc.depositEndDateMs)
+        }),
         breakdown: sumBreakdowns(
           yearAccs.map(y => y.breakdown)
         ) as MembersFinanceBreakdown,
@@ -440,7 +450,10 @@ const ITEM_COLUMN_ALIASES: Record<string, string[]> = {
   reportId: ["report_id"],
   recordTypeId: ["record_type_id"],
   amount: ["amount"],
-  date: ["date"]
+  date: ["date"],
+  name: ["name"], // last name for individuals; full name for committees/unions
+  firstName: ["first_name"],
+  zip: ["zip"]
 }
 
 function buildIndex(
@@ -633,8 +646,14 @@ async function streamReportItems(
     const amount = parseFloat(col(cols, idx.amount)) || 0
     const date = col(cols, idx.date)
     const dateMs = date ? new Date(date).getTime() : NaN
+    const contributor = contributorKey(
+      recordTypeId,
+      col(cols, idx.name),
+      col(cols, idx.firstName),
+      col(cols, idx.zip)
+    )
 
-    accumulateItem(acc, recordTypeId, amount, dateMs, year)
+    accumulateItem(acc, recordTypeId, amount, dateMs, contributor, year)
     processed++
   }
 
@@ -644,11 +663,38 @@ async function streamReportItems(
   })
 }
 
+// Contribution record types counted in contributionsCount/uniqueContributorsCount:
+// Individual (201), Committee (202) and Union/Association (203). Together
+// these are the itemized contributions behind totalRaised.
+const CONTRIBUTION_RECORD_TYPE_IDS = new Set([201, 202, 203])
+
+// OCPF has no contributor ID, so a contributor is identified by
+// record type + name + first name + 5-digit ZIP. Committees and unions leave
+// First_Name blank and put the full name in Name. Record type is part of the key so an
+// individual never merges with an organization. Street address is not used:
+// its formatting varies between filings for the same person ("St" vs "Street").
+// Known limits: nicknames ("Dan"/"Daniel") and contributors who moved count
+// more than once. Returns null for non-contribution items and rows with no name.
+function contributorKey(
+  recordTypeId: number,
+  name: string,
+  firstName: string,
+  zip: string
+): string | null {
+  if (!CONTRIBUTION_RECORD_TYPE_IDS.has(recordTypeId)) return null
+  const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "")
+  const normalizedName = normalize(name)
+  if (!normalizedName) return null
+  const zip5 = zip.replace(/\D/g, "").slice(0, 5)
+  return [recordTypeId, normalizedName, normalize(firstName), zip5].join("|")
+}
+
 function accumulateItem(
   acc: MemberAccumulator,
   recordTypeId: number,
   amount: number,
   dateMs: number,
+  contributor: string | null,
   year: string
 ): void {
   const addTo = (entry: MutableBreakdownEntry) => {
@@ -659,10 +705,14 @@ function accumulateItem(
   const yearAcc = acc.years[year]
   const yb = yearAcc.breakdown
 
+  if (CONTRIBUTION_RECORD_TYPE_IDS.has(recordTypeId)) {
+    acc.contributionsCount++
+    if (contributor) acc.contributorKeys.add(contributor)
+  }
+
   switch (recordTypeId) {
     case 201: // Individual Contribution
       addTo(yb.individual)
-      acc.contributionsCount++
       if (amount < 200) {
         addTo(yb.smallDonors.itemized)
       }
