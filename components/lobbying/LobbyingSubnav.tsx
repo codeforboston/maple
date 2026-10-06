@@ -2,6 +2,7 @@ import React from "react"
 import { useRouter } from "next/router"
 import { useTranslation } from "next-i18next"
 import { Container } from "components/bootstrap"
+import { Banner } from "components/shared/StyledSharedComponents"
 import { MAPLE_COLORS } from "./chartTheme"
 
 export function LobbyingSubnav() {
@@ -16,25 +17,34 @@ export function LobbyingSubnav() {
   ]
 
   return (
-    <div style={barStyle}>
-      <Container>
-        <div style={innerStyle}>
-          <span style={titleStyle}>{t("subnav.label")}</span>
-          <nav style={{ display: "flex", gap: "1.25rem" }}>
-            {LINKS.map(({ label, href, exact }) => {
-              const active = exact
-                ? pathname === href
-                : pathname === href || pathname.startsWith(href + "/")
-              return (
-                <a key={href} href={href} style={linkStyle(active)}>
-                  {label}
-                </a>
-              )
-            })}
-          </nav>
-        </div>
-      </Container>
-    </div>
+    <>
+      <Banner>
+        {t("banner.betaLine1")}{" "}
+        <a href="mailto:info@mapletestimony.org" style={{ color: "#fff" }}>
+          info@mapletestimony.org
+        </a>{" "}
+        {t("banner.betaLine2")}
+      </Banner>
+      <div style={barStyle}>
+        <Container>
+          <div style={innerStyle}>
+            <span style={titleStyle}>{t("subnav.label")}</span>
+            <nav style={{ display: "flex", gap: "1.25rem" }}>
+              {LINKS.map(({ label, href, exact }) => {
+                const active = exact
+                  ? pathname === href
+                  : pathname === href || pathname.startsWith(href + "/")
+                return (
+                  <a key={href} href={href} style={linkStyle(active)}>
+                    {label}
+                  </a>
+                )
+              })}
+            </nav>
+          </div>
+        </Container>
+      </div>
+    </>
   )
 }
 

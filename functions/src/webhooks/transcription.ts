@@ -1,11 +1,11 @@
-import * as functions from "firebase-functions"
+import { onRequest as onRequestV2 } from "firebase-functions/v2/https"
 import { assemblyAI } from "../events/AssemblyAIHandler"
 import { db, Timestamp } from "../firebase"
 import { sha256 } from "js-sha256"
 
-export const transcription = functions
-  .runWith({ secrets: ["ASSEMBLY_API_KEY"] })
-  .https.onRequest(async (req, res) => {
+export const transcriptionV2 = onRequestV2(
+  { secrets: ["ASSEMBLY_API_KEY"] },
+  async (req, res) => {
     if (req.headers["x-maple-webhook"]) {
       if (req.body.status === "completed") {
         // If we get a request with the right header and status, get the
@@ -143,4 +143,5 @@ export const transcription = functions
       }
     }
     res.status(200).send()
-  })
+  }
+)

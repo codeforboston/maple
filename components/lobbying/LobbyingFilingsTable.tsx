@@ -14,6 +14,7 @@ interface LobbyingFilingsTableProps {
   showActivity?: boolean
   maxRows?: number
   onViewAll?: () => void
+  bordered?: boolean
 }
 
 export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
@@ -24,7 +25,8 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
   showAmount = true,
   showActivity = false,
   maxRows,
-  onViewAll
+  onViewAll,
+  bordered = false
 }) => {
   const { t } = useTranslation("lobbying")
   const rows = maxRows ? filings.slice(0, maxRows) : filings
@@ -39,7 +41,17 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
   }
 
   return (
-    <div>
+    <div
+      style={
+        bordered
+          ? {
+              border: "1px solid var(--bs-border-color)",
+              borderRadius: 6,
+              overflow: "hidden"
+            }
+          : undefined
+      }
+    >
       <Table hover responsive size="sm" style={tableStyle}>
         <thead>
           <tr style={theadRowStyle}>
@@ -71,8 +83,30 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
                   )}
                 </td>
               )}
-              {showClient && <td style={cellStyle}>{f.clientName}</td>}
-              {showFirm && <td style={cellStyle}>{f.entityName}</td>}
+              {showClient && (
+                <td style={cellStyle}>
+                  <a
+                    href={`/lobbying/clients/${encodeURIComponent(
+                      f.clientNameNorm
+                    )}`}
+                    style={{ color: MAPLE_COLORS.primary }}
+                  >
+                    {f.clientName}
+                  </a>
+                </td>
+              )}
+              {showFirm && (
+                <td style={cellStyle}>
+                  <a
+                    href={`/lobbying/firms/${encodeURIComponent(
+                      f.entityNameNorm
+                    )}`}
+                    style={{ color: MAPLE_COLORS.primary }}
+                  >
+                    {f.entityName}
+                  </a>
+                </td>
+              )}
               {showActivity && (
                 <td style={{ ...cellStyle, color: MAPLE_COLORS.textMuted }}>
                   {f.activityTitle || "—"}
@@ -116,8 +150,10 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
 
 const tableStyle: React.CSSProperties = {
   fontSize: 13,
-  color: MAPLE_COLORS.textBody
-}
+  color: MAPLE_COLORS.textBody,
+  "--bs-table-bg": "var(--bs-gray-100)",
+  "--bs-table-hover-bg": "rgba(15, 23, 42, 0.06)"
+} as React.CSSProperties
 
 const theadRowStyle: React.CSSProperties = {
   fontSize: 11,

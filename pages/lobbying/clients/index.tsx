@@ -4,17 +4,16 @@ import { Col, Container, Row } from "components/bootstrap"
 import { createPage } from "components/page"
 import { createGetStaticTranslationProps } from "components/translations"
 import {
-  useLobbyingAllRegistrants,
+  useLobbyingClientSummaries,
   useLobbyingClientFilingCounts
 } from "components/db/lobbying"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
-import type { LobbyingRegistrant } from "functions/src/lobbying/types"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
+import { matchesSearch } from "components/lobbying/searchMatch"
 
-const LEGACY_TOTAL_CLIENT = "_total_salary_"
 const PAGE_SIZE = 50
 
 type ClientSortKey = "name" | "compensation" | "firms" | "filings"
@@ -65,41 +64,6 @@ type ClientRow = {
   totalFilings: number | undefined
 }
 
-function deriveClients(
-  registrants: LobbyingRegistrant[] | undefined
-): ClientRow[] {
-  if (!registrants) return []
-  const map = new Map<string, ClientRow>()
-  for (const r of registrants) {
-    for (const c of r.clients) {
-      const lc = c.clientName.toLowerCase()
-      if (
-        !c.clientNameNorm ||
-        c.clientNameNorm === LEGACY_TOTAL_CLIENT ||
-        c.clientName === LEGACY_TOTAL_CLIENT ||
-        lc.includes("total salaries") ||
-        lc.includes("total salary")
-      )
-        continue
-      if (!map.has(c.clientNameNorm)) {
-        map.set(c.clientNameNorm, {
-          clientName: c.clientName,
-          clientNameNorm: c.clientNameNorm,
-          totalCompensation: null,
-          registrantCount: 0,
-          totalFilings: undefined
-        })
-      }
-      const row = map.get(c.clientNameNorm)!
-      row.registrantCount++
-      if (c.compensation != null) {
-        row.totalCompensation = (row.totalCompensation ?? 0) + c.compensation
-      }
-    }
-  }
-  return [...map.values()]
-}
-
 function LobbyingClientsTable() {
   const { t } = useTranslation("lobbying")
   const [search, setSearch] = useState("")
@@ -115,26 +79,23 @@ function LobbyingClientsTable() {
     }
   }
 
-  const { result: registrants, status, error } = useLobbyingAllRegistrants()
+  const { result: summaries, status, error } = useLobbyingClientSummaries()
   const { result: filCounts } = useLobbyingClientFilingCounts()
-  const clients = useMemo(() => deriveClients(registrants), [registrants])
-  const clientsWithCounts = useMemo(
-    () =>
-      filCounts
-        ? clients.map(c => ({
-            ...c,
-            totalFilings: filCounts[c.clientNameNorm]
-          }))
-        : clients,
-    [clients, filCounts]
-  )
+  const clientsWithCounts = useMemo<ClientRow[]>(() => {
+    if (!summaries) return []
+    return summaries.map(c => ({
+      clientName: c.clientName,
+      clientNameNorm: c.clientNameNorm,
+      totalCompensation: c.totalCompensation,
+      registrantCount: c.registrantCount,
+      totalFilings: filCounts?.[c.clientNameNorm]
+    }))
+  }, [summaries, filCounts])
 
   const filtered = useMemo(
     () =>
       search
-        ? clientsWithCounts.filter(c =>
-            c.clientName.toLowerCase().includes(search.toLowerCase())
-          )
+        ? clientsWithCounts.filter(c => matchesSearch(c.clientName, search))
         : clientsWithCounts,
     [clientsWithCounts, search]
   )

@@ -62,12 +62,12 @@ const paths = {
 const deleteTestimony = httpsCallable<
   { uid: string; publicationId: string },
   { deleted: boolean }
->(functions, "deleteTestimony")
+>(functions, "deleteTestimonyV2")
 
 const publishTestimony = httpsCallable<
   { draftId: string },
   { publicationId: string }
->(functions, "publishTestimony")
+>(functions, "publishTestimonyV2")
 
 let uid: string
 let user: User

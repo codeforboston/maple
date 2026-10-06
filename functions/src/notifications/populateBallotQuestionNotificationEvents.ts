@@ -1,11 +1,16 @@
-import * as functions from "firebase-functions"
+import {
+  Change,
+  DocumentSnapshot,
+  FirestoreEvent,
+  onDocumentWritten
+} from "firebase-functions/v2/firestore"
 import { db, Timestamp } from "../firebase"
 
 export const populateBallotQuestionNotificationEventsHandler = async (
-  snapshot: functions.Change<functions.firestore.DocumentSnapshot>,
-  context: functions.EventContext
+  event: FirestoreEvent<Change<DocumentSnapshot> | undefined, { id: string }>
 ) => {
-  if (!snapshot.after.exists) {
+  const snapshot = event.data
+  if (!snapshot || !snapshot.after.exists) {
     console.error("New snapshot does not exist")
     return
   }
@@ -18,7 +23,7 @@ export const populateBallotQuestionNotificationEventsHandler = async (
     return
   }
 
-  const { id } = context.params
+  const { id } = event.params
 
   const existingSnapshot = await db
     .collection("/notificationEvents")
@@ -52,6 +57,7 @@ export const populateBallotQuestionNotificationEventsHandler = async (
   }
 }
 
-export const populateBallotQuestionNotificationEvents = functions.firestore
-  .document("/ballotQuestions/{id}")
-  .onWrite(populateBallotQuestionNotificationEventsHandler)
+export const populateBallotQuestionNotificationEvents = onDocumentWritten(
+  "/ballotQuestions/{id}",
+  populateBallotQuestionNotificationEventsHandler
+)

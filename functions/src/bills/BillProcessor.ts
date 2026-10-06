@@ -1,5 +1,6 @@
 import { QuerySnapshot } from "@google-cloud/firestore"
-import { runWith } from "firebase-functions"
+import { onMessagePublished } from "firebase-functions/v2/pubsub"
+import { onSchedule } from "firebase-functions/v2/scheduler"
 import { City } from "../cities/types"
 import { Committee } from "../committees/types"
 import { DocUpdate } from "../common"
@@ -23,13 +24,16 @@ export default abstract class BillProcessor {
     topic: string,
     timeoutSeconds = 120
   ) {
-    return runWith({ timeoutSeconds })
-      .pubsub.topic(topic)
-      .onPublish(async message => {
+    return onMessagePublished(
+      // v2 pubsub triggers default to us-east1; pin to match the rest of the deployment
+      { topic, timeoutSeconds, region: "us-central1" },
+      async event => {
+        const message = event.data.message
         if (message.json.run !== true)
           throw Error('Expected { "run": true } message')
         await new Processor(message.json).run()
-      })
+      }
+    )
   }
 
   static scheduled(
@@ -37,9 +41,7 @@ export default abstract class BillProcessor {
     schedule = "every 24 hours",
     timeoutSeconds = 120
   ) {
-    return runWith({ timeoutSeconds })
-      .pubsub.schedule(schedule)
-      .onRun(() => new Processor().run())
+    return onSchedule({ schedule, timeoutSeconds }, () => new Processor().run())
   }
 
   private async run() {

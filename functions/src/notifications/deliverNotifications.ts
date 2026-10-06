@@ -1,4 +1,4 @@
-import * as functions from "firebase-functions"
+import { onSchedule } from "firebase-functions/v2/scheduler"
 import * as handlebars from "handlebars"
 import * as fs from "fs"
 import { auth, db, Timestamp } from "../firebase"
@@ -308,7 +308,10 @@ const renderToHtmlString = (digestData: NotificationEmailDigest) => {
 }
 
 // Firebase Functions
-export const deliverNotifications = functions.pubsub
-  .schedule("47 9 * * *") // 9:47 AM every day
-  .timeZone("America/New_York")
-  .onRun(deliverEmailNotifications)
+export const deliverNotifications = onSchedule(
+  {
+    schedule: "47 9 * * *", // 9:47 AM every day
+    timeZone: "America/New_York"
+  },
+  deliverEmailNotifications
+)

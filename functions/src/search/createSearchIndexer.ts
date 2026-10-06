@@ -1,4 +1,7 @@
-import { EventContext, runWith } from "firebase-functions"
+import {
+  onDocumentCreated,
+  onDocumentWritten
+} from "firebase-functions/v2/firestore"
 import { nanoid } from "nanoid"
 import { getHeapStatistics } from "v8"
 import { db, QueryDocumentSnapshot, Timestamp } from "../firebase"
@@ -23,20 +26,26 @@ export function createSearchIndexer<T extends BaseRecord = BaseRecord>(
 ) {
   registerConfig(config)
   return {
-    upgradeSearchIndex: runWith({
-      /** This only starts the run — create the collection, record it, write the
-       * first chunk. The backfill itself is a chain of `runBackfillChunk`
-       * invocations, each with its own 540s budget and its own cursor, so the
-       * work no longer has to fit in one timeout to converge.
-       */
-      timeoutSeconds: 120,
-      secrets: ["TYPESENSE_API_KEY"]
-    })
-      .firestore.document(upgradePath(config.alias))
-      .onCreate(snap => startUpgrade(config, snap)),
+    upgradeSearchIndex: onDocumentCreated(
+      {
+        /** This only starts the run — create the collection, record it, write
+         * the first chunk. The backfill itself is a chain of
+         * `runBackfillChunk` invocations, each with its own 540s budget and
+         * its own cursor, so the work no longer has to fit in one timeout to
+         * converge.
+         */
+        document: upgradePath(config.alias),
+        timeoutSeconds: 120,
+        secrets: ["TYPESENSE_API_KEY"]
+      },
+      event => {
+        if (!event.data) return
+        return startUpgrade(config, event.data)
+      }
+    ),
 
     /** Runs one chunk of a backfill, then either chains the next chunk or swaps
-     * the alias. `failurePolicy` gives the retries: a chunk resumes from its own
+     * the alias. Retries let a chunk resume from its own
      * cursor, imports upserts into a collection nothing is aliased to yet, and
      * writes totals relative to the baseline on its own document, so running it
      * more than once converges rather than double-counting.
@@ -44,23 +53,31 @@ export function createSearchIndexer<T extends BaseRecord = BaseRecord>(
      * What bounds a chunk's footprint is `MAX_BATCHES_PER_CHUNK` and the
      * config's `batchSize`, not the memory tier.
      */
-    runBackfillChunk: runWith({
-      timeoutSeconds: 540,
-      memory: "1GB",
-      secrets: ["TYPESENSE_API_KEY"],
-      failurePolicy: true
-    })
-      .firestore.document(`${upgradePath(config.alias)}/chunks/{chunkId}`)
-      .onCreate((snap, context) => advanceBackfill(config, snap, context)),
+    runBackfillChunk: onDocumentCreated(
+      {
+        document: `${upgradePath(config.alias)}/chunks/{chunkId}`,
+        timeoutSeconds: 540,
+        memory: "1GiB",
+        secrets: ["TYPESENSE_API_KEY"],
+        retry: true
+      },
+      event => {
+        if (!event.data) return
+        return advanceBackfill(config, event.data, event.time)
+      }
+    ),
 
-    syncToSearchIndex: runWith({
-      timeoutSeconds: 30,
-      secrets: ["TYPESENSE_API_KEY"]
-    })
-      .firestore.document(config.documentTrigger)
-      .onWrite(async change => {
-        await new SearchIndexer(config).syncDocument(change)
-      })
+    syncToSearchIndex: onDocumentWritten(
+      {
+        document: config.documentTrigger,
+        timeoutSeconds: 30,
+        secrets: ["TYPESENSE_API_KEY"]
+      },
+      async event => {
+        if (!event.data) return
+        await new SearchIndexer(config).syncDocument(event.data)
+      }
+    )
   }
 }
 
@@ -121,8 +138,8 @@ async function startUpgrade(
 
 /** Creates a chunk document, treating "it already exists" as success: chunk
  * events are delivered at least once, so a replayed invocation can find the
- * successor it already created. Throwing instead would loop failurePolicy's
- * retries into the age gate, which would mark a healthy run failed. */
+ * successor it already created. Throwing instead would loop the retry policy
+ * into the age gate, which would mark a healthy run failed. */
 async function createChunk(alias: string, chunk: ChunkDoc) {
   try {
     await db.doc(chunkPath(alias, chunk.index)).create(chunk)
@@ -139,19 +156,19 @@ async function createChunk(alias: string, chunk: ChunkDoc) {
 async function advanceBackfill(
   config: CollectionConfig<any>,
   snap: QueryDocumentSnapshot,
-  context: EventContext
+  eventTime: string
 ) {
   const { alias } = config
   const runRef = snap.ref.parent.parent!
   const indexer = new SearchIndexer(config)
 
   // The age gate runs before anything that can throw — parsing included —
-  // or a persistently unparseable chunk or run document would retry for
-  // failurePolicy's full seven days with the run never marked failed.
+  // or a persistently unparseable chunk or run document would retry until it
+  // reaches the 30-minute event-age cutoff without the run being marked failed.
   // Returning without a throw is what ends the retry chain; the run is
   // additionally failed when the chunk provably belongs to it, since only
   // then is writing to the run document safe.
-  const age = Date.now() - Date.parse(context.timestamp)
+  const age = Date.now() - Date.parse(eventTime)
   if (age > MAX_EVENT_AGE_MS) {
     const error = `Chunk ${snap.id} of ${alias} still failing ${Math.round(
       age / 60_000
