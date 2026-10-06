@@ -83,9 +83,12 @@ export interface MembersFinance {
   // 331/332).
   // Matches OCPF's own public "Expenditures" definition.
   totalSpent: number
+  // Sum, across the committee's depository accounts, of each account's
+  // latest Bank Report (type 70) End_Balance.
   cashOnHand: number
-  // Start_Balance of the earliest Bank Report (type 70) in the tracked window,
-  // i.e. cash on hand at the start of the current election cycle.
+  // Sum of Start_Balance for every depository account whose first Bank Report
+  // (type 70) starts on the earliest Start_Date in the tracked window, i.e.
+  // cash on hand at the start of the current election cycle.
   // TODO: Surface this on the Finance tab.
   startBalance: number
 
@@ -102,8 +105,9 @@ export interface MembersFinance {
   // (about 79% of 2025 individual contribution rows were $50 or less).
   uniqueContributorsCount: number
   lastUpdated: FirebaseFirestore.Timestamp
-  // End_Date of the most recent Bank Report (type 70) — the basis for totalRaised/cashOnHand.
-  // Missing if the member has no Bank Report.
+  // End_Date of the most recent Bank Report (type 70), across all depository
+  // accounts — the basis for totalRaised/cashOnHand. Missing if the member
+  // has no Bank Report.
   bankDataAsOf?: FirebaseFirestore.Timestamp
   // End_Date of the most recent Deposit Report (type 60) — the basis for the
   // breakdown categories. Normally later than bankDataAsOf, since Deposit
