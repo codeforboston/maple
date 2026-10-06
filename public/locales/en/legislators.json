@@ -33,7 +33,9 @@
       "smallDonorsSubtitle": "Under $200 contributions",
       "totalRaised": "Total Raised*",
       "totalRaisedFootnote": "*after processing fees, through {{date}}",
-      "totalRaisedSubtitle": "From {{count}} contributions",
+      "totalRaisedFootnoteNoDate": "*after processing fees",
+      "totalRaisedContributorsFootnote": "†Excludes donations smaller than $50 that the campaign reported only as a lump sum",
+      "totalRaisedSubtitle": "From {{count}} contributors†",
       "totalSpent": "Total Spent",
       "totalSpentSubtitle": "As of {{date}}"
     },

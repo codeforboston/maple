@@ -24,31 +24,31 @@ export function FinanceTab({ finance }: { finance?: MembersFinance }) {
   }
 
   const inKindTotal =
-    (finance.inKind?.individual?.amount ?? 0) +
-    (finance.inKind?.committee?.amount ?? 0) +
-    (finance.inKind?.union?.amount ?? 0) +
-    (finance.inKind?.unitemized?.amount ?? 0)
+    finance.inKind.individual.amount +
+    finance.inKind.committee.amount +
+    finance.inKind.union.amount +
+    finance.inKind.unitemized.amount
 
   const candidateFundsTotal =
-    (finance.candidateFunds?.loans?.amount ?? 0) +
-    (finance.candidateFunds?.contributions?.amount ?? 0)
+    finance.candidateFunds.loans.amount +
+    finance.candidateFunds.contributions.amount
 
   const categories: CategoryRow[] = [
     {
       name: t("finance.breakdown.individual"),
-      value: finance.breakdown?.individual?.amount ?? 0
+      value: finance.breakdown.individual.amount
     },
     {
       name: t("finance.breakdown.committee"),
-      value: finance.breakdown?.committee?.amount ?? 0
+      value: finance.breakdown.committee.amount
     },
     {
       name: t("finance.breakdown.union"),
-      value: finance.breakdown?.union?.amount ?? 0
+      value: finance.breakdown.union.amount
     },
     {
       name: t("finance.breakdown.unitemized"),
-      value: finance.breakdown?.unitemized?.amount ?? 0
+      value: finance.breakdown.unitemized.amount
     },
     { name: t("finance.breakdown.candidateFunds"), value: candidateFundsTotal },
     { name: t("finance.breakdown.inKind"), value: inKindTotal }
@@ -57,22 +57,20 @@ export function FinanceTab({ finance }: { finance?: MembersFinance }) {
     .sort((a, b) => b.value - a.value)
 
   const total = categories.reduce((sum, c) => sum + c.value, 0)
-  const processingFees = finance.breakdown?.processingFees?.amount ?? 0
+  const processingFees = finance.breakdown.processingFees.amount
 
   const smallDonorTotal =
-    (finance.breakdown?.smallDonors?.itemized?.amount ?? 0) +
-    (finance.breakdown?.unitemized?.amount ?? 0)
+    finance.breakdown.smallDonors.itemized.amount +
+    finance.breakdown.unitemized.amount
 
-  const cycleYears = Object.keys(finance.years ?? {}).map(Number)
+  const cycleYears = Object.keys(finance.years).map(Number)
   const cycleYear = cycleYears.length
     ? Math.max(...cycleYears)
     : new Date().getFullYear()
 
   const totalSpentAsOf = finance.lastUpdated
-    ? finance.lastUpdated
-        .toDate()
-        .toLocaleDateString("en-US", { month: "short", year: "numeric" })
-    : ""
+    .toDate()
+    .toLocaleDateString("en-US", { month: "short", year: "numeric" })
 
   const formatFullDate = (ts?: { toDate: () => Date }) =>
     ts
@@ -91,9 +89,13 @@ export function FinanceTab({ finance }: { finance?: MembersFinance }) {
       label: t("finance.stats.totalRaised"),
       value: formatCurrency(finance.totalRaised),
       subtitle: t("finance.stats.totalRaisedSubtitle", {
-        count: finance.contributionsCount ?? 0
+        count: finance.uniqueContributorsCount
       }),
-      footnote: t("finance.stats.totalRaisedFootnote", { date: bankDataAsOf })
+      footnote: `${
+        bankDataAsOf
+          ? t("finance.stats.totalRaisedFootnote", { date: bankDataAsOf })
+          : t("finance.stats.totalRaisedFootnoteNoDate")
+      }\n${t("finance.stats.totalRaisedContributorsFootnote")}`
     },
     {
       label: t("finance.stats.totalSpent"),
@@ -166,7 +168,8 @@ export function FinanceTab({ finance }: { finance?: MembersFinance }) {
                     fontSize: 11,
                     fontStyle: "italic",
                     color: "#adb5bd",
-                    marginTop: 4
+                    marginTop: 4,
+                    whiteSpace: "pre-line"
                   }}
                 >
                   {footnote}
