@@ -90,31 +90,30 @@ export function FinanceTab({ finance }: { finance?: MembersFinance }) {
       value: formatCurrency(finance.totalRaised),
       subtitle: t("finance.stats.totalRaisedSubtitle", {
         count: finance.uniqueContributorsCount
-      }),
-      footnote: `${
-        bankDataAsOf
-          ? t("finance.stats.totalRaisedFootnote", { date: bankDataAsOf })
-          : t("finance.stats.totalRaisedFootnoteNoDate")
-      }\n${t("finance.stats.totalRaisedContributorsFootnote")}`
+      })
     },
     {
       label: t("finance.stats.totalSpent"),
       value: formatCurrency(finance.totalSpent),
-      subtitle: t("finance.stats.totalSpentSubtitle", { date: totalSpentAsOf }),
-      footnote: undefined as string | undefined
+      subtitle: t("finance.stats.totalSpentSubtitle", { date: totalSpentAsOf })
     },
     {
       label: t("finance.stats.smallDonors"),
       value: formatPct(smallDonorTotal, total),
-      subtitle: t("finance.stats.smallDonorsSubtitle"),
-      footnote: undefined as string | undefined
+      subtitle: t("finance.stats.smallDonorsSubtitle")
     },
     {
       label: t("finance.stats.cashOnHand"),
       value: formatCurrency(finance.cashOnHand),
-      subtitle: t("finance.stats.cashOnHandSubtitle"),
-      footnote: undefined as string | undefined
+      subtitle: t("finance.stats.cashOnHandSubtitle")
     }
+  ]
+
+  const totalRaisedFootnotes = [
+    bankDataAsOf
+      ? t("finance.stats.totalRaisedFootnote", { date: bankDataAsOf })
+      : t("finance.stats.totalRaisedFootnoteNoDate"),
+    t("finance.stats.totalRaisedContributorsFootnote")
   ]
 
   return (
@@ -133,7 +132,7 @@ export function FinanceTab({ finance }: { finance?: MembersFinance }) {
       </div>
 
       <div className="row row-cols-1 row-cols-sm-2 g-3 mb-4">
-        {statBoxes.map(({ label, value, subtitle, footnote }) => (
+        {statBoxes.map(({ label, value, subtitle }) => (
           <div className="col" key={label}>
             <div
               style={{
@@ -162,19 +161,6 @@ export function FinanceTab({ finance }: { finance?: MembersFinance }) {
               <div style={{ fontSize: 13, color: "#adb5bd", marginTop: 2 }}>
                 {subtitle}
               </div>
-              {footnote && (
-                <div
-                  style={{
-                    fontSize: 11,
-                    fontStyle: "italic",
-                    color: "#adb5bd",
-                    marginTop: 4,
-                    whiteSpace: "pre-line"
-                  }}
-                >
-                  {footnote}
-                </div>
-              )}
             </div>
           </div>
         ))}
@@ -281,6 +267,14 @@ export function FinanceTab({ finance }: { finance?: MembersFinance }) {
           })}
         </p>
       )}
+
+      <div className="text-muted mt-3" style={{ fontSize: 12 }}>
+        {totalRaisedFootnotes.map(footnote => (
+          <p className="mb-1" key={footnote}>
+            {footnote}
+          </p>
+        ))}
+      </div>
     </div>
   )
 }
