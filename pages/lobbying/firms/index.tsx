@@ -13,6 +13,9 @@ import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 import { matchesSearch } from "components/lobbying/searchMatch"
+import { regTypeLabel } from "components/lobbying/regTypeLabel"
+import { SessionFilter, SessionSelect } from "components/lobbying/SessionSelect"
+import { yearToCourt } from "components/lobbying/sessions"
 
 const PAGE_SIZE = 50
 
@@ -66,6 +69,8 @@ type FirmRow = {
   lobbyists: string[]
   // Lobbyists whose name matched the search when the firm's own name didn't.
   matchedLobbyists: string[]
+  employers: string[]
+  hasFilings: boolean
 }
 
 function LobbyingFirmsTable() {
@@ -74,6 +79,7 @@ function LobbyingFirmsTable() {
     "all" | "Lobbyist" | "Employer"
   >("all")
   const [search, setSearch] = useState("")
+  const [session, setSession] = useState<SessionFilter>("all")
   const [sortKey, setSortKey] = useState<FirmSortKey>("name")
   const [sortDir, setSortDir] = useState<SortDir>("asc")
 
@@ -88,19 +94,50 @@ function LobbyingFirmsTable() {
 
   const { result: summaries, status, error } = useLobbyingFirmSummaries()
   const { result: filCounts } = useLobbyingEntityFilingCounts()
+  const sessions = useMemo(
+    () =>
+      [
+        ...new Set((summaries ?? []).flatMap(f => f.years.map(yearToCourt)))
+      ].sort((a, b) => b - a),
+    [summaries]
+  )
+
+  // With a session selected, show only lobbyists and entities registered or
+  // filing in it, with that session's clients and filings.
   const firmsWithCounts = useMemo<FirmRow[]>(() => {
     if (!summaries) return []
-    return summaries.map(f => ({
-      entityName: f.entityName,
-      entityNameNorm: f.entityNameNorm,
-      regType: f.regType,
-      years: f.years,
-      clientCount: f.clientCount,
-      totalFilings: filCounts?.[f.entityNameNorm],
-      lobbyists: f.lobbyists ?? [],
-      matchedLobbyists: []
-    }))
-  }, [summaries, filCounts])
+    return summaries.flatMap(f => {
+      const row = {
+        entityName: f.entityName,
+        entityNameNorm: f.entityNameNorm,
+        regType: f.regType,
+        years: f.years,
+        lobbyists: f.lobbyists ?? [],
+        matchedLobbyists: [],
+        employers: f.employers ?? []
+      }
+      if (session === "all") {
+        return [
+          {
+            ...row,
+            clientCount: f.clientCount,
+            totalFilings: filCounts?.[f.entityNameNorm],
+            hasFilings: f.hasFilings ?? true
+          }
+        ]
+      }
+      if (!f.years.some(y => yearToCourt(y) === session)) return []
+      const inSession = f.courts?.[String(session)]
+      return [
+        {
+          ...row,
+          clientCount: inSession?.clientCount ?? 0,
+          totalFilings: inSession?.filings,
+          hasFilings: Boolean(inSession)
+        }
+      ]
+    })
+  }, [summaries, filCounts, session])
 
   // A firm's disclosures are credited to the firm, so a lobbyist who only
   // appears on a firm's disclosures is found through the firm.
@@ -141,11 +178,17 @@ function LobbyingFirmsTable() {
 
   useEffect(() => {
     setPage(1)
-  }, [regTypeFilter, search, sortKey, sortDir, setPage])
+  }, [regTypeFilter, session, search, sortKey, sortDir, setPage])
 
   return (
     <>
       <div style={filterRowStyle}>
+        <SessionSelect
+          sessions={sessions}
+          value={session}
+          onChange={setSession}
+          style={selectStyle}
+        />
         <select
           value={regTypeFilter}
           onChange={e =>
@@ -247,8 +290,18 @@ function LobbyingFirmsTable() {
                           })}
                         </div>
                       )}
+                      {f.employers.length > 0 && (
+                        <div
+                          style={{
+                            color: MAPLE_COLORS.textMuted,
+                            fontSize: 12
+                          }}
+                        >
+                          {t("misc.atFirms", { firms: f.employers.join(", ") })}
+                        </div>
+                      )}
                     </td>
-                    <td style={tdStyle}>{f.regType}</td>
+                    <td style={tdStyle}>{regTypeLabel(f.regType, t)}</td>
                     <td
                       style={{
                         ...tdStyle,
@@ -260,7 +313,9 @@ function LobbyingFirmsTable() {
                         ? f.years[0]
                         : `${f.years[f.years.length - 1]}–${f.years[0]}`}
                     </td>
-                    <td style={tdStyle}>{f.clientCount}</td>
+                    <td style={tdStyle}>
+                      {f.hasFilings ? f.clientCount : "—"}
+                    </td>
                     <td style={{ ...tdStyle, color: MAPLE_COLORS.textMuted }}>
                       {f.totalFilings !== undefined ? f.totalFilings : "—"}
                     </td>

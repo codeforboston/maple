@@ -24,6 +24,7 @@ from portal import (
     _parse_amount,
     _parse_period,
     parse_disclosure_detail,
+    parse_registration,
     parse_summary,
     resolve_filer,
     year_to_general_court,
@@ -226,8 +227,8 @@ FILER_CASES = [
     ("2016e_disc", "Employer", "Murphy Donoghue Partners", None),
     ("2024e_disc", "Employer", "21c, LLC", ["Hugh R. Jones, III"]),
     ("2011i_disc", "Lobbyist", None, []),
-    # Captured from lobbyist Anthony Arthur Abdelahad's summary page, but the
-    # disclosure it links to is his firm's.
+    # Captured from an individual lobbyist's summary page, but the disclosure
+    # it links to is their firm's.
     ("2024i_disc", "Employer", "Ventry Associates, LLP",
      ["Dennis Michael Murphy", "Anthony Arthur Abdelahad", "Charles McCoy White"]),
 ]
@@ -298,3 +299,54 @@ def test_client_named_like_total_is_kept():
     "ADP TotalSource" must stay."""
     detail = parse_disclosure_detail(_soup("2016e_disc"), 2016)
     assert any(c.client_name == "ADP TotalSource" for c in detail.compensation)
+
+
+# ── Registration pages (Summary.aspx) ───────────────────────────────────────
+
+
+def _registration(fix):
+    return parse_registration(_soup(fix), f"https://example.test/{fix}")
+
+
+def test_registration_firm_lists_lobbyists_without_links_before_2019():
+    """Before 2019 a firm's lobbyist links lead to duplicate copies of the
+    firm's own page, so they must not be kept as the lobbyists' pages."""
+    r = _registration("2007e_summ")
+    assert (r.name, r.year, r.reg_type) == ("Ventry Associates, LLP", 2007, "Employer")
+    assert [p.name for p in r.lobbyists] == ["Anthony Arthur Abdelahad", "Dennis M Murphy"]
+    assert r.lobbyists[1].amount == 160000.0
+    assert r.lobbyists[0].start_date == "2007-01-01"
+    assert all(p.url is None for p in r.lobbyists)
+    assert len(r.clients) == 6 and r.disclosure_urls
+
+
+def test_registration_firm_links_lobbyists_from_2019():
+    r = _registration("2024e_summ")
+    assert r.reg_type == "Employer"
+    (lobbyist,) = r.lobbyists
+    assert lobbyist.name == "Hugh R. Jones, III"
+    assert lobbyist.url and "Summary.aspx" in lobbyist.url
+
+
+def test_registration_individual_lists_employer_from_2019():
+    r = _registration("2024i_summ")
+    assert (r.name, r.reg_type) == ("Anthony Arthur Abdelahad", "Lobbyist")
+    (employer,) = r.employers
+    assert employer.name == "Ventry Associates, LLP"
+    assert employer.amount == 167348.5
+    assert employer.url and "Summary.aspx" in employer.url
+    assert r.lobbyists == [] and r.clients == []
+
+
+def test_registration_individual_with_own_client():
+    r = _registration("2011i_summ")
+    assert r.reg_type == "Lobbyist" and r.employers == []
+    (client,) = r.clients
+    assert client.name == "Jewish Community Relations Council of Greater Boston"
+    assert client.purpose.startswith("This lobbyist will be working on")
+
+
+def test_registration_error_page_is_none():
+    """The portal sometimes serves "An Error Occurred" instead of the page."""
+    soup = BeautifulSoup("<html><body>An Error Occurred</body></html>", "html.parser")
+    assert parse_registration(soup, "https://example.test/x") is None

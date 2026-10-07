@@ -104,7 +104,7 @@ def _process_blob(db: firestore.Client, blob: Blob, dry_run: bool) -> str:
 
     if not dry_run:
         write_registrant(db, meta, detail, url)
-        write_filings(db, meta, detail)
+        write_filings(db, meta, detail, url)
         _mark_processed(blob)
 
     return "processed"

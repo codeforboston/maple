@@ -13,6 +13,7 @@ import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 import { matchesSearch } from "components/lobbying/searchMatch"
+import { SessionFilter, SessionSelect } from "components/lobbying/SessionSelect"
 
 const PAGE_SIZE = 50
 
@@ -67,6 +68,7 @@ type ClientRow = {
 function LobbyingClientsTable() {
   const { t } = useTranslation("lobbying")
   const [search, setSearch] = useState("")
+  const [session, setSession] = useState<SessionFilter>("all")
   const [sortKey, setSortKey] = useState<ClientSortKey>("name")
   const [sortDir, setSortDir] = useState<SortDir>("asc")
 
@@ -81,16 +83,43 @@ function LobbyingClientsTable() {
 
   const { result: summaries, status, error } = useLobbyingClientSummaries()
   const { result: filCounts } = useLobbyingClientFilingCounts()
+  const sessions = useMemo(
+    () =>
+      [...new Set((summaries ?? []).flatMap(c => Object.keys(c.courts ?? {})))]
+        .map(Number)
+        .sort((a, b) => b - a),
+    [summaries]
+  )
+
+  // With a session selected, show only clients active in it, with that
+  // session's lobbyists, filings and compensation.
   const clientsWithCounts = useMemo<ClientRow[]>(() => {
     if (!summaries) return []
-    return summaries.map(c => ({
-      clientName: c.clientName,
-      clientNameNorm: c.clientNameNorm,
-      totalCompensation: c.totalCompensation,
-      registrantCount: c.registrantCount,
-      totalFilings: filCounts?.[c.clientNameNorm]
-    }))
-  }, [summaries, filCounts])
+    return summaries.flatMap(c => {
+      if (session === "all") {
+        return [
+          {
+            clientName: c.clientName,
+            clientNameNorm: c.clientNameNorm,
+            totalCompensation: c.totalCompensation,
+            registrantCount: c.registrantCount,
+            totalFilings: filCounts?.[c.clientNameNorm]
+          }
+        ]
+      }
+      const inSession = c.courts?.[String(session)]
+      if (!inSession) return []
+      return [
+        {
+          clientName: c.clientName,
+          clientNameNorm: c.clientNameNorm,
+          totalCompensation: inSession.compensation,
+          registrantCount: inSession.lobbyistCount,
+          totalFilings: inSession.filings
+        }
+      ]
+    })
+  }, [summaries, filCounts, session])
 
   const filtered = useMemo(
     () =>
@@ -125,11 +154,17 @@ function LobbyingClientsTable() {
 
   useEffect(() => {
     setPage(1)
-  }, [search, sortKey, sortDir, setPage])
+  }, [search, session, sortKey, sortDir, setPage])
 
   return (
     <>
       <div style={filterRowStyle}>
+        <SessionSelect
+          sessions={sessions}
+          value={session}
+          onChange={setSession}
+          style={selectStyle}
+        />
         <input
           type="search"
           placeholder={t("filters.search")}

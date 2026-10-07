@@ -93,12 +93,12 @@ function StatsBar({ stats }: { stats: LobbyingStats | undefined }) {
         description={t("explainers.statClients")}
       />
       <StatCard
-        label={t("stats.totalFirms")}
+        label={t("stats.totalLobbyists")}
         value={
           stats ? stats.totalRegistrants.toLocaleString("en-US") : undefined
         }
         href="/lobbying/firms"
-        description={t("explainers.firms")}
+        description={t("explainers.statLobbyists")}
       />
       <StatCard
         label={t("stats.totalSpend")}

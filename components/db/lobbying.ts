@@ -295,8 +295,8 @@ export function useLobbyingBillSummaries(court: number) {
   return useAsync(fetchLobbyingBillSummaries, [court])
 }
 
-// ── Client / firm summaries (precomputed server-side; see writer.py and
-// seedLobbyingStats.ts). Replaces client-side derivation over
+// ── Client / firm summaries (precomputed server-side by compute_stats in
+// lobbying-scraper/writer.py). Replaces client-side derivation over
 // useLobbyingAllRegistrants(), which only fetches the first 2,000 of
 // 25,000+ registrant docs and was silently showing an incomplete list. ────
 
@@ -313,6 +313,29 @@ export type ClientSummaryRow = {
   totalCompensation: number | null
   registrantCount: number
   firms: ClientSummaryFirm[]
+  // Per legislative session (General Court number as a string); absent on
+  // summaries computed before session filters existed.
+  courts?: Record<
+    string,
+    { filings: number; lobbyistCount: number; compensation: number | null }
+  >
+}
+
+export type FirmRegistrationParty = {
+  name: string
+  nameNorm: string | null
+  // Whether this person or entity has a profile page of its own.
+  hasProfile: boolean
+}
+
+export type FirmRegistration = {
+  year: number
+  // The registration page on the SoS website.
+  sourceUrl: string | null
+  // For an individual lobbyist: the entities they're registered under (2019+).
+  employers: FirmRegistrationParty[]
+  // For an entity: the lobbyists it registered.
+  lobbyists: FirmRegistrationParty[]
 }
 
 export type FirmSummaryRow = {
@@ -321,8 +344,17 @@ export type FirmSummaryRow = {
   regType: string
   years: number[]
   clientCount: number
-  // Lobbyists named in the firm's disclosures; absent on older summaries.
+  // Fields below are absent on summaries computed before registrations were
+  // stored.
   lobbyists?: string[]
+  employers?: string[]
+  // False for a lobbyist whose employer files all their disclosures.
+  hasFilings?: boolean
+  // Latest registration page on the SoS website.
+  sourceUrl?: string | null
+  registrations?: FirmRegistration[]
+  // Per legislative session (General Court number as a string).
+  courts?: Record<string, { filings: number; clientCount: number }>
 }
 
 async function fetchClientSummaries(): Promise<ClientSummaryRow[]> {
@@ -369,6 +401,25 @@ export function useLobbyingClientSummary(clientNameNorm: string) {
 
 export function useLobbyingFirmSummaries() {
   return useAsync(fetchFirmSummaries, [])
+}
+
+async function fetchFirmSummary(
+  entityNameNorm: string
+): Promise<FirmSummaryRow | undefined> {
+  const snap = await getDoc(
+    doc(
+      firestore,
+      LOBBYING_STATS_COLLECTION,
+      "firmSummaries",
+      "firms",
+      encodeURIComponent(entityNameNorm)
+    )
+  )
+  return snap.exists() ? (snap.data() as FirmSummaryRow) : undefined
+}
+
+export function useLobbyingFirmSummary(entityNameNorm: string) {
+  return useAsync(fetchFirmSummary, [entityNameNorm])
 }
 
 export function useLobbyingBillRows(courts: number[]) {
