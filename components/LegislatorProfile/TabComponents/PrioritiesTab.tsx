@@ -541,7 +541,7 @@ function ReadonlyPriorities({ legislatorData }: { legislatorData: any[] }) {
           {!legislatorData[0]?.inTheirOwnWords ||
           legislatorData[0]?.inTheirOwnWords === "Add your own words"
             ? t("inTheirOwnWordsEmpty")
-            : !legislatorData[0]?.inTheirOwnWords}
+            : legislatorData[0].inTheirOwnWords}
 
           <span>&rdquo;</span>
         </PriorityWords>
