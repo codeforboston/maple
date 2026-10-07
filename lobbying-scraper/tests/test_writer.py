@@ -672,3 +672,41 @@ def test_compute_stats_employer_listed_once_across_spellings():
         compute_stats(db)
     firms = {d["entityNameNorm"]: d for d in _batch_set_dicts_with_key(db, "clientCount")}
     assert firms["JORDAN ELLERY"]["employers"] == ["Barlow, Finch & Kerr Public Policy Group, LLC"]
+
+
+def test_compute_stats_per_session_counts_for_list_filters():
+    """Lobbyist and client summaries carry per-session (general court) counts
+    so the lists can be filtered by session with exact numbers."""
+    db, _ = _make_stats_db()
+    registrants = [
+        _fake_doc({"entityName": "Larkspur Strategies Group LLC", "entityNameNorm": "LARKSPUR STRATEGIES GROUP",
+                   "regType": "Employer", "year": 2023,          # session 193
+                   "clients": [{"clientName": "Client A", "clientNameNorm": "CLIENT A", "compensation": 1000.0},
+                               {"clientName": "Client B", "clientNameNorm": "CLIENT B", "compensation": 500.0}]}),
+        _fake_doc({"entityName": "Larkspur Strategies Group LLC", "entityNameNorm": "LARKSPUR STRATEGIES GROUP",
+                   "regType": "Employer", "year": 2025,          # session 194
+                   "clients": [{"clientName": "Client A", "clientNameNorm": "CLIENT A", "compensation": 2000.0}]}),
+    ]
+    filings = [
+        _fake_doc({"entityNameNorm": "LARKSPUR STRATEGIES GROUP", "clientNameNorm": "CLIENT A", "generalCourt": 193, "year": 2023}),
+        _fake_doc({"entityNameNorm": "LARKSPUR STRATEGIES GROUP", "clientNameNorm": "CLIENT A", "generalCourt": 194, "year": 2025}),
+        _fake_doc({"entityNameNorm": "LARKSPUR STRATEGIES GROUP", "clientNameNorm": "CLIENT A", "generalCourt": 194, "year": 2025}),
+    ]
+
+    def _iter(_db, collection_name):
+        if collection_name == REGISTRANTS_COLLECTION:
+            return iter(registrants)
+        if collection_name == "lobbyingFilings":
+            return iter(filings)
+        return iter([])
+
+    with patch("writer._iter_collection", side_effect=_iter):
+        compute_stats(db)
+
+    firm = {d["entityNameNorm"]: d for d in _batch_set_dicts_with_key(db, "clientCount")}["LARKSPUR STRATEGIES GROUP"]
+    assert firm["courts"] == {"193": {"filings": 1, "clientCount": 2}, "194": {"filings": 2, "clientCount": 1}}
+    client = {d["clientNameNorm"]: d for d in _batch_set_dicts_with_key(db, "registrantCount")}["CLIENT A"]
+    assert client["courts"] == {
+        "193": {"filings": 1, "lobbyistCount": 1, "compensation": 1000.0},
+        "194": {"filings": 2, "lobbyistCount": 1, "compensation": 2000.0},
+    }

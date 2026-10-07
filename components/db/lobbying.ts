@@ -313,6 +313,12 @@ export type ClientSummaryRow = {
   totalCompensation: number | null
   registrantCount: number
   firms: ClientSummaryFirm[]
+  // Per legislative session (General Court number as a string); absent on
+  // summaries computed before session filters existed.
+  courts?: Record<
+    string,
+    { filings: number; lobbyistCount: number; compensation: number | null }
+  >
 }
 
 export type FirmRegistrationParty = {
@@ -347,6 +353,8 @@ export type FirmSummaryRow = {
   // Latest registration page on the SoS website.
   sourceUrl?: string | null
   registrations?: FirmRegistration[]
+  // Per legislative session (General Court number as a string).
+  courts?: Record<string, { filings: number; clientCount: number }>
 }
 
 async function fetchClientSummaries(): Promise<ClientSummaryRow[]> {

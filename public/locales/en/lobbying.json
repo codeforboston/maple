@@ -53,7 +53,8 @@
     "allSessions": "All sessions",
     "allPositions": "All positions",
     "allTypes": "All types",
-    "search": "Search…"
+    "search": "Search…",
+    "sessionOption": "Session {{court}} ({{years}})"
   },
   "position": {
     "support": "Support",

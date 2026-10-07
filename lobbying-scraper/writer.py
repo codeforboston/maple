@@ -152,6 +152,13 @@ def compute_stats(db: firestore.Client) -> None:
     bill_client_sets: dict[int, dict[str, set]] = {}
     bill_entity_sets: dict[int, dict[str, set]] = {}
     total_filings = 0
+    # Per-session (general court) tallies behind the session filter on the
+    # Lobbyists and Clients lists: entity/client norm -> court -> value.
+    entity_court_filings: dict[str, dict[int, int]] = {}
+    client_court_filings: dict[str, dict[int, int]] = {}
+    entity_court_clients: dict[str, dict[int, set]] = {}
+    client_court_entities: dict[str, dict[int, set]] = {}
+    client_court_comp: dict[str, dict[int, float]] = {}
 
     for doc in _iter_collection(db, FILINGS_COLLECTION):
         d = doc.to_dict()
@@ -195,8 +202,14 @@ def compute_stats(db: firestore.Client) -> None:
         cn = d.get("clientNameNorm")
         if en:
             entity_filing_counts[en] = entity_filing_counts.get(en, 0) + 1
+            if gc:
+                by_court = entity_court_filings.setdefault(en, {})
+                by_court[gc] = by_court.get(gc, 0) + 1
         if cn:
             client_filing_counts[cn] = client_filing_counts.get(cn, 0) + 1
+            if gc:
+                by_court = client_court_filings.setdefault(cn, {})
+                by_court[gc] = by_court.get(gc, 0) + 1
 
     for gc, bills_map in bill_summaries.items():
         for bill_id, counts in bills_map.items():
@@ -226,6 +239,7 @@ def compute_stats(db: firestore.Client) -> None:
         entity_norm = d.get("entityNameNorm")
         reg_type = d.get("regType")
         clients = d.get("clients", [])
+        court = year_to_general_court(year) if year is not None else None
 
         if entity_norm:
             firm = firm_summaries.setdefault(
@@ -257,6 +271,13 @@ def compute_stats(db: firestore.Client) -> None:
                 continue
 
             client_norms.add(norm)
+            if court is not None:
+                if comp is not None:
+                    by_court = client_court_comp.setdefault(norm, {})
+                    by_court[court] = by_court.get(court, 0) + comp
+                if entity_norm:
+                    entity_court_clients.setdefault(entity_norm, {}).setdefault(court, set()).add(norm)
+                    client_court_entities.setdefault(norm, {}).setdefault(court, set()).add(entity_norm)
             if entity_norm:
                 # A set, not a running sum of len(clients): a registrant can
                 # now have multiple docs (one per filing period) for the same
@@ -358,6 +379,18 @@ def compute_stats(db: firestore.Client) -> None:
         # inflation concern as firm clientCount above. Labeled "Lobbyists" on
         # the clients page.
         cs["registrantCount"] = len(cs["firms"])
+        norm = cs["clientNameNorm"]
+        filings_by_court = client_court_filings.get(norm, {})
+        entities_by_court = client_court_entities.get(norm, {})
+        comp_by_court = client_court_comp.get(norm, {})
+        cs["courts"] = {
+            str(gc): {
+                "filings": filings_by_court.get(gc, 0),
+                "lobbyistCount": len(entities_by_court.get(gc, ())),
+                "compensation": comp_by_court.get(gc),
+            }
+            for gc in set(filings_by_court) | set(entities_by_court) | set(comp_by_court)
+        }
         for fb in cs["firms"].values():
             fb["years"] = sorted(fb["years"], reverse=True)
         cs["firms"] = sorted(
@@ -375,6 +408,15 @@ def compute_stats(db: firestore.Client) -> None:
             name for _, name in sorted(fs.get("employers", {}).values(), key=lambda e: (-e[0], e[1]))
         ]
         fs["hasFilings"] = fs["entityNameNorm"] in filer_norms
+        filings_by_court = entity_court_filings.get(fs["entityNameNorm"], {})
+        clients_by_court = entity_court_clients.get(fs["entityNameNorm"], {})
+        fs["courts"] = {
+            str(gc): {
+                "filings": filings_by_court.get(gc, 0),
+                "clientCount": len(clients_by_court.get(gc, ())),
+            }
+            for gc in set(filings_by_court) | set(clients_by_court)
+        }
         fs["sourceUrl"] = latest_registration.get(fs["entityNameNorm"], (0, None))[1]
         regs = sorted(fs.get("registrations", []), key=lambda r: -(r["year"] or 0))
         for r in regs:
