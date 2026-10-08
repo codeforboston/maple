@@ -15,6 +15,7 @@ export const NewsCard = ({ newsItem }: NewsCardProps) => {
       style={{
         backgroundColor: "var(--maple-surface-base)",
         borderRadius: "var(--maple-radius-lg)",
+        border: "1px solid var(--maple-card-edge)",
         boxShadow: "var(--maple-shadow-sm)"
       }}
     >

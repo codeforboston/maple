@@ -6,7 +6,9 @@ import styled from "styled-components"
 import type { BallotQuestion } from "../db"
 import { maple } from "../links"
 import { QuestionTooltip } from "../tooltip"
+import { BallotQuestionAlert } from "./BallotQuestionAlert"
 import { SearchContainer } from "../search/SearchContainer"
+import { MapleOnly, DigitalDemocracyOnly } from "components/shared/SkinOnly"
 
 type BallotQuestionStatus = BallotQuestion["ballotStatus"]
 
@@ -419,15 +421,29 @@ export const BrowseBallotQuestions = ({
 
   return (
     <>
+      {/* The note on question numbers, one per skin: Maple keeps the alert
+          from main; Digital Democracy and Mixed use the ballot question flag
+          (BallotQuestionAlert) in its info form. */}
       {showInfo && (
-        <Alert
-          variant="info"
-          dismissible
-          onClose={() => setShowInfo(false)}
-          className="maple-info-alert mb-3 rounded-4"
-        >
-          {questionNumberDisclaimer}
-        </Alert>
+        <>
+          <MapleOnly>
+            <Alert
+              variant="info"
+              dismissible
+              onClose={() => setShowInfo(false)}
+              className="maple-info-alert mb-3 rounded-4"
+            >
+              {questionNumberDisclaimer}
+            </Alert>
+          </MapleOnly>
+          <DigitalDemocracyOnly className="mb-3">
+            <BallotQuestionAlert
+              alertFlag={questionNumberDisclaimer}
+              variant="info"
+              dismiss={() => setShowInfo(false)}
+            />
+          </DigitalDemocracyOnly>
+        </>
       )}
 
       <SearchContainer>

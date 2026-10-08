@@ -1,8 +1,12 @@
-import { Container } from "components/bootstrap"
 import { dbService } from "components/db"
 import { BrowseBallotQuestions } from "components/ballotquestions/BrowseBallotQuestions"
 import type { BallotQuestionBrowseItem } from "components/ballotquestions/BrowseBallotQuestions"
 import { createPage } from "components/page"
+import { PageColumn } from "components/shared/PageColumn"
+import { PageArt } from "components/shared/PageArt"
+import { LearnGround } from "components/shared/LearnGround"
+import { LEARN_LOOK } from "components/Navbar"
+import styled from "styled-components"
 import type { BallotQuestion } from "components/db"
 import { useTranslation } from "next-i18next"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
@@ -20,16 +24,30 @@ export default createPage({
     const { t } = useTranslation("ballotquestions")
 
     return (
-      <Container fluid="xl" className="mt-3 mb-4">
+      <ArtColumn $width="xwide" className="mt-3 mb-4">
+        {/* An open envelope (a mailed ballot). */}
+        <PageArt
+          src="/Mail with Blob.svg"
+          out={1.5}
+          sameSize
+          size={8}
+          leftLift={1}
+        />
+        {LEARN_LOOK.includes("/ballotQuestions") && <LearnGround />}
         <h1>{t("browse_ballot_questions")}</h1>
         <p className="text-muted mb-4 col-lg-8 px-0">
           {t("browse_ballot_questions_intro")}
         </p>
         <BrowseBallotQuestions items={items} currentYear={currentYear} />
-      </Container>
+      </ArtColumn>
     )
   }
 })
+
+/* The page art places itself against this column. */
+const ArtColumn = styled(PageColumn)`
+  position: relative;
+`
 
 export const getServerSideProps: GetServerSideProps<
   BrowseBallotQuestionsPageProps

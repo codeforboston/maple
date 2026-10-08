@@ -78,7 +78,22 @@ export const globalTypes = {
       dynamicTitle: true,
       items: [
         { value: "maple", title: "Maple (current)" },
-        { value: "dd", title: "Digital Democracy" }
+        { value: "dd", title: "Digital Democracy" },
+        { value: "mixed", title: "Mixed" }
+      ]
+    }
+  },
+  explorerArt: {
+    name: "Explorer art",
+    description:
+      "The explorers' illustrations (Digital Democracy and Mixed skins only)",
+    defaultValue: "on",
+    toolbar: {
+      icon: "photo",
+      dynamicTitle: true,
+      items: [
+        { value: "on", title: "Explorer art on" },
+        { value: "off", title: "Explorer art off" }
       ]
     }
   }
@@ -89,9 +104,21 @@ export const globalTypes = {
  * overrides live in styles/bootstrap.scss under [data-maple-theme="dd"], so
  * every component reading var(--maple-*) follows without knowing about this.
  */
-const SkinProvider = ({ skin, children }) => {
+const SkinProvider = ({ skin, art, children }) => {
   React.useEffect(() => {
-    document.documentElement.setAttribute("data-maple-theme", skin)
+    // Read by components/shared/PageArt.tsx and the other explorer art.
+    if (art === "off")
+      document.documentElement.setAttribute("data-maple-art", "off")
+    else document.documentElement.removeAttribute("data-maple-art")
+  }, [art])
+
+  React.useEffect(() => {
+    const root = document.documentElement
+    // "mixed" is the Digital Democracy skin plus a navbar rule (neutral on the
+    // homepage, blue elsewhere) that components/Navbar.tsx reads.
+    root.setAttribute("data-maple-theme", skin === "maple" ? "maple" : "dd")
+    if (skin === "mixed") root.setAttribute("data-maple-nav", "mixed")
+    else root.removeAttribute("data-maple-nav")
   }, [skin])
 
   return children
@@ -108,7 +135,10 @@ export const decorators = [
     return (
       <Suspense fallback="Loading...">
         <I18nextProvider i18n={i18n}>
-          <SkinProvider skin={context.globals.mapleSkin ?? "maple"}>
+          <SkinProvider
+            skin={context.globals.mapleSkin ?? "maple"}
+            art={context.globals.explorerArt ?? "on"}
+          >
             <Story />
           </SkinProvider>
         </I18nextProvider>

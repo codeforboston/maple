@@ -111,7 +111,8 @@ export const NavbarLinkAI: React.FC<
   const { t } = useTranslation(["common", "auth"])
   return (
     <NavbarDropdownLink
-      className={isMobile ? "navLink-primary" : ""}
+      // Maple only: Digital Democracy and Mixed list it under Policies.
+      className={`nav-maple-only ${isMobile ? "navLink-primary" : ""}`}
       href="/about/how-maple-uses-ai"
       handleClick={handleClick}
       other={other}
@@ -250,12 +251,36 @@ export const NavbarLinkWritingTestimony: React.FC<
   const { t } = useTranslation(["common", "auth"])
   return (
     <NavbarDropdownLink
-      className={isMobile ? "navLink-primary" : ""}
-      href="/learn/writing-effective-testimony"
+      // Maple only: Digital Democracy and Mixed list it in the footer's Other
+      // Resources instead.
+      className={`nav-maple-only ${isMobile ? "navLink-primary" : ""}`}
+      href="/writing-effective-testimony"
       handleClick={handleClick}
       other={other}
     >
       {t("navigation.writingTestimony")}
+    </NavbarDropdownLink>
+  )
+}
+
+/** Digital Democracy and Mixed only (nav-dd-only, styles/globals.css): the
+ * Policies landing page, in the About menu. */
+export const NavbarLinkPolicies: React.FC<
+  React.PropsWithChildren<{
+    handleClick?: any
+    other?: any
+  }>
+> = ({ handleClick, other }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  const { t } = useTranslation("footer")
+  return (
+    <NavbarDropdownLink
+      className={`nav-dd-only ${isMobile ? "navLink-primary" : ""}`}
+      href="/policies"
+      handleClick={handleClick}
+      other={other}
+    >
+      {t("headers.policies")}
     </NavbarDropdownLink>
   )
 }
@@ -319,15 +344,37 @@ export const NavbarLinkLogo: React.FC<
         {/* Two assets rather than one recoloured asset: the logo is a flat
             silhouette with the colour baked in. CSS picks which is visible, so
             the choice stays with the theme. */}
+        {/* The Maple skin's blue bar: the logo from main, at main's size. */}
         <Image
           src="/maple-logo-white-no-tagline.svg"
+          alt={t("navigation.logo")}
+          className={`navbar-logo navbar-logo-original ${
+            isMobile ? "w-100" : ""
+          }`}
+          width={isMobile ? "60" : "80"}
+          height={isMobile ? "60" : "80"}
+        />
+        {/* The blue bar under Digital Democracy (only where a page asks for
+            the blue bar outright). */}
+        <Image
+          src="/logo-ple-blue-bg.svg"
           alt={t("navigation.logo")}
           className={`navbar-logo navbar-logo-light ${isMobile ? "w-100" : ""}`}
           width={isMobile ? "60" : "80"}
           height={isMobile ? "60" : "80"}
         />
+        {/* Mixed's blue bar: the blue logo laid out as the neutral bar's is,
+            its tree as drawn and the MAPLE word all white
+            (/logo-ple-blue-alt3-largealt.svg with the word recoloured). */}
         <Image
-          src="/logo-long.svg"
+          src="/logo-ple-blue-bg-white.svg"
+          alt={t("navigation.logo")}
+          className={`navbar-logo navbar-logo-mixed ${isMobile ? "w-100" : ""}`}
+          width={isMobile ? "60" : "80"}
+          height={isMobile ? "60" : "80"}
+        />
+        <Image
+          src="/logo-ple-neutral-bg.svg"
           alt={t("navigation.logo")}
           className={`navbar-logo navbar-logo-dark ${isMobile ? "w-100" : ""}`}
           width={isMobile ? "60" : "80"}

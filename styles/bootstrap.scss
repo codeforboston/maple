@@ -258,7 +258,7 @@ $utilities: (
 
 // Import fonts using the default bootstrap weights.
 // Lexend is the display face for the Learn section headings; Nunito remains the body face.
-@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Lexend:wght@300;400;500;600;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;700&family=Lexend:wght@300;400;500;600;700;900&display=swap");
 
 :root {
   --bs-blue-100: #{$blue-100};
@@ -268,6 +268,8 @@ $utilities: (
   --bs-gold: #{$gold};
 
   --maple-font-heading: #{$maple-font-heading};
+  // Maple's body face, Nunito, for places that keep it under every skin.
+  --maple-font-body: #{$font-family-sans-serif};
 
   // Height of the sticky site navbar. The Learn process rail sticks below it,
   // and section rows use it for scroll-margin so smooth-scroll targets clear it.
@@ -307,6 +309,10 @@ $utilities: (
   --maple-surface-accent: #{$maple-surface-accent};
   --maple-surface-accent-strong: #{$maple-surface-accent-strong};
   --maple-surface-border: #{$maple-surface-border};
+  // The edge on white cards that otherwise rely on a shadow or the page ground
+  // to stand out. Invisible here; the Digital Democracy skin, which drops the
+  // shadows, gives it the soft surface border.
+  --maple-card-edge: transparent;
   --maple-surface-hearing-search: #{$maple-surface-hearing-search};
   --maple-surface-hearing-header: #{$maple-surface-hearing-header};
   --maple-surface-transcript-stripe: #{$maple-surface-transcript-stripe};
@@ -408,15 +414,34 @@ $utilities: (
 // two share.
 // -----------------------------------------------------------------------------
 
+// Digital Democracy (not Mixed) does not pin the navbar on the Learn and
+// About pages (components/Navbar.tsx), the only pages that read this offset,
+// so their sticky step rail and section jumps need no room for it. Those
+// pages, and their navbar (styles/globals.css), sit on a ground a touch
+// darker than the page grey elsewhere (#f7f7f7), halfway to #f2f2f2.
+[data-maple-theme="dd"]:not([data-maple-nav="mixed"]) {
+  --maple-navbar-sticky-offset: 0px;
+  --maple-surface-learn: #f5f5f5;
+}
+
+// Mixed keeps Maple's pale blue-grey on Learn and About, under its blue bar.
+[data-maple-theme="dd"][data-maple-nav="mixed"] {
+  --maple-surface-learn: #{$maple-surface-learn};
+}
+
 [data-maple-theme="dd"] {
   // Surfaces. A near-white page instead of the warm mid-grey, so white cards
   // read as raised without needing a shadow.
   --maple-surface-page: #f7f7f7;
   --maple-surface-base: #ffffff;
   --maple-surface-muted: #fafafa;
+  // Learn and About share the page ground too, in place of Maple's pale
+  // blue-grey, so the neutral navbar and the page read as one surface.
+  --maple-surface-learn: var(--maple-surface-page);
 
   // Borders do the work the shadows used to.
   --maple-surface-border: rgba(15, 23, 42, 0.12);
+  --maple-card-edge: var(--maple-surface-border);
   --maple-border-default: rgba(15, 23, 42, 0.14);
 
   // Shape. Near-square, 2 to 6px rather than 4 to 16. The pill is left alone,
@@ -435,26 +460,6 @@ $utilities: (
   // Accent moves from orange toward gold. The blues are untouched.
   --maple-brand-accent: #e5b93c;
 
-  // The bar is a transparent gutter; the white surface belongs to the container
-  // inside it. Its ink inverts to suit; the logo swaps asset rather than
-  // recolouring, in components/NavbarComponents.tsx.
-  --maple-navbar-bg: transparent;
-
-  // Anything pulled up behind the navbar uses this, so it has to match the bar's
-  // whole footprint or a strip of body colour shows above the page's own
-  // ground. Here that is 1rem margin + 1rem padding + 48px of content + 1rem
-  // padding + 1rem margin.
-  --maple-navbar-height: 7rem;
-  // The bar is not pinned in this skin, so nothing should reserve space for it.
-  --maple-navbar-sticky-offset: 0px;
-
-  // Lexend everywhere, not just the headings. Bootstrap emits its body face as
-  // a runtime custom property, so this reaches every component that inherits
-  // it. Four places hardcode Nunito and will not follow: AboutPagesCard,
-  // HistoryTable, and three rules in globals.css.
-  --bs-font-sans-serif: "Lexend", system-ui, -apple-system, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
-
   // Buttons run smaller in this skin.
   --bs-btn-padding-x: 0.85rem;
   --bs-btn-padding-y: 0.3rem;
@@ -468,6 +473,46 @@ $utilities: (
   --bs-border-radius: 3px;
   --bs-border-radius-lg: 4px;
   --bs-border-radius-xl: 6px;
+}
+
+// -----------------------------------------------------------------------------
+// Typeface: Lexend, part of the Digital Democracy skin (and so of Mixed). The
+// Maple skin stays in Nunito.
+// -----------------------------------------------------------------------------
+
+[data-maple-theme="dd"] {
+  // Lexend everywhere, not just the headings. Bootstrap emits its body face as
+  // a runtime custom property, so this reaches every component that inherits
+  // it. Four places hardcode Nunito and will not follow: AboutPagesCard,
+  // HistoryTable, and three rules in globals.css.
+  --bs-font-sans-serif: "Lexend", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+// Page titles under the Digital Democracy skin match the homepage hero title under the Digital
+// Democracy skin: its size (up to 38px), weight (600) and colour, MAPLE's
+// blue-black (--maple-brand-dark). The line height is the Learn title's
+// (components/learn/LearnHeader.tsx). :where() keeps this at plain h1
+// strength, so any heading a component styles itself (the homepage hero
+// title, the Learn titles) keeps its own look.
+// Not on the Learn and About pages, which keep Maple's type in every skin
+// (components/learn/LearnLayout.tsx).
+:where([data-maple-theme="dd"]) h1:where(:not(.maple-learn-page h1)),
+:where([data-maple-theme="dd"]) .h1:where(:not(.maple-learn-page .h1)) {
+  font-family: var(--maple-font-heading);
+  font-size: clamp(1.9rem, 3vw, 38px);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--maple-brand-dark);
+}
+
+// The blue navbar keeps the current MAPLE shape whichever skin is showing, so
+// its sign-in button is not squared off by a skin's tighter radii.
+[data-navbar-variant="blue"] {
+  --maple-radius-sm: #{$maple-radius-sm};
+  --maple-radius-md: #{$maple-radius-md};
+  --maple-radius-lg: #{$maple-radius-lg};
+  --maple-radius-xl: #{$maple-radius-xl};
 }
 
 .btn {

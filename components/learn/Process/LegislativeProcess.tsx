@@ -72,6 +72,7 @@ const RailCard = styled.div`
   background: var(--maple-surface-base);
   border-radius: var(--maple-radius-xl);
   box-shadow: var(--maple-shadow-sm);
+  border: 1px solid var(--maple-card-edge);
   padding: 1.25rem 1.5rem;
 
   /* The rail scrolls horizontally on narrow screens and its scrollbar is
@@ -204,6 +205,7 @@ const Row = styled.div`
   background: var(--maple-surface-base);
   border-radius: var(--maple-radius-xl);
   box-shadow: var(--maple-shadow-sm);
+  border: 1px solid var(--maple-card-edge);
   overflow: hidden;
 
   /* We compute the post-collapse scroll position ourselves, so the browser must
@@ -889,7 +891,7 @@ export const LegislativeProcess = () => {
 
   return (
     // "medium" rather than "narrow": the h1 wraps at 48rem.
-    <LearnLayout width="medium">
+    <LearnLayout width="medium" enlarge={false}>
       <div ref={scopeRef}>
         <LearnBreadcrumb section={t("process.breadcrumb")} />
         <HeaderAnchor ref={headerRef}>

@@ -20,9 +20,36 @@
 }
 
 .heroSection {
+  /* Hero tokens. Every hero rule that sets a colour reads one of these, so a
+     skin restyles the hero by giving them new values rather than by
+     overriding the rules. These are the current MAPLE values: a blue band with
+     white ink. */
+  --hero-bg: var(--maple-brand-primary);
+  --hero-ink: #ffffff;
+  --hero-heading-ink: var(--hero-ink);
+  --hero-ink-body: #ffffff;
+  --hero-lead-ink: var(--hero-ink-body);
+  --hero-link: #ffffff;
+  --hero-panel-bg: rgba(255, 255, 255, 0.11);
+  /* Frosted glass: the skyline behind the topics panel is blurred, the way the
+     Digital Democracy panel's near-opaque white softens it. */
+  --hero-panel-blur: blur(10px);
+  --hero-skyline: rgba(255, 255, 255, 0.08);
+  --hero-lead-weight: 400;
+  /* The copy column runs to the hero's bottom edge so the statehouse under the
+     copy sits on it, as the original hero's did. */
+  --hero-pad-bottom: 0;
+  --hero-content-align: stretch;
+  --hero-content-pad-bottom: 0;
+  /* Room between the paragraph and the statehouse under it, and the
+     statehouse's width: the Digital Democracy experiment's values, so the hero
+     is sized the same in both skins. */
+  --hero-lead-gap: 3.5rem;
+  --hero-statehouse-width: 19.5rem;
+
   position: relative;
   width: 100%;
-  background: var(--maple-brand-primary);
+  background: var(--hero-bg);
   overflow: hidden;
 }
 
@@ -42,13 +69,37 @@
   right: 0;
   bottom: 0;
   height: 100%;
-  background-image: url("/skyline.svg");
-  background-repeat: no-repeat;
-  background-position: bottom center;
-  background-size: 100% auto;
-  opacity: 0.2;
   z-index: 0;
   pointer-events: none;
+}
+
+/* The skyline itself: a stretch of skyline-long.svg (4337 wide), framed the
+   same way in both skins; each skin sets only its colour. A mask, so the
+   colour comes from --hero-skyline. On a pseudo-element so the mask does not
+   also clip the artwork the Digital Democracy skin places inside this layer.
+
+   The cuts are in the drawing's units, off each end. What is left fills the
+   width; x is the share of the overhang taken from the left end. */
+.skylineBackground::before {
+  --skyline-cut-left: 1046;
+  --skyline-cut-right: 2202;
+  --skyline-zoom: calc(
+    4337 / (4337 - var(--skyline-cut-left) - var(--skyline-cut-right))
+  );
+  --skyline-x: calc(
+    100% * var(--skyline-cut-left) /
+      (var(--skyline-cut-left) + var(--skyline-cut-right))
+  );
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* Raised this far off the bottom of the hero. */
+  bottom: 3rem;
+  background-color: var(--hero-skyline);
+  -webkit-mask: url("/skyline-long.svg") no-repeat var(--skyline-x) bottom /
+    calc(100% * var(--skyline-zoom)) auto;
+  mask: url("/skyline-long.svg") no-repeat var(--skyline-x) bottom /
+    calc(100% * var(--skyline-zoom)) auto;
 }
 
 .heroVisual {
@@ -78,14 +129,15 @@
 }
 
 .heroTitle {
-  color: white;
-  font-size: clamp(2.5rem, 3vw, 3rem);
+  color: var(--hero-heading-ink);
+  /* Same in both skins: caps at 38px and scales down on narrow viewports. */
+  font-size: clamp(1.9rem, 3vw, 38px);
   line-height: 1.08;
   margin: 0 0 1.35rem;
 }
 
 .heroBody {
-  color: white;
+  color: var(--hero-ink-body);
   font-size: 1.125rem;
   line-height: 1.62;
   margin: 0 0 1.9rem;
@@ -94,7 +146,7 @@
 
 /* Was an inline style on the anchor, which no skin could override. */
 .heroLink {
-  color: white;
+  color: var(--hero-link);
 }
 
 .heroActions {
@@ -460,12 +512,6 @@
     left: auto;
   }
 
-  .skylineBackground {
-    height: 50%;
-    background-size: contain;
-    background-position: bottom center;
-  }
-
   .heroContent {
     order: 2;
     padding-top: 6rem;
@@ -479,7 +525,6 @@
   }
 
   .heroTitle {
-    font-size: 2.75rem;
     line-height: 1.1;
     margin-bottom: 1.25rem;
     font-weight: 700;
@@ -667,12 +712,38 @@
    That is what both Digital Democracy editions do, and it is what makes a blue
    primary button possible here at all, since blue on blue does not work.
 
-   Scoped entirely under the skin attribute, so the current MAPLE hero is
-   untouched.
+   Colours come from the hero tokens set on .heroSection below; the rules here
+   are for layout and artwork that only this skin has.
    --------------------------------------------------------------------------- */
 
 :global([data-maple-theme="dd"]) .heroSection {
-  background: var(--maple-surface-page);
+  --hero-bg: var(--maple-surface-page);
+  --hero-ink: var(--maple-text-strong);
+  /* MAPLE's near-black with a blue tint, for the title and panel heading. */
+  --hero-heading-ink: var(--maple-brand-dark);
+  --hero-ink-body: var(--maple-text-body);
+  /* A lighter charcoal for the paragraph, between body text (#334155) and
+     muted (#64748b). */
+  --hero-lead-ink: #475569;
+  --hero-link: var(--maple-brand-primary);
+  --hero-panel-bg: rgba(255, 255, 255, 0.72);
+  --hero-panel-blur: none;
+  --hero-lead-weight: 400;
+  --hero-pad-bottom: 10rem;
+  --hero-content-align: center;
+  --hero-content-pad-bottom: 1.5rem;
+  --hero-lead-gap: 1.5rem;
+}
+
+/* Experiment: this skin with the coloured statehouse grounded under the copy,
+   as in the current MAPLE look. Delete this block, and restore the parked rule
+   and markup, to go back. */
+:global([data-maple-theme="dd"]) .heroSection {
+  --hero-pad-bottom: 0;
+  --hero-content-align: stretch;
+  --hero-content-pad-bottom: 0;
+  --hero-lead-gap: 3.5rem;
+  --hero-statehouse-width: 19.5rem;
 }
 
 /* The original asset bakes opacity into its path, so it can never render at
@@ -686,6 +757,11 @@
   height: 100%;
   background-image: none;
   opacity: 1;
+}
+
+/* This skin draws its skyline in slices, below, not as one layer. */
+:global([data-maple-theme="dd"]) .skylineBackground::before {
+  content: none;
 }
 
 /* One layer for now: the whole long skyline, full width, faint, along the
@@ -715,10 +791,10 @@
   position: absolute;
   left: 37.25%;
   right: 0;
-  top: 0;
+  top: -5%;
   bottom: 15%;
   background-color: var(--maple-brand-primary);
-  opacity: 0.09;
+  opacity: 0.06;
   z-index: 1;
   /* Sized from the hero height rather than the viewport width, so it keeps
      the same proportion whatever the window is doing. Width follows. */
@@ -735,18 +811,6 @@
 :global([data-maple-theme="dd"]) .skylineSlice3,
 :global([data-maple-theme="dd"]) .skylineSlice4 {
   display: none;
-}
-
-:global([data-maple-theme="dd"]) .heroTitle {
-  color: var(--maple-text-strong);
-}
-
-:global([data-maple-theme="dd"]) .heroBody {
-  color: var(--maple-text-body);
-}
-
-:global([data-maple-theme="dd"]) .heroLink {
-  color: var(--maple-brand-primary);
 }
 
 /* Primary action moves from red to blue, per the skin's rule that red is
@@ -768,25 +832,41 @@
   border-color: var(--maple-surface-border);
 }
 
+/* The explainer's Get Started as the secondary action, white with the thin
+   outline, rather than solid blue (components/homepage/ExplainerSection). */
+:global([data-maple-theme="dd"]) .primaryAction.explainerAction {
+  background: var(--maple-surface-base);
+  border-color: var(--maple-surface-border);
+  color: var(--maple-brand-primary-strong);
+}
+
+:global([data-maple-theme="dd"]) .primaryAction.explainerAction:hover,
+:global([data-maple-theme="dd"]) .primaryAction.explainerAction:focus-visible {
+  background: #f0f2f8;
+  border-color: var(--maple-surface-border);
+  color: var(--maple-brand-primary-strong);
+}
+
 /* A lighter hero: the band no longer has to be tall enough to justify a slab
    of solid blue, so it tightens up. */
-:global([data-maple-theme="dd"]) .hero {
+.hero {
   /* No height and no viewport units, as in the Digital Democracy hero: the
      height is whatever the content plus this padding comes to, so nothing
      changes when the window is resized. The artwork behind is absolutely
      positioned and contributes nothing to height. */
-  /* The base rule sets min-height: 35rem, which was pinning the section's
-     height and swallowing any padding change. */
-  min-height: 42rem;
-  padding-top: 6.5rem;
-  padding-bottom: 11rem;
+  /* No floor: the base rule's min-height: 35rem is overridden to 0 so the
+     height really is content plus padding, as in the Digital Democracy hero.
+     Their bottom padding is 96px; this is close to it. */
+  min-height: 0;
+  padding-top: 4.75rem;
+  padding-bottom: var(--hero-pad-bottom);
 }
 
-:global([data-maple-theme="dd"]) .heroContent {
+.heroContent {
   padding-bottom: 3rem;
 }
 
-:global([data-maple-theme="dd"]) .heroVisual {
+.heroVisual {
   min-height: 18rem;
 }
 
@@ -854,21 +934,20 @@
   padding: 0.5rem 1rem;
 }
 
-/* Lexend, in the dark ink rather than the brand blue the Learn and About
-   headings use. */
+/* Lexend, the Digital Democracy skin's face. */
 :global([data-maple-theme="dd"]) .heroTitle {
-  color: var(--maple-text-strong);
   font-family: var(--maple-font-heading);
-  font-weight: 600;
   letter-spacing: -0.015em;
-  /* Caps at 40px; still scales down on narrow viewports. */
-  font-size: clamp(1.9rem, 3vw, 35px);
+}
+
+:global([data-maple-theme="dd"]) .heroTitle {
+  font-weight: 600;
 }
 
 /* The statehouse is scenery rather than a column: it sits on the hero's bottom
    edge at the left, behind everything, like the skyline. That leaves the grid
    with the copy and the topic panel to place. */
-:global([data-maple-theme="dd"]) .hero {
+.hero {
   /* Both columns are sized to their content, not to fractions of the width:
      the copy is pinned at 29.5rem and the ask panel at 32rem, so neither
      resizes and the spare width collects in the gap between them. That is what
@@ -876,33 +955,30 @@
      breaks included. */
   grid-template-columns: max-content max-content;
   justify-content: space-between;
-}
-
-:global([data-maple-theme="dd"]) .heroMain {
-  display: contents;
-}
-
-:global([data-maple-theme="dd"]) .heroVisual {
-  display: none;
+  /* A minimum gap between the two fixed columns; space-between spreads them
+     further than this whenever there is room. */
+  gap: clamp(3rem, 6vw, 12rem);
 }
 
 .heroMain {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  /* Full height so the illustration can be pushed to the bottom edge, and the
-     positioning context for the floated topic panel. */
-  height: 100%;
-  position: relative;
+  display: contents;
 }
 
-:global([data-maple-theme="dd"]) .heroContent {
-  align-self: center;
+.heroVisual {
+  display: none;
+}
+
+.heroContent {
+  align-self: var(--hero-content-align);
   grid-column: 1;
   grid-row: 1;
   max-width: 38rem;
   padding-top: 0;
-  padding-bottom: 3.5rem;
+  padding-bottom: var(--hero-content-pad-bottom);
+  /* A column, so the copy inside can stretch to the full height and push the
+     statehouse to the bottom. */
+  display: flex;
+  flex-direction: column;
 }
 
 :global([data-maple-theme="dd"]) .topicsPanel {
@@ -911,44 +987,39 @@
 
 /* Wraps the heading and the panel so the two float together over the
    illustration. */
-:global([data-maple-theme="dd"]) .heroSearch {
+.heroSearch {
   grid-column: 2;
   grid-row: 1;
-  align-self: center;
+  /* Set from the top rather than centred: centred against the whole left
+     column, statehouse included, it sat well below the heading, and flush with
+     the title it sat too high. 1.5rem down sits between the two. */
+  align-self: start;
+  margin-top: 1.5rem;
   margin-bottom: 3.5rem;
-  /* Right-aligned with a fluid offset. A flat percentage tracked the column too
-     gently, so this subtracts a constant from it: the offset falls away much
-     faster than the column does, reaching the edge near the mobile collapse,
-     and it is still one continuous expression with nothing to jump. */
+  /* Flush to the right edge of the hero. The column is sized to the panel, so
+     the distance from the copy is set here, not by the grid gap. */
   justify-self: end;
-  margin-right: clamp(0px, calc(38% - 205px), 6rem);
+  margin-right: 0;
   /* One fixed width rather than a max plus width:100%, which let the panel
      stretch with its column and resize between window sizes. The Digital
      Democracy panel is a fixed size for the same reason. */
-  width: 32rem;
+  width: 38rem;
   z-index: 3;
 }
 
-/* Bold subhead then a lighter lead, as under the Digital Democracy headline.
-   Both are sized to sit on one line at the hero column width. */
-.heroSubhead {
-  color: var(--maple-text-strong);
-  font-size: 1.2rem;
-  font-weight: 400;
-  line-height: 1.35;
-  margin: 0 0 0.85rem;
-}
-
+/* A lighter lead under the headline, as in the Digital Democracy hero. */
 .heroLead {
-  color: var(--maple-text-body);
-  font-size: 0.95rem;
+  color: var(--hero-lead-ink);
+  font-size: 1rem;
+  font-weight: var(--hero-lead-weight);
   line-height: 1.6;
-  margin: 0 0 1.5rem;
+  margin: 0 0 var(--hero-lead-gap);
 }
 
 /* A slightly wider content column than the default 1120px, so the hero copy and
    the topic panel are not squeezed against each other. */
-:global([data-maple-theme="dd"]) .sectionShell {
+:global([data-maple-theme="dd"]) .sectionShell,
+.heroSection .sectionShell {
   width: min(1260px, calc(100% - 2rem));
 }
 
@@ -957,18 +1028,21 @@
 @media (max-width: 1100px) {
   /* One column: everything stacks in flow as statehouse, copy, then circles.
      The dd grid template has to be collapsed here too, or its 24rem column
-     minimums keep a two-column grid and overflow the screen. */
-  :global([data-maple-theme="dd"]) .hero {
-    grid-template-columns: 1fr;
+     minimums keep a two-column grid and overflow the screen. minmax(0, ...)
+     rather than a bare 1fr, which can never be narrower than its content: the
+     ask field's typed prompt does not wrap, so a bare 1fr column widened with
+     each phrase it typed and pushed the panel off the screen. */
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   /* The statehouse stops being scenery, and the explicit column placements are
      released, or they would force a second column back into the grid. */
-  :global([data-maple-theme="dd"]) .heroMain {
+  .heroMain {
     display: contents;
   }
 
-  :global([data-maple-theme="dd"]) .heroVisual {
+  .heroVisual {
     order: 1;
     position: static;
     grid-column: auto;
@@ -977,11 +1051,11 @@
     justify-content: center;
   }
 
-  :global([data-maple-theme="dd"]) .statehouse {
+  .statehouse {
     width: min(24rem, 70%);
   }
 
-  :global([data-maple-theme="dd"]) .heroContent {
+  .heroContent {
     order: 2;
     grid-column: auto;
     grid-row: auto;
@@ -992,12 +1066,24 @@
   /* The copy is pinned to a fixed measure on desktop, which is wider than a
      phone. Released here so it fills the column instead of overflowing it, and
      centred with the rest of the stack. */
-  :global([data-maple-theme="dd"]) .heroCopy {
+  .heroCopy {
     min-width: 0;
     max-width: 30rem;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
+  }
+
+  .heroSearch {
+    order: 3;
+    grid-column: auto;
+    grid-row: auto;
+    justify-self: center;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 38rem;
+    width: 100%;
+    text-align: left;
   }
 
   :global([data-maple-theme="dd"]) .topicsFloat {
@@ -1105,7 +1191,7 @@
    whole layout jump. Fixed padding has no such crossover: the content always
    starts the same distance from the edge and the columns simply scale. */
 @media (min-width: 1101px) {
-  :global([data-maple-theme="dd"]) .heroSection .sectionShell {
+  .heroSection .sectionShell {
     /* Fixed padding for the gutter, plus a cap so the content stops spreading
        on very wide displays. That pairing is what their layout does: global
        padding on the section, a constrained wrapper above it. Neither one
@@ -1116,32 +1202,100 @@
     margin-right: auto;
     /* Scales gently with the window instead of being a fixed value: a fixed
        gutter is proportionally huge on a narrow window and thin on a wide one,
-       which is why the two resolutions looked so different. */
-    padding-left: clamp(3rem, 9vw, 12rem);
-    padding-right: clamp(3rem, 9vw, 12rem);
+       which is why the two resolutions looked so different. Held at 3rem
+       (48px) up to 1350px, where the copy and the panel need every pixel, then
+       one straight line up to the 12rem cap at 2000px, so there is no step. */
+    padding-left: clamp(3rem, calc(48px + (100vw - 1350px) * 144 / 650), 12rem);
+    padding-right: clamp(
+      3rem,
+      calc(48px + (100vw - 1350px) * 144 / 650),
+      12rem
+    );
   }
 }
 
 /* The copy's own box inside the hero column: its measure lives here rather than
-   on the column, so changing one does not disturb the other. Fixed width, so the text never reflows as the column around it changes. */
-:global([data-maple-theme="dd"]) .heroCopy {
+   on the column, so changing one does not disturb the other. Fixed width, so
+   the text never reflows as the column around it changes. */
+.heroCopy {
   order: 1;
   position: relative;
   z-index: 1;
-  max-width: 29.5rem;
-  min-width: 29.5rem;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
 }
 
-@media (min-width: 1101px) and (max-width: 1200px) {
-  /* Less padding once the columns are tight, so the space goes back to them. */
-  :global([data-maple-theme="dd"]) .heroSection .sectionShell {
-    padding-left: 3rem;
-    padding-right: 3rem;
+@media (min-width: 1101px) {
+  .heroCopy {
+    max-width: 29.5rem;
+    min-width: 29.5rem;
   }
 }
 
-/* Statehouse and flag as background silhouettes, masked and tinted the same
-   brand blue as the skyline rather than left flat black. */
+/* Below 1250px the gap between the copy and the panel, and the paragraph's
+   text size, ease down with the window instead of holding until the layout
+   stacks at 1100px.
+
+   The gap falls fast at first and then slowly: from 75px (6vw at 1250px) to
+   30px by 1176px, then from 30px to 16px by 1101px. The text runs in one
+   straight line from 16px at 1250px to 15px at 1101px. */
+@media (min-width: 1101px) and (max-width: 1250px) {
+  .heroLead {
+    font-size: calc(15px + (100vw - 1101px) * 1 / 149);
+  }
+}
+
+@media (min-width: 1176px) and (max-width: 1250px) {
+  .hero {
+    gap: calc(30px + (100vw - 1176px) * 45 / 74);
+  }
+}
+
+@media (min-width: 1101px) and (max-width: 1175px) {
+  .hero {
+    gap: calc(16px + (100vw - 1101px) * 14 / 74);
+  }
+}
+
+/* The current MAPLE look: the full-colour statehouse, in the copy column under
+   the paragraph. In flow, so it always clears the text however long that runs.
+   That skin hides this and draws its own below. */
+.statehouseArt {
+  display: block;
+  width: min(var(--hero-statehouse-width), 100%);
+  /* statehouse.svg is 487x326. */
+  aspect-ratio: 487 / 326;
+  /* Takes up any spare height above it, so it sits on the bottom edge, and
+     centres under the copy. */
+  margin-top: auto;
+  margin-left: auto;
+  margin-right: auto;
+  background: url("/statehouse.svg") no-repeat bottom center / contain;
+  pointer-events: none;
+}
+
+/* Raised 1.5rem off the bottom edge. Offset rather than taken out of flow, so
+   the column still reserves its full height and the copy can never run into
+   it. Desktop only: stacked, the ask panel sits right below it. */
+@media (min-width: 1101px) {
+  .statehouseArt {
+    position: relative;
+    bottom: 1.5rem;
+    /* Part way in from the left of the copy column rather than centred in it.
+       The column is 29.5rem and the art 19.5rem, so fully centred would be
+       5rem. */
+    margin-left: 2.75rem;
+  }
+}
+
+/* Parked for the experiment below: restore to hide the coloured statehouse in
+   this skin again.
+:global([data-maple-theme="dd"]) .statehouseArt {
+  display: none;
+}
+*/
+
 /* Statehouse and flag as background silhouettes, masked and tinted rather than
    left flat black. */
 :global([data-maple-theme="dd"]) .statehouseBack,
@@ -1163,12 +1317,12 @@
   /* The mask lives on the pseudo-element: CSS applies filter before mask, so a
      drop-shadow here would be clipped away by the silhouette itself. Shaping
      the child and shadowing the parent keeps both. */
-  right: 1.25%;
-  bottom: 8.4%;
-  width: 25rem;
-  /* The mask is 487x326, so this is the natural height at 25rem wide: any
+  right: 0.25%;
+  bottom: 6.4%;
+  width: 22rem;
+  /* The mask is 487x326, so this is the natural height at 22rem wide: any
      taller and mask-size: contain would letterbox it. */
-  height: 16.75rem;
+  height: 14.73rem;
   -webkit-mask-image: none;
   mask-image: none;
   background-color: transparent;
@@ -1196,7 +1350,7 @@
 :global([data-maple-theme="dd"]) .flagBack {
   right: 0.5%;
   left: auto;
-  bottom: 8%;
+  bottom: 6%;
   width: 5rem;
   /* The mask is 62x165; at 5rem wide the natural height is 13.3rem, so this is
      letterboxed slightly and the offsets stay predictable. */
@@ -1206,20 +1360,24 @@
 }
 
 /* Demo search block, borrowed from the Digital Democracy heroes: a tinted
-   panel carrying a label and a white field. Not a real input. */
-:global([data-maple-theme="dd"]) .heroSearch {
-  background: rgba(255, 255, 255, 0.72);
+   panel carrying a label and a white field. Not a real input. Shared by both
+   skins; the panel and ink colours come from the hero tokens. */
+.heroSearch {
+  background: var(--hero-panel-bg);
+  -webkit-backdrop-filter: var(--hero-panel-blur);
+  backdrop-filter: var(--hero-panel-blur);
   padding: 1.25rem 1.5rem 1.5rem;
 }
 
-:global([data-maple-theme="dd"]) .heroSearchLabel {
-  color: var(--maple-text-strong);
-  font-size: 1.05rem;
-  font-weight: 700;
-  margin: 0 0 0.75rem;
+.heroSearchLabel {
+  color: var(--hero-heading-ink);
+  font-size: 1.3rem;
+  /* Lighter than the hero title, so the panel heading sits below it. */
+  font-weight: 500;
+  margin: 0 0 1.25rem;
 }
 
-:global([data-maple-theme="dd"]) .heroSearchField {
+.heroSearchField {
   align-items: center;
   overflow: hidden;
   background: var(--maple-surface-base);
@@ -1234,7 +1392,7 @@
   padding: 0.85rem 0.75rem;
 }
 
-:global([data-maple-theme="dd"]) .heroSearchField svg {
+.heroSearchField svg {
   color: var(--maple-brand-primary);
   /* Pinned right: never shrinks, and nothing passes beneath it. */
   flex: 0 0 auto;
@@ -1249,7 +1407,7 @@
 /* The mascot marks the field as an assistant rather than a plain search. A
    negative vertical margin lets it grow past the line box without pushing the
    label, and so the panel, any taller. */
-:global([data-maple-theme="dd"]) .heroSearchMascot {
+.heroSearchMascot {
   /* Bigger than the line it sits on: the negative margins let it overflow the
      field's padding rather than making the field taller, so it fills the
      whitespace beside the text without changing the layout. */
@@ -1265,7 +1423,7 @@
 /* The lead-in stays put while the phrase after it types and deletes. The whole
    line is nowrap: the longest prompt sets the field's width rather than being
    allowed to break onto a second line. */
-:global([data-maple-theme="dd"]) .heroSearchText {
+.heroSearchText {
   align-items: baseline;
   display: flex;
   flex: 1 1 auto;
@@ -1277,23 +1435,13 @@
 
 /* The lead-in reads as part of the placeholder rather than a label, so it
    matches the typed text in both colour and weight. */
-:global([data-maple-theme="dd"]) .heroSearchText strong {
+.heroSearchText strong {
   color: inherit;
   font-weight: inherit;
 }
 
-/* Sits under the field. */
-:global([data-maple-theme="dd"]) .heroSearchSubtitle {
-  /* Nunito rather than the Lexend the rest of this skin uses. */
-  font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
-  color: var(--maple-text-muted);
-  font-size: 0.9rem;
-  line-height: 1.4;
-  margin: 0.7rem 0 0;
-}
-
 /* The real input that replaces the typed placeholder on focus. */
-:global([data-maple-theme="dd"]) .heroSearchInput {
+.heroSearchInput {
   background: none;
   border: 0;
   color: var(--maple-text-strong);
@@ -1304,27 +1452,31 @@
   padding: 0;
 }
 
-:global([data-maple-theme="dd"]) .heroSearchInput:focus {
+.heroSearchInput:focus {
   outline: none;
 }
 
 /* Suggestions, raised under the field while it has focus. */
-:global([data-maple-theme="dd"]) .heroSuggest {
+.heroSuggest {
   background: var(--maple-surface-base);
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
   padding: 1.1rem 1.25rem 1.25rem;
-  position: relative;
-  z-index: 4;
+  /* Overlaid under the field, outside the panel, so nothing reflows. */
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 5;
 }
 
-:global([data-maple-theme="dd"]) .heroSuggestHeading {
+.heroSuggestHeading {
   color: var(--maple-text-strong);
   font-size: 1rem;
   font-weight: 700;
   margin: 0 0 0.6rem;
 }
 
-:global([data-maple-theme="dd"]) .heroSuggest ul {
+.heroSuggest ul {
   color: var(--maple-text-body);
   font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
   font-size: 0.9rem;
@@ -1335,7 +1487,7 @@
 
 /* The agenda circles again, small and label-less, sitting between the ask
    panel's title and its field. */
-:global([data-maple-theme="dd"]) .topicChips {
+.topicChips {
   /* Two even columns rather than wrapping flex, so the rows line up instead of
      breaking wherever the labels happen to run out. */
   display: grid;
@@ -1345,24 +1497,61 @@
   margin: 0 0 1rem;
 }
 
-:global([data-maple-theme="dd"]) .topicChip {
+.topicChip {
   align-items: center;
-  color: var(--maple-text-body);
+  color: var(--hero-ink-body);
   display: flex;
   font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   gap: 0.45rem;
   line-height: 1.2;
   white-space: nowrap;
 }
 
-:global([data-maple-theme="dd"]) .topicChipDisc {
+.topicChipDisc {
   align-items: center;
   border-radius: 50%;
   display: flex;
   flex: 0 0 auto;
-  font-size: 1rem;
-  height: 2.4rem;
+  font-size: 1.15rem;
+  height: 2.8rem;
   justify-content: center;
-  width: 2.4rem;
+  width: 2.8rem;
+}
+
+/* Anchors the suggestions to the field so they overlay rather than push the
+   panel taller, which was making it jump on focus. */
+.heroAsk {
+  position: relative;
+}
+
+/* One column on a phone: the chip labels do not wrap, so two columns would run
+   past the edge of the screen. */
+@media (max-width: 900px) {
+  .heroSearch .topicChips {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Temporary: the full-width skyline from the current MAPLE look, in this
+   skin's blue at the same 6% as the slice, in place of the slice. Delete this
+   block to go back. */
+:global([data-maple-theme="dd"]) .heroSection {
+  --hero-skyline: color-mix(
+    in srgb,
+    var(--maple-brand-primary) 6%,
+    transparent
+  );
+}
+
+/* Shown in this skin, framed by the shared rule, in skyline_blue.svg's
+   #1a3185 at 6%. */
+:global([data-maple-theme="dd"]) .skylineBackground::before {
+  content: "";
+  background-color: #1a3185;
+  opacity: 0.06;
+}
+
+:global([data-maple-theme="dd"]) .skylineSlice2 {
+  display: none;
 }

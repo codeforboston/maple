@@ -34,16 +34,14 @@
     "body2a": "New to MAPLE? For extra support, check",
     "body2b": "and join an upcoming training session!",
     "calendar": "Our Calendar",
-    "lead": "Every bill filed in the Massachusetts Legislature is open to public comment, and most never receive any. Anyone can weigh in: you do not need a lobbyist, a law degree, or any special standing to tell a committee what a bill would mean for you.",
-    "lead2": "MAPLE helps you find the bills that affect you, read what people across the Commonwealth have already submitted, and send your own testimony to the right committee before its hearing. Everything published here stays public, so the record of who said what is open to anyone who wants to read it.",
+    "lead": "Every bill in the Massachusetts Legislature is open to public comment, and anyone can testify. MAPLE shows you which bills are moving, when their hearings are, and what people across the Commonwealth have already said about them. Everything published here stays public, so the record of who said what is open to anyone who wants to read it.",
     "newsletter": "Click Here to Subscribe to Our Newsletter",
     "primaryAction": "Get Started",
+    "searchDefault": "Bills: sponsors, hearings, testimony",
     "searchLabel": "Digital Democracy Database",
-    "searchLead": "Learn about:",
+    "searchLead": "Ask about:",
     "searchPlaceholder": "e.g. Which committee is hearing the tenant protection bill?",
-    "searchSubtitle": "Ask MAPLE about any bill, hearing, or legislator",
     "secondaryAction": "Learn More",
-    "subhead": "Testimony that shapes Massachusetts law",
     "suggest": {
       "bills": "Bills (e.g. H.1234)",
       "hearings": "Hearings, agendas, and transcripts",
@@ -65,7 +63,7 @@
     "housing": "Housing, Transit & Community",
     "work": "Work, Money & Business"
   },
-  "topicsHeading": "Massachusetts 2026",
+  "topicsHeading": "Wrapping up the 194th legislative session...",
   "what": {
     "bodytext": "MAPLE makes it easy to submit testimony and see testimony submitted by others.",
     "title": "What"

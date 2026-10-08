@@ -1,5 +1,6 @@
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
+import { Internal } from "../links"
 import { ChevronRightIcon } from "./icons"
 
 const Nav = styled.nav`
@@ -45,14 +46,17 @@ const Nav = styled.nav`
 /**
  * "{eyebrow} > {section}" trail shown at the top of a Learn or About sub-page.
  * The eyebrow defaults to "Learn"; pass one (e.g. "About") to reuse the trail on
- * other sections.
+ * other sections. parent adds a linked step between them, for a page a level
+ * further down ("About > Policies > Privacy Policy").
  */
 export const LearnBreadcrumb = ({
   section,
-  eyebrow
+  eyebrow,
+  parent
 }: {
   section: string
   eyebrow?: string
+  parent?: { label: string; href: string }
 }) => {
   const { t } = useTranslation("learn")
 
@@ -68,6 +72,19 @@ export const LearnBreadcrumb = ({
         <li aria-hidden="true" className="separator d-flex align-items-center">
           <ChevronRightIcon fontSize="inherit" />
         </li>
+        {parent && (
+          <>
+            <li>
+              <Internal href={parent.href}>{parent.label}</Internal>
+            </li>
+            <li
+              aria-hidden="true"
+              className="separator d-flex align-items-center"
+            >
+              <ChevronRightIcon fontSize="inherit" />
+            </li>
+          </>
+        )}
         <li className="current" aria-current="page">
           {section}
         </li>

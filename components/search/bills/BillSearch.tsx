@@ -128,6 +128,7 @@ const useSearchStatus = () => {
 
 const StyledLoadingContainer = styled(Container)`
   background-color: white;
+  border: 1px solid var(--maple-card-edge);
   display: flex;
   height: 300px;
   justify-content: center;
@@ -191,7 +192,7 @@ const Layout: FC<
         />
       </ControlsBar>
       <Row>
-        <Col xs={0} lg={3}>
+        <Col xs={0} lg={3} className="search-filter-column">
           {refinements.options}
         </Col>
         <Col className="d-flex flex-column">

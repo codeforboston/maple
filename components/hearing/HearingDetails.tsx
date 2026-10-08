@@ -17,13 +17,70 @@ import {
   Paragraph,
   TranscriptData,
   convertToString,
+  toTitleCase,
   fetchTranscriptionData,
   toVTT
 } from "./hearing"
 import { Transcriptions } from "./Transcriptions"
 
+/* The feature tag above the title shows under the Maple skin only. The
+   Digital Democracy and Mixed skins leave it out: the AI banner over the video
+   already says the same thing. */
+const ClassicFeatureTag = styled.div`
+  [data-maple-theme="dd"] & {
+    display: none;
+  }
+`
+
+/* The page header comes in two arrangements, one per skin; only one shows.
+
+   Maple: the committee name as the title, the description under it. */
+const ClassicHeader = styled.div`
+  [data-maple-theme="dd"] & {
+    display: none;
+  }
+`
+
+/* Digital Democracy and Mixed: the title is the description, in title case,
+   with the committee as a smaller linked line below it. Without a description
+   the committee is the title, and without either it is "Hearing on" the date,
+   which otherwise lives in the sidebar as the recording date. */
+const TopicHeader = styled.header`
+  display: none;
+  margin-bottom: 1rem;
+
+  [data-maple-theme="dd"] & {
+    display: block;
+  }
+
+  h1 {
+    margin-bottom: 0.25rem;
+  }
+
+  /* Supporting text, so Nunito even when the typeface switch puts headings in
+     Lexend, in the body text colour like a subtitle. The committee link takes
+     that colour too and drops its underline, showing it only on hover. */
+  .committee {
+    font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 1.125rem;
+    color: var(--maple-text-body);
+    margin-bottom: 0;
+  }
+
+  .committee a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .committee a:hover,
+  .committee a:focus-visible {
+    text-decoration: underline;
+  }
+`
+
 const LegalContainer = styled(Container)`
   background-color: white;
+  border: 1px solid var(--maple-card-edge);
 `
 
 const VideoChild = styled.video`
@@ -86,6 +143,23 @@ export const HearingDetails = ({
   hearingData: HearingData
 }) => {
   const { t } = useTranslation(["common", "hearing"])
+
+  // For the title: a description or committee name that is only whitespace
+  // counts as missing, so the title falls back instead of showing blank.
+  const topic = description?.trim() || null
+  const committee = committeeName?.trim() || null
+
+  // Formatted the way HearingSidebar shows the recording date. Only used for
+  // the title when a hearing has neither a description nor a committee.
+  const parsedDate = hearingDate ? new Date(hearingDate) : null
+  const formattedDate =
+    parsedDate && !isNaN(parsedDate.getTime())
+      ? parsedDate.toLocaleDateString("en-US", {
+          month: "long",
+          day: "2-digit",
+          year: "numeric"
+        })
+      : null
   const router = useRouter()
   const previousActive = useRef<number | null>(null)
   const routerReady = useRef(false)
@@ -195,36 +269,81 @@ export const HearingDetails = ({
       </Row>
 
       {videos.length ? (
-        <ButtonContainer className={`mb-2`}>
-          {/* ButtonContainer contrains clickable area of link so that it doesn't exceed
+        <>
+          <ClassicFeatureTag>
+            <ButtonContainer className={`mb-2`}>
+              {/* ButtonContainer contrains clickable area of link so that it doesn't exceed
               the button and strech invisibly across the width of the page */}
-          <FeatureCalloutButton
-            className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
-          >
-            &nbsp;{" "}
-            {t("video_and_transcription_feature_callout", { ns: "hearing" })}{" "}
-            &nbsp;
-          </FeatureCalloutButton>
-        </ButtonContainer>
+              <FeatureCalloutButton
+                className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
+              >
+                &nbsp;{" "}
+                {t("video_and_transcription_feature_callout", {
+                  ns: "hearing"
+                })}{" "}
+                &nbsp;
+              </FeatureCalloutButton>
+            </ButtonContainer>
+          </ClassicFeatureTag>
+        </>
       ) : (
         <></>
       )}
 
-      {committeeName ? (
-        committeeCode ? (
-          <h1>
-            <External href={committeeURL(committeeCode)}>
-              {committeeName}
-            </External>
-          </h1>
+      <ClassicHeader>
+        {committeeName ? (
+          committeeCode ? (
+            <h1>
+              <External href={committeeURL(committeeCode)}>
+                {committeeName}
+              </External>
+            </h1>
+          ) : (
+            <h1>{committeeName}</h1>
+          )
         ) : (
-          <h1>{committeeName}</h1>
-        )
-      ) : (
-        <></>
-      )}
+          <></>
+        )}
 
-      <h5 className={`mb-3`}>{description}</h5>
+        <h5 className={`mb-3`}>{description}</h5>
+      </ClassicHeader>
+
+      <TopicHeader>
+        {/* The title is the description; failing that, the committee; failing
+            that, the date. */}
+        {topic ? (
+          <h1>{toTitleCase(topic)}</h1>
+        ) : committee ? (
+          <h1>
+            {committeeCode ? (
+              <External href={committeeURL(committeeCode)}>
+                {committee}
+              </External>
+            ) : (
+              committee
+            )}
+          </h1>
+        ) : formattedDate ? (
+          <h1>{t("title_on_date", { ns: "hearing", date: formattedDate })}</h1>
+        ) : (
+          <></>
+        )}
+        {/* The committee line only shows under a description title; otherwise
+            the committee is already in the title. */}
+        {topic && committee ? (
+          <p className="committee">
+            {committeeCode ? (
+              <External href={committeeURL(committeeCode)}>
+                {committee}
+              </External>
+            ) : (
+              committee
+            )}
+          </p>
+        ) : (
+          <></>
+        )}
+      </TopicHeader>
 
       <Row>
         <Col className={`col-md-8 mt-4`}>

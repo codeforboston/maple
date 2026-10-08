@@ -27,7 +27,8 @@ const CARD_STYLE: Record<string, { color: string; Icon: typeof BookOpenIcon }> =
     ai: { color: CRIMSON, Icon: BotIcon }
   }
 
-const CardLink = styled(Internal)`
+/** A hub card: also used by the Policies landing page (components/Policies). */
+export const CardLink = styled(Internal)`
   display: flex;
   flex-direction: column;
   gap: 1rem;

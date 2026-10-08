@@ -1,12 +1,8 @@
 import { Hit } from "instantsearch.js"
-import { useInstantSearch } from "react-instantsearch"
 import { SearchPage } from "../shared"
 import { HearingHit } from "./HearingHit"
-import {
-  CURRENT_COURT_NUMBER,
-  formatCourtFilterLabel,
-  formatCourtSubtitle
-} from "../courtSessions"
+import { SessionSubtitle, Statehouse } from "../SessionMark"
+import { CURRENT_COURT_NUMBER, formatCourtFilterLabel } from "../courtSessions"
 import { useMemo, useRef } from "react"
 
 /* carbon copy of type in functions/src/hearings/search.ts */
@@ -79,7 +75,9 @@ export const HearingSearch = () => {
   return (
     <SearchPage
       searchType="hearing"
-      header={<HearingSearchHeader />}
+      header={<SessionSubtitle />}
+      // Above the search box, with Regular Background only.
+      controlsArt={<Statehouse regularBackgroundOnly />}
       currentRefinementsProps={{ excludedAttributes: ["startsAt"] }}
       initialUiState={{
         [sortOptions[0].value]: {
@@ -128,16 +126,4 @@ export const HearingSearch = () => {
       sortOptions={sortOptions}
     />
   )
-}
-const HearingSearchHeader = () => {
-  const { indexUiState } = useInstantSearch()
-
-  const subtitle = useMemo(() => {
-    const selectedCourt = indexUiState?.refinementList?.court?.[0]
-    const parsed = Number.parseInt(selectedCourt ?? "", 10)
-    const courtNumber = Number.isNaN(parsed) ? CURRENT_COURT_NUMBER : parsed
-    return formatCourtSubtitle(courtNumber)
-  }, [indexUiState?.refinementList?.court])
-
-  return <p className="text-secondary mb-3">{subtitle}</p>
 }

@@ -6,7 +6,7 @@ import {
 } from "react-instantsearch"
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useCallback, useState } from "react"
+import { ReactNode, useCallback, useState } from "react"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { Button, Offcanvas } from "../bootstrap"
@@ -29,7 +29,7 @@ export const FilterButton = styled(Button)`
   }
 `
 
-const FilterSection = styled.div`
+export const FilterSection = styled.div`
   background: white;
   border: 1px solid var(--maple-surface-border);
   border-radius: var(--maple-radius-md);
@@ -38,7 +38,7 @@ const FilterSection = styled.div`
   margin-bottom: var(--maple-space-md);
 `
 
-const FilterLabel = styled.p`
+export const FilterLabel = styled.p`
   color: var(--bs-gray-700);
   font-size: 0.78rem;
   font-weight: var(--maple-font-weight-bold);
@@ -76,10 +76,13 @@ const useHasRefinements = () => {
 
 export const useRefinements = ({
   hierarchicalMenuProps,
-  refinementProps
+  refinementProps,
+  leadingFilters
 }: {
   hierarchicalMenuProps?: MultiselectHierarchicalMenuParams
   refinementProps: RefinementListProps[]
+  /** Hand-built filter sections shown above the generated ones. */
+  leadingFilters?: ReactNode
 }) => {
   const inline = useMediaQuery("(min-width: 768px)")
   const [show, setShow] = useState(false)
@@ -88,6 +91,7 @@ export const useRefinements = ({
 
   const refinements = (
     <>
+      {leadingFilters}
       {refinementProps
         .filter((p: any) => !p.hidden)
         .map((p, i) => (

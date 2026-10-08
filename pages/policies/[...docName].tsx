@@ -13,8 +13,10 @@ const Query = z.object({
 export default createPage({
   titleI18nKey: "titles.policies",
   Page: () => {
-    const policy =
-      Query.parse(useRouter().query).docName?.[0] || "privacy-policy"
+    const slug = Query.parse(useRouter().query).docName?.[0] || "privacy"
+    // The privacy policy lives at /policies/privacy; its text and labels keep
+    // the "privacy-policy" name (public/privacy-policy.md).
+    const policy = slug === "privacy" ? "privacy-policy" : slug
     return <PolicyPage policy={policy as Policy} />
   }
 })
@@ -22,7 +24,7 @@ export default createPage({
 export const getStaticPaths: GetStaticPaths = async ctx => {
   return {
     paths: [
-      { params: { docName: ["privacy-policy"] } },
+      { params: { docName: ["privacy"] } },
       { params: { docName: ["code-of-conduct"] } },
       { params: { docName: ["copyright"] } }
     ],
@@ -34,6 +36,7 @@ export const getStaticProps = createGetStaticTranslationProps([
   "auth",
   "common",
   "footer",
+  "learn",
   "policies",
   "testimony"
 ])

@@ -18,6 +18,15 @@ const Title = styled.h1`
   margin-bottom: 0.75rem;
   /* Scale down on narrow viewports rather than wrapping to four lines. */
   font-size: clamp(1.75rem, 6vw, var(--learn-title-size, 2.375rem));
+
+  /* Mixed only: the same title style as every other page there
+     (styles/bootstrap.scss), in place of the Learn blue and weight. Maple and
+     Digital Democracy keep the Learn title as it is. */
+  [data-maple-nav="mixed"] & {
+    font-weight: 600;
+    color: var(--maple-brand-dark);
+    font-size: clamp(1.9rem, 3vw, 38px);
+  }
 `
 
 const Subhead = styled.p`

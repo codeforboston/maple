@@ -1,5 +1,6 @@
 import { useTranslation } from "next-i18next"
-import React, { useState } from "react"
+import { useRouter } from "next/router"
+import React, { useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
@@ -12,6 +13,7 @@ import {
   NavbarLinkBallotQuestions,
   DESKTOP_NAV_ITEM_CLASS,
   NavbarLinkAI,
+  NavbarLinkPolicies,
   NavbarLinkBills,
   NavbarLinkAiTools,
   NavbarLinkEffective,
@@ -36,13 +38,117 @@ const MobileCollapse = styled(Navbar.Collapse)`
   background-color: var(--maple-navbar-bg);
 `
 
-export const MainNavbar: React.FC<React.PropsWithChildren<unknown>> = () => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+/**
+ * The site navbar comes in two looks:
+ *
+ * - "blue": the current MAPLE bar, a brand-blue band with the white logo and
+ *   white links.
+ * - "neutral": the Digital Democracy bar, a light band with the long navy logo
+ *   and dark links.
+ *
+ * "auto" follows the skin: neutral under the Digital Democracy skin, blue
+ * otherwise. The styles key off data-navbar-variant in styles/globals.css.
+ */
+export type NavbarVariant = "blue" | "neutral" | "auto"
 
-  return <>{isMobile ? <MobileNav /> : <DesktopNav />}</>
+/** The Learn and About sections (Policies counts as About, and the writing
+ * guide, out of /learn, as Learn), whose bar is not pinned under Digital
+ * Democracy. */
+const isLearnOrAbout = (pathname: string) =>
+  [
+    "/learn",
+    "/about",
+    "/why-use-maple",
+    "/policies",
+    "/writing-effective-testimony"
+  ].some(section => pathname === section || pathname.startsWith(`${section}/`))
+
+/** The four explorers. Their bar is not pinned under Digital Democracy, and
+ * the dev switcher's art row (components/DevSkinToggle.tsx) shows only on
+ * them. */
+export const EXPLORERS = [
+  "/bills",
+  "/hearings",
+  "/testimony",
+  "/ballotQuestions"
+]
+
+/** Pages outside Learn and About that take their look under Digital
+ * Democracy: the section's ground on page and bar (styles/globals.css). Now
+ * the four explorers. Each page also renders LearnGround
+ * (components/shared/LearnGround.tsx) for its own ground. */
+export const LEARN_LOOK = EXPLORERS
+
+/**
+ * Reads an attribute on <html> and follows changes to it, so switching skins
+ * at runtime (Storybook, or the dev switcher) re-renders the navbar.
+ */
+const useHtmlAttribute = (name: string, enabled = true) => {
+  // Read straight away where there is a document (the layout only renders in
+  // the browser), so the first render already has the value and nothing jumps.
+  const [value, setValue] = useState<string | null>(() =>
+    enabled && typeof document !== "undefined"
+      ? document.documentElement.getAttribute(name)
+      : null
+  )
+
+  useEffect(() => {
+    if (!enabled) return
+    const root = document.documentElement
+    const read = () => setValue(root.getAttribute(name))
+    read()
+    const observer = new MutationObserver(read)
+    observer.observe(root, { attributes: true, attributeFilter: [name] })
+    return () => observer.disconnect()
+  }, [name, enabled])
+
+  return value
 }
 
-const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
+export const MainNavbar: React.FC<{ variant?: NavbarVariant }> = ({
+  variant
+}) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  const { pathname } = useRouter()
+
+  // By default the bar follows the skin ("auto"): neutral under the Digital
+  // Democracy skin, blue under Maple. The "mixed" skin (data-maple-nav="mixed",
+  // alongside Digital Democracy) is neutral on the homepage only and blue
+  // everywhere else.
+  const isHome = pathname === "/"
+  const mixed = useHtmlAttribute("data-maple-nav") === "mixed"
+  const pageDefault: NavbarVariant = mixed
+    ? isHome
+      ? "neutral"
+      : "blue"
+    : "auto"
+
+  const resolved = variant ?? pageDefault
+
+  // Pinned everywhere except the homepage, where the bar scrolls away with the
+  // hero, and, under Digital Democracy only (not Mixed), the four explorers
+  // and the Learn and About sections.
+  const ddOnly = useHtmlAttribute("data-maple-theme") === "dd" && !mixed
+  const learn = isLearnOrAbout(pathname) || LEARN_LOOK.includes(pathname)
+  const pinned = !isHome && !(ddOnly && (EXPLORERS.includes(pathname) || learn))
+
+  return (
+    <>
+      {isMobile ? (
+        <MobileNav variant={resolved} learn={learn} />
+      ) : (
+        <DesktopNav variant={resolved} pinned={pinned} learn={learn} />
+      )}
+    </>
+  )
+}
+
+/* learn marks the Learn and About sections (data-section="learn"), whose bar
+   takes the section's own ground under Digital Democracy (styles/globals.css). */
+const MobileNav: React.FC<{ variant: NavbarVariant; learn: boolean }> = ({
+  variant,
+  learn
+}) => {
   const ProfileLinks = () => {
     return (
       <Nav className="my-4 d-flex align-items-start">
@@ -88,6 +194,7 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           <NavbarLinkInTheNews handleClick={closeNav} />
           <NavbarLinkFAQ handleClick={closeNav} />
           <NavbarLinkAI handleClick={closeNav} />
+          <NavbarLinkPolicies handleClick={closeNav} />
         </NavDropdown>
 
         <NavDropdown className={"navLink-primary"} title={t("learn")}>
@@ -129,6 +236,8 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   return (
     <Navbar
       className={`main-navbar w-100 ${isExpanded ? "pb-0" : ""}`}
+      data-navbar-variant={variant}
+      data-section={learn ? "learn" : undefined}
       style={{ backgroundColor: "var(--maple-navbar-bg)" }}
       data-bs-theme="dark"
       expand="lg"
@@ -199,14 +308,37 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   )
 }
 
-const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
+const DesktopNav: React.FC<{
+  variant: NavbarVariant
+  pinned: boolean
+  learn: boolean
+}> = ({ variant, pinned, learn }) => {
   const { authenticated } = useAuth()
   const { t } = useTranslation(["common", "auth"])
+
+  // While pinned, the bar casts a shadow once the page has scrolled at all,
+  // which is when content starts passing underneath it. At the top there is
+  // nothing under it, so no shadow.
+  const [scrolled, setScrolled] = useState(false)
+  useEffect(() => {
+    if (!pinned) {
+      setScrolled(false)
+      return
+    }
+    const update = () => setScrolled(window.scrollY > 0)
+    update()
+    window.addEventListener("scroll", update, { passive: true })
+    return () => window.removeEventListener("scroll", update)
+  }, [pinned])
 
   return (
     <Container
       fluid
-      className={`main-navbar desktop-navbar d-flex py-2 sticky-top justify-content-end gap-2`}
+      className={`main-navbar desktop-navbar d-flex py-2 ${
+        pinned ? "sticky-top" : ""
+      } ${scrolled ? "navbar-scrolled" : ""} justify-content-end gap-2`}
+      data-navbar-variant={variant}
+      data-section={learn ? "learn" : undefined}
       style={{ backgroundColor: "var(--maple-navbar-bg)" }}
     >
       {/* Logo, nav items and the sign-in action share one container, so the
@@ -263,6 +395,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                 <NavbarLinkInTheNews />
                 <NavbarLinkFAQ />
                 <NavbarLinkAI />
+                <NavbarLinkPolicies />
               </Dropdown.Menu>
             </Dropdown>
           </div>
@@ -286,7 +419,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           </div>
 
           {authenticated ? (
-            <div className={`align-self-center`}>
+            <div className={`desktop-navbar-account align-self-center`}>
               <Dropdown>
                 <Dropdown.Toggle
                   variant="light"
@@ -314,7 +447,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
               </Dropdown>
             </div>
           ) : (
-            <div className={`align-self-center`}>
+            <div className={`desktop-navbar-account align-self-center`}>
               <SignInWithButton />
             </div>
           )}

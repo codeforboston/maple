@@ -41,6 +41,49 @@ export type TranscriptData = {
   filename: string
 }
 
+/** Short words left lowercase inside a title, as in most title-case styles. */
+const MINOR_WORDS = new Set([
+  "a",
+  "an",
+  "and",
+  "as",
+  "at",
+  "but",
+  "by",
+  "for",
+  "from",
+  "in",
+  "into",
+  "nor",
+  "of",
+  "on",
+  "or",
+  "per",
+  "the",
+  "to",
+  "via",
+  "vs",
+  "with"
+])
+
+/**
+ * Title case for hearing descriptions, which arrive from the legislature in
+ * mixed styles. Each word is capitalised except short joining words in the
+ * middle. A description in all capitals is lowercased first; otherwise words
+ * keep any capitals they already have, so acronyms like MBTA survive.
+ */
+export const toTitleCase = (text: string): string => {
+  const base = text === text.toUpperCase() ? text.toLowerCase() : text
+  const words = base.trim().split(/\s+/)
+  return words
+    .map((word, i) => {
+      const lower = word.toLowerCase()
+      if (i > 0 && i < words.length - 1 && MINOR_WORDS.has(lower)) return lower
+      return word.charAt(0).toUpperCase() + word.slice(1)
+    })
+    .join(" ")
+}
+
 export const convertToString = (
   value: string | string[] | undefined
 ): string => {

@@ -3,7 +3,8 @@ import DidYouKnowSection from "components/homepage/DidYouKnowSection"
 import ExplainerSection from "components/homepage/ExplainerSection"
 import FeaturesSection from "components/homepage/FeaturesSection"
 import { HearingsSectionContent } from "components/homepage/HearingsSection"
-import HeroSection from "components/homepage/HeroSection"
+import HeroSection, { HeroSectionProps } from "components/homepage/HeroSection"
+import LegacyHeroSection from "components/homepage/legacy/LegacyHeroSection"
 import TopicsSection from "components/homepage/TopicsSection"
 
 const meta: Meta = {
@@ -14,8 +15,29 @@ export default meta
 
 type Story = StoryObj
 
-export const Hero: Story = {
-  render: () => <HeroSection />
+/* Each block can be toggled from the Controls panel, and the Skin menu in the
+   toolbar switches between the two looks. The defaults match the homepage. */
+export const Hero: StoryObj<HeroSectionProps & { version: "new" | "old" }> = {
+  args: {
+    version: "new",
+    showBody: false,
+    showActions: false,
+    showAsk: true
+  },
+  argTypes: {
+    version: {
+      name: "Version",
+      description:
+        "Old is the hero as it is on main, before the redesign; the other settings only apply to the new one.",
+      options: ["new", "old"],
+      control: {
+        type: "inline-radio",
+        labels: { new: "New", old: "Old (main)" }
+      }
+    }
+  },
+  render: ({ version, ...args }) =>
+    version === "old" ? <LegacyHeroSection /> : <HeroSection {...args} />
 }
 
 export const Topics: Story = {

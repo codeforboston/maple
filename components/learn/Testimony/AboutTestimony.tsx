@@ -48,6 +48,7 @@ const Card = styled.div`
   background: var(--maple-surface-base);
   border-radius: var(--maple-radius-xl);
   box-shadow: var(--maple-shadow-sm);
+  border: 1px solid var(--maple-card-edge);
   overflow: hidden;
   height: 100%;
 
@@ -172,6 +173,7 @@ const Panel = styled.div`
   background: var(--maple-surface-base);
   border-radius: var(--maple-radius-xl);
   box-shadow: var(--maple-shadow-sm);
+  border: 1px solid var(--maple-card-edge);
   overflow: hidden;
 
   /* Deep-link targets: stop short of the sticky navbar rather than under it. */
@@ -324,7 +326,7 @@ export const AboutTestimony = () => {
                         i18nKey="testimony.tipsLink"
                         components={[
                           // eslint-disable-next-line react/jsx-key
-                          <Internal href="/learn/writing-effective-testimony" />
+                          <Internal href="/writing-effective-testimony" />
                         ]}
                       />
                     </p>

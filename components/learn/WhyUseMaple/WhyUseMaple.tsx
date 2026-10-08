@@ -109,7 +109,7 @@ const PersonaCard = styled.button<{ $color: string; $active: boolean }>`
   border-radius: var(--maple-radius-lg);
   padding: 0.875rem 1rem;
   text-align: left;
-  border: 2px solid ${p => (p.$active ? p.$color : "transparent")};
+  border: 2px solid ${p => (p.$active ? p.$color : "var(--maple-card-edge)")};
   background-color: ${p =>
     p.$active ? p.$color : "var(--maple-surface-base)"};
   box-shadow: var(--maple-shadow-sm);
@@ -161,6 +161,7 @@ const Detail = styled.div`
   background: var(--maple-surface-base);
   border-radius: var(--maple-radius-xl);
   box-shadow: var(--maple-shadow-sm);
+  border: 1px solid var(--maple-card-edge);
   overflow: hidden;
 `
 
@@ -397,6 +398,7 @@ const Cta = styled.div`
   background: var(--maple-surface-base);
   border-radius: var(--maple-radius-xl);
   box-shadow: var(--maple-shadow-sm);
+  border: 1px solid var(--maple-card-edge);
   padding: 2.5rem 2rem;
   margin-top: 1rem;
   text-align: center;

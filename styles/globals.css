@@ -207,6 +207,32 @@
   line-height: 1;
 }
 
+/* The info note (the question-number note on the ballot questions explorer):
+   the full width of the column, in Nunito, Maple's body face. */
+.ballot-question-alert--info {
+  width: 100%;
+  font-family: var(--maple-font-body);
+}
+
+/* The close button (dismiss): small and quiet, navy on hover. */
+.ballot-question-alert-close {
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding: 0.25rem;
+  border: 0;
+  background: transparent;
+  color: var(--maple-text-muted);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color var(--maple-transition-fast);
+}
+
+.ballot-question-alert-close:hover,
+.ballot-question-alert-close:focus-visible {
+  color: var(--maple-color-blue-subtle-text);
+}
+
 .ballot-question-alert-content {
   font-size: 0.95rem;
   font-weight: 650;
@@ -322,6 +348,20 @@
 
 .modal-content {
   border: none;
+}
+
+/* Digital Democracy and Mixed: links to a bill (H5405 and the like) are in
+   Lexend even inside text that is set in Nunito, such as the Status & History
+   table, so bill numbers read the same everywhere. Not on the Learn and About
+   pages, which keep Maple's type in every skin. */
+[data-maple-theme="dd"] a[href^="/bills/"]:not(.maple-learn-page a) {
+  font-family: var(--maple-font-heading);
+}
+
+/* Digital Democracy and Mixed: modals sit on a grey a step darker than the
+   page, so white cell gutters and white panels inside them still read. */
+[data-maple-theme="dd"] .modal {
+  --bs-modal-bg: color-mix(in srgb, var(--maple-surface-page) 96%, #000000);
 }
 
 .whitebackground {
@@ -614,16 +654,60 @@
    attribute; the current MAPLE navbar is untouched.
    --------------------------------------------------------------------------- */
 
+/* The neutral navbar (see components/Navbar.tsx) is a transparent gutter: the
+   surface belongs to the container inside it. Its ink inverts to suit, and the
+   logo swaps asset rather than recolouring. Every neutral rule below is scoped
+   to the variant, so the blue bar can appear under either skin. */
+.main-navbar:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  ) {
+  --maple-navbar-bg: transparent;
+}
+
 /* Default: the light logo shows, the navy one is not rendered. */
-.navbar-logo-dark {
+.navbar-logo-dark,
+.navbar-logo-mixed,
+.navbar-logo-original {
   display: none;
 }
 
-[data-maple-theme="dd"] .navbar-logo-light {
+/* The Maple skin: on its blue bar, the logo from main. */
+html:not([data-maple-theme="dd"])
+  :is([data-navbar-variant="blue"], [data-navbar-variant="auto"])
+  .navbar-logo-light {
   display: none;
 }
 
-[data-maple-theme="dd"] .navbar-logo-dark {
+html:not([data-maple-theme="dd"])
+  :is([data-navbar-variant="blue"], [data-navbar-variant="auto"])
+  .navbar-logo-original {
+  display: inline-block;
+}
+
+/* Mixed: on the blue bar, a blue logo laid out as the neutral bar's is, with
+   its word all white. */
+[data-maple-nav="mixed"] [data-navbar-variant="blue"] .navbar-logo-light {
+  display: none;
+}
+
+[data-maple-nav="mixed"] [data-navbar-variant="blue"] .navbar-logo-mixed {
+  display: inline-block;
+}
+
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .navbar-logo-light {
+  display: none;
+}
+
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .navbar-logo-dark {
   display: inline-block;
 }
 
@@ -632,7 +716,8 @@
 
 /* Red is reserved for one deliberate call to action, not the default button.
    $primary compiles to red at build time, so this reaches past that. */
-[data-maple-theme="dd"] .btn-primary {
+/* Not inside a blue navbar, where the sign-in button keeps its red. */
+[data-maple-theme="dd"] .btn-primary:not([data-navbar-variant="blue"] *) {
   --bs-btn-bg: var(--maple-brand-primary);
   --bs-btn-border-color: var(--maple-brand-primary);
   --bs-btn-hover-bg: var(--maple-brand-primary-strong);
@@ -645,18 +730,44 @@
 
 /* The desktop navbar carries data-bs-theme="dark", which drives Bootstrap's
    own link colours. Point those at the skin's ink instead. */
-[data-maple-theme="dd"] .main-navbar .nav-link,
-[data-maple-theme="dd"] .main-navbar .navbar-nav .nav-link {
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .nav-link,
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .navbar-nav
+  .nav-link {
   color: var(--maple-text-body);
 }
 
-[data-maple-theme="dd"] .main-navbar .nav-link:hover,
-[data-maple-theme="dd"] .main-navbar .nav-link:focus,
-[data-maple-theme="dd"] .main-navbar .navbar-nav .nav-link.active {
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .nav-link:hover,
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .nav-link:focus,
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .navbar-nav
+  .nav-link.active {
   color: var(--maple-brand-primary);
 }
 
-[data-maple-theme="dd"] .main-navbar .navbar-toggler-icon {
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .navbar-toggler-icon {
   filter: invert(1);
 }
 
@@ -677,26 +788,55 @@
 }
 
 /* The circular logo needs no border radius from the skin. */
-[data-maple-theme="dd"] .navbar-logo-dark {
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .navbar-logo-dark {
   border-radius: 50%;
 }
 
 /* .desktop-navbar-link forces white with !important, which was correct on a
    blue band and invisible on a light one. The hover wash is white-alpha for
    the same reason, so it inverts to dark-alpha here. */
-[data-maple-theme="dd"] .desktop-navbar-link,
-[data-maple-theme="dd"] .desktop-navbar-dropdown,
-[data-maple-theme="dd"] .desktop-navbar-dropdown .dropdown-toggle {
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .desktop-navbar-link,
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .desktop-navbar-dropdown,
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .desktop-navbar-dropdown
+  .dropdown-toggle {
   color: var(--maple-text-strong) !important;
 }
 
-[data-maple-theme="dd"] .desktop-navbar-link:hover,
-[data-maple-theme="dd"] .desktop-navbar-link:focus-visible {
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .desktop-navbar-link:hover,
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .desktop-navbar-link:focus-visible {
   color: var(--maple-brand-primary) !important;
   background-color: rgba(15, 23, 42, 0.06) !important;
 }
 
-[data-maple-theme="dd"] .desktop-navbar-dropdown.btn {
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .desktop-navbar-dropdown.btn {
   --bs-btn-color: var(--maple-text-strong);
   --bs-btn-hover-color: var(--maple-brand-primary);
   --bs-btn-hover-bg: rgba(15, 23, 42, 0.06);
@@ -704,22 +844,27 @@
   --bs-btn-active-bg: rgba(15, 23, 42, 0.06);
 }
 
-[data-maple-theme="dd"] .navbar-logo-dark {
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .navbar-logo-dark {
   border-radius: 0;
-  width: auto;
-  /* Taller than the bar and overhanging it evenly, so the mark breaks the band
-     top and bottom rather than sitting inside it. The negative margins are
-     symmetrical, which keeps the bar's own height unchanged. */
-  height: 76px;
-  margin-top: -20px;
-  margin-bottom: -20px;
+  /* Sized by the shared logo rule below, the same as the blue bar's. */
   position: relative;
   z-index: 3;
 }
 
 /* Nothing in the header may clip the overhang. */
-[data-maple-theme="dd"] .main-navbar,
-[data-maple-theme="dd"] .main-navbar .nav-link {
+.main-navbar:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  ),
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .nav-link {
   overflow: visible;
 }
 
@@ -736,21 +881,122 @@
    white block reads as thin and floating rather than as a full-height strip. */
 /* The bar itself is a transparent gutter: it stays in normal flow so nothing
    slides underneath it, and the surface belongs to the container inside. */
-[data-maple-theme="dd"] .main-navbar.desktop-navbar {
-  padding: 1.5rem 0 !important;
-  /* Not pinned in this skin: the bar scrolls away with the page. Anything that
-     reserved space beneath a pinned navbar has to stop doing so, see the
-     sticky rail on /learn/legislative-process. */
-  position: static !important;
+.main-navbar.desktop-navbar:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  ) {
+  /* Pinned to the top as in the current MAPLE skin (sticky-top). The bar is
+     transparent, so give it the page ground or the page would show through it
+     as it scrolls underneath. */
+  background-color: var(--maple-surface-page) !important;
 }
 
-/* Logo and nav items sit together on this. */
-[data-maple-theme="dd"] .desktop-navbar-bar {
-  background-color: transparent;
+/* Digital Democracy (not Mixed), Learn and About: the bar takes the section's
+   ground, a touch darker than the page grey elsewhere (styles/bootstrap.scss). */
+[data-maple-theme="dd"]:not([data-maple-nav="mixed"])
+  .main-navbar[data-section="learn"]:is(
+    [data-navbar-variant="neutral"],
+    [data-navbar-variant="auto"]
+  ) {
+  background-color: var(--maple-surface-learn) !important;
+}
+
+/* Both navbars: the logo sets the bar's height, with 8px of padding above and
+   below it. Overrides the bar's py-2 and the logo's own 80px. */
+.main-navbar.desktop-navbar {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+/* Both logos, the same size in either bar. */
+.desktop-navbar .navbar-logo {
+  width: auto;
+  height: 72px;
+}
+
+/* The logo from main keeps main's size. */
+.desktop-navbar .navbar-logo-original {
+  width: 80px;
+  height: 80px;
+}
+
+/* A pinned bar casts a shadow only while content is scrolling under it; the
+   class is set in components/Navbar.tsx. Both skins. */
+.main-navbar.desktop-navbar {
+  transition: box-shadow var(--maple-transition-fast);
+}
+
+.main-navbar.desktop-navbar.navbar-scrolled {
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+}
+
+/* A pinned neutral bar always has a shadow, even at the top: on the light
+   ground it is otherwise hard to tell where the bar ends. A neutral bar that
+   is not pinned (the homepage, and the explorers under Digital Democracy) has
+   none. Pinning is decided in components/Navbar.tsx. */
+.main-navbar.sticky-top:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  ) {
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+}
+
+/* Logo and nav items sit together on this. Its width and position are shared
+   by both skins, so the logo starts in the same place whichever skin, and
+   whichever logo graphic, is showing. The bar gives up its own side padding so
+   both measure the column from the same edge. */
+.main-navbar.desktop-navbar {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Digital Democracy and Mixed: the explorers' filter column a touch wider than
+   Bootstrap's quarter (lg={3}), since Lexend runs wider than Nunito and the
+   filter labels wrapped. The results take the rest of the row. */
+@media (min-width: 992px) {
+  [data-maple-theme="dd"] .search-filter-column {
+    width: 27%;
+  }
+}
+
+/* Digital Democracy and Mixed, desktop: the footer's disclaimer and
+   newsletter line moves into its Account column (components/Footer). */
+@media (min-width: 768px) {
+  [data-maple-theme="dd"] .footer-bottom-line {
+    display: none;
+  }
+}
+
+/* Navbar and footer links for one look only: Policies in the About menu
+   under Digital Democracy and Mixed, and How MAPLE Uses AI under About for
+   Maple but under Policies for Digital Democracy and Mixed. */
+[data-maple-theme="dd"] .nav-maple-only,
+.nav-dd-only {
+  display: none !important;
+}
+
+[data-maple-theme="dd"] .nav-dd-only {
+  display: block !important;
+}
+
+/* Digital Democracy and Mixed: the sign-in button (or the profile menu) set a
+   little apart from the menu items, 1rem beyond the usual gap. */
+[data-maple-theme="dd"] .desktop-navbar-account {
+  margin-left: 1rem;
+}
+
+.desktop-navbar-bar {
   /* The same content column the page body uses (.sectionShell), so the logo
      and the nav line up with everything below them while the bar itself stays
      full-bleed. */
   width: min(1660px, calc(100% - 3rem));
   margin: 0 auto;
-  padding: 0.4rem 0;
+}
+
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .desktop-navbar-bar {
+  background-color: transparent;
 }

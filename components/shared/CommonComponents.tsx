@@ -57,9 +57,15 @@ const EmailContainer = styled.a`
   text-decoration: underline;
 `
 
-export const FeatureCalloutButton = styled.button`
+/* A badge ("*NEW*", "Hearing Video + Transcription") styled with Bootstrap's
+   button classes, but not a control: a span, so it is not focusable or
+   announced as a button, and with no pointer events, so hovering does not
+   suggest it does anything. */
+export const FeatureCalloutButton = styled.span`
   border-radius: var(--maple-radius-xl);
   font-size: 12px;
+  pointer-events: none;
+  cursor: default;
 `
 
 // A person's name / sub-heading. Exposed as an h3 for screen-reader heading
@@ -93,6 +99,7 @@ export const PageTitle = styled.div`
 export const SectionContainer = styled.div`
   border-radius: var(--maple-radius-lg);
   background: var(--maple-surface-base);
+  border: 1px solid var(--maple-card-edge);
 `
 
 // A card/section title. Exposed as an h2 for screen-reader heading navigation

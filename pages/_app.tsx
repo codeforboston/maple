@@ -17,6 +17,18 @@ import { wrapper } from "../components/store"
 import { Provider as Redux } from "react-redux"
 import { appWithTranslation } from "next-i18next"
 import nextI18NextConfig from "../next-i18next.config"
+import dynamic from "next/dynamic"
+
+/**
+ * The skin switcher is for `next dev` only. Next.js replaces NODE_ENV with a
+ * constant at build time, so in a production build this is `() => null` and
+ * the import is removed along with the dead branch.
+ */
+const DevSkinToggle =
+  process.env.NODE_ENV === "development"
+    ? dynamic(() => import("../components/DevSkinToggle"), { ssr: false })
+    : () => null
+
 /**
  * The root React component of the application. Next.js renders this, passing
  * the component of the current page. When you navigate to a new page, Next.js
@@ -38,6 +50,7 @@ function App({ Component, ...rest }: AppPropsWithLayout) {
       ) : (
         <Providers>{applyLayout({ Component, ...props })}</Providers>
       )}
+      <DevSkinToggle />
     </Redux>
   )
 }
