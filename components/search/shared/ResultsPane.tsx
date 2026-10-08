@@ -8,6 +8,7 @@ import { NoResults } from "../NoResults"
 
 const StyledLoadingContainer = styled(Container)`
   background-color: white;
+  border: 1px solid var(--maple-card-edge);
   display: flex;
   height: 300px;
   justify-content: center;

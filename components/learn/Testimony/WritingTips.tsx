@@ -6,6 +6,7 @@ import LearnHeader from "../LearnHeader"
 import LearnLayout from "../LearnLayout"
 import { CheckIcon } from "../icons"
 import { NAVY, STAGE_COLORS, alpha } from "../palette"
+import { MapleOnly } from "components/shared/SkinOnly"
 
 /* Near-black for headings, a shade deeper than the page's body ink. */
 const INK = "#0f1828"
@@ -21,6 +22,7 @@ const Card = styled.section`
   background: var(--maple-surface-base);
   border-radius: var(--maple-radius-xl);
   box-shadow: var(--maple-shadow-sm);
+  border: 1px solid var(--maple-card-edge);
   overflow: hidden;
   margin-bottom: 1rem;
 `
@@ -119,6 +121,7 @@ const Principle = styled.li<{ $color: string }>`
   background: var(--maple-surface-base);
   border-radius: var(--maple-radius-xl);
   box-shadow: var(--maple-shadow-sm);
+  border: 1px solid var(--maple-card-edge);
   padding: 1.5rem 1.75rem;
 
   .num {
@@ -187,6 +190,7 @@ const Cta = styled.div`
   background: var(--maple-surface-base);
   border-radius: var(--maple-radius-xl);
   box-shadow: var(--maple-shadow-sm);
+  border: 1px solid var(--maple-card-edge);
   padding: 2.5rem 2rem;
   text-align: center;
 
@@ -232,7 +236,11 @@ export const WritingTips = () => {
 
   return (
     <LearnLayout width="medium">
-      <LearnBreadcrumb section={t("writingTips.breadcrumb")} />
+      {/* Maple only: Digital Democracy and Mixed list this page under the
+          footer's Other Resources, not Learn, so it has no Learn trail. */}
+      <MapleOnly>
+        <LearnBreadcrumb section={t("writingTips.breadcrumb")} />
+      </MapleOnly>
       <LearnHeader
         title={t("writingTips.title")}
         subhead={t("writingTips.subhead")}

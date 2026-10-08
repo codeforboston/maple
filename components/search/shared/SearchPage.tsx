@@ -28,6 +28,8 @@ import { SearchErrorBoundary } from "../SearchErrorBoundary"
 const EMPTY_MENU_ATTRIBUTES: string[] = []
 
 const ControlsBar = styled.div`
+  /* The positioning context for anything resting on the bar (controlsArt). */
+  position: relative;
   background: white;
   border: 1px solid var(--maple-surface-border);
   border-radius: var(--bs-border-radius-xl);
@@ -68,6 +70,8 @@ export type SortOptionInput = {
 type SearchPageProps<TRecord extends Hit> = {
   searchType: SearchType
   header?: ReactNode
+  /** Decoration resting on the search box's top edge; it positions itself. */
+  controlsArt?: ReactNode
   filterPanelConfig: RefinementPanelConfig
   currentRefinementsProps?: CurrentRefinementsProps
   hitComponent: ComponentType<{ hit: TRecord }>
@@ -81,6 +85,7 @@ type SearchPageProps<TRecord extends Hit> = {
 export const SearchPage = <TRecord extends Hit>({
   searchType,
   header,
+  controlsArt,
   hitComponent,
   filterPanelConfig,
   currentRefinementsProps = {},
@@ -153,6 +158,7 @@ export const SearchPage = <TRecord extends Hit>({
           {({ filterPanel, filterToggle }) => (
             <SearchContainer>
               <ControlsBar>
+                {controlsArt}
                 <SearchBox
                   placeholder={t(`search_box.placeholder.${searchType}`)}
                 />
@@ -164,7 +170,11 @@ export const SearchPage = <TRecord extends Hit>({
                 <CurrentRefinements {...currentRefinementsProps} />
               </ControlsBar>
               <Row>
-                <Col xs={12} lg={3} className="mb-3 mb-lg-0">
+                <Col
+                  xs={12}
+                  lg={3}
+                  className="search-filter-column mb-3 mb-lg-0"
+                >
                   {filterPanel}
                 </Col>
                 <Col className="d-flex flex-column">

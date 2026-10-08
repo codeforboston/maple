@@ -15,10 +15,10 @@ import {
 import { currentGeneralCourt } from "functions/src/shared"
 import { SortByItem } from "instantsearch.js/es/connectors/sort-by/connectSortBy"
 import { useState, useMemo } from "react"
-import { TabContainer, TabPane } from "react-bootstrap"
+import { TabContainer } from "react-bootstrap"
 import styled from "styled-components"
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
-import { Col, Nav, Row } from "../../bootstrap"
+import { Col, Form, Nav, Row } from "../../bootstrap"
 import { NoResults } from "../NoResults"
 import { ResultCount } from "../ResultCount"
 import { SearchContainer } from "../SearchContainer"
@@ -28,6 +28,7 @@ import { getServerConfig, VirtualFilters } from "../common"
 import { testimonyRelevanceSort, testimonySearchParams } from "../searchParams"
 import { TestimonyHit } from "./TestimonyHit"
 import { useTestimonyRefinements } from "./useTestimonyRefinements"
+import { FilterLabel, FilterSection } from "../useRefinements"
 import { FollowContext, OrgFollowStatus } from "components/shared/FollowContext"
 import { pathToSearchState, searchStateToUrl } from "../routingHelpers"
 import { useTranslation } from "next-i18next"
@@ -122,12 +123,41 @@ const useSearchStatus = () => {
   }
 }
 
+/* Only one of the two author-type controls shows, by skin; display: none keeps
+   the other out of the accessibility tree. */
+const AuthorTypeTabs = styled.div`
+  [data-maple-theme="dd"] & {
+    display: none;
+  }
+`
+
+const AuthorTypeFilterSection = styled(FilterSection)`
+  display: none;
+
+  [data-maple-theme="dd"] & {
+    display: block;
+  }
+
+  /* Bootstrap's primary here is red (styles/bootstrap.scss), which checked
+     radios take; these use the site's navy instead. */
+  .form-check-input:checked {
+    background-color: var(--maple-brand-primary);
+    border-color: var(--maple-brand-primary);
+  }
+
+  /* The same for the focus ring, which Bootstrap also draws in its red. */
+  .form-check-input:focus {
+    border-color: var(--maple-brand-primary);
+    box-shadow: 0 0 0 0.25rem
+      color-mix(in srgb, var(--maple-brand-primary) 25%, transparent);
+  }
+`
+
 const tabs = ["All", "Individuals", "Organizations"]
 type Tab = (typeof tabs)[number]
 
 const Layout = () => {
   const [key, setKey] = useState<string>("All")
-  const refinements = useTestimonyRefinements()
   const status = useSearchStatus()
   const { indexUiState, setIndexUiState } = useInstantSearch()
   const { t } = useTranslation("search")
@@ -152,28 +182,51 @@ const Layout = () => {
     })
   }
 
+  /* The All / Individuals / Organizations choice comes two ways, one per skin,
+     both setting the same authorRole filter. Maple: tabs above the search.
+     Digital Democracy and Mixed: the first group in the filter panel. */
+  const authorTypeFilter = (
+    <AuthorTypeFilterSection>
+      <FilterLabel>{t("author_type")}</FilterLabel>
+      {tabs.map(tab => (
+        <Form.Check
+          key={tab}
+          type="radio"
+          id={`author-type-${tab}`}
+          name="author-type"
+          label={tab}
+          checked={key === tab}
+          onChange={() => onTabClick(tab)}
+        />
+      ))}
+    </AuthorTypeFilterSection>
+  )
+  const refinements = useTestimonyRefinements(authorTypeFilter)
+
   const [followStatus, setFollowStatus] = useState<OrgFollowStatus>({})
 
   return (
     <>
       <FollowContext.Provider value={{ followStatus, setFollowStatus }}>
-        <TabContainer activeKey={key} onSelect={(k: any) => setKey(k)}>
-          <StyledTabNav>
-            {tabs.map((t, i) => (
-              <Nav.Item key={t}>
-                <Nav.Link
-                  eventKey={t}
-                  className={`rounded-top m-0 p-0`}
-                  onClick={e => onTabClick(t)}
-                >
-                  <p className={`my-0 ${i == 0 ? "" : "mx-4"}`}>{t}</p>
-                  <hr className={`my-0`} />
-                </Nav.Link>
-              </Nav.Item>
-            ))}
-          </StyledTabNav>
-          <StyledTabContent></StyledTabContent>
-        </TabContainer>
+        <AuthorTypeTabs>
+          <TabContainer activeKey={key} onSelect={(k: any) => setKey(k)}>
+            <StyledTabNav>
+              {tabs.map((t, i) => (
+                <Nav.Item key={t}>
+                  <Nav.Link
+                    eventKey={t}
+                    className={`rounded-top m-0 p-0`}
+                    onClick={e => onTabClick(t)}
+                  >
+                    <p className={`my-0 ${i == 0 ? "" : "mx-4"}`}>{t}</p>
+                    <hr className={`my-0`} />
+                  </Nav.Link>
+                </Nav.Item>
+              ))}
+            </StyledTabNav>
+            <StyledTabContent></StyledTabContent>
+          </TabContainer>
+        </AuthorTypeTabs>
         <SearchContainer>
           <ControlsBar>
             <SearchBox placeholder="Search For Testimony" />
@@ -185,7 +238,7 @@ const Layout = () => {
             <CurrentRefinements excludedAttributes={["authorRole"]} />
           </ControlsBar>
           <Row>
-            <Col xs={0} lg={3}>
+            <Col xs={0} lg={3} className="search-filter-column">
               {refinements.options}
             </Col>
             <Col className="d-flex flex-column">

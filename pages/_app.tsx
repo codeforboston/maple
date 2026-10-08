@@ -17,6 +17,20 @@ import { wrapper } from "../components/store"
 import { Provider as Redux } from "react-redux"
 import { appWithTranslation } from "next-i18next"
 import nextI18NextConfig from "../next-i18next.config"
+import dynamic from "next/dynamic"
+
+/**
+ * The skin switcher is for `next dev`, and for demo deployments that set
+ * NEXT_PUBLIC_THEME_SWITCHER=on. Next.js replaces both with constants at build
+ * time, so in any other build this is `() => null` and the import is removed
+ * along with the dead branch. MAPLE's own deployments do not set it.
+ */
+const DevSkinToggle =
+  process.env.NODE_ENV === "development" ||
+  process.env.NEXT_PUBLIC_THEME_SWITCHER === "on"
+    ? dynamic(() => import("../components/DevSkinToggle"), { ssr: false })
+    : () => null
+
 /**
  * The root React component of the application. Next.js renders this, passing
  * the component of the current page. When you navigate to a new page, Next.js
@@ -38,6 +52,7 @@ function App({ Component, ...rest }: AppPropsWithLayout) {
       ) : (
         <Providers>{applyLayout({ Component, ...props })}</Providers>
       )}
+      <DevSkinToggle />
     </Redux>
   )
 }

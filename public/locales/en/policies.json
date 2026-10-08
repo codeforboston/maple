@@ -12,5 +12,11 @@
     "humility": "Humility",
     "compassion": "Compassion",
     "curiosity": "Curiosity"
+  },
+  "landing": {
+    "privacy-policy": "How MAPLE collects, uses, and stores your personal information, and how you can manage it.",
+    "copyright": "How the testimony you submit is licensed, how to report a copyright concern, and our newsletter.",
+    "code-of-conduct": "How testimony on MAPLE is moderated, and our community guidelines.",
+    "maple-ai": "Our principles for using AI, where MAPLE uses it today, and its limitations and risks."
   }
 }
