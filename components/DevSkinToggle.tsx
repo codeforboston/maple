@@ -10,9 +10,10 @@ import { EXPLORERS } from "./Navbar"
  * switch sets data-maple-art, which components/shared/PageArt.tsx and the
  * other explorer art read.
  *
- * Never shipped: pages/_app.tsx only imports this behind a NODE_ENV check that
- * Next.js replaces with a constant at build time, so production bundles drop
- * it. The check below is a second guard in case it is ever imported directly.
+ * Not shipped on MAPLE: pages/_app.tsx only imports this in `next dev` or when
+ * a demo deployment sets NEXT_PUBLIC_THEME_SWITCHER=on, both constants at
+ * build time, so other production bundles drop it. The check below is a second
+ * guard in case it is ever imported directly.
  */
 
 /**
@@ -165,7 +166,11 @@ function Switch({ control, pathname }: { control: Control; pathname: string }) {
 
 export default function DevSkinToggle() {
   const { pathname } = useRouter()
-  if (process.env.NODE_ENV !== "development") return null
+  if (
+    process.env.NODE_ENV !== "development" &&
+    process.env.NEXT_PUBLIC_THEME_SWITCHER !== "on"
+  )
+    return null
 
   return (
     <div

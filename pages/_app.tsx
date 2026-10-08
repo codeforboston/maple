@@ -20,12 +20,14 @@ import nextI18NextConfig from "../next-i18next.config"
 import dynamic from "next/dynamic"
 
 /**
- * The skin switcher is for `next dev` only. Next.js replaces NODE_ENV with a
- * constant at build time, so in a production build this is `() => null` and
- * the import is removed along with the dead branch.
+ * The skin switcher is for `next dev`, and for demo deployments that set
+ * NEXT_PUBLIC_THEME_SWITCHER=on. Next.js replaces both with constants at build
+ * time, so in any other build this is `() => null` and the import is removed
+ * along with the dead branch. MAPLE's own deployments do not set it.
  */
 const DevSkinToggle =
-  process.env.NODE_ENV === "development"
+  process.env.NODE_ENV === "development" ||
+  process.env.NEXT_PUBLIC_THEME_SWITCHER === "on"
     ? dynamic(() => import("../components/DevSkinToggle"), { ssr: false })
     : () => null
 
