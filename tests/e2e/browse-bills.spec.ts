@@ -65,8 +65,8 @@ test.describe("Search result test", () => {
 })
 
 // Array of sorting test configurations
-// Need to add test for sort by relevant
 const sortingTests: string[] = [
+  "Sort by Relevance",
   "Sort by Testimony Count",
   "Sort by Cosponsor Count",
   "Sort by Next Hearing Date",
