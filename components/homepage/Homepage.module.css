@@ -1549,6 +1549,8 @@
   content: "";
   background-color: #1a3185;
   opacity: 0.06;
+  /* Pinned to the hero's bottom edge rather than raised off it. */
+  bottom: 0;
 }
 
 :global([data-maple-theme="dd"]) .skylineSlice2 {

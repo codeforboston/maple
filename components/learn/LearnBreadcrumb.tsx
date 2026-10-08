@@ -41,13 +41,46 @@ const Nav = styled.nav`
     color: var(--bs-blue);
     font-weight: 700;
   }
+
+  /* Home leads the trail under Digital Democracy and Mixed only. */
+  .home-step {
+    display: none;
+  }
+
+  /* Digital Democracy and Mixed: Lexend, and colour by role: links in the
+     link blue, everything else (plain steps and the current page) in the
+     same grey; all of it medium (500). */
+  [data-maple-theme="dd"] & {
+    font-family: var(--maple-font-heading);
+
+    /* A step smaller than Maple's 0.875rem: Lexend runs wider than Nunito. */
+    ol {
+      font-size: 0.8125rem;
+    }
+
+    .home-step {
+      display: flex;
+    }
+
+    a {
+      color: var(--bs-blue);
+      font-weight: 500;
+    }
+
+    .disabled,
+    .current {
+      color: var(--maple-text-body);
+      font-weight: 500;
+    }
+  }
 `
 
 /**
  * "{eyebrow} > {section}" trail shown at the top of a Learn or About sub-page.
  * The eyebrow defaults to "Learn"; pass one (e.g. "About") to reuse the trail on
- * other sections. parent adds a linked step between them, for a page a level
- * further down ("About > Policies > Privacy Policy").
+ * other sections. parent adds a step between them, for a page a level further
+ * down ("About > Policies > Privacy Policy"), linked when it has an href. Under
+ * Digital Democracy and Mixed the trail starts with Home.
  */
 export const LearnBreadcrumb = ({
   section,
@@ -56,13 +89,23 @@ export const LearnBreadcrumb = ({
 }: {
   section: string
   eyebrow?: string
-  parent?: { label: string; href: string }
+  /** The middle step; plain text when it has no href. */
+  parent?: { label: string; href?: string }
 }) => {
-  const { t } = useTranslation("learn")
+  const { t } = useTranslation(["learn", "common"])
 
   return (
     <Nav aria-label={t("breadcrumbLabel")}>
       <ol>
+        <li className="home-step">
+          <Internal href="/">{t("navigation.home", { ns: "common" })}</Internal>
+        </li>
+        <li
+          aria-hidden="true"
+          className="separator home-step align-items-center"
+        >
+          <ChevronRightIcon fontSize="inherit" />
+        </li>
         {/* The parent link is disabled for now -- the hub pages still exist, we
             just are not surfacing them yet. Restore the <Internal> wrapper (and
             its import) to re-enable it. */}
@@ -75,7 +118,11 @@ export const LearnBreadcrumb = ({
         {parent && (
           <>
             <li>
-              <Internal href={parent.href}>{parent.label}</Internal>
+              {parent.href ? (
+                <Internal href={parent.href}>{parent.label}</Internal>
+              ) : (
+                <span className="disabled">{parent.label}</span>
+              )}
             </li>
             <li
               aria-hidden="true"

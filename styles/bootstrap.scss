@@ -442,6 +442,9 @@ $utilities: (
   // Borders do the work the shadows used to.
   --maple-surface-border: rgba(15, 23, 42, 0.12);
   --maple-card-edge: var(--maple-surface-border);
+  // Cards that draw their own outline (the legislator profile's, which fall
+  // back to their own #b8c0c9) take the card edge instead.
+  --maple-card-outline: var(--maple-card-edge);
   --maple-border-default: rgba(15, 23, 42, 0.14);
 
   // Shape. Near-square, 2 to 6px rather than 4 to 16. The pill is left alone,

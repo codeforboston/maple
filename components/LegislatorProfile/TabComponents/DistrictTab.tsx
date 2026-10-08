@@ -14,7 +14,7 @@ const MapPreview = styled.div`
 `
 
 const DistrictCard = styled.section`
-  border: 1px #b8c0c9 solid;
+  border: 1px var(--maple-card-outline, #b8c0c9) solid;
   border-radius: 5px;
   overflow: hidden;
 `
