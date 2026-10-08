@@ -246,6 +246,18 @@ summary/topic follow-up.
 
 <!-- TODO: document -->
 
+#### `fetchBills`
+
+Pulls named real bills into the local emulator by running the regular scraper on them. See [Updating conference committees](../docs/updating-conferences.md#local-data).
+
+#### `findConferences`
+
+Read-only. Writes a draft YAML for each committee of conference it finds in the bill histories. See [Updating conference committees](../docs/updating-conferences.md#adding-a-conference).
+
+#### `syncConferences`
+
+Updates the conferences collection to match `conferences/`, deleting any document whose file is gone. See [Updating conference committees](../docs/updating-conferences.md#syncing).
+
 #### `generateBill`
 
 <!-- TODO: document -->

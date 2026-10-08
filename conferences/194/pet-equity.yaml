@@ -1,0 +1,24 @@
+id: pet-equity
+court: 194
+title: An Act promoting pet equity, treatment and safety
+senateBillId: S3028
+houseBillId: H5589
+canonicalBillId: S3028
+status: appointed
+conferees:
+  - memberCode: PRF0
+    branch: Senate
+  - memberCode: jml0
+    branch: Senate
+  - memberCode: BET0
+    branch: Senate
+  - memberCode: JJO1
+    branch: House
+  - memberCode: JPL1
+    branch: House
+  - memberCode: SSH1
+    branch: House
+hearingIds:
+  - hearing-5762
+differences: []
+similarities: []

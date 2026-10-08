@@ -1,0 +1,25 @@
+id: data-privacy
+court: 194
+title: An Act establishing the Massachusetts data privacy act
+senateBillId: S2619
+houseBillId: H5479
+canonicalBillId: S2619
+status: appointed
+conferees:
+  - memberCode: CSC0
+    branch: Senate
+  - memberCode: BRF0
+    branch: Senate
+  - memberCode: PMO
+    branch: Senate
+  - memberCode: MJM1
+    branch: House
+  - memberCode: TFB1
+    branch: House
+  - memberCode: DTV1
+    branch: House
+hearingIds:
+  - hearing-5739
+  - hearing-5752
+differences: []
+similarities: []

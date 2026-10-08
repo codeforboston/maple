@@ -1,0 +1,25 @@
+id: protect-act
+court: 194
+title: An Act promoting rule of law, oversight, trust and equal constitutional treatment
+senateBillId: S3086
+houseBillId: H5316
+canonicalBillId: H5316
+status: reportFiled
+conferees:
+  - memberCode: DFC1
+    branch: House
+  - memberCode: AXV1
+    branch: House
+  - memberCode: MSV1
+    branch: House
+  - memberCode: CFF0
+    branch: Senate
+  - memberCode: PMP0
+    branch: Senate
+  - memberCode: RCF0
+    branch: Senate
+hearingIds:
+  - hearing-5702
+  - hearing-5711
+differences: []
+similarities: []

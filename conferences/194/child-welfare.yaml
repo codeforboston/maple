@@ -1,0 +1,23 @@
+id: child-welfare
+court: 194
+title: An Act enhancing child welfare protections
+senateBillId: S3121
+houseBillId: H4646
+canonicalBillId: H4646
+status: reportFiled
+conferees:
+  - memberCode: J_L1
+    branch: House
+  - memberCode: JAG2
+    branch: House
+  - memberCode: AMS2
+    branch: House
+  - memberCode: JMC0
+    branch: Senate
+  - memberCode: RKK0
+    branch: Senate
+  - memberCode: PMO
+    branch: Senate
+hearingIds: []
+differences: []
+similarities: []

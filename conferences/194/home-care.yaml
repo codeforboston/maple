@@ -1,0 +1,24 @@
+id: home-care
+court: 194
+title: An Act to improve Massachusetts home care
+senateBillId: S3183
+houseBillId: H4706
+canonicalBillId: H4706
+status: reportFiled
+conferees:
+  - memberCode: TMS1
+    branch: House
+  - memberCode: FAM1
+    branch: House
+  - memberCode: DFD1
+    branch: House
+  - memberCode: WNB0
+    branch: Senate
+  - memberCode: PDJ0
+    branch: Senate
+  - memberCode: RCF0
+    branch: Senate
+hearingIds:
+  - hearing-5759
+differences: []
+similarities: []
