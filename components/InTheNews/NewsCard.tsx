@@ -58,7 +58,10 @@ export const NewsCard = ({ newsItem }: NewsCardProps) => {
         </h2>
         <div
           className="text-truncate"
-          style={{ color: "var(--maple-text-body)", fontSize: "0.9375rem" }}
+          style={{
+            color: "var(--maple-text-body)",
+            fontSize: "var(--learn-small-text, 0.9375rem)"
+          }}
         >
           {newsItem.description}
         </div>

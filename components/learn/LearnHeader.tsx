@@ -32,7 +32,7 @@ const Title = styled.h1`
 const Subhead = styled.p`
   color: var(--maple-text-body);
   max-width: var(--learn-subhead-max-width, 34rem);
-  font-size: 1rem;
+  font-size: var(--learn-text, 1rem);
   line-height: 1.6;
   margin-bottom: 0;
 `

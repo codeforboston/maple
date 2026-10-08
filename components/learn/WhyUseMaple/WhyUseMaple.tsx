@@ -318,7 +318,7 @@ const Offer = styled.div`
 
   .benefit-body p {
     color: var(--maple-text-muted);
-    font-size: 0.9375rem;
+    font-size: var(--learn-small-text, 0.9375rem);
     line-height: 1.6;
     margin: 0;
     padding: 0 1.25rem 1.25rem 3.25rem;
@@ -467,7 +467,7 @@ const Cta = styled.div`
 
   .cta-contact {
     margin: 1.5rem 0 0;
-    font-size: 0.9375rem;
+    font-size: var(--learn-small-text, 0.9375rem);
   }
 
   .cta-contact a {

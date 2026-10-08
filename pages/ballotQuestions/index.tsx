@@ -4,8 +4,8 @@ import type { BallotQuestionBrowseItem } from "components/ballotquestions/Browse
 import { createPage } from "components/page"
 import { PageColumn } from "components/shared/PageColumn"
 import { PageArt } from "components/shared/PageArt"
-import { LearnGround } from "components/shared/LearnGround"
-import { LEARN_LOOK } from "components/Navbar"
+import { SectionGround } from "components/shared/SectionGround"
+import { SECTION_GROUND_PAGES } from "components/Navbar"
 import styled from "styled-components"
 import type { BallotQuestion } from "components/db"
 import { useTranslation } from "next-i18next"
@@ -33,7 +33,7 @@ export default createPage({
           size={8}
           leftLift={1}
         />
-        {LEARN_LOOK.includes("/ballotQuestions") && <LearnGround />}
+        {SECTION_GROUND_PAGES.includes("/ballotQuestions") && <SectionGround />}
         <h1>{t("browse_ballot_questions")}</h1>
         <p className="text-muted mb-4 col-lg-8 px-0">
           {t("browse_ballot_questions_intro")}

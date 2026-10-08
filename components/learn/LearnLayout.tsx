@@ -33,12 +33,10 @@ const Page = styled.div`
   }
 `
 
-/* Digital Democracy and Mixed, on desktop: the page a step larger throughout
-   (text, headings, icons, spacing, scaled together), and as wide as the
-   "wide" column once scaled. Pages that pass enlarge={false} keep their own
-   size and width (the legislative process page). */
-const ENLARGE = 1.08
-
+/* Digital Democracy and Mixed, on desktop: the page in the "wide" column,
+   whatever width the page asks for, with reading text a step larger. Pages
+   that pass enlarge={false} keep their own width and sizes (the legislative
+   process page). */
 const Inner = styled.div<{ $width: Width }>`
   max-width: ${p => maxWidths[p.$width]};
   margin: 0 auto;
@@ -57,8 +55,13 @@ const Inner = styled.div<{ $width: Width }>`
 
   @media (min-width: 992px) {
     [data-maple-theme="dd"] &[data-enlarge="true"] {
-      zoom: ${ENLARGE};
-      max-width: calc(${maxWidths.wide} / ${ENLARGE});
+      max-width: ${maxWidths.wide};
+      /* Reading text a step larger. Text that sets no size of its own takes
+         the base; components whose text is set smaller read the two sizes
+         below and keep their own size everywhere else. */
+      font-size: 1.0625rem;
+      --learn-text: 1.0625rem;
+      --learn-small-text: 1rem;
     }
   }
 `

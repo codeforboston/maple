@@ -3,8 +3,8 @@ import { TestimonySearch } from "components/search/testimony/TestimonySearch"
 import { PageColumn } from "components/shared/PageColumn"
 import { PageArt } from "components/shared/PageArt"
 import { FooterStatehouse } from "components/shared/FooterStatehouse"
-import { LearnGround } from "components/shared/LearnGround"
-import { LEARN_LOOK } from "components/Navbar"
+import { SectionGround } from "components/shared/SectionGround"
+import { SECTION_GROUND_PAGES } from "components/Navbar"
 import { createGetStaticTranslationProps } from "components/translations"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
@@ -14,7 +14,7 @@ export default createPage({
   Page: () => {
     return (
       <ArtColumn $width="xwide" className="mt-3">
-        {LEARN_LOOK.includes("/testimony") && <LearnGround />}
+        {SECTION_GROUND_PAGES.includes("/testimony") && <SectionGround />}
         {/* The statehouse on the footer's edge, at the left. */}
         <FooterStatehouse />
         <PageArt

@@ -2,8 +2,8 @@ import { useTranslation } from "next-i18next"
 import { PageColumn } from "components/shared/PageColumn"
 import { PageArt } from "components/shared/PageArt"
 import { FooterStatehouse } from "components/shared/FooterStatehouse"
-import { LearnGround } from "components/shared/LearnGround"
-import { LEARN_LOOK } from "components/Navbar"
+import { SectionGround } from "components/shared/SectionGround"
+import { SECTION_GROUND_PAGES } from "components/Navbar"
 import styled from "styled-components"
 import { createPage } from "components/page"
 import { BillSearch } from "components/search"
@@ -16,7 +16,7 @@ export default createPage({
 
     return (
       <ArtColumn $width="xwide" className="mt-3">
-        {LEARN_LOOK.includes("/bills") && <LearnGround />}
+        {SECTION_GROUND_PAGES.includes("/bills") && <SectionGround />}
         <h1>{t("browse_bills")}</h1>
         {/* The statehouse on the footer's edge, at the left. */}
         <FooterStatehouse />

@@ -75,9 +75,9 @@ export const EXPLORERS = [
 
 /** Pages outside Learn and About that take their look under Digital
  * Democracy: the section's ground on page and bar (styles/globals.css). Now
- * the four explorers. Each page also renders LearnGround
- * (components/shared/LearnGround.tsx) for its own ground. */
-export const LEARN_LOOK = EXPLORERS
+ * the four explorers. Each page also renders SectionGround
+ * (components/shared/SectionGround.tsx) for its own ground. */
+export const SECTION_GROUND_PAGES = EXPLORERS
 
 /**
  * Reads an attribute on <html> and follows changes to it, so switching skins
@@ -129,26 +129,33 @@ export const MainNavbar: React.FC<{ variant?: NavbarVariant }> = ({
   // hero, and, under Digital Democracy only (not Mixed), the four explorers
   // and the Learn and About sections.
   const ddOnly = useHtmlAttribute("data-maple-theme") === "dd" && !mixed
-  const learn = isLearnOrAbout(pathname) || LEARN_LOOK.includes(pathname)
-  const pinned = !isHome && !(ddOnly && (EXPLORERS.includes(pathname) || learn))
+  const sectionGround =
+    isLearnOrAbout(pathname) || SECTION_GROUND_PAGES.includes(pathname)
+  const pinned =
+    !isHome && !(ddOnly && (EXPLORERS.includes(pathname) || sectionGround))
 
   return (
     <>
       {isMobile ? (
-        <MobileNav variant={resolved} learn={learn} />
+        <MobileNav variant={resolved} sectionGround={sectionGround} />
       ) : (
-        <DesktopNav variant={resolved} pinned={pinned} learn={learn} />
+        <DesktopNav
+          variant={resolved}
+          pinned={pinned}
+          sectionGround={sectionGround}
+        />
       )}
     </>
   )
 }
 
-/* learn marks the Learn and About sections (data-section="learn"), whose bar
-   takes the section's own ground under Digital Democracy (styles/globals.css). */
-const MobileNav: React.FC<{ variant: NavbarVariant; learn: boolean }> = ({
-  variant,
-  learn
-}) => {
+/* sectionGround marks the pages on the Learn and About ground (Learn, About,
+   Policies, the writing guide and SECTION_GROUND_PAGES; data-section-ground),
+   whose bar takes that ground under Digital Democracy (styles/globals.css). */
+const MobileNav: React.FC<{
+  variant: NavbarVariant
+  sectionGround: boolean
+}> = ({ variant, sectionGround }) => {
   const ProfileLinks = () => {
     return (
       <Nav className="my-4 d-flex align-items-start">
@@ -237,7 +244,7 @@ const MobileNav: React.FC<{ variant: NavbarVariant; learn: boolean }> = ({
     <Navbar
       className={`main-navbar w-100 ${isExpanded ? "pb-0" : ""}`}
       data-navbar-variant={variant}
-      data-section={learn ? "learn" : undefined}
+      data-section-ground={sectionGround ? "" : undefined}
       style={{ backgroundColor: "var(--maple-navbar-bg)" }}
       data-bs-theme="dark"
       expand="lg"
@@ -311,8 +318,8 @@ const MobileNav: React.FC<{ variant: NavbarVariant; learn: boolean }> = ({
 const DesktopNav: React.FC<{
   variant: NavbarVariant
   pinned: boolean
-  learn: boolean
-}> = ({ variant, pinned, learn }) => {
+  sectionGround: boolean
+}> = ({ variant, pinned, sectionGround }) => {
   const { authenticated } = useAuth()
   const { t } = useTranslation(["common", "auth"])
 
@@ -338,7 +345,7 @@ const DesktopNav: React.FC<{
         pinned ? "sticky-top" : ""
       } ${scrolled ? "navbar-scrolled" : ""} justify-content-end gap-2`}
       data-navbar-variant={variant}
-      data-section={learn ? "learn" : undefined}
+      data-section-ground={sectionGround ? "" : undefined}
       style={{ backgroundColor: "var(--maple-navbar-bg)" }}
     >
       {/* Logo, nav items and the sign-in action share one container, so the

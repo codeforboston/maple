@@ -112,7 +112,7 @@ export const NavbarLinkAI: React.FC<
   return (
     <NavbarDropdownLink
       // Maple only: Digital Democracy and Mixed list it under Policies.
-      className={`nav-maple-only ${isMobile ? "navLink-primary" : ""}`}
+      className={`maple-only ${isMobile ? "navLink-primary" : ""}`}
       href="/about/how-maple-uses-ai"
       handleClick={handleClick}
       other={other}
@@ -253,7 +253,7 @@ export const NavbarLinkWritingTestimony: React.FC<
     <NavbarDropdownLink
       // Maple only: Digital Democracy and Mixed list it in the footer's Other
       // Resources instead.
-      className={`nav-maple-only ${isMobile ? "navLink-primary" : ""}`}
+      className={`maple-only ${isMobile ? "navLink-primary" : ""}`}
       href="/writing-effective-testimony"
       handleClick={handleClick}
       other={other}
@@ -263,7 +263,7 @@ export const NavbarLinkWritingTestimony: React.FC<
   )
 }
 
-/** Digital Democracy and Mixed only (nav-dd-only, styles/globals.css): the
+/** Digital Democracy and Mixed only (dd-only, styles/globals.css): the
  * Policies landing page, in the About menu. */
 export const NavbarLinkPolicies: React.FC<
   React.PropsWithChildren<{
@@ -275,7 +275,7 @@ export const NavbarLinkPolicies: React.FC<
   const { t } = useTranslation("footer")
   return (
     <NavbarDropdownLink
-      className={`nav-dd-only ${isMobile ? "navLink-primary" : ""}`}
+      className={`dd-only ${isMobile ? "navLink-primary" : ""}`}
       href="/policies"
       handleClick={handleClick}
       other={other}

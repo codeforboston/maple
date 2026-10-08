@@ -34,7 +34,8 @@ export const ButtonContainer = styled.div`
 `
 
 export const DescrContainer = styled.div`
-  font-size: 16px;
+  /* A step larger on the enlarged Learn and About pages (LearnLayout). */
+  font-size: var(--learn-text, 16px);
   font-weight: 500;
   line-height: 20px;
   letter-spacing: 0.015em;

@@ -77,12 +77,6 @@ const parsePolicy = (content: string): Section[] => {
   return sections
 }
 
-/* Section headings shown differently on this page than in the policy text,
-   which the Maple skin's page also shows as written. */
-const SECTION_TITLES: Record<string, string> = {
-  Values: "Our Guiding Principles"
-}
-
 const hasText = (lines: string[]) => lines.some(l => l.trim() !== "")
 
 const Markdown = ({ lines }: { lines: string[] }) => (
@@ -125,9 +119,7 @@ export const PolicyAboutPage = ({ policy }: { policy: Policy }) => {
           <Row key={section.title}>
             <Col className="py-4">
               <SectionContainer>
-                <SectionTitle className="p-3">
-                  {SECTION_TITLES[section.title] ?? section.title}
-                </SectionTitle>
+                <SectionTitle className="p-3">{section.title}</SectionTitle>
                 {hasText(section.intro) && (
                   <DescrContainer className="py-4 px-4">
                     <Markdown lines={section.intro} />
@@ -194,7 +186,7 @@ const PolicyBody = styled(Container)`
   }
 
   ${DescrContainer} {
-    font-size: 0.9375rem;
+    font-size: var(--learn-small-text, 0.9375rem);
     line-height: 1.5;
 
     ul {

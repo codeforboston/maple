@@ -5,8 +5,8 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import { PageColumn } from "components/shared/PageColumn"
 import { PageArt } from "components/shared/PageArt"
 import { FooterStatehouse } from "components/shared/FooterStatehouse"
-import { LearnGround } from "components/shared/LearnGround"
-import { LEARN_LOOK } from "components/Navbar"
+import { SectionGround } from "components/shared/SectionGround"
+import { SECTION_GROUND_PAGES } from "components/Navbar"
 import styled from "styled-components"
 import { flags } from "components/featureFlags"
 import { createPage } from "components/page"
@@ -33,7 +33,7 @@ const HearingsPage = createPage({
           sameSize
           leftOut={1}
         />
-        {LEARN_LOOK.includes("/hearings") && <LearnGround />}
+        {SECTION_GROUND_PAGES.includes("/hearings") && <SectionGround />}
         <h1>{t("navigation.browseHearings")}</h1>
         <HearingSearch />
       </ArtColumn>

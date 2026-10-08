@@ -192,10 +192,7 @@ const TermsAndPolicies = () => {
         {t("legal.codeOfConduct")}
       </StyledInternalLink>
       {/* Digital Democracy and Mixed: How MAPLE Uses AI sits under Policies. */}
-      <StyledInternalLink
-        href="/about/how-maple-uses-ai"
-        className="nav-dd-only"
-      >
+      <StyledInternalLink href="/about/how-maple-uses-ai" className="dd-only">
         {t("links.mapleAI")}
       </StyledInternalLink>
     </>
@@ -238,10 +235,10 @@ const LearnLinks = () => {
     <>
       {/* Maple keeps main's "About Testimony"; Digital Democracy and Mixed use
           the page's own title, as the navbar's Learn menu does. */}
-      <StyledInternalLink href="/learn/testimony" className="nav-maple-only">
+      <StyledInternalLink href="/learn/testimony" className="maple-only">
         {t("links.learnWriting")}
       </StyledInternalLink>
-      <StyledInternalLink href="/learn/testimony" className="nav-dd-only">
+      <StyledInternalLink href="/learn/testimony" className="dd-only">
         {t("navigation.aboutTestimony", { ns: "common" })}
       </StyledInternalLink>
       <StyledInternalLink href="/learn/legislative-process">
@@ -276,7 +273,7 @@ const AboutLinks = () => {
       {/* Maple only: Digital Democracy and Mixed list it under Policies. */}
       <StyledInternalLink
         href="/about/how-maple-uses-ai"
-        className="nav-maple-only"
+        className="maple-only"
       >
         {t("links.mapleAI")}
       </StyledInternalLink>

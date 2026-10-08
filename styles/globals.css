@@ -894,7 +894,7 @@ html:not([data-maple-theme="dd"])
 /* Digital Democracy (not Mixed), Learn and About: the bar takes the section's
    ground, a touch darker than the page grey elsewhere (styles/bootstrap.scss). */
 [data-maple-theme="dd"]:not([data-maple-nav="mixed"])
-  .main-navbar[data-section="learn"]:is(
+  .main-navbar[data-section-ground]:is(
     [data-navbar-variant="neutral"],
     [data-navbar-variant="auto"]
   ) {
@@ -970,12 +970,12 @@ html:not([data-maple-theme="dd"])
 /* Navbar and footer links for one look only: Policies in the About menu
    under Digital Democracy and Mixed, and How MAPLE Uses AI under About for
    Maple but under Policies for Digital Democracy and Mixed. */
-[data-maple-theme="dd"] .nav-maple-only,
-.nav-dd-only {
+[data-maple-theme="dd"] .maple-only,
+.dd-only {
   display: none !important;
 }
 
-[data-maple-theme="dd"] .nav-dd-only {
+[data-maple-theme="dd"] .dd-only {
   display: block !important;
 }
 

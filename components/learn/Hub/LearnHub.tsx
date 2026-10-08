@@ -72,7 +72,7 @@ export const CardLink = styled(Internal)`
 
   .desc {
     color: var(--maple-text-muted);
-    font-size: 0.9375rem;
+    font-size: var(--learn-small-text, 0.9375rem);
     line-height: 1.6;
     margin: 0;
   }

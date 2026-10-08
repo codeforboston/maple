@@ -50,7 +50,6 @@
   position: relative;
   width: 100%;
   background: var(--hero-bg);
-  overflow: hidden;
 }
 
 .hero {
