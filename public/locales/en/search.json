@@ -9,6 +9,7 @@
     "bill": {
       "court": "Legislative Session",
       "currentCommittee": "Current Committee",
+      "legislationType": "Document Type",
       "city": "City",
       "primarySponsor": "Primary Sponsor",
       "cosponsors": "Cosponsor"

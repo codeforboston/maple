@@ -69,6 +69,21 @@ export const FeatureCalloutButton = styled.span`
   cursor: default;
 `
 
+export const BetaTag = styled.span`
+  display: inline-block;
+  /* Orange in every skin: Digital Democracy turns the brand accent gold. */
+  background: var(--bs-orange);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: var(--maple-radius-xl);
+  padding: 0.1rem 0.4rem;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+`
+
 // A person's name / sub-heading. Exposed as an h3 for screen-reader heading
 // navigation via role/aria-level (rather than a native <h3>) so the visual
 // styling is untouched -- these sit under an h2 section/card title everywhere

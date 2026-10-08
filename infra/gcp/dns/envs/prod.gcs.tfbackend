@@ -1,0 +1,3 @@
+# Shared with the sibling root; infra/gcp/scripts/bootstrap.sh prod creates it (README step 2).
+bucket = "digital-testimony-prod-tfstate"
+prefix = "dns"

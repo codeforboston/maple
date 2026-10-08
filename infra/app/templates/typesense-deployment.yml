@@ -17,6 +17,8 @@ spec:
     spec:
       containers:
         - name: typesense
+          # Dormant: this chart is not deployed. The live Typesense servers run
+          # on AWS ECS, managed in https://github.com/maple-testimony/infra.
           image: typesense/typesense:0.24.0
           ports:
             - containerPort: 8108

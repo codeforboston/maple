@@ -19,6 +19,11 @@ export const formatPhoneNumber = (value: string) => {
     `
 }
 
+export const SubmitButton = styled.button`
+  font-size: 9px;
+  padding: 2px;
+`
+
 export const TabBlock = styled.div`
   background-color: white;
   border: 1px #b8c0c9 solid;

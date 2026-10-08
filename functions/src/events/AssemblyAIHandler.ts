@@ -5,7 +5,7 @@ import {
   TranscriptUtterance,
   TranscriptWord
 } from "assemblyai"
-import * as functions from "firebase-functions/v1"
+import * as logger from "firebase-functions/logger"
 import { db, storage } from "../firebase"
 import { randomBytes } from "node:crypto"
 import { sha256 } from "js-sha256"
@@ -67,11 +67,11 @@ export class AssemblyAIHandler extends AssemblyAIHandlerBase {
         error: any
       }
   > {
-    if (!process.env.FUNCTIONS_API_BASE) {
+    if (!process.env.TRANSCRIPTION_WEBHOOK_URL) {
       return {
         status: "error",
         type: "transcription",
-        error: "process.env.FUNCTIONS_API_BASE is not set"
+        error: "process.env.TRANSCRIPTION_WEBHOOK_URL is not set"
       }
     }
 
@@ -99,12 +99,7 @@ export class AssemblyAIHandler extends AssemblyAIHandlerBase {
         audio:
           // test with: "https://assemblyaiusercontent.com/playground/aKUqpEtmYmI.flac",
           audioUrl,
-        webhook_url:
-          // make sure process.env.FUNCTIONS_API_BASE equals
-          // https://us-central1-digital-testimony-prod.cloudfunctions.net
-          // on prod. test with:
-          // "https://ngrokid.ngrok-free.app/demo-dtp/us-central1/transcription",
-          `${process.env.FUNCTIONS_API_BASE}/transcription`,
+        webhook_url: process.env.TRANSCRIPTION_WEBHOOK_URL,
         speaker_labels: true,
         webhook_auth_header_name: "x-maple-webhook",
         webhook_auth_header_value: newToken
@@ -186,14 +181,17 @@ export class AssemblyAIHandlerDummy extends AssemblyAIHandlerBase {
     setTimeout(async () => {
       const transcript: any = await this.getTranscript(transcriptionId)
       transcript["transcript_id"] = transcript.id
-      await fetch("http://localhost:5001/demo-dtp/us-central1/transcription", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-maple-webhook": token
-        },
-        body: JSON.stringify(transcript)
-      })
+      await fetch(
+        "http://localhost:5001/demo-dtp/us-central1/transcriptionV2",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-maple-webhook": token
+          },
+          body: JSON.stringify(transcript)
+        }
+      )
     }, 10000)
 
     const result = await db
@@ -253,7 +251,7 @@ const extractAudioFromVideo = async (
         resolve()
       })
       .on("error", err => {
-        functions.logger.error("FFmpeg error:", err)
+        logger.error("FFmpeg error:", err)
         reject(err)
       })
       .save(tmpFilePath)

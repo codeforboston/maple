@@ -37,6 +37,11 @@ export const useBillRefinements = () => {
             attribute: "court"
           },
           { attribute: "currentCommittee" },
+          /** Bills outrank procedural documents by default (see
+           * billsRelevanceSort in ../searchParams.ts, and #95). This is how a
+           * searcher who actually wants an Extension Order gets back to it —
+           * refining to the type lifts the whole demoted class. */
+          { attribute: "legislationType" },
           { attribute: "city" },
           { attribute: "primarySponsor" },
           { attribute: "cosponsors" }

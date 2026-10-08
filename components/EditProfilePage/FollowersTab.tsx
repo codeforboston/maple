@@ -30,7 +30,7 @@ export const FollowersTab = ({
     try {
       const { data: profileIds } = await httpsCallable<void, string[]>(
         functions,
-        "getFollowers"
+        "getFollowersV2"
       )()
       setState({
         items: profileIds.map(profileId => ({ profileId })),
@@ -47,6 +47,7 @@ export const FollowersTab = ({
       })
     }
   }
+
   useEffect(() => {
     if (uid) {
       setState(prev => ({ ...prev, loading: true, error: null }))
@@ -55,6 +56,7 @@ export const FollowersTab = ({
       setState({ items: [], loading: false, error: null })
     }
   }, [uid])
+
   return (
     <PaginatedItemsCard
       className={className}

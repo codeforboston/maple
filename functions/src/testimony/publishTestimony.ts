@@ -1,5 +1,7 @@
 import { DocumentReference, DocumentSnapshot } from "@google-cloud/firestore"
-import { https, logger } from "firebase-functions"
+import { onCall } from "firebase-functions/v2/https"
+import type { CallableRequest } from "firebase-functions/v2/https"
+import * as logger from "firebase-functions/logger"
 import { nanoid } from "nanoid"
 import { Record } from "runtypes"
 import { BallotQuestion } from "../ballotQuestions/types"
@@ -19,10 +21,10 @@ const INITIAL_VERSION = 1,
   MAX_EDITS = 5,
   MAX_VERSION = INITIAL_VERSION + MAX_EDITS
 
-export const publishTestimony = https.onCall(async (data, context) => {
+export const publishTestimonyV2 = onCall(async (request: CallableRequest) => {
   const checkEmailVerification = true
-  const uid = checkAuth(context, checkEmailVerification)
-  const { draftId } = checkRequest(PublishTestimonyRequest, data)
+  const uid = checkAuth(request, checkEmailVerification)
+  const { draftId } = checkRequest(PublishTestimonyRequest, request.data)
 
   let output: TransactionOutput
   try {

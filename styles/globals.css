@@ -1000,3 +1000,9 @@ html:not([data-maple-theme="dd"])
   .desktop-navbar-bar {
   background-color: transparent;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .recharts-tooltip-wrapper {
+    transition: none !important;
+  }
+}

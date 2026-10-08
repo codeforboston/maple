@@ -1,4 +1,5 @@
-import { runWith, RuntimeOptions } from "firebase-functions"
+import type { MemoryOption } from "firebase-functions/v2"
+import { onSchedule } from "firebase-functions/v2/scheduler"
 import { db } from "../firebase"
 import { fetchElectionsData } from "./scrapeElections"
 
@@ -10,7 +11,7 @@ export class ElectionScraper {
   constructor(
     schedule: string = "every 24 hours",
     timeout: number = 480,
-    memory: RuntimeOptions["memory"] = "256MB"
+    memory: MemoryOption = "256MiB"
   ) {
     this.schedule = schedule
     this.timeout = timeout
@@ -18,13 +19,15 @@ export class ElectionScraper {
   }
 
   get function() {
-    return runWith({
-      timeoutSeconds: this.timeout,
-      memory: this.memory,
-      maxInstances: 1
-    })
-      .pubsub.schedule(this.schedule)
-      .onRun(() => this.run())
+    return onSchedule(
+      {
+        schedule: this.schedule,
+        timeoutSeconds: this.timeout,
+        memory: this.memory,
+        maxInstances: 1
+      },
+      () => this.run()
+    )
   }
 
   private async run(yearTo?: number, yearFrom?: number) {

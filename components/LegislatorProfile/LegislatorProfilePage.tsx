@@ -248,16 +248,16 @@ export function LegislatorProfilePage({
             )}
 
             <div>
-              {legislatorData[0]?.social.twitter ||
-              legislatorData[0]?.social.linkedIn ||
-              legislatorData[0]?.social.blueSky ||
-              legislatorData[0]?.social.mastodon ? (
+              {legislatorData[0]?.social?.twitter ||
+              legislatorData[0]?.social?.linkedIn ||
+              legislatorData[0]?.social?.blueSky ||
+              legislatorData[0]?.social?.mastodon ? (
                 <span className="px-2">·</span>
               ) : (
                 <></>
               )}
 
-              {legislatorData[0]?.social.twitter ? (
+              {legislatorData[0]?.social?.twitter ? (
                 <a
                   href={legislatorData[0].social.twitter}
                   className="pe-2"
@@ -271,7 +271,7 @@ export function LegislatorProfilePage({
                 <></>
               )}
 
-              {legislatorData[0]?.social.linkedIn ? (
+              {legislatorData[0]?.social?.linkedIn ? (
                 <a
                   href={legislatorData[0].social.linkedIn}
                   className="pe-2"
@@ -285,7 +285,7 @@ export function LegislatorProfilePage({
                 <></>
               )}
 
-              {legislatorData[0]?.social.blueSky ? (
+              {legislatorData[0]?.social?.blueSky ? (
                 <a
                   href={legislatorData[0].social.blueSky}
                   className="pe-2"
@@ -299,7 +299,7 @@ export function LegislatorProfilePage({
                 <></>
               )}
 
-              {legislatorData[0]?.social.mastodon ? (
+              {legislatorData[0]?.social?.mastodon ? (
                 <a
                   href={legislatorData[0].social.mastodon}
                   className="pe-2"
@@ -367,19 +367,24 @@ export function LegislatorProfilePage({
       <Row className={`mt-4`}>
         <Col md="9">
           <LegislatorTabs
+            court={court}
             district={district}
             districtLoading={districtLoading}
+            legislatorData={legislatorData}
             legislatorId={legislatorId}
             name={member.Name}
             finance={finance}
+            memberCode={memberCode}
           />
         </Col>
         <Col md="3">
           <LegislatorSidebar
+            committeeList={member.Committees}
             court={court}
             legislatorData={legislatorData}
             legislatorId={legislatorId}
             memberCode={memberCode}
+            sponsoredBills={member.SponsoredBills}
           />
         </Col>
       </Row>

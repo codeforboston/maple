@@ -44,6 +44,7 @@
       "labor_and_employment": "Labor and Employment",
       "law_and_judiciary": "Law and Judiciary",
       "public_and_natural_resources": "Public and Natural Resources",
+      "selectMenu": "Select Menu",
       "social_services": "Social Services",
       "sports_and_recreation": "Sports and Recreation",
       "taxation": "Taxation",
@@ -142,8 +143,10 @@
     "viewProfile": "View Profile",
     "whyUseMaple": "Why Use MAPLE",
     "inTheNews": "In The News",
+    "lobbying": "Lobbying",
     "login": "Login"
   },
+  "beta_feature": "BETA",
   "new_feature": "*NEW*",
   "newcomer": "New to MAPLE? For extra support, check",
   "newsletter": "Click Here to Subscribe to Our Newsletter",
@@ -201,6 +204,7 @@
     "unsubscribe": "Unsubscribe",
     "why_use_maple": "Why Use Maple?",
     "ai_tools": "AI Research Tools",
+    "lobbying": "Lobbying Explorer",
     "learn_hub": "Learn",
     "about_testimony": "How Testimony Works",
     "writing_testimony": "How to Write Effective Testimony"

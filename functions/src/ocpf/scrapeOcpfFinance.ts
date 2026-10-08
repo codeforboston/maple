@@ -1,6 +1,7 @@
 // TODO: After validating output against the OCPF website, flip to:
 // export const scrapeOcpfFinance = functions.pubsub.schedule("every 24 hours").onRun(...)
-import * as functions from "firebase-functions"
+import { onRequest as onRequestV2 } from "firebase-functions/v2/https"
+import * as logger from "firebase-functions/logger"
 import { getAuth } from "firebase-admin/auth"
 import axios from "axios"
 import unzipper from "unzipper"
@@ -64,7 +65,7 @@ interface MemberAccumulator {
   startBalance: number
   startBalanceStartDateMs: number // Start_Date (as ms) of the earliest Bank Report (type 70) seen
   depositEndDateMs: number // End_Date (as ms) of the most recent Deposit Report (type 60) seen
-  contributorCount: number
+  contributionsCount: number
   breakdown: {
     individual: MutableBreakdownEntry
     committee: MutableBreakdownEntry
@@ -130,7 +131,7 @@ function newAccumulator(cpfId: number): MemberAccumulator {
     startBalance: 0,
     startBalanceStartDateMs: Infinity,
     depositEndDateMs: 0,
-    contributorCount: 0,
+    contributionsCount: 0,
     breakdown: {
       individual: emptyEntry(),
       committee: emptyEntry(),
@@ -153,9 +154,9 @@ function newAccumulator(cpfId: number): MemberAccumulator {
 
 // ── Cloud Function ────────────────────────────────────────────────────────────
 
-export const scrapeOcpfFinance = functions
-  .runWith({ timeoutSeconds: 540, memory: "512MB" })
-  .https.onRequest(async (req, res) => {
+export const scrapeOcpfFinanceV2 = onRequestV2(
+  { timeoutSeconds: 540, memory: "512MiB" },
+  async (req, res) => {
     if (req.method !== "POST") {
       res.status(405).send("Method Not Allowed. Use POST.")
       return
@@ -196,12 +197,12 @@ export const scrapeOcpfFinance = functions
           ([cpfId]) => cpfId === TEST_CPF_ID
         )
       )
-      functions.logger.info("TEST MODE: filtering to single member", {
+      logger.info("TEST MODE: filtering to single member", {
         cpfId: TEST_CPF_ID
       })
     }
 
-    functions.logger.info("Loaded member mapping", {
+    logger.info("Loaded member mapping", {
       totalMembers: Object.keys(mapping).length,
       activeInRun: cpfIdToMemberCode.size
     })
@@ -214,7 +215,7 @@ export const scrapeOcpfFinance = functions
 
     for (const year of YEARS) {
       const url = `${OCPF_BASE_URL}/ocpf-${year}-reports.zip`
-      functions.logger.info(`Downloading ${url}`)
+      logger.info(`Downloading ${url}`)
       const buf = await downloadBuffer(url)
       await parseReports(
         buf,
@@ -224,7 +225,7 @@ export const scrapeOcpfFinance = functions
         reportIdToMemberCode
       )
 
-      functions.logger.info(`Streaming report-items for ${year}`)
+      logger.info(`Streaming report-items for ${year}`)
       await streamReportItems(buf, reportIdToMemberCode, accumulators, year)
     }
 
@@ -256,7 +257,7 @@ export const scrapeOcpfFinance = functions
         const raisedDiff = Math.abs(check.receiptsTotal - summedRaised)
         const spentDiff = Math.abs(check.expendituresTotal - summedSpent)
         if (raisedDiff > 0.02 || spentDiff > 0.02) {
-          functions.logger.warn(
+          logger.warn(
             "Year-end totals mismatch — investigate periodic report accumulation",
             {
               memberCode,
@@ -292,7 +293,7 @@ export const scrapeOcpfFinance = functions
         totalSpent: acc.totalSpent,
         cashOnHand: acc.cashOnHand,
         startBalance: acc.startBalance,
-        contributorCount: acc.contributorCount,
+        contributionsCount: acc.contributionsCount,
         lastUpdated: now,
         bankDataAsOf: Timestamp.fromMillis(acc.cashOnHandEndDateMs),
         depositDataAsOf: Timestamp.fromMillis(acc.depositEndDateMs),
@@ -316,7 +317,7 @@ export const scrapeOcpfFinance = functions
 
     await batch.commit()
 
-    functions.logger.info("scrapeOcpfFinance complete", {
+    logger.info("scrapeOcpfFinance complete", {
       processed: accumulators.size,
       years: YEARS
     })
@@ -324,7 +325,8 @@ export const scrapeOcpfFinance = functions
     res.status(200).json({
       results: { processed: accumulators.size, years: YEARS }
     })
-  })
+  }
+)
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -500,7 +502,7 @@ async function parseReports(
     matched++
   }
 
-  functions.logger.info(`Parsed reports.txt for ${year}`, { matched })
+  logger.info(`Parsed reports.txt for ${year}`, { matched })
 }
 
 async function streamReportItems(
@@ -554,7 +556,7 @@ async function streamReportItems(
     processed++
   }
 
-  functions.logger.info(`Streamed report-items.txt for ${year}`, {
+  logger.info(`Streamed report-items.txt for ${year}`, {
     processed,
     skipped
   })
@@ -583,7 +585,7 @@ function accumulateItem(
   switch (recordTypeId) {
     case 201: // Individual Contribution
       addTo(acc.breakdown.individual, yb?.individual)
-      acc.contributorCount++
+      acc.contributionsCount++
       if (amount < 200) {
         addTo(acc.breakdown.smallDonors.itemized, yb?.smallDonors?.itemized)
       }

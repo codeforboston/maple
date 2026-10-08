@@ -40,6 +40,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
         "auth",
         "common",
         "footer",
+        "lobbying",
         "testimony",
         "profile"
       ]))

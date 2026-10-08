@@ -1,15 +1,17 @@
 """GCS raw-HTML archive for the MA SoS lobbying scraper.
 
-Write-only cold storage: every fetched Summary/CompleteDisclosure page is
-saved as gs://{bucket}/raw_html/{sha1(url)}.html with the original URL stored
-as object metadata. This enables offline reparsing when parser logic changes
-without re-scraping the portal (which is rate-limited and Imperva-protected).
+Cold storage for every fetched Summary/CompleteDisclosure page, saved as
+gs://{bucket}/raw_html/{sha1(url)}.html with the original URL stored as
+object metadata. This enables offline reparsing when parser logic changes,
+and an archive-aware backfill (see scrape.py's use_archive flag) that skips
+live requests entirely for pages already cached — without re-scraping the
+portal (which is rate-limited and Imperva-protected).
 
 Enabled by setting ARCHIVE_RAW=1 in the environment. When disabled (default),
-save_page() is a no-op so local runs and tests work without GCS credentials.
+save_page() is a no-op and load_page() always returns None, so local runs and
+tests work without GCS credentials.
 
-The bucket is named {GOOGLE_CLOUD_PROJECT}-lobbying-archive and should be
-created with the Archive storage class (written once, read rarely).
+The bucket is named {GOOGLE_CLOUD_PROJECT}-lobbying-archive.
 """
 
 from __future__ import annotations
@@ -58,3 +60,22 @@ def save_page(url: str, html: str) -> None:
     except Exception as exc:
         # Archive failures must never interrupt the live scrape path.
         print(f"  [archive] WARNING: failed to save {url[:80]!r}: {exc}")
+
+
+def load_page(url: str) -> str | None:
+    """Return cached HTML for url, or None if not archived (or ARCHIVE_RAW unset).
+
+    Never raises — a read failure just means "not cached", so callers fall
+    back to a live fetch instead of crashing, matching save_page's philosophy
+    that archive problems must never interrupt the actual scrape.
+    """
+    if not _ENABLED:
+        return None
+    try:
+        blob = _gcs().bucket(_get_bucket_name()).blob(blob_name(url))
+        if not blob.exists():
+            return None
+        return blob.download_as_text(encoding="utf-8")
+    except Exception as exc:
+        print(f"  [archive] WARNING: failed to load {url[:80]!r}: {exc}")
+        return None

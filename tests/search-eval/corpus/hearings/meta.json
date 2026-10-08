@@ -1,0 +1,11 @@
+{
+  "alias": "hearings",
+  "source": "prod",
+  "count": 962,
+  "courts": {
+    "192": 107,
+    "193": 389,
+    "194": 466
+  },
+  "jsonlMd5": "fa6e9fe42e3da564da0bd72eef1e55aa"
+}

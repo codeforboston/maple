@@ -1,6 +1,12 @@
 const i18Config = require("./next-i18next.config")
 
 const config = {
+  /** typesense-instantsearch-adapter 3.x ships ESM syntax in .js files whose
+   * package main is not marked "type": "module", so Next's default server
+   * externalization require()s it and node fails on its extensionless relative
+   * imports — 500ing every search page. Transpiling bundles it instead.
+   */
+  transpilePackages: ["typesense-instantsearch-adapter"],
   images: {
     loader: "custom"
   },
@@ -10,7 +16,18 @@ const config = {
   eslint: {
     dirs: ["pages", "components", "functions/src", "tests", "analysis"]
   },
-  i18n: i18Config.i18n
+  i18n: i18Config.i18n,
+
+  webpack(config) {
+    // Grab rules matching SVG files and transform them into React Components using SVGR
+    config.module.rules.push({
+      test: /\.svg\$/i,
+      issuer: /\.[jt]sx?\$/,
+      use: ["@svgr/webpack"]
+    })
+
+    return config
+  }
 }
 
 /** @type {import('next').NextConfig} */

@@ -7,6 +7,7 @@ import { Nav, NavDropdown } from "./bootstrap"
 import { useProfile } from "./db"
 import { NavLink } from "./Navlink"
 import { Wrap } from "./links"
+import { BetaTag } from "./shared/CommonComponents"
 
 export const DESKTOP_NAV_ITEM_CLASS = "desktop-navbar-link px-3 py-1"
 
@@ -138,6 +139,28 @@ export const NavbarLinkBills: React.FC<
         {...other}
       >
         {t("navigation.bills")}
+      </NavLink>
+    </Nav.Item>
+  )
+}
+
+export const NavbarLinkLobbying: React.FC<
+  React.PropsWithChildren<{
+    handleClick?: any
+    other?: any
+  }>
+> = ({ handleClick, other }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  const { t } = useTranslation(["common", "auth"])
+  return (
+    <Nav.Item onClick={handleClick}>
+      <NavLink
+        className={isMobile ? "navLink-primary" : DESKTOP_NAV_ITEM_CLASS}
+        href="/lobbying"
+        {...other}
+      >
+        {t("navigation.lobbying")}
+        <BetaTag>{t("beta_feature")}</BetaTag>
       </NavLink>
     </Nav.Item>
   )

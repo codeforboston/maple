@@ -9,6 +9,7 @@ export type EventData = {
   index: number
   type: "hearing" | "session"
   name: string
+  code?: string | null
   id: number
   location?: string
   fullDate: Date // TODO: Could be a timestamp

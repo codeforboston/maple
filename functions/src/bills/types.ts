@@ -44,6 +44,12 @@ export type BillContent = Static<typeof BillContent>
 export const BillContent = Record({
   Pinslip: Nullable(String),
   Title: String,
+  /** What kind of document this is: "Bill", "Order", "Extension Order",
+   * "Amendment", "Resolve", "Governor's Message (Veto)" and nine more. Roughly
+   * one document in ten in a court is not a Bill. The search converter reads it
+   * to keep procedural orders from competing with legislation
+   * (functions/src/bills/search.ts). */
+  LegislationTypeName: Maybe(String),
   PrimarySponsor: Nullable(Record({ Name: String })),
   DocumentText: Maybe(String),
   Cosponsors: Array(Record({ Name: Maybe(String) }))

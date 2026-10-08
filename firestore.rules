@@ -114,6 +114,27 @@ service cloud.firestore {
     match /lobbyingMeta/{id} {
       allow read: if true;
       allow write: if false;
+
+      // billSummaries_{court} docs store per-bill counts as small docs in
+      // this subcollection (not as a single JSON blob) to avoid Firestore's
+      // 1MB per-document/field size limit as a session's filings accumulate.
+      match /bills/{billId} {
+        allow read: if true;
+        allow write: if false;
+      }
+
+      // clientSummaries/firmSummaries store one small doc per client/firm
+      // (same reasoning as billSummaries above) so the clients and firms
+      // browse pages can read a precomputed rollup instead of scanning the
+      // full, capped-at-2000 lobbyingRegistrants query client-side.
+      match /clients/{clientId} {
+        allow read: if true;
+        allow write: if false;
+      }
+      match /firms/{firmId} {
+        allow read: if true;
+        allow write: if false;
+      }
     }
     match /transcriptions/{tid} {
       // public, read-only

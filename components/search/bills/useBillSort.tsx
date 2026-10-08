@@ -1,6 +1,7 @@
 import { useMemo, useRef } from "react"
 import { SortByWithConfigurationItem } from "../SortBy"
 import { useTranslation } from "next-i18next"
+import { billsRelevanceSort } from "../searchParams"
 
 export const useBillSort = () => {
   const now = useRef(new Date().getTime())
@@ -16,7 +17,7 @@ export const useBillSort = () => {
       },
       {
         label: t("sort_by.relevance"),
-        value: "bills/sort/_text_match:desc,testimonyCount:desc"
+        value: `bills/sort/${billsRelevanceSort}`
       },
       {
         label: t("sort_by.testimony_count"),

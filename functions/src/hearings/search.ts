@@ -4,30 +4,12 @@ import { createSearchIndexer } from "../search"
 import { Hearing } from "../events/types"
 import { timeZone } from "../malegislature"
 import { generalCourts, currentGeneralCourt } from "../shared/constants"
-
-type HearingSearchRecord = {
-  id: string
-  eventId: number
-  title: string
-  description?: string
-  startsAt: number
-  month: string
-  year: number
-  committeeCode?: string
-  committeeName?: string
-  locationName?: string
-  locationCity?: string
-  chairNames: string[]
-  agendaTopics: string[]
-  billNumbers: string[]
-  billSlugs: string[]
-  court: number
-  hasVideo: boolean
-}
+import { HearingSearchRecord } from "./types"
 
 export const {
   syncToSearchIndex: syncHearingToSearchIndex,
-  upgradeSearchIndex: upgradeHearingSearchIndex
+  upgradeSearchIndex: upgradeHearingSearchIndex,
+  runBackfillChunk: runHearingBackfillChunk
 } = createSearchIndexer<HearingSearchRecord>({
   sourceCollection: db.collection("events").where("type", "==", "hearing"),
   documentTrigger: "events/{eventId}",
@@ -35,6 +17,14 @@ export const {
   idField: "id",
   filter: data => data.type === "hearing",
   schema: {
+    /** Hyphens do not split tokens by default, so "vote-by-mail" indexes as one
+     * token and the spaced form people type cannot reach it — the two spellings
+     * return disjoint result sets. Splitting on "-" makes each form find both,
+     * and makes the parts individually searchable ("income" reaches
+     * "low-income"). Hyphenated compounds are everywhere in this corpus:
+     * low-income, long-term, well-being, community-based, in-person.
+     */
+    token_separators: ["-"],
     fields: [
       { name: "eventId", type: "int32", facet: false },
       { name: "title", type: "string", facet: false },

@@ -1,8 +1,9 @@
-export { modifyAccount, createFakeOrg, createFakeTestimony } from "./auth"
+export { modifyAccountV2, createFakeOrgV2, createFakeTestimonyV2 } from "./auth"
 export {
   backfillTestimonyCounts,
   fetchBillBatch,
   startBillBatches,
+  runBillBackfillChunk,
   syncBillToSearchIndex,
   updateBillReferences,
   updateBillSearchIndex,
@@ -20,10 +21,10 @@ export {
   scrapeVideos,
   scrapeSessions,
   scrapeSpecialEvents,
-  scrapeSingleHearing,
   scrapeSingleHearingv2
 } from "./events"
 export {
+  runHearingBackfillChunk,
   syncHearingToSearchIndex,
   upgradeHearingSearchIndex
 } from "./hearings/search"
@@ -32,14 +33,15 @@ export {
   fetchMemberBatch,
   startMemberBatches
 } from "./members"
-export { completePhoneVerification, finishSignup } from "./profile"
+export { completePhoneVerificationV2, finishSignupV2 } from "./profile"
 export { checkSearchIndexVersion, searchHealthCheck } from "./search"
 export {
-  deleteTestimony,
-  publishTestimony,
+  deleteTestimonyV2,
+  publishTestimonyV2,
+  runTestimonyBackfillChunk,
   syncTestimonyToSearchIndex,
   upgradeTestimonySearchIndex,
-  resolveReport as adminResolveReport
+  resolveReportV2 as adminResolveReportV2
 } from "./testimony"
 export {
   publishNotifications,
@@ -52,22 +54,22 @@ export {
 } from "./notifications"
 
 export {
-  followBill,
-  unfollowBill,
-  followUser,
-  unfollowUser,
-  getFollowers
+  followBillV2,
+  unfollowBillV2,
+  followUserV2,
+  unfollowUserV2,
+  getFollowersV2
 } from "./subscriptions"
 export { scrapeElections } from "./legislators"
 
-export { transcription } from "./webhooks"
+export { transcriptionV2 } from "./webhooks"
 
-export { matchOcpfMembers } from "./ocpf/matchOcpfMembers"
-export { scrapeOcpfFinance } from "./ocpf/scrapeOcpfFinance"
+export { matchOcpfMembersV2 } from "./ocpf/matchOcpfMembers"
+export { scrapeOcpfFinanceV2 } from "./ocpf/scrapeOcpfFinance"
 
 export * from "./triggerPubsubFunction"
 
-export { mcpProxy } from "./mcp/proxy"
+export { mcpProxyV2 } from "./mcp/proxy"
 
 // Export the health check last so it is loaded last.
 export * from "./healthCheck"

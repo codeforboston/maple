@@ -1,0 +1,91 @@
+{
+  "token_separators": ["-"],
+  "fields": [
+    {
+      "name": "eventId",
+      "type": "int32",
+      "facet": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "facet": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "facet": false,
+      "optional": true
+    },
+    {
+      "name": "startsAt",
+      "type": "int64",
+      "facet": false
+    },
+    {
+      "name": "month",
+      "type": "string",
+      "facet": true
+    },
+    {
+      "name": "year",
+      "type": "int32",
+      "facet": true
+    },
+    {
+      "name": "committeeCode",
+      "type": "string",
+      "facet": true,
+      "optional": true
+    },
+    {
+      "name": "committeeName",
+      "type": "string",
+      "facet": true,
+      "optional": true
+    },
+    {
+      "name": "locationName",
+      "type": "string",
+      "facet": false,
+      "optional": true
+    },
+    {
+      "name": "locationCity",
+      "type": "string",
+      "facet": false,
+      "optional": true
+    },
+    {
+      "name": "chairNames",
+      "type": "string[]",
+      "facet": true
+    },
+    {
+      "name": "agendaTopics",
+      "type": "string[]",
+      "facet": false
+    },
+    {
+      "name": "billNumbers",
+      "type": "string[]",
+      "facet": false
+    },
+    {
+      "name": "billSlugs",
+      "type": "string[]",
+      "facet": false
+    },
+    {
+      "name": "court",
+      "type": "int32",
+      "facet": true
+    },
+    {
+      "name": "hasVideo",
+      "type": "bool",
+      "facet": true
+    }
+  ],
+  "default_sorting_field": "startsAt"
+}

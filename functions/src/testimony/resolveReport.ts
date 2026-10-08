@@ -1,4 +1,5 @@
-import * as functions from "firebase-functions"
+import { onCall } from "firebase-functions/v2/https"
+import type { CallableRequest } from "firebase-functions/v2/https"
 import { db } from "../firebase"
 import { z } from "zod"
 import { fail, checkRequestZod, checkAuth, checkAdmin } from "../common"
@@ -17,12 +18,15 @@ export type Response = {
   status: "success" | "report-already-resolved" | "testimony-already-removed"
 }
 
-export const resolveReport = functions.https.onCall(
-  async (data, context): Promise<Response> => {
-    checkAuth(context, false)
-    checkAdmin(context)
+export const resolveReportV2 = onCall(
+  async (request: CallableRequest): Promise<Response> => {
+    checkAuth(request, false)
+    checkAdmin(request)
 
-    const { reportId, resolution, reason } = checkRequestZod(Request, data)
+    const { reportId, resolution, reason } = checkRequestZod(
+      Request,
+      request.data
+    )
 
     // 1. Get the report document
     const reportRef = db.collection("reports").doc(reportId)
@@ -43,7 +47,7 @@ export const resolveReport = functions.https.onCall(
     const testimony = Testimony.check(rawTestimony)
 
     // 3. Get the moderator's profile document
-    const moderatorUid = context.auth!.uid
+    const moderatorUid = request.auth!.uid
     const moderatorName = await db
       .doc(`profiles/${moderatorUid}`)
       .get()

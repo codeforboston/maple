@@ -1,4 +1,4 @@
-import { runWith } from "firebase-functions"
+import { onSchedule } from "firebase-functions/v2/scheduler"
 import { createClient } from "./client"
 
 const connectionTimeoutSeconds = 5,
@@ -7,17 +7,15 @@ const connectionTimeoutSeconds = 5,
 
 /** Checks that the search backend is working. If this fails it will trigger an
  * alert. */
-export const searchHealthCheck = runWith({
-  secrets: ["TYPESENSE_API_KEY"],
-  timeoutSeconds: functionTimeoutSeconds,
-  memory: "128MB"
-})
-  .pubsub.schedule("every 30 minutes")
-  .retryConfig({
-    // Retry using the client
+export const searchHealthCheck = onSchedule(
+  {
+    schedule: "every 30 minutes",
+    secrets: ["TYPESENSE_API_KEY"],
+    timeoutSeconds: functionTimeoutSeconds,
+    memory: "256MiB",
     retryCount: 0
-  })
-  .onRun(async () => {
+  },
+  async () => {
     const client = createClient({
       connectionTimeoutSeconds,
       numRetries
@@ -27,4 +25,5 @@ export const searchHealthCheck = runWith({
       throw Error(
         `Search backend responded with failure: ${JSON.stringify(res)}`
       )
-  })
+  }
+)

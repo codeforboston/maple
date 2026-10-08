@@ -1,40 +1,35 @@
 import { useTranslation } from "next-i18next"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import styled from "styled-components"
 
 import { Form } from "../../bootstrap"
 import { Profile, ProfileHook, useProfile } from "../../db"
 import Input from "../../forms/Input"
+import { SubmitButton } from "../LegislatorComponents"
+import { SidebarBlock, SidebarTitle } from "../LegislatorSidebar"
 
 import { useAuth } from "components/auth"
-import {
-  updateProfile,
-  UpdateProfileData
-} from "components/EditProfilePage/PersonalInfoTab"
 
-const BioBlock = styled.div`
-  background-color: white;
-  border-color: #b8c0c9;
-  border-radius: 5px;
-  border-style: solid;
-  border-width: 1px;
-  font-size: 11px;
-  padding: 16px;
-`
+type UpdateProfileBiography = {
+  aboutYou: string
+}
 
-const BioButton = styled.button`
-  font-size: 9px;
-  padding: 2px;
-`
+type Props = {
+  profile: Profile
+  actions: ProfileHook
+  uid?: string
+  setFormUpdated?: any
+  className?: string
+}
 
-const BioTitle = styled.div`
-  font-weight: 700;
-  color: #0b0a3e;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 10px;
-`
+async function updateBiography(
+  { actions }: Props,
+  data: UpdateProfileBiography
+) {
+  const { updateAbout } = actions
+
+  await updateAbout(data.aboutYou)
+}
 
 export function Biography({
   court,
@@ -90,12 +85,12 @@ function EditableBiography({
     register,
     formState: { errors, isDirty },
     handleSubmit
-  } = useForm<UpdateProfileData>()
+  } = useForm<UpdateProfileBiography>()
 
   const { about }: Profile = profile
 
   const onSubmit = handleSubmit(async update => {
-    await updateProfile({ profile, actions }, update)
+    await updateBiography({ profile, actions }, update)
     location.assign(`/legislators/${court}/${memberCode}`)
     setFormUpdated(false)
   })
@@ -108,19 +103,19 @@ function EditableBiography({
   }, [isDirty, setFormUpdated])
 
   return (
-    <BioBlock>
+    <SidebarBlock>
       <Form onSubmit={onSubmit}>
         <div className={`d-flex justify-content-between`}>
-          <BioTitle className={`align-self-center d-inline my-1`}>
+          <SidebarTitle className={`align-self-center d-inline my-1`}>
             {t("biography")}
-          </BioTitle>
-          <BioButton
+          </SidebarTitle>
+          <SubmitButton
             type="submit"
             className={`btn btn-primary d-inline m-1 w-auto`}
             disabled={!formUpdated}
           >
             {t("submit")}
-          </BioButton>
+          </SubmitButton>
         </div>
         <Input
           as="textarea"
@@ -131,7 +126,7 @@ function EditableBiography({
           defaultValue={about ? about : t("addBio")}
         />
       </Form>
-    </BioBlock>
+    </SidebarBlock>
   )
 }
 
@@ -139,11 +134,11 @@ function ReadonlyBiography({ legislatorData }: { legislatorData: any[] }) {
   const { t } = useTranslation("legislators")
 
   return (
-    <BioBlock>
-      <BioTitle className={`my-1`}>{t("biography")}</BioTitle>
+    <SidebarBlock>
+      <SidebarTitle className={`my-1`}>{t("biography")}</SidebarTitle>
       <div style={{ whiteSpace: "pre-wrap" }}>
         {legislatorData[0]?.about ? legislatorData[0].about : t("notClaimed")}
       </div>
-    </BioBlock>
+    </SidebarBlock>
   )
 }

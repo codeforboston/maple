@@ -102,3 +102,9 @@ CLAUDE.md
 #gcloud
 .gcloudignore
 
+# search-eval: every corpus is committed, because none of them can be rebuilt
+# byte-for-byte from what the repo holds — bills now joins `summary` in from a
+# live project on top of the emulator fixture, and hearings/publishedTestimony
+# come from prod outright. See tests/search-eval/README.md. Labeling sheets are
+# authoring scratch.
+tests/search-eval/labeling-sheet-*.md
