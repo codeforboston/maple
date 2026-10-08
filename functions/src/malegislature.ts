@@ -12,8 +12,10 @@ import {
   SessionContent,
   SpecialEventContent
 } from "./events/types"
+import { APIDocument, APIRollCall } from "./votes/types"
 import { Timestamp } from "./firebase"
 import { MemberContent } from "./members/types"
+import { RollCallSummary } from "./votes/types"
 
 /**
  * The MA Legislature website's SSL certificate only contains the first
@@ -91,13 +93,13 @@ export async function getDocument({
 }: {
   id: string
   court: number
-}): Promise<any> {
+}): Promise<APIDocument> {
   const response = await request({
     url: `/GeneralCourts/${court}/Documents/${id}`,
     method: "GET",
     timeout: 30_000
   })
-  return response as any
+  return APIDocument.check(response)
 }
 
 export async function getDocumentPdf({
@@ -249,4 +251,26 @@ export async function getSimilarBills(court: number, id: string) {
     timeout: 60_000
   })
   return SimilarBills.check(data)
+}
+
+export async function getRollCalls(court: number, branch: string) {
+  const data = await request({
+    url: `GeneralCourts/${court}/Branches/${branch}/RollCalls`,
+    method: "GET",
+    timeout: 60_000
+  })
+  return Array(RollCallSummary).check(data)
+}
+
+export async function getRollCall(
+  court: number,
+  branch: string,
+  number: number
+): Promise<APIRollCall> {
+  const data = await request({
+    url: `GeneralCourts/${court}/Branches/${branch}/RollCalls/${number}`,
+    method: "GET",
+    timeout: 60_000
+  })
+  return APIRollCall.check(data)
 }
