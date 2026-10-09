@@ -356,12 +356,19 @@ export const scrapeOcpfFinanceV2 = onRequestV2(
     // totalSpent: Year-End Receipts_Total includes 204 cash and excludes
     // 331/332 out-of-pocket items, the same as the periodic reports.
     //
-    // Verified empirically (2025): summed Bank Report totals matched the
-    // Year-End Report for 409 of 413 legislators (e.g. CPF 16883, exactly
-    // $104,770.60), and Bank + External Activity totals matched for every
-    // legislator with out-of-pocket items. A mismatch here would point to some
-    // report type being mis-handled — do not ignore it, investigate before
-    // trusting the displayed totals.
+    // Verified empirically (2025): summed Bank + External Activity totals
+    // matched the Year-End Report for every legislator (e.g. CPF 16883,
+    // exactly $104,770.60). A mismatch here would point to some report type
+    // being mis-handled — do not ignore it, investigate before trusting the
+    // displayed totals.
+    //
+    // Known mismatch not caused by this scraper: a Year-End Report's period can start after
+    // Jan 1, while reportTotals sums every report in the calendar year. In
+    // 2025 this affected two non-legislator filers: CPF 17839's committee was
+    // organized 7/16/2025 on a bank account with earlier activity, and CPF
+    // 18789's Year-End Report starts 9/4/2025 for reasons not visible in the
+    // bulk data. Both matched once only the Bank Reports within the Year-End
+    // period were summed.
     //
     // Note: this only reconciles report-level totals. It does NOT catch the
     // separate, known gap between totalRaised (Bank Report, after
