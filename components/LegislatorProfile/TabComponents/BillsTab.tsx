@@ -9,7 +9,7 @@ import {
   getFirestore
 } from "firebase/firestore"
 import { Bill } from "functions/src/bills/types"
-import { BillsTabContainer } from "./BillsTab/BillsTabContainer"
+import { BillsTabContainer } from "./billsTab/BillsTabContainer"
 
 type BillGroups = {
   all: Bill[]
@@ -85,7 +85,9 @@ export const BillsTab = ({ member }: { member: MemberContent }) => {
 
         setBillGroups({
           all,
-          sponsored: all.filter(bill => sponsoredIds.has(bill.id)),
+          sponsored: all.filter(
+            bill => sponsoredIds.has(bill.id) && !cosponsoredIds.has(bill.id)
+          ),
           cosponsored: all.filter(bill => cosponsoredIds.has(bill.id))
         })
       } catch (err) {
