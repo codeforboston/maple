@@ -78,10 +78,16 @@ describe("BillsTab", () => {
         JSON.stringify({
           all: ["sponsored-1", "shared-1", "cosponsored-1"],
           sponsored: ["sponsored-1", "shared-1"],
-          cosponsored: ["shared-1", "cosponsored-1"]
+          cosponsored: ["cosponsored-1"]
         })
       )
     })
+
+    const groups = JSON.parse(
+      screen.getByTestId("bill-groups").textContent || "{}"
+    )
+    expect(groups.sponsored).toContain("shared-1")
+    expect(groups.cosponsored).not.toContain("shared-1")
 
     expect(getFirestore).toHaveBeenCalledTimes(1)
     expect(doc).toHaveBeenCalledWith(
