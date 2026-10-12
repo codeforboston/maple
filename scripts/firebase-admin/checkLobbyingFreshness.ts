@@ -73,6 +73,6 @@ export const script: Script = async ({ db }) => {
   console.log(
     `\nlobbyingMeta/stats (as of last compute): ${
       stats?.totalFilings ?? "?"
-    } filings, ${stats?.totalRegistrants ?? "?"} registrants`
+    } filings, ${stats?.totalRegistrants ?? "?"} individual lobbyists`
   )
 }

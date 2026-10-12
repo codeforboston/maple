@@ -5,6 +5,8 @@ import { Col, Container, Row } from "components/bootstrap"
 import { createPage } from "components/page"
 import { createGetStaticTranslationProps } from "components/translations"
 import {
+  FirmRegistration,
+  useLobbyingFirmSummary,
   useLobbyingRegistrantsByEntityName,
   useLobbyingFilingsForEntityName
 } from "components/db/lobbying"
@@ -18,6 +20,8 @@ import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
+import { SosSourceLink } from "components/lobbying/SosSourceLink"
+import { regTypeLabel } from "components/lobbying/regTypeLabel"
 
 const PAGE_SIZE = 25
 
@@ -37,10 +41,14 @@ function FirmDetail() {
     status: filStatus,
     error: filError
   } = useLobbyingFilingsForEntityName(entityNameNorm)
+  const { result: summary, status: sumStatus } =
+    useLobbyingFirmSummary(entityNameNorm)
 
   const loading =
     regStatus === "loading" ||
     regStatus === "not-requested" ||
+    sumStatus === "loading" ||
+    sumStatus === "not-requested" ||
     filStatus === "loading" ||
     filStatus === "not-requested"
 
@@ -74,11 +82,22 @@ function FirmDetail() {
 
   if (!entityNameNorm) return null
 
-  // Aggregate from all registrant docs for this entity
+  // Aggregate from all registrant docs for this entity, plus its registrations
+  // (which also cover lobbyists whose employer files their disclosures).
   const primary = registrants?.[0]
-  const years = [...new Set(registrants?.map(r => r.year) ?? [])].sort(
-    (a, b) => b - a
-  )
+  const name = primary?.entityName ?? summary?.entityName ?? entityNameNorm
+  const regType = primary?.regType ?? summary?.regType
+  const years = [
+    ...new Set([
+      ...(registrants?.map(r => r.year) ?? []),
+      ...(summary?.years ?? [])
+    ])
+  ].sort((a, b) => b - a)
+  const registrations = summary?.registrations ?? []
+  const employers = partiesByName(registrations, "employers")
+  const registeredLobbyists = partiesByName(registrations, "lobbyists")
+  const filesThroughEmployer =
+    summary?.hasFilings === false && (filings?.length ?? 0) === 0
   const allClients = [
     ...new Map(
       (registrants ?? [])
@@ -125,9 +144,9 @@ function FirmDetail() {
             >
               ← {t("titles.firms")}
             </a>
-            <h1 className="mt-2">{primary?.entityName ?? entityNameNorm}</h1>
+            <h1 className="mt-2">{name}</h1>
             <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 14 }}>
-              {primary?.regType}
+              {regType && regTypeLabel(regType, t)}
               {years.length > 0 && (
                 <>
                   &nbsp;·&nbsp;{" "}
@@ -136,8 +155,12 @@ function FirmDetail() {
                     : `${years[years.length - 1]}–${years[0]}`}
                 </>
               )}
-              &nbsp;·&nbsp; {filings?.length ?? "—"}{" "}
-              {t("fields.filings").toLowerCase()}
+              {!filesThroughEmployer && (
+                <>
+                  &nbsp;·&nbsp; {filings?.length ?? "—"}{" "}
+                  {t("fields.filings").toLowerCase()}
+                </>
+              )}
               {totalCompensation > 0 && (
                 <>
                   &nbsp;·&nbsp;{" "}
@@ -147,6 +170,11 @@ function FirmDetail() {
                     maximumFractionDigits: 0
                   })}{" "}
                   {t("misc.total")}
+                </>
+              )}
+              {summary?.sourceUrl && (
+                <>
+                  &nbsp;·&nbsp; <SosSourceLink href={summary.sourceUrl} />
                 </>
               )}
             </p>
@@ -167,27 +195,44 @@ function FirmDetail() {
             {/* Left: filings */}
             <Col md={8}>
               <h5 style={sectionHeadStyle}>{t("sections.bills")}</h5>
-              <LobbyingFilingsTable
-                filings={pageItems}
-                showBill
-                showClient
-                showFirm={false}
-                showAmount
-              />
-              <LobbyingPaginationBar
-                page={page}
-                totalPages={totalPages}
-                totalItems={totalItems}
-                pageSize={PAGE_SIZE}
-                onPage={setPage}
-              />
+              {filesThroughEmployer && (
+                <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 14 }}>
+                  {t("misc.filesThroughFirm", { name })}
+                </p>
+              )}
+              {!filesThroughEmployer && (
+                <>
+                  <LobbyingFilingsTable
+                    filings={pageItems}
+                    showBill
+                    showClient
+                    showFirm={false}
+                    showAmount
+                  />
+                  <LobbyingPaginationBar
+                    page={page}
+                    totalPages={totalPages}
+                    totalItems={totalItems}
+                    pageSize={PAGE_SIZE}
+                    onPage={setPage}
+                  />
+                </>
+              )}
             </Col>
 
             {/* Right: clients + disclosure links */}
             <Col md={4}>
-              <h5 style={sectionHeadStyle}>{t("sections.clients")}</h5>
+              {/* A lobbyist whose employer files has no clients of their own;
+                  the note on the left explains where to look instead. */}
+              {(allClients.length > 0 || !filesThroughEmployer) && (
+                <h5 style={sectionHeadStyle}>{t("sections.clients")}</h5>
+              )}
               {allClients.length === 0 ? (
-                <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 13 }}>—</p>
+                !filesThroughEmployer && (
+                  <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 13 }}>
+                    —
+                  </p>
+                )
               ) : (
                 <ul style={{ paddingLeft: "1.25rem", fontSize: 13 }}>
                   {allClients.map(c => (
@@ -225,17 +270,50 @@ function FirmDetail() {
                 </ul>
               )}
 
-              {lobbyists.length > 0 && (
+              {employers.length > 0 && (
+                <>
+                  <h5 style={{ ...sectionHeadStyle, marginTop: "1.5rem" }}>
+                    {t("sections.employers")}
+                  </h5>
+                  <PartyList parties={employers} />
+                </>
+              )}
+
+              {(registeredLobbyists.length > 0 || lobbyists.length > 0) && (
                 <>
                   <h5 style={{ ...sectionHeadStyle, marginTop: "1.5rem" }}>
                     {t("sections.firmLobbyists")}
                   </h5>
-                  <ul style={{ paddingLeft: "1.25rem", fontSize: 13 }}>
-                    {lobbyists.map(name => (
-                      <li key={name} style={{ marginBottom: "0.35rem" }}>
-                        {name}
-                      </li>
-                    ))}
+                  {registeredLobbyists.length > 0 ? (
+                    <PartyList parties={registeredLobbyists} />
+                  ) : (
+                    <ul style={{ paddingLeft: "1.25rem", fontSize: 13 }}>
+                      {lobbyists.map(lobbyist => (
+                        <li key={lobbyist} style={{ marginBottom: "0.35rem" }}>
+                          {lobbyist}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </>
+              )}
+
+              {registrations.some(r => r.sourceUrl) && (
+                <>
+                  <h5 style={{ ...sectionHeadStyle, marginTop: "1.5rem" }}>
+                    {t("sections.registrations")}
+                  </h5>
+                  <ul style={{ paddingLeft: "1.25rem", fontSize: 12 }}>
+                    {registrations
+                      .filter(r => r.sourceUrl)
+                      .map(r => (
+                        <li key={r.year} style={{ marginBottom: "0.35rem" }}>
+                          <SosSourceLink
+                            href={r.sourceUrl}
+                            label={t("misc.registrationYear", { year: r.year })}
+                          />
+                        </li>
+                      ))}
                   </ul>
                 </>
               )}
@@ -302,6 +380,62 @@ function FirmDetail() {
         <LobbyingAttribution className="mt-3" />
       </Container>
     </>
+  )
+}
+
+type Party = {
+  name: string
+  nameNorm: string | null
+  hasProfile: boolean
+  years: number[]
+}
+
+// One entry per person or entity across all registration years, most recent
+// first.
+function partiesByName(
+  registrations: FirmRegistration[],
+  key: "employers" | "lobbyists"
+): Party[] {
+  const byKey = new Map<string, Party>()
+  for (const r of registrations) {
+    for (const p of r[key]) {
+      const k = p.nameNorm || p.name
+      const entry = byKey.get(k) ?? { ...p, years: [] }
+      if (!entry.years.includes(r.year)) entry.years.push(r.year)
+      entry.hasProfile = entry.hasProfile || p.hasProfile
+      byKey.set(k, entry)
+    }
+  }
+  return [...byKey.values()]
+    .map(p => ({ ...p, years: p.years.sort((a, b) => b - a) }))
+    .sort((a, b) => b.years[0] - a.years[0] || a.name.localeCompare(b.name))
+}
+
+function PartyList({ parties }: { parties: Party[] }) {
+  return (
+    <ul style={{ paddingLeft: "1.25rem", fontSize: 13 }}>
+      {parties.map(p => (
+        <li key={p.nameNorm || p.name} style={{ marginBottom: "0.35rem" }}>
+          {p.hasProfile && p.nameNorm ? (
+            <a
+              href={`/lobbying/firms/${encodeURIComponent(p.nameNorm)}`}
+              style={{ color: MAPLE_COLORS.primary }}
+            >
+              {p.name}
+            </a>
+          ) : (
+            p.name
+          )}{" "}
+          <span style={{ color: MAPLE_COLORS.textMuted, fontSize: 12 }}>
+            (
+            {p.years.length === 1
+              ? p.years[0]
+              : `${p.years[p.years.length - 1]}–${p.years[0]}`}
+            )
+          </span>
+        </li>
+      ))}
+    </ul>
   )
 }
 

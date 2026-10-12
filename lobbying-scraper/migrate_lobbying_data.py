@@ -11,9 +11,12 @@ which change Firestore doc ids:
    lobbyists' summary pages as well as the firm's own, so firm disclosures were
    often credited to an individual lobbyist (or to several). They are now
    credited to the filer named on the page (see portal.resolve_filer).
+3. Registration pages were discarded, so lobbyists whose firm files for them
+   had no record. Registrations are now stored in lobbyingRegistrations.
 
 Every registrant and filing doc is regenerated from the raw-HTML archive, then
-docs that weren't regenerated are deleted.
+docs that weren't regenerated are deleted. Registrations are written from the
+archived registration pages (additive; nothing is deleted).
 
 Phases (run in order, per project):
 
@@ -27,13 +30,23 @@ Phases (run in order, per project):
              --execute command, which refuses to delete unless the project,
              the id count and the stale count all match and the write phase
              finished with nothing unaccounted for.
+    registrations
+             Parse every archived registration page (Summary.aspx) and write one
+             lobbyingRegistrations doc per registrant and year. Before 2019 the
+             portal served several identical pages per firm per year; they
+             collapse into one doc listing all their URLs.
+    refetch-errors
+             Find archived pages that are portal error pages ("An Error
+             Occurred") instead of content, and with --execute re-fetch them
+             from the live portal into the archive. Run before the phases above.
     stats    Recompute lobbyingMeta.
 
     GOOGLE_APPLICATION_CREDENTIALS=... python3 migrate_lobbying_data.py \\
       --project <project> --phase write --out-prefix /tmp/<project>
     GOOGLE_APPLICATION_CREDENTIALS=... python3 migrate_lobbying_data.py \\
       --project <project> --phase cleanup --collection filings --out-prefix /tmp/<project>
-    (same for --collection registrants), then --phase stats.
+    (same for --collection registrants), then --phase registrations, then
+    --phase stats.
 
 Safe to delete once dev and prod have both been migrated.
 """
@@ -42,6 +55,12 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import time
+
+# archive.py reads ARCHIVE_RAW when imported; refetch-errors relies on it to
+# save re-fetched pages.
+os.environ["ARCHIVE_RAW"] = "1"
+
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from bs4 import BeautifulSoup
@@ -51,6 +70,9 @@ from google.cloud.storage import Blob
 import archive
 from portal import (
     DisclosureMeta,
+    _get,
+    make_session,
+    parse_registration,
     filing_id,
     parse_disclosure_detail,
     resolve_filer,
@@ -60,7 +82,9 @@ from writer import (
     FILINGS_COLLECTION,
     REGISTRANTS_COLLECTION,
     compute_stats,
+    REGISTRATIONS_COLLECTION,
     registrant_doc,
+    registration_doc,
     write_filings,
 )
 
@@ -126,36 +150,37 @@ def choose_owner(owners: list[DisclosureMeta]) -> DisclosureMeta:
     return sorted(owners, key=lambda m: (m.reg_type != "Lobbyist", m.entity_name))[0]
 
 
+def _process_page_once(db: firestore.Client, blob: Blob, owner: DisclosureMeta, url: str) -> dict:
+    soup = BeautifulSoup(_download(blob), "html.parser")
+    detail = parse_disclosure_detail(soup, owner.year)
+    built = registrant_doc(owner, detail)
+    if built is None:
+        return {"status": "unattributable", "url": url}
+    rid, data = built
+    filer = resolve_filer(owner, detail)
+    gc = year_to_general_court(filer.year)
+    fids = [
+        filing_id(filer.entity_name, b.client_name, b.chamber, b.bill_id,
+                  gc, b.position, detail.period_start)
+        for b in detail.bills
+    ]
+    write_filings(db, owner, detail, url)
+    return {"status": "processed", "url": url, "rid": rid, "data": data, "fids": fids,
+            "reattributed": filer.entity_name != owner.entity_name}
+
+
 def _process_page(db: firestore.Client, blob: Blob, owner: DisclosureMeta, url: str) -> dict:
-    # One try/except around the whole page so a transient network error can't
-    # escape to future.result() and abort the accounting loop.
-    try:
-        for attempt in range(3):
-            try:
-                html = blob.download_as_text(encoding="utf-8")
-                break
-            except Exception:
-                if attempt == 2:
-                    raise
-        soup = BeautifulSoup(html, "html.parser")
-        detail = parse_disclosure_detail(soup, owner.year)
-        built = registrant_doc(owner, detail)
-        if built is None:
-            return {"status": "unattributable", "url": url}
-        rid, data = built
-        filer = resolve_filer(owner, detail)
-        gc = year_to_general_court(filer.year)
-        fids = [
-            filing_id(filer.entity_name, b.client_name, b.chamber, b.bill_id,
-                      gc, b.position, detail.period_start)
-            for b in detail.bills
-        ]
-        write_filings(db, owner, detail)
-        return {"status": "processed", "url": url, "rid": rid, "data": data, "fids": fids,
-                "reattributed": filer.entity_name != owner.entity_name}
-    except Exception as exc:
-        print(f"  ERROR processing {url}: {exc}")
-        return {"status": "error", "url": url}
+    # Retry the whole page (read, parse, writes are all idempotent) so a brief
+    # network outage doesn't leave it stale, and never let an exception escape
+    # to future.result(), which would abort the accounting loop.
+    for attempt in range(3):
+        try:
+            return _process_page_once(db, blob, owner, url)
+        except Exception as exc:
+            if attempt == 2:
+                print(f"  ERROR processing {url}: {exc}")
+                return {"status": "error", "url": url}
+            time.sleep(5 * 2 ** attempt)
 
 
 def run_write(project: str, out_prefix: str, workers: int, limit: int | None) -> None:
@@ -312,22 +337,154 @@ def run_cleanup(project: str, out_prefix: str, collection: str, execute: bool,
     print(f"Deleted {count} stale {collection} docs.")
 
 
+def _archived_pages(project: str, kind: str) -> list[tuple[Blob, str]]:
+    os.environ["GOOGLE_CLOUD_PROJECT"] = project
+    bucket = storage.Client(project=project).bucket(archive._get_bucket_name())
+    pages = []
+    for blob in bucket.list_blobs(prefix="raw_html/"):
+        url = (blob.metadata or {}).get("source-url", "")
+        if kind in url:
+            pages.append((blob, url))
+    return pages
+
+
+def _download(blob: Blob) -> str:
+    for attempt in range(3):
+        try:
+            return blob.download_as_text(encoding="utf-8")
+        except Exception:
+            if attempt == 2:
+                raise
+
+
+def _is_error_page(html: str) -> bool:
+    return "An Error Occurred" in html and "There was a problem opening" in html
+
+
+def run_registrations(project: str, out_prefix: str, workers: int) -> None:
+    db = firestore.Client(project=project)
+    print(f"Target project: {db.project}")
+    pages = _archived_pages(project, "Summary.aspx")
+    print(f"Archived registration pages: {len(pages)}")
+
+    def parse(page):
+        blob, url = page
+        try:
+            return url, parse_registration(BeautifulSoup(_download(blob), "html.parser"), url), None
+        except Exception as exc:
+            return url, None, str(exc)
+
+    by_id: dict[str, dict] = {}
+    unreadable, errors = [], []
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        for done, (url, reg, err) in enumerate(pool.map(parse, pages), 1):
+            if err:
+                errors.append(url)
+            elif reg is None:
+                unreadable.append(url)
+            else:
+                doc_id, data = registration_doc(reg)
+                entry = by_id.setdefault(doc_id, {"data": data, "urls": set()})
+                entry["urls"].add(url)
+            if done % 5000 == 0 or done == len(pages):
+                print(f"  [{done}/{len(pages)}] {len(by_id)} registrations, {len(unreadable)} unreadable, {len(errors)} errors")
+
+    coll = db.collection(REGISTRATIONS_COLLECTION)
+    batch, n = db.batch(), 0
+    for doc_id, entry in by_id.items():
+        doc = dict(entry["data"], sourceUrls=sorted(entry["urls"]), fetchedAt=firestore.SERVER_TIMESTAMP)
+        batch.set(coll.document(doc_id), doc)
+        n += 1
+        if n % 400 == 0:
+            batch.commit()
+            batch = db.batch()
+    if n % 400:
+        batch.commit()
+
+    with open(f"{out_prefix}.registrations.txt", "w") as f:
+        f.writelines(doc_id + "\n" for doc_id in sorted(by_id))
+    summary = {
+        "project": project,
+        "pages": len(pages),
+        "registrations": len(by_id),
+        "pages_collapsed_as_duplicates": len(pages) - len(unreadable) - len(errors) - len(by_id),
+        "unreadable": len(unreadable),
+        "errors": len(errors),
+        "unreadable_urls": unreadable[:50],
+        "error_urls": errors[:50],
+    }
+    with open(f"{out_prefix}.registrations.summary.json", "w") as f:
+        json.dump(summary, f, indent=2)
+    print(json.dumps({k: v for k, v in summary.items() if not k.endswith("_urls")}, indent=2))
+
+
+def run_refetch_errors(project: str, workers: int, execute: bool) -> None:
+    pages = _archived_pages(project, ".aspx")
+    print(f"Archived pages: {len(pages)}")
+
+    def check(page):
+        blob, url = page
+        try:
+            return url, _is_error_page(_download(blob))
+        except Exception:
+            return url, None
+
+    bad, unchecked = [], []
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        for done, (url, is_error) in enumerate(pool.map(check, pages), 1):
+            if is_error:
+                bad.append(url)
+            elif is_error is None:
+                unchecked.append(url)
+            if done % 10000 == 0 or done == len(pages):
+                print(f"  [{done}/{len(pages)}] {len(bad)} error pages, {len(unchecked)} unchecked")
+    print(f"Error pages stored in place of content: {len(bad)}")
+    for url in bad:
+        print("  ", url)
+    if unchecked:
+        # A failed download says nothing about the page; rerun to check these.
+        print(f"Could not download {len(unchecked)} pages to check them; rerun the scan.")
+    if not execute:
+        print("Dry run — nothing fetched. Re-run with --execute to re-fetch them from the portal.")
+        return
+
+    # _get saves each fetched page to the archive (ARCHIVE_RAW is set in main),
+    # and paces requests to the portal.
+    session = make_session()
+    still_bad = 0
+    for url in bad:
+        try:
+            html = str(_get(session, url))
+        except Exception as exc:
+            html = ""
+            print("  fetch failed:", url, exc)
+        if not html or _is_error_page(html):
+            still_bad += 1
+            print("  still not fetched:", url)
+    print(f"Re-fetched {len(bad)} pages; {still_bad} still return an error page.")
+
+
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--project", required=True)
-    p.add_argument("--phase", required=True, choices=["write", "cleanup", "stats"])
+    p.add_argument("--phase", required=True,
+                   choices=["write", "cleanup", "registrations", "refetch-errors", "stats"])
     p.add_argument("--out-prefix", help="write/cleanup: path prefix for recorded ids and summary")
     p.add_argument("--collection", choices=sorted(_COLLECTIONS), help="cleanup: which collection")
     p.add_argument("--workers", type=int, default=_DEFAULT_WORKERS)
     p.add_argument("--limit", type=int, default=None, help="write: only N pages (testing; blocks cleanup)")
-    p.add_argument("--execute", action="store_true", help="cleanup: actually delete")
+    p.add_argument("--execute", action="store_true",
+                   help="cleanup: actually delete; refetch-errors: actually re-fetch")
     p.add_argument("--expect-ids", type=int, default=None)
     p.add_argument("--expect-stale", type=int, default=None)
     args = p.parse_args()
 
-    os.environ["ARCHIVE_RAW"] = "1"
     if args.phase == "write":
         run_write(args.project, args.out_prefix, args.workers, args.limit)
+    elif args.phase == "registrations":
+        run_registrations(args.project, args.out_prefix, args.workers)
+    elif args.phase == "refetch-errors":
+        run_refetch_errors(args.project, args.workers, args.execute)
     elif args.phase == "cleanup":
         if not args.collection:
             p.error("--collection is required for cleanup")
