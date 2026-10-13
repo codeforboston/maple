@@ -123,6 +123,8 @@ export const HearingSidebar = ({
   activeVideo,
   billsInAgenda,
   committeeCode,
+  externalDownloadFilename,
+  externalDownloadUrl,
   generalCourtNumber,
   hearingDate,
   transcripts
@@ -130,6 +132,9 @@ export const HearingSidebar = ({
   activeVideo: number
   billsInAgenda: any[] | null
   committeeCode: string | null
+  // Used when the download link is built client-side rather than from `transcripts`.
+  externalDownloadFilename?: string
+  externalDownloadUrl?: string
   generalCourtNumber: string | null
   hearingDate: string | null
   transcripts: (TranscriptData | null)[] | null
@@ -218,7 +223,7 @@ export const HearingSidebar = ({
         {t("hearing_details", { ns: "hearing" })}
       </SidebarHeader>
 
-      {dateCheck || downloadURL !== "" ? (
+      {dateCheck || downloadURL !== "" || externalDownloadUrl ? (
         <SidebarBody className={`border-bottom fs-6 px-3 py-3`}>
           {dateCheck ? (
             <>
@@ -249,6 +254,17 @@ export const HearingSidebar = ({
             </div>
           ) : (
             <></>
+          )}
+          {externalDownloadUrl && (
+            <div>
+              <a
+                href={externalDownloadUrl}
+                download={externalDownloadFilename ?? "transcript.csv"}
+                className="text-blue-600 underline"
+              >
+                {t("download_transcript", { ns: "hearing" })}
+              </a>
+            </div>
           )}
         </SidebarBody>
       ) : (
