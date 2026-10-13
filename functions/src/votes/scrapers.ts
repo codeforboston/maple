@@ -1,4 +1,5 @@
-import { runWith, RuntimeOptions } from "firebase-functions"
+import type { MemoryOption } from "firebase-functions/v2"
+import { onSchedule } from "firebase-functions/v2/scheduler"
 import { db } from "../firebase"
 import {
   fetchSenateBillNumber,
@@ -21,7 +22,7 @@ export class SenateRollCallScraper {
   constructor(
     schedule: string = "every 24 hours",
     timeout: number = 480,
-    memory: RuntimeOptions["memory"] = "256MB"
+    memory: MemoryOption = "256MiB"
   ) {
     this.schedule = schedule
     this.timeout = timeout
@@ -29,13 +30,15 @@ export class SenateRollCallScraper {
   }
 
   get function() {
-    return runWith({
-      timeoutSeconds: this.timeout,
-      memory: this.memory,
-      maxInstances: 1
-    })
-      .pubsub.schedule(this.schedule)
-      .onRun(() => this.run())
+    return onSchedule(
+      {
+        schedule: this.schedule,
+        timeoutSeconds: this.timeout,
+        memory: this.memory,
+        maxInstances: 1
+      },
+      () => this.run()
+    )
   }
 
   async addRollCall(
@@ -174,7 +177,7 @@ export class HouseRollCallScraper {
   constructor(
     schedule: string = "every 24 hours",
     timeout: number = 480,
-    memory: RuntimeOptions["memory"] = "256MB"
+    memory: MemoryOption = "256MiB"
   ) {
     this.schedule = schedule
     this.timeout = timeout
@@ -183,13 +186,15 @@ export class HouseRollCallScraper {
   }
 
   get function() {
-    return runWith({
-      timeoutSeconds: this.timeout,
-      memory: this.memory,
-      maxInstances: 1
-    })
-      .pubsub.schedule(this.schedule)
-      .onRun(() => this.run())
+    return onSchedule(
+      {
+        schedule: this.schedule,
+        timeoutSeconds: this.timeout,
+        memory: this.memory,
+        maxInstances: 1
+      },
+      () => this.run()
+    )
   }
 
   async addRollCall(
