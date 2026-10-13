@@ -5,9 +5,25 @@ jest.mock("../malegislature", () => ({
 jest.mock("./pdfText", () => ({
   extractBillTextFromPdf: jest.fn()
 }))
+jest.mock("firebase-functions", () => ({
+  logger: { warn: jest.fn(), info: jest.fn() }
+}))
+jest.mock("../scraper", () => ({
+  createScraper: jest.fn(() => ({ fetchBatch: {}, startBatches: {} }))
+}))
+jest.mock("../firebase", () => ({
+  Timestamp: { fromMillis: jest.fn(() => ({})), now: jest.fn(() => ({})) },
+  FieldValue: { delete: jest.fn() },
+  FieldPath: {}
+}))
+jest.mock("@google-cloud/firestore", () => ({
+  FieldValue: { delete: jest.fn() }
+}))
 
 import { getDocumentWithPdfTextFallback } from "./documentTextFallback"
 import { extractBillTextFromPdf } from "./pdfText"
+import { dropDocumentTextIfTooLarge, MAX_FIRESTORE_DOC_BYTES } from "./bills"
+import { logger } from "firebase-functions"
 
 const mockedApi = jest.requireMock("../malegislature") as {
   getDocument: jest.Mock
@@ -78,5 +94,49 @@ describe("getDocumentWithPdfTextFallback", () => {
       status: "fetch-error",
       error: "not found"
     })
+  })
+})
+
+describe("dropDocumentTextIfTooLarge", () => {
+  const mockedLogger = logger as jest.Mocked<typeof logger>
+
+  beforeEach(() => {
+    jest.resetAllMocks()
+  })
+
+  it("leaves DocumentText intact when resource is within the size limit", () => {
+    const content = { DocumentText: "short text", Cosponsors: [] } as any
+    const resource = { content } as any
+
+    dropDocumentTextIfTooLarge(resource, 194, "H1")
+
+    expect(content.DocumentText).toBe("short text")
+    expect(mockedLogger.warn).not.toHaveBeenCalled()
+  })
+
+  it("drops DocumentText and warns when resource exceeds 1 MiB", () => {
+    const longText = "x".repeat(MAX_FIRESTORE_DOC_BYTES + 100)
+    const content = { DocumentText: longText, Cosponsors: [] } as any
+    const resource = { content } as any
+
+    dropDocumentTextIfTooLarge(resource, 194, "H5500")
+
+    expect(content).not.toHaveProperty("DocumentText")
+    expect(mockedLogger.warn).toHaveBeenCalledWith(
+      expect.stringContaining("H5500")
+    )
+    expect(mockedLogger.warn).toHaveBeenCalledWith(
+      expect.stringContaining("dropping DocumentText")
+    )
+  })
+
+  it("mutates the same content object referenced by the resource", () => {
+    const longText = "x".repeat(MAX_FIRESTORE_DOC_BYTES + 100)
+    const content = { DocumentText: longText, Cosponsors: [] } as any
+    const resource = { content } as any
+
+    dropDocumentTextIfTooLarge(resource, 194, "H5500")
+
+    expect(resource.content).not.toHaveProperty("DocumentText")
   })
 })
