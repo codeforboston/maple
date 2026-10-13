@@ -41,6 +41,7 @@ export const BillsTab = ({ member }: { member: MemberContent }) => {
         const courtNumber = member.GeneralCourtNumber
         const memberCode = member.MemberCode
 
+        // is this a possible problem location?
         const memberDocRef = doc(
           firestore,
           `generalCourts/${courtNumber}/members/${memberCode}`
