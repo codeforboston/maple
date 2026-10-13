@@ -1,8 +1,10 @@
 import { runWith, RuntimeOptions } from "firebase-functions"
 import { db } from "../firebase"
 import {
+  fetchSenateBillNumber,
   getHouseLegislators,
   getHouseRollCall,
+  senateDownloadUrl,
   translateNames
 } from "./scrapeRollCall"
 import * as functions from "firebase-functions"
@@ -47,10 +49,13 @@ export class SenateRollCallScraper {
     } catch (e) {
       return `fetch error: ${e}`
     }
+    const pdfURL = senateDownloadUrl(court, rollCallNumber)
+    const bill = await fetchSenateBillNumber(pdfURL)
     const rollCallRewritten: SenateRollCall = {
       type: "RollCall",
       generalCourtNumber: court,
       branch: "Senate",
+      bill,
       questionMotion: rollCall.QuestionMotion ?? null,
       downloadUrl:
         rollCall.DownloadUrl ??

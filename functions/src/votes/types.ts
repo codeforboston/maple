@@ -68,6 +68,7 @@ export const SenateRollCall = Record({
   type: VoteType,
   generalCourtNumber: Number,
   branch: Branch,
+  bill: Union(String, Null),
   rollCallNumber: Number,
   questionMotion: Union(String, Null),
   downloadUrl: String

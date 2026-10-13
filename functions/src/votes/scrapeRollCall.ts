@@ -202,15 +202,19 @@ function parseVotes(number: number, text: string): RollCall | string {
   }
 }
 
-function downloadUrl(court: number, number: number): string {
+function houseDownloadUrl(court: number, number: number): string {
   return `https://malegislature.gov/RollCall/${court}/HouseRollCall${number}.pdf`
+}
+
+export function senateDownloadUrl(court: number, number: number): string {
+  return `https://malegislature.gov/RollCall/${court}/SenateRollCall${number}.pdf`
 }
 
 export async function getHouseRollCall(
   court: number,
   number: number
 ): Promise<HouseRollCallResult | string | null> {
-  const url = downloadUrl(court, number)
+  const url = houseDownloadUrl(court, number)
   const pdf = await fetch(url)
   if (pdf.status === 404) {
     return null
@@ -312,4 +316,23 @@ export function translateNames(
     )} remaining)`
   }
   return translations
+}
+
+export async function fetchSenateBillNumber(
+  url: string
+): Promise<string | null> {
+  const pdf = await fetch(url)
+  if (pdf.status === 404) {
+    return null
+  }
+  const result = await pdfParse(Buffer.from(await pdf.arrayBuffer()))
+  const text = result.text
+  text.split("\n")
+  for (const line of text.split("\n")) {
+    const match = line.match(/S\.([0-9]+)/)
+    if (match) {
+      return `S${match[1]}`
+    }
+  }
+  return null
 }
