@@ -1,6 +1,8 @@
 import { GetServerSideProps } from "next"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import { z } from "zod"
+import { ConferenceSummary } from "components/conference/types"
+import { loadConferenceForHearing } from "components/conference/load"
 import { flags } from "components/featureFlags"
 import { HearingDetails } from "components/hearing/HearingDetails"
 import { createPage } from "../../components/page"
@@ -8,10 +10,13 @@ import { fetchHearingData, HearingData } from "components/hearing/hearing"
 
 const Query = z.object({ hearingId: z.coerce.number() })
 
-export default createPage<{ hearingData: HearingData }>({
+export default createPage<{
+  hearingData: HearingData
+  conference: ConferenceSummary | null
+}>({
   titleI18nKey: "navigation.hearing",
-  Page: ({ hearingData }) => {
-    return <HearingDetails hearingData={hearingData} />
+  Page: ({ hearingData, conference }) => {
+    return <HearingDetails hearingData={hearingData} conference={conference} />
   }
 })
 
@@ -34,15 +39,27 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   const hearingData = await fetchHearingData(hearingId)
   if (!hearingData) return { notFound: true }
 
+  const [conference, translations] = await Promise.all([
+    flags().conferences
+      ? loadConferenceForHearing(
+          hearingData.generalCourtNumber,
+          hearingData.hearingId
+        )
+      : null,
+    serverSideTranslations(locale, [
+      "auth",
+      "common",
+      "footer",
+      "hearing",
+      "conferences"
+    ])
+  ])
+
   return {
     props: {
       hearingData: hearingData,
-      ...(await serverSideTranslations(locale, [
-        "auth",
-        "common",
-        "footer",
-        "hearing"
-      ]))
+      conference,
+      ...translations
     }
   }
 }

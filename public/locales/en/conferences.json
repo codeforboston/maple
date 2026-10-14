@@ -1,0 +1,24 @@
+{
+  "in_conference": "In conference",
+  "byline": "Conference committee to pass <1>{{title}}</1> by resolving differences between <3>{{senate}}</3> and <5>{{house}}</5>",
+  "status": {
+    "reportFiled": "Report filed",
+    "enacted": "Enacted",
+    "dissolved": "Dissolved"
+  },
+  "who": "Who’s in the committee?",
+  "senate": "Senate",
+  "house": "House",
+  "seats_lit": "{{chamber}} · {{count}} of {{total}}",
+  "chair": "chair",
+  "your_senator": "Your Senator",
+  "your_representative": "Your Representative",
+  "hearings": "Hearings",
+  "hearing_held": "Hearing held {{date}}",
+  "hearing_scheduled": "Hearing scheduled for {{date}}",
+  "no_hearings": "No hearings have been disclosed.",
+  "pick_conference": "Choose a conference committee",
+  "bill_banner": "This bill is in a conference committee: <1>{{name}}</1>",
+  "hearing_backlink": "A meeting of the conference committee on <1>{{name}}</1>",
+  "map_label": "Massachusetts {{chamber}} districts, with the committee's seats marked"
+}

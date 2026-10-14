@@ -77,6 +77,9 @@ export const maple = {
     `/bills/${court}/${id}`,
   legislator: ({ court, memberCode }: { court: number; memberCode: string }) =>
     `/legislators/${court}/${memberCode}`,
+  conference: ({ court, id }: { court: number; id: string }) =>
+    `/conferences/${court}/${id}`,
+  hearing: ({ eventId }: { eventId: number }) => `/hearing/${eventId}`,
   testimony: ({ publishedId }: { publishedId: string }) =>
     `/testimony/${publishedId}`,
   userTestimony: ({

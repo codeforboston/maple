@@ -1,5 +1,6 @@
 import {
   Array,
+  Boolean,
   Literal as L,
   Number,
   Optional,
@@ -40,7 +41,9 @@ export const ConferenceSimilarity = Record({
 export type Conferee = Static<typeof Conferee>
 export const Conferee = Record({
   memberCode: String,
-  branch: Branch
+  branch: Branch,
+  /** Named first for their chamber in the appointment action. */
+  chair: Optional(Boolean)
 })
 
 export type ConferenceStatus = Static<typeof ConferenceStatus>
@@ -60,7 +63,11 @@ export const Conference = withDefaults(
   Record({
     id: String,
     court: Number,
+    /** The act title of the bill pair, as the legislature words it. */
     title: String,
+    /** A short name for headings and lists ("Phone-Free Schools"), as the
+     * press refers to it. Pages fall back to the title. */
+    name: Optional(String),
     senateBillId: Id,
     houseBillId: Id,
     /** The bill whose history carries the appointment actions, one of the

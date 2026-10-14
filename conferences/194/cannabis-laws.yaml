@@ -1,4 +1,5 @@
 id: cannabis-laws
+name: Cannabis Laws
 court: 194
 title: An Act modernizing the commonwealth’s cannabis laws
 senateBillId: S2749
@@ -8,12 +9,14 @@ status: reportFiled
 conferees:
   - memberCode: DMD1
     branch: House
+    chair: true
   - memberCode: C_G1
     branch: House
   - memberCode: MJS3
     branch: House
   - memberCode: A_G0
     branch: Senate
+    chair: true
   - memberCode: JMC0
     branch: Senate
   - memberCode: PJD0

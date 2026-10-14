@@ -6,6 +6,7 @@ import { createNewBill, deleteBill } from "./common"
 import { script } from "../../scripts/firebase-admin/syncConferences"
 import {
   getConferenceForBill,
+  getConferenceForHearing,
   listConferences
 } from "../../components/db/conferences"
 
@@ -59,6 +60,15 @@ it("writes the document from YAML", async () => {
 
   const doc = (await conference("test-conference").get()).data()
   expect(doc?.title).toBe("Test conference committee")
+  expect(doc?.name).toBe("Test Conference")
+  expect(doc?.conferees.map((c: any) => c.chair === true)).toEqual([
+    true,
+    false,
+    false,
+    true,
+    false,
+    false
+  ])
   expect(doc?.senateBillId).toBe("S9901")
   expect(doc?.houseBillId).toBe("H9901")
   expect(doc?.hearingIds).toEqual(["hearing-9901"])
@@ -81,6 +91,13 @@ it("is found from either bill without a pointer on the bill", async () => {
   expect((await listConferences(COURT)).map(c => c.id)).toContain(
     "test-conference"
   )
+})
+
+it("is found from a hearing it links", async () => {
+  expect((await getConferenceForHearing(COURT, "hearing-9901"))?.id).toBe(
+    "test-conference"
+  )
+  expect(await getConferenceForHearing(COURT, "hearing-0000")).toBeUndefined()
 })
 
 it("deletes documents that are no longer in YAML", async () => {

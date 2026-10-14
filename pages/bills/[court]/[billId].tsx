@@ -1,4 +1,7 @@
+import { ConferenceSummary } from "components/conference/types"
+import { loadConferenceForBill } from "components/conference/load"
 import { dbService } from "components/db/api"
+import { flags } from "components/featureFlags"
 import { GetServerSideProps } from "next"
 import { z } from "zod"
 import { BillDetails } from "../../../components/bill"
@@ -9,17 +12,19 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 
 const Query = z.object({ court: z.coerce.number(), billId: z.string({}) })
 
-export default createPage<{ bill: Bill }>({
-  titleI18nKey: "titles.bill",
-  Page: ({ bill }) => {
-    return (
-      <>
-        <usePublishService.Provider />
-        <BillDetails bill={bill} />
-      </>
-    )
+export default createPage<{ bill: Bill; conference: ConferenceSummary | null }>(
+  {
+    titleI18nKey: "titles.bill",
+    Page: ({ bill, conference }) => {
+      return (
+        <>
+          <usePublishService.Provider />
+          <BillDetails bill={bill} conference={conference} />
+        </>
+      )
+    }
   }
-})
+)
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
   ctx.res.setHeader(
@@ -31,19 +36,27 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 
   const query = Query.safeParse(ctx.query)
   if (!query.success) return { notFound: true }
-  const bill = await dbService().getBill(query.data)
+  const [bill, conference, translations] = await Promise.all([
+    dbService().getBill(query.data),
+    flags().conferences
+      ? loadConferenceForBill(query.data.court, query.data.billId)
+      : null,
+    serverSideTranslations(locale, [
+      "auth",
+      "common",
+      "footer",
+      "lobbying",
+      "testimony",
+      "profile",
+      "conferences"
+    ])
+  ])
   if (!bill) return { notFound: true }
   return {
     props: {
       bill: JSON.parse(JSON.stringify(bill)),
-      ...(await serverSideTranslations(locale, [
-        "auth",
-        "common",
-        "footer",
-        "lobbying",
-        "testimony",
-        "profile"
-      ]))
+      conference,
+      ...translations
     }
   }
 }

@@ -1,4 +1,5 @@
 id: protect-act
+name: PROTECT Act
 court: 194
 title: An Act promoting rule of law, oversight, trust and equal constitutional treatment
 senateBillId: S3086
@@ -8,12 +9,14 @@ status: reportFiled
 conferees:
   - memberCode: DFC1
     branch: House
+    chair: true
   - memberCode: AXV1
     branch: House
   - memberCode: MSV1
     branch: House
   - memberCode: CFF0
     branch: Senate
+    chair: true
   - memberCode: PMP0
     branch: Senate
   - memberCode: RCF0

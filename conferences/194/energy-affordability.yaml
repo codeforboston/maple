@@ -1,4 +1,5 @@
 id: energy-affordability
+name: Energy Affordability
 court: 194
 title: An Act relative to energy affordability, clean power and economic competitiveness
 senateBillId: S3166
@@ -8,12 +9,14 @@ status: appointed
 conferees:
   - memberCode: MJC1
     branch: House
+    chair: true
   - memberCode: AMM1
     branch: House
   - memberCode: BHJ1
     branch: House
   - memberCode: MJB0
     branch: Senate
+    chair: true
   - memberCode: CSC0
     branch: Senate
   - memberCode: BET0

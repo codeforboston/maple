@@ -1,4 +1,5 @@
 id: health-care-workplace-violence
+name: Health Worker Safety
 court: 194
 title: >-
   An Act requiring health care employers to develop and implement programs to prevent workplace
@@ -10,12 +11,14 @@ status: appointed
 conferees:
   - memberCode: MSD1
     branch: House
+    chair: true
   - memberCode: BFR1
     branch: House
   - memberCode: HEK1
     branch: House
   - memberCode: CFF0
     branch: Senate
+    chair: true
   - memberCode: JBL0
     branch: Senate
   - memberCode: KAD0

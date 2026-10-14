@@ -1,4 +1,5 @@
 id: home-care
+name: Home Care
 court: 194
 title: An Act to improve Massachusetts home care
 senateBillId: S3183
@@ -8,12 +9,14 @@ status: reportFiled
 conferees:
   - memberCode: TMS1
     branch: House
+    chair: true
   - memberCode: FAM1
     branch: House
   - memberCode: DFD1
     branch: House
   - memberCode: WNB0
     branch: Senate
+    chair: true
   - memberCode: PDJ0
     branch: Senate
   - memberCode: RCF0

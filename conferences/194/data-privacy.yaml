@@ -1,4 +1,5 @@
 id: data-privacy
+name: Data Privacy
 court: 194
 title: An Act establishing the Massachusetts data privacy act
 senateBillId: S2619
@@ -8,12 +9,14 @@ status: appointed
 conferees:
   - memberCode: CSC0
     branch: Senate
+    chair: true
   - memberCode: BRF0
     branch: Senate
   - memberCode: PMO
     branch: Senate
   - memberCode: MJM1
     branch: House
+    chair: true
   - memberCode: TFB1
     branch: House
   - memberCode: DTV1

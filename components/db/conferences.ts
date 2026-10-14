@@ -6,24 +6,13 @@ import {
   query,
   where
 } from "firebase/firestore"
-import { useMemo } from "react"
-import { useAsync } from "react-async-hook"
 import type { Conference } from "../../functions/src/conferences/types"
 import { firestore } from "../firebase"
-import { loadDoc } from "./common"
 
 export type { Conference } from "../../functions/src/conferences/types"
 
 const conferences = (court: number) =>
   collection(firestore, `/generalCourts/${court}/conferences`)
-
-export async function getConference(
-  court: number,
-  id: string
-): Promise<Conference | undefined> {
-  const conference = await loadDoc(`/generalCourts/${court}/conferences/${id}`)
-  return conference as Conference | undefined
-}
 
 export async function listConferences(court: number) {
   const snap = await getDocs(query(conferences(court), orderBy("title")))
@@ -41,12 +30,19 @@ export async function getConferenceForBill(court: number, billId: string) {
   return snap.docs[0]?.data() as Conference | undefined
 }
 
-export function useConference(court: number, id: string) {
-  const { result, loading } = useAsync(getConference, [court, id])
-  return useMemo(() => ({ conference: result, loading }), [loading, result])
-}
-
-export function useConferenceForBill(court: number, billId: string) {
-  const { result, loading } = useAsync(getConferenceForBill, [court, billId])
-  return useMemo(() => ({ conference: result, loading }), [loading, result])
+/** The conference a hearing belongs to, by the event document id
+ * (`hearing-{EventId}`). Conference hearings carry no bill numbers, so this is
+ * the only way from a hearing to its bills. */
+export async function getConferenceForHearing(
+  court: number,
+  hearingId: string
+) {
+  const snap = await getDocs(
+    query(
+      conferences(court),
+      where("hearingIds", "array-contains", hearingId),
+      limit(1)
+    )
+  )
+  return snap.docs[0]?.data() as Conference | undefined
 }

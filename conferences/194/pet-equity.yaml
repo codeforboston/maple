@@ -1,4 +1,5 @@
 id: pet-equity
+name: PETS Act
 court: 194
 title: An Act promoting pet equity, treatment and safety
 senateBillId: S3028
@@ -8,12 +9,14 @@ status: appointed
 conferees:
   - memberCode: PRF0
     branch: Senate
+    chair: true
   - memberCode: jml0
     branch: Senate
   - memberCode: BET0
     branch: Senate
   - memberCode: JJO1
     branch: House
+    chair: true
   - memberCode: JPL1
     branch: House
   - memberCode: SSH1

@@ -1,6 +1,5 @@
 import { dbService } from "components/db/api"
-import { doc, getDoc } from "firebase/firestore"
-import { firestore } from "components/firebase"
+import { EventSummary, getEventSummary } from "components/db/events"
 import { GetServerSideProps } from "next"
 import { flags } from "components/featureFlags"
 import { z } from "zod"
@@ -10,23 +9,11 @@ import {
   Hearing
 } from "../../components/ballotquestions/types"
 import { BallotQuestion, Bill } from "../../components/db"
-import { Video } from "../../components/hearing/hearing"
 import { createPage } from "../../components/page"
 import { usePublishService } from "../../components/publish/hooks"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 
 const Query = z.object({ id: z.string() })
-
-async function getHearing(id: string): Promise<Hearing | null> {
-  const snap = await getDoc(doc(firestore, "events", id))
-  if (!snap.exists()) return null
-  const data = snap.data()
-  return {
-    id,
-    videoURLs: data.videos ? data.videos.map((item: Video) => item.url) : [],
-    startsAt: data.startsAt?.toMillis() ?? 0
-  }
-}
 
 export default createPage<{
   ballotQuestion: BallotQuestion
@@ -85,8 +72,8 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 
     if (bill?.hearingIds?.length) {
       hearings = await Promise.all(
-        bill.hearingIds.map(id => getHearing(id).catch(() => null))
-      ).then(results => results.filter((h): h is Hearing => h !== null))
+        bill.hearingIds.map(id => getEventSummary(id).catch(() => null))
+      ).then(results => results.filter((h): h is EventSummary => h !== null))
     }
   }
 
