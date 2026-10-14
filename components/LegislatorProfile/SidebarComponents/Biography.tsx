@@ -1,23 +1,35 @@
 import { useTranslation } from "next-i18next"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import styled from "styled-components"
 
 import { Form } from "../../bootstrap"
 import { Profile, ProfileHook, useProfile } from "../../db"
 import Input from "../../forms/Input"
+import { SubmitButton } from "../LegislatorComponents"
 import { SidebarBlock, SidebarTitle } from "../LegislatorSidebar"
 
 import { useAuth } from "components/auth"
-import {
-  updateProfile,
-  UpdateProfileData
-} from "components/EditProfilePage/PersonalInfoTab"
 
-const BioButton = styled.button`
-  font-size: 9px;
-  padding: 2px;
-`
+type UpdateProfileBiography = {
+  aboutYou: string
+}
+
+type Props = {
+  profile: Profile
+  actions: ProfileHook
+  uid?: string
+  setFormUpdated?: any
+  className?: string
+}
+
+async function updateBiography(
+  { actions }: Props,
+  data: UpdateProfileBiography
+) {
+  const { updateAbout } = actions
+
+  await updateAbout(data.aboutYou)
+}
 
 export function Biography({
   court,
@@ -73,12 +85,12 @@ function EditableBiography({
     register,
     formState: { errors, isDirty },
     handleSubmit
-  } = useForm<UpdateProfileData>()
+  } = useForm<UpdateProfileBiography>()
 
   const { about }: Profile = profile
 
   const onSubmit = handleSubmit(async update => {
-    await updateProfile({ profile, actions }, update)
+    await updateBiography({ profile, actions }, update)
     location.assign(`/legislators/${court}/${memberCode}`)
     setFormUpdated(false)
   })
@@ -97,13 +109,13 @@ function EditableBiography({
           <SidebarTitle className={`align-self-center d-inline my-1`}>
             {t("biography")}
           </SidebarTitle>
-          <BioButton
+          <SubmitButton
             type="submit"
             className={`btn btn-primary d-inline m-1 w-auto`}
             disabled={!formUpdated}
           >
             {t("submit")}
-          </BioButton>
+          </SubmitButton>
         </div>
         <Input
           as="textarea"

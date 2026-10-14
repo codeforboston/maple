@@ -1,5 +1,7 @@
 import { JSDOM } from "jsdom"
-import * as functions from "firebase-functions/v1"
+import type { MemoryOption } from "firebase-functions/v2"
+import { onSchedule } from "firebase-functions/v2/scheduler"
+import * as logger from "firebase-functions/logger"
 import { db, Timestamp } from "../firebase"
 import { DateTime } from "luxon"
 import * as api from "../malegislature"
@@ -84,11 +86,11 @@ export class HearingPostProcessor {
     schedule: string = "every 60 minutes",
     timeout: number = 540,
     {
-      memory = "4GB",
+      memory = "4GiB",
       pastEventBeginProcessing = {},
       pastEventCutoff = { days: 8 }
     }: {
-      memory?: functions.RuntimeOptions["memory"]
+      memory?: MemoryOption
       pastEventBeginProcessing?: Duration
       pastEventCutoff?: Duration
     } = {}
@@ -101,15 +103,16 @@ export class HearingPostProcessor {
   }
 
   get function() {
-    return functions
-      .runWith({
+    return onSchedule(
+      {
+        schedule: this.schedule,
         timeoutSeconds: this.timeout,
         secrets: ["ASSEMBLY_API_KEY"],
         memory: this.memory,
         maxInstances: 1
-      })
-      .pubsub.schedule(this.schedule)
-      .onRun(() => this.run())
+      },
+      () => this.run()
+    )
   }
 
   private async run() {
@@ -169,7 +172,7 @@ export class HearingPostProcessor {
         if (!oldVideo.transcriptionId) continue
         const index = videos.findIndex(video => video.url === oldVideo.url)
         if (index < 0) {
-          functions.logger.error(
+          logger.error(
             `A refetch of hearing ${eventId} somehow lost a video ${oldVideo.url}`
           )
           videos.push(oldVideo)
@@ -227,7 +230,7 @@ export class HearingPostProcessor {
       bucketName: bucketName
     })
     if (result.status === ("error" as const)) {
-      functions.logger.error(`Error during ${result.type}: ${result.error}`)
+      logger.error(`Error during ${result.type}: ${result.error}`)
       return null
     }
     console.log(

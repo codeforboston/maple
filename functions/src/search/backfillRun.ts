@@ -34,9 +34,9 @@ export const MAX_BATCHES_PER_CHUNK = 25
  * instead of chaining. */
 export const MAX_CHUNKS = 500
 
-/** `failurePolicy: true` retries the same event for up to seven days. Past this
- * age the chunk gives up and marks the run failed, so a poisoned chunk cannot
- * retry indefinitely. */
+/** Chunks retry on failure, but events older than 30 minutes are abandoned.
+ * Past this age the chunk gives up and marks the run failed, so a poisoned
+ * chunk cannot retry indefinitely. */
 export const MAX_EVENT_AGE_MS = 30 * 60_000
 
 const UPGRADE_PREFIX = "upgrade-"
