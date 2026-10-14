@@ -31,6 +31,7 @@ const ClearButton = styled(FontAwesomeIcon)`
 
 const LegalContainer = styled(Container)`
   background-color: white;
+  border: 1px solid var(--maple-card-edge);
 `
 
 const ResultNumText = styled.div`
@@ -101,6 +102,8 @@ const TimestampCol = styled.div`
 
 const TranscriptBottom = styled(Container)`
   background-color: white;
+  border: 1px solid var(--maple-card-edge);
+  border-top: 0;
   border-bottom-left-radius: 0.75rem;
   border-bottom-right-radius: 0.75rem;
   height: 9px;
@@ -110,6 +113,11 @@ const TranscriptContainer = styled(Container)`
   max-height: 483px;
   overflow-y: auto;
   background-color: var(--maple-surface-base);
+  border-left: 1px solid var(--maple-card-edge);
+  border-right: 1px solid var(--maple-card-edge);
+  /* Long-form reading text stays in Nunito even when the typeface switch puts
+     the rest of the page in Lexend. The search box above is not in here. */
+  font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
 `
 
 const TranscriptRow = styled(Row)`

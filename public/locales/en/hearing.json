@@ -27,6 +27,7 @@
   "see_all": "See all",
   "see_less": "See less",
   "senate_chair": "Senate Chair",
+  "title_on_date": "Hearing on {{date}}",
   "transcript_loading": "Loading transcript for this hearing...",
   "video_and_transcription_feature_callout": "Hearing Video + Transcription",
   "view_bill": "View Bill Details",

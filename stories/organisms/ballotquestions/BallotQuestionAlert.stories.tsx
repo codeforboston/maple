@@ -24,3 +24,14 @@ export const NoTooltip: Story = {
     alertFlag: "Important ballot question update pending."
   }
 }
+
+/* The standing note on the ballot questions explorer (Digital Democracy and
+   Mixed), with its close button. */
+export const Info: Story = {
+  args: {
+    alertFlag:
+      "Question numbers are assigned by the Secretary of State in the summer prior to an election",
+    variant: "info",
+    dismiss: () => {}
+  }
+}

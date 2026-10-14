@@ -34,6 +34,25 @@ const StyledSelect = styled(Select)`
   .s__indicator:hover {
     color: var(--bs-gray-500);
   }
+
+  /* Digital Democracy and Mixed: the sort text a step smaller, menu included. */
+  [data-maple-theme="dd"] & .s__control,
+  [data-maple-theme="dd"] & .s__menu {
+    font-size: 0.875rem;
+  }
+
+  /* The selected value a step bolder; the menu stays regular. */
+  [data-maple-theme="dd"] & .s__control {
+    font-weight: 500;
+  }
+
+  /* Below 992px, where the filters collapse to the filter button
+     (components/search/useFiltersInline.ts), a step bolder again. */
+  @media (max-width: 991.98px) {
+    [data-maple-theme="dd"] & .s__control {
+      font-weight: 600;
+    }
+  }
 `
 
 export type SortByWithConfigurationItem = SortByItem & {

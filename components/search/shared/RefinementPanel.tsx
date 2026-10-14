@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useMemo, useState } from "react"
 import { useTranslation } from "next-i18next"
-import { useMediaQuery } from "usehooks-ts"
+import { useFiltersInline } from "../useFiltersInline"
 import { Button, Offcanvas } from "../../bootstrap"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
@@ -135,8 +135,12 @@ const createMobileFilterElements = ({
         active={isOpen}
         onClick={onOpen}
         className={hasRefinements ? "ais-FilterButton-has-refinements" : ""}
+        aria-label={title}
       >
-        <FontAwesomeIcon icon={faFilter} /> {title}
+        {/* Digital Democracy and Mixed show the icon alone below 768px; the
+            word stays in the label (styles/globals.css). */}
+        <FontAwesomeIcon icon={faFilter} />
+        <span className="filter-button-word"> {title}</span>
       </FilterButton>
     )
   }
@@ -178,7 +182,7 @@ export const RefinementPanel = ({
   filters,
   children
 }: RefinementPanelProps) => {
-  const isDesktop = useMediaQuery("(min-width: 768px)")
+  const isDesktop = useFiltersInline()
   const hasRefinements = useHasRefinements()
   const [isOpen, setIsOpen] = useState(false)
   const menu = useMemo(
