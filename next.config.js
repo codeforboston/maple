@@ -16,7 +16,18 @@ const config = {
   eslint: {
     dirs: ["pages", "components", "functions/src", "tests", "analysis"]
   },
-  i18n: i18Config.i18n
+  i18n: i18Config.i18n,
+
+  webpack(config) {
+    // Grab rules matching SVG files and transform them into React Components using SVGR
+    config.module.rules.push({
+      test: /\.svg\$/i,
+      issuer: /\.[jt]sx?\$/,
+      use: ["@svgr/webpack"]
+    })
+
+    return config
+  }
 }
 
 /** @type {import('next').NextConfig} */

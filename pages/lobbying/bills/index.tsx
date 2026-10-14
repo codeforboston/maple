@@ -10,14 +10,10 @@ import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 import styles from "components/lobbying/lobbying.module.css"
+import { courtYears } from "components/lobbying/sessions"
 
 const ALL_COURTS = [194, 193, 192, 191, 190, 189, 188, 187, 186, 185, 184]
 const PAGE_SIZE = 50
-
-function courtYears(court: number): string {
-  const start = 2 * (court - 184) + 2005
-  return `${start}–${String(start + 1).slice(2)}`
-}
 
 type BillSortKey =
   | "id"

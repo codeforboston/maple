@@ -1,4 +1,4 @@
-import * as functions from "firebase-functions"
+import { onSchedule } from "firebase-functions/v2/scheduler"
 import { getFirestore } from "firebase-admin/firestore"
 import { Timestamp } from "../firebase"
 
@@ -64,6 +64,7 @@ const runCleanupNotifications = async () => {
 }
 
 // Define the cleanupNotifications function
-export const cleanupNotifications = functions.pubsub
-  .schedule("every 24 hours")
-  .onRun(runCleanupNotifications)
+export const cleanupNotifications = onSchedule(
+  "every 24 hours",
+  runCleanupNotifications
+)
