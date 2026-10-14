@@ -155,4 +155,34 @@ it("refuses a file whose name or folder disagrees with its id or court", async (
   errors.mockRestore()
   const doc = (await conference("test-conference").get()).data()
   expect(doc?.title).toBe("edited by hand")
+  editFixture("court: 195", "court: 194")
+})
+
+it("refuses a key the schema does not have", async () => {
+  const errors = jest.spyOn(console, "error").mockImplementation(() => {})
+  editFixture("status: appointed", "status: appointed\nhearingID: hearing-9901")
+  await expect(run()).rejects.toThrow(/nothing written/)
+  expect(errors.mock.calls.flat()).toEqual([
+    expect.stringContaining("unknown field(s) hearingID")
+  ])
+  errors.mockRestore()
+  const doc = (await conference("test-conference").get()).data()
+  expect(doc?.title).toBe("edited by hand")
+  editFixture("\nhearingID: hearing-9901", "")
+})
+
+it("refuses Senate and House bill ids that are swapped", async () => {
+  const errors = jest.spyOn(console, "error").mockImplementation(() => {})
+  editFixture("senateBillId: S9901", "senateBillId: HSWAP")
+  editFixture("houseBillId: H9901", "houseBillId: S9901")
+  editFixture("senateBillId: HSWAP", "senateBillId: H9901")
+  await expect(run()).rejects.toThrow(/nothing written/)
+  expect(errors.mock.calls.flat()).toEqual(
+    expect.arrayContaining([
+      expect.stringContaining("senateBillId must be an S bill")
+    ])
+  )
+  errors.mockRestore()
+  const doc = (await conference("test-conference").get()).data()
+  expect(doc?.title).toBe("edited by hand")
 })
