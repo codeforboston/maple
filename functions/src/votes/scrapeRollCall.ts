@@ -30,7 +30,7 @@ function parseVoteLines(
 ): HouseRollCallVote[] | string {
   const results = []
   let present = 0
-  const votes: ("Yea" | "Nay" | "Abstain" | "Present")[] = []
+  const votes: ("Yea" | "Nay" | "Not Voting" | "Present")[] = []
   for (const line of lines) {
     if (line.match(/^[YNPX]*$/)) {
       for (const char of line) {
@@ -39,7 +39,7 @@ function parseVoteLines(
         } else if (char === "N") {
           votes.push("Nay")
         } else if (char === "X") {
-          votes.push("Abstain")
+          votes.push("Not Voting")
         } else if (char === "P") {
           votes.push("Present")
           present += 1
@@ -97,7 +97,7 @@ type RollCall = {
   yeas: number
   nays: number
   time: Date
-  abstains: number
+  nv: number
 }
 export type HouseRollCallResult = RollCall & { downloadUrl: string }
 
@@ -198,7 +198,7 @@ function parseVotes(number: number, text: string): RollCall | string {
     time,
     yeas: Number(yeas),
     nays: Number(nays),
-    abstains: Number(nv)
+    nv: Number(nv)
   }
 }
 

@@ -44,11 +44,18 @@ export const CommitteeVotes = Record({
   committee: String
 })
 
+// The API states "Absent" votes, which theoretically excludes "Present"
+// votes. A "Present" vote is where a member explicitly states they are present
+// without voting, which can affect the quorum.
+// For "Not Voting", we cannot determine whether the member was absent or whether
+// they were physically present but made no statement from the roll call record.
+// Since it is additional information, "Present" votes are separated from "Not Voting"
+// (unknown status), but they can also be considered an example of not voting.
 export type RollCallResponse = Static<typeof RollCallResponse>
 export const RollCallResponse = Union(
   Literal("Yea"),
   Literal("Nay"),
-  Literal("Abstain"),
+  Literal("Not Voting"),
   Literal("Present")
 )
 

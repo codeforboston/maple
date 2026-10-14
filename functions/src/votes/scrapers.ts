@@ -119,13 +119,17 @@ export class SenateRollCallScraper {
         voteRewritten
       )
     }
+    // The senate PDFs, members who are listed as absent
+    // are listed in the section "ABSENT OR NOT VOTING",
+    // so absent is switch to "Not Voting" (the more general
+    // description) here.
     for (let i = 0; i < (rollCall.Absent ?? []).length; i++) {
       const memberCode = rollCall?.Absent?.[i]?.MemberCode
       if (!memberCode) {
         continue
       }
       const voteRewritten: RollCallVote = {
-        response: "Abstain",
+        response: "Not Voting",
         branch: "Senate",
         memberCode: memberCode!,
         generalCourtNumber: court,
