@@ -99,7 +99,7 @@ export async function getDocument({
     method: "GET",
     timeout: 30_000
   })
-  return APIDocument.check(response)
+  return response as any
 }
 
 export async function getDocumentPdf({

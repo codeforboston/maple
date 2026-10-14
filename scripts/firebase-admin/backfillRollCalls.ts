@@ -27,31 +27,12 @@ export const script: Script = async ({ db, args }) => {
   const houseScraper = new HouseRollCallScraper()
   const senateScraper = new SenateRollCallScraper()
   for (; court <= endCourt; court++) {
-    for (
-      let rollCallNumber = number;
-      !endNumber || rollCallNumber <= endNumber;
-      rollCallNumber++
-    ) {
-      if (!branch) {
-        let result = await senateScraper.addRollCall(
-          writer,
-          court,
-          rollCallNumber
-        )
-        if (result !== "success") {
-          console.log(
-            `Error fetching senate rollcall ${rollCallNumber} for court ${court}: ${result}`
-          )
-          return
-        }
-        result = await houseScraper.addRollCall(writer, court, rollCallNumber)
-        if (result !== "success") {
-          console.log(
-            `Error fetching house rollcall ${rollCallNumber} for court ${court}: ${result}`
-          )
-          return
-        }
-      } else if (branch === "Senate") {
+    if (!branch) {
+      for (
+        let rollCallNumber = number;
+        !endNumber || rollCallNumber <= endNumber;
+        rollCallNumber++
+      ) {
         const result = await senateScraper.addRollCall(
           writer,
           court,
@@ -63,7 +44,48 @@ export const script: Script = async ({ db, args }) => {
           )
           return
         }
-      } else if (branch === "House") {
+      }
+      for (
+        let rollCallNumber = number;
+        !endNumber || rollCallNumber <= endNumber;
+        rollCallNumber++
+      ) {
+        const result = await houseScraper.addRollCall(
+          writer,
+          court,
+          rollCallNumber
+        )
+        if (result !== "success") {
+          console.log(
+            `Error fetching house rollcall ${rollCallNumber} for court ${court}: ${result}`
+          )
+          return
+        }
+      }
+    } else if (branch === "Senate") {
+      for (
+        let rollCallNumber = number;
+        !endNumber || rollCallNumber <= endNumber;
+        rollCallNumber++
+      ) {
+        const result = await senateScraper.addRollCall(
+          writer,
+          court,
+          rollCallNumber
+        )
+        if (result !== "success") {
+          console.log(
+            `Error fetching senate rollcall ${rollCallNumber} for court ${court}: ${result}`
+          )
+          return
+        }
+      }
+    } else if (branch === "House") {
+      for (
+        let rollCallNumber = number;
+        !endNumber || rollCallNumber <= endNumber;
+        rollCallNumber++
+      ) {
         const result = await houseScraper.addRollCall(
           writer,
           court,

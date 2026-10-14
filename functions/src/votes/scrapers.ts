@@ -10,9 +10,25 @@ import {
 } from "./scrapeRollCall"
 import * as functions from "firebase-functions"
 import { currentGeneralCourt } from "../shared"
-import { RollCallVote, HouseRollCall, SenateRollCall } from "./types"
+import { RollCallVote, HouseRollCall, SenateRollCall, Branch } from "./types"
 import { BulkWriter, Timestamp } from "firebase-admin/firestore"
 import { getRollCall } from "../malegislature"
+
+async function getHighestProcessedRollCall(branch: Branch): Promise<number> {
+  const lastVote = await db
+    .collection("votes")
+    .where("type", "==", "RollCall")
+    .where("branch", "==", branch)
+    .where("generalCourtNumber", "==", currentGeneralCourt)
+    .orderBy("rollCallNumber", "desc")
+    .select("rollCallNumber")
+    .limit(1)
+    .get()
+
+  // Roll call numbering starts at 1
+  const number = lastVote.empty ? 0 : lastVote.docs[0].get("rollCallNumber")
+  return number
+}
 
 export class SenateRollCallScraper {
   private schedule
@@ -62,7 +78,7 @@ export class SenateRollCallScraper {
       questionMotion: rollCall.QuestionMotion ?? null,
       downloadUrl:
         rollCall.DownloadUrl ??
-        `https://malegislature.gov/api/DownloadRollCall?Branch=House&generalCourtNumber=${court}&rollCallNumber=${rollCallNumber}`,
+        `http://malegislature.gov/api/DownloadRollCall?Branch=Senate&generalCourtNumber=${court}&rollCallNumber=${rollCallNumber}`,
       rollCallNumber
     }
 
@@ -103,8 +119,6 @@ export class SenateRollCallScraper {
         voteRewritten
       )
     }
-    // This includes members that are only present for part of a session
-    // (should be altered?)
     for (let i = 0; i < (rollCall.Absent ?? []).length; i++) {
       const memberCode = rollCall?.Absent?.[i]?.MemberCode
       if (!memberCode) {
@@ -126,21 +140,7 @@ export class SenateRollCallScraper {
   }
 
   private async run() {
-    const snapshot = await db
-      .collection("votes")
-      .where("type", "==", "rollcall")
-      .where("branch", "==", "Senate")
-      .get()
-
-    let rollCallNumber = 1
-    for (const doc of snapshot.docs) {
-      const name = doc.ref.id
-      const thisCourt = Number(name.split("-")[1])
-      const thisNumber = Number(name.split("-")[2])
-      if (thisCourt === currentGeneralCourt && thisNumber > rollCallNumber) {
-        rollCallNumber = thisNumber
-      }
-    }
+    let rollCallNumber = (await getHighestProcessedRollCall("Senate")) + 1
 
     const writer = db.bulkWriter()
 
@@ -158,13 +158,14 @@ export class SenateRollCallScraper {
         rollCallNumber
       )
     }
+
+    await writer.close()
+
     if (!rollcall.startsWith("fetch error")) {
       functions.logger.error(
         `Error collecting house rollcall ${rollCallNumber}: ${rollcall}`
       )
     }
-
-    await writer.close()
   }
 }
 
@@ -260,21 +261,7 @@ export class HouseRollCallScraper {
   }
 
   private async run() {
-    const snapshot = await db
-      .collection("votes")
-      .where("type", "==", "rollcall")
-      .where("branch", "==", "House")
-      .get()
-
-    let rollCallNumber = 1
-    for (const doc of snapshot.docs) {
-      const name = doc.ref.id
-      const thisCourt = Number(name.split("-")[1])
-      const thisNumber = Number(name.split("-")[2])
-      if (thisCourt === currentGeneralCourt && thisNumber > rollCallNumber) {
-        rollCallNumber = thisNumber
-      }
-    }
+    let rollCallNumber = await getHighestProcessedRollCall("House")
 
     const writer = db.bulkWriter()
 
@@ -292,13 +279,14 @@ export class HouseRollCallScraper {
         rollCallNumber
       )
     }
+
+    await writer.close()
+
     if (!rollcall.startsWith("fetch error")) {
       functions.logger.error(
         `Error collecting house rollcall ${rollCallNumber}: ${rollcall}`
       )
     }
-
-    await writer.close()
   }
 }
 
