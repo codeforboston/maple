@@ -5,6 +5,7 @@ import { getAuth } from "firebase-admin/auth"
 import axios from "axios"
 import unzipper from "unzipper"
 import * as readline from "readline"
+import { z } from "zod"
 import { db, Timestamp } from "../firebase"
 import { currentGeneralCourt, generalCourts } from "../shared"
 import {
@@ -238,7 +239,7 @@ function startBalance(acc: MemberAccumulator): number {
 // Runs nightly, 3 hours after OCPF refreshes its bulk downloads (~3:30 AM
 // Eastern). Firestore is written in a single batch at the end, so a failed run
 // leaves the previous night's data in place and a retry is safe.
-export const scrapeOcpfFinanceNightlyV2 = onSchedule(
+export const scrapeOcpfFinanceNightly = onSchedule(
   {
     schedule: "30 6 * * *",
     timeZone: "America/New_York",
@@ -251,10 +252,19 @@ export const scrapeOcpfFinanceNightlyV2 = onSchedule(
   }
 )
 
+const CPF_ID_ERROR = "cpfId must be a positive integer"
+const ManualQuery = z.object({
+  cpfId: z.coerce
+    .number({ invalid_type_error: CPF_ID_ERROR })
+    .int(CPF_ID_ERROR)
+    .positive(CPF_ID_ERROR)
+    .optional()
+})
+
 // Manual trigger for admins. Optional ?cpfId= limits the run to one member,
 // e.g. ?cpfId=16883 (Rebecca L. Rausch, RLR0), to validate single-member output.
 // concurrency: 1 so overlapping requests don't share an instance's memory.
-export const scrapeOcpfFinanceManualV2 = onRequestV2(
+export const scrapeOcpfFinanceManual = onRequestV2(
   { timeoutSeconds: 540, memory: "512MiB", concurrency: 1 },
   async (req, res) => {
     if (req.method !== "POST") {
@@ -279,17 +289,13 @@ export const scrapeOcpfFinanceManualV2 = onRequestV2(
       }
     }
 
-    let cpfId: number | undefined
-    if (req.query.cpfId !== undefined) {
-      const raw = String(req.query.cpfId)
-      cpfId = Number(raw)
-      if (!/^\d+$/.test(raw) || cpfId <= 0) {
-        res.status(400).send("cpfId must be a positive integer")
-        return
-      }
+    const query = ManualQuery.safeParse(req.query)
+    if (!query.success) {
+      res.status(400).send(query.error.issues[0].message)
+      return
     }
 
-    const results = await runOcpfFinanceScrape({ cpfId })
+    const results = await runOcpfFinanceScrape({ cpfId: query.data.cpfId })
     res.status(200).json({ results })
   }
 )

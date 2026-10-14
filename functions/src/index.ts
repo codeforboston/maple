@@ -66,8 +66,8 @@ export { transcriptionV2 } from "./webhooks"
 
 export { matchOcpfMembersV2 } from "./ocpf/matchOcpfMembers"
 export {
-  scrapeOcpfFinanceNightlyV2,
-  scrapeOcpfFinanceManualV2
+  scrapeOcpfFinanceNightly,
+  scrapeOcpfFinanceManual
 } from "./ocpf/scrapeOcpfFinance"
 
 export * from "./triggerPubsubFunction"
