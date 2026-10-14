@@ -27,6 +27,12 @@ const LOBBYING_STATS_DOC_ID = "stats"
 
 // ── Internal fetchers ─────────────────────────────────────────────────────────
 
+/** The most recent legislative session (General Court) with lobbying data. */
+export async function fetchLatestLobbyingCourt(): Promise<number> {
+  const stats = await fetchLobbyingStats()
+  return Math.max(...(stats?.courtsWithData ?? []))
+}
+
 async function fetchLobbyingStats(): Promise<LobbyingStats | undefined> {
   const snap = await getDoc(
     doc(firestore, LOBBYING_STATS_COLLECTION, LOBBYING_STATS_DOC_ID)
@@ -241,14 +247,6 @@ async function fetchClientFilingCounts(): Promise<Record<string, number>> {
   return snap.exists() ? (snap.data() as Record<string, number>) : {}
 }
 
-export function useLobbyingEntityFilingCounts() {
-  return useAsync(fetchEntityFilingCounts, [])
-}
-
-export function useLobbyingClientFilingCounts() {
-  return useAsync(fetchClientFilingCounts, [])
-}
-
 export type BillSummaryEntry = {
   total: number
   support: number
@@ -391,16 +389,8 @@ async function fetchFirmSummaries(): Promise<FirmSummaryRow[]> {
   return snap.docs.map(d => d.data() as FirmSummaryRow)
 }
 
-export function useLobbyingClientSummaries() {
-  return useAsync(fetchClientSummaries, [])
-}
-
 export function useLobbyingClientSummary(clientNameNorm: string) {
   return useAsync(fetchClientSummary, [clientNameNorm])
-}
-
-export function useLobbyingFirmSummaries() {
-  return useAsync(fetchFirmSummaries, [])
 }
 
 async function fetchFirmSummary(
@@ -422,30 +412,93 @@ export function useLobbyingFirmSummary(entityNameNorm: string) {
   return useAsync(fetchFirmSummary, [entityNameNorm])
 }
 
+export async function fetchBillRows(court: number): Promise<BillRow[]> {
+  const summaries = await fetchLobbyingBillSummaries(court)
+  return Object.entries(summaries).map(([billId, e]) => ({
+    billId,
+    court,
+    total: e.total,
+    support: e.support,
+    oppose: e.oppose,
+    neutral: e.neutral,
+    none: e.none,
+    title: e.title ?? "",
+    clients: e.clients ?? 0,
+    lobbyists: e.lobbyists ?? 0
+  }))
+}
+
 export function useLobbyingBillRows(courts: number[]) {
   const courtsKey = courts.join(",")
   return useAsync(
     async (key: string) => {
       if (!key) return [] as BillRow[]
-      const courtList = key.split(",").map(Number)
-      const results = await Promise.all(
-        courtList.map(fetchLobbyingBillSummaries)
+      const rows = await Promise.all(
+        key.split(",").map(Number).map(fetchBillRows)
       )
-      return courtList.flatMap((court, i) =>
-        Object.entries(results[i]).map(([billId, e]) => ({
-          billId,
-          court,
-          total: e.total,
-          support: e.support,
-          oppose: e.oppose,
-          neutral: e.neutral,
-          none: e.none,
-          title: e.title ?? "",
-          clients: e.clients ?? 0,
-          lobbyists: e.lobbyists ?? 0
-        }))
-      )
+      return rows.flat()
     },
     [courtsKey]
   )
+}
+
+// ── Rows for the prerendered Lobbyists and Clients lists. Fetched in
+// getStaticProps (at build and on daily revalidation), so they must be
+// JSON-serializable (null, never undefined) and hold only what the lists
+// show, since they're embedded in the page. ─────────────────────────────────
+
+export type FirmListRow = {
+  entityName: string
+  entityNameNorm: string
+  regType: string
+  years: number[]
+  clientCount: number
+  totalFilings: number | null
+  lobbyists: string[]
+  employers: string[]
+  hasFilings: boolean
+  courts: Record<string, { filings: number; clientCount: number }>
+}
+
+export async function fetchFirmListRows(): Promise<FirmListRow[]> {
+  const [summaries, filingCounts] = await Promise.all([
+    fetchFirmSummaries(),
+    fetchEntityFilingCounts()
+  ])
+  return summaries.map(f => ({
+    entityName: f.entityName,
+    entityNameNorm: f.entityNameNorm,
+    regType: f.regType,
+    years: f.years,
+    clientCount: f.clientCount,
+    totalFilings: filingCounts[f.entityNameNorm] ?? null,
+    lobbyists: f.lobbyists ?? [],
+    employers: f.employers ?? [],
+    hasFilings: f.hasFilings ?? true,
+    courts: f.courts ?? {}
+  }))
+}
+
+export type ClientListRow = {
+  clientName: string
+  clientNameNorm: string
+  totalCompensation: number | null
+  registrantCount: number
+  totalFilings: number | null
+  courts: NonNullable<ClientSummaryRow["courts"]>
+}
+
+export async function fetchClientListRows(): Promise<ClientListRow[]> {
+  const [summaries, filingCounts] = await Promise.all([
+    fetchClientSummaries(),
+    fetchClientFilingCounts()
+  ])
+  return summaries.map(c => ({
+    clientName: c.clientName,
+    clientNameNorm: c.clientNameNorm,
+    totalCompensation: c.totalCompensation ?? null,
+    registrantCount: c.registrantCount,
+    totalFilings: filingCounts[c.clientNameNorm] ?? null,
+    courts: c.courts ?? {}
+  }))
 }

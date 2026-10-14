@@ -207,7 +207,7 @@ function FirmDetail() {
                     showBill
                     showClient
                     showFirm={false}
-                    showAmount
+                    showAmount={false}
                   />
                   <LobbyingPaginationBar
                     page={page}

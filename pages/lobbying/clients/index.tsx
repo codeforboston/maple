@@ -2,11 +2,8 @@ import React, { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "next-i18next"
 import { Col, Container, Row } from "components/bootstrap"
 import { createPage } from "components/page"
-import { createGetStaticTranslationProps } from "components/translations"
-import {
-  useLobbyingClientSummaries,
-  useLobbyingClientFilingCounts
-} from "components/db/lobbying"
+import { ClientListRow, fetchClientListRows } from "components/db/lobbying"
+import { createLobbyingListProps } from "components/lobbying/listPageProps"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { usePagination } from "components/lobbying/usePagination"
@@ -65,7 +62,7 @@ type ClientRow = {
   totalFilings: number | undefined
 }
 
-function LobbyingClientsTable() {
+function LobbyingClientsTable({ rows }: { rows: ClientListRow[] }) {
   const { t } = useTranslation("lobbying")
   const [search, setSearch] = useState("")
   const [session, setSession] = useState<SessionFilter>("all")
@@ -81,21 +78,18 @@ function LobbyingClientsTable() {
     }
   }
 
-  const { result: summaries, status, error } = useLobbyingClientSummaries()
-  const { result: filCounts } = useLobbyingClientFilingCounts()
   const sessions = useMemo(
     () =>
-      [...new Set((summaries ?? []).flatMap(c => Object.keys(c.courts ?? {})))]
+      [...new Set(rows.flatMap(c => Object.keys(c.courts)))]
         .map(Number)
         .sort((a, b) => b - a),
-    [summaries]
+    [rows]
   )
 
   // With a session selected, show only clients active in it, with that
   // session's lobbyists, filings and compensation.
   const clientsWithCounts = useMemo<ClientRow[]>(() => {
-    if (!summaries) return []
-    return summaries.flatMap(c => {
+    return rows.flatMap(c => {
       if (session === "all") {
         return [
           {
@@ -103,11 +97,11 @@ function LobbyingClientsTable() {
             clientNameNorm: c.clientNameNorm,
             totalCompensation: c.totalCompensation,
             registrantCount: c.registrantCount,
-            totalFilings: filCounts?.[c.clientNameNorm]
+            totalFilings: c.totalFilings ?? undefined
           }
         ]
       }
-      const inSession = c.courts?.[String(session)]
+      const inSession = c.courts[String(session)]
       if (!inSession) return []
       return [
         {
@@ -119,7 +113,7 @@ function LobbyingClientsTable() {
         }
       ]
     })
-  }, [summaries, filCounts, session])
+  }, [rows, session])
 
   const filtered = useMemo(
     () =>
@@ -174,111 +168,103 @@ function LobbyingClientsTable() {
         />
       </div>
 
-      {status === "loading" || status === "not-requested" ? (
-        <p style={{ color: MAPLE_COLORS.textMuted, padding: "2rem 0" }}>
-          {t("loading")}
+      <>
+        <p
+          style={{
+            color: MAPLE_COLORS.textMuted,
+            fontSize: 13,
+            marginBottom: "0.5rem"
+          }}
+        >
+          {totalItems} {t("sections.clients").toLowerCase()}
         </p>
-      ) : status === "error" ? (
-        <p style={{ color: MAPLE_COLORS.danger }}>{error?.message}</p>
-      ) : (
-        <>
-          <p
-            style={{
-              color: MAPLE_COLORS.textMuted,
-              fontSize: 13,
-              marginBottom: "0.5rem"
-            }}
-          >
-            {totalItems} {t("sections.clients").toLowerCase()}
-          </p>
-          <div style={{ overflowX: "auto" }}>
-            <table style={tableStyle}>
-              <thead>
-                <tr style={theadStyle}>
-                  <SortTh
-                    label={t("fields.clientName")}
-                    sortKey="name"
-                    current={sortKey}
-                    dir={sortDir}
-                    onSort={handleSort}
-                  />
-                  <SortTh
-                    label={t("fields.firms")}
-                    sortKey="firms"
-                    current={sortKey}
-                    dir={sortDir}
-                    onSort={handleSort}
-                  />
-                  <SortTh
-                    label={t("fields.filings")}
-                    sortKey="filings"
-                    current={sortKey}
-                    dir={sortDir}
-                    onSort={handleSort}
-                  />
-                  <SortTh
-                    label={t("fields.amount")}
-                    sortKey="compensation"
-                    current={sortKey}
-                    dir={sortDir}
-                    onSort={handleSort}
-                    style={{ textAlign: "right" }}
-                  />
-                </tr>
-              </thead>
-              <tbody>
-                {pageItems.map(c => (
-                  <tr key={c.clientNameNorm} style={trStyle}>
-                    <td style={tdStyle}>
-                      <a
-                        href={`/lobbying/clients/${encodeURIComponent(
-                          c.clientNameNorm
-                        )}`}
-                        style={{ color: MAPLE_COLORS.primary, fontWeight: 600 }}
-                      >
-                        {c.clientName}
-                      </a>
-                    </td>
-                    <td style={{ ...tdStyle, color: MAPLE_COLORS.textMuted }}>
-                      {c.registrantCount}
-                    </td>
-                    <td style={{ ...tdStyle, color: MAPLE_COLORS.textMuted }}>
-                      {c.totalFilings !== undefined ? c.totalFilings : "—"}
-                    </td>
-                    <td
-                      style={{
-                        ...tdStyle,
-                        textAlign: "right",
-                        color: MAPLE_COLORS.textMuted
-                      }}
+        <div style={{ overflowX: "auto" }}>
+          <table style={tableStyle}>
+            <thead>
+              <tr style={theadStyle}>
+                <SortTh
+                  label={t("fields.clientName")}
+                  sortKey="name"
+                  current={sortKey}
+                  dir={sortDir}
+                  onSort={handleSort}
+                />
+                <SortTh
+                  label={t("fields.firms")}
+                  sortKey="firms"
+                  current={sortKey}
+                  dir={sortDir}
+                  onSort={handleSort}
+                />
+                <SortTh
+                  label={t("fields.filings")}
+                  sortKey="filings"
+                  current={sortKey}
+                  dir={sortDir}
+                  onSort={handleSort}
+                />
+                <SortTh
+                  label={t("fields.amount")}
+                  sortKey="compensation"
+                  current={sortKey}
+                  dir={sortDir}
+                  onSort={handleSort}
+                  style={{ textAlign: "right" }}
+                />
+              </tr>
+            </thead>
+            <tbody>
+              {pageItems.map(c => (
+                <tr key={c.clientNameNorm} style={trStyle}>
+                  <td style={tdStyle}>
+                    <a
+                      href={`/lobbying/clients/${encodeURIComponent(
+                        c.clientNameNorm
+                      )}`}
+                      style={{ color: MAPLE_COLORS.primary, fontWeight: 600 }}
                     >
-                      {c.totalCompensation != null
-                        ? c.totalCompensation.toLocaleString("en-US", {
-                            style: "currency",
-                            currency: "USD",
-                            maximumFractionDigits: 0
-                          })
-                        : "—"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <LobbyingPaginationBar
-            page={page}
-            totalPages={totalPages}
-            totalItems={totalItems}
-            pageSize={PAGE_SIZE}
-            onPage={setPage}
-          />
-        </>
-      )}
+                      {c.clientName}
+                    </a>
+                  </td>
+                  <td style={{ ...tdStyle, color: MAPLE_COLORS.textMuted }}>
+                    {c.registrantCount}
+                  </td>
+                  <td style={{ ...tdStyle, color: MAPLE_COLORS.textMuted }}>
+                    {c.totalFilings !== undefined ? c.totalFilings : "—"}
+                  </td>
+                  <td
+                    style={{
+                      ...tdStyle,
+                      textAlign: "right",
+                      color: MAPLE_COLORS.textMuted
+                    }}
+                  >
+                    {c.totalCompensation != null
+                      ? c.totalCompensation.toLocaleString("en-US", {
+                          style: "currency",
+                          currency: "USD",
+                          maximumFractionDigits: 0
+                        })
+                      : "—"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <LobbyingPaginationBar
+          page={page}
+          totalPages={totalPages}
+          totalItems={totalItems}
+          pageSize={PAGE_SIZE}
+          onPage={setPage}
+        />
+      </>
     </>
   )
 }
 
-function LobbyingClientsPage() {
+function LobbyingClientsPage({ rows }: { rows: ClientListRow[] }) {
   const { t } = useTranslation("lobbying")
   return (
     <>
@@ -294,7 +280,7 @@ function LobbyingClientsPage() {
         </Row>
         <Row>
           <Col>
-            <LobbyingClientsTable />
+            <LobbyingClientsTable rows={rows} />
           </Col>
         </Row>
         <Row>
@@ -312,12 +298,9 @@ export default createPage({
   Page: LobbyingClientsPage
 })
 
-export const getStaticProps = createGetStaticTranslationProps([
-  "auth",
-  "common",
-  "footer",
-  "lobbying"
-])
+export const getStaticProps = createLobbyingListProps(async () => ({
+  rows: await fetchClientListRows()
+}))
 
 const filterRowStyle: React.CSSProperties = {
   display: "flex",
