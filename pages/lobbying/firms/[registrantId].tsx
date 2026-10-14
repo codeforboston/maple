@@ -98,13 +98,50 @@ function FirmDetail() {
   const registeredLobbyists = partiesByName(registrations, "lobbyists")
   const filesThroughEmployer =
     summary?.hasFilings === false && (filings?.length ?? 0) === 0
-  const allClients = [
-    ...new Map(
-      (registrants ?? [])
-        .flatMap(r => r.clients)
-        .map(c => [c.clientNameNorm, c])
-    ).values()
-  ].sort((a, b) => a.clientNameNorm.localeCompare(b.clientNameNorm))
+  // One entry per client, with the compensation reported in each period
+  // (most recent first), since a client may appear on several periods'
+  // registrant docs.
+  const clientMap = new Map<
+    string,
+    {
+      clientName: string
+      clientNameNorm: string
+      periods: {
+        periodStart?: string | null
+        periodEnd?: string | null
+        year: number
+        compensation: number
+      }[]
+    }
+  >()
+  for (const r of registrants ?? []) {
+    for (const c of r.clients) {
+      const entry = clientMap.get(c.clientNameNorm) ?? {
+        clientName: c.clientName,
+        clientNameNorm: c.clientNameNorm,
+        periods: []
+      }
+      if (c.compensation != null) {
+        entry.periods.push({
+          periodStart: r.periodStart,
+          periodEnd: r.periodEnd,
+          year: r.year,
+          compensation: c.compensation
+        })
+      }
+      clientMap.set(c.clientNameNorm, entry)
+    }
+  }
+  const allClients = [...clientMap.values()]
+    .map(c => ({
+      ...c,
+      periods: c.periods.sort(
+        (a, b) =>
+          b.year - a.year ||
+          (b.periodStart ?? "").localeCompare(a.periodStart ?? "")
+      )
+    }))
+    .sort((a, b) => a.clientNameNorm.localeCompare(b.clientNameNorm))
 
   const lobbyists = [
     ...new Set((registrants ?? []).flatMap(r => r.lobbyists ?? []))
@@ -207,7 +244,7 @@ function FirmDetail() {
                     showBill
                     showClient
                     showFirm={false}
-                    showAmount
+                    showAmount={false}
                   />
                   <LobbyingPaginationBar
                     page={page}
@@ -248,23 +285,22 @@ function FirmDetail() {
                       >
                         {c.clientName}
                       </a>
-                      {c.compensation != null && (
-                        <span
+                      {c.periods.map((p, i) => (
+                        <div
+                          key={i}
                           style={{
                             color: MAPLE_COLORS.textMuted,
                             fontSize: 12
                           }}
                         >
-                          {" "}
-                          (
-                          {c.compensation.toLocaleString("en-US", {
+                          {formatDisclosureLabel(p, t, i)}:{" "}
+                          {p.compensation.toLocaleString("en-US", {
                             style: "currency",
                             currency: "USD",
                             maximumFractionDigits: 0
                           })}
-                          )
-                        </span>
-                      )}
+                        </div>
+                      ))}
                     </li>
                   ))}
                 </ul>
