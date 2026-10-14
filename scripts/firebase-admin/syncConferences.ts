@@ -30,8 +30,25 @@ export const script: Script = async ({ db, args }) => {
   const desired = new Map<string, { file: string; conf: Conference }>()
   const billOf = new Map<string, string>()
   for (const file of files) {
-    const raw = yaml.load(fs.readFileSync(path.join(dir, file), "utf8"))
-    const conf = Conference.checkWithDefaults(raw)
+    const raw: any = yaml.load(fs.readFileSync(path.join(dir, file), "utf8"))
+    const checked = Conference.validateWithDefaults(raw)
+    if (!checked.success) {
+      errors.push(
+        `${file}: ${checked.message} ${JSON.stringify(checked.details ?? {})}`
+      )
+      continue
+    }
+    const conf = checked.value
+    // The document is the YAML as written, so a misspelt key would land in
+    // Firestore beside the field it meant to set.
+    const unknown = Object.keys(raw).filter(k => !(k in Conference.fields))
+    if (unknown.length)
+      errors.push(`${file}: unknown field(s) ${unknown.join(", ")}`)
+    // getConferenceForBill picks the field to query from the bill's prefix.
+    if (!conf.senateBillId.startsWith("S") || !conf.houseBillId.startsWith("H"))
+      errors.push(
+        `${file}: senateBillId must be an S bill and houseBillId an H bill`
+      )
     const expected = path.join(`${conf.court}`, `${conf.id}.yaml`)
     if (file !== expected && !file.endsWith(path.sep + expected)) {
       errors.push(`${file}: court and id say it belongs at ${expected}`)
