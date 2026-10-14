@@ -20,7 +20,7 @@ class MapleDocument extends Document {
       // skin so changes can be judged in context, or "maple" for the current
       // look. The token overrides live in styles/bootstrap.scss. Drop the
       // attribute before this branch merges.
-      <Html lang={this.props.locale ?? "en"} data-maple-theme="maple">
+      <Html lang={this.props.locale ?? "en"} data-maple-theme="dd">
         <Head />
         <body>
           <Main />

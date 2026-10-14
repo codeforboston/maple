@@ -1,7 +1,7 @@
 import { Hit } from "instantsearch.js"
 import { SearchPage, SortOptionInput } from "../shared"
 import { HearingHit } from "./HearingHit"
-import { SessionSubtitle, Statehouse } from "../SessionMark"
+import { SessionSubtitle } from "../SessionMark"
 import { CURRENT_COURT_NUMBER, formatCourtFilterLabel } from "../courtSessions"
 import { useMemo, useRef } from "react"
 import type { HearingSearchRecord } from "functions/src/hearings/types"
@@ -72,8 +72,6 @@ export const HearingSearch = () => {
     <SearchPage
       searchType="hearing"
       header={<SessionSubtitle />}
-      // Above the search box, with Regular Background only.
-      controlsArt={<Statehouse regularBackgroundOnly />}
       currentRefinementsProps={{ excludedAttributes: ["startsAt"] }}
       initialUiState={{
         [sortOptions[0].value]: {

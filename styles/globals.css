@@ -771,6 +771,61 @@ html:not([data-maple-theme="dd"])
   filter: invert(1);
 }
 
+/* The mobile menu: .navLink-primary and the trigger's close icon force white,
+   for the blue bar. The neutral bar's collapse is transparent over the light
+   page, so they take the desktop links' dark ink instead. */
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .navLink-primary,
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .navLink-primary
+  .dropdown-toggle {
+  color: var(--maple-text-strong) !important;
+  /* A step under the blue bar's bold, which reads heavy in dark ink. */
+  font-weight: 600;
+}
+
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .navLink-primary.show
+  .dropdown-toggle,
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .navLink-primary
+  .dropdown-toggle:hover {
+  background: rgba(15, 23, 42, 0.06) !important;
+}
+
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .mobile-nav-close-icon::before,
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .mobile-nav-close-icon::after {
+  background-color: var(--maple-text-strong);
+}
+
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .mobile-nav-trigger:focus-visible {
+  outline-color: var(--maple-text-strong);
+}
+
 /* HighContrastButton and OutlineButton attach .btn-hover-* automatically, and
    that class sets the resting background to white, not just the hover one. On
    a white page those buttons disappear. Give them the skin's surface and a
@@ -959,6 +1014,15 @@ html:not([data-maple-theme="dd"])
   }
 }
 
+/* Digital Democracy and Mixed: the explorers' filter button is the icon alone
+   below 768px, and the icon and its word from there until the filters sit in
+   their column at 992px (components/search/useFiltersInline.ts). */
+@media (max-width: 767.98px) {
+  [data-maple-theme="dd"] .filter-button-word {
+    display: none;
+  }
+}
+
 /* Digital Democracy and Mixed, desktop: the footer's disclaimer and
    newsletter line moves into its Account column (components/Footer). */
 @media (min-width: 768px) {
@@ -979,10 +1043,47 @@ html:not([data-maple-theme="dd"])
   display: block !important;
 }
 
+/* Digital Democracy and Mixed: a sign-in button that wraps breaks after the
+   slash, "Log in /" over "Sign up" (components/auth/SignInWithButton.tsx). */
+[data-maple-theme="dd"] .sign-in-label-half {
+  white-space: nowrap;
+}
+
+/* Digital Democracy and Mixed: on the mobile bar, room between the logo and the
+   sign-in button (or the profile menu). */
+[data-maple-theme="dd"] .mobile-navbar-account {
+  padding-left: 1rem;
+}
+
+/* Digital Democracy and Mixed, under 600px: the navbar's sign-in button at the
+   explorers' sort text size (components/search/SortBy.tsx), still bold. Set on
+   the button, since .btn declares its own size over the skin's. */
+@media (max-width: 599.98px) {
+  [data-maple-theme="dd"] .main-navbar .btn-primary {
+    --bs-btn-font-size: 0.875rem;
+  }
+}
+
 /* Digital Democracy and Mixed: the sign-in button (or the profile menu) set a
    little apart from the menu items, 1rem beyond the usual gap. */
 [data-maple-theme="dd"] .desktop-navbar-account {
   margin-left: 1rem;
+}
+
+/* Digital Democracy and Mixed: every nav item stays on one line, in the
+   desktop bar and the mobile one. The sign-in button may wrap. */
+[data-maple-theme="dd"]
+  .main-navbar
+  :is(.desktop-navbar-link, .desktop-navbar-dropdown, .nav-link) {
+  white-space: nowrap;
+}
+
+/* While the desktop bar measures whether its links fit (components/Navbar.tsx,
+   Digital Democracy and Mixed), they keep their natural width rather than
+   shrinking, so not fitting shows as overflow and the bar collapses to the
+   hamburger instead of squeezing the sign-in button. */
+.desktop-navbar-bar[data-measure-fit] > * {
+  flex-shrink: 0;
 }
 
 .desktop-navbar-bar {

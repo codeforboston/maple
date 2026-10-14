@@ -8,7 +8,7 @@ import { faFilter } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { ReactNode, useCallback, useState } from "react"
 import styled from "styled-components"
-import { useMediaQuery } from "usehooks-ts"
+import { useFiltersInline } from "./useFiltersInline"
 import { Button, Offcanvas } from "../bootstrap"
 import {
   MultiselectHierarchicalMenu,
@@ -84,7 +84,7 @@ export const useRefinements = ({
   /** Hand-built filter sections shown above the generated ones. */
   leadingFilters?: ReactNode
 }) => {
-  const inline = useMediaQuery("(min-width: 768px)")
+  const inline = useFiltersInline()
   const [show, setShow] = useState(false)
   const handleClose = useCallback(() => setShow(false), [])
   const handleOpen = useCallback(() => setShow(true), [])
@@ -140,8 +140,12 @@ export const useRefinements = ({
         active={show}
         onClick={handleOpen}
         className={hasRefinements ? "ais-FilterButton-has-refinements" : ""}
+        aria-label={t("filter")}
       >
-        <FontAwesomeIcon icon={faFilter} /> {t("filter")}
+        {/* Digital Democracy and Mixed show the icon alone below 768px; the
+            word stays in the label (styles/globals.css). */}
+        <FontAwesomeIcon icon={faFilter} />
+        <span className="filter-button-word"> {t("filter")}</span>
       </FilterButton>
     )
   }

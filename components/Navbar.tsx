@@ -1,12 +1,14 @@
 import { useTranslation } from "next-i18next"
 import { useRouter } from "next/router"
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
+import { flushSync } from "react-dom"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
-import { useMediaQuery } from "usehooks-ts"
+import { useIsomorphicLayoutEffect, useMediaQuery } from "usehooks-ts"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import { Col, Container, Dropdown, Nav, Navbar, NavDropdown } from "./bootstrap"
 import { flags } from "./featureFlags"
+import { useHtmlAttribute } from "./shared/useHtmlAttribute"
 
 import {
   Avatar,
@@ -26,6 +28,7 @@ import {
   NavbarLinkGoals,
   NavbarLinkInTheNews,
   NavbarLinkLogo,
+  NavbarMobileContext,
   NavbarLinkNewsfeed,
   NavbarLinkSignOut,
   NavbarLinkSupport,
@@ -80,37 +83,12 @@ export const EXPLORERS = [
  * (components/shared/SectionGround.tsx) for its own ground. */
 export const SECTION_GROUND_PAGES = EXPLORERS
 
-/**
- * Reads an attribute on <html> and follows changes to it, so switching skins
- * at runtime (Storybook, or the dev switcher) re-renders the navbar.
- */
-const useHtmlAttribute = (name: string, enabled = true) => {
-  // Read straight away where there is a document (the layout only renders in
-  // the browser), so the first render already has the value and nothing jumps.
-  const [value, setValue] = useState<string | null>(() =>
-    enabled && typeof document !== "undefined"
-      ? document.documentElement.getAttribute(name)
-      : null
-  )
-
-  useEffect(() => {
-    if (!enabled) return
-    const root = document.documentElement
-    const read = () => setValue(root.getAttribute(name))
-    read()
-    const observer = new MutationObserver(read)
-    observer.observe(root, { attributes: true, attributeFilter: [name] })
-    return () => observer.disconnect()
-  }, [name, enabled])
-
-  return value
-}
-
 export const MainNavbar: React.FC<{ variant?: NavbarVariant }> = ({
   variant
 }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const narrow = useMediaQuery("(max-width: 768px)")
   const { pathname } = useRouter()
+  const { authenticated } = useAuth()
 
   // By default the bar follows the skin ("auto"): neutral under the Digital
   // Democracy skin, blue under Maple. The "mixed" skin (data-maple-nav="mixed",
@@ -126,6 +104,38 @@ export const MainNavbar: React.FC<{ variant?: NavbarVariant }> = ({
 
   const resolved = variant ?? pageDefault
 
+  // Digital Democracy and Mixed: the bar collapses to the hamburger whenever
+  // its links do not fit, rather than at a set width, so it follows whichever
+  // links are showing (feature flags, signed in or not). DesktopNav reports
+  // the window width its links need when they overflow; narrower than that,
+  // the mobile bar shows. Maple keeps main's 768px.
+  const dd = useHtmlAttribute("data-maple-theme") === "dd"
+  // A measurement holds only for the links it was taken with.
+  const linksKey = `${dd}|${resolved}|${authenticated}`
+  const [fit, setFit] = useState<{ linksKey: string; needed: number } | null>(
+    null
+  )
+  const fitsFrom = fit?.linksKey === linksKey ? fit.needed : null
+  const [windowWidth, setWindowWidth] = useState(() =>
+    typeof window === "undefined" ? 0 : window.innerWidth
+  )
+
+  useEffect(() => {
+    const update = () => setWindowWidth(window.innerWidth)
+    window.addEventListener("resize", update)
+    return () => window.removeEventListener("resize", update)
+  }, [])
+
+  const handleOverflow = useCallback(
+    (needed: number) => {
+      setWindowWidth(window.innerWidth)
+      setFit({ linksKey, needed })
+    },
+    [linksKey]
+  )
+
+  const isMobile = narrow || (dd && fitsFrom !== null && windowWidth < fitsFrom)
+
   // Pinned everywhere except the homepage, where the bar scrolls away with the
   // hero, and, under Digital Democracy only (not Mixed), the four explorers
   // and the Learn and About sections.
@@ -136,7 +146,7 @@ export const MainNavbar: React.FC<{ variant?: NavbarVariant }> = ({
     !isHome && !(ddOnly && (EXPLORERS.includes(pathname) || sectionGround))
 
   return (
-    <>
+    <NavbarMobileContext.Provider value={isMobile}>
       {isMobile ? (
         <MobileNav variant={resolved} sectionGround={sectionGround} />
       ) : (
@@ -144,9 +154,10 @@ export const MainNavbar: React.FC<{ variant?: NavbarVariant }> = ({
           variant={resolved}
           pinned={pinned}
           sectionGround={sectionGround}
+          onOverflow={dd ? handleOverflow : undefined}
         />
       )}
-    </>
+    </NavbarMobileContext.Provider>
   )
 }
 
@@ -251,7 +262,10 @@ const MobileNav: React.FC<{
       data-section-ground={sectionGround ? "" : undefined}
       style={{ backgroundColor: "var(--maple-navbar-bg)" }}
       data-bs-theme="dark"
-      expand="lg"
+      // Never laid out open: under Digital Democracy and Mixed this bar can
+      // show at any width (MainNavbar). Below 992px, where Maple shows it, this
+      // is the same as expand="lg".
+      expand={false}
       expanded={isExpanded}
     >
       <Col className="ms-3 ps-2">
@@ -277,7 +291,7 @@ const MobileNav: React.FC<{
       <Col className="d-flex justify-content-center">
         <NavbarLinkLogo handleClick={closeNav} />
       </Col>
-      <Col className="d-flex justify-content-end me-3 pe-2">
+      <Col className="mobile-navbar-account d-flex justify-content-end me-3 pe-2">
         {authenticated ? (
           <button
             type="button"
@@ -323,9 +337,30 @@ const DesktopNav: React.FC<{
   variant: NavbarVariant
   pinned: boolean
   sectionGround: boolean
-}> = ({ variant, pinned, sectionGround }) => {
+  /** Called with the window width the links need, when they overflow. */
+  onOverflow?: (needed: number) => void
+}> = ({ variant, pinned, sectionGround, onOverflow }) => {
   const { authenticated } = useAuth()
   const { t } = useTranslation(["common", "auth"])
+
+  // Measured before paint, and again whenever the bar or its links change
+  // size (applied before the next paint), so an overflowing bar is not shown.
+  // The links do not wrap or shrink while this is on (styles/globals.css), so
+  // not fitting shows up as overflow.
+  const barRef = useRef<HTMLDivElement>(null)
+  useIsomorphicLayoutEffect(() => {
+    const bar = barRef.current
+    if (!onOverflow || !bar) return
+    const overflow = () => bar.scrollWidth - bar.clientWidth
+    if (overflow() > 0) onOverflow(window.innerWidth + overflow())
+    const observer = new ResizeObserver(() => {
+      const over = overflow()
+      if (over > 0) flushSync(() => onOverflow(window.innerWidth + over))
+    })
+    observer.observe(bar)
+    Array.from(bar.children).forEach(child => observer.observe(child))
+    return () => observer.disconnect()
+  }, [onOverflow])
 
   // While pinned, the bar casts a shadow once the page has scrolled at all,
   // which is when content starts passing underneath it. At the top there is
@@ -355,7 +390,11 @@ const DesktopNav: React.FC<{
       {/* Logo, nav items and the sign-in action share one container, so the
           Digital Democracy skin can seat the whole lot on its own surface and
           leave the bar itself transparent. */}
-      <div className={`desktop-navbar-bar align-items-center d-flex gap-2`}>
+      <div
+        ref={barRef}
+        className={`desktop-navbar-bar align-items-center d-flex gap-2`}
+        data-measure-fit={onOverflow ? "" : undefined}
+      >
         <div className={`me-auto`}>
           <NavbarLinkLogo />
         </div>

@@ -1,4 +1,5 @@
 import { useTranslation } from "next-i18next"
+import { createContext, useContext } from "react"
 import { useRouter } from "next/router"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
@@ -10,6 +11,19 @@ import { Wrap } from "./links"
 import { BetaTag } from "./shared/CommonComponents"
 
 export const DESKTOP_NAV_ITEM_CLASS = "desktop-navbar-link px-3 py-1"
+
+/**
+ * Whether the navbar is in its mobile (hamburger) layout. MainNavbar provides
+ * it, since under Digital Democracy and Mixed that turns on whether the bar's
+ * links fit, not on the width alone. Outside the navbar, the width decides.
+ */
+export const NavbarMobileContext = createContext<boolean | null>(null)
+
+const useNavbarIsMobile = () => {
+  const fromNavbar = useContext(NavbarMobileContext)
+  const narrow = useMediaQuery("(max-width: 768px)")
+  return fromNavbar ?? narrow
+}
 
 const NavbarDropdownLink: React.FC<
   React.PropsWithChildren<{
@@ -88,7 +102,7 @@ export const NavbarLinkAiTools: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <NavbarDropdownLink
@@ -108,7 +122,7 @@ export const NavbarLinkAI: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <NavbarDropdownLink
@@ -129,7 +143,7 @@ export const NavbarLinkBills: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <Nav.Item onClick={handleClick}>
@@ -150,7 +164,7 @@ export const NavbarLinkLobbying: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <Nav.Item onClick={handleClick}>
@@ -172,7 +186,7 @@ export const NavbarLinkBallotQuestions: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <Nav.Item onClick={handleClick}>
@@ -193,7 +207,7 @@ export const NavbarLinkHearings: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <Nav.Item onClick={handleClick}>
@@ -216,7 +230,7 @@ export const NavbarLinkEditProfile: React.FC<
     dropdown?: boolean
   }>
 > = ({ handleClick, other, tab, dropdown = false }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth", "profile"])
   const href =
     tab == "navigation.editProfile"
@@ -250,7 +264,7 @@ export const NavbarLinkEffective: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <NavbarDropdownLink
@@ -270,7 +284,7 @@ export const NavbarLinkWritingTestimony: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <NavbarDropdownLink
@@ -294,7 +308,7 @@ export const NavbarLinkPolicies: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation("footer")
   return (
     <NavbarDropdownLink
@@ -314,7 +328,7 @@ export const NavbarLinkFAQ: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <NavbarDropdownLink
@@ -334,7 +348,7 @@ export const NavbarLinkGoals: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <NavbarDropdownLink
@@ -354,7 +368,7 @@ export const NavbarLinkLogo: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <div
@@ -414,7 +428,7 @@ export const NavbarLinkNewsfeed: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth", "profile"])
   return (
     <Nav.Item onClick={handleClick}>
@@ -435,7 +449,7 @@ export const NavbarLinkProcess: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <NavbarDropdownLink
@@ -456,7 +470,7 @@ export const NavbarLinkSignOut: React.FC<
     dropdown?: boolean
   }>
 > = ({ handleClick, other, dropdown = false }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
 
   if (dropdown && !isMobile) {
@@ -489,7 +503,7 @@ export const NavbarLinkSupport: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <NavbarDropdownLink
@@ -509,7 +523,7 @@ export const NavbarLinkTeam: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <NavbarDropdownLink
@@ -529,7 +543,7 @@ export const NavbarLinkTestimony: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <Nav.Item onClick={handleClick}>
@@ -553,7 +567,7 @@ export const NavbarLinkViewProfile: React.FC<
 > = ({ handleClick, other, dropdown = false }) => {
   const { user } = useAuth()
   const userLink = "/profile?id=" + user?.uid
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
 
   if (dropdown && !isMobile) {
@@ -586,7 +600,7 @@ export const NavbarLinkWhyUse: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <NavbarDropdownLink
@@ -606,7 +620,7 @@ export const NavbarLinkInTheNews: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return isMobile ? (
     <NavDropdown.Item onClick={handleClick}>
