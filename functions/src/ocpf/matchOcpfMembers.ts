@@ -40,7 +40,10 @@ export const matchOcpfMembersV2 = onRequestV2(async (req, res) => {
   const filers = await downloadAndParseFilers()
   const members = await loadMembers()
 
-  const existingMappingDoc = await db.doc("/config/ocpfMemberMapping").get()
+  const mappingPath = `/generalCourts/${currentGeneralCourt}/ocpfMemberMappingConfig/ocpfMemberMapping`
+  const flagsPath = `/generalCourts/${currentGeneralCourt}/ocpfMemberMappingConfig/ocpfMemberMappingFlags`
+
+  const existingMappingDoc = await db.doc(mappingPath).get()
   const existingMapping = (existingMappingDoc.data() ?? {}) as OcpfMemberMapping
 
   const mapping: OcpfMemberMapping = {}
@@ -125,8 +128,8 @@ export const matchOcpfMembersV2 = onRequestV2(async (req, res) => {
 
   const flags: OcpfMemberMappingFlags = { unmatched, ambiguous }
 
-  await db.doc("/config/ocpfMemberMapping").set(mapping, { merge: true })
-  await db.doc("/config/ocpfMemberMappingFlags").set(flags)
+  await db.doc(mappingPath).set(mapping, { merge: true })
+  await db.doc(flagsPath).set(flags)
 
   logger.info("matchOcpfMembers complete", {
     matched: Object.keys(mapping).length,

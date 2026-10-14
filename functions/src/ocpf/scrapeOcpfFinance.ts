@@ -307,11 +307,10 @@ async function runOcpfFinanceScrape(
   options: { cpfId?: number } = {}
 ): Promise<{ processed: number; years: string[] }> {
   // ── A. Load member mapping ─────────────────────────────────────────────
-  const mappingDoc = await db.doc("/config/ocpfMemberMapping").get()
+  const mappingPath = `/generalCourts/${currentGeneralCourt}/ocpfMemberMappingConfig/ocpfMemberMapping`
+  const mappingDoc = await db.doc(mappingPath).get()
   if (!mappingDoc.exists) {
-    logger.warn(
-      "config/ocpfMemberMapping not found; no members will be processed"
-    )
+    logger.warn(`${mappingPath} not found; no members will be processed`)
   }
   const mapping = (mappingDoc.data() ?? {}) as OcpfMemberMapping
 

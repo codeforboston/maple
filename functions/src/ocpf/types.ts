@@ -8,7 +8,7 @@ export interface OcpfFilerRow {
   closedDate: string // empty string = active
 }
 
-// Firestore: /config/ocpfMemberMapping
+// Firestore: /generalCourts/{court}/ocpfMemberMappingConfig/ocpfMemberMapping
 // memberCode → { cpfId, name }, e.g. { "SND1": { cpfId: 15031, name: "Sal N. DiDomenico" } }
 export interface OcpfMemberMappingEntry {
   cpfId: number
@@ -22,7 +22,7 @@ export interface OcpfMemberMappingFlagsEntry {
   name: string
 }
 
-// Firestore: /config/ocpfMemberMappingFlags
+// Firestore: /generalCourts/{court}/ocpfMemberMappingConfig/ocpfMemberMappingFlags
 export interface OcpfMemberMappingFlags {
   unmatched: OcpfMemberMappingFlagsEntry[]
   ambiguous: OcpfMemberMappingFlagsEntry[]
