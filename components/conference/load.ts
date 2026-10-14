@@ -1,3 +1,5 @@
+import { districtId } from "functions/src/districts/normalize"
+import type { Branch } from "../../functions/src/common"
 import {
   Conference,
   getConferenceForBill,
@@ -6,7 +8,7 @@ import {
 } from "../db/conferences"
 import { getEventSummary } from "../db/events"
 import { getMember } from "../db/members"
-import { seatKey } from "./map/seats"
+import { cells } from "./map/geometry"
 import {
   byActivity,
   ConfereeView,
@@ -24,6 +26,13 @@ const summarize = (c: Conference): ConferenceSummary => ({
   houseBillId: c.houseBillId,
   status: c.status
 })
+
+/** The member's cell on the map: their district id, or null where the map has
+ * no such seat. */
+const seatFor = (branch: Branch, district: string) => {
+  const id = districtId(branch, district)
+  return id in cells[branch] ? id : null
+}
 
 /**
  * Everything the conference page renders, resolved server-side so the page
@@ -56,7 +65,7 @@ export async function loadConferencePage(
         name: m.Name,
         party: m.Party,
         district: m.District,
-        seat: seatKey(c.branch, m.District) ?? null
+        seat: seatFor(c.branch, m.District)
       }
     ]
   })

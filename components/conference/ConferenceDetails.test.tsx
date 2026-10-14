@@ -70,7 +70,7 @@ const props: ConferencePageProps = {
       name: "Brendan P. Crighton",
       party: "Democrat",
       district: "Third Essex",
-      seat: "S:Crighton"
+      seat: "senate-3-essex"
     },
     {
       memberCode: "MJR0",
@@ -79,7 +79,7 @@ const props: ConferencePageProps = {
       name: "Michael J. Rodrigues",
       party: "Democrat",
       district: "First Bristol and Plymouth",
-      seat: "S:Rodrigues"
+      seat: "senate-1-bristol-plymouth"
     },
     {
       memberCode: "PJD0",
@@ -88,7 +88,7 @@ const props: ConferencePageProps = {
       name: "Peter J. Durant",
       party: "Republican",
       district: "Worcester and Hampshire",
-      seat: "S:Durant"
+      seat: "senate-worcester-hampshire"
     },
     {
       memberCode: "AHP1",
@@ -97,7 +97,7 @@ const props: ConferencePageProps = {
       name: "Alice Hanlon Peisch",
       party: "Democrat",
       district: "14th Norfolk",
-      seat: "Norfolk-14"
+      seat: "house-14-norfolk"
     },
     {
       memberCode: "FAM1",
@@ -106,7 +106,7 @@ const props: ConferencePageProps = {
       name: "Frank A. Moran",
       party: "Democrat",
       district: "17th Essex",
-      seat: "Essex-17"
+      seat: "house-17-essex"
     },
     {
       memberCode: "DTV1",
@@ -115,7 +115,7 @@ const props: ConferencePageProps = {
       name: "David T. Vieira",
       party: "Republican",
       district: "3rd Barnstable",
-      seat: "Barnstable-3"
+      seat: "house-3-barnstable"
     }
   ],
   hearings: [

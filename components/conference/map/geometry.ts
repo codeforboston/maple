@@ -11,8 +11,9 @@ import geometry from "./geometry.json"
  * seats are in the room, not where a district's edges run. Swap the JSON for
  * real shapes keyed the same way and the components need no change.
  *
- * Seat keys are resolved server-side by `seats.ts`, so the browser only
- * carries the shapes.
+ * Cells are keyed by district id (`districtId` in functions/src/districts),
+ * the same id the districts collection uses, so a member's seat is found
+ * from their district with no lookup.
  */
 
 type Geometry = {
@@ -20,7 +21,7 @@ type Geometry = {
   box: [number, number, number, number]
   /** The state as SVG path data: mainland and two islands. */
   outline: string[]
-  /** Seat key to polygon points, "x,y x,y …". */
+  /** District id to polygon points, "x,y x,y …". */
   house: Record<string, string>
   senate: Record<string, string>
 }
