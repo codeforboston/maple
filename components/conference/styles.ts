@@ -8,6 +8,18 @@ export const Eyebrow = styled.p.attrs((props): { className: string } => ({
   font-size: 0.6875rem;
 `
 
+/** The mockup's 1180 column, shared by the conference page and the index. */
+export const PageColumn = styled.div`
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 1.25rem 3rem;
+
+  @media (min-width: 576px) {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+`
+
 /** The page heading: bold Nunito rather than the heading face, as the mockup
  * sets it. */
 export const Title = styled.h1`

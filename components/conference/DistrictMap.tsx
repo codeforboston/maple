@@ -1,11 +1,22 @@
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import type { Branch } from "../../functions/src/common"
+import { shortName } from "../formatting"
 import { box, cells, outline, seatCount } from "./map/geometry"
 import { Eyebrow, partyColor } from "./styles"
+import { ConfereeView } from "./types"
 
 /** Who a lit seat is, for the label and the colour. */
-export type SeatPerson = { name: string; party: string }
+type SeatPerson = { name: string; party: string }
+
+/** The seats to light for these conferees, by seat key. A conferee the map
+ * has no cell for lights nothing. */
+export const seatsOf = (conferees: ConfereeView[]) =>
+  Object.fromEntries(
+    conferees.flatMap((c): [string, SeatPerson][] =>
+      c.seat ? [[c.seat, { name: shortName(c.name), party: c.party }]] : []
+    )
+  )
 
 /** What every cell shares, so a polygon only carries what sets it apart. A
  * lit cell sets its colour inline: a stylesheet rule outranks an SVG

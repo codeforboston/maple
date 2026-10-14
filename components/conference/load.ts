@@ -12,6 +12,7 @@ import { cells } from "./map/geometry"
 import {
   byActivity,
   ConfereeView,
+  ConferenceIndexProps,
   ConferencePageProps,
   ConferenceSummary,
   HearingView
@@ -35,10 +36,51 @@ const seatFor = (branch: Branch, district: string) => {
 }
 
 /**
+ * Each conference's conferees with their member documents resolved and their
+ * seats found, by conference id. A member sitting on several conferences is
+ * read once. A member document that is missing is left out rather than
+ * failing the page.
+ */
+async function resolveConferees(
+  court: number,
+  conferences: Conference[]
+): Promise<Record<string, ConfereeView[]>> {
+  const codes = [
+    ...new Set(conferences.flatMap(c => c.conferees.map(m => m.memberCode)))
+  ]
+  const members = new Map(
+    await Promise.all(
+      codes.map(async code => [code, await getMember(court, code)] as const)
+    )
+  )
+
+  return Object.fromEntries(
+    conferences.map(conference => [
+      conference.id,
+      conference.conferees.flatMap((c): ConfereeView[] => {
+        const m = members.get(c.memberCode)
+        if (!m) return []
+        return [
+          {
+            memberCode: c.memberCode,
+            branch: c.branch,
+            chair: c.chair === true,
+            name: m.Name,
+            party: m.Party,
+            district: m.District,
+            seat: seatFor(c.branch, m.District)
+          }
+        ]
+      })
+    ])
+  )
+}
+
+/**
  * Everything the conference page renders, resolved server-side so the page
  * arrives complete: the conference, the rail, the six members with their
- * seats on the map, and the hearings. A member or hearing document that is
- * missing is left out rather than failing the page.
+ * seats on the map, and the hearings. A hearing document that is missing is
+ * left out rather than failing the page.
  */
 export async function loadConferencePage(
   court: number,
@@ -49,36 +91,31 @@ export async function loadConferencePage(
   const conference = all.find(c => c.id === id)
   if (!conference) return null
 
-  const [members, hearings] = await Promise.all([
-    Promise.all(conference.conferees.map(c => getMember(court, c.memberCode))),
+  const [conferees, hearings] = await Promise.all([
+    resolveConferees(court, [conference]),
     Promise.all(conference.hearingIds.map(getEventSummary))
   ])
-
-  const conferees = conference.conferees.flatMap((c, i): ConfereeView[] => {
-    const m = members[i]
-    if (!m) return []
-    return [
-      {
-        memberCode: c.memberCode,
-        branch: c.branch,
-        chair: c.chair === true,
-        name: m.Name,
-        party: m.Party,
-        district: m.District,
-        seat: seatFor(c.branch, m.District)
-      }
-    ]
-  })
 
   return {
     conference: summarize(conference),
     conferences: all.map(summarize).sort(byActivity),
-    conferees,
+    conferees: conferees[conference.id],
     hearings: hearings
       .flatMap((h): HearingView[] =>
         h ? [{ id: h.id, eventId: h.eventId, startsAt: h.startsAt }] : []
       )
       .sort((a, b) => a.startsAt - b.startsAt)
+  }
+}
+
+/** Every conference in the court with its conferees, for the index. */
+export async function loadConferenceIndex(
+  court: number
+): Promise<ConferenceIndexProps> {
+  const all = await listConferences(court)
+  return {
+    conferences: all.map(summarize).sort(byActivity),
+    conferees: await resolveConferees(court, all)
   }
 }
 

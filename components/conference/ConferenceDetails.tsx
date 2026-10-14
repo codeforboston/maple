@@ -3,21 +3,14 @@ import { ConferenceByline } from "./ConferenceByline"
 import { ConferenceCommittee } from "./ConferenceCommittee"
 import { ConferencePicker } from "./ConferencePicker"
 import { ConferenceRail } from "./ConferenceRail"
-import { Title } from "./styles"
+import { PageColumn, Title } from "./styles"
 import { conferenceName, ConferencePageProps } from "./types"
 
-/** The mockup's column: 1180 wide, and 1320 once the rail sits beside it. */
-const Page = styled.div`
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 0 1.25rem 3rem;
+/** The mockup's column, widened to 1320 once the rail sits beside it. */
+const Page = styled(PageColumn)`
   display: flex;
   gap: 1.5rem;
 
-  @media (min-width: 576px) {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
   @media (min-width: 992px) {
     max-width: 1320px;
     gap: 3.5rem;

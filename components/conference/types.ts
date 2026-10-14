@@ -29,6 +29,10 @@ export type ConfereeView = {
   seat: string | null
 }
 
+/** The key a conferee answers to on the map, the lists and the table: their
+ * seat, or their member code where the map has no cell for them. */
+export const personKey = (c: ConfereeView) => c.seat ?? c.memberCode
+
 /** A linked hearing, without its videos. */
 export type HearingView = Pick<EventSummary, "id" | "eventId" | "startsAt">
 
@@ -37,6 +41,13 @@ export type ConferencePageProps = {
   conferences: ConferenceSummary[]
   conferees: ConfereeView[]
   hearings: HearingView[]
+}
+
+/** The index: every conference, active first, with its conferees by
+ * conference id. */
+export type ConferenceIndexProps = {
+  conferences: ConferenceSummary[]
+  conferees: Record<string, ConfereeView[]>
 }
 
 /** The short name where there is one, else the act title. */

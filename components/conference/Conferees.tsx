@@ -7,7 +7,7 @@ import { shortName } from "../formatting"
 import { Internal, maple } from "../links"
 import type { Branch } from "../../functions/src/common"
 import { Eyebrow, partyColor } from "./styles"
-import { ConfereeView } from "./types"
+import { ConfereeView, personKey } from "./types"
 
 const List = styled.ul`
   list-style: none;
@@ -31,12 +31,18 @@ const Row = styled.button<{ $back: boolean }>`
   transition: opacity 120ms ease;
 `
 
-const Portrait = styled.span<{ $ring: string; $lit: boolean }>`
+/** 36px unless `$size` says otherwise; a parent can resize it through
+ * `--portrait-size`. */
+const Portrait = styled.span<{
+  $ring: string
+  $lit: boolean
+  $size?: number
+}>`
   position: relative;
   flex: 0 0 auto;
   display: block;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: var(--portrait-size, ${({ $size = 36 }) => $size}px);
+  height: var(--portrait-size, ${({ $size = 36 }) => $size}px);
 
   img {
     display: block;
@@ -45,7 +51,8 @@ const Portrait = styled.span<{ $ring: string; $lit: boolean }>`
     border-radius: 50%;
     object-fit: cover;
     background: var(--maple-surface-page);
-    border: 3px solid ${({ $ring }) => $ring};
+    border: ${({ $size = 36 }) => ($size < 32 ? 2 : 3)}px solid
+      ${({ $ring }) => $ring};
     box-shadow: ${({ $lit }) =>
       $lit
         ? "0 0 0 2px var(--maple-surface-base), 0 0 0 4px var(--maple-text-strong)"
@@ -78,7 +85,7 @@ const Name = styled.span`
   color: var(--maple-text-strong);
 `
 
-const Chair = styled.span`
+export const Chair = styled.span`
   margin-left: 0.375rem;
   font-size: 0.75rem;
   font-weight: 400;
@@ -101,6 +108,44 @@ const NameLink = styled(Internal)`
     text-underline-offset: 3px;
   }
 `
+
+/** The reader's word for one of their own legislators. */
+export const yoursKey = (c: ConfereeView) =>
+  c.branch === "House" ? "your_representative" : "your_senator"
+
+/** A member's face ringed in their party's colour. `lit` adds the outer ring
+ * that marks the one being read, `own` the star for the reader's own
+ * legislator. Where no name stands beside it, `labelled` names the face. */
+export function ConfereeFace({
+  c,
+  size,
+  lit = false,
+  own = false,
+  labelled = false
+}: {
+  c: ConfereeView
+  size?: number
+  lit?: boolean
+  own?: boolean
+  labelled?: boolean
+}) {
+  const { t } = useTranslation("conferences")
+  return (
+    <Portrait $ring={partyColor(c.party)} $lit={lit} $size={size}>
+      <img
+        src={`https://malegislature.gov/Legislators/Profile/170/${c.memberCode}.jpg`}
+        alt={labelled ? c.name : ""}
+        title={labelled ? c.name : undefined}
+        loading="lazy"
+      />
+      {own && (
+        <Star aria-label={t(yoursKey(c))}>
+          <FontAwesomeIcon icon={faStar} />
+        </Star>
+      )}
+    </Portrait>
+  )
+}
 
 /**
  * One chamber's three, to stand beside that chamber's map. Pointing at a
@@ -127,7 +172,6 @@ export function Conferees({
 }) {
   const { t } = useTranslation("conferences")
   const flags = useFlags()
-  const yours = t(chamber === "House" ? "your_representative" : "your_senator")
   return (
     <div>
       <Eyebrow className="mb-2">{t(chamber.toLowerCase())}</Eyebrow>
@@ -137,7 +181,7 @@ export function Conferees({
           .map(c => {
             // A conferee the map has no seat for still answers the pointer,
             // under their own code; they just light nothing.
-            const key = c.seat ?? c.memberCode
+            const key = personKey(c)
             const own = mine.has(c.memberCode)
             const lit = selected === key
             return (
@@ -152,17 +196,7 @@ export function Conferees({
                   onBlur={() => onHover(null)}
                   onClick={() => onPin(key)}
                 >
-                  <Portrait $ring={partyColor(c.party)} $lit={lit}>
-                    <img
-                      src={`https://malegislature.gov/Legislators/Profile/170/${c.memberCode}.jpg`}
-                      alt=""
-                    />
-                    {own && (
-                      <Star aria-label={yours}>
-                        <FontAwesomeIcon icon={faStar} />
-                      </Star>
-                    )}
-                  </Portrait>
+                  <ConfereeFace c={c} lit={lit} own={own} />
                   <span className="min-w-0">
                     <Name>
                       <NameLink
@@ -180,7 +214,7 @@ export function Conferees({
                       </NameLink>
                       {c.chair && <Chair>{t("chair")}</Chair>}
                     </Name>
-                    <Sub>{own ? yours : c.district}</Sub>
+                    <Sub>{own ? t(yoursKey(c)) : c.district}</Sub>
                   </span>
                 </Row>
               </li>

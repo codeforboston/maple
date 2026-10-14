@@ -63,23 +63,17 @@ const RailRow = styled(Internal)<{ $on: boolean }>`
   }
 `
 
-/** One row of the list, shared with the phone picker. */
-function RailEntry({ c, on }: { c: ConferenceSummary; on: boolean }) {
+/** "S.1234 · H.5678", and the status once the conference has finished. The
+ * caller styles `.status`. */
+export function BillLine({ c }: { c: ConferenceSummary }) {
   const { t } = useTranslation("conferences")
   return (
-    <RailRow
-      href={maple.conference({ court: c.court, id: c.id })}
-      aria-current={on ? "page" : undefined}
-      $on={on}
-    >
-      <span className="name">{conferenceName(c)}</span>
-      <span className="bills">
-        {formatBillId(c.senateBillId)} · {formatBillId(c.houseBillId)}
-        {c.status !== "appointed" && (
-          <span className="status">{t(`status.${c.status}`)}</span>
-        )}
-      </span>
-    </RailRow>
+    <>
+      {formatBillId(c.senateBillId)} · {formatBillId(c.houseBillId)}
+      {c.status !== "appointed" && (
+        <span className="status">{t(`status.${c.status}`)}</span>
+      )}
+    </>
   )
 }
 
@@ -117,7 +111,16 @@ export function RailList({
     <List>
       {conferences.map(c => (
         <li key={c.id}>
-          <RailEntry c={c} on={c.id === current} />
+          <RailRow
+            href={maple.conference(c)}
+            aria-current={c.id === current ? "page" : undefined}
+            $on={c.id === current}
+          >
+            <span className="name">{conferenceName(c)}</span>
+            <span className="bills">
+              <BillLine c={c} />
+            </span>
+          </RailRow>
         </li>
       ))}
     </List>
