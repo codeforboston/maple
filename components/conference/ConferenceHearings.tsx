@@ -1,6 +1,7 @@
 import { DateTime } from "luxon"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
+import { timeZone } from "../db/events"
 import { maple } from "../links"
 import { DottedInternal, Eyebrow } from "./styles"
 import { HearingView } from "./types"
@@ -37,7 +38,9 @@ export function ConferenceHearings({ hearings }: { hearings: HearingView[] }) {
           <li key={h.id}>
             <DottedInternal href={maple.hearing(h)}>
               {t(h.startsAt <= now ? "hearing_held" : "hearing_scheduled", {
-                date: DateTime.fromMillis(h.startsAt)
+                // In the legislature's zone, so the server and the reader
+                // agree on the day of an evening hearing.
+                date: DateTime.fromMillis(h.startsAt, { zone: timeZone })
                   .setLocale(i18n.language)
                   .toLocaleString(DateTime.DATE_FULL)
               })}

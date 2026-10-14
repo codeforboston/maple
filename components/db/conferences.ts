@@ -1,11 +1,4 @@
-import {
-  collection,
-  getDocs,
-  limit,
-  orderBy,
-  query,
-  where
-} from "firebase/firestore"
+import { collection, getDocs, limit, query, where } from "firebase/firestore"
 import type { Conference } from "../../functions/src/conferences/types"
 import { firestore } from "../firebase"
 
@@ -15,7 +8,8 @@ const conferences = (court: number) =>
   collection(firestore, `/generalCourts/${court}/conferences`)
 
 export async function listConferences(court: number) {
-  const snap = await getDocs(query(conferences(court), orderBy("title")))
+  // Unordered: every caller sorts by activity.
+  const snap = await getDocs(conferences(court))
   return snap.docs.map(d => d.data() as Conference)
 }
 

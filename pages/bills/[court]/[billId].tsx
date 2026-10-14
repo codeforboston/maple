@@ -39,7 +39,10 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   const [bill, conference, translations] = await Promise.all([
     dbService().getBill(query.data),
     flags().conferences
-      ? loadConferenceForBill(query.data.court, query.data.billId)
+      ? // The banner is secondary: a failed lookup must not fail the bill page.
+        loadConferenceForBill(query.data.court, query.data.billId).catch(
+          () => null
+        )
       : null,
     serverSideTranslations(locale, [
       "auth",

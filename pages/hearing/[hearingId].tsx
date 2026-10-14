@@ -44,7 +44,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
       ? loadConferenceForHearing(
           hearingData.generalCourtNumber,
           hearingData.hearingId
-        )
+        ).catch(() => null)
       : null,
     serverSideTranslations(locale, [
       "auth",

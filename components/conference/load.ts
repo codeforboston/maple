@@ -79,8 +79,8 @@ async function resolveConferees(
 /**
  * Everything the conference page renders, resolved server-side so the page
  * arrives complete: the conference, the rail, the six members with their
- * seats on the map, and the hearings. A hearing document that is missing is
- * left out rather than failing the page.
+ * seats on the map, and the hearings. A hearing document that is missing, or
+ * has no start to date it by, is left out rather than failing the page.
  */
 export async function loadConferencePage(
   court: number,
@@ -102,7 +102,9 @@ export async function loadConferencePage(
     conferees: conferees[conference.id],
     hearings: hearings
       .flatMap((h): HearingView[] =>
-        h ? [{ id: h.id, eventId: h.eventId, startsAt: h.startsAt }] : []
+        h?.startsAt
+          ? [{ id: h.id, eventId: h.eventId, startsAt: h.startsAt }]
+          : []
       )
       .sort((a, b) => a.startsAt - b.startsAt)
   }
