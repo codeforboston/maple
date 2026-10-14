@@ -428,13 +428,32 @@ export async function fetchBillRows(court: number): Promise<BillRow[]> {
   }))
 }
 
+// Reads through the CDN-cached API route rather than Firestore directly, and
+// keeps each session's rows for the life of the page so changing the selected
+// sessions doesn't refetch them.
+const billRowsBySession = new Map<number, Promise<BillRow[]>>()
+
+function fetchCachedBillRows(court: number): Promise<BillRow[]> {
+  let rows = billRowsBySession.get(court)
+  if (!rows) {
+    rows = fetch(`/api/lobbying/bills/${court}`).then(res => {
+      if (!res.ok) throw new Error(`Failed to load bills for session ${court}`)
+      return res.json() as Promise<BillRow[]>
+    })
+    // Let a failed request be retried.
+    rows.catch(() => billRowsBySession.delete(court))
+    billRowsBySession.set(court, rows)
+  }
+  return rows
+}
+
 export function useLobbyingBillRows(courts: number[]) {
   const courtsKey = courts.join(",")
   return useAsync(
     async (key: string) => {
       if (!key) return [] as BillRow[]
       const rows = await Promise.all(
-        key.split(",").map(Number).map(fetchBillRows)
+        key.split(",").map(Number).map(fetchCachedBillRows)
       )
       return rows.flat()
     },
