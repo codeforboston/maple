@@ -4,6 +4,7 @@ import { ConferenceCommittee } from "./ConferenceCommittee"
 import { ConferenceHero } from "./ConferenceHero"
 import { ConferencePicker } from "./ConferencePicker"
 import { ConferenceRail } from "./ConferenceRail"
+import { ConferenceText } from "./ConferenceText"
 import { useConferenceTop } from "./hooks"
 import { PageColumn, Title } from "./styles"
 import { conferenceName, ConferencePageProps } from "./types"
@@ -88,6 +89,8 @@ export function ConferenceDetails({
             conferees={conferees}
             hearings={hearings}
           />
+          {/* Keyed so a picked version does not outlive its conference. */}
+          <ConferenceText key={conference.id} conference={conference} />
         </Main>
       </Page>
     </>

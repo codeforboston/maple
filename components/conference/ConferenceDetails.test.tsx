@@ -55,6 +55,29 @@ jest.mock("../featureFlags", () => ({
 const profile = { representative: { id: "AHP1" } }
 jest.mock("../db", () => ({ useProfile: () => ({ profile }) }))
 
+const mockBill = jest.fn()
+jest.mock("../db/bills", () => ({
+  useBill: (court: number, id: string) => mockBill(court, id)
+}))
+
+const loaded = (id: string, Title: string, DocumentText?: string) => ({
+  loading: false,
+  result: { id, content: { Title, DocumentText } }
+})
+
+const texts: Record<string, ReturnType<typeof loaded>> = {
+  S2581: loaded(
+    "S2581",
+    "An Act to promote student learning",
+    "\tSECTION 1. Phones.\r\n\r\n\tSECTION 2. Pouches."
+  ),
+  H5366: loaded(
+    "H5366",
+    "An Act relative to student mental health",
+    "SECTION 1. Social media."
+  )
+}
+
 const conference: ConferencePageProps["conference"] = {
   id: "student-learning-and-mental-health",
   name: "Phone-Free Schools",
@@ -143,6 +166,10 @@ const props: ConferencePageProps = {
     }
   ]
 }
+
+beforeEach(() => {
+  mockBill.mockImplementation((_court: number, id: string) => texts[id])
+})
 
 describe("ConferenceDetails", () => {
   const { scrollTo } = window
@@ -282,5 +309,57 @@ describe("ConferenceDetails", () => {
     expect(
       container.querySelector('polygon[aria-label="D. Vieira"]')
     ).toHaveStyle({ fill: "#b53333", fillOpacity: 0.45 })
+  })
+
+  describe("bill text", () => {
+    it("shows both texts side by side, Senate first, a paragraph per line", () => {
+      render(<ConferenceDetails {...props} />)
+      const sheets = screen.getAllByRole("article")
+      expect(sheets.map(s => s.getAttribute("aria-label"))).toEqual([
+        "senate S2581",
+        "house H5366"
+      ])
+      expect(sheets[0]).toHaveTextContent("An Act to promote student learning")
+      // Each line on its own: the blank line between them is dropped.
+      expect(screen.getByText("SECTION 1. Phones.")).toBeInTheDocument()
+      expect(screen.getByText("SECTION 2. Pouches.")).toBeInTheDocument()
+      expect(sheets[1]).toHaveTextContent("SECTION 1. Social media.")
+      expect(mockBill).toHaveBeenCalledWith(194, "S2581")
+      expect(mockBill).toHaveBeenCalledWith(194, "H5366")
+    })
+
+    it("shows one chamber's text when one is picked, without fetching again", () => {
+      render(<ConferenceDetails {...props} />)
+      mockBill.mockClear()
+      fireEvent.change(screen.getByLabelText("version"), {
+        target: { value: "house" }
+      })
+      const sheets = screen.getAllByRole("article")
+      expect(sheets).toHaveLength(1)
+      expect(sheets[0]).toHaveAttribute("aria-label", "house H5366")
+      // The hidden Senate text stays fetched, ready for switching back.
+      expect(mockBill).toHaveBeenCalledWith(194, "S2581")
+    })
+
+    it("spins while a bill loads", () => {
+      mockBill.mockImplementation((_court: number, id: string) =>
+        id === "H5366" ? { loading: true } : texts[id]
+      )
+      render(<ConferenceDetails {...props} />)
+      expect(screen.getByRole("status")).toHaveTextContent("text_loading")
+      expect(screen.getAllByRole("article")).toHaveLength(1)
+    })
+
+    it("links to the PDF where MAPLE has no text", () => {
+      mockBill.mockImplementation((_court: number, id: string) =>
+        id === "H5366" ? loaded("H5366", "An Act", undefined) : texts[id]
+      )
+      render(<ConferenceDetails {...props} />)
+      expect(screen.getByText("text_missing H5366")).toBeInTheDocument()
+      expect(screen.getByText("text_pdf").closest("a")).toHaveAttribute(
+        "href",
+        "https://malegislature.gov/Bills/194/H5366.pdf"
+      )
+    })
   })
 })

@@ -62,5 +62,13 @@
     ],
     "sources": "From MAPLE’s <1>guide to the legislative process</1> and the legislature’s <3>Joint Rules</3>.",
     "see": "See the committees"
-  }
+  },
+  "bill_text": "Bill Text",
+  "version": "Version",
+  "version_senate": "Senate Version",
+  "version_house": "House Version",
+  "version_both": "Senate and House",
+  "text_loading": "Loading the bill text",
+  "text_missing": "The text of {{bill}} isn’t on MAPLE yet.",
+  "text_pdf": "Read the PDF"
 }
