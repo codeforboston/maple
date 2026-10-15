@@ -1,10 +1,10 @@
 import { useTranslation } from "next-i18next"
-import styled from "styled-components"
+import styled, { css } from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faStar } from "@fortawesome/free-solid-svg-icons"
 import { useFlags } from "../featureFlags"
 import { shortName } from "../formatting"
-import { Internal, maple } from "../links"
+import { External, Internal, maple } from "../links"
 import type { Branch } from "../../functions/src/common"
 import { Eyebrow, partyColor } from "./styles"
 import { ConfereeView, personKey } from "./types"
@@ -18,17 +18,30 @@ const List = styled.ul`
   gap: 0.625rem;
 `
 
-const Row = styled.button<{ $back: boolean }>`
+const Row = styled.div<{ $back: boolean }>`
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.625rem;
+  opacity: ${({ $back }) => ($back ? 0.45 : 1)};
+  transition: opacity 120ms ease;
+`
+
+/** The portrait is the row's button; its pseudo-element stretches over the
+ * whole row so the row stays one target, while the name beside it stays a
+ * sibling link rather than a control inside a control. */
+const Pick = styled.button`
+  flex: 0 0 auto;
   padding: 0;
   border: 0;
   background: none;
-  text-align: left;
   cursor: pointer;
-  opacity: ${({ $back }) => ($back ? 0.45 : 1)};
-  transition: opacity 120ms ease;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
 `
 
 /** 36px unless `$size` says otherwise; a parent can resize it through
@@ -99,7 +112,9 @@ const Sub = styled.span`
   color: var(--maple-text-muted);
 `
 
-const NameLink = styled(Internal)`
+const linkStyle = css`
+  position: relative;
+  z-index: 1;
   color: inherit;
   text-decoration: none;
   &:hover {
@@ -107,6 +122,14 @@ const NameLink = styled(Internal)`
     text-decoration: underline dotted;
     text-underline-offset: 3px;
   }
+`
+
+const NameLink = styled(Internal)`
+  ${linkStyle}
+`
+
+const ExternalNameLink = styled(External)`
+  ${linkStyle}
 `
 
 /** The reader's word for one of their own legislators. */
@@ -187,31 +210,41 @@ export function Conferees({
             return (
               <li key={c.memberCode}>
                 <Row
-                  type="button"
                   $back={Boolean(selected) && !lit}
-                  aria-pressed={lit}
                   onPointerEnter={() => onHover(key)}
                   onPointerLeave={() => onHover(null)}
-                  onFocus={() => onHover(key)}
-                  onBlur={() => onHover(null)}
-                  onClick={() => onPin(key)}
                 >
-                  <ConfereeFace c={c} lit={lit} own={own} />
+                  <Pick
+                    type="button"
+                    aria-pressed={lit}
+                    aria-label={`${c.name}, ${
+                      own ? t(yoursKey(c)) : c.district
+                    }`}
+                    onFocus={() => onHover(key)}
+                    onBlur={() => onHover(null)}
+                    onClick={() => onPin(key)}
+                  >
+                    <ConfereeFace c={c} lit={lit} own={own} />
+                  </Pick>
                   <span className="min-w-0">
                     <Name>
-                      <NameLink
-                        href={
-                          flags.legislators
-                            ? maple.legislator({
-                                court,
-                                memberCode: c.memberCode
-                              })
-                            : `https://malegislature.gov/Legislators/Profile/${c.memberCode}`
-                        }
-                        onClick={e => e.stopPropagation()}
-                      >
-                        {shortName(c.name)}
-                      </NameLink>
+                      {flags.legislators ? (
+                        <NameLink
+                          href={maple.legislator({
+                            court,
+                            memberCode: c.memberCode
+                          })}
+                        >
+                          {shortName(c.name)}
+                        </NameLink>
+                      ) : (
+                        <ExternalNameLink
+                          href={`https://malegislature.gov/Legislators/Profile/${c.memberCode}`}
+                          plain
+                        >
+                          {shortName(c.name)}
+                        </ExternalNameLink>
+                      )}
                       {c.chair && <Chair>{t("chair")}</Chair>}
                     </Name>
                     <Sub>{own ? t(yoursKey(c)) : c.district}</Sub>
