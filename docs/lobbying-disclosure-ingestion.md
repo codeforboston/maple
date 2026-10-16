@@ -452,42 +452,19 @@ running multiple language runtimes in the same Firebase Functions deployment.
 
 ## Deploying the Cloud Run Container
 
-Follows the same pattern as the MCP server. The Artifact Registry repo
-(`maple-lobbying`) and Cloud Run job (`maple-lobbying-scraper`) are already
-created in `digital-testimony-dev`.
+`lobbying-scraper/deploy.sh` builds and pushes the image, creates or updates
+the `maple-lobbying-scraper` Cloud Run job (with `ARCHIVE_RAW=1`), and creates
+or updates the `maple-lobbying-weekly` Cloud Scheduler trigger (Mondays 06:00
+UTC). The trigger runs as a dedicated `lobbying-scheduler` service account that
+can only invoke the job. Re-run it after any scraper change:
 
 ```bash
-cd lobbying-scraper
-IMAGE=us-central1-docker.pkg.dev/digital-testimony-dev/maple-lobbying/scraper:latest
-docker build -t $IMAGE . && docker push $IMAGE
-
-gcloud run jobs update maple-lobbying-scraper \
-  --image=$IMAGE \
-  --project=digital-testimony-dev \
-  --region=us-central1
+gcloud auth configure-docker us-central1-docker.pkg.dev  # once
+lobbying-scraper/deploy.sh <project>
 ```
 
-For a new project (prod), create the job first:
-
-```bash
-gcloud artifacts repositories create maple-lobbying \
-  --repository-format=docker --location=us-central1 --project=<project>
-
-gcloud run jobs create maple-lobbying-scraper \
-  --image=$IMAGE \
-  --project=<project> \
-  --region=us-central1 \
-  --task-timeout=30m \
-  --max-retries=0
-
-# Schedule weekly (Mondays 6am UTC)
-gcloud scheduler jobs create http maple-lobbying-weekly \
-  --schedule="0 6 * * 1" \
-  --uri="https://us-central1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/<project>/jobs/maple-lobbying-scraper:run" \
-  --http-method=POST \
-  --oauth-service-account-email=<scheduler-sa>@<project>.iam.gserviceaccount.com \
-  --location=us-central1
-```
+The project's archive bucket (`<project>-lobbying-archive`) must already exist.
+For a new project, run the historical backfill before the first weekly run.
 
 ## Recomputing Stats
 
@@ -760,17 +737,11 @@ resumption.
 
 ### Step 8 — Deploy and verify Cloud Run scraper
 
-Build and push the container image, then update the Cloud Run job:
+Build, push and schedule the job (see
+[Deploying the Cloud Run Container](#deploying-the-cloud-run-container)):
 
 ```bash
-cd lobbying-scraper
-IMAGE=us-central1-docker.pkg.dev/digital-testimony-dev/maple-lobbying/scraper:latest
-docker build -t $IMAGE . && docker push $IMAGE
-
-gcloud run jobs update maple-lobbying-scraper \
-  --image=$IMAGE \
-  --project=digital-testimony-dev \
-  --region=us-central1
+lobbying-scraper/deploy.sh digital-testimony-dev
 ```
 
 Trigger a manual run via the Cloud Run console or:
