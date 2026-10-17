@@ -26,7 +26,10 @@ const BaseTestimony = R({
   attachmentId: Maybe(RtString),
   /** Only present if testimony was edited (has a version greater than 1) */
   editReason: Maybe(RtString),
-  ballotQuestionId: Maybe(RtString)
+  ballotQuestionId: Maybe(RtString),
+  /** Set when the testimony targets a committee of conference rather than the
+   * bill alone. `billId` is then the conference's canonical bill. */
+  conferenceId: Maybe(RtString)
 })
 
 export type Testimony = Static<typeof Testimony>

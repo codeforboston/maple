@@ -1,0 +1,27 @@
+id: public-records
+name: Public Records
+court: 194
+title: An Act promoting transparency and public access in state government
+senateBillId: S3244
+houseBillId: H5469
+canonicalBillId: H5469
+status: appointed
+conferees:
+  - memberCode: AHP1
+    branch: House
+    chair: true
+  - memberCode: AXV1
+    branch: House
+  - memberCode: DKM1
+    branch: House
+  - memberCode: CSC0
+    branch: Senate
+    chair: true
+  - memberCode: CFF0
+    branch: Senate
+  - memberCode: KAD0
+    branch: Senate
+hearingIds:
+  - hearing-5767
+differences: []
+similarities: []

@@ -1,0 +1,27 @@
+id: ballot-question-campaign-finance
+name: Ballot Question Finance
+court: 194
+title: "An Act improving campaign finance reporting for statewide ballot questions "
+senateBillId: S2916
+houseBillId: H5558
+canonicalBillId: S2916
+status: appointed
+conferees:
+  - memberCode: SND0
+    branch: Senate
+    chair: true
+  - memberCode: JRO0
+    branch: Senate
+  - memberCode: RCF0
+    branch: Senate
+  - memberCode: djh1
+    branch: House
+    chair: true
+  - memberCode: AHP1
+    branch: House
+  - memberCode: PKF1
+    branch: House
+hearingIds:
+  - hearing-5765
+differences: []
+similarities: []
