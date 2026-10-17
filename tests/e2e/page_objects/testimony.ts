@@ -38,7 +38,6 @@ export class TestimonyPage {
   }
 
   async sort(option: string) {
-    // previoud code: await this.page.getByText("Sort by New -> Old").click()
     await this.page
       .getByText(/Sort by/i)
       .first()
