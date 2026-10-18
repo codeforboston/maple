@@ -1,62 +1,83 @@
 {
   "About_MAPLE": "About MAPLE",
+  "didYouKnow": {
+    "deadline": "Testimony can be generally be submitted up until the hearing date.",
+    "legislators": "Legislators value personal stories and information regarding their constituents.",
+    "submit": "Anyone can submit testimony to the MA legislature.",
+    "title": "Did You Know?"
+  },
+  "explainer": {
+    "action": "Get Started",
+    "body": "MAPLE makes it easy to engage with the Massachusetts Legislature. Research bills, read diverse perspectives, and submit your own testimony to ensure your voice is heard.",
+    "title": "What does MAPLE do?"
+  },
+  "features": {
+    "publish": "Share your perspective directly with the State House. Submit written testimony to make your voice part of the legislative process.",
+    "research": "Explore bills and policy changes on topics that matter to you. Search by keyword, committee, or legislator.",
+    "share": "Read testimony from organizations and constituents across the Commonwealth to get informed on the issues of the day.",
+    "title": "Features"
+  },
+  "hearings": {
+    "action": "Browse Hearings",
+    "appPreviewAlt": "MAPLE platform preview",
+    "loading": "Loading upcoming hearings...",
+    "logoAlt": "MAPLE Massachusetts Platform for Legislative Engagement logo",
+    "title": "Upcoming Hearings",
+    "topic": "Massachusetts Legislature"
+  },
   "hearingsScheduled": {
     "noEvents": "No Scheduled Events",
     "title": "Hearings Scheduled"
   },
-  "who": {
-    "title": "Who",
-    "bodytext": "All Massachusetts residents can use MAPLE to fulfill their civic responsibility to our state democracy."
-  },
-  "when": {
-    "title": "When",
-    "bodytext": "MAPLE welcomes testimony at any time, but we recommend submitting it before the scheduled hearing date for the greatest impact. Hearing dates are listed on the bill pages of this website."
-  },
-  "how": {
-    "title": "How",
-    "bodytext": "We help you craft your testimony, publish it to the community, and send it directly to the right legislators."
-  },
-  "why": {
-    "title": "Why",
-    "bodytext": "Your voice is important; we help amplify it. We make the Massachusetts' legislature's testimony process more accessible and transparent."
-  },
-  "what": {
-    "title": "What",
-    "bodytext": "MAPLE makes it easy to submit testimony and see testimony submitted by others."
-  },
   "hero": {
-    "title": "Your Voice Matters",
     "body": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future.",
     "body2a": "New to MAPLE? For extra support, check",
-    "calendar": "Our Calendar",
     "body2b": "and join an upcoming training session!",
+    "calendar": "Our Calendar",
+    "lead": "Every bill in the Massachusetts Legislature is open to public comment, and anyone can testify. MAPLE shows you which bills are moving, when their hearings are, and what people across the Commonwealth have already said about them. Everything published here stays public, so the record of who said what is open to anyone who wants to read it.",
     "newsletter": "Click Here to Subscribe to Our Newsletter",
     "primaryAction": "Get Started",
-    "secondaryAction": "Learn More"
+    "searchDefault": "Bills: sponsors, hearings, testimony",
+    "searchLabel": "Digital Democracy Database",
+    "searchLead": "Ask about:",
+    "searchPlaceholder": "e.g. Which committee is hearing the tenant protection bill?",
+    "secondaryAction": "Learn More",
+    "suggest": {
+      "bills": "Bills (e.g. H.1234)",
+      "hearings": "Hearings, agendas, and transcripts",
+      "people": "Legislators, committees, and sponsors",
+      "testimony": "Testimony on a topic (e.g. housing)"
+    },
+    "suggestHeading": "Suggested searches",
+    "title": "Your Voice Matters"
   },
-  "didYouKnow": {
-    "title": "Did You Know?",
-    "submit": "Anyone can submit testimony to the MA legislature.",
-    "deadline": "Testimony can be generally be submitted up until the hearing date.",
-    "legislators": "Legislators value personal stories and information regarding their constituents."
+  "how": {
+    "bodytext": "We help you craft your testimony, publish it to the community, and send it directly to the right legislators.",
+    "title": "How"
   },
-  "explainer": {
-    "title": "What does MAPLE do?",
-    "body": "MAPLE makes it easy to engage with the Massachusetts Legislature. Research bills, read diverse perspectives, and submit your own testimony to ensure your voice is heard.",
-    "action": "Get Started"
+  "topics": {
+    "climate": "Climate, Energy & Environment",
+    "democracy": "Democracy, Rights & Safety",
+    "education": "Education, Youth & Families",
+    "health": "Healthcare & Human Services",
+    "housing": "Housing, Transit & Community",
+    "work": "Work, Money & Business"
   },
-  "features": {
-    "title": "Features",
-    "research": "Explore bills and policy changes on topics that matter to you. Search by keyword, committee, or legislator.",
-    "publish": "Share your perspective directly with the State House. Submit written testimony to make your voice part of the legislative process.",
-    "share": "Read testimony from organizations and constituents across the Commonwealth to get informed on the issues of the day."
+  "topicsHeading": "Wrapping up the 194th legislative session...",
+  "what": {
+    "bodytext": "MAPLE makes it easy to submit testimony and see testimony submitted by others.",
+    "title": "What"
   },
-  "hearings": {
-    "title": "Upcoming Hearings",
-    "action": "Browse Hearings",
-    "loading": "Loading upcoming hearings...",
-    "topic": "Massachusetts Legislature",
-    "appPreviewAlt": "MAPLE platform preview",
-    "logoAlt": "MAPLE Massachusetts Platform for Legislative Engagement logo"
+  "when": {
+    "bodytext": "MAPLE welcomes testimony at any time, but we recommend submitting it before the scheduled hearing date for the greatest impact. Hearing dates are listed on the bill pages of this website.",
+    "title": "When"
+  },
+  "who": {
+    "bodytext": "All Massachusetts residents can use MAPLE to fulfill their civic responsibility to our state democracy.",
+    "title": "Who"
+  },
+  "why": {
+    "bodytext": "Your voice is important; we help amplify it. We make the Massachusetts' legislature's testimony process more accessible and transparent.",
+    "title": "Why"
   }
 }

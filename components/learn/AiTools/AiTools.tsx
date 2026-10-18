@@ -18,7 +18,8 @@ const ExampleBox = styled.div`
   border-radius: 0 var(--maple-radius-md) var(--maple-radius-md) 0;
   padding: 1rem 1.25rem;
   margin: 0.75rem 0;
-  font-size: 15px;
+  /* A step larger on the enlarged pages (components/learn/LearnLayout.tsx). */
+  font-size: var(--learn-small-text, 15px);
   font-style: italic;
   color: var(--maple-text-body);
 `
@@ -45,7 +46,7 @@ const StepRow = styled.div`
 `
 
 const StepText = styled.div`
-  font-size: 16px;
+  font-size: var(--learn-text, 16px);
   font-weight: 500;
   color: var(--maple-text-body);
   line-height: 1.5;

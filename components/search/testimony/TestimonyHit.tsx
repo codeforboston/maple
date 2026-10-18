@@ -71,6 +71,17 @@ const ThumbIcon = styled.div<{ $position: string }>`
   height: 36px;
   width: 36px;
   background-size: cover;
+
+  /* Digital Democracy and Mixed: the whole thumb, never cropped (cover crops
+     the taller endorse and oppose drawings), inset 4px within the same box. */
+  [data-maple-theme="dd"] & {
+    box-sizing: border-box;
+    padding: 4px;
+    background-origin: content-box;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
 `
 
 const PositionLabel = styled.span`

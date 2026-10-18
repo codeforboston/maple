@@ -74,6 +74,8 @@ function MemberItem({
 
 const BillsBody = styled.div`
   background-color: white;
+  border-left: 1px solid var(--maple-card-edge);
+  border-right: 1px solid var(--maple-card-edge);
   max-height: 672px;
   overflow-y: auto;
 
@@ -99,10 +101,14 @@ const ModalLine = styled.hr`
 
 const SidebarBody = styled.div`
   background-color: white;
+  border-left: 1px solid var(--maple-card-edge);
+  border-right: 1px solid var(--maple-card-edge);
 `
 
 const SidebarBottom = styled.div`
   background-color: white;
+  border: 1px solid var(--maple-card-edge);
+  border-top: 0;
   border-bottom-left-radius: 0.75rem;
   border-bottom-right-radius: 0.75rem;
   height: 11px;

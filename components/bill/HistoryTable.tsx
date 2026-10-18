@@ -114,4 +114,22 @@ const StyledTable = styled.table`
       text-align: center;
     }
   }
+
+  /* Digital Democracy and Mixed: the cells in Nunito, as the block above
+     intends (its Sass-style font: { } nesting does not appear to be applied by
+     styled-components), and the header row in the skin's Lexend. Both at
+     normal letter spacing; the tight -1.125px crowds Lexend. Maple is left as
+     it is. */
+  [data-maple-theme="dd"] & {
+    th {
+      letter-spacing: normal;
+    }
+
+    td {
+      font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: normal;
+    }
+  }
 `

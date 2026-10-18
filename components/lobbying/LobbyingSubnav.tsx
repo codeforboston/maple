@@ -2,7 +2,9 @@ import React from "react"
 import { useRouter } from "next/router"
 import { useTranslation } from "next-i18next"
 import { Container } from "components/bootstrap"
+import styled from "styled-components"
 import { Banner } from "components/shared/StyledSharedComponents"
+import { DigitalDemocracyOnly, MapleOnly } from "components/shared/SkinOnly"
 import { MAPLE_COLORS } from "./chartTheme"
 
 export function LobbyingSubnav() {
@@ -18,13 +20,24 @@ export function LobbyingSubnav() {
 
   return (
     <>
-      <Banner>
-        {t("banner.betaLine1")}{" "}
-        <a href="mailto:info@mapletestimony.org" style={{ color: "#fff" }}>
-          info@mapletestimony.org
-        </a>{" "}
-        {t("banner.betaLine2")}
-      </Banner>
+      <MapleOnly>
+        <Banner>
+          {t("banner.betaLine1")}{" "}
+          <a href="mailto:info@mapletestimony.org" style={{ color: "#fff" }}>
+            info@mapletestimony.org
+          </a>{" "}
+          {t("banner.betaLine2")}
+        </Banner>
+      </MapleOnly>
+      {/* Digital Democracy and Mixed: a slim orange note in place of the large
+          orange banner. */}
+      <DigitalDemocracyOnly>
+        <BetaNote>
+          {t("banner.betaLine1")}{" "}
+          <a href="mailto:info@mapletestimony.org">info@mapletestimony.org</a>{" "}
+          {t("banner.betaLine2")}
+        </BetaNote>
+      </DigitalDemocracyOnly>
       <div style={barStyle}>
         <Container>
           <div style={innerStyle}>
@@ -47,6 +60,25 @@ export function LobbyingSubnav() {
     </>
   )
 }
+
+const BetaNote = styled.p`
+  margin: 0;
+  padding: 1.1rem 1rem;
+  text-align: center;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  /* A pale tint of the Beta tag's orange, with the amber note's dark ink. */
+  color: var(--maple-color-amber-subtle-text);
+  background: color-mix(in srgb, var(--bs-orange) 14%, #ffffff);
+  border-bottom: 1px solid color-mix(in srgb, var(--bs-orange) 45%, #ffffff);
+
+  a {
+    color: var(--maple-color-amber-subtle-text);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 0.16em;
+  }
+`
 
 const barStyle: React.CSSProperties = {
   background: "#fff",

@@ -34,7 +34,8 @@ export const ButtonContainer = styled.div`
 `
 
 export const DescrContainer = styled.div`
-  font-size: 16px;
+  /* A step larger on the enlarged Learn and About pages (LearnLayout). */
+  font-size: var(--learn-text, 16px);
   font-weight: 500;
   line-height: 20px;
   letter-spacing: 0.015em;
@@ -57,14 +58,21 @@ const EmailContainer = styled.a`
   text-decoration: underline;
 `
 
-export const FeatureCalloutButton = styled.button`
+/* A badge ("*NEW*", "Hearing Video + Transcription") styled with Bootstrap's
+   button classes, but not a control: a span, so it is not focusable or
+   announced as a button, and with no pointer events, so hovering does not
+   suggest it does anything. */
+export const FeatureCalloutButton = styled.span`
   border-radius: var(--maple-radius-xl);
   font-size: 12px;
+  pointer-events: none;
+  cursor: default;
 `
 
 export const BetaTag = styled.span`
   display: inline-block;
-  background: var(--maple-brand-accent);
+  /* Orange in every skin: Digital Democracy turns the brand accent gold. */
+  background: var(--bs-orange);
   color: #fff;
   font-size: 10px;
   font-weight: 700;
@@ -107,6 +115,7 @@ export const PageTitle = styled.div`
 export const SectionContainer = styled.div`
   border-radius: var(--maple-radius-lg);
   background: var(--maple-surface-base);
+  border: 1px solid var(--maple-card-edge);
 `
 
 // A card/section title. Exposed as an h2 for screen-reader heading navigation
