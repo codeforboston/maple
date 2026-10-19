@@ -19,12 +19,6 @@ import {
 
 const OCPF_BASE_URL = "https://ocpf2.blob.core.windows.net/downloads/data2"
 
-const currentCourt = generalCourts[currentGeneralCourt]
-if (!currentCourt) {
-  throw new Error(`No general court entry for court ${currentGeneralCourt}`)
-}
-const YEARS = [currentCourt.FirstYear, currentCourt.SecondYear].map(String)
-
 // How each OCPF report type (reports.txt Report_Type_ID) is used:
 //   totals     — Receipts_Total/Expenditures_Total feed totalRaised/totalSpent;
 //                items and Receipts_Unitemized_Total are also used
@@ -182,7 +176,7 @@ function sumBreakdowns(breakdowns: MutableBreakdown[]): MutableBreakdown {
   }
 }
 
-function newAccumulator(cpfId: number): MemberAccumulator {
+function newAccumulator(cpfId: number, years: string[]): MemberAccumulator {
   const yearInit = (): YearAccumulator => ({
     totalRaised: 0,
     totalSpent: 0,
@@ -202,10 +196,10 @@ function newAccumulator(cpfId: number): MemberAccumulator {
       union: emptyEntry(),
       unitemized: { amount: 0 }
     },
-    years: Object.fromEntries(YEARS.map(y => [y, yearInit()])),
-    yearEndCheck: Object.fromEntries(YEARS.map(y => [y, null])),
+    years: Object.fromEntries(years.map(y => [y, yearInit()])),
+    yearEndCheck: Object.fromEntries(years.map(y => [y, null])),
     reportTotals: Object.fromEntries(
-      YEARS.map(y => [y, { receipts: 0, expenditures: 0 }])
+      years.map(y => [y, { receipts: 0, expenditures: 0 }])
     ),
     pendingNonContributionReceipts: []
   }
@@ -248,7 +242,7 @@ export const scrapeOcpfFinanceNightly = onSchedule(
     retryCount: 1
   },
   async () => {
-    await runOcpfFinanceScrape()
+    await scrapeFinanceForCourt(currentGeneralCourt)
   }
 )
 
@@ -295,22 +289,33 @@ export const scrapeOcpfFinanceManual = onRequestV2(
       return
     }
 
-    const results = await runOcpfFinanceScrape({ cpfId: query.data.cpfId })
+    const results = await scrapeFinanceForCourt(currentGeneralCourt, {
+      cpfId: query.data.cpfId
+    })
     res.status(200).json({ results })
   }
 )
 
-// ── Scrape run (shared by nightly and manual triggers) ────────────────────────
+// ── Scrape run (shared by nightly, manual and backfill triggers) ──────────────
 
 // Set cpfId to run a single member; omit to run all members.
-async function runOcpfFinanceScrape(
+export async function scrapeFinanceForCourt(
+  court: number,
   options: { cpfId?: number } = {}
 ): Promise<{ processed: number; years: string[] }> {
+  const courtInfo = generalCourts[court]
+  if (!courtInfo) {
+    throw new Error(`No general court entry for court ${court}`)
+  }
+  const years = [courtInfo.FirstYear, courtInfo.SecondYear].map(String)
+
   // ── A. Load member mapping ─────────────────────────────────────────────
-  const mappingPath = `/generalCourts/${currentGeneralCourt}/ocpfMemberMappingConfig/ocpfMemberMapping`
+  const mappingPath = `/generalCourts/${court}/ocpfMemberMappingConfig/ocpfMemberMapping`
   const mappingDoc = await db.doc(mappingPath).get()
   if (!mappingDoc.exists) {
-    logger.warn(`${mappingPath} not found; no members will be processed`)
+    logger.warn(`${mappingPath} not found; no members will be processed`, {
+      court
+    })
   }
   const mapping = (mappingDoc.data() ?? {}) as OcpfMemberMapping
 
@@ -334,6 +339,7 @@ async function runOcpfFinanceScrape(
   }
 
   logger.info("Loaded member mapping", {
+    court,
     totalMembers: Object.keys(mapping).length,
     activeInRun: cpfIdToMemberCode.size
   })
@@ -347,20 +353,21 @@ async function runOcpfFinanceScrape(
   // items are read for in-kind records only
   const inKindOnlyReportIds = new Set<number>()
 
-  for (const year of YEARS) {
+  for (const year of years) {
     const url = `${OCPF_BASE_URL}/ocpf-${year}-reports.zip`
-    logger.info(`Downloading ${url}`)
+    logger.info(`Downloading ${url}`, { court })
     const buf = await downloadBuffer(url)
     await parseReports(
       buf,
       year,
+      years,
       cpfIdToMemberCode,
       accumulators,
       reportIdToMemberCode,
       inKindOnlyReportIds
     )
 
-    logger.info(`Streaming report-items for ${year}`)
+    logger.info(`Streaming report-items for ${year}`, { court })
     await streamReportItems(
       buf,
       reportIdToMemberCode,
@@ -417,7 +424,7 @@ async function runOcpfFinanceScrape(
   // (Deposit Report items, before deduction of fees). That gap is tracked
   // via record type 319 (breakdown.processingFees).
   for (const [memberCode, acc] of accumulators) {
-    for (const year of YEARS) {
+    for (const year of years) {
       const check = acc.yearEndCheck[year]
       if (!check) continue
       const summedRaised = acc.reportTotals[year]?.receipts ?? 0
@@ -428,6 +435,7 @@ async function runOcpfFinanceScrape(
         logger.warn(
           "Year-end totals mismatch — investigate periodic report accumulation",
           {
+            court,
             memberCode,
             year,
             yearEnd: {
@@ -452,9 +460,7 @@ async function runOcpfFinanceScrape(
   const batch = db.batch()
 
   for (const [memberCode, acc] of accumulators) {
-    const doc = db.doc(
-      `/generalCourts/${currentGeneralCourt}/membersFinance/${memberCode}`
-    )
+    const doc = db.doc(`/generalCourts/${court}/membersFinance/${memberCode}`)
     const yearAccs = Object.values(acc.years)
     const data: MembersFinance = {
       ocpfCpfId: acc.cpfId,
@@ -495,11 +501,12 @@ async function runOcpfFinanceScrape(
   await batch.commit()
 
   logger.info("scrapeOcpfFinance complete", {
+    court,
     processed: accumulators.size,
-    years: YEARS
+    years
   })
 
-  return { processed: accumulators.size, years: YEARS }
+  return { processed: accumulators.size, years }
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -563,6 +570,7 @@ function col(cols: string[], idx: number): string {
 async function parseReports(
   buf: Buffer,
   year: string,
+  years: string[],
   cpfIdToMemberCode: Map<number, string>,
   accumulators: Map<string, MemberAccumulator>,
   reportIdToMemberCode: Map<number, string>,
@@ -602,7 +610,7 @@ async function parseReports(
 
     let acc = accumulators.get(memberCode)
     if (!acc) {
-      acc = newAccumulator(cpfId)
+      acc = newAccumulator(cpfId, years)
       accumulators.set(memberCode, acc)
     }
 

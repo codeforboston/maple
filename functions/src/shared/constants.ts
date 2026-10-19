@@ -23,6 +23,24 @@ export const generalCourts: Record<number, GeneralCourt | undefined> = {
     Number: 192,
     FirstYear: 2021,
     SecondYear: 2022
+  },
+  191: {
+    Name: "191st (2019 - 2020)",
+    Number: 191,
+    FirstYear: 2019,
+    SecondYear: 2020
+  },
+  190: {
+    Name: "190th (2017 - 2018)",
+    Number: 190,
+    FirstYear: 2017,
+    SecondYear: 2018
+  },
+  189: {
+    Name: "189th (2015 - 2016)",
+    Number: 189,
+    FirstYear: 2015,
+    SecondYear: 2016
   }
 }
 
