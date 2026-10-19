@@ -64,7 +64,7 @@ export { scrapeElections } from "./legislators"
 
 export { transcriptionV2 } from "./webhooks"
 
-export { matchOcpfMembersV2 } from "./ocpf/matchOcpfMembers"
+export { matchOcpfMembers } from "./ocpf/matchOcpfMembers"
 export {
   scrapeOcpfFinanceNightly,
   scrapeOcpfFinanceManual

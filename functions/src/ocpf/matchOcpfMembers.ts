@@ -14,7 +14,7 @@ import {
   OcpfMemberMappingFlagsEntry
 } from "./types"
 
-export const matchOcpfMembersV2 = onRequestV2(async (req, res) => {
+export const matchOcpfMembers = onRequestV2(async (req, res) => {
   if (req.method !== "POST") {
     res.status(405).send("Method Not Allowed. Use POST.")
     return
