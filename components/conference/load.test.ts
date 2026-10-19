@@ -12,7 +12,7 @@ const conference = (id: string, memberCodes: string[]) =>
     id,
     court: currentGeneralCourt,
     title: id,
-    status: "active",
+    status: "appointed",
     hearingIds: [],
     conferees: memberCodes.map(memberCode => ({
       memberCode,
