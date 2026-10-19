@@ -21,14 +21,14 @@ const Page = styled(PageColumn)`
   }
 `
 
+/** The header and the sections under it, a gap apart. */
 const Main = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   min-width: 0;
   flex: 1 1 auto;
   padding-top: 1.625rem;
-`
-
-const Header = styled.header`
-  margin-bottom: 1.5rem;
 `
 
 /** Below md the picker shows the name, so the heading is there for screen
@@ -69,7 +69,7 @@ export function ConferenceDetails({
           current={conference.id}
         />
         <Main>
-          <Header>
+          <header>
             <div className="d-md-none">
               <ConferencePicker
                 conferences={conferences}
@@ -80,7 +80,7 @@ export function ConferenceDetails({
               {conferenceName(conference)}
             </PageTitle>
             <ConferenceByline conference={conference} />
-          </Header>
+          </header>
           {/* Keyed so a pinned seat does not outlive its conference. */}
           <ConferenceCommittee
             key={conference.id}
