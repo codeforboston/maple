@@ -12,12 +12,14 @@ import { TestimonySubmissionNotificationFields, Profile } from "./types"
 import {
   BallotQuestionDigest,
   BillDigest,
+  BillResult,
   NotificationEmailDigest,
   Position,
   UserDigest
 } from "./emailTypes"
 import { prepareHandlebars } from "../email/handlebarsHelpers"
 import { Frequency } from "../auth/types"
+import { ConferencePosition } from "../testimony/types"
 
 const PROFILE_BATCH_SIZE = 50
 const NUM_BILLS_TO_DISPLAY = 4
@@ -25,6 +27,14 @@ const NUM_USERS_TO_DISPLAY = 4
 const NUM_TESTIMONIES_TO_DISPLAY = 6
 const NUM_BALLOT_QUESTIONS_TO_DISPLAY = 4
 const EMAIL_TEMPLATE_PATH = "../email/digestEmail.handlebars"
+
+// The site's wording, conferences input.position.*.long; a test holds them equal.
+export const CONFERENCE_STANCES: Record<ConferencePosition, string> = {
+  passSomething: "Please pass something",
+  passSenateVersion: "Pass the Senate version",
+  passHouseVersion: "Pass the House version",
+  passNothing: "Don't pass anything"
+}
 
 const path = require("path")
 
@@ -207,10 +217,16 @@ export const buildDigestData = async (
     }
 
     if (notification.isUserMatch) {
-      const billResult = {
+      const billResult: BillResult = {
         billId: notification.billId,
         court: notification.court,
-        position: notification.position as Position
+        ...(notification.conferenceId
+          ? {
+              conferenceId: notification.conferenceId,
+              stance:
+                CONFERENCE_STANCES[notification.position as ConferencePosition]
+            }
+          : { position: notification.position as Position })
       }
       if (usersById[notification.authorUid]) {
         const user = usersById[notification.authorUid]
