@@ -28,7 +28,13 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 
   const [page, translations] = await Promise.all([
     loadConferencePage(query.data.court, query.data.id),
-    serverSideTranslations(locale, ["auth", "common", "footer", "conferences"])
+    serverSideTranslations(locale, [
+      "auth",
+      "common",
+      "footer",
+      "conferences",
+      "testimony"
+    ])
   ])
   if (!page) return { notFound: true }
 

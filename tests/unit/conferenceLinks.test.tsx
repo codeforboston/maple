@@ -23,6 +23,7 @@ const conference: ConferenceSummary = {
   title: "An Act relative to testing",
   senateBillId: "S2500",
   houseBillId: "H4000",
+  canonicalBillId: "S2500",
   status: "appointed"
 }
 
