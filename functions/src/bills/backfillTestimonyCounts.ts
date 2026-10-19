@@ -2,10 +2,14 @@ import { groupBy } from "lodash"
 import { Array, Optional, Record, String } from "runtypes"
 import { db } from "../firebase"
 import { currentGeneralCourt } from "../shared"
+import { matchesTestimonyScope } from "../testimony/scope"
 import { Testimony } from "../testimony/types"
 import BillProcessor from "./BillProcessor"
 
-export type PartialTestimony = Pick<Testimony, "court" | "billId" | "position">
+export type PartialTestimony = Pick<
+  Testimony,
+  "court" | "billId" | "position" | "conferenceId"
+>
 
 const Args = Record({ billIds: Optional(Array(String)) })
 
@@ -25,9 +29,10 @@ class BackfillTestimonyCounts extends BillProcessor {
       .collectionGroup("publishedTestimony")
       .where("court", "==", currentGeneralCourt)
       .where("ballotQuestionId", "==", null)
-      .select("court", "billId", "position")
+      .select("court", "billId", "position", "conferenceId")
       .get()
       .then(t => t.docs.map(d => d.data() as PartialTestimony))
+      .then(t => t.filter(d => matchesTestimonyScope(d)))
     const testimonyByBillId: Map<string, PartialTestimony[]> = new Map(
       Object.entries(groupBy(testimony, "billId"))
     )

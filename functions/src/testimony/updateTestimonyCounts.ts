@@ -1,38 +1,31 @@
 import { countsByPositions, Testimony } from "./types"
 
-export type TestimonyCountFields = {
-  testimonyCount: number
-  endorseCount: number
-  neutralCount: number
-  opposeCount: number
-}
+type CountField =
+  | "testimonyCount"
+  | (typeof countsByPositions)[keyof typeof countsByPositions]
 
-/** Updates testimony-count fields based on changes to the user's testimony. */
-export function updateTestimonyCounts(
-  {
-    testimonyCount,
-    endorseCount,
-    neutralCount,
-    opposeCount
-  }: TestimonyCountFields,
+/** Updates the given testimony-count fields based on changes to the user's
+ * testimony. A position whose count field is not among `fields` moves only
+ * `testimonyCount`. */
+export function updateTestimonyCounts<F extends CountField>(
+  fields: readonly F[],
+  counts: Record<F, number>,
   currentPublication?: Pick<Testimony, "position">,
   newPublication?: Pick<Testimony, "position">
-): TestimonyCountFields {
-  const update: TestimonyCountFields = {
-    testimonyCount,
-    endorseCount,
-    neutralCount,
-    opposeCount
+): Record<F, number> {
+  const update = Object.fromEntries(
+    fields.map(field => [field, counts[field]])
+  ) as Record<string, number>
+  const adjust = (field: string, delta: number) => {
+    if (field in update) update[field] = Math.max(update[field] + delta, 0)
   }
   if (currentPublication) {
-    const oldPosition = countsByPositions[currentPublication.position]
-    update[oldPosition] = Math.max(update[oldPosition] - 1, 0)
-    update.testimonyCount = Math.max(update.testimonyCount - 1, 0)
+    adjust(countsByPositions[currentPublication.position], -1)
+    adjust("testimonyCount", -1)
   }
   if (newPublication) {
-    const newPosition = countsByPositions[newPublication.position]
-    update[newPosition] += 1
-    update.testimonyCount += 1
+    adjust(countsByPositions[newPublication.position], 1)
+    adjust("testimonyCount", 1)
   }
-  return update
+  return update as Record<F, number>
 }

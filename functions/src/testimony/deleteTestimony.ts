@@ -5,6 +5,7 @@ import * as logger from "firebase-functions/logger"
 import { Record } from "runtypes"
 import { BallotQuestion } from "../ballotQuestions/types"
 import { Bill } from "../bills/types"
+import { Conference, conferenceCountFields } from "../conferences/types"
 import {
   checkAuth,
   checkRequest,
@@ -15,7 +16,8 @@ import {
 } from "../common"
 import { db, FieldValue } from "../firebase"
 import { Attachments } from "./attachments"
-import { DraftTestimony, Testimony } from "./types"
+import { matchesTestimonyScope } from "./scope"
+import { billCountFields, DraftTestimony, Testimony } from "./types"
 import { updateTestimonyCounts } from "./updateTestimonyCounts"
 
 const DeleteTestimonyRequest = Record({
@@ -71,6 +73,8 @@ class DeleteTestimonyTransaction {
   private bill!: Bill
   private ballotQuestion?: BallotQuestion
   private ballotQuestionRef?: FirebaseFirestore.DocumentReference
+  private conference?: Conference
+  private conferenceRef?: FirebaseFirestore.DocumentReference
   private draftSnap?: DocumentSnapshot
 
   constructor(
@@ -86,26 +90,49 @@ class DeleteTestimonyTransaction {
   async run(): Promise<TransactionOutput> {
     await this.loadPublication()
     if (!this.publicationSnap.exists) return { deleted: false }
-    await this.loadBill()
-    await this.loadBallotQuestion()
-    await this.loadDraft()
-
-    const billUpdate: DocUpdate<Bill> = {
-      ...(await this.resolveNewLatestTestimony()),
-      ...updateTestimonyCounts(this.bill, this.publication, undefined)
-    }
+    await Promise.all([
+      this.loadBill(),
+      this.loadBallotQuestion(),
+      this.loadConference(),
+      this.loadDraft()
+    ])
 
     const draftUpdate: DocUpdate<DraftTestimony> = {
       publishedVersion: FieldValue.delete()
     }
 
-    if (!this.publication.ballotQuestionId) {
+    if (matchesTestimonyScope(this.publication)) {
+      const billUpdate: DocUpdate<Bill> = {
+        ...(await this.resolveNewLatestTestimony()),
+        ...updateTestimonyCounts(
+          billCountFields,
+          this.bill,
+          this.publication,
+          undefined
+        )
+      }
       this.t.update(this.billSnap.ref, billUpdate)
     }
     if (this.ballotQuestion && this.ballotQuestionRef) {
       this.t.update(
         this.ballotQuestionRef,
-        updateTestimonyCounts(this.ballotQuestion, this.publication, undefined)
+        updateTestimonyCounts(
+          billCountFields,
+          this.ballotQuestion,
+          this.publication,
+          undefined
+        )
+      )
+    }
+    if (this.conference && this.conferenceRef) {
+      this.t.update(
+        this.conferenceRef,
+        updateTestimonyCounts(
+          conferenceCountFields,
+          this.conference,
+          this.publication,
+          undefined
+        )
       )
     }
     this.t.delete(this.publicationSnap.ref)
@@ -143,10 +170,26 @@ class DeleteTestimonyTransaction {
         .collection(`users/${this.uid}/draftTestimony`)
         .where("billId", "==", this.publication.billId)
     )
+    const drafts = result.docs.filter(d =>
+      matchesTestimonyScope(d.data(), this.publication)
+    )
 
-    if (result.docs.length === 1) {
-      this.draftSnap = result.docs[0]
+    if (drafts.length === 1) {
+      this.draftSnap = drafts[0]
     }
+  }
+
+  private async loadConference() {
+    const conferenceId = this.publication.conferenceId ?? null
+    if (!conferenceId) return
+
+    this.conferenceRef = db.doc(
+      `/generalCourts/${this.publication.court}/conferences/${conferenceId}`
+    )
+    const snap = await this.t.get(this.conferenceRef)
+    if (!snap.exists) return
+
+    this.conference = Conference.checkWithDefaults(snap.data())
   }
 
   private async loadBallotQuestion() {
@@ -160,17 +203,31 @@ class DeleteTestimonyTransaction {
     this.ballotQuestion = BallotQuestion.checkWithDefaults(snap.data())
   }
 
-  private async resolveNewLatestTestimony() {
-    const result = await this.t.get(
-      db
-        .collectionGroup("publishedTestimony")
-        .where("billId", "==", this.publication.billId)
-        .where("court", "==", this.publication.court)
-        .where("ballotQuestionId", "==", null)
-        .orderBy("publishedAt", "desc")
-        .limit(2)
+  private findLatest(docs: FirebaseFirestore.QueryDocumentSnapshot[]) {
+    return docs.find(
+      d => d.id !== this.publicationId && matchesTestimonyScope(d.data())
     )
-    const latestDoc = result.docs.find(d => d.id !== this.publicationId)
+  }
+
+  /** The bill's latest testimony once this one is gone. Conference testimony
+   * shares the bill's id but not its listing, so page past it. */
+  private async resolveNewLatestTestimony() {
+    const query = db
+      .collectionGroup("publishedTestimony")
+      .where("billId", "==", this.publication.billId)
+      .where("court", "==", this.publication.court)
+      .where("ballotQuestionId", "==", null)
+      .orderBy("publishedAt", "desc")
+    // Two cover the common case: this testimony and the one before it.
+    let pageSize = 2
+    let page = await this.t.get(query.limit(pageSize))
+    let latestDoc = this.findLatest(page.docs)
+    while (!latestDoc && page.size === pageSize) {
+      const last = page.docs[pageSize - 1]
+      pageSize = 10
+      page = await this.t.get(query.startAfter(last).limit(pageSize))
+      latestDoc = this.findLatest(page.docs)
+    }
 
     if (!latestDoc) {
       return {
