@@ -1,0 +1,27 @@
+id: student-learning-and-mental-health
+name: Phone-Free Schools
+court: 194
+title: "An Act to promote student learning and mental health "
+senateBillId: S2581
+houseBillId: H5366
+canonicalBillId: S2581
+status: appointed
+conferees:
+  - memberCode: BPC0
+    branch: Senate
+    chair: true
+  - memberCode: MJR0
+    branch: Senate
+  - memberCode: PJD0
+    branch: Senate
+  - memberCode: AHP1
+    branch: House
+    chair: true
+  - memberCode: FAM1
+    branch: House
+  - memberCode: DTV1
+    branch: House
+hearingIds:
+  - hearing-5710
+differences: []
+similarities: []

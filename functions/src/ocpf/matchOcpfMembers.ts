@@ -4,7 +4,7 @@ import { getAuth } from "firebase-admin/auth"
 import axios from "axios"
 import unzipper from "unzipper"
 import { db } from "../firebase"
-import { currentGeneralCourt } from "../shared"
+import { currentGeneralCourt, extractLastName } from "../shared"
 import { MemberContent } from "../members/types"
 import {
   OcpfFilerRow,
@@ -252,18 +252,6 @@ function buildColumnIndex(
   }
 
   return index
-}
-
-const GENERATIONAL_SUFFIXES = new Set(["jr", "sr", "ii", "iii", "iv", "v"])
-
-function extractLastName(fullName: string): string {
-  const parts = fullName.trim().split(/\s+/)
-  while (parts.length > 1) {
-    const last = parts[parts.length - 1].toLowerCase().replace(/[.,]/g, "")
-    if (GENERATIONAL_SUFFIXES.has(last)) parts.pop()
-    else break
-  }
-  return parts[parts.length - 1].replace(/[,.]$/, "")
 }
 
 async function loadMembers(): Promise<MemberContent[]> {

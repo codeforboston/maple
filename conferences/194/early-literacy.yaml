@@ -1,0 +1,28 @@
+id: early-literacy
+name: Early Literacy
+court: 194
+title: An Act relative to teacher preparation and student literacy
+senateBillId: S2940
+houseBillId: H4683
+canonicalBillId: H4683
+status: reportFiled
+conferees:
+  - memberCode: KIG1
+    branch: House
+    chair: true
+  - memberCode: S_C1
+    branch: House
+  - memberCode: JJM1
+    branch: House
+  - memberCode: SND0
+    branch: Senate
+    chair: true
+  - memberCode: jml0
+    branch: Senate
+  - memberCode: PMO
+    branch: Senate
+hearingIds:
+  - hearing-5587
+  - hearing-5725
+differences: []
+similarities: []
