@@ -37,11 +37,37 @@ export const matchOcpfMembers = onRequestV2(async (req, res) => {
     }
   }
 
-  const filers = await downloadAndParseFilers()
-  const members = await loadMembers()
+  const { matched, unmatched, ambiguous } = await matchMembersForCourt(
+    currentGeneralCourt
+  )
 
-  const mappingPath = `/generalCourts/${currentGeneralCourt}/ocpfMemberMappingConfig/ocpfMemberMapping`
-  const flagsPath = `/generalCourts/${currentGeneralCourt}/ocpfMemberMappingConfig/ocpfMemberMappingFlags`
+  res.status(200).json({
+    results: {
+      matched,
+      unmatched: unmatched.length,
+      ambiguous: ambiguous.length
+    },
+    unmatched_members: unmatched,
+    ambiguous_members: ambiguous
+  })
+})
+
+// Matches a general court's MAPLE members to their OCPF filer record by last
+// name + branch, writing the result to that court's ocpfMemberMapping. The
+// current court is matched against active filers only (OCPF Closed_Date
+// empty); historical courts drop that filter.
+export async function matchMembersForCourt(court: number): Promise<{
+  matched: number
+  unmatched: OcpfMemberMappingFlagsEntry[]
+  ambiguous: OcpfMemberMappingFlagsEntry[]
+}> {
+  const activeFilersOnly = court === currentGeneralCourt
+
+  const filers = await downloadAndParseFilers(activeFilersOnly)
+  const members = await loadMembers(court)
+
+  const mappingPath = `/generalCourts/${court}/ocpfMemberMappingConfig/ocpfMemberMapping`
+  const flagsPath = `/generalCourts/${court}/ocpfMemberMappingConfig/ocpfMemberMappingFlags`
 
   const existingMappingDoc = await db.doc(mappingPath).get()
   const existingMapping = (existingMappingDoc.data() ?? {}) as OcpfMemberMapping
@@ -56,6 +82,9 @@ export const matchOcpfMembers = onRequestV2(async (req, res) => {
 
     if (!branch || (branch !== "Senate" && branch !== "House")) continue
 
+    // Branch is a hard filter: a legislator who switched chambers (House <->
+    // Senate) between courts will come up unmatched for the earlier court.
+    // Expected for older courts, not a bug.
     const lastNameAndBranchMatches = filers.filter(
       f =>
         f.lastName.toLowerCase() === lastName.toLowerCase() &&
@@ -90,6 +119,7 @@ export const matchOcpfMembers = onRequestV2(async (req, res) => {
       logger.warn(
         "Ambiguous OCPF match. Single last name match but first name did not align.",
         {
+          court,
           memberCode: member.MemberCode,
           name: member.Name,
           district: member.District,
@@ -103,6 +133,7 @@ export const matchOcpfMembers = onRequestV2(async (req, res) => {
     } else if (candidates.length === 0) {
       unmatched.push({ memberCode: member.MemberCode, name: member.Name })
       logger.warn("No OCPF match.", {
+        court,
         memberCode: member.MemberCode,
         name: member.Name,
         district: member.District,
@@ -111,6 +142,7 @@ export const matchOcpfMembers = onRequestV2(async (req, res) => {
     } else {
       ambiguous.push({ memberCode: member.MemberCode, name: member.Name })
       logger.warn("Ambiguous OCPF match.", {
+        court,
         memberCode: member.MemberCode,
         name: member.Name,
         district: member.District,
@@ -131,24 +163,20 @@ export const matchOcpfMembers = onRequestV2(async (req, res) => {
   await db.doc(mappingPath).set(mapping, { merge: true })
   await db.doc(flagsPath).set(flags)
 
+  const matched = Object.keys(mapping).length
   logger.info("matchOcpfMembers complete", {
-    matched: Object.keys(mapping).length,
+    court,
+    matched,
     unmatched: unmatched.length,
     ambiguous: ambiguous.length
   })
 
-  res.status(200).json({
-    results: {
-      matched: Object.keys(mapping).length,
-      unmatched: unmatched.length,
-      ambiguous: ambiguous.length
-    },
-    unmatched_members: unmatched,
-    ambiguous_members: ambiguous
-  })
-})
+  return { matched, unmatched, ambiguous }
+}
 
-async function downloadAndParseFilers(): Promise<OcpfFilerRow[]> {
+async function downloadAndParseFilers(
+  activeFilersOnly: boolean
+): Promise<OcpfFilerRow[]> {
   const response = await axios.get(
     "https://ocpf2.blob.core.windows.net/downloads/data2/ocpf-filers.zip",
     { responseType: "arraybuffer" }
@@ -200,7 +228,7 @@ async function downloadAndParseFilers(): Promise<OcpfFilerRow[]> {
     const closedDate = col(cols, colIndex.closedDate)
     const officeSought = col(cols, colIndex.officeSought)
 
-    if (closedDate !== "") continue
+    if (activeFilersOnly && closedDate !== "") continue
     if (officeSought !== "Senate" && officeSought !== "House") continue
 
     filers.push({
@@ -257,10 +285,8 @@ function buildColumnIndex(
   return index
 }
 
-async function loadMembers(): Promise<MemberContent[]> {
-  const snapshot = await db
-    .collection(`/generalCourts/${currentGeneralCourt}/members`)
-    .get()
+async function loadMembers(court: number): Promise<MemberContent[]> {
+  const snapshot = await db.collection(`/generalCourts/${court}/members`).get()
 
   return snapshot.docs
     .map(doc => {
