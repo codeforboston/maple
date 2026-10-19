@@ -18,7 +18,12 @@
   "hearing_scheduled": "Hearing scheduled for {{date}}",
   "no_hearings": "No hearings have been disclosed.",
   "pick_conference": "Choose a conference committee",
-  "bill_banner": "This bill is in a conference committee: <1>{{name}}</1>",
+  "bill_banner": {
+    "appointed": "This bill is in a conference committee: <1>{{name}}</1>",
+    "reportFiled": "The conference committee on this bill has filed its report: <1>{{name}}</1>",
+    "enacted": "This bill was enacted after a conference committee: <1>{{name}}</1>",
+    "dissolved": "The conference committee on this bill was dissolved: <1>{{name}}</1>"
+  },
   "hearing_backlink": "A meeting of the conference committee on <1>{{name}}</1>",
   "map_label": "Massachusetts {{chamber}} districts, with the committee's seats marked",
   "index_title": "Conference Committees",
