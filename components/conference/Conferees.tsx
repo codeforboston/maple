@@ -213,6 +213,8 @@ export function Conferees({
                   $back={Boolean(selected) && !lit}
                   onPointerEnter={() => onHover(key)}
                   onPointerLeave={() => onHover(null)}
+                  onFocus={() => onHover(key)}
+                  onBlur={() => onHover(null)}
                 >
                   <Pick
                     type="button"
@@ -220,8 +222,6 @@ export function Conferees({
                     aria-label={`${c.name}, ${
                       own ? t(yoursKey(c)) : c.district
                     }`}
-                    onFocus={() => onHover(key)}
-                    onBlur={() => onHover(null)}
                     onClick={() => onPin(key)}
                   >
                     <ConfereeFace c={c} lit={lit} own={own} />
