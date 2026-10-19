@@ -12,7 +12,7 @@ import { firestore } from "../../firebase"
 import { nullableQuery } from "../common"
 import { createTableHook } from "../createTableHook"
 import { Testimony } from "./types"
-import { matchesBallotQuestionScope } from "./ballotQuestionScope"
+import { matchesTestimonyScope } from "functions/src/testimony/scope"
 
 type Refinement = {
   senatorId?: string
@@ -22,13 +22,15 @@ type Refinement = {
   court?: number
   billId?: string
   ballotQuestionId?: string
+  conferenceId?: string
 }
 
 const initialRefinement = (
   uid?: string,
   court?: number,
   billId?: string,
-  ballotQuestionId?: string
+  ballotQuestionId?: string,
+  conferenceId?: string
 ): Refinement => ({
   representativeId: undefined,
   senatorId: undefined,
@@ -36,7 +38,8 @@ const initialRefinement = (
   uid,
   court,
   billId,
-  ballotQuestionId
+  ballotQuestionId,
+  conferenceId
 })
 
 const useTable = createTableHook<Testimony, Refinement, unknown>({
@@ -57,15 +60,17 @@ export function usePublishedTestimonyListing({
   uid,
   court,
   billId,
-  ballotQuestionId
+  ballotQuestionId,
+  conferenceId
 }: {
   uid?: string
   court?: number
   billId?: string
   ballotQuestionId?: string
+  conferenceId?: string
 } = {}) {
   const { pagination, items, refine, refinement } = useTable(
-    initialRefinement(uid, court, billId, ballotQuestionId)
+    initialRefinement(uid, court, billId, ballotQuestionId, conferenceId)
   )
 
   useEffect(() => {
@@ -74,7 +79,8 @@ export function usePublishedTestimonyListing({
     if (refinement.court !== court) refine({ court })
     if (refinement.ballotQuestionId !== ballotQuestionId)
       refine({ ballotQuestionId })
-  }, [ballotQuestionId, billId, court, refine, refinement, uid])
+    if (refinement.conferenceId !== conferenceId) refine({ conferenceId })
+  }, [ballotQuestionId, billId, conferenceId, court, refine, refinement, uid])
 
   return useMemo(() => {
     return {
@@ -98,7 +104,8 @@ function getWhere({
   representativeId,
   court,
   senatorId,
-  ballotQuestionId
+  ballotQuestionId,
+  conferenceId
 }: Refinement): QueryConstraint[] {
   const constraints: Parameters<typeof where>[] = []
   const singularUserRoles: string[] = [
@@ -111,6 +118,7 @@ function getWhere({
   if (billId) constraints.push(["billId", "==", billId])
   if (ballotQuestionId)
     constraints.push(["ballotQuestionId", "==", ballotQuestionId])
+  if (conferenceId) constraints.push(["conferenceId", "==", conferenceId])
   if (representativeId)
     constraints.push(["representativeId", "==", representativeId])
   if (senatorId) constraints.push(["senatorId", "==", senatorId])
@@ -141,13 +149,11 @@ async function listTestimony(
   )
   return result.docs
     .map(d => d.data() as Testimony)
-    .filter(testimony => {
-      if (refinement.ballotQuestionId)
-        return matchesBallotQuestionScope(
-          testimony,
-          refinement.ballotQuestionId
-        )
-      if (refinement.billId) return matchesBallotQuestionScope(testimony)
-      return true
-    })
+    .filter(testimony =>
+      refinement.conferenceId ||
+      refinement.ballotQuestionId ||
+      refinement.billId
+        ? matchesTestimonyScope(testimony, refinement)
+        : !testimony.conferenceId
+    )
 }
