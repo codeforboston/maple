@@ -700,6 +700,7 @@ async function streamReportItems(
   let idx: Record<string, number> = {}
   let processed = 0
   let skipped = 0
+  const warnedRecordTypeIds = new Set<number>()
 
   for await (const line of rl) {
     if (!line.trim()) continue
@@ -743,7 +744,15 @@ async function streamReportItems(
       col(cols, idx.zip)
     )
 
-    accumulateItem(acc, recordTypeId, amount, dateMs, contributor, year)
+    accumulateItem(
+      acc,
+      recordTypeId,
+      amount,
+      dateMs,
+      contributor,
+      year,
+      warnedRecordTypeIds
+    )
     processed++
   }
 
@@ -757,6 +766,12 @@ async function streamReportItems(
 // Individual (201), Committee (202) and Union/Association (203). Together
 // these are the itemized contributions behind totalRaised.
 const CONTRIBUTION_RECORD_TYPE_IDS = new Set([201, 202, 203])
+
+// Record types whose amounts are already counted elsewhere and are correctly
+// excluded here — not unclassified, just sourced differently: 205 (Bank
+// Interest) and 220 (Aggregated un-itemized) totals come from reports.txt,
+// not report-items.txt.
+const KNOWN_IGNORED_RECORD_TYPE_IDS = new Set([205, 220])
 
 // OCPF has no contributor ID, so a contributor is identified by
 // record type + name + first name + 5-digit ZIP. Committees and unions leave
@@ -785,7 +800,8 @@ function accumulateItem(
   amount: number,
   dateMs: number,
   contributor: string | null,
-  year: string
+  year: string,
+  warnedRecordTypeIds: Set<number>
 ): void {
   const addTo = (entry: MutableBreakdownEntry) => {
     entry.count++
@@ -852,8 +868,17 @@ function accumulateItem(
     case 319: // Payment-processor fee (see breakdown.processingFees doc comment)
       addTo(yb.processingFees)
       break
-    // 205 (Bank Interest) and 220 (Aggregated un-itemized) totals sourced from reports.txt, not items
     default:
+      if (
+        !KNOWN_IGNORED_RECORD_TYPE_IDS.has(recordTypeId) &&
+        !warnedRecordTypeIds.has(recordTypeId)
+      ) {
+        warnedRecordTypeIds.add(recordTypeId)
+        logger.warn(
+          "Unclassified OCPF record type — no amount counted; classify it in accumulateItem",
+          { recordTypeId, year }
+        )
+      }
       break
   }
 }
