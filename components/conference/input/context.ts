@@ -9,8 +9,9 @@ type InputContextValue = {
   subject: string
   /** The authors the viewer follows. */
   followed: Set<string>
-  /** Reopen the panel on the viewer's own entry. */
-  onEdit: () => void
+  /** Reopen the panel on the viewer's own entry; absent once the conference
+   * stops taking testimony. */
+  onEdit?: () => void
   /** Whether an entry can be followed or reported by this viewer. */
   signedIn: boolean
 }
@@ -18,7 +19,6 @@ type InputContextValue = {
 export const InputContext = createContext<InputContextValue>({
   subject: "",
   followed: new Set(),
-  onEdit: () => {},
   signedIn: false
 })
 

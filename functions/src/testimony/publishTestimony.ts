@@ -9,7 +9,7 @@ import { Bill } from "../bills/types"
 import { Conference, conferenceCountFields } from "../conferences/types"
 import { checkAuth, checkRequest, DocUpdate, fail, Id } from "../common"
 import { db, FieldValue, Timestamp } from "../firebase"
-import { supportedGeneralCourts } from "../shared"
+import { supportedGeneralCourts, takesTestimony } from "../shared"
 import { Attachments, PublishedAttachmentState } from "./attachments"
 import { matchesTestimonyScope } from "./scope"
 import { billCountFields, DraftTestimony, Testimony } from "./types"
@@ -258,6 +258,12 @@ class PublishTestimonyTransaction {
       throw fail(
         "failed-precondition",
         `Conference ${conferenceId} takes testimony on ${conference.canonicalBillId}, not ${draft.billId}`
+      )
+    }
+    if (conference && !takesTestimony(conference.status)) {
+      throw fail(
+        "failed-precondition",
+        `Conference ${conferenceId} is not accepting testimony (status ${conference.status})`
       )
     }
 

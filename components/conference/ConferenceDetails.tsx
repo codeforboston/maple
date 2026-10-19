@@ -8,6 +8,7 @@ import {
   useState
 } from "react"
 import { useTranslation } from "next-i18next"
+import { takesTestimony } from "../../functions/src/shared"
 import styled from "styled-components"
 import { ConferenceByline } from "./ConferenceByline"
 import { ConferenceCommittee } from "./ConferenceCommittee"
@@ -158,6 +159,7 @@ function Details({
   const { width, drag } = usePanelWidth()
   const followed = useFollowedAuthors(user?.uid)
   const subject = conferenceName(conference)
+  const taking = takesTestimony(conference.status)
 
   const close = useCallback(() => setOpen(false), [])
   const edit = useCallback(() => {
@@ -204,10 +206,10 @@ function Details({
       uid: user?.uid,
       subject,
       followed,
-      onEdit: edit,
+      onEdit: taking ? edit : undefined,
       signedIn: authenticated
     }),
-    [user?.uid, subject, followed, edit, authenticated]
+    [user?.uid, subject, followed, taking, edit, authenticated]
   )
   return (
     <InputContext.Provider value={input}>
@@ -229,9 +231,7 @@ function Details({
               </div>
               <TitleRow>
                 <PageTitle as={openOnHero ? "h2" : "h1"}>{subject}</PageTitle>
-                {conference.status === "appointed" && !mine && (
-                  <ShareButton onClick={share} />
-                )}
+                {taking && !mine && <ShareButton onClick={share} />}
               </TitleRow>
             </TitleBand>
             <ConferenceByline conference={conference} />

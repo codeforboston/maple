@@ -601,6 +601,44 @@ describe("publishTestimony", () => {
       ).rejects.toThrow("invalid conferenceId")
     })
 
+    it.each(["reportFiled", "enacted", "dissolved"])(
+      "Refuses testimony on a conference that is %s",
+      async status => {
+        const closedId = await createConference(billId, status)
+        const { draftId: conferenceDraftId } = await createConferenceDraft(
+          uid,
+          billId,
+          closedId,
+          "passNothing"
+        )
+        await expect(
+          publishTestimony({ draftId: conferenceDraftId })
+        ).rejects.toThrow("not accepting testimony")
+        expect((await getConference(closedId)).testimonyCount).toBe(0)
+      }
+    )
+
+    it("Refuses to republish once the conference has closed", async () => {
+      const { draftId: conferenceDraftId } = await createConferenceDraft(
+        uid,
+        billId,
+        conferenceId,
+        "passNothing"
+      )
+      await publishTestimony({ draftId: conferenceDraftId })
+      await testDb
+        .doc(
+          `/generalCourts/${currentGeneralCourt}/conferences/${conferenceId}`
+        )
+        .update({ status: "reportFiled" })
+      await updateDoc(refs.draftTestimony(uid, conferenceDraftId), {
+        content: "updated content"
+      })
+      await expect(
+        publishTestimony({ draftId: conferenceDraftId })
+      ).rejects.toThrow("not accepting testimony")
+    })
+
     it("Refuses testimony on a bill that is not the conference's", async () => {
       const otherBillId = await createFakeBill()
       const { draftId: conferenceDraftId } = await createConferenceDraft(
@@ -704,6 +742,25 @@ describe("deleteTestimony", () => {
     expect(draft.data()!.publishedVersion).toBeUndefined()
   })
 
+  it("Lets conference testimony be deleted after the conference closes", async () => {
+    const conferenceId = await createConference(billId)
+    const { draftId: conferenceDraftId } = await createConferenceDraft(
+      uid,
+      billId,
+      conferenceId,
+      "passSomething"
+    )
+    const res = await publishTestimony({ draftId: conferenceDraftId })
+    await testDb
+      .doc(`/generalCourts/${currentGeneralCourt}/conferences/${conferenceId}`)
+      .update({ status: "dissolved" })
+
+    await getSignedInAdmin()
+    await deleteTestimony({ uid, publicationId: res.data.publicationId })
+
+    expect((await getConference(conferenceId)).testimonyCount).toBe(0)
+  })
+
   it("Never makes conference testimony the bill's latest", async () => {
     const conferenceId = await createConference(billId)
     const resBill = await publishTestimony({ draftId })
@@ -792,8 +849,9 @@ async function createDraftAttachment(uid: string, id: string, content: string) {
   })
 }
 
-/** A conference whose canonical bill is `billId`, with its counts zeroed. */
-async function createConference(billId: string) {
+/** A conference whose canonical bill is `billId`, with its counts zeroed. It
+ * takes testimony only while `status` is appointed. */
+async function createConference(billId: string, status = "appointed") {
   const id = `conference-${nanoid()}`.toLowerCase()
   await testDb
     .doc(`/generalCourts/${currentGeneralCourt}/conferences/${id}`)
@@ -805,7 +863,7 @@ async function createConference(billId: string) {
       houseBillId: "H1",
       canonicalBillId: billId,
       conferees: [],
-      status: "appointed",
+      status,
       hearingIds: [],
       differences: [],
       similarities: [],

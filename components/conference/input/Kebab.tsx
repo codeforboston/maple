@@ -134,8 +134,11 @@ export function Kebab({
     ...(onView
       ? [{ label: t("input.view"), icon: <FileText size={15} />, act: onView }]
       : []),
-    ...(report.own
+    ...(report.own && onEdit
       ? [{ label: t("input.edit"), icon: <SquarePen size={15} />, act: onEdit }]
+      : []),
+    ...(report.own
+      ? []
       : [
           {
             label: following

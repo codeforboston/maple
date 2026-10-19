@@ -338,6 +338,21 @@ describe("ConferenceDetails", () => {
     ).toHaveStyle({ fill: "#b53333", fillOpacity: 0.45 })
   })
 
+  it("takes input only while the conference is appointed", () => {
+    const { unmount } = render(<ConferenceDetails {...props} />)
+    expect(
+      screen.getByRole("button", { name: "input.share" })
+    ).toBeInTheDocument()
+    unmount()
+    const reported = { ...conference, status: "reportFiled" as const }
+    render(<ConferenceDetails {...props} conference={reported} />)
+    expect(
+      screen.queryByRole("button", { name: "input.share" })
+    ).not.toBeInTheDocument()
+    // Public Input stays.
+    expect(screen.getByText("input.empty_title")).toBeInTheDocument()
+  })
+
   it("leads from its tabs to its sections", () => {
     const { container } = render(<ConferenceDetails {...props} />)
     const tabs = within(screen.getByRole("navigation", { name: "tabs_label" }))
