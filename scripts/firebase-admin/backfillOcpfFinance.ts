@@ -1,12 +1,13 @@
-import { Record, String } from "runtypes"
+import { Number as RNumber, Record, String as RString, Union } from "runtypes"
 import { Script } from "./types"
 import { scrapeFinanceForCourt } from "functions/src/ocpf/scrapeOcpfFinance"
 
-const Args = Record({ courts: String })
+// yargs parses a single value like "193" as a number
+const Args = Record({ courts: Union(RString, RNumber) })
 
 export const script: Script = async ({ args }) => {
   const { courts } = Args.check(args)
-  const courtNumbers = courts.split(",").map(Number)
+  const courtNumbers = String(courts).split(",").map(Number)
 
   const succeeded: number[] = []
   const failed: number[] = []
