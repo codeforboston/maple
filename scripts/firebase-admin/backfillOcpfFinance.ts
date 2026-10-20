@@ -1,24 +1,22 @@
-import { Number as RNumber, Record, String as RString, Union } from "runtypes"
+import { z } from "zod"
 import { Script } from "./types"
 import { scrapeFinanceForCourt } from "functions/src/ocpf/scrapeOcpfFinance"
 
-// yargs parses a single value like "193" as a number
-const Args = Record({ courts: Union(RString, RNumber) })
+const Args = z.object({
+  // yargs parses a single value like "193" as a number
+  courts: z
+    .union([z.string(), z.number()])
+    .transform(v => String(v).split(",").map(Number))
+    .pipe(z.array(z.number().int().positive()))
+})
 
 export const script: Script = async ({ args }) => {
-  const { courts } = Args.check(args)
-  const courtNumbers = String(courts).split(",").map(Number)
+  const { courts } = Args.parse(args)
 
   const succeeded: number[] = []
   const failed: number[] = []
 
-  for (const court of courtNumbers) {
-    if (!Number.isInteger(court) || court <= 0) {
-      console.error(`Skipping invalid court number: ${court}`)
-      failed.push(court)
-      continue
-    }
-
+  for (const court of courts) {
     console.log(`\n── Court ${court} ──`)
     try {
       const { processed, years } = await scrapeFinanceForCourt(court)
