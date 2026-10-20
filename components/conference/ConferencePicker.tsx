@@ -47,8 +47,9 @@ const Menu = styled(Dropdown.Menu)`
 
 /**
  * The committee list as the title itself, where there is no room for a
- * column: the h1 opens the same rows the rail shows, and the one being read is
- * marked rather than ticked.
+ * column: the title opens the same rows the rail shows, and the one being
+ * read is marked rather than ticked. The page's heading stays beside it, out
+ * of sight.
  */
 export function ConferencePicker({
   conferences,
