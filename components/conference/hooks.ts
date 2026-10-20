@@ -1,7 +1,15 @@
 import Router, { useRouter } from "next/router"
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react"
+import {
+  RefObject,
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react"
 import { useMediaQuery } from "usehooks-ts"
 import { useProfile } from "../db"
+import { navbarBottom } from "./navbar"
 
 /** Whether the page arriving is one Back or Forward reached within the app,
  * where the browser puts the reader back. Those have moved the address by the
@@ -105,24 +113,20 @@ export function useConferenceTop(openOnHero: boolean) {
       sync()
     }
     measure()
-    const observer =
-      typeof ResizeObserver === "undefined"
-        ? undefined
-        : new ResizeObserver(measure)
+    const observer = new ResizeObserver(measure)
     // The hero's own height is where the conference starts: it follows the
     // window's height and its text's wrapping.
-    if (hero.current) observer?.observe(hero.current)
+    if (hero.current) observer.observe(hero.current)
     // Whatever sits above the hero moves it when it changes height, however
     // far up: the siblings before it and before each of its ancestors. The
     // body is no use, being a fixed-height box.
     for (let el = hero.current; el && el !== document.body; ) {
-      if (el.previousElementSibling)
-        observer?.observe(el.previousElementSibling)
+      if (el.previousElementSibling) observer.observe(el.previousElementSibling)
       el = el.parentElement
     }
     window.addEventListener("scroll", sync, { passive: true })
     return () => {
-      observer?.disconnect()
+      observer.disconnect()
       window.removeEventListener("scroll", sync)
       root.style.removeProperty("--conference-nav")
       root.style.scrollSnapType = ""
@@ -152,4 +156,49 @@ export function useConferenceTop(openOnHero: boolean) {
   }, [asPath, openOnHero])
 
   return { top, hero, toConference }
+}
+
+/**
+ * Publishes where the site navbar's bottom edge is on `scope` as
+ * --maple-navbar-height, so what pins under it pins flush, and follows it as
+ * it scrolls away. The stylesheet's 4.5rem is neither the desktop bar, which
+ * is shorter or taller with the window and lets go a window down, nor the
+ * phone bar, which is not sticky. The learn page's rail tracks the same edge.
+ */
+export function usePinnedNavbar(scope: RefObject<HTMLElement>) {
+  useLayoutEffect(() => {
+    const el = scope.current
+    if (!el) return
+    let nav: Element | null = null
+    let published = ""
+    const publish = () => {
+      // The navbar is a different element either side of its breakpoint.
+      const now = document.querySelector(".main-navbar")
+      if (now !== nav) {
+        if (nav) observer.unobserve(nav)
+        if (now) observer.observe(now)
+        nav = now
+      }
+      // Written only when it moves, which is rarely: most scrolls leave the
+      // bar where it was, and a write would restyle the page.
+      const value = `${navbarBottom()}px`
+      if (value === published) return
+      published = value
+      el.style.setProperty("--maple-navbar-height", value)
+    }
+    const observer = new ResizeObserver(publish)
+    publish()
+    // Capture, and registered before the tabs', so they read the edge where
+    // it is now.
+    document.addEventListener("scroll", publish, {
+      passive: true,
+      capture: true
+    })
+    window.addEventListener("resize", publish)
+    return () => {
+      observer.disconnect()
+      document.removeEventListener("scroll", publish, { capture: true })
+      window.removeEventListener("resize", publish)
+    }
+  }, [scope])
 }

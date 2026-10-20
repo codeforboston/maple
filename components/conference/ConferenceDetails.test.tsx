@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom"
-import { fireEvent, render, screen } from "@testing-library/react"
+import { act, fireEvent, render, screen, within } from "@testing-library/react"
 import Router from "next/router"
 import { ConferenceDetails } from "./ConferenceDetails"
 import type { ConferencePageProps } from "./types"
@@ -51,6 +51,19 @@ jest.mock("usehooks-ts", () => ({ useMediaQuery: () => false }))
 jest.mock("../featureFlags", () => ({
   useFlags: () => ({ legislators: false, hearingsAndTranscriptions: true })
 }))
+
+// jsdom has none; the page watches its title's height, and the tabs the
+// column their sections sit in. Kept, so a test can say something resized.
+const resized: (() => void)[] = []
+class Observer {
+  constructor(callback: () => void) {
+    resized.push(callback)
+  }
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+Object.assign(global, { ResizeObserver: Observer })
 
 const profile = { representative: { id: "AHP1" } }
 jest.mock("../db", () => ({ useProfile: () => ({ profile }) }))
@@ -309,6 +322,45 @@ describe("ConferenceDetails", () => {
     expect(
       container.querySelector('polygon[aria-label="D. Vieira"]')
     ).toHaveStyle({ fill: "#b53333", fillOpacity: 0.45 })
+  })
+
+  it("leads from its tabs to its sections", () => {
+    const { container } = render(<ConferenceDetails {...props} />)
+    const tabs = within(screen.getByRole("navigation", { name: "tabs_label" }))
+      .getAllByRole("link")
+      .map(a => [a.textContent, a.getAttribute("href")])
+    expect(tabs).toEqual([
+      ["tab_committee", "#committee"],
+      ["tab_text", "#text"]
+    ])
+    for (const [, href] of tabs)
+      expect(container.querySelector(href!)).toBeTruthy()
+  })
+
+  it("lights the tab of the section that has come up under the tabs", () => {
+    // jsdom lays nothing out, so each section says where its top is.
+    const tops: Record<string, number> = { committee: 0, text: 900 }
+    const rect = jest
+      .spyOn(HTMLElement.prototype, "getBoundingClientRect")
+      .mockImplementation(function (this: HTMLElement) {
+        return { top: tops[this.id] ?? 0 } as DOMRect
+      })
+    render(<ConferenceDetails {...props} />)
+    const lit = () =>
+      screen
+        .getAllByRole("link")
+        .filter(a => a.getAttribute("aria-current") === "true")
+        .map(a => a.textContent)
+    expect(lit()).toEqual(["tab_committee"])
+    // The last section lights too, once a jump has parked it.
+    tops.text = 0
+    fireEvent.scroll(document)
+    expect(lit()).toEqual(["tab_text"])
+    // A section can move with no scroll, when one above it grows.
+    tops.text = 900
+    act(() => resized.forEach(heard => heard()))
+    expect(lit()).toEqual(["tab_committee"])
+    rect.mockRestore()
   })
 
   describe("bill text", () => {

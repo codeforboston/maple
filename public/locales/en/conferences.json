@@ -70,5 +70,8 @@
   "version_both": "Senate and House",
   "text_loading": "Loading the bill text",
   "text_missing": "The text of {{bill}} isn’t on MAPLE yet.",
-  "text_pdf": "Read the PDF"
+  "text_pdf": "Read the PDF",
+  "tabs_label": "Sections of this conference committee",
+  "tab_committee": "Committee",
+  "tab_text": "Bill Text"
 }
