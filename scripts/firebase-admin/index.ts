@@ -5,6 +5,7 @@ import { hideBin } from "yargs/helpers"
 import { runAgainstEmulators, runAgainstProject } from "../configure"
 import { Context, Script, ScriptContext } from "./types"
 import { listAllUsers } from "./list-all-users"
+import { ArgsError } from "./args"
 
 const Args = Record({
   env: Union(L("local"), L("dev"), L("prod")),
@@ -69,7 +70,13 @@ yargs(hideBin(process.argv))
       const context: ScriptContext = { ...init(args), args: args as any }
       const script: Script = require(`./${scriptName}`).script
 
-      await script(context)
+      try {
+        await script(context)
+      } catch (err) {
+        if (!(err instanceof ArgsError)) throw err
+        console.error(err.message)
+        process.exitCode = 1
+      }
     }
   )
   .strictCommands()

@@ -1,5 +1,6 @@
 import { z } from "zod"
 import { Script } from "./types"
+import { parseArgs } from "./args"
 import { scrapeFinanceForCourt } from "functions/src/ocpf/scrapeOcpfFinance"
 
 const Args = z.object({
@@ -11,7 +12,7 @@ const Args = z.object({
 })
 
 export const script: Script = async ({ args }) => {
-  const { courts } = Args.parse(args)
+  const { courts } = parseArgs(Args, args)
 
   const succeeded: number[] = []
   const failed: number[] = []
