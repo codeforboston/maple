@@ -189,15 +189,20 @@ export function usePinnedNavbar(scope: RefObject<HTMLElement>) {
     const observer = new ResizeObserver(publish)
     publish()
     // Capture, and registered before the tabs', so they read the edge where
-    // it is now.
-    document.addEventListener("scroll", publish, {
+    // it is now; but not a box inside `scope`, such as a bill text's sheet,
+    // whose scrolling leaves the navbar where it was.
+    const scrolled = (e: Event) => {
+      if (e.target instanceof Node && el.contains(e.target)) return
+      publish()
+    }
+    document.addEventListener("scroll", scrolled, {
       passive: true,
       capture: true
     })
     window.addEventListener("resize", publish)
     return () => {
       observer.disconnect()
-      document.removeEventListener("scroll", publish, { capture: true })
+      document.removeEventListener("scroll", scrolled, { capture: true })
       window.removeEventListener("resize", publish)
     }
   }, [scope])

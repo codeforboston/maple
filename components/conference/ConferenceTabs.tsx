@@ -97,7 +97,12 @@ export function ConferenceTabs({ sections }: { sections: readonly string[] }) {
             if (!el) return
             e.preventDefault()
             jumpTo(el)
-            history.replaceState(null, "", `#${s}`)
+            // Next's state kept: on Back to a null-state entry Next only
+            // rewrites the URL, leaving the page it came from on screen.
+            // Its as path takes the hash, since Back restores that path.
+            const state = history.state
+            const as = state?.as && `${state.as.split("#")[0]}#${s}`
+            history.replaceState(as ? { ...state, as } : state, "", `#${s}`)
           }}
         >
           {t(`tab_${s}`)}
