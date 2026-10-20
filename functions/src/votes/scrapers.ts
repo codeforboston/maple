@@ -265,7 +265,7 @@ export class HouseRollCallScraper {
   }
 
   private async run() {
-    let rollCallNumber = await getHighestProcessedRollCall("House")
+    let rollCallNumber = (await getHighestProcessedRollCall("House")) + 1
 
     const writer = db.bulkWriter()
 
