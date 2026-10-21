@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import type { MemberContent } from "functions/src/members/types"
 import { doc, getDoc, getFirestore } from "firebase/firestore"
 import type { MemberBillSummary } from "functions/src/members/memberBillSummary"
-import { BillsTabContainer } from "./billsTab/BillsTabContainer"
+import { BillsTabContainer } from "./BillsTab/BillsTabContainer"
 
 const emptyBillSummary: MemberBillSummary = {
   all: { count: 0, topics: [] },
