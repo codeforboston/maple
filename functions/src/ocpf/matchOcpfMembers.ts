@@ -67,7 +67,8 @@ export const matchOcpfMembers = onRequestV2(async (req, res) => {
 // - Last name change (e.g. Alyson M. Sullivan in court 192 is now filed as
 //   Alyson M. Sullivan-Almeida). Alyson M. Sullivan isn't found, so for court 192,
 //   they come up unmatched, or ambiguous if others share the old last name.
-// Expected for older courts, not a bug; fix these by hand in ocpfMemberMapping.
+// Expected for older courts, not a bug; fix these by hand in ocpfMemberMapping and
+// set manual: true on the entry so later runs don't overwrite it.
 
 export async function matchMembersForCourt(
   court: number,
@@ -114,14 +115,18 @@ export async function matchMembersForCourt(
     const candidates =
       firstNameMatches.length > 0 ? firstNameMatches : lastNameAndBranchMatches
 
-    if (firstNameMatches.length === 1) {
+    // Fixed by hand (manual: true). Always wins over automatic matching.
+    if (existingMapping[member.MemberCode]?.manual) {
+      continue
+    } else if (firstNameMatches.length === 1) {
       const entry: OcpfMemberMappingEntry = {
         cpfId: candidates[0].cpfId,
         name: member.Name
       }
       mapping[member.MemberCode] = entry
 
-      // Matching was likley fixed manually
+      // Matched on a previous run but not this one. Keep the existing entry
+      // rather than flagging.
     } else if (member.MemberCode in existingMapping) {
       continue
 
