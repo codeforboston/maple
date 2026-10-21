@@ -83,11 +83,16 @@ Backend work runs the whole stack in Docker with `yarn dev:up` (emulator UI at [
 
 ### Claude Code specifically
 
-Claude Code reads `CLAUDE.md`, not `AGENTS.md`. `CLAUDE.md` is gitignored in this repo so everyone can keep personal notes there. Create one containing this line so Claude Code loads this file too:
+Recent versions of Claude Code (v2.1.277 and later) read `AGENTS.md` automatically, but only when there is **no** `CLAUDE.md`, `.claude/CLAUDE.md` or `CLAUDE.local.md` in the project folder or above it. See [How Claude remembers your project](https://code.claude.com/docs/en/memory#agents-md).
 
-```markdown
-@AGENTS.md
-```
+- **No personal notes?** Nothing to do: Claude Code loads this file. In an interactive session you'll see a line like `no CLAUDE.md found; AGENTS.md loaded`.
+- **Keeping personal notes?** `CLAUDE.md` is gitignored in this repo, so you can keep your own. Creating one stops Claude Code from reading `AGENTS.md` unless your `CLAUDE.md` imports it. Start your `CLAUDE.md` with this line:
+
+  ```markdown
+  @AGENTS.md
+  ```
+
+  The import also covers older Claude Code versions and sessions where reading `AGENTS.md` directly isn't available.
 
 Put anything specific to your own machine (paths, environment managers, local ports) in your `CLAUDE.md`, never in committed files.
 
