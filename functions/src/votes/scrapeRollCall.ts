@@ -118,7 +118,7 @@ function parseQuestion(number: number, input: string) {
 
   const search1 = /([0-9]+\/[0-9]+\/[0-9]+ [0-9]+:[0-9]+ (AM|PM))/
   const search2 = /([0-9]+) YEAS([0-9]+) NAYS([0-9]+) N\/V/
-  const search3 = /(H|S)\. ([0-9]+)(, )?/
+  const search3 = /(H|S)\. ([0-9]+)( , )?/
 
   // Find all required values
   const timeMatch = input.match(search1)
