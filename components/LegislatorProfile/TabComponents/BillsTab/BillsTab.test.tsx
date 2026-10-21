@@ -16,9 +16,10 @@ jest.mock("./BillsTabContainer", () => ({
       "div",
       { "data-testid": "bill-groups" },
       JSON.stringify({
-        all: bills.all.map(bill => bill.id),
-        sponsored: bills.sponsored.map(bill => bill.id),
-        cosponsored: bills.cosponsored.map(bill => bill.id)
+        all: bills.all.count,
+        sponsored: bills.sponsored.count,
+        cosponsored: bills.cosponsored.count,
+        recentSponsoredBills: bills.recentSponsoredBills
       })
     )
 }))
@@ -27,10 +28,6 @@ const makeSnapshot = (id: string, data: Record<string, unknown>) => ({
   id,
   exists: () => true,
   data: () => data
-})
-
-const makeBillData = (title: string) => ({
-  content: { Title: title }
 })
 
 describe("BillsTab", () => {
@@ -43,72 +40,51 @@ describe("BillsTab", () => {
     jest.clearAllMocks()
   })
 
-  it("loads unique member bills and groups them as all, sponsored, and cosponsored", async () => {
-    const billDataByPath: Record<string, Record<string, unknown>> = {
-      "generalCourts/194/bills/sponsored-1": makeBillData("Sponsored bill"),
-      "generalCourts/194/bills/cosponsored-1": makeBillData("Cosponsored bill"),
-      "generalCourts/194/bills/shared-1": makeBillData("Shared bill")
+  it("loads bill groups from one member summary document", async () => {
+    const summary = {
+      all: { count: 3, topics: [] },
+      sponsored: { count: 2, topics: [] },
+      cosponsored: { count: 1, topics: [] },
+      recentSponsoredBills: [
+        { id: "HD2", title: "Recent bill", topic: "Education" }
+      ]
     }
-
-    ;(getDoc as jest.Mock).mockImplementation(
-      async (reference: { path: string }) => {
-        if (reference.path === "generalCourts/194/members/ABC123") {
-          return makeSnapshot("ABC123", {
-            content: {
-              SponsoredBills: ["sponsored-1", "shared-1"],
-              CoSponsoredBills: ["cosponsored-1", "shared-1"]
-            }
-          })
-        }
-
-        const data = billDataByPath[reference.path]
-        return data
-          ? makeSnapshot(
-              reference.path.split("/")[reference.path.split("/").length - 1],
-              data
-            )
-          : { exists: () => false }
-      }
-    )
+    ;(getDoc as jest.Mock).mockResolvedValue(makeSnapshot("ABC123", summary))
 
     render(<BillsTab member={member} />)
 
     await waitFor(() => {
       expect(screen.getByTestId("bill-groups").textContent).toBe(
         JSON.stringify({
-          all: ["sponsored-1", "shared-1", "cosponsored-1"],
-          sponsored: ["sponsored-1", "shared-1"],
-          cosponsored: ["cosponsored-1"]
+          all: 3,
+          sponsored: 2,
+          cosponsored: 1,
+          recentSponsoredBills: summary.recentSponsoredBills
         })
       )
     })
 
-    const groups = JSON.parse(
-      screen.getByTestId("bill-groups").textContent || "{}"
-    )
-    expect(groups.sponsored).toContain("shared-1")
-    expect(groups.cosponsored).not.toContain("shared-1")
-
     expect(getFirestore).toHaveBeenCalledTimes(1)
     expect(doc).toHaveBeenCalledWith(
       { type: "db" },
-      "generalCourts/194/members/ABC123"
+      "generalCourts/194/memberBillSummaries/ABC123"
     )
-    expect(
-      (getDoc as jest.Mock).mock.calls.filter(([reference]) =>
-        reference.path.includes("/bills/")
-      )
-    ).toHaveLength(3)
+    expect(getDoc).toHaveBeenCalledTimes(1)
   })
 
-  it("renders empty bill groups when the member document does not exist", async () => {
+  it("renders empty bill groups when the summary does not exist", async () => {
     ;(getDoc as jest.Mock).mockResolvedValue({ exists: () => false })
 
     render(<BillsTab member={member} />)
 
     await waitFor(() => {
       expect(screen.getByTestId("bill-groups").textContent).toBe(
-        JSON.stringify({ all: [], sponsored: [], cosponsored: [] })
+        JSON.stringify({
+          all: 0,
+          sponsored: 0,
+          cosponsored: 0,
+          recentSponsoredBills: []
+        })
       )
     })
 

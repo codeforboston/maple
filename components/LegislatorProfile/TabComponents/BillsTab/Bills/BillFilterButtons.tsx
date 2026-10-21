@@ -3,30 +3,24 @@ import {
   StyledButtonFilterGroup,
   StyledButtonBase
 } from "../StyledComponents/BillStyledComponents"
-import { Bill } from "functions/src/bills/types"
+import { BillGroupSummary } from "functions/src/members/memberBillSummary"
 
-type BillGroups = {
-  all: Bill[]
-  sponsored: Bill[]
-  cosponsored: Bill[]
-}
-
-export type BillFilter = keyof BillGroups
+export type BillFilter = "all" | "sponsored" | "cosponsored"
 
 export const BillFilterButtons = ({
-  bills,
+  groups,
   selectedFilter,
   onSelectFilter
 }: {
-  bills: BillGroups
+  groups: Record<BillFilter, BillGroupSummary>
   selectedFilter: BillFilter
   onSelectFilter: (filter: BillFilter) => void
 }) => {
   const { t } = useTranslation("legislators")
 
-  const sponsoredBills = bills.sponsored.length
-  const coSponsoredBills = bills.cosponsored.length
-  const allBills = bills.all.length
+  const sponsoredBills = groups.sponsored.count
+  const coSponsoredBills = groups.cosponsored.count
+  const allBills = groups.all.count
 
   return (
     <StyledButtonFilterGroup>

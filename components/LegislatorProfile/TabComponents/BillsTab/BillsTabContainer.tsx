@@ -1,34 +1,24 @@
-import { TabBlock } from "../../LegislatorComponents"
-import { useTranslation } from "next-i18next"
-import {
-  StyledSubSectionHeaders,
-  StyledBillsTab
-} from "./StyledComponents/BillStyledComponents"
+import { StyledBillsTab } from "./StyledComponents/BillStyledComponents"
 import { MemberContent } from "functions/src/members/types"
 import { BillsByTopic } from "./Bills/BillsByTopic"
 import { RecentBills } from "./Bills/RecentBills"
 import { CommitteePositions } from "./Committees/CommitteePositions"
-import { Bill } from "functions/src/bills/types"
-
-type BillGroups = {
-  all: Bill[]
-  sponsored: Bill[]
-  cosponsored: Bill[]
-}
+import { MemberBillSummary } from "functions/src/members/memberBillSummary"
 
 export function BillsTabContainer({
   member,
   bills
 }: {
   member: MemberContent | undefined
-  bills: BillGroups
+  bills: MemberBillSummary
 }) {
-  const { t } = useTranslation("legislators")
-
   return (
     <StyledBillsTab>
       <BillsByTopic billGroups={bills} />
-      <RecentBills bills={bills.sponsored} />
+      <RecentBills
+        bills={bills.recentSponsoredBills}
+        totalCount={bills.sponsored.count}
+      />
       <CommitteePositions member={member} />
     </StyledBillsTab>
   )

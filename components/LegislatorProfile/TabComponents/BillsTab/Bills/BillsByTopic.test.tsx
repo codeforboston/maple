@@ -1,36 +1,62 @@
 import React from "react"
 import { fireEvent, render, screen } from "@testing-library/react"
-import { Bill } from "functions/src/bills/types"
+import { MemberBillSummary } from "functions/src/members/memberBillSummary"
 import { BillsByTopic } from "./BillsByTopic"
 
 jest.mock("next-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key })
 }))
 
-const makeBill = (id: string, topic: string, subtopic: string): Bill =>
-  ({
-    id,
-    topics: [
-      { category: "Test", topic },
-      { category: "Test", topic: subtopic }
-    ]
-  } as Bill)
-
 describe("BillsByTopic", () => {
-  const billGroups = {
-    all: [
-      makeBill("sponsored-only", "Sponsored topic", "Sponsored subtopic"),
-      makeBill("shared", "Shared topic", "Shared subtopic"),
-      makeBill("cosponsored-only", "Cosponsored topic", "Cosponsored subtopic")
-    ],
-    sponsored: [
-      makeBill("sponsored-only", "Sponsored topic", "Sponsored subtopic"),
-      makeBill("shared", "Shared topic", "Shared subtopic")
-    ],
-    cosponsored: [
-      makeBill("shared", "Shared topic", "Shared subtopic"),
-      makeBill("cosponsored-only", "Cosponsored topic", "Cosponsored subtopic")
-    ]
+  const billGroups: Pick<
+    MemberBillSummary,
+    "all" | "sponsored" | "cosponsored"
+  > = {
+    all: {
+      count: 3,
+      topics: [
+        {
+          topic: "Sponsored topic",
+          count: 1,
+          subtopics: [{ topic: "Sponsored subtopic", count: 1 }]
+        },
+        {
+          topic: "Shared topic",
+          count: 1,
+          subtopics: [{ topic: "Shared subtopic", count: 1 }]
+        },
+        {
+          topic: "Cosponsored topic",
+          count: 1,
+          subtopics: [{ topic: "Cosponsored subtopic", count: 1 }]
+        }
+      ]
+    },
+    sponsored: {
+      count: 2,
+      topics: [
+        {
+          topic: "Sponsored topic",
+          count: 1,
+          subtopics: [{ topic: "Sponsored subtopic", count: 1 }]
+        },
+        {
+          topic: "Shared topic",
+          count: 1,
+          subtopics: [{ topic: "Shared subtopic", count: 1 }]
+        }
+      ]
+    },
+    cosponsored: {
+      count: 1,
+      topics: [
+        {
+          topic: "Cosponsored topic",
+          count: 1,
+          subtopics: [{ topic: "Cosponsored subtopic", count: 1 }]
+        }
+      ]
+    }
   }
 
   it("shows each bill group's own count, with all counting the unique union", () => {
@@ -40,7 +66,7 @@ describe("BillsByTopic", () => {
 
     expect(buttons.map(button => button.textContent)).toEqual([
       "2billsSponsored",
-      "2cosponsored",
+      "1cosponsored",
       "All3"
     ])
     expect(buttons[2].getAttribute("aria-pressed")).toBe("true")
@@ -58,9 +84,11 @@ describe("BillsByTopic", () => {
         .getAttribute("aria-pressed")
     ).toBe("true")
     expect(screen.getByText("Cosponsored topic")).toBeTruthy()
-    expect(screen.getByText("Shared topic")).toBeTruthy()
+    expect(screen.queryByText("Shared topic")).toBeNull()
     expect(screen.queryByText("Sponsored topic")).toBeNull()
-    expect(screen.getByText("2 profiles.bills • cosponsored")).toBeTruthy()
+    expect(
+      screen.getByText("1 profiles.bills • profiles.coSponsor")
+    ).toBeTruthy()
 
     fireEvent.click(screen.getByRole("button", { name: /billsSponsored/ }))
 

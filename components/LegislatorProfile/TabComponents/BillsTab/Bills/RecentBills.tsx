@@ -10,12 +10,16 @@ import {
   StyledSubtopicTag,
   StyledTitleCell
 } from "../StyledComponents/BillStyledComponents"
-import { Bill } from "functions/src/bills/types"
+import { RecentSponsoredBill } from "functions/src/members/memberBillSummary"
 
-export const RecentBills = ({ bills }: { bills: Bill[] }) => {
+export const RecentBills = ({
+  bills,
+  totalCount
+}: {
+  bills: RecentSponsoredBill[]
+  totalCount: number
+}) => {
   const { t } = useTranslation("legislators")
-
-  const lastFiveSponsoredBills = bills.slice(0, 5)
 
   return (
     <div>
@@ -38,18 +42,16 @@ export const RecentBills = ({ bills }: { bills: Bill[] }) => {
             </tr>
           </thead>
           <tbody>
-            {lastFiveSponsoredBills.map(bill => (
+            {bills.map(bill => (
               <tr key={bill.id}>
                 <StyledSubsectionTableColumnData>
                   <StyledBillId>{bill.id}</StyledBillId>
                 </StyledSubsectionTableColumnData>
                 <StyledSubsectionTableColumnData>
-                  <StyledTitleCell>{bill.content.Title}</StyledTitleCell>
+                  <StyledTitleCell>{bill.title}</StyledTitleCell>
                 </StyledSubsectionTableColumnData>
                 <StyledSubsectionTableColumnData>
-                  <StyledSubtopicTag>
-                    {bill.topics ? bill.topics[1].topic : ""}
-                  </StyledSubtopicTag>
+                  <StyledSubtopicTag>{bill.topic}</StyledSubtopicTag>
                 </StyledSubsectionTableColumnData>
               </tr>
             ))}
@@ -57,7 +59,7 @@ export const RecentBills = ({ bills }: { bills: Bill[] }) => {
         </StyledSubsectionTable>
         <StyledRecentBillsFooter>
           {t("profiles.recentSponsoredBills.viewBills", {
-            number: bills.length ?? 0
+            number: totalCount
           })}
         </StyledRecentBillsFooter>
       </TabBlock>

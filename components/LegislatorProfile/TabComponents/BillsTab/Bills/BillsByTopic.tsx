@@ -14,27 +14,18 @@ import {
   StyledTopicNameBox,
   StyledTopicLink
 } from "../StyledComponents/BillStyledComponents"
-import { Bill } from "functions/src/bills/types"
+import {
+  BillGroupSummary,
+  MemberBillSummary
+} from "functions/src/members/memberBillSummary"
 import { BillFilter, BillFilterButtons } from "./BillFilterButtons"
 import { ArrowRightIcon } from "components/learn/icons"
 
-type BillGroups = {
-  all: Bill[]
-  sponsored: Bill[]
-  cosponsored: Bill[]
-}
-
-type TopicGroup = {
-  topic: string
-  count: number
-  bills: Bill[]
-}
-
 const BillsByTopicContainer = ({
-  bills,
+  group,
   selectedFilter
 }: {
-  bills: Bill[]
+  group: BillGroupSummary
   selectedFilter: BillFilter
 }) => {
   const { t } = useTranslation("legislators")
@@ -46,39 +37,6 @@ const BillsByTopicContainer = ({
       ? t("profiles.primarySponsor")
       : t("profiles.coSponsor")
 
-  const topicGroups = Object.values(
-    bills.reduce<Record<string, TopicGroup>>((groups, bill) => {
-      const topic = bill.topics?.[0]?.topic
-
-      if (topic) {
-        const group = groups[topic] ?? { topic, count: 0, bills: [] }
-        group.count += 1
-        group.bills.push(bill)
-        groups[topic] = group
-      }
-
-      return groups
-    }, {})
-  )
-    .sort((groupA, groupB) => groupB.count - groupA.count)
-    .slice(0, 5)
-    .map(group => ({
-      ...group,
-      subtopics: Object.entries(
-        group.bills.reduce<Record<string, number>>((counts, bill) => {
-          const subtopic = bill.topics?.[1]?.topic
-
-          if (subtopic) {
-            counts[subtopic] = (counts[subtopic] ?? 0) + 1
-          }
-
-          return counts
-        }, {})
-      )
-        .sort(([, countA], [, countB]) => countB - countA)
-        .slice(0, 4)
-    }))
-
   return (
     <StyledBillsByTopic>
       <StyledBillsByTopicHeader>
@@ -86,22 +44,24 @@ const BillsByTopicContainer = ({
           {t("profiles.billsByTopic")}
         </StyledBillsByTopicHeaderTitle>
         <StyledBillsByTopicHeaderSubtitle>
-          {bills.length} {t("profiles.bills")} • {filterLabel}
+          {group.count} {t("profiles.bills")} • {filterLabel}
         </StyledBillsByTopicHeaderSubtitle>
       </StyledBillsByTopicHeader>
       <div>
-        {topicGroups.map(group => (
-          <StyledTopicRow key={group.topic}>
+        {group.topics.map(topicGroup => (
+          <StyledTopicRow key={topicGroup.topic}>
             <StyledTopicMeta>
               <StyledTopicNameBox>
-                <StyledTopicName>{group.topic}</StyledTopicName>
+                <StyledTopicName>{topicGroup.topic}</StyledTopicName>
                 <StyledTopicLink>Browse bills {arrow}</StyledTopicLink>
               </StyledTopicNameBox>
-              <StyledCountLabel>{group.count} bills</StyledCountLabel>
+              <StyledCountLabel>{topicGroup.count} bills</StyledCountLabel>
             </StyledTopicMeta>
             <StyledSubtopicContainer>
-              {group.subtopics.map(([subtopic]) => (
-                <StyledSubtopicTag key={subtopic}>{subtopic}</StyledSubtopicTag>
+              {topicGroup.subtopics.map(subtopic => (
+                <StyledSubtopicTag key={subtopic.topic}>
+                  {subtopic.topic}
+                </StyledSubtopicTag>
               ))}
             </StyledSubtopicContainer>
           </StyledTopicRow>
@@ -111,19 +71,23 @@ const BillsByTopicContainer = ({
   )
 }
 
-export const BillsByTopic = ({ billGroups }: { billGroups: BillGroups }) => {
+export const BillsByTopic = ({
+  billGroups
+}: {
+  billGroups: Pick<MemberBillSummary, "all" | "sponsored" | "cosponsored">
+}) => {
   const [selectedFilter, setSelectedFilter] = useState<BillFilter>("all")
-  const selectedBills = billGroups[selectedFilter]
+  const selectedGroup = billGroups[selectedFilter]
 
   return (
     <>
       <BillFilterButtons
-        bills={billGroups}
+        groups={billGroups}
         selectedFilter={selectedFilter}
         onSelectFilter={setSelectedFilter}
       />
       <BillsByTopicContainer
-        bills={selectedBills}
+        group={selectedGroup}
         selectedFilter={selectedFilter}
       />
     </>
