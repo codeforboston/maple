@@ -1,14 +1,10 @@
 import { z } from "zod"
 import { Script } from "./types"
-import { parseArgs } from "./args"
+import { courtList, parseArgs } from "./args"
 import { scrapeFinanceForCourt } from "functions/src/ocpf/scrapeOcpfFinance"
 
 const Args = z.object({
-  // yargs parses a single value like "193" as a number
-  courts: z
-    .union([z.string(), z.number()])
-    .transform(v => String(v).split(",").map(Number))
-    .pipe(z.array(z.number().int().positive()))
+  courts: courtList
 })
 
 export const script: Script = async ({ args }) => {
