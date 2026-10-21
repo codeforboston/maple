@@ -312,9 +312,7 @@ function useSaveDraft(
             attachmentId: attachmentId ?? null,
             ballotQuestionId:
               requestBallotQuestionId ?? ballotQuestionId ?? null,
-            // Only stamped where it applies, so bill drafts are written as
-            // they always were.
-            ...(conferenceId && { conferenceId })
+            conferenceId: conferenceId ?? null
           }
           const result = await addDoc(
             collection(firestore, `/users/${uid}/draftTestimony`),

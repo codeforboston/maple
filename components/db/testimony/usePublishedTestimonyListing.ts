@@ -12,7 +12,6 @@ import { firestore } from "../../firebase"
 import { nullableQuery } from "../common"
 import { createTableHook } from "../createTableHook"
 import { Testimony } from "./types"
-import { matchesTestimonyScope } from "functions/src/testimony/scope"
 
 type Refinement = {
   senatorId?: string
@@ -116,9 +115,12 @@ function getWhere({
   ]
   if (uid) constraints.push(["authorUid", "==", uid])
   if (billId) constraints.push(["billId", "==", billId])
-  if (ballotQuestionId)
-    constraints.push(["ballotQuestionId", "==", ballotQuestionId])
-  if (conferenceId) constraints.push(["conferenceId", "==", conferenceId])
+  // A bill's listing is one scope: the bill alone, a ballot question or a
+  // conference.
+  if (billId || ballotQuestionId)
+    constraints.push(["ballotQuestionId", "==", ballotQuestionId ?? null])
+  if (billId || conferenceId)
+    constraints.push(["conferenceId", "==", conferenceId ?? null])
   if (representativeId)
     constraints.push(["representativeId", "==", representativeId])
   if (senatorId) constraints.push(["senatorId", "==", senatorId])
@@ -147,13 +149,11 @@ async function listTestimony(
       startAfterKey !== null && startAfter(startAfterKey)
     )
   )
-  return result.docs
-    .map(d => d.data() as Testimony)
-    .filter(testimony =>
-      refinement.conferenceId ||
-      refinement.ballotQuestionId ||
-      refinement.billId
-        ? matchesTestimonyScope(testimony, refinement)
-        : !testimony.conferenceId
-    )
+  const testimony = result.docs.map(d => d.data() as Testimony)
+  return refinement.billId ||
+    refinement.ballotQuestionId ||
+    refinement.conferenceId
+    ? testimony
+    : // Unscoped listings would need an index per filter for this.
+      testimony.filter(t => !t.conferenceId)
 }

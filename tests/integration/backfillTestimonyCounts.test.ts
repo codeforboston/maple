@@ -83,9 +83,9 @@ describe("backfillTestimonyCounts", () => {
 async function setPublication(
   uid: string,
   id: string,
-  testimony: PartialTestimony
+  testimony: PartialTestimony & { conferenceId?: string }
 ): Promise<void> {
   await testDb
     .doc(`/users/${uid}/publishedTestimony/${id}`)
-    .set({ ballotQuestionId: null, ...testimony })
+    .set({ ballotQuestionId: null, conferenceId: null, ...testimony })
 }

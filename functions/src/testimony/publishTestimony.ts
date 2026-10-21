@@ -11,7 +11,6 @@ import { checkAuth, checkRequest, DocUpdate, fail, Id } from "../common"
 import { db, FieldValue, Timestamp } from "../firebase"
 import { supportedGeneralCourts, takesTestimony } from "../shared"
 import { Attachments, PublishedAttachmentState } from "./attachments"
-import { matchesTestimonyScope } from "./scope"
 import { billCountFields, DraftTestimony, Testimony } from "./types"
 import { updateTestimonyCounts } from "./updateTestimonyCounts"
 
@@ -334,11 +333,11 @@ class PublishTestimonyTransaction {
         .where("billId", "==", this.draft.billId)
         .where("court", "==", this.draft.court)
         .where("ballotQuestionId", "==", this.bqId)
+        .where("conferenceId", "==", this.conferenceId)
         .orderBy("version", "desc")
+        .limit(1)
     )
-    const latest = archived.docs.find(d =>
-      matchesTestimonyScope(d.data(), this.scope())
-    )
+    const latest = archived.docs[0]
 
     if (!latest) return INITIAL_VERSION
 
@@ -359,10 +358,10 @@ class PublishTestimonyTransaction {
         .where("billId", "==", this.draft.billId)
         .where("court", "==", this.draft.court)
         .where("ballotQuestionId", "==", this.bqId)
+        .where("conferenceId", "==", this.conferenceId)
+        .limit(1)
     )
-    const publication = publications.docs.find(d =>
-      matchesTestimonyScope(d.data(), this.scope())
-    )
+    const publication = publications.docs[0]
 
     if (!publication) {
       this.publicationRef = db.doc(
@@ -372,10 +371,6 @@ class PublishTestimonyTransaction {
       this.currentPublication = Testimony.checkWithDefaults(publication.data())
       this.publicationRef = publication.ref
     }
-  }
-
-  private scope() {
-    return { ballotQuestionId: this.bqId, conferenceId: this.conferenceId }
   }
 
   private getDisplayName(): string {

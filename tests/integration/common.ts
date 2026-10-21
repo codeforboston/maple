@@ -181,7 +181,9 @@ export const createNewTestimony = async (uid: string, billId: string) => {
     court: 192,
     position: "oppose",
     content: "testimony content",
-    public: true
+    public: true,
+    ballotQuestionId: null,
+    conferenceId: null
   }
 
   try {

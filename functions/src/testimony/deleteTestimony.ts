@@ -16,7 +16,6 @@ import {
 } from "../common"
 import { db, FieldValue } from "../firebase"
 import { Attachments } from "./attachments"
-import { matchesTestimonyScope } from "./scope"
 import { billCountFields, DraftTestimony, Testimony } from "./types"
 import { updateTestimonyCounts } from "./updateTestimonyCounts"
 
@@ -101,7 +100,7 @@ class DeleteTestimonyTransaction {
       publishedVersion: FieldValue.delete()
     }
 
-    if (matchesTestimonyScope(this.publication)) {
+    if (!this.publication.ballotQuestionId && !this.publication.conferenceId) {
       const billUpdate: DocUpdate<Bill> = {
         ...(await this.resolveNewLatestTestimony()),
         ...updateTestimonyCounts(
@@ -169,13 +168,16 @@ class DeleteTestimonyTransaction {
       db
         .collection(`users/${this.uid}/draftTestimony`)
         .where("billId", "==", this.publication.billId)
-    )
-    const drafts = result.docs.filter(d =>
-      matchesTestimonyScope(d.data(), this.publication)
+        .where(
+          "ballotQuestionId",
+          "==",
+          this.publication.ballotQuestionId ?? null
+        )
+        .where("conferenceId", "==", this.publication.conferenceId ?? null)
     )
 
-    if (drafts.length === 1) {
-      this.draftSnap = drafts[0]
+    if (result.docs.length === 1) {
+      this.draftSnap = result.docs[0]
     }
   }
 
@@ -203,31 +205,18 @@ class DeleteTestimonyTransaction {
     this.ballotQuestion = BallotQuestion.checkWithDefaults(snap.data())
   }
 
-  private findLatest(docs: FirebaseFirestore.QueryDocumentSnapshot[]) {
-    return docs.find(
-      d => d.id !== this.publicationId && matchesTestimonyScope(d.data())
-    )
-  }
-
-  /** The bill's latest testimony once this one is gone. Conference testimony
-   * shares the bill's id but not its listing, so page past it. */
   private async resolveNewLatestTestimony() {
-    const query = db
-      .collectionGroup("publishedTestimony")
-      .where("billId", "==", this.publication.billId)
-      .where("court", "==", this.publication.court)
-      .where("ballotQuestionId", "==", null)
-      .orderBy("publishedAt", "desc")
-    // Two cover the common case: this testimony and the one before it.
-    let pageSize = 2
-    let page = await this.t.get(query.limit(pageSize))
-    let latestDoc = this.findLatest(page.docs)
-    while (!latestDoc && page.size === pageSize) {
-      const last = page.docs[pageSize - 1]
-      pageSize = 10
-      page = await this.t.get(query.startAfter(last).limit(pageSize))
-      latestDoc = this.findLatest(page.docs)
-    }
+    const result = await this.t.get(
+      db
+        .collectionGroup("publishedTestimony")
+        .where("billId", "==", this.publication.billId)
+        .where("court", "==", this.publication.court)
+        .where("ballotQuestionId", "==", null)
+        .where("conferenceId", "==", null)
+        .orderBy("publishedAt", "desc")
+        .limit(2)
+    )
+    const latestDoc = result.docs.find(d => d.id !== this.publicationId)
 
     if (!latestDoc) {
       return {

@@ -2,12 +2,12 @@ import {
   collection,
   collectionGroup,
   getDocs,
+  limit,
   query,
   where
 } from "firebase/firestore"
 import { first } from "lodash"
 import { firestore } from "../../firebase"
-import { matchesTestimonyScope } from "functions/src/testimony/scope"
 import { DraftTestimony, Testimony } from "./types"
 
 /** Resolves the current draft and publication refs for a given user and bill. */
@@ -75,13 +75,12 @@ function getPublishedTestimony(
       collectionGroup(firestore, "publishedTestimony"),
       where("authorUid", "==", uid),
       where("billId", "==", billId),
-      where("court", "==", court)
+      where("court", "==", court),
+      where("ballotQuestionId", "==", ballotQuestionId ?? null),
+      where("conferenceId", "==", conferenceId ?? null),
+      limit(1)
     )
-  ).then(snapshot =>
-    snapshot.docs.filter(doc =>
-      matchesTestimonyScope(doc.data(), { ballotQuestionId, conferenceId })
-    )
-  )
+  ).then(snapshot => snapshot.docs)
 }
 
 function getDraftTestimony(
@@ -93,11 +92,10 @@ function getDraftTestimony(
   return getDocs(
     query(
       collection(firestore, `users/${uid}/draftTestimony`),
-      where("billId", "==", billId)
+      where("billId", "==", billId),
+      where("ballotQuestionId", "==", ballotQuestionId ?? null),
+      where("conferenceId", "==", conferenceId ?? null),
+      limit(1)
     )
-  ).then(snapshot =>
-    snapshot.docs.filter(doc =>
-      matchesTestimonyScope(doc.data(), { ballotQuestionId, conferenceId })
-    )
-  )
+  ).then(snapshot => snapshot.docs)
 }

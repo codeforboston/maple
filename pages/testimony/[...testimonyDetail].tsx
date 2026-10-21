@@ -128,7 +128,8 @@ const fetchDocs = async (q: NonNullable<ReturnType<typeof parseQuery>>) => {
       authorUid,
       billId,
       court,
-      ballotQuestionId
+      ballotQuestionId,
+      conferenceId: testimony.conferenceId ?? undefined
     })
   } else if (q.authorUid) {
     ;({ authorUid, billId, court, ballotQuestionId } = q)

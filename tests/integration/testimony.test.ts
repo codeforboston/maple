@@ -1,4 +1,5 @@
 import { currentGeneralCourt } from "functions/src/shared"
+import { FieldValue } from "firebase-admin/firestore"
 import { signOut, User } from "firebase/auth"
 import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
@@ -6,6 +7,7 @@ import { ref, uploadBytes } from "firebase/storage"
 import { nanoid } from "nanoid"
 import { auth, firestore, functions, storage } from "../../components/firebase"
 import { terminateFirebase, testDb, testStorage } from "../testUtils"
+import { script as backfillTestimonyScope } from "../../scripts/firebase-admin/backfillTestimonyScope"
 import {
   createFakeBill,
   expectPermissionDenied,
@@ -547,6 +549,48 @@ describe("publishTestimony", () => {
       expect(bill.latestTestimonyId).toBe(resA.data.publicationId)
     })
 
+    it("Republishes backfilled legacy bill testimony in place", async () => {
+      const resA = await publishTestimony({ draftId })
+      // Strip the field from everything the bill testimony wrote, as it was
+      // before conference testimony existed, then backfill it.
+      const legacy = [
+        testDb.doc(paths.draftTestimony(uid, draftId)),
+        testDb.doc(
+          `/users/${uid}/publishedTestimony/${resA.data.publicationId}`
+        ),
+        ...(
+          await testDb
+            .collection(`/users/${uid}/archivedTestimony`)
+            .where("billId", "==", billId)
+            .get()
+        ).docs.map(d => d.ref)
+      ]
+      for (const ref of legacy)
+        await ref.update({ conferenceId: FieldValue.delete() })
+      await backfillTestimonyScope({
+        db: testDb,
+        args: { env: "local", argv: [] }
+      } as any)
+
+      const { draftId: conferenceDraftId } = await createConferenceDraft(
+        uid,
+        billId,
+        conferenceId,
+        "passNothing"
+      )
+      await publishTestimony({ draftId: conferenceDraftId })
+      await updateDoc(refs.draftTestimony(uid, draftId), {
+        content: "updated content",
+        editReason: "edit reason"
+      })
+      const resB = await publishTestimony({ draftId })
+
+      expect(resB.data.publicationId).toBe(resA.data.publicationId)
+      const publication = await getPublication(uid, resB.data.publicationId)
+      expect(publication.version).toBe(2)
+      expect(publication.conferenceId).toBeNull()
+    })
+
     it("Moves the conference counts when the stance changes", async () => {
       const { draftId: conferenceDraftId } = await createConferenceDraft(
         uid,
@@ -781,6 +825,29 @@ describe("deleteTestimony", () => {
     expect((await getConference(conferenceId)).testimonyCount).toBe(1)
   })
 
+  it("Skips newer conference testimony for the bill's latest", async () => {
+    const resA = await publishTestimony({ draftId })
+    const { draftId: conferenceDraftId } = await createConferenceDraft(
+      uid,
+      billId,
+      await createConference(billId),
+      "passSomething"
+    )
+    await publishTestimony({ draftId: conferenceDraftId })
+    const { uid: uid2 } = await getSignedInAdmin()
+    const { draftId: draftId2 } = await createDraft(uid2, billId)
+    const resB = await publishTestimony({ draftId: draftId2 })
+    expect((await getBill(billId)).latestTestimonyId).toBe(
+      resB.data.publicationId
+    )
+
+    await deleteTestimony({ uid: uid2, publicationId: resB.data.publicationId })
+
+    const bill = await getBill(billId)
+    expect(bill.testimonyCount).toBe(1)
+    expect(bill.latestTestimonyId).toBe(resA.data.publicationId)
+  })
+
   describe("attachments", () => {
     it("deletes attachments", async () => {
       let attachmentId = nanoid()
@@ -910,7 +977,8 @@ async function createDraft(
     court,
     position: "endorse",
     attachmentId: null,
-    ballotQuestionId: ballotQuestionId ?? null
+    ballotQuestionId: ballotQuestionId ?? null,
+    conferenceId: null
   }
 
   await setDoc(refs.draftTestimony(uid, draftId), draft)
