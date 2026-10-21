@@ -55,8 +55,20 @@ export const matchOcpfMembers = onRequestV2(async (req, res) => {
 // Matches a general court's MAPLE members to their OCPF filer record by last
 // name + branch, writing the result to that court's ocpfMemberMapping. The
 // current court is matched against active filers only (OCPF Closed_Date
-// empty); historical courts drop that filter. Pass quiet to suppress logging
+// empty); historical courts drop that filter.
+// Pass quiet to suppress logging
 // (e.g. when run from a CLI script that prints its own summary).
+
+// NOTE: OCPF filer records reflect the filer's *current* name and office, so
+// matching older courts can miss legislators whose record has changed since.
+// Examples:
+// - Chamber switch (House <-> Senate): branch is a hard filter, so they come
+//   up unmatched for the earlier court.
+// - Last name change (e.g. Alyson M. Sullivan in court 192 is now filed as
+//   Alyson M. Sullivan-Almeida). Alyson M. Sullivan isn't found, so for court 192,
+//   they come up unmatched, or ambiguous if others share the old last name.
+// Expected for older courts, not a bug; fix these by hand in ocpfMemberMapping.
+
 export async function matchMembersForCourt(
   court: number,
   { quiet = false }: { quiet?: boolean } = {}
@@ -87,9 +99,6 @@ export async function matchMembersForCourt(
 
     if (!branch || (branch !== "Senate" && branch !== "House")) continue
 
-    // Branch is a hard filter: a legislator who switched chambers (House <->
-    // Senate) between courts will come up unmatched for the earlier court.
-    // Expected for older courts, not a bug.
     const lastNameAndBranchMatches = filers.filter(
       f =>
         f.lastName.toLowerCase() === lastName.toLowerCase() &&
