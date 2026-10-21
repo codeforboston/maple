@@ -21,7 +21,7 @@ export const script: Script = async ({ db, args }) => {
     endNumber = number
   }
   if (!number) {
-    number = 0
+    number = 1
   }
   const writer = db.bulkWriter()
   const houseScraper = new HouseRollCallScraper()
