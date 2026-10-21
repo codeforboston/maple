@@ -1,5 +1,6 @@
 import { districtId } from "functions/src/districts/normalize"
 import type { Branch } from "../../functions/src/common"
+import type { ConferenceSource } from "../../functions/src/conferences/types"
 import {
   Conference,
   getConferenceForBill,
@@ -15,7 +16,8 @@ import {
   ConferenceIndexProps,
   ConferencePageProps,
   ConferenceSummary,
-  HearingView
+  HearingView,
+  SourceView
 } from "./types"
 
 const summarize = (c: Conference): ConferenceSummary => ({
@@ -28,6 +30,10 @@ const summarize = (c: Conference): ConferenceSummary => ({
   canonicalBillId: c.canonicalBillId,
   status: c.status
 })
+
+/** As props: Next refuses undefined, so what is left out arrives as null. */
+const sourceView = (s?: ConferenceSource): SourceView | null =>
+  s ? { ...s, publishedAt: s.publishedAt ?? null } : null
 
 /** The member's cell on the map: their district id, or null where the map has
  * no such seat. */
@@ -124,7 +130,20 @@ async function pageFor(
           ? [{ id: h.id, eventId: h.eventId, startsAt: h.startsAt }]
           : []
       )
-      .sort((a, b) => a.startsAt - b.startsAt)
+      .sort((a, b) => a.startsAt - b.startsAt),
+    gist: conference.gist ?? null,
+    differences: conference.differences.map(d => ({
+      heading: d.heading,
+      senate: d.senate ?? null,
+      house: d.house ?? null,
+      notes: d.notes ?? {},
+      source: sourceView(d.source)
+    })),
+    similarities: conference.similarities.map(d => ({
+      heading: d.heading,
+      body: d.body,
+      source: sourceView(d.source)
+    }))
   }
 }
 

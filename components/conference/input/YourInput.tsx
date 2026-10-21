@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
+import { TABS_H } from "../ConferenceTabs"
 import { ConferenceTestimony } from "components/db"
 import { Entry } from "./Entry"
 import { EntryModal } from "./EntryModal"
@@ -10,7 +11,7 @@ import { ink, line, shadow } from "./tokens"
 
 const Section = styled.section`
   scroll-margin-top: calc(
-    var(--maple-navbar-height) + var(--title-h, 5rem) + 4.5rem
+    var(--maple-navbar-height) + var(--title-h, 5rem) + ${TABS_H} + 1.5rem
   );
 `
 

@@ -93,7 +93,10 @@ const page = (conference: ConferencePageProps["conference"]) => ({
   conference,
   conferences: [phoneFree, privacy],
   conferees: [],
-  hearings: []
+  hearings: [],
+  gist: null,
+  differences: [],
+  similarities: []
 })
 
 describe("moving between conferences", () => {

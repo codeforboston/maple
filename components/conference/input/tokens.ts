@@ -36,3 +36,14 @@ export const shadow = {
   raised: "0 1px 2px rgba(20, 20, 19, 0.05)",
   popover: "0 8px 24px rgba(20, 20, 19, 0.1), 0 1px 3px rgba(20, 20, 19, 0.06)"
 }
+
+/** The chamber inks, matched in luminance: the Senate blue darkened to the
+ * House amber. */
+export const chamberInk = {
+  Senate: "#2562b9",
+  House: "#8a5a00"
+}
+
+export const yea = "#2f6b46"
+export const caution = "#ecb72e"
+export const positive = "#2e7d32"
