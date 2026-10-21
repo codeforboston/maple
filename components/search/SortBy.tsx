@@ -96,7 +96,9 @@ export const SortBy = ({
           if (e) sortBy.refine(e.value)
         }}
       />
-      {relevanceHelp && <QuestionTooltip text={relevanceHelp} />}
+      {relevanceHelp && selected.value === relevanceValue && (
+        <QuestionTooltip text={relevanceHelp} />
+      )}
     </span>
   )
 }
