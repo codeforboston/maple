@@ -4,11 +4,14 @@ import { courtList, parseArgs } from "./args"
 import { matchMembersForCourt } from "functions/src/ocpf/matchOcpfMembers"
 
 const Args = z.object({
-  courts: courtList
+  courts: courtList,
+  // Print matchMembersForCourt's detailed logs (download info, OCPF headers,
+  // per-member match warnings)
+  verbose: z.boolean().default(false)
 })
 
 export const script: Script = async ({ args }) => {
-  const { courts } = parseArgs(Args, args)
+  const { courts, verbose } = parseArgs(Args, args)
 
   const succeeded: number[] = []
   const failed: number[] = []
@@ -17,24 +20,26 @@ export const script: Script = async ({ args }) => {
     console.log(`\n── Court ${court} ──`)
     try {
       const { matched, unmatched, ambiguous } = await matchMembersForCourt(
-        court
+        court,
+        { quiet: !verbose }
       )
 
+      // Same shape as the matchOcpfMembers HTTP response
       console.log(
-        `Court ${court}: matched ${matched}, unmatched ${unmatched.length}, ambiguous ${ambiguous.length}`
+        JSON.stringify(
+          {
+            results: {
+              matched,
+              unmatched: unmatched.length,
+              ambiguous: ambiguous.length
+            },
+            unmatched_members: unmatched,
+            ambiguous_members: ambiguous
+          },
+          null,
+          2
+        )
       )
-      if (unmatched.length > 0) {
-        console.log(
-          "  unmatched:",
-          unmatched.map(m => `${m.memberCode} (${m.name})`).join(", ")
-        )
-      }
-      if (ambiguous.length > 0) {
-        console.log(
-          "  ambiguous:",
-          ambiguous.map(m => `${m.memberCode} (${m.name})`).join(", ")
-        )
-      }
       succeeded.push(court)
     } catch (err) {
       console.error(`Court ${court} failed:`, err)

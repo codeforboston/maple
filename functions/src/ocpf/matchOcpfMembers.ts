@@ -55,15 +55,20 @@ export const matchOcpfMembers = onRequestV2(async (req, res) => {
 // Matches a general court's MAPLE members to their OCPF filer record by last
 // name + branch, writing the result to that court's ocpfMemberMapping. The
 // current court is matched against active filers only (OCPF Closed_Date
-// empty); historical courts drop that filter.
-export async function matchMembersForCourt(court: number): Promise<{
+// empty); historical courts drop that filter. Pass quiet to suppress logging
+// (e.g. when run from a CLI script that prints its own summary).
+export async function matchMembersForCourt(
+  court: number,
+  { quiet = false }: { quiet?: boolean } = {}
+): Promise<{
   matched: number
   unmatched: OcpfMemberMappingFlagsEntry[]
   ambiguous: OcpfMemberMappingFlagsEntry[]
 }> {
+  const log = quiet ? silentLogger : logger
   const activeFilersOnly = court === currentGeneralCourt
 
-  const filers = await downloadAndParseFilers(activeFilersOnly)
+  const filers = await downloadAndParseFilers(activeFilersOnly, log)
   const members = await loadMembers(court)
 
   const mappingPath = `/generalCourts/${court}/ocpfMemberMappingConfig/ocpfMemberMapping`
@@ -116,7 +121,7 @@ export async function matchMembersForCourt(court: number): Promise<{
       // and another person with same last name is running for original office).
     } else if (candidates.length === 1 && firstNameMatches.length === 0) {
       ambiguous.push({ memberCode: member.MemberCode, name: member.Name })
-      logger.warn(
+      log.warn(
         "Ambiguous OCPF match. Single last name match but first name did not align.",
         {
           court,
@@ -132,7 +137,7 @@ export async function matchMembersForCourt(court: number): Promise<{
       )
     } else if (candidates.length === 0) {
       unmatched.push({ memberCode: member.MemberCode, name: member.Name })
-      logger.warn("No OCPF match.", {
+      log.warn("No OCPF match.", {
         court,
         memberCode: member.MemberCode,
         name: member.Name,
@@ -141,7 +146,7 @@ export async function matchMembersForCourt(court: number): Promise<{
       })
     } else {
       ambiguous.push({ memberCode: member.MemberCode, name: member.Name })
-      logger.warn("Ambiguous OCPF match.", {
+      log.warn("Ambiguous OCPF match.", {
         court,
         memberCode: member.MemberCode,
         name: member.Name,
@@ -164,7 +169,7 @@ export async function matchMembersForCourt(court: number): Promise<{
   await db.doc(flagsPath).set(flags)
 
   const matched = Object.keys(mapping).length
-  logger.info("matchOcpfMembers complete", {
+  log.info("matchOcpfMembers complete", {
     court,
     matched,
     unmatched: unmatched.length,
@@ -174,8 +179,13 @@ export async function matchMembersForCourt(court: number): Promise<{
   return { matched, unmatched, ambiguous }
 }
 
+type Log = Pick<typeof logger, "info" | "warn">
+
+const silentLogger: Log = { info: () => {}, warn: () => {} }
+
 async function downloadAndParseFilers(
-  activeFilersOnly: boolean
+  activeFilersOnly: boolean,
+  log: Log
 ): Promise<OcpfFilerRow[]> {
   const response = await axios.get(
     "https://ocpf2.blob.core.windows.net/downloads/data2/ocpf-filers.zip",
@@ -183,7 +193,7 @@ async function downloadAndParseFilers(
   )
 
   const buffer = Buffer.from(response.data as ArrayBuffer)
-  logger.info("Downloaded ocpf-filers.zip", {
+  log.info("Downloaded ocpf-filers.zip", {
     status: response.status,
     contentType: response.headers["content-type"],
     bytes: buffer.length,
@@ -204,7 +214,7 @@ async function downloadAndParseFilers(
   const lines = text.split(/\r?\n/)
 
   const rawHeaders = lines[0].split("\t").map(h => h.trim())
-  logger.info("OCPF filers headers", { headers: rawHeaders })
+  log.info("OCPF filers headers", { headers: rawHeaders })
 
   const colIndex = buildColumnIndex(rawHeaders, [
     "cpfId",
@@ -241,7 +251,7 @@ async function downloadAndParseFilers(
     })
   }
 
-  logger.info("Parsed active state legislators from OCPF", {
+  log.info("Parsed active state legislators from OCPF", {
     count: filers.length
   })
   return filers
