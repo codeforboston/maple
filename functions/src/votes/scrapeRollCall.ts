@@ -118,7 +118,7 @@ function parseQuestion(number: number, input: string) {
 
   const search1 = /([0-9]+\/[0-9]+\/[0-9]+ [0-9]+:[0-9]+ (AM|PM))/
   const search2 = /([0-9]+) YEAS([0-9]+) NAYS([0-9]+) N\/V/
-  const search3 = /H\. ([0-9]+)/
+  const search3 = /(H|S)\. ([0-9]+)/
 
   // Find all required values
   const timeMatch = input.match(search1)
@@ -139,7 +139,12 @@ function parseQuestion(number: number, input: string) {
   const yeas = Number(voteMatch[1])
   const nays = Number(voteMatch[2])
   const nv = Number(voteMatch[3])
-  const billNumber = billMatch?.[1] ?? null
+  let billNumber
+  if (!billMatch) {
+    billNumber = null
+  } else {
+    billNumber = billMatch[1] + billMatch[2]
+  }
 
   // Remove everything we've extracted
   let question = input
@@ -329,9 +334,9 @@ export async function fetchSenateBillNumber(
   const text = result.text
   text.split("\n")
   for (const line of text.split("\n")) {
-    const match = line.match(/S\.([0-9]+)/)
+    const match = line.match(/(S|H)\.([0-9]+)/)
     if (match) {
-      return `S${match[1]}`
+      return `${match[1]}${match[2]}`
     }
   }
   return null
