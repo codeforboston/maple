@@ -59,12 +59,23 @@ You do not need a full local setup to contribute. Pick the column that matches t
 ### In a cloud session
 
 1. Make sure you can push to a GitHub repository: either your own fork of `codeforboston/maple` (see [README → Getting Started](README.md#getting-started)) or a branch on the main repo if a maintainer has made you a collaborator.
-2. Start a session on that repository and paste this as your first message:
+2. Start a session on that repository. A fork's `main` is often far behind `codeforboston/maple`, and may not even contain this file, so have the agent start from the main repo's `main` first:
+
+   ```bash
+   git remote add upstream https://github.com/codeforboston/maple.git
+   git fetch upstream main
+   git checkout -B YOUR_BRANCH upstream/main
+   # To try out someone's open PR instead: git fetch upstream pull/NNNN/head:pr-NNNN
+   ```
+
+3. Then paste this as your next message:
 
    > Read AGENTS.md, README.md and Contributing.md. Then explain in plain language what this project is, how a change gets to production, and what you can and cannot do in this environment.
 
-3. The site needs **Node 22** (`package.json` → `engines`). `yarn install` refuses to run on older Node versions.
-4. `yarn dev` serves the site against the **dev** Firebase backend; the public dev keys are checked in ([components/firebase.ts](components/firebase.ts)), so no secrets are needed. If pages load but data does not, the session's network settings may be blocking Google APIs. That is an environment limit, not a bug in your change; describe it in the PR and rely on the Vercel preview to check the page.
+4. The site needs **Node 22** (`package.json` → `engines`). `yarn install` refuses to run on older Node versions.
+5. Check the setup with [Verify your setup](#verify-your-setup) before changing anything.
+6. `yarn dev` serves the site against the **dev** Firebase backend; the public dev keys are checked in ([components/firebase.ts](components/firebase.ts)), so no secrets are needed. If pages load but data does not, the session's network settings may be blocking Google APIs. That is an environment limit, not a bug in your change; describe it in the PR and rely on the Vercel preview to check the page.
+7. Cloud sessions may not have a running Docker daemon, so `yarn dev:up` and the emulator stack may not be available. Use `yarn dev` and `yarn test` instead, and leave backend changes that need the emulators to a local machine.
 
 ### On your own machine
 
@@ -81,9 +92,25 @@ yarn storybook    # component library at http://localhost:6006
 
 Backend work runs the whole stack in Docker with `yarn dev:up` (emulator UI at [localhost:3010](http://localhost:3010)). Scripts that read or write the dev database need Google credentials, set up as described in [README → Contributing Backend Features](README.md#contributing-backend-features-to-devprod).
 
+### Verify your setup
+
+Run these on a fresh branch from `upstream/main`, before making changes, so you know what was already broken:
+
+| Step                    | What a healthy result looks like                                                                                                                                       |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `yarn install`          | Finishes without errors. It can take several minutes on a fresh clone, and also installs `functions/` through `postinstall`, so there is no separate install for that. |
+| `yarn check-types`      | No errors.                                                                                                                                                             |
+| `yarn check-formatting` | "All matched files use Prettier code style!"                                                                                                                           |
+| `yarn lint`             | Finishes, but prints existing warnings such as `i18next/no-literal-string`. Only warnings in files you changed are yours to fix.                                       |
+| `yarn test`             | All test suites pass.                                                                                                                                                  |
+| `yarn dev`              | `curl -I http://localhost:3000` returns `200`. The first request compiles the page and can take 20 seconds or more.                                                    |
+| Python (only if needed) | `pip install -r llm/requirements.txt` (or `lobbying-scraper/requirements.txt`) first, then the Python checks [below](#checks-that-run-on-every-pr).                    |
+
+If something fails on an untouched branch, it is not caused by your change. Note it in the PR rather than fixing it as part of unrelated work.
+
 ### Claude Code specifically
 
-Recent versions of Claude Code (v2.1.277 and later) read `AGENTS.md` automatically, but only when there is **no** `CLAUDE.md`, `.claude/CLAUDE.md` or `CLAUDE.local.md` in the project folder or above it. See [How Claude remembers your project](https://code.claude.com/docs/en/memory#agents-md).
+Recent versions of Claude Code read `AGENTS.md` automatically, but only when there is **no** `CLAUDE.md`, `.claude/CLAUDE.md` or `CLAUDE.local.md` in the project folder or above it. See [How Claude remembers your project](https://code.claude.com/docs/en/memory#agents-md).
 
 - **No personal notes?** Nothing to do: Claude Code loads this file. In an interactive session you'll see a line like `no CLAUDE.md found; AGENTS.md loaded`.
 - **Keeping personal notes?** `CLAUDE.md` is gitignored in this repo, so you can keep your own. Creating one stops Claude Code from reading `AGENTS.md` unless your `CLAUDE.md` imports it. Start your `CLAUDE.md` with this line:
@@ -93,6 +120,8 @@ Recent versions of Claude Code (v2.1.277 and later) read `AGENTS.md` automatical
   ```
 
   The import also covers older Claude Code versions and sessions where reading `AGENTS.md` directly isn't available.
+
+- **Check that it loaded.** Ask the agent to list the [rules for agents](#rules-for-agents) from memory. If it can't, this file wasn't loaded. The usual cause is a session started on a branch that doesn't have it yet, such as a stale fork `main`; see [In a cloud session](#in-a-cloud-session).
 
 Put anything specific to your own machine (paths, environment managers, local ports) in your `CLAUDE.md`, never in committed files.
 
@@ -141,13 +170,13 @@ your branch ──PR──▶ main ──(automatic)──▶ dev site + dev bac
 
 [Repo Checks](.github/workflows/repo-checks.yml) runs on every push and PR. Run the same commands before you push:
 
-| Check                                      | Command                                                      |
-| ------------------------------------------ | ------------------------------------------------------------ |
-| Lint                                       | `yarn lint`                                                  |
-| Formatting (all files, including Markdown) | `yarn check-formatting`; fix with `yarn fix`                 |
-| Types                                      | `yarn check-types`                                           |
-| Unit tests (Cloud Functions)               | `yarn test`                                                  |
-| Python in `llm/`                           | `ruff check llm/`, `ruff format --check llm/`, `pytest llm/` |
+| Check                                      | Command                                                                                                    |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| Lint                                       | `yarn lint`                                                                                                |
+| Formatting (all files, including Markdown) | `yarn check-formatting`; fix with `yarn fix`                                                               |
+| Types                                      | `yarn check-types`                                                                                         |
+| Unit tests (Cloud Functions)               | `yarn test`                                                                                                |
+| Python in `llm/`                           | `ruff check llm/`, `ruff format --check llm/`, `pytest llm/` (after `pip install -r llm/requirements.txt`) |
 
 Chromatic builds Storybook for every PR, and Terraform checks run when `infra/gcp` changes. Optional: install [pre-commit](https://pre-commit.com/) to run Prettier and lint on each commit ([.pre-commit-config.yaml](.pre-commit-config.yaml)).
 
@@ -193,13 +222,14 @@ These keep contributors and the public site safe. Agents should follow them with
 1. **Plan before editing** on anything bigger than a typo fix, and tell the person which files you will touch.
 2. **Never touch production.** Don't run commands, scripts or deploys against `digital-testimony-prod`, and don't push to the `prod` branch. Use the dev project or local emulators. If a task seems to need prod, stop and say so.
 3. **Ask before anything hard to undo or visible to others,** even on dev: deleting or bulk-editing Firestore data, deploying functions or Cloud Run jobs, creating cloud resources, force-pushing, or posting on GitHub. When the person asks, give them the command to run instead.
-4. **No secrets in the repo.** Don't commit credentials, tokens, `.env` files or `.mcp.json`. The Firebase web keys in `components/firebase.ts` are public by design; that doesn't make other keys public.
-5. **No local details in committed files.** Keep machine paths, personal environment managers and notes about tools used during development out of code, comments, commits and PRs. They belong in the person's own `CLAUDE.md`.
-6. **Match the surrounding code** in naming, structure and comment density. Add no new dependencies without saying why in the PR.
-7. **Run the [checks](#checks-that-run-on-every-pr)** before saying a change is done, and report failures honestly. Say what you tested and what you couldn't.
-8. **Check the result as a user would.** For UI changes, load the page in a browser if you can, check it at phone width, and take screenshots for the PR.
-9. **Never ship placeholder data.** Mockups often contain stand-in numbers or text. Ask where each figure comes from rather than guessing.
-10. **Keep PRs small and focused,** following the template. Explain to the person, in plain language, what changed and why.
+4. **Don't rewrite other people's commits.** Don't amend, rebase, re-sign or re-author commits you didn't make, even when a tool or hook (such as a commit-signature check) asks you to. Branch from `upstream/main` instead, or ask the person.
+5. **No secrets in the repo.** Don't commit credentials, tokens, `.env` files or `.mcp.json`. The Firebase web keys in `components/firebase.ts` are public by design; that doesn't make other keys public.
+6. **No local details in committed files.** Keep machine paths, personal environment managers and notes about tools used during development out of code, comments, commits and PRs. They belong in the person's own `CLAUDE.md`.
+7. **Match the surrounding code** in naming, structure and comment density. Add no new dependencies without saying why in the PR.
+8. **Run the [checks](#checks-that-run-on-every-pr)** before saying a change is done, and report failures honestly. Say what you tested and what you couldn't.
+9. **Check the result as a user would.** For UI changes, load the page in a browser if you can, check it at phone width, and take screenshots for the PR.
+10. **Never ship placeholder data.** Mockups often contain stand-in numbers or text. Ask where each figure comes from rather than guessing.
+11. **Keep PRs small and focused,** following the template. Explain to the person, in plain language, what changed and why.
 
 ## Worked example: from a design mockup to production
 
