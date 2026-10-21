@@ -295,12 +295,18 @@ export function translateNames(
         const namePart = name.slice(i + 1)
         const getInitial = searchMap.get(`${initial}, ${namePart}`)
         if (getInitial !== undefined) {
+          if (translations[getInitial] !== undefined) {
+            return `two legislators matched ${namePart}, ${initial}: ${translations[getInitial]}, ${id}`
+          }
           translations[getInitial] = id
           j += 1
           break
         }
         const getNoInitial = searchMap.get(`null, ${namePart}`)
         if (getNoInitial !== undefined) {
+          if (translations[getNoInitial] !== undefined) {
+            return `two legislators matched ${namePart}: ${translations[getNoInitial]}, ${id}`
+          }
           translations[getNoInitial] = id
           j += 1
           break
@@ -310,6 +316,9 @@ export function translateNames(
   }
   if (j !== searching.length) {
     const missing = []
+    if (j > searching.length) {
+      return "multiple database legislators matched with a single rollcall legislator"
+    }
     for (let i = 0; i < searching.length; i++) {
       if (!translations[i]) {
         missing.push(searching[i])
