@@ -15,7 +15,18 @@ import { Bill } from "functions/src/bills/types"
 export const RecentBills = ({ bills }: { bills: Bill[] }) => {
   const { t } = useTranslation("legislators")
 
-  const lastFiveSponsoredBills = bills.slice(0, 5)
+  const lastFiveSponsoredBills = [...bills]
+    .sort((billA, billB) => {
+      const numberA = Number(billA.id.match(/(\d+)$/)?.[1])
+      const numberB = Number(billB.id.match(/(\d+)$/)?.[1])
+
+      if (Number.isFinite(numberA) && Number.isFinite(numberB)) {
+        return numberB - numberA || billB.id.localeCompare(billA.id)
+      }
+
+      return billB.id.localeCompare(billA.id)
+    })
+    .slice(0, 5)
 
   return (
     <div>
