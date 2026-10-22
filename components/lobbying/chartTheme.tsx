@@ -14,6 +14,7 @@ import type {
   Payload,
   ValueType
 } from "recharts/types/component/DefaultTooltipContent"
+import type { PositionCategory } from "./activity"
 
 // ── Token mirrors ─────────────────────────────────────────────────────────────
 // Keep in sync with styles/bootstrap.scss.
@@ -27,6 +28,9 @@ export const MAPLE_COLORS = {
   green: "#3d9922",
   stagePast: "#8ebc81",
   periwinkle: "#8c98c2",
+  // Not in styles/bootstrap.scss: marks organizations that reported more
+  // than one position on a bill.
+  purple: "#9a5fd0",
 
   // Text
   textBody: "#334155",
@@ -69,14 +73,13 @@ export const DATA_PALETTE: readonly string[] = [
 ]
 
 /** Lobbying position colours. Aligned to MAPLE bill position palette. */
-export const POSITION_COLORS = {
+export const POSITION_COLORS: Record<PositionCategory, string> = {
   support: MAPLE_COLORS.green,
   oppose: MAPLE_COLORS.accent,
   neutral: MAPLE_COLORS.primary,
+  multiple: MAPLE_COLORS.purple,
   none: MAPLE_COLORS.graySubtleBorder
-} as const
-
-export type LobbyingPosition = keyof typeof POSITION_COLORS
+}
 
 // ── Axis / grid props ─────────────────────────────────────────────────────────
 // Spread directly onto <XAxis>, <YAxis>, <CartesianGrid>.

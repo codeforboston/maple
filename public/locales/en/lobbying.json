@@ -60,7 +60,8 @@
     "support": "Support",
     "oppose": "Oppose",
     "neutral": "Neutral",
-    "none": "No position"
+    "none": "No position",
+    "multiple": "Multiple positions"
   },
   "fields": {
     "clientName": "Client",
@@ -106,5 +107,35 @@
     "viewAll": "Open in Lobbying Explorer →",
     "showingOf": "Showing {{showing}} of {{total}} filings",
     "filingsLabel": "Lobbying filings"
+  },
+  "activity": {
+    "organizations": "Organizations",
+    "reportedPaid": "Reported paid",
+    "billSearch": "Bill number or title",
+    "clientSearch": "Client name",
+    "column": {
+      "client": "Organization",
+      "latestPosition": "Most recent position",
+      "whoLobbied": "Who lobbied"
+    },
+    "showFilers": "Show filers for {{name}}",
+    "hideFilers": "Hide filers for {{name}}",
+    "latestPeriod": "Most recent period: {{period}}",
+    "inHouse": "In-house",
+    "firm": "Firm",
+    "firmAgents": "Firm · agents on this account: {{names}}",
+    "noFiling": "No filing that period",
+    "filingLink": "{{period}} SoS filing ↗︎",
+    "positionsNote": "Positions are each lobbyist's own statement on their filing.",
+    "filings_one": "{{count}} filing",
+    "filings_other": "{{count}} filings",
+    "whoInHouse_one": "{{count}} in-house lobbyist",
+    "whoInHouse_other": "{{count}} in-house lobbyists",
+    "whoNames": "{{text}} ({{names}})",
+    "whoFirmAgents_one": "{{name}} ({{count}} agent)",
+    "whoFirmAgents_other": "{{name}} ({{count}} agents)",
+    "barLabel": "Positions by organization: {{counts}}",
+    "barSegment_one": "{{position}}: {{count}} organization",
+    "barSegment_other": "{{position}}: {{count}} organizations"
   }
 }

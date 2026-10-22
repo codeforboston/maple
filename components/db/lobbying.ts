@@ -1,6 +1,7 @@
 import {
   collection,
   doc,
+  documentId,
   getDoc,
   getDocs,
   limit,
@@ -8,9 +9,9 @@ import {
   query,
   where
 } from "firebase/firestore"
+import { chunk, uniq } from "lodash"
 import { useAsync } from "react-async-hook"
 import type {
-  LobbyingClientSummary,
   LobbyingFiling,
   LobbyingRegistrant,
   LobbyingStats
@@ -21,7 +22,6 @@ import { firestore } from "../firebase"
 // pulling firebase-admin (a Node-only package) into the browser bundle.
 const FILINGS_COLLECTION = "lobbyingFilings"
 const REGISTRANTS_COLLECTION = "lobbyingRegistrants"
-const CLIENTS_COLLECTION = "lobbyingClients"
 const LOBBYING_STATS_COLLECTION = "lobbyingMeta"
 const LOBBYING_STATS_DOC_ID = "stats"
 
@@ -92,29 +92,6 @@ async function fetchFilingsForRegistrant(
     )
   )
   return snap.docs.map(d => d.data() as LobbyingFiling)
-}
-
-async function fetchClients(opts: {
-  year?: number
-  pageSize?: number
-}): Promise<LobbyingClientSummary[]> {
-  const constraints = [
-    opts.year ? where("years", "array-contains", opts.year) : undefined,
-    orderBy("clientNameNorm"),
-    limit(opts.pageSize ?? 50)
-  ].filter(Boolean) as Parameters<typeof query>[1][]
-
-  const snap = await getDocs(
-    query(collection(firestore, CLIENTS_COLLECTION), ...constraints)
-  )
-  return snap.docs.map(d => d.data() as LobbyingClientSummary)
-}
-
-async function fetchClient(
-  clientSlug: string
-): Promise<LobbyingClientSummary | undefined> {
-  const snap = await getDoc(doc(firestore, CLIENTS_COLLECTION, clientSlug))
-  return snap.exists() ? (snap.data() as LobbyingClientSummary) : undefined
 }
 
 async function fetchAllRegistrants(): Promise<LobbyingRegistrant[]> {
@@ -219,14 +196,50 @@ export function useLobbyingFilingsForRegistrant(registrantId: string) {
   return useAsync(fetchFilingsForRegistrant, [registrantId])
 }
 
-export function useLobbyingClients(
-  opts: { year?: number; pageSize?: number } = {}
-) {
-  return useAsync(fetchClients, [opts])
+// Firestore's limit on the values in one "in" query.
+const IN_QUERY_LIMIT = 30
+
+/** What the lobbying activity helpers need from a lobbyingRegistrants doc. */
+export type RegistrantInfo = {
+  periodEnd: string | null
+  lobbyists: string[]
+  clientLobbyists: Record<string, string[]>
 }
 
-export function useLobbyingClient(clientSlug: string) {
-  return useAsync(fetchClient, [clientSlug])
+/** The period and lobbyists of each given registrant, keyed by registrantId.
+ * Ids with no doc are absent. */
+export async function fetchRegistrantsByIds(
+  ids: string[]
+): Promise<Record<string, RegistrantInfo>> {
+  const snaps = await Promise.all(
+    chunk(uniq(ids), IN_QUERY_LIMIT).map(batch =>
+      getDocs(
+        query(
+          collection(firestore, REGISTRANTS_COLLECTION),
+          where(documentId(), "in", batch)
+        )
+      )
+    )
+  )
+  const result: Record<string, RegistrantInfo> = {}
+  for (const snap of snaps)
+    for (const d of snap.docs) {
+      const r = d.data() as LobbyingRegistrant
+      result[d.id] = {
+        periodEnd: r.periodEnd ?? null,
+        lobbyists: r.lobbyists ?? [],
+        clientLobbyists: r.clientLobbyists ?? {}
+      }
+    }
+  return result
+}
+
+export function useLobbyingRegistrantsByIds(ids: string[]) {
+  const idsKey = uniq(ids).sort().join(",")
+  return useAsync(
+    (key: string) => fetchRegistrantsByIds(key ? key.split(",") : []),
+    [idsKey]
+  )
 }
 
 export function useLobbyingFilingsForClient(clientNameNorm: string) {

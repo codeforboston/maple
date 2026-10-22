@@ -9,10 +9,8 @@ import {
   useLobbyingClientSummary
 } from "components/db/lobbying"
 import { LobbyingFilingsTable } from "components/lobbying/LobbyingFilingsTable"
-import {
-  LobbyingPositionChip,
-  normalizePosition
-} from "components/lobbying/LobbyingPositionChip"
+import { normalizePosition } from "components/lobbying/activity"
+import { LobbyingPositionChip } from "components/lobbying/LobbyingPositionChip"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"

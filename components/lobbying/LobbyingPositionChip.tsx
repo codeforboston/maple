@@ -1,8 +1,6 @@
 import React from "react"
 import { useTranslation } from "next-i18next"
-import { POSITION_COLORS } from "./chartTheme"
-
-type Position = "support" | "oppose" | "neutral" | "none"
+import { normalizePosition, type Position } from "./activity"
 
 const CHIP_STYLES: Record<Position, React.CSSProperties> = {
   support: {
@@ -27,22 +25,16 @@ const CHIP_STYLES: Record<Position, React.CSSProperties> = {
   }
 }
 
-function normalizePosition(raw: string): Position {
-  const lower = raw.toLowerCase()
-  if (lower.includes("support")) return "support"
-  if (lower.includes("oppose") || lower.includes("against")) return "oppose"
-  if (lower.includes("neutral")) return "neutral"
-  return "none"
-}
-
 interface LobbyingPositionChipProps {
   position: string
   className?: string
+  title?: string
 }
 
 export const LobbyingPositionChip: React.FC<LobbyingPositionChipProps> = ({
   position,
-  className
+  className,
+  title
 }) => {
   const { t } = useTranslation("lobbying")
   const key = normalizePosition(position)
@@ -50,6 +42,7 @@ export const LobbyingPositionChip: React.FC<LobbyingPositionChipProps> = ({
   return (
     <span
       className={className}
+      title={title}
       style={{
         ...chipBaseStyle,
         ...CHIP_STYLES[key]
@@ -69,6 +62,3 @@ const chipBaseStyle: React.CSSProperties = {
   letterSpacing: "0.01em",
   whiteSpace: "nowrap"
 }
-
-export { normalizePosition }
-export type { Position }

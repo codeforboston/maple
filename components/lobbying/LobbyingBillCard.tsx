@@ -5,7 +5,7 @@ import { LobbyingFilingsTable } from "./LobbyingFilingsTable"
 import { LobbyingPaginationBar } from "./LobbyingPaginationBar"
 import { usePagination } from "./usePagination"
 import { MAPLE_COLORS } from "./chartTheme"
-import { normalizePosition } from "./LobbyingPositionChip"
+import { normalizePosition } from "./activity"
 import { BetaTag } from "components/shared/CommonComponents"
 
 const PAGE_SIZE = 10
