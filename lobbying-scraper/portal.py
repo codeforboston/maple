@@ -91,7 +91,11 @@ class DisclosureMeta:
     entity_name: str
     year: Optional[int]
     reg_type: str          # "Lobbyist" | "Employer"
+    # The current version of each disclosure: its latest amendment, or the
+    # original filing if it was never amended.
     disclosure_urls: list[str] = field(default_factory=list)
+    # Earlier versions of those disclosures -> the current version's URL.
+    superseded_urls: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass
@@ -333,17 +337,31 @@ def parse_summary(soup: BeautifulSoup) -> DisclosureMeta:
 
     reg_type = "Employer" if "Entity" in reg_type_raw else "Lobbyist"
 
-    disc_urls = [
-        BASE_URL + a["href"] if not a["href"].startswith("http") else a["href"]
-        for a in soup.find_all("a", href=True)
-        if "CompleteDisclosure" in a["href"]
-    ]
+    # Each amendment is a separate page. In every layout (a list per period,
+    # or the single list on 2019+ individual pages), a disclosure's
+    # amendments come right before its original filing, newest first. The
+    # newest version is the current one; earlier versions must not be
+    # counted alongside it.
+    disc_urls: list[str] = []
+    superseded: dict[str, str] = {}
+    versions: list[str] = []
+    for a in soup.find_all("a", href=True):
+        if "CompleteDisclosure" not in a["href"]:
+            continue
+        versions.append(BASE_URL + a["href"] if not a["href"].startswith("http") else a["href"])
+        if not a.get_text(strip=True).startswith("Report amendment"):
+            disc_urls.append(versions[0])
+            superseded.update((url, versions[0]) for url in versions[1:])
+            versions = []
+    # Amendments with no original after them (not seen on the portal): keep.
+    disc_urls.extend(versions)
 
     return DisclosureMeta(
         entity_name=entity_name,
         year=year,
         reg_type=reg_type,
         disclosure_urls=disc_urls,
+        superseded_urls=superseded,
     )
 
 

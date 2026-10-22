@@ -25,6 +25,7 @@ from normalize import normalize_entity_name
 from writer import (
     registrant_doc,
     registration_doc,
+    remove_superseded_filings,
     write_registrant,
     write_filings,
     compute_stats,
@@ -158,6 +159,36 @@ def test_write_registrant_period_fields_none_when_unparsed():
     data = _captured_data(doc_ref)
     assert data["periodStart"] is None
     assert data["periodEnd"] is None
+
+
+def test_write_registrant_replaces_fields_but_keeps_disclosure_urls():
+    """An amendment rewrites the registrant: each field is replaced whole,
+    so a client it dropped leaves clientLobbyists, while disclosureUrls
+    stays a union."""
+    db, doc_ref = _make_db()
+    detail = DisclosureDetail(client_lobbyists={"Client A": ["Jane Doe"]})
+    with patch("writer.firestore.ArrayUnion", side_effect=lambda x: x):
+        write_registrant(db, _meta(), detail, "https://example.com/disc")
+    args, kwargs = doc_ref.set.call_args
+    assert sorted(kwargs["merge"]) == sorted(args[0])
+    assert {"clientLobbyists", "disclosureUrls"} <= set(kwargs["merge"])
+
+
+def test_remove_superseded_filings_deletes_filings_of_each_version():
+    db = MagicMock()
+    query = db.collection.return_value.where.return_value
+    query.stream.side_effect = [
+        [MagicMock(reference=f"ref-{i}") for i in range(3)],
+        [],
+    ]
+    batch = db.batch.return_value
+    assert remove_superseded_filings(db, ["https://x/old-1", "https://x/old-2"]) == 3
+    db.collection.assert_called_with(FILINGS_COLLECTION)
+    filters = [c.kwargs["filter"] for c in db.collection.return_value.where.call_args_list]
+    assert [f.value for f in filters] == ["https://x/old-1", "https://x/old-2"]
+    assert all(f.field_path == "disclosureUrl" and f.op_string == "==" for f in filters)
+    assert [c.args[0] for c in batch.delete.call_args_list] == ["ref-0", "ref-1", "ref-2"]
+    assert batch.commit.call_count == 1
 
 
 # ── registrant_id (the core bug fix) ────────────────────────────────────────

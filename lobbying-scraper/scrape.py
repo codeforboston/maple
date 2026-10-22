@@ -51,6 +51,7 @@ from writer import (
     SCRAPER_DOC,
     SUMMARY_CACHE_COLLECTION,
     compute_stats,
+    remove_superseded_filings,
     write_filings,
     write_registrant,
     write_registration,
@@ -201,6 +202,7 @@ def run_weekly(
             # Prior years: trust the cache if we have one. Current year:
             # always refetch live, since its disclosures can still change.
             disc_urls = None
+            superseded: list[str] = []
             if year != current_year and use_cursor:
                 disc_urls = _get_cached_disc_urls(db, summary_url)
 
@@ -208,6 +210,7 @@ def run_weekly(
                 try:
                     meta, registration = fetch_summary(session, summary_url)
                     disc_urls = meta.disclosure_urls
+                    superseded = list(meta.superseded_urls)
                     if use_cursor:
                         _cache_disc_urls(db, summary_url, disc_urls)
                         if registration is not None:
@@ -216,6 +219,7 @@ def run_weekly(
                     print(f"  failed to fetch summary {summary_url}: {e}", file=sys.stderr)
                     continue
 
+            failed = False
             for disc_url in disc_urls:
                 if use_cursor and _is_processed(db, disc_url):
                     continue
@@ -228,7 +232,12 @@ def run_weekly(
                     if use_cursor:
                         _mark_processed(db, disc_url)
                 except Exception as e:
+                    failed = True
                     print(f"  failed to process {disc_url}: {e}", file=sys.stderr)
+            if use_cursor and superseded and not failed:
+                removed = remove_superseded_filings(db, superseded)
+                if removed:
+                    print(f"  {_ts()} removed {removed} filings of superseded versions")
 
     return new_count
 
@@ -294,6 +303,8 @@ def _backfill_one_summary_url(
             processed += 1
         except Exception as e:
             errors.append(f"failed to process {disc_url}: {e}")
+    if db is not None and not dry_run and meta.superseded_urls and not errors:
+        remove_superseded_filings(db, list(meta.superseded_urls))
     return processed, errors
 
 

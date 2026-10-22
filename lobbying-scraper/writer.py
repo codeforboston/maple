@@ -758,7 +758,10 @@ def write_registrant(
     doc_id, data = built
     data["disclosureUrls"] = firestore.ArrayUnion([disc_url])
     data["fetchedAt"] = _now()
-    db.collection(REGISTRANTS_COLLECTION).document(doc_id).set(data, merge=True)
+    # Replace each field outright (merge=True would keep map keys such as a
+    # client an amendment dropped from clientLobbyists), but keep the union
+    # of disclosure URLs, which the migration reads back.
+    db.collection(REGISTRANTS_COLLECTION).document(doc_id).set(data, merge=list(data))
 
 
 def _party(p: RegistrationParty) -> dict:
@@ -859,3 +862,25 @@ def write_filings(
         batch.commit()
 
     return count
+
+
+def remove_superseded_filings(db: firestore.Client, disc_urls: list[str]) -> int:
+    """Delete the filings still credited to earlier versions of amended
+    disclosures. Run after the current versions are written: a filing both
+    versions report already names the current version and is kept."""
+    removed = 0
+    for url in disc_urls:
+        query = db.collection(FILINGS_COLLECTION).where(
+            filter=firestore.FieldFilter("disclosureUrl", "==", url)
+        )
+        refs = [doc.reference for doc in query.stream()]
+        batch = db.batch()
+        for i, ref in enumerate(refs, 1):
+            batch.delete(ref)
+            if i % 400 == 0:
+                batch.commit()
+                batch = db.batch()
+        if len(refs) % 400:
+            batch.commit()
+        removed += len(refs)
+    return removed

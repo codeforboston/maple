@@ -438,6 +438,46 @@ def test_registrations_are_saved_by_weekly_and_backfill():
     assert saved == [reg, reg]
 
 
+@pytest.mark.parametrize("fail", [False, True])
+@pytest.mark.parametrize("mode", ["weekly", "backfill"])
+def test_superseded_versions_removed_after_current_is_written(mode, fail):
+    """Filings of an amended disclosure's earlier versions are removed once
+    its current version is written, and kept if writing it failed."""
+    db = FakeFirestore()
+    summary_url = "https://x/summary/a"
+    meta = _meta(summary_url, ["https://x/disc/amended"])
+    meta.superseded_urls = {"https://x/disc/original": "https://x/disc/amended"}
+    events = []
+
+    def write_filings(db, meta, detail, url):
+        if fail:
+            raise RuntimeError("write failed")
+        events.append(("write", url))
+        return 0
+
+    with patch("scrape.make_session", return_value=None), patch(
+        "scrape.fetch_summary_links", side_effect=lambda session, year: [summary_url]
+    ), patch(
+        "scrape.fetch_disclosure_meta", side_effect=lambda session, url, use_archive=False: meta
+    ), patch(
+        "scrape.fetch_disclosure_detail", return_value=DisclosureDetail()
+    ), patch(
+        "scrape.write_registrant", return_value=None
+    ), patch("scrape.write_filings", side_effect=write_filings), patch(
+        "scrape.remove_superseded_filings",
+        side_effect=lambda db, urls: events.append(("remove", urls)) or 0,
+    ):
+        if mode == "weekly":
+            scrape.run_weekly(db, years=[2024])
+        else:
+            scrape.run_backfill(db, years=[2024], workers=1)
+
+    if fail:
+        assert events == []
+    else:
+        assert events == [("write", "https://x/disc/amended"), ("remove", ["https://x/disc/original"])]
+
+
 def test_stats_mode_only_recomputes_stats(monkeypatch):
     """--mode stats recomputes lobbyingMeta without fetching or scraping."""
     calls = []

@@ -12,7 +12,10 @@ The portal has three levels of pages:
 
 1. **Search page** → one row per registrant per year
 2. **Summary page** → registrant metadata + links to semi-annual disclosure
-   filings
+   filings. Each amendment is a separate page, listed as "Report amendment
+   M/D/YYYY" right above the filing it amends, newest first. Only the newest
+   version of each filing is ingested; earlier versions are skipped, and their
+   filings removed.
 3. **CompleteDisclosure page** → per-client compensation table + per-client bill
    activity tables
 
