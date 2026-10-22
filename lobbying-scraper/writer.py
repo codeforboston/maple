@@ -390,7 +390,7 @@ def compute_stats(db: firestore.Client) -> None:
     registered_by_court: dict[str, dict[int, set]] = {"Lobbyist": {}, "Employer": {}}
     # (lobbyist norm, gc) -> norms of the organizations they're staff of that
     # session: the entities employing them, or, for a lobbyist registered with
-    # no employing entity, the clients they list (their own organization).
+    # no employing entity, the client(s) they list (taken as their employer).
     lobbyist_orgs: dict[tuple[str, int], set] = {}
     # Per client: earliest employment start, and the latest registration
     # listing them as (year, registration page).
@@ -435,8 +435,9 @@ def compute_stats(db: firestore.Client) -> None:
                 lobbyist_orgs.setdefault((norm, gc), set()).add(key)
         urls = sorted(d.get("sourceUrls") or [])
         # Lobbyists working for a firm register under it and list no clients;
-        # one with no employing entity lists the organization they work for
-        # (almost always exactly one).
+        # an individual account may have at most one client, normally the
+        # organization employing them. A single-client contractor looks the
+        # same in the data and is counted as in-house too.
         staff_of_clients = reg_type == "Lobbyist" and not d.get("employers") and gc is not None
         # Tuple order prefers, within a year, a registration with a page.
         latest = (year, urls[0] if urls else "")

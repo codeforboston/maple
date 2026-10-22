@@ -26,12 +26,22 @@ and later. All historical filings are ingested regardless.
 
 The portal has two registrant types:
 
-- **Lobbyist** — an individual person who lobbies directly on behalf of clients.
-- **Employer** — a lobbying firm that employs individual lobbyists and is
-  retained by clients. Called "Lobbyist Entity" on the portal.
+- **Lobbyist** — an individual person who lobbies. An individual account may
+  have at most one client per reporting period; anyone serving more than one
+  client should register as a lobbyist entity. That one client may be the
+  lobbyist's employer (in-house staff) or an organization that contracted them.
+  A lobbyist working for a firm registers under the firm and lists no clients.
+- **Employer** — a lobbying firm or other entity that employs individual
+  lobbyists and is retained by clients. Called "Lobbyist Entity" on the portal.
 
-In both cases, the registrant reports compensation received from each **client**
-(the organization that hired them) and which bills they lobbied for that client.
+Each registrant reports compensation received from each **client** and which
+bills they lobbied for that client. The law treats a client employing an agent
+and one retaining an agent alike (M.G.L. c. 3, §§ 39 and 41), and the portal
+records both the same way: every individual's page shows an "Employed" date and
+"Total salaries received", so it never says whether a single-client lobbyist is
+staff or a contractor. Sources: the Secretary's _Online User Guide: Getting
+Started_ (Lobbyist Division, December 2020, "Account types") and
+[M.G.L. c. 3, § 39](https://malegislature.gov/Laws/GeneralLaws/PartI/TitleI/Chapter3/Section39).
 
 ---
 
@@ -541,11 +551,14 @@ A filer is in-house for a client when it is the client, or when its
 registration for that session names the client as its employer (from 2019),
 or, for an individual registered with no employing entity, lists the client
 as a client. Lobbyists working for a firm register under it and list no
-clients; one with no employing entity almost always lists exactly one client,
-the organization they work for (e.g. the Greater Boston Chamber of Commerce's
-staff). This last case holds before 2019 too, so older sessions have a split.
-It is a pattern in the data rather than something the portal states: a solo
-lobbyist with one outside client and no entity would count as in-house.
+clients, and an individual account may have at most one client (see
+Terminology), which is how organizations that don't register as entities
+register their own staff (e.g. the Greater Boston Chamber of Commerce's). This
+last case holds before 2019 too, so older sessions have a split. Its one known
+error: that single client may instead have contracted the lobbyist, and neither
+the portal nor the data says which, so a single-client contractor counts as
+in-house. Independent lobbyists with more than one client register as entities
+and count as hired.
 
 Firms name their agents per client from 2014 (no firm disclosure before 2014
 carries the label), so `individuals` and `firmAgents` include firm agents from
