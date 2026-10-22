@@ -8,14 +8,36 @@ import {
   StyledSubsectionTableColumnData,
   StyledSubsectionTableColumnHeader,
   StyledSubtopicTag,
-  StyledTitleCell
+  StyledTitleCell,
+  StyledTopicLink
 } from "../StyledComponents/BillStyledComponents"
 import { Bill } from "functions/src/bills/types"
+import { billSearchByPrimarySponsor } from "components/links"
+import { MemberContent } from "components/db"
 
-export const RecentBills = ({ bills }: { bills: Bill[] }) => {
+export const RecentBills = ({
+  bills,
+  court,
+  member
+}: {
+  bills: Bill[]
+  court: number
+  member: MemberContent
+}) => {
   const { t } = useTranslation("legislators")
 
-  const lastFiveSponsoredBills = bills.slice(0, 5)
+  const lastFiveSponsoredBills = [...bills]
+    .sort((billA, billB) => {
+      const numberA = Number(billA.id.match(/(\d+)$/)?.[1])
+      const numberB = Number(billB.id.match(/(\d+)$/)?.[1])
+
+      if (Number.isFinite(numberA) && Number.isFinite(numberB)) {
+        return numberB - numberA || billB.id.localeCompare(billA.id)
+      }
+
+      return billB.id.localeCompare(billA.id)
+    })
+    .slice(0, 5)
 
   return (
     <div>
@@ -56,9 +78,11 @@ export const RecentBills = ({ bills }: { bills: Bill[] }) => {
           </tbody>
         </StyledSubsectionTable>
         <StyledRecentBillsFooter>
-          {t("profiles.recentSponsoredBills.viewBills", {
-            number: bills.length ?? 0
-          })}
+          <StyledTopicLink href={billSearchByPrimarySponsor(court, member)}>
+            {t("profiles.recentSponsoredBills.viewBills", {
+              number: bills.length ?? 0
+            })}
+          </StyledTopicLink>
         </StyledRecentBillsFooter>
       </TabBlock>
     </div>
