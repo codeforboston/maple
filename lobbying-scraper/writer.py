@@ -618,6 +618,9 @@ def compute_stats(db: firestore.Client) -> None:
     # overwrite, like stats, so a client no longer in-house drops out.
     for gc, by_client in in_house_by_court.items():
         db.collection(STATS_COLLECTION).document(f"inHouseFilers_{gc}").set(by_client)
+    # A session whose clients are all no longer in-house keeps no stale doc.
+    for gc in courts - set(in_house_by_court):
+        db.collection(STATS_COLLECTION).document(f"inHouseFilers_{gc}").delete()
     pruned = 0
     for gc, bills_map in bill_summaries.items():
         # One small doc per bill, not one JSON blob per court: a court's blob

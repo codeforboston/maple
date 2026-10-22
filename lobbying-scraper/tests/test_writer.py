@@ -827,7 +827,9 @@ def test_compute_stats_classifies_in_house_filers():
     assert clients["CLIENT A"]["inHouseCount"] == 2  # STAFFER once across sessions
     assert clients["OLD CLIENT"]["inHouseCount"] == 0
     assert doc_mocks["inHouseFilers_194"].set.call_args[0][0] == {"CLIENT A": ["CLIENT A", "STAFFER"]}
-    assert "inHouseFilers_189" not in doc_mocks
+    # No in-house clients in the 189th: its doc is removed, not written.
+    assert not doc_mocks["inHouseFilers_189"].set.called
+    doc_mocks["inHouseFilers_189"].delete.assert_called_once()
 
 
 def test_compute_stats_counts_individual_lobbyists_per_client():
