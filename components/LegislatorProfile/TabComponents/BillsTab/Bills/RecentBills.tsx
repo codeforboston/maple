@@ -8,11 +8,22 @@ import {
   StyledSubsectionTableColumnData,
   StyledSubsectionTableColumnHeader,
   StyledSubtopicTag,
-  StyledTitleCell
+  StyledTitleCell,
+  StyledTopicLink
 } from "../StyledComponents/BillStyledComponents"
 import { Bill } from "functions/src/bills/types"
+import { billSearchByPrimarySponsor } from "components/links"
+import { MemberContent } from "components/db"
 
-export const RecentBills = ({ bills }: { bills: Bill[] }) => {
+export const RecentBills = ({
+  bills,
+  court,
+  member
+}: {
+  bills: Bill[]
+  court: number
+  member: MemberContent
+}) => {
   const { t } = useTranslation("legislators")
 
   const lastFiveSponsoredBills = [...bills]
@@ -67,9 +78,11 @@ export const RecentBills = ({ bills }: { bills: Bill[] }) => {
           </tbody>
         </StyledSubsectionTable>
         <StyledRecentBillsFooter>
-          {t("profiles.recentSponsoredBills.viewBills", {
-            number: bills.length ?? 0
-          })}
+          <StyledTopicLink href={billSearchByPrimarySponsor(court, member)}>
+            {t("profiles.recentSponsoredBills.viewBills", {
+              number: bills.length ?? 0
+            })}
+          </StyledTopicLink>
         </StyledRecentBillsFooter>
       </TabBlock>
     </div>

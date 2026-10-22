@@ -4,7 +4,7 @@ import {
   StyledSubSectionHeaders,
   StyledBillsTab
 } from "./StyledComponents/BillStyledComponents"
-import { MemberContent } from "functions/src/members/types"
+import { MemberContent } from "components/db"
 import { BillsByTopic } from "./Bills/BillsByTopic"
 import { RecentBills } from "./Bills/RecentBills"
 import { CommitteePositions } from "./Committees/CommitteePositions"
@@ -18,17 +18,19 @@ type BillGroups = {
 
 export function BillsTabContainer({
   member,
-  bills
+  bills,
+  court
 }: {
-  member: MemberContent | undefined
+  member: MemberContent
   bills: BillGroups
+  court: number
 }) {
   const { t } = useTranslation("legislators")
 
   return (
     <StyledBillsTab>
       <BillsByTopic billGroups={bills} court={member?.GeneralCourtNumber} />
-      <RecentBills bills={bills.sponsored} />
+      <RecentBills bills={bills.sponsored} member={member} court={court} />
       <CommitteePositions member={member} />
     </StyledBillsTab>
   )
