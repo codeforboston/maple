@@ -460,7 +460,8 @@ lobbying-scraper/
   portal.py           — HTTP fetch wrappers + pure HTML parsers for all 4 format eras
   normalize.py        — Entity name normalization pipeline
   writer.py           — Firestore document construction + writes
-  archive.py          — GCS raw-HTML archive (write-only; enabled by ARCHIVE_RAW=1)
+  archive.py          — raw-HTML archive: GCS when ARCHIVE_RAW=1, or a local
+                        folder when ARCHIVE_DIR is set (local runs only)
   reparse_archive.py  — Offline driver to re-ingest archived HTML into Firestore
   migrate_lobbying_data.py — Full rebuild of registrants and filings from the
                         archive; also the backfill path for newly parsed fields
@@ -491,6 +492,19 @@ lobbying-scraper/deploy.sh <project>
 
 The project's archive bucket (`<project>-lobbying-archive`) must already exist.
 For a new project, run the historical backfill before the first weekly run.
+
+The job must not set `ARCHIVE_DIR`. That variable is for local runs: it keeps
+the archive in a local folder and takes precedence over GCS. On Cloud Run that
+folder is the container's temporary disk, so pages would be lost when the job
+ends and the GCS archive would silently stop receiving them. `deploy.sh` only
+sets `ARCHIVE_RAW=1`. To check a deployed job:
+
+```bash
+gcloud run jobs describe maple-lobbying-scraper --region=us-central1 \
+  --project=<project> --format=yaml | grep -A1 "name: ARCHIVE_"
+```
+
+The output should show `ARCHIVE_RAW` and no `ARCHIVE_DIR`.
 
 ## Recomputing Stats
 
@@ -598,6 +612,118 @@ If a cleanup dry run reports stale docs, something changed doc ids: stop and
 don't run `--execute`. Don't use `reparse_archive.py` for this: it skips pages
 an earlier reparse already marked processed. Docs from disclosures missing from
 the archive keep the field absent.
+
+## Running the Scraper Locally
+
+Verify scraper changes with a full local scrape before deploying: the live SoS
+portal into the Firestore emulator, with a local archive of every fetched page.
+Nothing touches GCP (no credentials, no GCS, no dev project).
+
+### 1. A folder that survives reboots
+
+Keep the archive and emulator data outside `/tmp`, e.g.
+`~/.local/share/maple-lobbying`. The emulator also needs the repo's config
+files there:
+
+```bash
+DATA=~/.local/share/maple-lobbying
+mkdir -p $DATA/logs
+cp firebase.json firestore.rules firestore.indexes.json $DATA/
+```
+
+### 2. The Firestore emulator
+
+`firebase-tools` needs Java 21 or later. Without a local JDK, run it in Docker
+from an image with Node 22 and a Java 21 runtime:
+
+```bash
+docker build -t maple-firestore-emulator - <<'EOF'
+FROM node:22-bookworm-slim
+COPY --from=eclipse-temurin:21-jre /opt/java/openjdk /opt/java/openjdk
+ENV JAVA_HOME=/opt/java/openjdk PATH=/opt/java/openjdk/bin:$PATH
+RUN npm install -g firebase-tools@15.32.0
+WORKDIR /repo
+EOF
+
+docker run -d --name maple-emulator --network host \
+  --user $(id -u):$(id -g) -e HOME=/tmp -v $DATA:/repo \
+  maple-firestore-emulator firebase --project demo-dtp \
+  emulators:start --only firestore --export-on-exit /repo/emulator-data
+```
+
+Add `--import /repo/emulator-data` once that folder exists (the first start
+has nothing to import). The emulator keeps everything in memory: it exports on
+a clean stop (`docker stop maple-emulator`), but a crash or reboot loses
+everything since the last export. During a long run, export now and then:
+
+```bash
+docker exec maple-emulator firebase emulators:export /repo/emulator-data \
+  --project demo-dtp --force
+```
+
+Keep the machine from sleeping during a run: a suspend drops the network, and
+the run stalls until it wakes.
+
+### 3. The scrape
+
+```bash
+cd lobbying-scraper
+python -m venv .venv && . .venv/bin/activate
+pip install -r requirements.txt
+# DATA must be set in this shell (step 1): an empty ARCHIVE_DIR silently turns
+# the local archive off. This stops here if it isn't.
+: "${DATA:?set DATA to the data folder first}"
+export FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 GOOGLE_CLOUD_PROJECT=demo-dtp \
+  ARCHIVE_DIR=$DATA PYTHONUNBUFFERED=1
+# ARCHIVE_DIR takes precedence, so ARCHIVE_RAW does nothing while it's set.
+# Unset anyway: if ARCHIVE_DIR ended up empty, a leftover ARCHIVE_RAW=1 (e.g.
+# from the Historical Backfill commands) would switch on GCS archiving instead.
+unset GOOGLE_APPLICATION_CREDENTIALS ARCHIVE_RAW
+
+# Smoke test: a few registrants, then stats (a --limit run skips stats).
+python scrape.py --mode backfill --year 2016 --limit 5 --use-archive
+python scrape.py --mode stats
+
+# Full history, all years.
+python scrape.py --mode backfill --use-archive --workers 8 >> $DATA/logs/scrape.log 2>&1
+```
+
+`ARCHIVE_DIR` saves every fetched page to `$DATA/raw_html/` (the page as
+`<sha1 of url>.html`, its URL in a matching `.url` file), and `--use-archive`
+reads pages from there before going to the portal. The backfill records each
+processed disclosure in the emulator, so a stopped run resumes where it left
+off.
+
+What a full run took in October 2026, with 8 workers: about 47,000
+disclosures and 593,000 filings in roughly 6 hours of fetching, then about 20
+minutes for stats, with the emulator using about 11 GB of memory. The archive
+was 12 GB and the emulator export 640 MB. Speed depends on the portal: an
+earlier attempt during the day ran about 20 times slower, with read timeouts.
+Progress lines carry UTC timestamps, so the log shows when a run slowed down.
+
+### 4. Rebuilding from the archive
+
+After a parser change, rebuild without the portal: start a second, empty
+emulator (or stop this one and start it without `--import`), then rerun the
+backfill with `ARCHIVE_DIR` and `--use-archive`. Pages come from disk; only the
+search that lists each year's registrants, and any page missing from the
+archive, are fetched live. Pages are missing when their disclosure was
+processed before archiving was turned on, since the backfill skips processed
+disclosures and never fetches them again.
+
+### 5. Looking at the data
+
+The emulator UI is at `http://127.0.0.1:3010/firestore` (with this repo's
+`firebase.json`). It can't open documents whose ID contains `%`, which
+includes every client and firm summary (their IDs are `encodeURIComponent` of
+the name). Read those through the emulator's REST API instead, with each `%`
+encoded again as `%25`, e.g.:
+
+```
+http://127.0.0.1:8080/v1/projects/demo-dtp/databases/(default)/documents/lobbyingMeta/clientSummaries/clients/GREATER%2520BOSTON%2520CHAMBER%2520OF%2520COMMERCE
+```
+
+To see a page as the portal served it, open its file in `$DATA/raw_html/`.
 
 ---
 
