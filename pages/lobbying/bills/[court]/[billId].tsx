@@ -14,11 +14,11 @@ import { MAPLE_COLORS } from "components/lobbying/chartTheme"
 import { SosSourceLink } from "components/lobbying/SosSourceLink"
 import type { LobbyingFiling } from "functions/src/lobbying/types"
 import styles from "components/lobbying/lobbying.module.css"
+import { SortTh, thStyle, type SortDir } from "components/lobbying/SortTh"
 
 const PAGE_SIZE = 50
 
 type SortKey = "client" | "firm" | "position" | "year"
-type SortDir = "asc" | "desc"
 
 function sortFilings(
   filings: LobbyingFiling[],
@@ -45,43 +45,6 @@ function sortFilings(
         return 0
     }
   })
-}
-
-function SortTh({
-  label,
-  sortKey,
-  current,
-  dir,
-  onSort,
-  style,
-  className
-}: {
-  label: string
-  sortKey: SortKey
-  current: SortKey
-  dir: SortDir
-  onSort: (k: SortKey) => void
-  style?: React.CSSProperties
-  className?: string
-}) {
-  const active = sortKey === current
-  const indicator = active ? (dir === "asc" ? " ↑" : " ↓") : ""
-  return (
-    <th
-      onClick={() => onSort(sortKey)}
-      className={className}
-      style={{
-        ...thStyle,
-        ...style,
-        cursor: "pointer",
-        color: active ? MAPLE_COLORS.primary : MAPLE_COLORS.textMuted,
-        userSelect: "none"
-      }}
-    >
-      {label}
-      <span style={{ fontSize: 10, opacity: active ? 1 : 0 }}>{indicator}</span>
-    </th>
-  )
 }
 
 function ordinalSuffix(n: number): string {
@@ -378,17 +341,6 @@ const tableStyle: React.CSSProperties = {
 
 const theadRowStyle: React.CSSProperties = {
   borderBottom: `2px solid ${MAPLE_COLORS.borderDefault}`
-}
-
-const thStyle: React.CSSProperties = {
-  padding: "0.4rem 0.75rem",
-  textAlign: "left",
-  fontSize: 11,
-  fontWeight: 700,
-  textTransform: "uppercase" as const,
-  letterSpacing: "0.05em",
-  color: MAPLE_COLORS.textMuted,
-  whiteSpace: "nowrap" as const
 }
 
 const trStyle: React.CSSProperties = {

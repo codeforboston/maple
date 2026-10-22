@@ -13,48 +13,11 @@ import { matchesSearch } from "components/lobbying/searchMatch"
 import { regTypeLabel } from "components/lobbying/regTypeLabel"
 import { SessionFilter, SessionSelect } from "components/lobbying/SessionSelect"
 import { yearToCourt } from "components/lobbying/sessions"
+import { SortTh, thStyle, type SortDir } from "components/lobbying/SortTh"
 
 const PAGE_SIZE = 50
 
 type FirmSortKey = "name" | "clients" | "sessions" | "filings"
-type SortDir = "asc" | "desc"
-
-function SortTh({
-  label,
-  sortKey,
-  current,
-  dir,
-  onSort,
-  style
-}: {
-  label: string
-  sortKey: FirmSortKey
-  current: FirmSortKey
-  dir: SortDir
-  onSort: (k: FirmSortKey) => void
-  style?: React.CSSProperties
-}) {
-  const active = sortKey === current
-  return (
-    <th
-      onClick={() => onSort(sortKey)}
-      style={{
-        ...thStyle,
-        ...style,
-        cursor: "pointer",
-        color: active ? MAPLE_COLORS.primary : MAPLE_COLORS.textMuted,
-        userSelect: "none"
-      }}
-    >
-      {label}
-      {active && (
-        <span style={{ fontSize: 10, marginLeft: 3 }}>
-          {dir === "asc" ? "↑" : "↓"}
-        </span>
-      )}
-    </th>
-  )
-}
 
 type FirmRow = {
   entityName: string
@@ -381,16 +344,6 @@ const tableStyle: React.CSSProperties = {
 }
 const theadStyle: React.CSSProperties = {
   borderBottom: `2px solid ${MAPLE_COLORS.borderDefault}`
-}
-const thStyle: React.CSSProperties = {
-  padding: "0.4rem 0.75rem",
-  textAlign: "left",
-  fontSize: 11,
-  fontWeight: 700,
-  textTransform: "uppercase",
-  letterSpacing: "0.05em",
-  color: MAPLE_COLORS.textMuted,
-  whiteSpace: "nowrap"
 }
 const trStyle: React.CSSProperties = {
   borderBottom: `1px solid ${MAPLE_COLORS.borderSubtle}`

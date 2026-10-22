@@ -16,6 +16,7 @@ import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 import styles from "components/lobbying/lobbying.module.css"
 import { courtYears } from "components/lobbying/sessions"
+import { SortTh, thStyle, type SortDir } from "components/lobbying/SortTh"
 
 const ALL_COURTS = [194, 193, 192, 191, 190, 189, 188, 187, 186, 185, 184]
 const PAGE_SIZE = 50
@@ -31,7 +32,6 @@ type BillSortKey =
   | "pct_support"
   | "pct_oppose"
   | "pct_neutral"
-type SortDir = "asc" | "desc"
 
 const PCT_CYCLE = ["pct_support", "pct_oppose", "pct_neutral"] as const
 type PctSortKey = (typeof PCT_CYCLE)[number]
@@ -137,48 +137,6 @@ function CourtMultiSelect({
         </div>
       )}
     </div>
-  )
-}
-
-// ── Sortable header cell ──────────────────────────────────────────────────────
-
-function SortTh({
-  label,
-  sortKey,
-  current,
-  dir,
-  onSort,
-  style,
-  className
-}: {
-  label: string
-  sortKey: BillSortKey
-  current: BillSortKey
-  dir: SortDir
-  onSort: (k: BillSortKey) => void
-  style?: React.CSSProperties
-  className?: string
-}) {
-  const active = sortKey === current
-  return (
-    <th
-      onClick={() => onSort(sortKey)}
-      className={className}
-      style={{
-        ...thStyle,
-        ...style,
-        cursor: "pointer",
-        color: active ? MAPLE_COLORS.primary : MAPLE_COLORS.textMuted,
-        userSelect: "none"
-      }}
-    >
-      {label}
-      {active && (
-        <span style={{ fontSize: 10, marginLeft: 3 }}>
-          {dir === "asc" ? "↑" : "↓"}
-        </span>
-      )}
-    </th>
   )
 }
 
@@ -692,17 +650,6 @@ const tableStyle: React.CSSProperties = {
 
 const theadStyle: React.CSSProperties = {
   borderBottom: `2px solid ${MAPLE_COLORS.borderDefault}`
-}
-
-const thStyle: React.CSSProperties = {
-  padding: "0.4rem 0.75rem",
-  textAlign: "left",
-  fontSize: 11,
-  fontWeight: 700,
-  textTransform: "uppercase",
-  letterSpacing: "0.05em",
-  color: MAPLE_COLORS.textMuted,
-  whiteSpace: "nowrap"
 }
 
 const trStyle: React.CSSProperties = {
