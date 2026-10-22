@@ -16,7 +16,7 @@ import {
 } from "../StyledComponents/BillStyledComponents"
 import { Bill } from "functions/src/bills/types"
 import { BillFilter, BillFilterButtons } from "./BillFilterButtons"
-import { ArrowRightIcon } from "components/learn/icons"
+import { billSearchByTopicLink } from "components/links"
 
 type BillGroups = {
   all: Bill[]
@@ -24,21 +24,22 @@ type BillGroups = {
   cosponsored: Bill[]
 }
 
-type TopicGroup = {
-  topic: string
+type TopicGroupAccumulator = {
+  category: string
   count: number
-  bills: Bill[]
+  subtopics: Record<string, number>
 }
 
 const BillsByTopicContainer = ({
   bills,
-  selectedFilter
+  selectedFilter,
+  court
 }: {
   bills: Bill[]
   selectedFilter: BillFilter
+  court: number
 }) => {
   const { t } = useTranslation("legislators")
-  const arrow = <ArrowRightIcon sx={{ fontSize: "1.125rem" }} />
   const filterLabel =
     selectedFilter === "all"
       ? t("All")
@@ -47,14 +48,27 @@ const BillsByTopicContainer = ({
       : t("profiles.coSponsor")
 
   const topicGroups = Object.values(
-    bills.reduce<Record<string, TopicGroup>>((groups, bill) => {
-      const topic = bill.topics?.[0]?.topic
+    bills.reduce<Record<string, TopicGroupAccumulator>>((groups, bill) => {
+      const categoriesSeen = new Set<string>()
+      const topicsSeen = new Set<string>()
 
-      if (topic) {
-        const group = groups[topic] ?? { topic, count: 0, bills: [] }
-        group.count += 1
-        group.bills.push(bill)
-        groups[topic] = group
+      for (const { category, topic } of bill.topics ?? []) {
+        const group = groups[category] ?? {
+          category,
+          count: 0,
+          subtopics: {}
+        }
+
+        if (!categoriesSeen.has(category)) {
+          group.count += 1
+          categoriesSeen.add(category)
+        }
+
+        if (!topicsSeen.has(`${category}\u0000${topic}`)) {
+          group.subtopics[topic] = (group.subtopics[topic] ?? 0) + 1
+          topicsSeen.add(`${category}\u0000${topic}`)
+        }
+        groups[category] = group
       }
 
       return groups
@@ -64,18 +78,9 @@ const BillsByTopicContainer = ({
     .slice(0, 5)
     .map(group => ({
       ...group,
-      subtopics: Object.entries(
-        group.bills.reduce<Record<string, number>>((counts, bill) => {
-          const subtopic = bill.topics?.[1]?.topic
-
-          if (subtopic) {
-            counts[subtopic] = (counts[subtopic] ?? 0) + 1
-          }
-
-          return counts
-        }, {})
-      )
-        .sort(([, countA], [, countB]) => countB - countA)
+      subtopics: Object.entries(group.subtopics)
+        .map(([topic, count]) => ({ topic, count }))
+        .sort((topicA, topicB) => topicB.count - topicA.count)
         .slice(0, 4)
     }))
 
@@ -91,17 +96,25 @@ const BillsByTopicContainer = ({
       </StyledBillsByTopicHeader>
       <div>
         {topicGroups.map(group => (
-          <StyledTopicRow key={group.topic}>
+          <StyledTopicRow key={group.category}>
             <StyledTopicMeta>
               <StyledTopicNameBox>
-                <StyledTopicName>{group.topic}</StyledTopicName>
-                <StyledTopicLink>Browse bills {arrow}</StyledTopicLink>
+                <StyledTopicName>{group.category}</StyledTopicName>
               </StyledTopicNameBox>
               <StyledCountLabel>{group.count} bills</StyledCountLabel>
             </StyledTopicMeta>
             <StyledSubtopicContainer>
-              {group.subtopics.map(([subtopic]) => (
-                <StyledSubtopicTag key={subtopic}>{subtopic}</StyledSubtopicTag>
+              {group.subtopics.map(({ topic, count }) => (
+                <StyledTopicLink
+                  key={topic}
+                  href={billSearchByTopicLink(court, {
+                    category: group.category,
+                    topic
+                  })}
+                  aria-label={`${topic} (${count} bills)`}
+                >
+                  <StyledSubtopicTag>{topic}</StyledSubtopicTag>
+                </StyledTopicLink>
               ))}
             </StyledSubtopicContainer>
           </StyledTopicRow>
@@ -111,7 +124,13 @@ const BillsByTopicContainer = ({
   )
 }
 
-export const BillsByTopic = ({ billGroups }: { billGroups: BillGroups }) => {
+export const BillsByTopic = ({
+  billGroups,
+  court
+}: {
+  billGroups: BillGroups
+  court: number
+}) => {
   const [selectedFilter, setSelectedFilter] = useState<BillFilter>("all")
   const selectedBills = billGroups[selectedFilter]
 
@@ -125,6 +144,7 @@ export const BillsByTopic = ({ billGroups }: { billGroups: BillGroups }) => {
       <BillsByTopicContainer
         bills={selectedBills}
         selectedFilter={selectedFilter}
+        court={court}
       />
     </>
   )
