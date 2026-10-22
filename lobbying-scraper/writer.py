@@ -720,7 +720,10 @@ def registrant_doc(
     # a client can normalize alike, so merge rather than overwrite.
     client_lobbyists: dict[str, list[str]] = {}
     for client, names in detail.client_lobbyists.items():
-        merged = client_lobbyists.setdefault(normalize_entity_name(client), [])
+        key = normalize_entity_name(client)
+        if not key:  # Firestore rejects empty map keys
+            continue
+        merged = client_lobbyists.setdefault(key, [])
         merged.extend(n for n in names if n not in merged)
 
     data = {
