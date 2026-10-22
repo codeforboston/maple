@@ -35,5 +35,130 @@
   "office": "Office",
   "office_senate": "State Senator, {{district}}",
   "office_house": "State Representative, {{district}}",
-  "conference": "Conference"
+  "conference": "Conference",
+  "hero": {
+    "lead": "When the House and Senate pass different versions of a bill, six legislators work out one final text in a conference committee. Learn how it works, see who’s negotiating and what’s still unresolved, and share your input while they’re still deciding.",
+    "steps": [
+      {
+        "h": "Two versions pass",
+        "p": "Each chamber passes its own text of the bill, and the two don't match."
+      },
+      {
+        "h": "Six are named",
+        "p": "Three from each chamber. In each, one of the three comes from the minority party."
+      },
+      {
+        "h": "They negotiate",
+        "p": "Their meetings are public unless a majority votes to close them, and they can't close the first one."
+      },
+      {
+        "h": "The report is posted",
+        "p": "A majority of each chamber's three has to agree to it. It goes up on the legislature's website, and neither chamber can vote on it for at least 24 hours."
+      },
+      {
+        "h": "Yes or no",
+        "p": "Each chamber accepts or rejects it as written. Changing it takes a new conference committee."
+      }
+    ],
+    "sources": "From MAPLE’s <1>guide to the legislative process</1> and the legislature’s <3>Joint Rules</3>.",
+    "see": "See the committees"
+  },
+  "bill_text": "Bill Text",
+  "version": "Version",
+  "version_senate": "Senate Version",
+  "version_house": "House Version",
+  "version_both": "Senate and House",
+  "text_loading": "Loading the bill text",
+  "text_missing": "The text of {{bill}} isn’t on MAPLE yet.",
+  "text_pdf": "Read the PDF",
+  "tabs_label": "Sections of this conference committee",
+  "tab_committee": "Committee",
+  "tab_input": "Public Input",
+  "tab_text": "Bill Text",
+  "input": {
+    "share": "Share your input",
+    "title": "Public Input",
+    "all_users": "All users",
+    "filter_by_account_type": "Filter by account type",
+    "account_individual": "Individuals",
+    "account_organization": "Organizations",
+    "account_government": "Gov Officials",
+    "type_individual": "Individual",
+    "type_organization": "Organization",
+    "type_government": "Government office",
+    "all_positions": "All positions",
+    "filter_by_position": "Filter by position",
+    "position_filtered": "Position: {{position}}. Change",
+    "clear_position": "Clear the {{position}} filter",
+    "position": {
+      "passSomething": {
+        "long": "Please pass something",
+        "short": "Pass something"
+      },
+      "passSenateVersion": {
+        "long": "Pass the Senate version",
+        "short": "Senate version"
+      },
+      "passHouseVersion": {
+        "long": "Pass the House version",
+        "short": "House version"
+      },
+      "passNothing": {
+        "long": "Don't pass anything",
+        "short": "Pass nothing"
+      }
+    },
+    "show_more": "Show more",
+    "show_less": "Show less",
+    "empty_title": "No public input yet",
+    "empty_body": "No public input has been submitted yet.",
+    "no_match_title": "Nothing matches these filters",
+    "no_match_body": "Try widening your selection to see more input on this topic.",
+    "clear_filters": "Clear Filters",
+    "previous_page": "Previous page",
+    "next_page": "Next page",
+    "page_of": "{{page}} of {{count}}",
+    "panel_title": "Add Your Input",
+    "close_panel": "Close Add Your Input",
+    "position_label": "Your position",
+    "body_label": "Your input",
+    "prompt": "What do you want lawmakers and other voters to know about this question?",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "delete_draft": "Delete Draft",
+    "cancel": "Cancel",
+    "review": "Review and Post",
+    "review_title": "Review and Post",
+    "preview_label": "Preview",
+    "preview_on": "on {{subject}}",
+    "rules_label": "Before You Post",
+    "rule_public": "Posting is public and stays attached to your account.",
+    "rule_revise": "You can revise it later; earlier versions stay on the record.",
+    "conduct": "All posts are governed by our <1>Code of Conduct</1>.",
+    "back": "Back to editing",
+    "post": "Post",
+    "empty_hint": "Write something first, then post it.",
+    "error": "Your input could not be saved. Try again in a moment.",
+    "yours_title": "Your Input",
+    "yours_on_record": "Your input is on the record.",
+    "yours_private": "This section is only visible to you. You can also find your post below in the public record.",
+    "view": "View submission",
+    "edit": "Edit",
+    "follow_user": "Follow user",
+    "unfollow_user": "Unfollow user",
+    "report": "Report",
+    "more_actions": "More actions for {{name}}",
+    "modal_title": "Input for Conference Committee on {{subject}}",
+    "actions": "Actions",
+    "follow_account": "Follow This Account",
+    "unfollow_account": "Unfollow This Account",
+    "close": "Close",
+    "filters": "Filters",
+    "following": "Following",
+    "follow_all": "Follow all",
+    "anonymous": "Anonymous",
+    "descriptor_organization": "Organization account, verified",
+    "descriptor_individual": "Individual account",
+    "descriptor_government": "Legislator account"
+  }
 }

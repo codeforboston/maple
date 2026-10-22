@@ -45,7 +45,9 @@ export const createFakeTestimonyV2 = onCall(
       fullName: fullName,
       content: fullName + " " + fullName + " " + fullName + " " + fullName,
       public: true,
-      updatedAt: Timestamp.now()
+      updatedAt: Timestamp.now(),
+      ballotQuestionId: null,
+      conferenceId: null
     }
 
     const testRef = db.doc(`users/${uid}/publishedTestimony/${id}`)

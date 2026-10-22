@@ -1,5 +1,8 @@
 import { Card, ListItem, ListItemProps } from "components/Card"
 import { dbService } from "components/db/api"
+import { conferenceName } from "components/conference/types"
+import { takesTestimony } from "functions/src/shared"
+import { maple } from "components/links"
 import { useFlags } from "components/featureFlags"
 import { formatBillId } from "components/formatting"
 import { formUrl } from "components/publish"
@@ -51,7 +54,8 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
   isReporting,
   setReporting
 }) => {
-  const { bill, revision, ballotQuestion } = useCurrentTestimonyDetails(),
+  const { bill, revision, ballotQuestion, conference } =
+      useCurrentTestimonyDetails(),
     billLabel = formatBillId(bill.id)
   const { notifications } = useFlags()
 
@@ -167,7 +171,20 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
       onClick={() => setReporting(!isReporting)}
     />
   )
-  if (canEditBallotQuestionTestimony)
+  // Conference testimony is written on the conference page, while it takes
+  // testimony.
+  if (revision.conferenceId) {
+    if (conference && takesTestimony(conference.status))
+      items.push(
+        <PolicyActionItem
+          key="add-testimony"
+          billName={`${isUser ? "Edit" : "Add"} Testimony for ${conferenceName(
+            conference
+          )}`}
+          href={maple.conference(conference)}
+        />
+      )
+  } else if (canEditBallotQuestionTestimony)
     items.push(
       <PolicyActionItem
         key="add-testimony"

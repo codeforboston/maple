@@ -32,7 +32,9 @@
 
         {{!-- Item 1 --}}
 
-        {{#if this.bills.0.billId}}
+        {{#if this.bills.0.conferenceId}}
+          {{> conferenceItem this.bills.[0]}}
+        {{else if this.bills.0.billId}}
           <td style="width: 100px">
             <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
               <a href="https://mapletestimony.org/bills/{{this.bills.0.court}}/{{this.bills.0.billId}}" target="_blank" rel="noopener noreferrer" style="color: inherit">
@@ -49,7 +51,9 @@
 
         {{!-- Item 2 --}}
           
-        {{#if this.bills.1.billId}}
+        {{#if this.bills.1.conferenceId}}
+          {{> conferenceItem this.bills.[1]}}
+        {{else if this.bills.1.billId}}
           <td style="width: 100px">
             <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
               <a href="https://mapletestimony.org/bills/{{this.bills.1.court}}/{{this.bills.1.billId}}" target="_blank" rel="noopener noreferrer" style="color: inherit">
@@ -67,7 +71,9 @@
       <tr>
         {{!-- Item 3 --}}
 
-        {{#if this.bills.2.billId}}
+        {{#if this.bills.2.conferenceId}}
+          {{> conferenceItem this.bills.[2]}}
+        {{else if this.bills.2.billId}}
           <td style="width: 100px">
             <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
               <a href="https://mapletestimony.org/bills/{{this.bills.2.court}}/{{this.bills.2.billId}}" target="_blank" rel="noopener noreferrer" style="color: inherit">
@@ -84,7 +90,9 @@
 
         {{!-- Item 4 --}}
         
-        {{#if this.bills.3.billId}}
+        {{#if this.bills.3.conferenceId}}
+          {{> conferenceItem this.bills.[3]}}
+        {{else if this.bills.3.billId}}
           <td style="width: 100px">
             <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
               <a href="https://mapletestimony.org/bills/{{this.bills.3.court}}/{{this.bills.3.billId}}" target="_blank" rel="noopener noreferrer" style="color: inherit">
@@ -103,7 +111,9 @@
       </tr>
         {{!-- Item 5 --}}
 
-        {{#if this.bills.4.billId}}
+        {{#if this.bills.4.conferenceId}}
+          {{> conferenceItem this.bills.[4]}}
+        {{else if this.bills.4.billId}}
           <td style="width: 100px">
             <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
               <a href="https://mapletestimony.org/bills/{{this.bills.4.court}}/{{this.bills.4.billId}}" target="_blank" rel="noopener noreferrer" style="color: inherit">
@@ -132,6 +142,8 @@
                 +
               </div>
             </td>
+          {{else if this.bills.5.conferenceId}}
+            {{> conferenceItem this.bills.[5]}}
           {{else}}
             <td style="width: 100px">
               <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">

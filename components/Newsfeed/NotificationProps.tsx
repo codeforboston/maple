@@ -23,6 +23,8 @@ export type NotificationProps = {
   ballotQuestionId?: string
   ballotQuestionCourt?: number
   ballotStatus?: string
+  // Set on testimony to a committee of conference
+  conferenceId?: string | null
 }
 
 export type Notifications = NotificationProps[]
