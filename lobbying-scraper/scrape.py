@@ -59,6 +59,11 @@ from writer import (
 _DEFAULT_BACKFILL_WORKERS = 20
 
 
+def _ts() -> str:
+    """UTC time for progress lines, so a slow run shows when it slowed down."""
+    return datetime.now(tz=timezone.utc).strftime("%H:%M:%SZ")
+
+
 # ── Cursor helpers ────────────────────────────────────────────────────────────
 #
 # Weekly-mode cursor state lives in subcollections under SCRAPER_DOC, one small
@@ -180,7 +185,7 @@ def run_weekly(
     new_count = 0
 
     for year in years:
-        print(f"\n── {year} ──")
+        print(f"\n── {year} ── {_ts()}")
         try:
             summary_urls = fetch_summary_links(session, year)
         except Exception as e:
@@ -190,7 +195,7 @@ def run_weekly(
         if limit:
             summary_urls = summary_urls[:limit]
 
-        print(f"  {len(summary_urls)} registrants on portal")
+        print(f"  {_ts()} {len(summary_urls)} registrants on portal")
 
         for summary_url in summary_urls:
             # Prior years: trust the cache if we have one. Current year:
@@ -219,7 +224,7 @@ def run_weekly(
                         db, session, summary_url, disc_url, year, dry_run=dry_run
                     )
                     new_count += 1
-                    print(f"  processed: {comp_n} clients, {filing_n} filings")
+                    print(f"  {_ts()} processed: {comp_n} clients, {filing_n} filings")
                     if use_cursor:
                         _mark_processed(db, disc_url)
                 except Exception as e:
@@ -322,7 +327,7 @@ def run_backfill(
     total_new = 0
 
     for year in years:
-        print(f"\n── {year} ──")
+        print(f"\n── {year} ── {_ts()}")
         try:
             summary_urls = fetch_summary_links(session, year)
         except Exception as e:
@@ -332,7 +337,7 @@ def run_backfill(
         if limit:
             summary_urls = summary_urls[:limit]
 
-        print(f"  {len(summary_urls)} registrants on portal")
+        print(f"  {_ts()} {len(summary_urls)} registrants on portal")
         year_new = 0
         done = 0
 
@@ -351,9 +356,9 @@ def run_backfill(
                     print(f"  {msg}", file=sys.stderr)
                 done += 1
                 if done % 50 == 0 or done == len(summary_urls):
-                    print(f"  [{done}/{len(summary_urls)}] {year_new} new disclosures so far")
+                    print(f"  {_ts()} [{done}/{len(summary_urls)}] {year_new} new disclosures so far")
 
-        print(f"  {year} complete: {year_new} new disclosures")
+        print(f"  {_ts()} {year} complete: {year_new} new disclosures")
 
     return total_new
 
