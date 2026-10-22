@@ -194,12 +194,17 @@ export const NavbarLinkConferences: React.FC<
 > = ({ handleClick, other }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const { t } = useTranslation(["common", "auth"])
+  const { pathname } = useRouter()
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
         className={isMobile ? "navLink-primary" : DESKTOP_NAV_ITEM_CLASS}
         href={maple.conferences()}
-        {...other}
+        // The landing, the explorer and every conference are this section.
+        other={{
+          active: pathname.startsWith(maple.conferences()),
+          ...other
+        }}
       >
         {t("navigation.conferences")}
       </NavLink>
