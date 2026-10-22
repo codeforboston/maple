@@ -26,6 +26,7 @@ export type TestimonySubmissionNotification = Notification & {
   testimonyVersion: number
   ballotQuestionId?: string | null
   ballotQuestionCourt?: number | null
+  conferenceId?: string | null
 }
 
 export interface TestimonySubmissionNotificationFields {
@@ -48,6 +49,7 @@ export interface TestimonySubmissionNotificationFields {
     authorUid: string
     ballotQuestionId?: string | null
     ballotQuestionCourt?: number | null
+    conferenceId?: string | null
   }
   createdAt: FirebaseFirestore.Timestamp
 }

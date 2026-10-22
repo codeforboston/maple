@@ -6,11 +6,12 @@ import { nanoid } from "nanoid"
 import { Record } from "runtypes"
 import { BallotQuestion } from "../ballotQuestions/types"
 import { Bill } from "../bills/types"
+import { Conference, conferenceCountFields } from "../conferences/types"
 import { checkAuth, checkRequest, DocUpdate, fail, Id } from "../common"
 import { db, FieldValue, Timestamp } from "../firebase"
-import { supportedGeneralCourts } from "../shared"
+import { supportedGeneralCourts, takesTestimony } from "../shared"
 import { Attachments, PublishedAttachmentState } from "./attachments"
-import { DraftTestimony, Testimony } from "./types"
+import { billCountFields, DraftTestimony, Testimony } from "./types"
 import { updateTestimonyCounts } from "./updateTestimonyCounts"
 
 const PublishTestimonyRequest = Record({
@@ -65,6 +66,9 @@ class PublishTestimonyTransaction {
   private billSnap!: DocumentSnapshot
   private bill!: Bill
   private ballotQuestion?: BallotQuestion
+  private conferenceId!: string | null
+  private conference?: Conference
+  private conferenceRef?: DocumentReference
   private publicationRef!: DocumentReference
   private currentPublication?: Testimony
   private profile?: any
@@ -99,7 +103,8 @@ class PublishTestimonyTransaction {
       draftAttachmentId: this.attachments.draftId,
       fullName: this.profile?.fullName ?? "Anonymous",
       public: this.profile?.public ?? true,
-      ballotQuestionId: this.bqId
+      ballotQuestionId: this.bqId,
+      conferenceId: this.conferenceId
     }
     if (this.profile?.representative?.id) {
       newPublication.representativeId = this.profile.representative.id
@@ -120,6 +125,7 @@ class PublishTestimonyTransaction {
     this.updateDraft(newPublication)
     this.updateBill(newPublication)
     this.updateBallotQuestion(newPublication)
+    this.updateConference(newPublication)
 
     return {
       publicationId: this.publicationRef.id,
@@ -148,12 +154,13 @@ class PublishTestimonyTransaction {
   }
 
   private updateBill(newPublication: Testimony) {
-    if (this.bqId) return
+    if (this.bqId || this.conferenceId) return
 
     const billTestimonyFields: DocUpdate<Bill> = {
       latestTestimonyAt: newPublication.publishedAt,
       latestTestimonyId: this.publicationRef.id,
       ...updateTestimonyCounts(
+        billCountFields,
         this.bill,
         this.currentPublication,
         newPublication
@@ -167,12 +174,26 @@ class PublishTestimonyTransaction {
 
     const ballotQuestionFields: DocUpdate<BallotQuestion> =
       updateTestimonyCounts(
+        billCountFields,
         this.ballotQuestion,
         this.currentPublication,
         newPublication
       )
 
     this.t.update(db.doc(`/ballotQuestions/${this.bqId}`), ballotQuestionFields)
+  }
+
+  private updateConference(newPublication: Testimony) {
+    if (!this.conference || !this.conferenceRef) return
+
+    const conferenceFields: DocUpdate<Conference> = updateTestimonyCounts(
+      conferenceCountFields,
+      this.conference,
+      this.currentPublication,
+      newPublication
+    )
+
+    this.t.update(this.conferenceRef, conferenceFields)
   }
 
   private async resolveDraft() {
@@ -195,13 +216,19 @@ class PublishTestimonyTransaction {
     await this.checkValidCourt(draft.court)
 
     const bqId = draft.ballotQuestionId ?? null
+    const conferenceId = draft.conferenceId ?? null
     const billRef = db.doc(
       `/generalCourts/${draft.court}/bills/${draft.billId}`
     )
     const bqRef = bqId !== null ? db.doc(`/ballotQuestions/${bqId}`) : null
-    const [billSnap, bqSnap] = await Promise.all([
+    const conferenceRef =
+      conferenceId !== null
+        ? db.doc(`/generalCourts/${draft.court}/conferences/${conferenceId}`)
+        : null
+    const [billSnap, bqSnap, conferenceSnap] = await Promise.all([
       this.t.get(billRef),
-      bqRef ? this.t.get(bqRef) : Promise.resolve(null)
+      bqRef ? this.t.get(bqRef) : Promise.resolve(null),
+      conferenceRef ? this.t.get(conferenceRef) : Promise.resolve(null)
     ])
 
     if (!billSnap.exists) {
@@ -217,8 +244,33 @@ class PublishTestimonyTransaction {
       )
     }
 
+    const conference = conferenceSnap?.exists
+      ? Conference.checkWithDefaults(conferenceSnap.data())
+      : undefined
+    if (conferenceSnap !== null && !conference) {
+      throw fail(
+        "failed-precondition",
+        `Draft testimony has invalid conferenceId ${conferenceId}`
+      )
+    }
+    if (conference && conference.canonicalBillId !== draft.billId) {
+      throw fail(
+        "failed-precondition",
+        `Conference ${conferenceId} takes testimony on ${conference.canonicalBillId}, not ${draft.billId}`
+      )
+    }
+    if (conference && !takesTestimony(conference.status)) {
+      throw fail(
+        "failed-precondition",
+        `Conference ${conferenceId} is not accepting testimony (status ${conference.status})`
+      )
+    }
+
     this.draft = draft
     this.bqId = bqId
+    this.conferenceId = conferenceId
+    this.conferenceRef = conferenceRef ?? undefined
+    this.conference = conference
     this.draftSnap = draftSnap
     this.billSnap = billSnap
     this.bill = Bill.checkWithDefaults(billSnap.data())
@@ -281,14 +333,15 @@ class PublishTestimonyTransaction {
         .where("billId", "==", this.draft.billId)
         .where("court", "==", this.draft.court)
         .where("ballotQuestionId", "==", this.bqId)
+        .where("conferenceId", "==", this.conferenceId)
         .orderBy("version", "desc")
         .limit(1)
     )
+    const latest = archived.docs[0]
 
-    if (archived.size === 0) return INITIAL_VERSION
+    if (!latest) return INITIAL_VERSION
 
-    const data = archived.docs[0].data(),
-      nextVersion = Testimony.checkWithDefaults(data).version + 1
+    const nextVersion = Testimony.checkWithDefaults(latest.data()).version + 1
 
     if (nextVersion > MAX_VERSION)
       throw new Error(
@@ -305,17 +358,18 @@ class PublishTestimonyTransaction {
         .where("billId", "==", this.draft.billId)
         .where("court", "==", this.draft.court)
         .where("ballotQuestionId", "==", this.bqId)
+        .where("conferenceId", "==", this.conferenceId)
         .limit(1)
     )
+    const publication = publications.docs[0]
 
-    if (publications.size === 0) {
+    if (!publication) {
       this.publicationRef = db.doc(
         `/users/${this.uid}/publishedTestimony/${nanoid()}`
       )
     } else {
-      const data = publications.docs[0].data()
-      this.currentPublication = Testimony.checkWithDefaults(data)
-      this.publicationRef = publications.docs[0].ref
+      this.currentPublication = Testimony.checkWithDefaults(publication.data())
+      this.publicationRef = publication.ref
     }
   }
 

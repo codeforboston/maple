@@ -1,5 +1,6 @@
 import { districtId } from "functions/src/districts/normalize"
 import type { Branch } from "../../functions/src/common"
+import type { ConferenceSource } from "../../functions/src/conferences/types"
 import {
   Conference,
   getConferenceForBill,
@@ -15,7 +16,8 @@ import {
   ConferenceIndexProps,
   ConferencePageProps,
   ConferenceSummary,
-  HearingView
+  HearingView,
+  SourceView
 } from "./types"
 
 const summarize = (c: Conference): ConferenceSummary => ({
@@ -25,8 +27,13 @@ const summarize = (c: Conference): ConferenceSummary => ({
   title: c.title,
   senateBillId: c.senateBillId,
   houseBillId: c.houseBillId,
+  canonicalBillId: c.canonicalBillId,
   status: c.status
 })
+
+/** As props: Next refuses undefined, so what is left out arrives as null. */
+const sourceView = (s?: ConferenceSource): SourceView | null =>
+  s ? { ...s, publishedAt: s.publishedAt ?? null } : null
 
 /** The member's cell on the map: their district id, or null where the map has
  * no such seat. */
@@ -87,18 +94,35 @@ export async function loadConferencePage(
   id: string
 ): Promise<ConferencePageProps | null> {
   // The rail needs every conference, and the page's own is among them.
-  const all = await listConferences(court)
-  const conference = all.find(c => c.id === id)
-  if (!conference) return null
+  return pageFor(await listConferences(court), id)
+}
 
+/** The page for the first conference in the rail's order, which the landing
+ * opens on; null where the court has none. */
+export async function loadLandingPage(
+  court: number
+): Promise<ConferencePageProps | null> {
+  return pageFor(await listConferences(court))
+}
+
+/** The page for conference `id` among `all`, or for the rail's first where
+ * there is no `id`. */
+async function pageFor(
+  all: Conference[],
+  id?: string
+): Promise<ConferencePageProps | null> {
+  const rail = all.map(summarize).sort(byActivity)
+  const summary = rail.find(c => c.id === (id ?? rail[0]?.id))
+  const conference = all.find(c => c.id === summary?.id)
+  if (!summary || !conference) return null
   const [conferees, hearings] = await Promise.all([
-    resolveConferees(court, [conference]),
+    resolveConferees(conference.court, [conference]),
     Promise.all(conference.hearingIds.map(getEventSummary))
   ])
 
   return {
-    conference: summarize(conference),
-    conferences: all.map(summarize).sort(byActivity),
+    conference: summary,
+    conferences: rail,
     conferees: conferees[conference.id],
     hearings: hearings
       .flatMap((h): HearingView[] =>
@@ -106,7 +130,20 @@ export async function loadConferencePage(
           ? [{ id: h.id, eventId: h.eventId, startsAt: h.startsAt }]
           : []
       )
-      .sort((a, b) => a.startsAt - b.startsAt)
+      .sort((a, b) => a.startsAt - b.startsAt),
+    gist: conference.gist ?? null,
+    differences: conference.differences.map(d => ({
+      heading: d.heading,
+      senate: d.senate ?? null,
+      house: d.house ?? null,
+      notes: d.notes ?? {},
+      source: sourceView(d.source)
+    })),
+    similarities: conference.similarities.map(d => ({
+      heading: d.heading,
+      body: d.body,
+      source: sourceView(d.source)
+    }))
   }
 }
 
