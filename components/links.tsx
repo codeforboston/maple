@@ -144,6 +144,17 @@ export const twitterShareLink = (publication: Testimony, t: TFunction) => {
   return tweetUrl
 }
 
+export const billSearchByPrimarySponsor = (
+  court: number,
+  member: MemberContent
+) => {
+  const params = {
+    "bills/sort/latestTestimonyAt:desc[refinementList][primarySponsor][0]": `${member.Name}`,
+    "bills/sort/latestTestimonyAt:desc[refinementList][court][0]": `${court}`
+  }
+  return `/bills?${new URLSearchParams(params).toString()}`
+}
+
 export const billSearchByTopicLink = (court: number, topic: BillTopic) => {
   const params = {
     "bills/sort/latestTestimonyAt:desc[multiselectHierarchicalMenu][topics.lvl1][0]": `${topic.category} > ${topic.topic}`,

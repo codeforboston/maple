@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { MemberContent } from "functions/src/members/types"
+import { MemberContent } from "components/db"
 import {
   collection,
   query,
@@ -109,5 +109,11 @@ export const BillsTab = ({ member }: { member: MemberContent }) => {
     return <div>Error loading bills.</div>
   }
 
-  return <BillsTabContainer member={member} bills={billGroups} />
+  return (
+    <BillsTabContainer
+      member={member}
+      bills={billGroups}
+      court={member?.GeneralCourtNumber}
+    />
+  )
 }
