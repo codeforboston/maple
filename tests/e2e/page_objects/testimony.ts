@@ -37,8 +37,11 @@ export class TestimonyPage {
     await this.page.getByRole("tab", { name: role }).click()
   }
 
+  selectedSort(label: string) {
+    return this.page.getByText(label, { exact: true })
+  }
+
   async sort(option: string) {
-    // previoud code: await this.page.getByText("Sort by New -> Old").click()
     await this.page
       .getByText(/Sort by/i)
       .first()
