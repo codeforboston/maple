@@ -350,3 +350,32 @@ def test_registration_error_page_is_none():
     """The portal sometimes serves "An Error Occurred" instead of the page."""
     soup = BeautifulSoup("<html><body>An Error Occurred</body></html>", "html.parser")
     assert parse_registration(soup, "https://example.test/x") is None
+
+
+# ── Agents per client ─────────────────────────────────────────────────────────
+
+
+def test_disclosure_agents_per_client_from_2019():
+    detail = parse_disclosure_detail(_soup("2024e_disc"), 2024)
+    assert detail.client_lobbyists["Amplify Education, Inc."] == ["Hugh R. Jones, III"]
+
+
+def test_disclosure_lists_each_agent_once_per_client():
+    """A firm's page has one block per agent per client."""
+    detail = parse_disclosure_detail(_soup("2024i_disc"), 2024)
+    assert detail.client_lobbyists["Massachusetts Association of Vocational Administrators, Inc."] == [
+        "Anthony Arthur Abdelahad", "Charles McCoy White", "Dennis Michael Murphy"]
+
+
+def test_disclosure_sub_agents_before_2019_skip_the_firm_itself():
+    """2014-2018 pages label agents "Sub-agent:"; the firm's own "Entity:"
+    block names no person."""
+    detail = parse_disclosure_detail(_soup("2016e_disc"), 2016)
+    agents = detail.client_lobbyists["Microsoft Corporation"]
+    assert agents[0] == "Charlie Ahern" and "Murphy Donoghue Partners" not in agents
+    assert len(agents) == len(set(agents))
+
+
+@pytest.mark.parametrize("fix,year", [("2011e", 2011), ("2007e", 2007)])
+def test_disclosure_agents_absent_before_2014(fix, year):
+    assert parse_disclosure_detail(_soup(f"{fix}_disc"), year).client_lobbyists == {}

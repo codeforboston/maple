@@ -48,7 +48,10 @@ Phases (run in order, per project):
     (same for --collection registrants), then --phase registrations, then
     --phase stats.
 
-Safe to delete once dev and prod have both been migrated.
+Keep it: the write phase is also how existing docs get fields the parser
+learns to read later (e.g. filing periodEnd, registrant clientLobbyists).
+Run write, then the cleanup dry runs, which should find no stale docs when
+ids are unchanged, then stats.
 """
 from __future__ import annotations
 

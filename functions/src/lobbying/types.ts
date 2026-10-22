@@ -46,6 +46,9 @@ export const LobbyingRegistrant = Record({
   // individual lobbyists). Absent on docs written before firm attribution.
   lobbyists: Optional(Array(String)),
   lobbyistsNorm: Optional(Array(String)),
+  // Agents named on each client's activity blocks, keyed by clientNameNorm
+  // (2014+). Absent on docs written before agents were parsed.
+  clientLobbyists: Optional(Dictionary(Array(String))),
   disclosureUrls: Array(String),
   fetchedAt: InstanceOf(Timestamp)
 })
@@ -72,6 +75,9 @@ export const LobbyingFiling = Record({
   // The SoS disclosure page this activity was reported on (absent on filings
   // written before it was recorded).
   disclosureUrl: Optional(String),
+  // End of the disclosure's half-year reporting window, e.g. "2025-06-30"
+  // (absent on filings written before it was recorded).
+  periodEnd: Optional(Null.Or(String)),
   fetchedAt: InstanceOf(Timestamp)
 })
 
@@ -100,7 +106,25 @@ export const LobbyingStats = Record({
   totalBillsWithFilings: Number,
   courtsWithData: Array(Number),
   spendByYear: Dictionary(Number),
-  filingsByYear: Dictionary(Number)
+  filingsByYear: Dictionary(Number),
+  // Key figures per session (General Court number as a string). lobbyists
+  // and firms count those registered in the session and on a disclosure in
+  // it; paid is registrant compensation, as in spendByYear. Absent on stats
+  // computed before they existed.
+  courts: Optional(
+    Dictionary(
+      Record({
+        bills: Number,
+        clients: Number,
+        lobbyists: Number,
+        firms: Number,
+        paid: Number
+      })
+    )
+  ),
+  // All-time distinct lobbyists and lobbying entities, counted as in courts.
+  totalLobbyists: Optional(Number),
+  totalEntities: Optional(Number)
 })
 
 /**

@@ -107,6 +107,9 @@ class DisclosureDetail:
     filer_name: Optional[str] = None
     # Lobbyists the firm reports paying (entity disclosures only).
     lobbyists: list[str] = field(default_factory=list)
+    # Agents named on each client's activity block, keyed by raw client name
+    # (2014+; older pages don't name the agent per client).
+    client_lobbyists: dict[str, list[str]] = field(default_factory=dict)
 
 
 @dataclass
@@ -515,6 +518,35 @@ def parse_disclosure_detail(soup: BeautifulSoup, year: int) -> DisclosureDetail:
     return detail
 
 
+def _parse_client_lobbyists(soup: BeautifulSoup) -> dict[str, list[str]]:
+    """Agents named on each client's activity block: {client name: [agents]}.
+
+    Each block is headed by an agent label ("Lobbyist: X" from 2019,
+    "Sub-agent: X" in 2014-2018) and its client name, paired by row index.
+    One block per agent per client, each repeating the bills. A firm's own
+    block ("Entity: <firm>") names no person and is skipped. Read per label,
+    not per bill row, so a block with no bills still counts.
+    """
+    # Index the client-name spans once rather than searching the page per label.
+    client_names: dict[str, str] = {}
+    for span in soup.find_all(id=lambda x: x and re.search(r"lblClientName_\d+$", x or "")):
+        client_names.setdefault(span["id"], span.get_text(strip=True))
+    result: dict[str, list[str]] = {}
+    for label in soup.find_all(
+        "span", id=lambda x: x and re.search(r"lblLobbyistName_\d+$", x or "")
+    ):
+        prefix, sep, name = label.get_text(" ", strip=True).partition(":")
+        if not sep or prefix.strip() == "Entity":
+            continue
+        name = name.strip()
+        client_name = client_names.get(label["id"].replace("lblLobbyistName", "lblClientName"), "")
+        if name and client_name:
+            names = result.setdefault(client_name, [])
+            if name not in names:
+                names.append(name)
+    return result
+
+
 def _parse_disclosure_content(soup: BeautifulSoup, year: int) -> DisclosureDetail:
     """Parse a CompleteDisclosure page's compensation and bills.
 
@@ -622,6 +654,7 @@ def _parse_disclosure_content(soup: BeautifulSoup, year: int) -> DisclosureDetai
             bills=bills,
             period_start=period_start,
             period_end=period_end,
+            client_lobbyists=_parse_client_lobbyists(soup),
         )
 
     # ── Legacy format (2005-2013): single grdvActivities table ───────────────

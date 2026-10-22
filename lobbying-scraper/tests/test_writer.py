@@ -28,6 +28,7 @@ from writer import (
     write_registrant,
     write_filings,
     compute_stats,
+    FILINGS_COLLECTION,
     REGISTRANTS_COLLECTION,
     REGISTRATIONS_COLLECTION,
     STATS_DOC_ID,
@@ -344,12 +345,14 @@ def _make_stats_db():
     return db, doc_mocks
 
 
-def _stats_iter(registrants=(), registrations=()):
+def _stats_iter(registrants=(), registrations=(), filings=()):
     def _iter(_db, collection_name):
         if collection_name == REGISTRANTS_COLLECTION:
             return iter(registrants)
         if collection_name == REGISTRATIONS_COLLECTION:
             return iter(registrations)
+        if collection_name == FILINGS_COLLECTION:
+            return iter(filings)
         return iter([])
     return _iter
 
@@ -553,6 +556,7 @@ def test_write_filings_credits_firm_page_to_firm():
     (fid, doc), = written
     assert doc["entityName"] == "Larkspur Strategies Group LLC"
     assert doc["disclosureUrl"] == "https://example.test/tremont"
+    assert doc["periodEnd"] == "2025-06-30"
     bill = detail.bills[0]
     assert fid == filing_id("Larkspur Strategies Group LLC", bill.client_name, bill.chamber,
                             bill.bill_id, 194, bill.position, "2025-01-01")
@@ -706,7 +710,192 @@ def test_compute_stats_per_session_counts_for_list_filters():
     firm = {d["entityNameNorm"]: d for d in _batch_set_dicts_with_key(db, "clientCount")}["LARKSPUR STRATEGIES GROUP"]
     assert firm["courts"] == {"193": {"filings": 1, "clientCount": 2}, "194": {"filings": 2, "clientCount": 1}}
     client = {d["clientNameNorm"]: d for d in _batch_set_dicts_with_key(db, "registrantCount")}["CLIENT A"]
+    others = {"bills": 0, "inHouseCount": 0, "individuals": 0, "firmAgents": 0}
     assert client["courts"] == {
-        "193": {"filings": 1, "lobbyistCount": 1, "compensation": 1000.0},
-        "194": {"filings": 2, "lobbyistCount": 1, "compensation": 2000.0},
+        "193": {"filings": 1, "lobbyistCount": 1, "compensation": 1000.0, **others},
+        "194": {"filings": 2, "lobbyistCount": 1, "compensation": 2000.0, **others},
     }
+
+
+# ── compute_stats: aggregates for the Lobbying Explorer redesign ────────────
+
+
+def _filing(entity, client, bill_id="H100", position="Support", court=194, year=2025, **extra):
+    return _fake_doc({"entityNameNorm": entity, "clientNameNorm": client, "clientName": client,
+                      "billId": bill_id, "position": position, "generalCourt": court,
+                      "year": year, **extra})
+
+
+def _registrant(entity, year, reg_type="Employer", clients=(), **extra):
+    return _fake_doc({"entityName": entity, "entityNameNorm": entity, "regType": reg_type,
+                      "year": year, "clients": [
+                          {"clientName": c, "clientNameNorm": c, "compensation": comp}
+                          for c, comp in clients], **extra})
+
+
+def _registration(name, year, reg_type="Lobbyist", **extra):
+    return _fake_doc({"name": name, "nameNorm": name, "regType": reg_type, "year": year, **extra})
+
+
+def _run_stats(**collections):
+    db, doc_mocks = _make_stats_db()
+    with patch("writer._iter_collection", side_effect=_stats_iter(**collections)):
+        compute_stats(db)
+    clients = {d["clientNameNorm"]: d for d in _batch_set_dicts_with_key(db, "registrantCount")}
+    return db, doc_mocks, clients
+
+
+def _stats_doc(doc_mocks) -> dict:
+    return doc_mocks[STATS_DOC_ID].set.call_args[0][0]
+
+
+def test_compute_stats_counts_distinct_bills_per_client_session():
+    """G1: a client's bills are distinct bill ids, not its filings."""
+    filings = [_filing("FIRM", "CLIENT A", "H100"), _filing("FIRM", "CLIENT A", "H100", "Oppose"),
+               _filing("FIRM", "CLIENT A", "H200")]
+    _, _, clients = _run_stats(registrants=[_registrant("FIRM", 2025, clients=[("CLIENT A", 10.0)])],
+                               filings=filings)
+    assert clients["CLIENT A"]["courts"]["194"]["bills"] == 2
+
+
+def test_compute_stats_counts_organizations_per_position():
+    """G2: an organization counts once per position it reported, however many
+    filings, and in both when it reported two positions."""
+    filings = [_filing("FIRM 1", "ORG A", "H100", "Support"), _filing("FIRM 2", "ORG A", "H100", "Support"),
+               _filing("FIRM 1", "ORG A", "H100", "Oppose"), _filing("FIRM 1", "ORG B", "H100", "Neutral")]
+    db, _, _ = _run_stats(filings=filings)
+    (bill,) = _batch_set_dicts_with_key(db, "orgSupport")
+    assert (bill["orgSupport"], bill["orgOppose"], bill["orgNeutral"]) == (1, 1, 1)
+    assert bill["support"] == 2 and bill["clients"] == 2
+
+
+def test_compute_stats_session_lobbyists_are_registered_and_active():
+    """G3: a session's lobbyists and firms are those registered in it and on a
+    disclosure in it, as filer or named by a firm; all-time totals count each
+    once across sessions."""
+    registrations = [
+        _registration("FILES OWN", 2025), _registration("NAMED BY FIRM", 2025),
+        _registration("NEVER ACTIVE", 2025), _registration("FIRM", 2023, "Employer"),
+        _registration("FIRM", 2025, "Employer"), _registration("FILES OWN", 2023),
+    ]
+    registrants = [
+        _registrant("FILES OWN", 2025, "Lobbyist"), _registrant("FILES OWN", 2023, "Lobbyist"),
+        _registrant("FIRM", 2025, lobbyistsNorm=["NAMED BY FIRM"]), _registrant("FIRM", 2023),
+    ]
+    _, doc_mocks, _ = _run_stats(registrants=registrants, registrations=registrations)
+    stats = _stats_doc(doc_mocks)
+    assert (stats["courts"]["194"]["lobbyists"], stats["courts"]["194"]["firms"]) == (2, 1)
+    assert (stats["courts"]["193"]["lobbyists"], stats["courts"]["193"]["firms"]) == (1, 1)
+    assert (stats["totalLobbyists"], stats["totalEntities"]) == (2, 1)
+
+
+def test_compute_stats_session_key_figures():
+    """G4: a session's bills and clients are distinct, and paid sums only
+    that session's years of registrant compensation."""
+    filings = [_filing("FIRM", "CLIENT A", "H100"), _filing("FIRM", "CLIENT B", "H100"),
+               _filing("FIRM", "CLIENT A", "H200", year=2026),
+               _filing("FIRM", "CLIENT C", "H100", court=193, year=2023)]
+    registrants = [_registrant("FIRM", 2025, clients=[("CLIENT A", 100.0)]),
+                   _registrant("FIRM", 2026, clients=[("CLIENT B", 50.0)]),
+                   _registrant("FIRM", 2023, clients=[("CLIENT C", 7.0)])]
+    _, doc_mocks, _ = _run_stats(registrants=registrants, filings=filings)
+    court = _stats_doc(doc_mocks)["courts"]["194"]
+    assert (court["bills"], court["clients"], court["paid"]) == (2, 2, 150.0)
+
+
+def test_compute_stats_classifies_in_house_filers():
+    """G5: a filer is in-house when that session's registration names the
+    client as its employer, or when the filer is the client. Registrations
+    before 2019 name no employers, so a firm there is never in-house."""
+    filings = [
+        _filing("STAFFER", "CLIENT A"),                      # employed by the client
+        _filing("HIRED FIRM", "CLIENT A"),                   # hired
+        _filing("CLIENT A", "CLIENT A"),                     # files for itself
+        _filing("STAFFER", "CLIENT A", court=193, year=2023),
+        _filing("OLD FIRM", "OLD CLIENT", court=189, year=2015),
+    ]
+    registrations = [
+        _registration("STAFFER", 2025, employers=[{"name": "Client A", "nameNorm": "CLIENT A"}]),
+        _registration("STAFFER", 2023, employers=[{"name": "Client A", "nameNorm": "CLIENT A"}]),
+    ]
+    registrants = [_registrant("HIRED FIRM", 2025, clients=[("CLIENT A", 1.0)]),
+                   _registrant("OLD FIRM", 2015, clients=[("OLD CLIENT", 1.0)])]
+    _, doc_mocks, clients = _run_stats(registrants=registrants, registrations=registrations,
+                                       filings=filings)
+    assert clients["CLIENT A"]["courts"]["194"]["inHouseCount"] == 2
+    assert clients["CLIENT A"]["courts"]["193"]["inHouseCount"] == 1
+    assert clients["CLIENT A"]["inHouseCount"] == 2  # STAFFER once across sessions
+    assert clients["OLD CLIENT"]["inHouseCount"] == 0
+    assert doc_mocks["inHouseFilers_194"].set.call_args[0][0] == {"CLIENT A": ["CLIENT A", "STAFFER"]}
+    assert "inHouseFilers_189" not in doc_mocks
+
+
+def test_compute_stats_counts_individual_lobbyists_per_client():
+    """The clients list counts people: in-house individuals plus the agents a
+    firm names on the client's account, each once."""
+    registrants = [
+        _registrant("STAFFER", 2025, "Lobbyist", clients=[("CLIENT A", 1.0)]),
+        _registrant("HIRED FIRM", 2025, clients=[("CLIENT A", 1.0)],
+                    clientLobbyists={"CLIENT A": ["Agent One", "Agent Two", "Staffer"]}),
+        _registrant("HIRED FIRM", 2023, clients=[("CLIENT A", 1.0)],
+                    clientLobbyists={"CLIENT A": ["Agent One"]}),
+    ]
+    registrations = [_registration("STAFFER", 2025, employers=[{"name": "Client A", "nameNorm": "CLIENT A"}])]
+    filings = [_filing("STAFFER", "CLIENT A"), _filing("HIRED FIRM", "CLIENT A")]
+    _, _, clients = _run_stats(registrants=registrants, registrations=registrations, filings=filings)
+    court = clients["CLIENT A"]["courts"]["194"]
+    # STAFFER is in-house; the firm's agents are hired, and STAFFER isn't counted twice.
+    assert (court["individuals"], court["firmAgents"]) == (3, 2)
+    assert clients["CLIENT A"]["courts"]["193"]["individuals"] == 1
+    assert clients["CLIENT A"]["individuals"] == 3
+
+
+def test_compute_stats_client_registration_dates_and_link():
+    """G6: first registered is the earliest employment start; the link and
+    last year come from the latest registration listing the client, never
+    from disclosure years."""
+    registrations = [
+        _registration("FIRM", 2012, "Employer", sourceUrls=["https://sos.test/2012"],
+                      clients=[{"name": "Client A", "nameNorm": "CLIENT A", "startDate": "2012-03-01"}]),
+        _registration("FIRM", 2024, "Employer", sourceUrls=["https://sos.test/2024"],
+                      clients=[{"name": "Client A", "nameNorm": "CLIENT A", "startDate": "2024-01-01"}]),
+    ]
+    registrants = [_registrant("FIRM", 2026, clients=[("CLIENT A", 1.0), ("CLIENT B", 1.0)])]
+    _, _, clients = _run_stats(registrants=registrants, registrations=registrations)
+    a = clients["CLIENT A"]
+    assert (a["firstRegistered"], a["lastRegisteredYear"], a["registrationUrl"]) == (
+        "2012-03-01", 2024, "https://sos.test/2024")
+    b = clients["CLIENT B"]
+    assert (b["firstRegistered"], b["lastRegisteredYear"], b["registrationUrl"]) == (None, None, None)
+
+
+def test_registrant_doc_lists_agents_per_client():
+    detail = DisclosureDetail(compensation=[Compensation("The Client, Inc.", 1.0)], bills=[],
+                              period_start="2025-01-01", client_lobbyists={
+                                  "The Client, Inc.": ["Riley Okafor"], "THE CLIENT": ["Morgan Tate"]})
+    _, data = registrant_doc(_meta(year=2025), detail)
+    assert data["clientLobbyists"] == {normalize_entity_name("The Client, Inc."): ["Riley Okafor", "Morgan Tate"]}
+
+
+
+def test_compute_stats_staff_registered_with_their_organization_as_client_are_in_house():
+    """Staff of an organization that doesn't register as an entity register
+    as individuals with no employer, listing the organization as their one
+    client (e.g. the Greater Boston Chamber of Commerce's lobbyists). That
+    holds before 2019 too. A lobbyist registered under a firm lists no
+    clients and stays hired."""
+    chamber = [{"name": "The Chamber", "nameNorm": "CHAMBER"}]
+    registrations = [
+        _registration("STAFFER", 2025, clients=chamber),
+        _registration("OLD STAFFER", 2015, clients=chamber),
+        _registration("FIRM AGENT", 2025, employers=[{"name": "Firm", "nameNorm": "FIRM"}]),
+    ]
+    filings = [_filing("STAFFER", "CHAMBER"), _filing("FIRM AGENT", "CHAMBER"),
+               _filing("OLD STAFFER", "CHAMBER", court=189, year=2015)]
+    registrants = [_registrant("STAFFER", 2025, "Lobbyist", clients=[("CHAMBER", 1.0)])]
+    _, doc_mocks, clients = _run_stats(registrants=registrants, registrations=registrations,
+                                       filings=filings)
+    assert clients["CHAMBER"]["courts"]["194"]["inHouseCount"] == 1
+    assert clients["CHAMBER"]["courts"]["189"]["inHouseCount"] == 1
+    assert doc_mocks["inHouseFilers_194"].set.call_args[0][0] == {"CHAMBER": ["STAFFER"]}
+    assert doc_mocks["inHouseFilers_189"].set.call_args[0][0] == {"CHAMBER": ["OLD STAFFER"]}
