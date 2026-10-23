@@ -123,7 +123,10 @@ function BillLobbyingPage() {
               <span style={{ fontSize: 18, fontWeight: 700 }}>{billId}</span>
               {court > 0 && <span>{courtName(court)}</span>}
             </div>
-            <h1 style={{ maxWidth: 900 }}>{title ?? billId}</h1>
+            {/* The page's heading, at h3 size: a bill title can run long. */}
+            <h1 className="h3" style={{ maxWidth: 900 }}>
+              {title ?? billId}
+            </h1>
             <div style={linksStyle}>
               {mapleHref && <a href={mapleHref}>{t("misc.viewOnMaple")}</a>}
               <a href={SOS_URL} target="_blank" rel="noreferrer">

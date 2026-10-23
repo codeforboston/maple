@@ -31,15 +31,12 @@ import {
   SessionSelect,
   type SessionFilter
 } from "components/lobbying/SessionSelect"
-import { naturalCompare } from "components/lobbying/activity"
 import { matchesSearch } from "components/lobbying/searchMatch"
 import { courtName, courtShortLabel } from "components/lobbying/sessions"
 import { SortTh, thStyle, type SortDir } from "components/lobbying/SortTh"
 
 const ALL_COURTS = [194, 193, 192, 191, 190, 189, 188, 187, 186, 185, 184]
 const PAGE_SIZE = 50
-
-type BillSortKey = "bill" | "orgs"
 
 // ── Main table component ──────────────────────────────────────────────────────
 
@@ -54,17 +51,7 @@ function LobbyingBillsTable({ initialCourt, initialRows }: BillsPageProps) {
   const router = useRouter()
   const [session, setSession] = useState<SessionFilter>(initialCourt)
   const [search, setSearch] = useState("")
-  const [sortKey, setSortKey] = useState<BillSortKey>("orgs")
   const [sortDir, setSortDir] = useState<SortDir>("desc")
-
-  function handleSort(key: BillSortKey) {
-    if (key === sortKey) {
-      setSortDir(d => (d === "asc" ? "desc" : "asc"))
-    } else {
-      setSortKey(key)
-      setSortDir(key === "bill" ? "asc" : "desc")
-    }
-  }
 
   // The Overview links here with ?session=<court> or ?session=all.
   useEffect(() => {
@@ -98,13 +85,8 @@ function LobbyingBillsTable({ initialCourt, initialRows }: BillsPageProps) {
     const mul = sortDir === "asc" ? 1 : -1
     return allRows
       .filter(b => matchesSearch(`${b.billId} ${b.title}`, search))
-      .sort((a, b) =>
-        sortKey === "bill"
-          ? // H2 before H10; the same number in two sessions, newest first.
-            mul * naturalCompare(a.billId, b.billId) || b.court - a.court
-          : mul * (a.clients - b.clients)
-      )
-  }, [allRows, search, sortKey, sortDir])
+      .sort((a, b) => mul * (a.clients - b.clients))
+  }, [allRows, search, sortDir])
 
   const { page, setPage, pageItems, totalPages, totalItems } = usePagination(
     sorted,
@@ -113,7 +95,7 @@ function LobbyingBillsTable({ initialCourt, initialRows }: BillsPageProps) {
 
   useEffect(() => {
     setPage(1)
-  }, [session, search, sortKey, sortDir, setPage])
+  }, [session, search, sortDir, setPage])
 
   const sessionLabel =
     session === "all" ? t("filters.allSessionsSince") : courtName(session)
@@ -182,20 +164,16 @@ function LobbyingBillsTable({ initialCourt, initialRows }: BillsPageProps) {
                 </colgroup>
                 <thead>
                   <tr>
-                    <SortTh
-                      label={t("fields.bill")}
-                      sortKey="bill"
-                      current={sortKey}
-                      dir={sortDir}
-                      onSort={handleSort}
-                    />
+                    <th style={thStyle}>{t("fields.bill")}</th>
                     <th style={thStyle}>{t("billList.title")}</th>
                     <SortTh
                       label={t("activity.organizations")}
                       sortKey="orgs"
-                      current={sortKey}
+                      current="orgs"
                       dir={sortDir}
-                      onSort={handleSort}
+                      onSort={() =>
+                        setSortDir(d => (d === "asc" ? "desc" : "asc"))
+                      }
                     />
                     <th style={thStyle}>
                       {t("overview.positionsReported")}{" "}

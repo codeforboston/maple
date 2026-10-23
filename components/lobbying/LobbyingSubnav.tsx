@@ -2,7 +2,6 @@ import React from "react"
 import { useRouter } from "next/router"
 import { useTranslation } from "next-i18next"
 import { Container } from "components/bootstrap"
-import { Banner } from "components/shared/StyledSharedComponents"
 import { MAPLE_COLORS } from "./chartTheme"
 
 export function LobbyingSubnav() {
@@ -18,13 +17,19 @@ export function LobbyingSubnav() {
 
   return (
     <>
-      <Banner>
+      {/* One running sentence, as on the redesign canvas. The shared Banner
+          is a flex row, which wraps the text and the link as separate
+          pieces. */}
+      <p className="text-center text-white bg-warning p-3 m-0 fs-5 fw-normal lh-sm">
         {t("banner.betaLine1")}{" "}
-        <a href="mailto:info@mapletestimony.org" style={{ color: "#fff" }}>
+        <a
+          href="mailto:info@mapletestimony.org"
+          style={{ color: "inherit", textDecoration: "underline" }}
+        >
           info@mapletestimony.org
         </a>{" "}
         {t("banner.betaLine2")}
-      </Banner>
+      </p>
       <div style={barStyle}>
         <Container>
           <div style={innerStyle}>
