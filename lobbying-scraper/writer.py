@@ -511,6 +511,11 @@ def compute_stats(db: firestore.Client) -> None:
         cs["courts"] = {}
         all_in_house: set[str] = set()
         all_individuals: set[str] = set()
+        # Every lobbyist or entity on the client's disclosures, filings or
+        # agent blocks is either its own staff or hired, counted from one set
+        # so the two always add up (for sessions without agent counts).
+        all_in_house_units: set[str] = set()
+        all_hired_units: set[str] = set()
         for gc in (
             set(filings_by_court) | set(entities_by_court) | set(comp_by_court)
             | set(bills_by_court) | set(filers_by_court)
@@ -522,11 +527,22 @@ def compute_stats(db: firestore.Client) -> None:
             agents = agents_by_court.get(gc, {})
             in_house_people: set[str] = set()
             hired_people: set[str] = set()
+            in_house_units: set[str] = set()
+            # Hired firms and hired individual lobbyists; an individual counts
+            # as a one-person firm (and as its own agent in firmAgents).
+            hired_units: set[str] = set()
             for en in set(entities_by_court.get(gc, ())) | filers_by_court.get(gc, set()) | set(agents):
                 people = set(agents.get(en, ()))
                 if firm_summaries.get(en, {}).get("regType") == "Lobbyist":
                     people.add(en)
-                (in_house_people if is_in_house(en, norm, gc) else hired_people).update(people)
+                if is_in_house(en, norm, gc):
+                    in_house_people.update(people)
+                    in_house_units.add(en)
+                else:
+                    hired_people.update(people)
+                    hired_units.add(en)
+            all_in_house_units |= in_house_units
+            all_hired_units |= hired_units
             firm_agents = hired_people - in_house_people
             individuals = in_house_people | firm_agents
             all_individuals |= individuals
@@ -538,9 +554,14 @@ def compute_stats(db: firestore.Client) -> None:
                 "inHouseCount": len(in_house_filers),
                 "individuals": len(individuals),
                 "firmAgents": len(firm_agents),
+                "inHouseLobbyists": len(in_house_units),
+                "hiredFirms": len(hired_units),
             }
         cs["inHouseCount"] = len(all_in_house)
         cs["individuals"] = len(all_individuals)
+        cs["inHouseLobbyists"] = len(all_in_house_units)
+        # In-house in any session wins, so no one is counted on both sides.
+        cs["hiredFirms"] = len(all_hired_units - all_in_house_units)
         cs["firstRegistered"] = client_first_start.get(norm)
         last_year, last_url = client_latest_registration.get(norm, (None, ""))
         cs["lastRegisteredYear"] = last_year
