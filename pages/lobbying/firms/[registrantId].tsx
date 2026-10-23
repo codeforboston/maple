@@ -20,6 +20,7 @@ import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
 import { SosSourceLink } from "components/lobbying/SosSourceLink"
 import { regTypeLabel } from "components/lobbying/regTypeLabel"
+import { LobbyingLoadError } from "components/lobbying/LobbyingPanel"
 
 const PAGE_SIZE = 25
 
@@ -219,11 +220,7 @@ function FirmDetail() {
         {loading && (
           <p style={{ color: MAPLE_COLORS.textMuted }}>{t("loading")}</p>
         )}
-        {filStatus === "error" && (
-          <p style={{ color: MAPLE_COLORS.danger }}>
-            Error: {filError?.message}
-          </p>
-        )}
+        {filStatus === "error" && <LobbyingLoadError error={filError} />}
 
         {!loading && (
           <Row className="mt-2">

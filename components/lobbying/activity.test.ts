@@ -1,5 +1,6 @@
 import {
   ActivityFiling,
+  filterActivity,
   groupActivity,
   normalizePosition,
   orgPositionBreakdown,
@@ -15,6 +16,7 @@ function filing(over: Partial<ActivityFiling>): ActivityFiling {
     clientName: "Widget Co",
     clientNameNorm: "widget co",
     year: 2025,
+    generalCourt: 194,
     billId: "H100",
     activityTitle: "An Act relative to widgets",
     position: "Support",
@@ -202,6 +204,18 @@ describe("groupActivity", () => {
     ])
   })
 
+  it("keeps a bill number reused in two sessions apart, newest first", () => {
+    const filings = [
+      filing({ billId: "H1", generalCourt: 193, year: 2023 }),
+      filing({ billId: "H1", generalCourt: 194 })
+    ]
+    const { rows } = groupActivity(filings, "bill", {}, {})
+    expect(rows.map(r => [r.key, r.label, r.court])).toEqual([
+      ["194/H1", "H1", 194],
+      ["193/H1", "H1", 193]
+    ])
+  })
+
   it("lists in-house filers before firms", () => {
     const filings = [
       filing({ entityName: "A Firm", entityNameNorm: "a firm" }),
@@ -250,5 +264,34 @@ describe("orgPositionBreakdown", () => {
       multiple: 1,
       none: 1
     })
+  })
+})
+
+describe("filterActivity", () => {
+  const { rows, periods } = groupActivity(
+    [
+      filing({ clientName: "Widget Co", clientNameNorm: "widget co" }),
+      filing({
+        clientName: "Gadget Inc",
+        clientNameNorm: "gadget inc",
+        position: "Oppose"
+      })
+    ],
+    "client",
+    {},
+    {}
+  )
+  const labels = (position: Parameters<typeof filterActivity>[1], q: string) =>
+    filterActivity({ rows, periods }, position, q).rows.map(r => r.label)
+
+  it("keeps rows whose latest positions include the choice", () => {
+    expect(labels("oppose", "")).toEqual(["Gadget Inc"])
+    expect(labels("all", "")).toEqual(["Gadget Inc", "Widget Co"])
+  })
+
+  it("matches the label and, for bills, the title", () => {
+    expect(labels("all", "widget")).toEqual(["Widget Co"])
+    const bills = groupActivity([filing({})], "bill", {}, {})
+    expect(filterActivity(bills, "all", "widgets").rows).toHaveLength(1)
   })
 })

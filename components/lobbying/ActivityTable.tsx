@@ -1,12 +1,19 @@
-import React, { useId, useState } from "react"
+import React, { useEffect, useId, useMemo, useState } from "react"
 import { useTranslation, type TFunction } from "next-i18next"
-import type { Activity, ActivityFiler, ActivityRow } from "./activity"
+import {
+  naturalCompare,
+  type Activity,
+  type ActivityFiler,
+  type ActivityRow
+} from "./activity"
 import { MAPLE_COLORS } from "./chartTheme"
 import { LobbyingPaginationBar } from "./LobbyingPaginationBar"
 import { LobbyingPositionChip } from "./LobbyingPositionChip"
-import { thStyle } from "./SortTh"
+import { SortTh, thStyle, type SortDir } from "./SortTh"
 import { SosSourceLink } from "./SosSourceLink"
 import { usePagination } from "./usePagination"
+
+type SortKey = "label" | "filings"
 
 // Name in-house lobbyists in the "who lobbied" line when there are at most
 // this many.
@@ -21,20 +28,56 @@ export function ActivityTable({
   by,
   data,
   rowHref,
-  pageSize = 25
+  pageSize = 25,
+  itemLabel
 }: {
   by: "client" | "bill"
   data: Activity
   rowHref?: (row: ActivityRow) => string
   pageSize?: number
+  // Names the rows in the pagination count ("1–25 of 105 organizations").
+  itemLabel?: string
 }) {
   const { t } = useTranslation("lobbying")
   const idPrefix = useId()
   const [open, setOpen] = useState<Set<string>>(new Set())
+  const [sortKey, setSortKey] = useState<SortKey>("label")
+  const [sortDir, setSortDir] = useState<SortDir>("asc")
+
+  const rows = useMemo(() => {
+    const mul = sortDir === "asc" ? 1 : -1
+    const byLabel = (a: ActivityRow, b: ActivityRow) =>
+      naturalCompare(a.label, b.label)
+    // A bill number reused in several sessions: newest first.
+    const byCourt = (a: ActivityRow, b: ActivityRow) =>
+      (b.court ?? 0) - (a.court ?? 0)
+    return [...data.rows].sort((a, b) =>
+      sortKey === "filings"
+        ? mul * (a.filings - b.filings) || byLabel(a, b) || byCourt(a, b)
+        : mul * byLabel(a, b) || byCourt(a, b)
+    )
+  }, [data.rows, sortKey, sortDir])
+
   const { page, setPage, pageItems, totalPages, totalItems } = usePagination(
-    data.rows,
+    rows,
     pageSize
   )
+
+  function handleSort(key: SortKey) {
+    if (key === sortKey) {
+      setSortDir(d => (d === "asc" ? "desc" : "asc"))
+    } else {
+      setSortKey(key)
+      setSortDir(key === "label" ? "asc" : "desc")
+    }
+    setPage(1)
+  }
+
+  // New rows (a filter or session change) start over on page 1, collapsed.
+  useEffect(() => {
+    setPage(1)
+    setOpen(prev => (prev.size ? new Set() : prev))
+  }, [data, setPage])
 
   const toggle = (key: string) =>
     setOpen(prev => {
@@ -43,6 +86,15 @@ export function ActivityTable({
       else next.add(key)
       return next
     })
+
+  // A click anywhere on a row toggles it, as the toggle button does for the
+  // keyboard. Links and the button keep their own click, and a drag that
+  // selects text doesn't toggle.
+  const onRowClick = (e: React.MouseEvent, key: string) => {
+    if ((e.target as Element).closest("a, button")) return
+    if (window.getSelection()?.toString()) return
+    toggle(key)
+  }
 
   const whoText = ({ who }: ActivityRow) => {
     const parts: string[] = []
@@ -73,16 +125,41 @@ export function ActivityTable({
         }}
       >
         <table
-          style={{ width: "100%", minWidth: 720, borderCollapse: "collapse" }}
+          style={{
+            width: "100%",
+            minWidth: 720,
+            tableLayout: "fixed",
+            borderCollapse: "collapse"
+          }}
         >
+          {/* Fixed widths, so filtering to other rows doesn't resize the
+              columns; the row label and "who lobbied" share the rest. */}
+          <colgroup>
+            <col />
+            <col style={{ width: 180 }} />
+            <col />
+            <col style={{ width: 100 }} />
+          </colgroup>
           <thead>
             <tr>
-              <th style={thStyle}>
-                {t(by === "bill" ? "fields.bill" : "activity.column.client")}
-              </th>
+              <SortTh
+                label={t(
+                  by === "bill" ? "fields.bill" : "activity.column.client"
+                )}
+                sortKey="label"
+                current={sortKey}
+                dir={sortDir}
+                onSort={handleSort}
+              />
               <th style={thStyle}>{t("activity.column.latestPosition")}</th>
               <th style={thStyle}>{t("activity.column.whoLobbied")}</th>
-              <th style={thStyle}>{t("fields.filings")}</th>
+              <SortTh
+                label={t("fields.filings")}
+                sortKey="filings"
+                current={sortKey}
+                dir={sortDir}
+                onSort={handleSort}
+              />
             </tr>
           </thead>
           <tbody>
@@ -93,7 +170,9 @@ export function ActivityTable({
               return (
                 <React.Fragment key={row.key}>
                   <tr
+                    onClick={e => onRowClick(e, row.key)}
                     style={{
+                      cursor: "pointer",
                       background: isOpen
                         ? MAPLE_COLORS.blueSubtleBg
                         : MAPLE_COLORS.surfaceBase
@@ -166,7 +245,13 @@ export function ActivityTable({
                     <td style={{ ...cellStyle, fontSize: 13 }}>
                       {whoText(row)}
                     </td>
-                    <td style={{ ...cellStyle, fontSize: 13 }}>
+                    <td
+                      style={{
+                        ...cellStyle,
+                        fontSize: 13,
+                        whiteSpace: "nowrap"
+                      }}
+                    >
                       {t("activity.filings", { count: row.filings })}
                     </td>
                   </tr>
@@ -195,6 +280,7 @@ export function ActivityTable({
         totalItems={totalItems}
         pageSize={pageSize}
         onPage={setPage}
+        itemLabel={itemLabel}
       />
     </div>
   )

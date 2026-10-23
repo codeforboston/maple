@@ -67,32 +67,10 @@ export function PositionBar({
         ))}
       </div>
       {legend && (
-        <ul
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "0.25rem 1.25rem",
-            listStyle: "none",
-            margin: "0.5rem 0 0",
-            padding: 0,
-            fontSize: 13,
-            color: MAPLE_COLORS.textBody
-          }}
-        >
+        <ul style={{ ...legendStyle, marginTop: "0.5rem" }}>
           {present.map(s => (
-            <li
-              key={s}
-              style={{ display: "flex", alignItems: "center", gap: 6 }}
-            >
-              <span
-                aria-hidden="true"
-                style={{
-                  width: 10,
-                  height: 10,
-                  borderRadius: 2,
-                  background: POSITION_COLORS[s]
-                }}
-              />
+            <li key={s} style={legendItemStyle}>
+              <LegendSwatch background={POSITION_COLORS[s]} />
               {segmentText(s)}
             </li>
           ))}
@@ -100,4 +78,54 @@ export function PositionBar({
       )}
     </div>
   )
+}
+
+/** The bar's colors, named, for a list of bars that show no legend each. */
+export function PositionLegend({
+  multiple = false,
+  note
+}: {
+  multiple?: boolean
+  note?: string
+}) {
+  const { t } = useTranslation("lobbying")
+  const segments = multiple ? SEGMENTS : SEGMENTS.filter(s => s !== "multiple")
+  return (
+    <ul style={legendStyle}>
+      {segments.map(s => (
+        <li key={s} style={legendItemStyle}>
+          <LegendSwatch background={POSITION_COLORS[s]} />
+          {t(`position.${s}`)}
+        </li>
+      ))}
+      {note && <li style={{ color: MAPLE_COLORS.graySubtleText }}>{note}</li>}
+    </ul>
+  )
+}
+
+/** A legend entry's color square. */
+export function LegendSwatch({ background }: { background: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      style={{ width: 10, height: 10, borderRadius: 2, background }}
+    />
+  )
+}
+
+export const legendStyle: React.CSSProperties = {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "0.25rem 1.25rem",
+  listStyle: "none",
+  margin: 0,
+  padding: 0,
+  fontSize: 13,
+  color: MAPLE_COLORS.textBody
+}
+
+export const legendItemStyle: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  gap: 6
 }

@@ -1,6 +1,6 @@
 import React from "react"
 import { useTranslation } from "next-i18next"
-import { normalizePosition, type Position } from "./activity"
+import type { Position } from "./activity"
 
 const CHIP_STYLES: Record<Position, React.CSSProperties> = {
   support: {
@@ -26,7 +26,8 @@ const CHIP_STYLES: Record<Position, React.CSSProperties> = {
 }
 
 interface LobbyingPositionChipProps {
-  position: string
+  // Normalized with normalizePosition.
+  position: Position
   className?: string
   title?: string
 }
@@ -37,7 +38,6 @@ export const LobbyingPositionChip: React.FC<LobbyingPositionChipProps> = ({
   title
 }) => {
   const { t } = useTranslation("lobbying")
-  const key = normalizePosition(position)
 
   return (
     <span
@@ -45,10 +45,10 @@ export const LobbyingPositionChip: React.FC<LobbyingPositionChipProps> = ({
       title={title}
       style={{
         ...chipBaseStyle,
-        ...CHIP_STYLES[key]
+        ...CHIP_STYLES[position]
       }}
     >
-      {t(`position.${key}`)}
+      {t(`position.${position}`)}
     </span>
   )
 }

@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo, useRef, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "next-i18next"
+import { useRouter } from "next/router"
 import { Col, Container, Row } from "components/bootstrap"
 import { createPage } from "components/page"
 import {
@@ -9,177 +10,36 @@ import {
   type BillRow
 } from "components/db/lobbying"
 import { createLobbyingListProps } from "components/lobbying/listPageProps"
-import { MAPLE_COLORS, POSITION_COLORS } from "components/lobbying/chartTheme"
+import { formatCount, MAPLE_COLORS } from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
+import {
+  FilterLabel,
+  LobbyingFilterBar,
+  LobbyingLoadError,
+  LobbyingPanel,
+  listTableStyle,
+  listTdStyle,
+  searchStyle,
+  sessionSelectStyle,
+  subTextStyle
+} from "components/lobbying/LobbyingPanel"
 import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
-import styles from "components/lobbying/lobbying.module.css"
-import { courtYears } from "components/lobbying/sessions"
+import { PositionBar, PositionLegend } from "components/lobbying/PositionBar"
+import {
+  SessionSelect,
+  type SessionFilter
+} from "components/lobbying/SessionSelect"
+import { naturalCompare } from "components/lobbying/activity"
+import { matchesSearch } from "components/lobbying/searchMatch"
+import { courtName, courtShortLabel } from "components/lobbying/sessions"
 import { SortTh, thStyle, type SortDir } from "components/lobbying/SortTh"
 
 const ALL_COURTS = [194, 193, 192, 191, 190, 189, 188, 187, 186, 185, 184]
 const PAGE_SIZE = 50
 
-type BillSortKey =
-  | "id"
-  | "filings"
-  | "support"
-  | "oppose"
-  | "neutral"
-  | "clients"
-  | "lobbyists"
-  | "pct_support"
-  | "pct_oppose"
-  | "pct_neutral"
-
-const PCT_CYCLE = ["pct_support", "pct_oppose", "pct_neutral"] as const
-type PctSortKey = (typeof PCT_CYCLE)[number]
-
-function isPctKey(k: BillSortKey): k is PctSortKey {
-  return (PCT_CYCLE as readonly string[]).includes(k)
-}
-
-const PCT_LABEL: Record<PctSortKey, string> = {
-  pct_support: "% Support",
-  pct_oppose: "% Oppose",
-  pct_neutral: "% Neutral"
-}
-
-// ── Session multiselect ───────────────────────────────────────────────────────
-
-function CourtMultiSelect({
-  selected,
-  onChange
-}: {
-  selected: number[]
-  onChange: (courts: number[]) => void
-}) {
-  const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
-
-  const allSelected = selected.length === ALL_COURTS.length
-  const label = allSelected
-    ? "All sessions"
-    : selected.length === 1
-    ? `Session ${selected[0]} (${courtYears(selected[0])})`
-    : `${selected.length} sessions`
-
-  function toggleAll() {
-    onChange(allSelected ? [ALL_COURTS[0]] : [...ALL_COURTS])
-  }
-
-  function toggleCourt(court: number) {
-    if (selected.includes(court)) {
-      const next = selected.filter(c => c !== court)
-      onChange(next.length ? next : [court])
-    } else {
-      onChange([...selected, court])
-    }
-  }
-
-  useEffect(() => {
-    if (!open) return
-    function onOutside(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
-    }
-    document.addEventListener("mousedown", onOutside)
-    return () => document.removeEventListener("mousedown", onOutside)
-  }, [open])
-
-  return (
-    <div ref={ref} style={{ position: "relative" }}>
-      <button
-        onClick={() => setOpen(o => !o)}
-        style={{
-          ...selectStyle,
-          display: "flex",
-          alignItems: "center",
-          gap: 6
-        }}
-      >
-        {label}
-        <span style={{ fontSize: 10, color: MAPLE_COLORS.textMuted }}>▾</span>
-      </button>
-      {open && (
-        <div style={dropdownStyle}>
-          <label style={checkRowStyle}>
-            <input
-              type="checkbox"
-              checked={allSelected}
-              onChange={toggleAll}
-              style={{ marginRight: 6 }}
-            />
-            <strong>All sessions</strong>
-          </label>
-          <div
-            style={{
-              borderTop: `1px solid ${MAPLE_COLORS.borderSubtle}`,
-              margin: "4px 0"
-            }}
-          />
-          {ALL_COURTS.map(c => (
-            <label key={c} style={checkRowStyle}>
-              <input
-                type="checkbox"
-                checked={selected.includes(c)}
-                onChange={() => toggleCourt(c)}
-                style={{ marginRight: 6 }}
-              />
-              <span style={{ fontVariantNumeric: "tabular-nums" }}>
-                Session {c}
-              </span>
-              <span style={{ color: MAPLE_COLORS.textMuted, marginLeft: 4 }}>
-                {courtYears(c)}
-              </span>
-            </label>
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
-
-// ── Position mini-bar ─────────────────────────────────────────────────────────
-
-function PositionMiniBar({ row }: { row: BillRow }) {
-  if (row.total === 0) return null
-  const pct = (n: number) => `${((n / row.total) * 100).toFixed(1)}%`
-  return (
-    <div
-      style={{
-        display: "flex",
-        height: 6,
-        borderRadius: 3,
-        overflow: "hidden",
-        width: 80,
-        background: MAPLE_COLORS.graySubtleBorder
-      }}
-    >
-      {row.support > 0 && (
-        <div
-          style={{
-            width: pct(row.support),
-            background: POSITION_COLORS.support
-          }}
-        />
-      )}
-      {row.oppose > 0 && (
-        <div
-          style={{ width: pct(row.oppose), background: POSITION_COLORS.oppose }}
-        />
-      )}
-      {row.neutral > 0 && (
-        <div
-          style={{
-            width: pct(row.neutral),
-            background: POSITION_COLORS.neutral
-          }}
-        />
-      )}
-    </div>
-  )
-}
+type BillSortKey = "bill" | "orgs"
 
 // ── Main table component ──────────────────────────────────────────────────────
 
@@ -191,12 +51,10 @@ type BillsPageProps = {
 
 function LobbyingBillsTable({ initialCourt, initialRows }: BillsPageProps) {
   const { t } = useTranslation("lobbying")
-  const [selectedCourts, setSelectedCourts] = useState<number[]>([initialCourt])
-  const [posFilter, setPosFilter] = useState<
-    "all" | "support" | "oppose" | "neutral"
-  >("all")
+  const router = useRouter()
+  const [session, setSession] = useState<SessionFilter>(initialCourt)
   const [search, setSearch] = useState("")
-  const [sortKey, setSortKey] = useState<BillSortKey>("filings")
+  const [sortKey, setSortKey] = useState<BillSortKey>("orgs")
   const [sortDir, setSortDir] = useState<SortDir>("desc")
 
   function handleSort(key: BillSortKey) {
@@ -204,17 +62,23 @@ function LobbyingBillsTable({ initialCourt, initialRows }: BillsPageProps) {
       setSortDir(d => (d === "asc" ? "desc" : "asc"))
     } else {
       setSortKey(key)
-      setSortDir(key === "id" ? "asc" : "desc")
+      setSortDir(key === "bill" ? "asc" : "desc")
     }
   }
 
-  function handlePositionsSort() {
-    const idx = PCT_CYCLE.indexOf(sortKey as PctSortKey)
-    setSortKey(PCT_CYCLE[(idx + 1) % PCT_CYCLE.length])
-    setSortDir("desc")
-  }
+  // The Overview links here with ?session=<court> or ?session=all.
+  useEffect(() => {
+    if (router.query.session === "all") return setSession("all")
+    const requested = Number(router.query.session)
+    if (ALL_COURTS.includes(requested)) setSession(requested)
+  }, [router.query.session])
 
-  const otherCourts = selectedCourts.filter(c => c !== initialCourt)
+  const otherCourts =
+    session === "all"
+      ? ALL_COURTS.filter(c => c !== initialCourt)
+      : session === initialCourt
+      ? []
+      : [session]
   const { result: otherRows, status, error } = useLobbyingBillRows(otherCourts)
   const loadingOther =
     otherCourts.length > 0 &&
@@ -222,71 +86,25 @@ function LobbyingBillsTable({ initialCourt, initialRows }: BillsPageProps) {
   const otherFailed = otherCourts.length > 0 && status === "error"
   const allRows = useMemo(
     () => [
-      ...(selectedCourts.includes(initialCourt) ? initialRows : []),
+      ...(session === "all" || session === initialCourt ? initialRows : []),
       ...(otherCourts.length > 0 ? otherRows ?? [] : [])
     ],
-    // otherCourts is derived from selectedCourts
+    // otherCourts is derived from session
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [selectedCourts, initialCourt, initialRows, otherRows]
+    [session, initialCourt, initialRows, otherRows]
   )
-
-  const multiCourt = selectedCourts.length > 1
-
-  const filtered = useMemo(() => {
-    if (!allRows) return []
-    return allRows.filter(b => {
-      if (posFilter !== "all" && b[posFilter] === 0) return false
-      if (search) {
-        const q = search.toLowerCase()
-        if (
-          !b.billId.toLowerCase().includes(q) &&
-          !b.title.toLowerCase().includes(q)
-        )
-          return false
-      }
-      return true
-    })
-  }, [allRows, posFilter, search])
 
   const sorted = useMemo(() => {
     const mul = sortDir === "asc" ? 1 : -1
-    return [...filtered].sort((a, b) => {
-      switch (sortKey) {
-        case "id":
-          return mul * a.billId.localeCompare(b.billId)
-        case "support":
-          return mul * (a.support - b.support)
-        case "oppose":
-          return mul * (a.oppose - b.oppose)
-        case "neutral":
-          return mul * (a.neutral - b.neutral)
-        case "clients":
-          return mul * (a.clients - b.clients)
-        case "lobbyists":
-          return mul * (a.lobbyists - b.lobbyists)
-        case "pct_support":
-          return (
-            mul *
-            ((a.total ? a.support / a.total : 0) -
-              (b.total ? b.support / b.total : 0))
-          )
-        case "pct_oppose":
-          return (
-            mul *
-            ((a.total ? a.oppose / a.total : 0) -
-              (b.total ? b.oppose / b.total : 0))
-          )
-        case "pct_neutral":
-          return (
-            mul *
-            ((a.total ? a.neutral / a.total : 0) -
-              (b.total ? b.neutral / b.total : 0))
-          )
-        default:
-          return mul * (a.total - b.total)
-      }
-    })
-  }, [filtered, sortKey, sortDir])
+    return allRows
+      .filter(b => matchesSearch(`${b.billId} ${b.title}`, search))
+      .sort((a, b) =>
+        sortKey === "bill"
+          ? // H2 before H10; the same number in two sessions, newest first.
+            mul * naturalCompare(a.billId, b.billId) || b.court - a.court
+          : mul * (a.clients - b.clients)
+      )
+  }, [allRows, search, sortKey, sortDir])
 
   const { page, setPage, pageItems, totalPages, totalItems } = usePagination(
     sorted,
@@ -295,261 +113,160 @@ function LobbyingBillsTable({ initialCourt, initialRows }: BillsPageProps) {
 
   useEffect(() => {
     setPage(1)
-  }, [selectedCourts, posFilter, search, sortKey, sortDir, setPage])
+  }, [session, search, sortKey, sortDir, setPage])
+
+  const sessionLabel =
+    session === "all" ? t("filters.allSessionsSince") : courtName(session)
 
   return (
     <>
-      <div style={filterRowStyle}>
-        <CourtMultiSelect
-          selected={selectedCourts}
-          onChange={setSelectedCourts}
+      <LobbyingFilterBar boxed>
+        <FilterLabel htmlFor="bills-session">
+          {t("filters.session")}
+        </FilterLabel>
+        <SessionSelect
+          id="bills-session"
+          sessions={ALL_COURTS}
+          value={session}
+          onChange={setSession}
+          current={initialCourt}
+          allLabel={t("filters.allSessionsSince")}
+          style={sessionSelectStyle}
         />
-
-        <select
-          value={posFilter}
-          onChange={e => setPosFilter(e.target.value as typeof posFilter)}
-          style={selectStyle}
-          aria-label={t("filters.position")}
-        >
-          <option value="all">{t("filters.allPositions")}</option>
-          <option value="support">{t("position.support")}</option>
-          <option value="oppose">{t("position.oppose")}</option>
-          <option value="neutral">{t("position.neutral")}</option>
-        </select>
-
         <input
           type="search"
-          placeholder="Search bill ID or title…"
+          placeholder={`${t("activity.billSearch")}…`}
+          aria-label={t("activity.billSearch")}
           value={search}
           onChange={e => setSearch(e.target.value)}
           style={searchStyle}
         />
-      </div>
+      </LobbyingFilterBar>
 
-      {loadingOther ? (
-        <p style={{ color: MAPLE_COLORS.textMuted, padding: "2rem 0" }}>
-          {t("loading")}
-        </p>
-      ) : otherFailed ? (
-        <p style={{ color: MAPLE_COLORS.danger, padding: "1rem 0" }}>
-          Error: {error?.message}
-        </p>
-      ) : sorted.length === 0 ? (
-        <p style={{ color: MAPLE_COLORS.textMuted, padding: "2rem 0" }}>
-          {t("noData")}
-        </p>
-      ) : (
-        <>
-          <p
-            style={{
-              color: MAPLE_COLORS.textMuted,
-              fontSize: 13,
-              marginBottom: "0.5rem"
-            }}
-          >
-            {totalItems} {t("sections.bills").toLowerCase()}
+      <LobbyingPanel
+        title={t("billList.panelTitle", { session: sessionLabel })}
+        aside={
+          !loadingOther && (
+            <>
+              <strong>
+                {t("billList.count", {
+                  count: totalItems,
+                  n: formatCount(totalItems)
+                })}
+              </strong>{" "}
+              · {t("billList.sortHint")}
+            </>
+          )
+        }
+        footer={<PositionLegend note={t("billList.positionsNote")} />}
+      >
+        {loadingOther ? (
+          <p style={{ color: MAPLE_COLORS.textMuted, margin: 0 }}>
+            {t("loading")}
           </p>
-          <div style={{ overflowX: "auto" }}>
-            <table style={tableStyle}>
-              <thead>
-                <tr style={theadStyle}>
-                  <SortTh
-                    label={t("fields.bill")}
-                    sortKey="id"
-                    current={sortKey}
-                    dir={sortDir}
-                    onSort={handleSort}
-                  />
-                  <th style={thStyle} className={styles.mobileHide}>
-                    Title
-                  </th>
-                  {multiCourt && (
-                    <th style={thStyle} className={styles.mobileHide}>
-                      {t("filters.session")}
-                    </th>
-                  )}
-                  <SortTh
-                    label={t("fields.filings")}
-                    sortKey="filings"
-                    current={sortKey}
-                    dir={sortDir}
-                    onSort={handleSort}
-                  />
-                  <SortTh
-                    label="Clients"
-                    sortKey="clients"
-                    current={sortKey}
-                    dir={sortDir}
-                    onSort={handleSort}
-                    className={styles.mobileHide}
-                  />
-                  <SortTh
-                    label="Firms"
-                    sortKey="lobbyists"
-                    current={sortKey}
-                    dir={sortDir}
-                    onSort={handleSort}
-                    className={styles.mobileHide}
-                  />
-                  <SortTh
-                    label={t("position.support")}
-                    sortKey="support"
-                    current={sortKey}
-                    dir={sortDir}
-                    onSort={handleSort}
-                    className={styles.mobileHide}
-                  />
-                  <SortTh
-                    label={t("position.oppose")}
-                    sortKey="oppose"
-                    current={sortKey}
-                    dir={sortDir}
-                    onSort={handleSort}
-                    className={styles.mobileHide}
-                  />
-                  <SortTh
-                    label={t("position.neutral")}
-                    sortKey="neutral"
-                    current={sortKey}
-                    dir={sortDir}
-                    onSort={handleSort}
-                    className={styles.mobileHide}
-                  />
-                  <th
-                    onClick={handlePositionsSort}
-                    style={{
-                      ...thStyle,
-                      cursor: "pointer",
-                      color: isPctKey(sortKey)
-                        ? MAPLE_COLORS.primary
-                        : MAPLE_COLORS.textMuted,
-                      userSelect: "none"
-                    }}
-                    title="Click to sort by % support → % oppose → % neutral"
-                  >
-                    {isPctKey(sortKey)
-                      ? PCT_LABEL[sortKey]
-                      : t("fields.positions")}
-                    {isPctKey(sortKey) && (
-                      <span style={{ fontSize: 10, marginLeft: 3 }}>
-                        {sortDir === "asc" ? "↑" : "↓"}
+        ) : otherFailed ? (
+          <LobbyingLoadError error={error} style={{ margin: 0 }} />
+        ) : sorted.length === 0 ? (
+          <p style={{ color: MAPLE_COLORS.textMuted, margin: 0 }}>
+            {t("noData")}
+          </p>
+        ) : (
+          <div>
+            <div style={{ overflowX: "auto" }}>
+              <table style={listTableStyle(760)}>
+                <colgroup>
+                  <col style={{ width: 150 }} />
+                  <col />
+                  <col style={{ width: 170 }} />
+                  <col style={{ width: 260 }} />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <SortTh
+                      label={t("fields.bill")}
+                      sortKey="bill"
+                      current={sortKey}
+                      dir={sortDir}
+                      onSort={handleSort}
+                    />
+                    <th style={thStyle}>{t("billList.title")}</th>
+                    <SortTh
+                      label={t("activity.organizations")}
+                      sortKey="orgs"
+                      current={sortKey}
+                      dir={sortDir}
+                      onSort={handleSort}
+                    />
+                    <th style={thStyle}>
+                      {t("overview.positionsReported")}{" "}
+                      <span style={{ textTransform: "none", fontWeight: 400 }}>
+                        {t("overview.hoverForCounts")}
                       </span>
-                    )}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {pageItems.map(b => {
-                  const rowKey = multiCourt
-                    ? `${b.court}-${b.billId}`
-                    : b.billId
-                  return (
-                    <tr key={rowKey} style={trStyle}>
-                      <td style={tdStyle}>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pageItems.map(b => (
+                    <tr key={`${b.court}-${b.billId}`}>
+                      <td style={listTdStyle}>
                         <a
                           href={`/lobbying/bills/${b.court}/${b.billId}`}
                           style={{
                             color: MAPLE_COLORS.primary,
-                            fontWeight: 600
+                            fontWeight: 700
                           }}
                         >
                           {b.billId}
                         </a>
+                        {session === "all" && (
+                          <div style={subTextStyle}>
+                            {courtShortLabel(b.court)}
+                          </div>
+                        )}
                       </td>
                       <td
-                        style={{ ...tdStyle, maxWidth: 280 }}
-                        className={styles.mobileHide}
-                        title={b.title || undefined}
+                        style={{
+                          ...listTdStyle,
+                          overflowWrap: "anywhere",
+                          lineHeight: 1.4
+                        }}
                       >
-                        {b.title ? (
-                          <span
-                            style={{
-                              display: "block",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                              fontSize: 12,
-                              color: MAPLE_COLORS.textMuted
-                            }}
-                          >
-                            {b.title}
-                          </span>
-                        ) : null}
+                        {b.title || "—"}
                       </td>
-                      {multiCourt && (
-                        <td style={tdStyle} className={styles.mobileHide}>
-                          {b.court}
-                        </td>
-                      )}
-                      <td style={tdStyle}>{b.total}</td>
-                      <td style={tdStyle} className={styles.mobileHide}>
-                        {b.clients || (
-                          <span style={{ color: MAPLE_COLORS.textMuted }}>
-                            —
-                          </span>
-                        )}
+                      <td style={listTdStyle}>
+                        <div style={{ fontWeight: 700, fontSize: 16 }}>
+                          {b.clients || "—"}
+                        </div>
+                        <div style={subTextStyle}>
+                          {t("activity.filings", { count: b.total })}
+                        </div>
                       </td>
-                      <td style={tdStyle} className={styles.mobileHide}>
-                        {b.lobbyists || (
-                          <span style={{ color: MAPLE_COLORS.textMuted }}>
-                            —
-                          </span>
-                        )}
-                      </td>
-                      <td style={tdStyle} className={styles.mobileHide}>
-                        {b.support > 0 && (
-                          <span
-                            style={{
-                              fontSize: 12,
-                              color: POSITION_COLORS.support
-                            }}
-                          >
-                            {b.support}
-                          </span>
-                        )}
-                      </td>
-                      <td style={tdStyle} className={styles.mobileHide}>
-                        {b.oppose > 0 && (
-                          <span
-                            style={{
-                              fontSize: 12,
-                              color: POSITION_COLORS.oppose
-                            }}
-                          >
-                            {b.oppose}
-                          </span>
-                        )}
-                      </td>
-                      <td style={tdStyle} className={styles.mobileHide}>
-                        {b.neutral > 0 && (
-                          <span
-                            style={{
-                              fontSize: 12,
-                              color: POSITION_COLORS.neutral
-                            }}
-                          >
-                            {b.neutral}
-                          </span>
-                        )}
-                      </td>
-                      <td style={{ ...tdStyle, verticalAlign: "middle" }}>
-                        <PositionMiniBar row={b} />
+                      <td style={{ ...listTdStyle, paddingTop: "1.1rem" }}>
+                        <PositionBar
+                          width={160}
+                          counts={{
+                            support: b.orgSupport,
+                            oppose: b.orgOppose,
+                            neutral: b.orgNeutral
+                          }}
+                        />
                       </td>
                     </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <LobbyingPaginationBar
+              page={page}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              pageSize={PAGE_SIZE}
+              onPage={setPage}
+              itemLabel={t("billList.items")}
+            />
           </div>
-          <LobbyingPaginationBar
-            page={page}
-            totalPages={totalPages}
-            totalItems={totalItems}
-            pageSize={PAGE_SIZE}
-            onPage={setPage}
-          />
-        </>
-      )}
+        )}
+      </LobbyingPanel>
 
       <LobbyingAttribution />
     </>
@@ -591,72 +308,3 @@ export const getStaticProps = createLobbyingListProps(async () => {
   const initialCourt = await fetchLatestLobbyingCourt()
   return { initialCourt, initialRows: await fetchBillRows(initialCourt) }
 })
-
-// ── Styles ────────────────────────────────────────────────────────────────────
-
-const filterRowStyle: React.CSSProperties = {
-  display: "flex",
-  gap: "0.75rem",
-  flexWrap: "wrap",
-  marginBottom: "1rem",
-  alignItems: "center"
-}
-
-const selectStyle: React.CSSProperties = {
-  padding: "0.35rem 0.65rem",
-  border: `1px solid ${MAPLE_COLORS.borderDefault}`,
-  borderRadius: 6,
-  fontSize: 14,
-  color: MAPLE_COLORS.textBody,
-  background: MAPLE_COLORS.surfaceBase,
-  cursor: "pointer"
-}
-
-const searchStyle: React.CSSProperties = {
-  ...selectStyle,
-  minWidth: 220,
-  cursor: "text"
-}
-
-const dropdownStyle: React.CSSProperties = {
-  position: "absolute",
-  top: "calc(100% + 4px)",
-  left: 0,
-  zIndex: 200,
-  background: MAPLE_COLORS.surfaceBase,
-  border: `1px solid ${MAPLE_COLORS.borderDefault}`,
-  borderRadius: 8,
-  boxShadow: "0 4px 16px rgba(15,23,42,0.10)",
-  padding: "6px 0",
-  minWidth: 240
-}
-
-const checkRowStyle: React.CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  padding: "5px 14px",
-  fontSize: 13,
-  cursor: "pointer",
-  whiteSpace: "nowrap",
-  gap: 2
-}
-
-const tableStyle: React.CSSProperties = {
-  width: "100%",
-  borderCollapse: "collapse",
-  fontSize: 13,
-  color: MAPLE_COLORS.textBody
-}
-
-const theadStyle: React.CSSProperties = {
-  borderBottom: `2px solid ${MAPLE_COLORS.borderDefault}`
-}
-
-const trStyle: React.CSSProperties = {
-  borderBottom: `1px solid ${MAPLE_COLORS.borderSubtle}`
-}
-
-const tdStyle: React.CSSProperties = {
-  padding: "0.45rem 0.75rem",
-  verticalAlign: "middle"
-}

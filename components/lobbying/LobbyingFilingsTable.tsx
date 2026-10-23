@@ -2,6 +2,7 @@ import React from "react"
 import { Table } from "react-bootstrap"
 import { useTranslation } from "next-i18next"
 import type { LobbyingFiling } from "functions/src/lobbying/types"
+import { normalizePosition } from "./activity"
 import { LobbyingPositionChip } from "./LobbyingPositionChip"
 import { MAPLE_COLORS } from "./chartTheme"
 import { SosSourceLink } from "./SosSourceLink"
@@ -116,7 +117,9 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
                 </td>
               )}
               <td style={cellStyle}>
-                <LobbyingPositionChip position={f.position} />
+                <LobbyingPositionChip
+                  position={normalizePosition(f.position)}
+                />
               </td>
               {showAmount && (
                 <td style={{ ...cellStyle, textAlign: "right" }}>

@@ -1,6 +1,6 @@
 {
   "title": "Lobbying Explorer",
-  "subtitle": "Browse Massachusetts lobbying disclosures filed with the Secretary of State.",
+  "subtitle": "Who registered to lobby Massachusetts state government, on what, and for whom — as they reported it to the Secretary of the Commonwealth.",
   "subnav": {
     "label": "LOBBYING EXPLORER",
     "overview": "Overview"
@@ -19,7 +19,6 @@
     "disclosureLink": "Disclosure {{number}}",
     "viewOnMaple": "View bill on MAPLE →",
     "total": "total",
-    "generalCourt": "General Court",
     "matchedLobbyists": "Lobbyist: {{names}}",
     "viewOnSos": "SoS ↗︎",
     "viewOnSosLabel": "View the original on the MA Secretary of State's website",
@@ -32,12 +31,6 @@
     "lobbyist": "Individual lobbyist",
     "employer": "Lobbyist entity"
   },
-  "stats": {
-    "totalBills": "Lobbied bills",
-    "totalClients": "Clients",
-    "totalLobbyists": "Individual lobbyists",
-    "totalSpend": "Total compensation reported"
-  },
   "sections": {
     "bills": "Bills",
     "clients": "Clients",
@@ -48,13 +41,14 @@
   },
   "filters": {
     "session": "Session",
-    "year": "Year",
     "position": "Position",
     "allSessions": "All sessions",
     "allPositions": "All positions",
     "allTypes": "All types",
     "search": "Search…",
-    "sessionOption": "Session {{court}} ({{years}})"
+    "currentSession": "{{label}} · current",
+    "allSessionsSince": "All sessions since 2005",
+    "anyPosition": "Any"
   },
   "position": {
     "support": "Support",
@@ -72,20 +66,14 @@
     "bills": "Bills lobbied",
     "clients": "Clients represented",
     "bill": "Bill",
-    "positions": "Positions",
     "activity": "Activity",
     "sessions": "Sessions",
     "type": "Type",
-    "firms": "Lobbyists",
     "source": "Source"
   },
   "explainers": {
-    "statBills": "Bills that have been the subject of at least one lobbying disclosure.",
-    "statClients": "Organizations that have hired lobbyists to advocate on their behalf.",
-    "statLobbyists": "People registered as individual lobbyists with the MA Secretary of State, each counted once. Before 2019, lobbyists employed by a firm registered under the firm and aren't counted here.",
-    "statSpend": "Sum of all annual compensation amounts reported by lobbyists to the Secretary of State.",
-    "bills": "Bills that appear in lobbying disclosures filed with the MA Secretary of State, across all sessions in this dataset.",
-    "clients": "Organizations that retained lobbyists or lobbied on their own behalf, as reported in annual compensation disclosures.",
+    "bills": "Bills that at least one registered lobbyist reported working on.",
+    "clients": "Organizations that hired a lobbyist or lobbying firm, or lobbied through their own staff.",
     "firms": "Individual lobbyists and lobbyist entities (firms and organizations that employ lobbyists) registered with the MA Secretary of State.",
     "spendNotReported": "Spending isn't shown for {{years}}: disclosures from those years don't report compensation by client."
   },
@@ -94,8 +82,8 @@
   "loading": "Loading lobbying data…",
   "titles": {
     "overview": "Lobbying Explorer",
-    "bills": "Lobbied Bills",
-    "clients": "Clients & Sponsors",
+    "bills": "Lobbied bills",
+    "clients": "Clients",
     "firms": "Lobbyists",
     "client": "Client Profile",
     "firm": "Lobbyist Profile"
@@ -137,5 +125,106 @@
     "barLabel": "Positions by organization: {{counts}}",
     "barSegment_one": "{{position}}: {{count}} organization",
     "barSegment_other": "{{position}}: {{count}} organizations"
+  },
+  "overview": {
+    "keyFigures": "Key figures · {{session}}",
+    "figBills": "Bills with reported lobbying",
+    "figClients": "Clients",
+    "figLobbyists": "Registered lobbyists",
+    "figLobbyistsSub": "people, plus {{firms}} lobbying firms & entities",
+    "figPaid": "Reported paid for lobbying",
+    "whereSession": "the {{session}}",
+    "whereAll": "any session",
+    "defBills": "Bill numbers that appear in at least one lobbyist's activity report in {{where}}.",
+    "defClients": "Organizations that hired a lobbyist or lobbying firm, or lobbied through their own staff, in {{where}}.",
+    "defLobbyists": "People registered as lobbyists and named on at least one filing in {{where}}, as its filer or as a firm's agent, each counted once. Firms and other lobbyist entities are counted separately.",
+    "defPaid": "Sum of what clients reported paying lobbyists and firms in {{where}}. For in-house staff this is the share of salary the employer allocated to lobbying, not total pay.",
+    "defToggle": "What does “{{label}}” count?",
+    "chartTitle": "Reported lobbying payments by session",
+    "chartHint": "What clients reported paying in each two-year session. Select a bar to switch sessions.",
+    "chartAmount": "{{amount}} reported",
+    "chartAmountSoFar": "{{amount}} reported so far",
+    "chartLabel": "Reported lobbying payments by session: {{bars}}",
+    "legendSelected": "Selected session",
+    "legendOther": "Other sessions",
+    "legendAll": "All sessions shown",
+    "legendInProgress": "Session in progress",
+    "topBills": "Most-lobbied bills · {{session}}",
+    "topBillsHint": "Ranked by the number of organizations that reported lobbying on the bill.",
+    "topBillsLink": "All bills in this session →",
+    "orgsReporting": "Organizations reporting",
+    "positionsReported": "Positions reported",
+    "hoverForCounts": "(hover for counts)"
+  },
+  "billList": {
+    "panelTitle": "Lobbied bills · {{session}}",
+    "count_one": "{{n}} bill with reported lobbying",
+    "count_other": "{{n}} bills with reported lobbying",
+    "sortHint": "select a column heading to sort",
+    "title": "Title",
+    "positionsNote": "Each organization is counted once under each position it reported.",
+    "items": "bills"
+  },
+  "clients": {
+    "panelTitle": "Clients · {{session}}",
+    "count_one": "{{n}} client with reported lobbying",
+    "count_other": "{{n}} clients with reported lobbying",
+    "bills": "Bills",
+    "lobbyists": "Lobbyists",
+    "inHouse_one": "{{count}} in-house",
+    "inHouse_other": "{{count}} in-house",
+    "firms_one": "{{count}} firm",
+    "firms_other": "{{count}} firms",
+    "firmsWithAgents_one": "{{firms}} ({{count}} agent)",
+    "firmsWithAgents_other": "{{firms}} ({{count}} agents)",
+    "allInHouse": "all in-house",
+    "paidNote": "Reported paid is what the client reported paying its lobbyists and firms across the session, for all bills. For in-house staff it is the share of salary allocated to lobbying.",
+    "items": "clients"
+  },
+  "firmList": {
+    "count_one": "{{n}} lobbyist",
+    "count_other": "{{n}} lobbyists"
+  },
+  "bill": {
+    "back": "← Lobbied bills",
+    "searchSos": "Search this bill on the SoS portal ↗︎",
+    "summary": "Summary",
+    "orgs_one": "organization",
+    "orgs_other": "organizations",
+    "orgsDetail": "reported lobbying on this bill, in {{filings}} by {{filers}}.",
+    "filers_one": "{{count}} lobbyist or firm",
+    "filers_other": "{{count}} lobbyists and firms",
+    "positionsByOrg": "Positions, by organization",
+    "orgCountNote": "Each organization is counted once, by the position its lobbyists reported in their latest six-month filing. Organizations whose lobbyists reported more than one position in that filing are shown in purple.",
+    "orgsPanel": "Organizations lobbying on {{bill}}",
+    "orgsHint": "Select an organization to see who filed for it.",
+    "filterOrgs": "Filter organizations",
+    "items": "organizations",
+    "noMatch": "No organizations match these filters."
+  },
+  "client": {
+    "back": "← Clients",
+    "kind": "Client",
+    "registered": "registered {{from}} – {{to}}",
+    "registeredSince": "registered {{from}}",
+    "sosRegistration": "SoS registration ↗︎",
+    "summary": "Summary · {{session}}",
+    "bills_one": "bill",
+    "bills_other": "bills",
+    "reportedBy": "reported by {{lobbyists}}, {{inHouse}}.",
+    "lobbyists_one": "{{count}} lobbyist",
+    "lobbyists_other": "{{count}} lobbyists",
+    "noneInHouse": "none in-house",
+    "paidLabel": "reported paid for lobbying",
+    "paidNote": "Total of what the client reported paying its lobbyists and firms in {{where}}, for all bills. For in-house staff this is the share of salary allocated to lobbying.",
+    "billsPanel": "Bills lobbied on · {{session}}",
+    "billsHint": "One row per bill. Select a bill to see which lobbyists reported on it.",
+    "filterBills": "Filter bills",
+    "items": "bills",
+    "noMatch": "No bills match these filters.",
+    "whereAll": "all sessions"
+  },
+  "errors": {
+    "unavailable": "Failed to get document because the server is not available."
   }
 }

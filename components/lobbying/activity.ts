@@ -1,6 +1,7 @@
 import { uniq } from "lodash"
 import type { RegistrantInfo } from "components/db/lobbying"
 import type { LobbyingFiling } from "functions/src/lobbying/types"
+import { matchesSearch } from "./searchMatch"
 
 export type Position = "support" | "oppose" | "neutral" | "none"
 
@@ -8,6 +9,10 @@ export type Position = "support" | "oppose" | "neutral" | "none"
 export type PositionCategory = Position | "multiple"
 
 const POSITION_ORDER: Position[] = ["support", "oppose", "neutral", "none"]
+
+/** Compares names and bill numbers with numbers in order (H2 before H10).
+ * One collator, since sorting builds a comparison per pair. */
+export const naturalCompare = new Intl.Collator("en", { numeric: true }).compare
 
 /** Mirrors _normalize_position in lobbying-scraper/writer.py, so positions
  * shown per filing agree with the precomputed counts. */
@@ -27,6 +32,7 @@ export type ActivityFiling = Pick<
   | "clientName"
   | "clientNameNorm"
   | "year"
+  | "generalCourt"
   | "billId"
   | "activityTitle"
   | "position"
@@ -68,10 +74,13 @@ export type ActivityFiler = {
 }
 
 export type ActivityRow = {
-  // clientNameNorm, or billId.
+  // clientNameNorm, or "<generalCourt>/<billId>": a bill number is reused
+  // every session.
   key: string
   // Client name, or bill number.
   label: string
+  // The bill's session (bill rows only).
+  court?: number
   // The bill's title (bill rows only).
   title?: string
   filings: number
@@ -116,7 +125,9 @@ export function groupActivity(
   const periods = new Map<string, Period>()
   const groups = new Map<string, ActivityFiling[]>()
   for (const f of filings) {
-    const key = by === "client" ? f.clientNameNorm : f.billId
+    if (by === "bill" && !f.billId) continue
+    const key =
+      by === "client" ? f.clientNameNorm : `${f.generalCourt}/${f.billId}`
     if (!key) continue
     const group = groups.get(key)
     if (group) group.push(f)
@@ -175,8 +186,10 @@ export function groupActivity(
     const first = group[0]
     return {
       key,
-      label: by === "client" ? first.clientName : key,
-      ...(by === "bill" ? { title: first.activityTitle } : {}),
+      label: by === "client" ? first.clientName : (first.billId as string),
+      ...(by === "bill"
+        ? { court: first.generalCourt, title: first.activityTitle }
+        : {}),
       filings: group.length,
       latest: {
         period: latestPeriod,
@@ -194,7 +207,11 @@ export function groupActivity(
     }
   })
 
-  rows.sort((a, b) => a.label.localeCompare(b.label, "en", { numeric: true }))
+  // Bill rows: newest session first, then by bill number.
+  rows.sort(
+    (a, b) =>
+      (b.court ?? 0) - (a.court ?? 0) || naturalCompare(a.label, b.label)
+  )
   return {
     periods: [...periods.values()].sort((a, b) => (a.key < b.key ? 1 : -1)),
     rows
@@ -214,4 +231,24 @@ export function orgPositionBreakdown(rows: ActivityRow[]): PositionBreakdown {
     else counts[positions[0] ?? "none"]++
   }
   return counts
+}
+
+/** A position filter's choice: one reported position, or any. */
+export type PositionFilter = "all" | Exclude<Position, "none">
+
+/** The rows whose most recent positions include `position`, and whose label
+ * (and title, for bills) match `search`. */
+export function filterActivity(
+  activity: Activity,
+  position: PositionFilter,
+  search: string
+): Activity {
+  return {
+    ...activity,
+    rows: activity.rows.filter(
+      r =>
+        (position === "all" || r.latest.positions.includes(position)) &&
+        matchesSearch(`${r.label} ${r.title ?? ""}`, search)
+    )
+  }
 }

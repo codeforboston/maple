@@ -2,33 +2,60 @@ import React, { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "next-i18next"
 import { Col, Container, Row } from "components/bootstrap"
 import { createPage } from "components/page"
-import { ClientListRow, fetchClientListRows } from "components/db/lobbying"
+import {
+  fetchClientList,
+  fetchLatestLobbyingCourt,
+  useLobbyingClientRows,
+  type ClientListRow
+} from "components/db/lobbying"
 import { createLobbyingListProps } from "components/lobbying/listPageProps"
-import { MAPLE_COLORS } from "components/lobbying/chartTheme"
+import {
+  formatCount,
+  formatCurrency,
+  MAPLE_COLORS
+} from "components/lobbying/chartTheme"
+import { lobbyistMix, lobbyistMixText } from "components/lobbying/clientCounts"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
+import {
+  FilterLabel,
+  LobbyingFilterBar,
+  LobbyingLoadError,
+  LobbyingPanel,
+  listTableStyle,
+  listTdStyle,
+  searchStyle,
+  sessionSelectStyle,
+  subTextStyle
+} from "components/lobbying/LobbyingPanel"
 import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 import { matchesSearch } from "components/lobbying/searchMatch"
 import { SessionFilter, SessionSelect } from "components/lobbying/SessionSelect"
-import { SortTh, thStyle, type SortDir } from "components/lobbying/SortTh"
+import { courtName } from "components/lobbying/sessions"
+import { SortTh, type SortDir } from "components/lobbying/SortTh"
 
 const PAGE_SIZE = 50
 
-type ClientSortKey = "name" | "compensation" | "firms" | "filings"
+type ClientSortKey = "name" | "bills" | "lobbyists" | "paid"
 
-type ClientRow = {
-  clientName: string
-  clientNameNorm: string
-  totalCompensation: number | null
-  registrantCount: number
-  totalFilings: number | undefined
+type ClientsPageProps = {
+  // Every session any client was active in, newest first. The latest
+  // session's rows are prerendered; other sessions load on demand.
+  sessions: number[]
+  initialCourt: number
+  initialRows: ClientListRow[]
 }
 
-function LobbyingClientsTable({ rows }: { rows: ClientListRow[] }) {
+function LobbyingClientsTable({
+  sessions,
+  initialCourt,
+  initialRows
+}: ClientsPageProps) {
   const { t } = useTranslation("lobbying")
+
   const [search, setSearch] = useState("")
-  const [session, setSession] = useState<SessionFilter>("all")
+  const [session, setSession] = useState<SessionFilter>(initialCourt)
   const [sortKey, setSortKey] = useState<ClientSortKey>("name")
   const [sortDir, setSortDir] = useState<SortDir>("asc")
 
@@ -41,68 +68,40 @@ function LobbyingClientsTable({ rows }: { rows: ClientListRow[] }) {
     }
   }
 
-  const sessions = useMemo(
-    () =>
-      [...new Set(rows.flatMap(c => Object.keys(c.courts)))]
-        .map(Number)
-        .sort((a, b) => b - a),
-    [rows]
-  )
+  const prerendered = session === initialCourt
+  const other = useLobbyingClientRows(prerendered ? undefined : session)
+  const rows = prerendered ? initialRows : other.result
+  const loadingOther = !prerendered && other.status !== "success"
+  const otherFailed = !prerendered && other.status === "error"
 
-  // With a session selected, show only clients active in it, with that
-  // session's lobbyists, filings and compensation.
-  const clientsWithCounts = useMemo<ClientRow[]>(() => {
-    return rows.flatMap(c => {
-      if (session === "all") {
-        return [
-          {
-            clientName: c.clientName,
-            clientNameNorm: c.clientNameNorm,
-            totalCompensation: c.totalCompensation,
-            registrantCount: c.registrantCount,
-            totalFilings: c.totalFilings ?? undefined
-          }
-        ]
-      }
-      const inSession = c.courts[String(session)]
-      if (!inSession) return []
-      return [
-        {
-          clientName: c.clientName,
-          clientNameNorm: c.clientNameNorm,
-          totalCompensation: inSession.compensation,
-          registrantCount: inSession.lobbyistCount,
-          totalFilings: inSession.filings
-        }
-      ]
-    })
-  }, [rows, session])
-
-  const filtered = useMemo(
-    () =>
-      search
-        ? clientsWithCounts.filter(c => matchesSearch(c.clientName, search))
-        : clientsWithCounts,
-    [clientsWithCounts, search]
+  const clientRows = useMemo(
+    () => (rows ?? []).map(c => ({ ...c, lobbyists: lobbyistMix(c, session) })),
+    [rows, session]
   )
 
   const sorted = useMemo(() => {
     const mul = sortDir === "asc" ? 1 : -1
-    return [...filtered].sort((a, b) => {
-      switch (sortKey) {
-        case "compensation":
-          return (
-            mul * ((a.totalCompensation ?? -1) - (b.totalCompensation ?? -1))
-          )
-        case "firms":
-          return mul * (a.registrantCount - b.registrantCount)
-        case "filings":
-          return mul * ((a.totalFilings ?? -1) - (b.totalFilings ?? -1))
-        default:
-          return mul * a.clientNameNorm.localeCompare(b.clientNameNorm)
-      }
-    })
-  }, [filtered, sortKey, sortDir])
+    // Missing figures sort last either way.
+    const byNumber = (x: number | null, y: number | null) =>
+      x == null ? (y == null ? 0 : 1) : y == null ? -1 : mul * (x - y)
+    return clientRows
+      .filter(c => !search || matchesSearch(c.clientName, search))
+      .sort((a, b) => {
+        switch (sortKey) {
+          case "bills":
+            return byNumber(a.bills, b.bills)
+          case "lobbyists":
+            return byNumber(
+              a.lobbyists?.total ?? null,
+              b.lobbyists?.total ?? null
+            )
+          case "paid":
+            return byNumber(a.compensation, b.compensation)
+          default:
+            return mul * a.clientNameNorm.localeCompare(b.clientNameNorm)
+        }
+      })
+  }, [clientRows, search, sortKey, sortDir])
 
   const { page, setPage, pageItems, totalPages, totalItems } = usePagination(
     sorted,
@@ -115,119 +114,154 @@ function LobbyingClientsTable({ rows }: { rows: ClientListRow[] }) {
 
   return (
     <>
-      <div style={filterRowStyle}>
+      <LobbyingFilterBar boxed>
+        <FilterLabel htmlFor="clients-session">
+          {t("filters.session")}
+        </FilterLabel>
         <SessionSelect
+          id="clients-session"
           sessions={sessions}
           value={session}
           onChange={setSession}
-          style={selectStyle}
+          current={initialCourt}
+          allLabel={t("filters.allSessionsSince")}
+          style={sessionSelectStyle}
         />
         <input
           type="search"
-          placeholder={t("filters.search")}
+          placeholder={`${t("activity.clientSearch")}…`}
+          aria-label={t("activity.clientSearch")}
           value={search}
           onChange={e => setSearch(e.target.value)}
           style={searchStyle}
         />
-      </div>
+      </LobbyingFilterBar>
 
-      <>
-        <p
-          style={{
-            color: MAPLE_COLORS.textMuted,
-            fontSize: 13,
-            marginBottom: "0.5rem"
-          }}
-        >
-          {totalItems} {t("sections.clients").toLowerCase()}
-        </p>
-        <div style={{ overflowX: "auto" }}>
-          <table style={tableStyle}>
-            <thead>
-              <tr style={theadStyle}>
-                <SortTh
-                  label={t("fields.clientName")}
-                  sortKey="name"
-                  current={sortKey}
-                  dir={sortDir}
-                  onSort={handleSort}
-                />
-                <SortTh
-                  label={t("fields.firms")}
-                  sortKey="firms"
-                  current={sortKey}
-                  dir={sortDir}
-                  onSort={handleSort}
-                />
-                <SortTh
-                  label={t("fields.filings")}
-                  sortKey="filings"
-                  current={sortKey}
-                  dir={sortDir}
-                  onSort={handleSort}
-                />
-                <SortTh
-                  label={t("fields.amount")}
-                  sortKey="compensation"
-                  current={sortKey}
-                  dir={sortDir}
-                  onSort={handleSort}
-                  style={{ textAlign: "right" }}
-                />
-              </tr>
-            </thead>
-            <tbody>
-              {pageItems.map(c => (
-                <tr key={c.clientNameNorm} style={trStyle}>
-                  <td style={tdStyle}>
-                    <a
-                      href={`/lobbying/clients/${encodeURIComponent(
-                        c.clientNameNorm
-                      )}`}
-                      style={{ color: MAPLE_COLORS.primary, fontWeight: 600 }}
-                    >
-                      {c.clientName}
-                    </a>
-                  </td>
-                  <td style={{ ...tdStyle, color: MAPLE_COLORS.textMuted }}>
-                    {c.registrantCount}
-                  </td>
-                  <td style={{ ...tdStyle, color: MAPLE_COLORS.textMuted }}>
-                    {c.totalFilings !== undefined ? c.totalFilings : "—"}
-                  </td>
-                  <td
-                    style={{
-                      ...tdStyle,
-                      textAlign: "right",
-                      color: MAPLE_COLORS.textMuted
-                    }}
-                  >
-                    {c.totalCompensation != null
-                      ? c.totalCompensation.toLocaleString("en-US", {
-                          style: "currency",
-                          currency: "USD",
-                          maximumFractionDigits: 0
-                        })
-                      : "—"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <LobbyingPaginationBar
-          page={page}
-          totalPages={totalPages}
-          totalItems={totalItems}
-          pageSize={PAGE_SIZE}
-          onPage={setPage}
-        />
-      </>
+      <LobbyingPanel
+        title={t("clients.panelTitle", {
+          session:
+            session === "all"
+              ? t("filters.allSessionsSince")
+              : courtName(session)
+        })}
+        aside={
+          !loadingOther && (
+            <>
+              <strong>
+                {t("clients.count", {
+                  count: totalItems,
+                  n: formatCount(totalItems)
+                })}
+              </strong>{" "}
+              · {t("billList.sortHint")}
+            </>
+          )
+        }
+        footer={t("clients.paidNote")}
+      >
+        {otherFailed ? (
+          <LobbyingLoadError error={other.error} style={{ margin: 0 }} />
+        ) : loadingOther ? (
+          <p style={{ color: MAPLE_COLORS.textMuted, margin: 0 }}>
+            {t("loading")}
+          </p>
+        ) : (
+          <div>
+            <div style={{ overflowX: "auto" }}>
+              <table style={listTableStyle(720)}>
+                <colgroup>
+                  <col />
+                  <col style={{ width: 110 }} />
+                  <col style={{ width: 260 }} />
+                  <col style={{ width: 170 }} />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <SortTh
+                      label={t("fields.clientName")}
+                      sortKey="name"
+                      current={sortKey}
+                      dir={sortDir}
+                      onSort={handleSort}
+                    />
+                    <SortTh
+                      label={t("clients.bills")}
+                      sortKey="bills"
+                      current={sortKey}
+                      dir={sortDir}
+                      onSort={handleSort}
+                    />
+                    <SortTh
+                      label={t("clients.lobbyists")}
+                      sortKey="lobbyists"
+                      current={sortKey}
+                      dir={sortDir}
+                      onSort={handleSort}
+                    />
+                    <SortTh
+                      label={t("activity.reportedPaid")}
+                      sortKey="paid"
+                      current={sortKey}
+                      dir={sortDir}
+                      onSort={handleSort}
+                    />
+                  </tr>
+                </thead>
+                <tbody>
+                  {pageItems.map(c => (
+                    <tr key={c.clientNameNorm}>
+                      <td style={listTdStyle}>
+                        <a
+                          href={`/lobbying/clients/${encodeURIComponent(
+                            c.clientNameNorm
+                          )}`}
+                          style={{
+                            color: MAPLE_COLORS.primary,
+                            fontWeight: 700
+                          }}
+                        >
+                          {c.clientName}
+                        </a>
+                      </td>
+                      <td style={{ ...listTdStyle, ...figureStyle }}>
+                        {c.bills ?? "—"}
+                      </td>
+                      <td style={listTdStyle}>
+                        <div style={{ fontWeight: 700 }}>
+                          {c.lobbyists?.total ?? "—"}
+                        </div>
+                        {c.lobbyists && (
+                          <div style={subTextStyle}>
+                            {lobbyistMixText(c.lobbyists, t)}
+                          </div>
+                        )}
+                      </td>
+                      <td style={{ ...listTdStyle, ...figureStyle }}>
+                        {c.compensation != null
+                          ? formatCurrency(c.compensation)
+                          : "—"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <LobbyingPaginationBar
+              page={page}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              pageSize={PAGE_SIZE}
+              onPage={setPage}
+              itemLabel={t("clients.items")}
+            />
+          </div>
+        )}
+      </LobbyingPanel>
     </>
   )
 }
 
-function LobbyingClientsPage({ rows }: { rows: ClientListRow[] }) {
+function LobbyingClientsPage(props: ClientsPageProps) {
   const { t } = useTranslation("lobbying")
   return (
     <>
@@ -243,7 +277,7 @@ function LobbyingClientsPage({ rows }: { rows: ClientListRow[] }) {
         </Row>
         <Row>
           <Col>
-            <LobbyingClientsTable rows={rows} />
+            <LobbyingClientsTable {...props} />
           </Col>
         </Row>
         <Row>
@@ -261,44 +295,14 @@ export default createPage({
   Page: LobbyingClientsPage
 })
 
-export const getStaticProps = createLobbyingListProps(async () => ({
-  rows: await fetchClientListRows()
-}))
+export const getStaticProps = createLobbyingListProps(async () => {
+  const initialCourt = await fetchLatestLobbyingCourt()
+  const { sessions, rows } = await fetchClientList(initialCourt)
+  return { sessions, initialCourt, initialRows: rows }
+})
 
-const filterRowStyle: React.CSSProperties = {
-  display: "flex",
-  gap: "0.75rem",
-  flexWrap: "wrap",
-  marginBottom: "1rem",
-  alignItems: "center"
-}
-const selectStyle: React.CSSProperties = {
-  padding: "0.35rem 0.65rem",
-  border: `1px solid ${MAPLE_COLORS.borderDefault}`,
-  borderRadius: 6,
-  fontSize: 14,
-  color: MAPLE_COLORS.textBody,
-  background: MAPLE_COLORS.surfaceBase,
-  cursor: "pointer"
-}
-const searchStyle: React.CSSProperties = {
-  ...selectStyle,
-  minWidth: 260,
-  cursor: "text"
-}
-const tableStyle: React.CSSProperties = {
-  width: "100%",
-  borderCollapse: "collapse",
-  fontSize: 13,
-  color: MAPLE_COLORS.textBody
-}
-const theadStyle: React.CSSProperties = {
-  borderBottom: `2px solid ${MAPLE_COLORS.borderDefault}`
-}
-const trStyle: React.CSSProperties = {
-  borderBottom: `1px solid ${MAPLE_COLORS.borderSubtle}`
-}
-const tdStyle: React.CSSProperties = {
-  padding: "0.45rem 0.75rem",
-  verticalAlign: "middle"
+const figureStyle: React.CSSProperties = {
+  fontWeight: 700,
+  fontSize: 16,
+  color: MAPLE_COLORS.textStrong
 }

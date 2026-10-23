@@ -311,43 +311,79 @@ position stacked bar on the bill sidebar is the highest-value chart — it answe
 
 ## Pages
 
+Every page follows the redesign canvas's layout, labels and interactions, in
+MAPLE's colors and type: white `LobbyingPanel` cards with uppercase titles, a
+boxed filter bar whose session select (`SessionSelect`) marks the session in
+progress, and the attribution line. Missing figures render as "—".
+
 ### `/lobbying` — Overview (`pages/lobbying/index.tsx`)
 
-- `getStaticProps` with ISR (`revalidate: 3600`)
-- Reads `LobbyingStats` at build time
-- Client-side: global search input querying `lobbyingFilings` for bill IDs / client names
-- Sections: stat cards, three entry cards (Bills / Clients / Firms), attribution bar
-- Data source attribution to MA Secretary of State required on every lobbying page
+- Prerendered (ISR, daily) with `lobbyingMeta/stats` and each session's five
+  most-lobbied bills (a `clients`-ordered query of 5 docs per session); the
+  browser reads nothing.
+- Session: the select, or a click on a bar of the payments chart; defaults to
+  the latest session. "All sessions" shows the all-time figures.
+- Key figures for the session from `stats.courts[court]` (all-time totals for
+  "All sessions"): bills, clients, lobbyists (plus firms and entities) and
+  reported paid, each with an "i" toggle for its definition.
+- Payments chart: one bar per session (`spendByYear` summed over its two
+  years), the selected one highlighted and the session in progress striped.
+- Most-lobbied bills: the top 5 by organizations, with a `PositionBar` of
+  organizations per position, linking to `/lobbying/bills?session=<court>`.
+  "All sessions" shows the top 5 of all sessions, taken from the sessions' own
+  top 5s.
 
-### `/lobbying/bills` — Lobbied bills browse (`pages/lobbying/bills.tsx`)
+### `/lobbying/bills` — Lobbied bills (`pages/lobbying/bills/index.tsx`)
 
-- `getStaticProps` (ISR)
-- Client-side filterable table: session (general court), position filter, text search
-- Columns: Bill ID (→ bill detail), Title, Session, Top tags (MAPLE bill tags), Position bar, Filings count
-- Default sort: most filings first
-- Clicking a bill row links to bill detail page (`/bills/[court]/[billId]`), not a lobbying sub-page
+- Prerendered with the latest session's rows (ISR, daily); other sessions load
+  through the cached `/api/lobbying/bills/[court]` route. Reads `?session=`.
+- Filters: session (one, or all) and bill number or title.
+- Columns: Bill, Title, Organizations (sortable; filings beneath), and a
+  `PositionBar` of `orgSupport/orgOppose/orgNeutral` with hover counts.
 
-### `/lobbying/clients` — Client browse (`pages/lobbying/clients/index.tsx`)
+### `/lobbying/bills/[court]/[billId]` — Bill detail
 
-- Client-side filterable list using `useLobbyingClients()`
-- Columns: Client name, Total filings, Bills, Years active, Position breakdown
-- Text search on client name
+- Reads the bill's filings, their registrants (`useLobbyingRegistrantsByIds`)
+  and the session's `inHouseFilers_{court}` doc.
+- Header: bill number and session, the title, links to the MAPLE bill page
+  (192nd session on) and the SoS search page (it can't link to one bill).
+- Summary: organizations, filings and filers; `PositionBar` of organizations
+  by their most recent positions (`orgPositionBreakdown`), with "multiple".
+- `ActivityTable` with a row per organization, filtered by position and name;
+  a row expands to each filer's positions per period and SoS filing links.
 
-### `/lobbying/clients/[clientSlug]` — Client detail (`pages/lobbying/clients/[clientSlug].tsx`)
+### `/lobbying/clients` — Clients (`pages/lobbying/clients/index.tsx`)
 
-- `getServerSideProps`; fetch `LobbyingClientSummary` + filings by `clientNameNorm`
-- Sections: stats bar, position donut, spend by year bar, bills lobbied table (with MAPLE tags)
-- Bills table columns: Bill ID, Title, Session, MAPLE tags, Position, Year
+- Prerendered with the latest session's rows (ISR, daily), keeping only the
+  fields the list shows; other sessions and "All sessions" load through the
+  cached `/api/lobbying/clients/[session]` route. Every visit would otherwise
+  hydrate all sessions' rows (2.6 MB for 5,553 clients, against 0.35 MB).
+- Columns: Client, Bills, Lobbyists ("k in-house · m firms (n agents)", see
+  `lobbyistMix` in `components/lobbying/clientCounts.ts`) and Reported paid;
+  Client, Lobbyists and Reported paid sort both ways.
+- From the 189th session the lobbyist counts are people (`individuals`,
+  `firmAgents`); before it, and for all sessions, `inHouseLobbyists` and
+  `hiredFirms`.
 
-### `/lobbying/firms` — Firms browse (`pages/lobbying/firms/index.tsx`)
+### `/lobbying/clients/[clientSlug]` — Client detail
 
-- Same pattern as clients; filters by `regType` (Lobbyist / Employer / all)
-- Columns: Firm name, Type, Clients, Bills, Years active
+- Prerendered on first visit (ISR, daily) with the client's summary (less its
+  `firms`) and the current session. The browser reads the selected session's
+  filings, their registrants and the client's in-house filers (one
+  `inHouseFilers_{court}` doc per session shown, cached per visit).
+- Header: name, registration years and the SoS registration link.
+- Session (default: the client's latest) drives the summary (bills,
+  lobbyists, reported paid) and the `ActivityTable` with a row per bill,
+  filtered by position and bill number or title.
 
-### `/lobbying/firms/[registrantId]` — Firm detail (`pages/lobbying/firms/[registrantId].tsx`)
+### `/lobbying/firms` — Lobbyists (`pages/lobbying/firms/index.tsx`)
 
-- `getServerSideProps`; fetch `LobbyingRegistrant` + filings
-- Sections: stats bar, position donut, clients represented table, bills lobbied table, compensation by year bar
+- Unchanged by the redesign apart from the panel, which shows the count.
+- Filters by session, `regType` (Lobbyist / Employer / all) and name.
+
+### `/lobbying/firms/[registrantId]` — Lobbyist detail (`pages/lobbying/firms/[registrantId].tsx`)
+
+- Unchanged by the redesign.
 
 ---
 

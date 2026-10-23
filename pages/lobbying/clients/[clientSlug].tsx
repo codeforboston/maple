@@ -1,254 +1,304 @@
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useMemo, useState } from "react"
+import { omit } from "lodash"
 import { useTranslation } from "next-i18next"
-import { useRouter } from "next/router"
 import { Col, Container, Row } from "components/bootstrap"
 import { createPage } from "components/page"
-import { createGetStaticTranslationProps } from "components/translations"
 import {
+  fetchClientSummary,
+  fetchLatestLobbyingCourt,
+  sumBills,
+  useLobbyingClientInHouseFilers,
   useLobbyingFilingsForClient,
-  useLobbyingClientSummary
+  useLobbyingRegistrantsByIds,
+  type ClientSummaryRow
 } from "components/db/lobbying"
-import { LobbyingFilingsTable } from "components/lobbying/LobbyingFilingsTable"
-import { normalizePosition } from "components/lobbying/activity"
-import { LobbyingPositionChip } from "components/lobbying/LobbyingPositionChip"
-import { MAPLE_COLORS } from "components/lobbying/chartTheme"
+import {
+  filterActivity,
+  groupActivity,
+  type PositionFilter
+} from "components/lobbying/activity"
+import { ActivityTable } from "components/lobbying/ActivityTable"
+import { formatCurrency, MAPLE_COLORS } from "components/lobbying/chartTheme"
+import { lobbyistMix } from "components/lobbying/clientCounts"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
+import { createLobbyingListProps } from "components/lobbying/listPageProps"
+import {
+  bigFigureRowStyle,
+  bigFigureStyle,
+  FilterLabel,
+  LobbyingFilterBar,
+  LobbyingLoadError,
+  LobbyingPanel,
+  searchStyle,
+  sessionSelectStyle,
+  summaryNoteStyle,
+  summaryStyle
+} from "components/lobbying/LobbyingPanel"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
-import { usePagination } from "components/lobbying/usePagination"
-import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
+import { PositionSelect } from "components/lobbying/PositionSelect"
+import {
+  SessionSelect,
+  type SessionFilter
+} from "components/lobbying/SessionSelect"
+import { courtName } from "components/lobbying/sessions"
+import { SosSourceLink } from "components/lobbying/SosSourceLink"
 
-const PAGE_SIZE = 25
+// The client's summary, less its firms (which the page doesn't show).
+type ClientDetailSummary = Omit<ClientSummaryRow, "firms">
 
-function ClientDetail() {
+type ClientDetailProps = {
+  clientNameNorm: string
+  // Null for a client with no summary.
+  summary: ClientDetailSummary | null
+  // The session in progress, as on the other lobbying pages: the newest one
+  // with any data (not necessarily this client's).
+  current: number
+}
+
+function ClientDetail({ clientNameNorm, summary, current }: ClientDetailProps) {
   const { t } = useTranslation("lobbying")
-  const { query } = useRouter()
 
-  const clientNameNorm = query.clientSlug
-    ? decodeURIComponent(query.clientSlug as string)
-    : ""
+  // The client's sessions, newest first; it opens on the latest. A client
+  // with no summary gets all its filings.
+  const sessions = useMemo(
+    () =>
+      Object.keys(summary?.courts ?? {})
+        .map(Number)
+        .sort((a, b) => b - a),
+    [summary]
+  )
+  const [chosen, setChosen] = useState<SessionFilter | null>(null)
+  const session: SessionFilter = chosen ?? sessions[0] ?? "all"
 
+  // Only the selected session's filings: a big client has thousands.
   const {
     result: filings,
     status: filStatus,
     error: filError
-  } = useLobbyingFilingsForClient(clientNameNorm)
-  const { result: clientSummary, status: summaryStatus } =
-    useLobbyingClientSummary(clientNameNorm)
-
-  const firms = clientSummary?.firms ?? []
-
-  const positionCounts = useMemo(() => {
-    const counts = { support: 0, oppose: 0, neutral: 0, none: 0 }
-    for (const f of filings ?? []) counts[normalizePosition(f.position)]++
-    return counts
-  }, [filings])
-
-  const totalCompensation = useMemo(
+  } = useLobbyingFilingsForClient(clientNameNorm, session)
+  // The hook keeps the last session's filings while the next one loads;
+  // leave those out, so their registrants aren't fetched for nothing.
+  const sessionFilings = useMemo(
     () =>
-      firms.reduce(
-        (sum, f) => (f.compensation != null ? sum + f.compensation : sum),
-        0
+      (filings ?? []).filter(
+        f => session === "all" || f.generalCourt === session
       ),
-    [firms]
+    [filings, session]
+  )
+  const registrants = useLobbyingRegistrantsByIds(
+    useMemo(() => sessionFilings.map(f => f.registrantId), [sessionFilings])
+  )
+  const inHouseFilers = useLobbyingClientInHouseFilers(
+    clientNameNorm,
+    session === "all" ? sessions : [session]
   )
 
-  const years = useMemo(
-    () => [...new Set((filings ?? []).map(f => f.year))].sort((a, b) => b - a),
-    [filings]
-  )
-
-  const sortedFilings = useMemo(
+  // A hook keeps its last result while it reloads, so wait for both to
+  // settle on this session's filings.
+  const activity = useMemo(
     () =>
-      [...(filings ?? [])].sort(
-        (a, b) =>
-          b.year - a.year || (a.billId ?? "").localeCompare(b.billId ?? "")
-      ),
-    [filings]
+      filStatus === "success" &&
+      registrants.status === "success" &&
+      inHouseFilers.status === "success"
+        ? groupActivity(
+            sessionFilings,
+            "bill",
+            registrants.result ?? {},
+            inHouseFilers.result ?? {}
+          )
+        : undefined,
+    [
+      filStatus,
+      sessionFilings,
+      registrants.status,
+      registrants.result,
+      inHouseFilers.status,
+      inHouseFilers.result
+    ]
   )
 
-  const { page, setPage, pageItems, totalPages, totalItems } = usePagination(
-    sortedFilings,
-    PAGE_SIZE
+  const [position, setPosition] = useState<PositionFilter>("all")
+  const [search, setSearch] = useState("")
+  const shown = useMemo(
+    () => activity && filterActivity(activity, position, search),
+    [activity, position, search]
   )
 
-  useEffect(() => {
-    setPage(1)
-  }, [clientNameNorm, setPage])
+  const failed =
+    filStatus === "error" ||
+    registrants.status === "error" ||
+    inHouseFilers.status === "error"
+  const failure = filError ?? registrants.error ?? inHouseFilers.error
 
-  const loading =
-    filStatus === "loading" ||
-    filStatus === "not-requested" ||
-    summaryStatus === "loading" ||
-    summaryStatus === "not-requested"
-
-  const displayName = filings?.[0]?.clientName ?? clientNameNorm
-
-  if (!clientNameNorm) return null
+  const displayName =
+    summary?.clientName ?? filings?.[0]?.clientName ?? clientNameNorm
+  const sessionLabel =
+    session === "all" ? t("filters.allSessions") : courtName(session)
 
   return (
     <>
       <LobbyingSubnav />
       <Container>
-        <Row className="mt-4 mb-1">
+        <Row className="mt-4 mb-4">
           <Col>
             <a
               href="/lobbying/clients"
-              style={{ color: MAPLE_COLORS.textMuted, fontSize: 13 }}
+              style={{ color: MAPLE_COLORS.primary, fontWeight: 700 }}
             >
-              ← {t("titles.clients")}
+              {t("client.back")}
             </a>
-            <h1 className="mt-2">{displayName}</h1>
-            <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 14 }}>
-              {years.length > 0 &&
-                (years.length === 1
-                  ? years[0]
-                  : `${years[years.length - 1]}–${years[0]}`)}
-              {filings && filings.length > 0 && (
-                <>
-                  &nbsp;·&nbsp; {filings.length}{" "}
-                  {t("fields.filings").toLowerCase()}
-                </>
-              )}
-              {totalCompensation > 0 && (
-                <>
-                  &nbsp;·&nbsp;{" "}
-                  {totalCompensation.toLocaleString("en-US", {
-                    style: "currency",
-                    currency: "USD",
-                    maximumFractionDigits: 0
-                  })}{" "}
-                  {t("misc.total")}
-                </>
-              )}
-            </p>
+            <h1 className="mt-3" style={{ maxWidth: 900 }}>
+              {displayName}
+            </h1>
+            <div style={subHeaderStyle}>
+              <span style={{ color: MAPLE_COLORS.graySubtleText }}>
+                {t("client.kind")}
+                {summary && registeredText(summary, t)}
+              </span>
+              <SosSourceLink
+                href={summary?.registrationUrl}
+                label={t("client.sosRegistration")}
+                style={{ fontWeight: 700 }}
+              />
+            </div>
           </Col>
         </Row>
 
-        {loading && (
-          <p style={{ color: MAPLE_COLORS.textMuted }}>{t("loading")}</p>
-        )}
-        {filStatus === "error" && (
-          <p style={{ color: MAPLE_COLORS.danger }}>
-            Error: {filError?.message}
-          </p>
-        )}
+        {failed && <LobbyingLoadError error={failure} />}
 
-        {!loading && (
-          <Row className="mt-2">
-            <Col md={8}>
-              <h5 style={sectionHeadStyle}>{t("sections.bills")}</h5>
-              <LobbyingFilingsTable
-                filings={pageItems}
-                showBill
-                showClient={false}
-                showFirm
-                showAmount
-              />
-              <LobbyingPaginationBar
-                page={page}
-                totalPages={totalPages}
-                totalItems={totalItems}
-                pageSize={PAGE_SIZE}
-                onPage={setPage}
-              />
-            </Col>
+        {summary && <ClientSummary summary={summary} session={session} />}
 
-            <Col md={4}>
-              <h5 style={sectionHeadStyle}>{t("sections.firms")}</h5>
-              {firms.length === 0 ? (
-                <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 13 }}>—</p>
-              ) : (
-                <ul style={{ paddingLeft: "1.25rem", fontSize: 13 }}>
-                  {firms.map(f => (
-                    <li
-                      key={f.entityNameNorm}
-                      style={{ marginBottom: "0.35rem" }}
-                    >
-                      <a
-                        href={`/lobbying/firms/${encodeURIComponent(
-                          f.entityNameNorm
-                        )}`}
-                        style={{ color: MAPLE_COLORS.primary }}
-                      >
-                        {f.entityName}
-                      </a>
-                      {f.years?.length > 0 && (
-                        <span
-                          style={{
-                            color: MAPLE_COLORS.textMuted,
-                            fontSize: 12
-                          }}
-                        >
-                          {" "}
-                          &middot; {t("fields.year")}{" "}
-                          {f.years.length > 1
-                            ? `${f.years[f.years.length - 1]}–${f.years[0]}`
-                            : f.years[0]}
-                        </span>
-                      )}
-                      {f.compensation != null && (
-                        <span
-                          style={{
-                            color: MAPLE_COLORS.textMuted,
-                            fontSize: 12
-                          }}
-                        >
-                          {" "}
-                          (
-                          {f.compensation.toLocaleString("en-US", {
-                            style: "currency",
-                            currency: "USD",
-                            maximumFractionDigits: 0
-                          })}
-                          )
-                        </span>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
-
-              {(filings?.length ?? 0) > 0 && (
-                <>
-                  <h5 style={{ ...sectionHeadStyle, marginTop: "1.5rem" }}>
-                    {t("filters.position")}
-                  </h5>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "0.4rem",
-                      fontSize: 13
-                    }}
-                  >
-                    {(["support", "oppose", "neutral"] as const).map(
-                      pos =>
-                        positionCounts[pos] > 0 && (
-                          <div
-                            key={pos}
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "0.5rem"
-                            }}
-                          >
-                            <LobbyingPositionChip position={pos} />
-                            <span style={{ color: MAPLE_COLORS.textMuted }}>
-                              {positionCounts[pos]}
-                            </span>
-                          </div>
-                        )
-                    )}
-                  </div>
-                </>
-              )}
-            </Col>
-          </Row>
-        )}
+        <LobbyingPanel
+          title={t("client.billsPanel", { session: sessionLabel })}
+          aside={t("client.billsHint")}
+        >
+          <LobbyingFilterBar>
+            <FilterLabel htmlFor="client-session">
+              {t("filters.session")}
+            </FilterLabel>
+            <SessionSelect
+              id="client-session"
+              sessions={sessions}
+              value={session}
+              onChange={setChosen}
+              current={current}
+              style={sessionSelectStyle}
+            />
+            <FilterLabel htmlFor="client-position">
+              {t("filters.position")}
+            </FilterLabel>
+            <PositionSelect
+              id="client-position"
+              value={position}
+              onChange={setPosition}
+              allLabel={t("filters.anyPosition")}
+            />
+            <input
+              type="search"
+              placeholder={`${t("activity.billSearch")}…`}
+              aria-label={t("client.filterBills")}
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              style={searchStyle}
+            />
+          </LobbyingFilterBar>
+          {!shown ? (
+            !failed && (
+              <p style={{ color: MAPLE_COLORS.textMuted, margin: 0 }}>
+                {t("loading")}
+              </p>
+            )
+          ) : shown.rows.length ? (
+            <ActivityTable
+              by="bill"
+              data={shown}
+              rowHref={row => `/lobbying/bills/${row.court}/${row.label}`}
+              itemLabel={t("client.items")}
+            />
+          ) : (
+            <p style={{ color: MAPLE_COLORS.textMuted, margin: 0 }}>
+              {activity?.rows.length ? t("client.noMatch") : t("noData")}
+            </p>
+          )}
+        </LobbyingPanel>
         <LobbyingAttribution className="mt-3" />
       </Container>
     </>
   )
+}
+
+function ClientSummary({
+  summary,
+  session
+}: {
+  summary: ClientDetailSummary
+  session: SessionFilter
+}) {
+  const { t } = useTranslation("lobbying")
+  const all = session === "all"
+  const c = all ? undefined : summary.courts?.[String(session)]
+  const bills = all ? sumBills(summary.courts) : c?.bills
+  const paid = all ? summary.totalCompensation : c?.compensation
+  const mix = lobbyistMix(all ? summary : c, session)
+  const where = all
+    ? t("client.whereAll")
+    : t("overview.whereSession", { session: courtName(session) })
+
+  return (
+    <LobbyingPanel
+      title={t("client.summary", {
+        session: all ? t("filters.allSessions") : courtName(session)
+      })}
+    >
+      <div style={summaryStyle}>
+        <div style={{ flex: "0 1 240px" }}>
+          <div style={bigFigureRowStyle}>
+            <span style={bigFigureStyle}>{bills ?? "—"}</span>
+            <span style={{ fontWeight: 700 }}>
+              {t("client.bills", { count: bills ?? 0 })}
+            </span>
+          </div>
+          {mix && mix.total > 0 && (
+            <div style={summaryNoteStyle}>
+              {t("client.reportedBy", {
+                lobbyists: t("client.lobbyists", { count: mix.total }),
+                inHouse:
+                  mix.inHouse === mix.total
+                    ? t("clients.allInHouse")
+                    : mix.inHouse
+                    ? t("clients.inHouse", { count: mix.inHouse })
+                    : t("client.noneInHouse")
+              })}
+            </div>
+          )}
+        </div>
+        <div style={{ flex: "999 1 380px", minWidth: 0 }}>
+          <div style={bigFigureRowStyle}>
+            <span style={bigFigureStyle}>
+              {paid != null ? formatCurrency(paid) : "—"}
+            </span>
+            <span style={{ fontWeight: 700 }}>{t("client.paidLabel")}</span>
+          </div>
+          <div style={summaryNoteStyle}>{t("client.paidNote", { where })}</div>
+        </div>
+      </div>
+    </LobbyingPanel>
+  )
+}
+
+// " · registered 2010 – 2026", or nothing when the dates are unknown.
+function registeredText(
+  summary: ClientDetailSummary,
+  t: ReturnType<typeof useTranslation>["t"]
+) {
+  const from = summary.firstRegistered?.slice(0, 4)
+  const to = summary.lastRegisteredYear
+  if (!from) return null
+  return ` · ${
+    to && String(to) !== from
+      ? t("client.registered", { from, to })
+      : t("client.registeredSince", { from })
+  }`
 }
 
 export default createPage({
@@ -256,22 +306,29 @@ export default createPage({
   Page: ClientDetail
 })
 
-export const getStaticProps = createGetStaticTranslationProps([
-  "auth",
-  "common",
-  "footer",
-  "lobbying"
-])
+export const getStaticProps = createLobbyingListProps<ClientDetailProps>(
+  async ({ params }) => {
+    const clientNameNorm = decodeURIComponent(String(params?.clientSlug ?? ""))
+    const [summary, current] = await Promise.all([
+      fetchClientSummary(clientNameNorm),
+      fetchLatestLobbyingCourt()
+    ])
+    return {
+      clientNameNorm,
+      summary: summary ? omit(summary, "firms") : null,
+      current
+    }
+  }
+)
 
 export async function getStaticPaths() {
   return { paths: [], fallback: "blocking" }
 }
 
-const sectionHeadStyle: React.CSSProperties = {
-  fontSize: 12,
-  fontWeight: 700,
-  textTransform: "uppercase",
-  letterSpacing: "0.06em",
-  color: MAPLE_COLORS.textMuted,
-  marginBottom: "0.6rem"
+const subHeaderStyle: React.CSSProperties = {
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "baseline",
+  gap: "0.375rem 1.25rem",
+  fontSize: 14
 }

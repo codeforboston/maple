@@ -2,10 +2,25 @@ import React, { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "next-i18next"
 import { Col, Container, Row } from "components/bootstrap"
 import { createPage } from "components/page"
-import { FirmListRow, fetchFirmListRows } from "components/db/lobbying"
+import {
+  fetchFirmListRows,
+  fetchLatestLobbyingCourt,
+  type FirmListRow
+} from "components/db/lobbying"
 import { createLobbyingListProps } from "components/lobbying/listPageProps"
-import { MAPLE_COLORS } from "components/lobbying/chartTheme"
+import { formatCount, MAPLE_COLORS } from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
+import {
+  FilterLabel,
+  LobbyingFilterBar,
+  LobbyingPanel,
+  listTableStyle,
+  listTdStyle,
+  searchStyle,
+  selectStyle,
+  sessionSelectStyle,
+  subTextStyle
+} from "components/lobbying/LobbyingPanel"
 import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
@@ -33,13 +48,20 @@ type FirmRow = {
   hasFilings: boolean
 }
 
-function LobbyingFirmsTable({ rows }: { rows: FirmListRow[] }) {
+type FirmsPageProps = {
+  rows: FirmListRow[]
+  // The session in progress, as on the other lobbying pages: the newest one
+  // with any data. The list opens on it.
+  currentCourt: number
+}
+
+function LobbyingFirmsTable({ rows, currentCourt }: FirmsPageProps) {
   const { t } = useTranslation("lobbying")
   const [regTypeFilter, setRegTypeFilter] = useState<
     "all" | "Lobbyist" | "Employer"
   >("all")
   const [search, setSearch] = useState("")
-  const [session, setSession] = useState<SessionFilter>("all")
+  const [session, setSession] = useState<SessionFilter>(currentCourt)
   const [sortKey, setSortKey] = useState<FirmSortKey>("name")
   const [sortDir, setSortDir] = useState<SortDir>("asc")
 
@@ -139,12 +161,18 @@ function LobbyingFirmsTable({ rows }: { rows: FirmListRow[] }) {
 
   return (
     <>
-      <div style={filterRowStyle}>
+      <LobbyingFilterBar boxed>
+        <FilterLabel htmlFor="firms-session">
+          {t("filters.session")}
+        </FilterLabel>
         <SessionSelect
+          id="firms-session"
           sessions={sessions}
           value={session}
           onChange={setSession}
-          style={selectStyle}
+          current={currentCourt}
+          allLabel={t("filters.allSessionsSince")}
+          style={sessionSelectStyle}
         />
         <select
           value={regTypeFilter}
@@ -164,125 +192,127 @@ function LobbyingFirmsTable({ rows }: { rows: FirmListRow[] }) {
           placeholder={t("filters.search")}
           value={search}
           onChange={e => setSearch(e.target.value)}
-          style={{ ...selectStyle, minWidth: 220, cursor: "text" }}
+          style={searchStyle}
           aria-label={t("filters.search")}
         />
-      </div>
+      </LobbyingFilterBar>
 
-      <>
-        <p
-          style={{
-            color: MAPLE_COLORS.textMuted,
-            fontSize: 13,
-            marginBottom: "0.5rem"
-          }}
-        >
-          {totalItems} {t("sections.firms").toLowerCase()}
-        </p>
-        <div style={{ overflowX: "auto" }}>
-          <table style={tableStyle}>
-            <thead>
-              <tr style={theadStyle}>
-                <SortTh
-                  label={t("fields.firmName")}
-                  sortKey="name"
-                  current={sortKey}
-                  dir={sortDir}
-                  onSort={handleSort}
-                />
-                <th style={thStyle}>{t("fields.type")}</th>
-                <SortTh
-                  label={t("fields.sessions")}
-                  sortKey="sessions"
-                  current={sortKey}
-                  dir={sortDir}
-                  onSort={handleSort}
-                />
-                <SortTh
-                  label={t("fields.clients")}
-                  sortKey="clients"
-                  current={sortKey}
-                  dir={sortDir}
-                  onSort={handleSort}
-                />
-                <SortTh
-                  label={t("fields.filings")}
-                  sortKey="filings"
-                  current={sortKey}
-                  dir={sortDir}
-                  onSort={handleSort}
-                />
-              </tr>
-            </thead>
-            <tbody>
-              {pageItems.map(f => (
-                <tr key={f.entityNameNorm} style={trStyle}>
-                  <td style={tdStyle}>
-                    <a
-                      href={`/lobbying/firms/${encodeURIComponent(
-                        f.entityNameNorm
-                      )}`}
-                      style={{ color: MAPLE_COLORS.primary, fontWeight: 600 }}
-                    >
-                      {f.entityName}
-                    </a>
-                    {f.matchedLobbyists.length > 0 && (
-                      <div
-                        style={{
-                          color: MAPLE_COLORS.textMuted,
-                          fontSize: 12
-                        }}
-                      >
-                        {t("misc.matchedLobbyists", {
-                          names: f.matchedLobbyists.join(", ")
-                        })}
-                      </div>
-                    )}
-                    {f.employers.length > 0 && (
-                      <div
-                        style={{
-                          color: MAPLE_COLORS.textMuted,
-                          fontSize: 12
-                        }}
-                      >
-                        {t("misc.atFirms", { firms: f.employers.join(", ") })}
-                      </div>
-                    )}
-                  </td>
-                  <td style={tdStyle}>{regTypeLabel(f.regType, t)}</td>
-                  <td
-                    style={{
-                      ...tdStyle,
-                      color: MAPLE_COLORS.textMuted,
-                      fontSize: 12
-                    }}
-                  >
-                    {f.years.length === 1
-                      ? f.years[0]
-                      : `${f.years[f.years.length - 1]}–${f.years[0]}`}
-                  </td>
-                  <td style={tdStyle}>{f.hasFilings ? f.clientCount : "—"}</td>
-                  <td style={{ ...tdStyle, color: MAPLE_COLORS.textMuted }}>
-                    {f.totalFilings !== undefined ? f.totalFilings : "—"}
-                  </td>
+      <LobbyingPanel
+        title={t("sections.firms")}
+        aside={
+          <strong>
+            {t("firmList.count", {
+              count: totalItems,
+              n: formatCount(totalItems)
+            })}
+          </strong>
+        }
+      >
+        <div>
+          <div style={{ overflowX: "auto" }}>
+            <table style={listTableStyle(720)}>
+              {/* Fixed widths, so a re-sort that brings in other rows
+                  doesn't resize the columns. */}
+              <colgroup>
+                <col />
+                <col style={{ width: 160 }} />
+                <col style={{ width: 120 }} />
+                <col style={{ width: 190 }} />
+                <col style={{ width: 100 }} />
+              </colgroup>
+              <thead>
+                <tr>
+                  <SortTh
+                    label={t("fields.firmName")}
+                    sortKey="name"
+                    current={sortKey}
+                    dir={sortDir}
+                    onSort={handleSort}
+                  />
+                  <th style={thStyle}>{t("fields.type")}</th>
+                  <SortTh
+                    label={t("fields.sessions")}
+                    sortKey="sessions"
+                    current={sortKey}
+                    dir={sortDir}
+                    onSort={handleSort}
+                  />
+                  <SortTh
+                    label={t("fields.clients")}
+                    sortKey="clients"
+                    current={sortKey}
+                    dir={sortDir}
+                    onSort={handleSort}
+                  />
+                  <SortTh
+                    label={t("fields.filings")}
+                    sortKey="filings"
+                    current={sortKey}
+                    dir={sortDir}
+                    onSort={handleSort}
+                  />
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {pageItems.map(f => (
+                  <tr key={f.entityNameNorm}>
+                    <td style={listTdStyle}>
+                      <a
+                        href={`/lobbying/firms/${encodeURIComponent(
+                          f.entityNameNorm
+                        )}`}
+                        style={{ color: MAPLE_COLORS.primary, fontWeight: 700 }}
+                      >
+                        {f.entityName}
+                      </a>
+                      {f.matchedLobbyists.length > 0 && (
+                        <div style={subTextStyle}>
+                          {t("misc.matchedLobbyists", {
+                            names: f.matchedLobbyists.join(", ")
+                          })}
+                        </div>
+                      )}
+                      {f.employers.length > 0 && (
+                        <div style={subTextStyle}>
+                          {t("misc.atFirms", { firms: f.employers.join(", ") })}
+                        </div>
+                      )}
+                    </td>
+                    <td style={listTdStyle}>
+                      <span style={typePillStyle(f.regType)}>
+                        {regTypeLabel(f.regType, t)}
+                      </span>
+                    </td>
+                    <td style={{ ...listTdStyle, whiteSpace: "nowrap" }}>
+                      {f.years.length === 1
+                        ? f.years[0]
+                        : `${f.years[f.years.length - 1]}–${f.years[0]}`}
+                    </td>
+                    <td style={figureTdStyle}>
+                      {f.hasFilings ? f.clientCount : "—"}
+                    </td>
+                    <td style={figureTdStyle}>
+                      {f.totalFilings !== undefined ? f.totalFilings : "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <LobbyingPaginationBar
+            page={page}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            pageSize={PAGE_SIZE}
+            onPage={setPage}
+          />
         </div>
-        <LobbyingPaginationBar
-          page={page}
-          totalPages={totalPages}
-          totalItems={totalItems}
-          pageSize={PAGE_SIZE}
-          onPage={setPage}
-        />
-      </>
+      </LobbyingPanel>
     </>
   )
 }
 
-function LobbyingFirmsPage({ rows }: { rows: FirmListRow[] }) {
+function LobbyingFirmsPage(props: FirmsPageProps) {
   const { t } = useTranslation("lobbying")
   return (
     <>
@@ -298,7 +328,7 @@ function LobbyingFirmsPage({ rows }: { rows: FirmListRow[] }) {
         </Row>
         <Row>
           <Col>
-            <LobbyingFirmsTable rows={rows} />
+            <LobbyingFirmsTable {...props} />
           </Col>
         </Row>
         <Row>
@@ -316,39 +346,34 @@ export default createPage({
   Page: LobbyingFirmsPage
 })
 
-export const getStaticProps = createLobbyingListProps(async () => ({
-  rows: await fetchFirmListRows()
-}))
+export const getStaticProps = createLobbyingListProps<FirmsPageProps>(
+  async () => {
+    const [rows, currentCourt] = await Promise.all([
+      fetchFirmListRows(),
+      fetchLatestLobbyingCourt()
+    ])
+    return { rows, currentCourt }
+  }
+)
 
-const filterRowStyle: React.CSSProperties = {
-  display: "flex",
-  gap: "0.75rem",
-  flexWrap: "wrap",
-  marginBottom: "1rem",
-  alignItems: "center"
-}
-const selectStyle: React.CSSProperties = {
-  padding: "0.35rem 0.65rem",
-  border: `1px solid ${MAPLE_COLORS.borderDefault}`,
-  borderRadius: 6,
-  fontSize: 14,
-  color: MAPLE_COLORS.textBody,
-  background: MAPLE_COLORS.surfaceBase,
-  cursor: "pointer"
-}
-const tableStyle: React.CSSProperties = {
-  width: "100%",
-  borderCollapse: "collapse",
-  fontSize: 13,
-  color: MAPLE_COLORS.textBody
-}
-const theadStyle: React.CSSProperties = {
-  borderBottom: `2px solid ${MAPLE_COLORS.borderDefault}`
-}
-const trStyle: React.CSSProperties = {
-  borderBottom: `1px solid ${MAPLE_COLORS.borderSubtle}`
-}
-const tdStyle: React.CSSProperties = {
-  padding: "0.45rem 0.75rem",
-  verticalAlign: "middle"
+// The registration type as a pill; entities a shade darker than individuals.
+const typePillStyle = (regType: string): React.CSSProperties => ({
+  display: "inline-block",
+  padding: "3px 10px",
+  borderRadius: 999,
+  background:
+    regType === "Employer"
+      ? MAPLE_COLORS.blueBorder
+      : MAPLE_COLORS.blueSubtleBg,
+  color: MAPLE_COLORS.textStrong,
+  fontSize: 12,
+  fontWeight: 700,
+  whiteSpace: "nowrap"
+})
+
+// Counts stand out, as on the other lists.
+const figureTdStyle: React.CSSProperties = {
+  ...listTdStyle,
+  fontWeight: 700,
+  color: MAPLE_COLORS.textStrong
 }

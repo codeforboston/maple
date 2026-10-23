@@ -35,6 +35,7 @@ describe("ActivityTable", () => {
     clientName: "Widget Co",
     clientNameNorm: "widget co",
     year: 2025,
+    generalCourt: 194,
     billId: "H100",
     activityTitle: "An Act relative to widgets",
     position: "Support",
@@ -64,5 +65,70 @@ describe("ActivityTable", () => {
     expect(
       screen.getByRole("link", { name: /viewOnSosLabel/ })
     ).toHaveAttribute("href", "https://sos.example/d1")
+  })
+
+  it("sorts by organization and by filings", async () => {
+    const filings = [
+      { ...filing, clientName: "Beta Org", clientNameNorm: "beta org" },
+      { ...filing, clientName: "Alpha Org", clientNameNorm: "alpha org" },
+      { ...filing, clientName: "Beta Org", clientNameNorm: "beta org" }
+    ]
+    render(
+      <ActivityTable
+        by="client"
+        data={groupActivity(filings, "client", {}, {})}
+      />
+    )
+    const labels = () =>
+      screen
+        .getAllByRole("button", { name: /showFilers/ })
+        .map(b => b.getAttribute("aria-label"))
+    expect(labels()).toEqual([
+      "activity.showFilers(Alpha Org)",
+      "activity.showFilers(Beta Org)"
+    ])
+
+    await userEvent.click(
+      screen.getByRole("button", { name: /fields.filings/ })
+    )
+    expect(labels()).toEqual([
+      "activity.showFilers(Beta Org)",
+      "activity.showFilers(Alpha Org)"
+    ])
+
+    await userEvent.click(
+      screen.getByRole("button", { name: /activity.column.client/ })
+    )
+    await userEvent.click(
+      screen.getByRole("button", { name: /activity.column.client/ })
+    )
+    expect(labels()).toEqual([
+      "activity.showFilers(Beta Org)",
+      "activity.showFilers(Alpha Org)"
+    ])
+  })
+
+  it("toggles a row from a click anywhere on it, but not from its link", async () => {
+    render(
+      <ActivityTable
+        by="client"
+        data={groupActivity([filing], "client", {}, {})}
+        rowHref={() => "#widget-co"}
+      />
+    )
+    const toggle = screen.getByRole("button", { name: /showFilers/ })
+
+    await userEvent.click(screen.getByText("activity.filings(1)"))
+    expect(toggle).toHaveAttribute("aria-expanded", "true")
+
+    await userEvent.click(screen.getByText("activity.filings(1)"))
+    expect(toggle).toHaveAttribute("aria-expanded", "false")
+
+    await userEvent.click(screen.getByRole("link", { name: "Widget Co" }))
+    expect(toggle).toHaveAttribute("aria-expanded", "false")
+
+    // The button's own click toggles once, not twice.
+    await userEvent.click(toggle)
+    expect(toggle).toHaveAttribute("aria-expanded", "true")
   })
 })
