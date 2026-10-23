@@ -4,9 +4,12 @@ import {
   naturalCompare,
   type Activity,
   type ActivityFiler,
-  type ActivityRow
+  type ActivityRow,
+  type Position,
+  courtOfPeriod,
+  sessionPeriodsWith
 } from "./activity"
-import { MAPLE_COLORS } from "./chartTheme"
+import { MAPLE_COLORS, POSITION_TONES } from "./chartTheme"
 import { LobbyingPaginationBar } from "./LobbyingPaginationBar"
 import { LobbyingPositionChip } from "./LobbyingPositionChip"
 import { SortTh, thStyle, type SortDir } from "./SortTh"
@@ -288,9 +291,16 @@ export function ActivityTable({
 
 function FilerList({ row, data }: { row: ActivityRow; data: Activity }) {
   const { t } = useTranslation("lobbying")
-  // The row's own periods, newest first, so each filer's history lines up.
-  const periods = data.periods.filter(p =>
-    row.filers.some(f => f.byPeriod[p.key])
+  // Every report period of the row's session so far, newest first, so each
+  // filer's history lines up and a period without a filing shows as an empty
+  // square. A bill's page has one session; a client's rows each carry theirs.
+  const court = row.court ?? (data.periods[0] && courtOfPeriod(data.periods[0]))
+  const periods = useMemo(
+    () =>
+      court === undefined
+        ? []
+        : sessionPeriodsWith(court, data.periods, new Date()),
+    [court, data.periods]
   )
   return (
     <div
@@ -326,19 +336,25 @@ function FilerList({ row, data }: { row: ActivityRow; data: Activity }) {
                     gap: 4
                   }}
                 >
-                  <span style={periodCaptionStyle}>{p.label}</span>
-                  {filer.byPeriod[p.key] ? (
-                    filer.byPeriod[p.key].positions.map(pos => (
-                      <LobbyingPositionChip key={pos} position={pos} />
-                    ))
-                  ) : (
-                    <span
-                      title={t("activity.noFiling")}
-                      style={{ color: MAPLE_COLORS.textMuted }}
-                    >
-                      —
-                    </span>
-                  )}
+                  <span style={periodCaptionStyle}>{p.short}</span>
+                  <div style={squareRowStyle}>
+                    {/* An empty square for a period with no filing. */}
+                    {(filer.byPeriod[p.key]?.positions ?? [undefined]).map(
+                      pos => (
+                        <PositionSquare
+                          key={pos ?? "no-filing"}
+                          position={pos}
+                          letter={pos && t(`positionShort.${pos}`)}
+                          label={t("activity.periodPosition", {
+                            period: p.label,
+                            position: t(
+                              pos ? `position.${pos}` : "activity.noFiling"
+                            )
+                          })}
+                        />
+                      )
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -381,6 +397,29 @@ function FilerList({ row, data }: { row: ActivityRow; data: Activity }) {
   )
 }
 
+/** One period's position as a lettered square, or an empty dashed square
+ * for a period without a filing. */
+function PositionSquare({
+  position,
+  letter,
+  label
+}: {
+  position?: Position
+  letter?: string
+  label: string
+}) {
+  return (
+    <span
+      role="img"
+      aria-label={label}
+      title={label}
+      style={position ? SQUARE_STYLES[position] : EMPTY_SQUARE_STYLE}
+    >
+      {letter}
+    </span>
+  )
+}
+
 function filerKind(filer: ActivityFiler, t: TFunction) {
   if (filer.inHouse) return t("activity.inHouse")
   if (filer.agents.length)
@@ -408,10 +447,38 @@ const toggleStyle: React.CSSProperties = {
   fontSize: 14
 }
 
+const squareStyle: React.CSSProperties = {
+  width: 26,
+  height: 26,
+  boxSizing: "border-box",
+  borderRadius: 5,
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: 14,
+  fontWeight: 700
+}
+
+const SQUARE_STYLES = Object.fromEntries(
+  Object.entries(POSITION_TONES).map(([p, tone]) => [
+    p,
+    { ...squareStyle, ...tone.square }
+  ])
+) as Record<Position, React.CSSProperties>
+
+const EMPTY_SQUARE_STYLE: React.CSSProperties = {
+  ...squareStyle,
+  background: MAPLE_COLORS.surfaceBase,
+  border: `1.5px dashed ${MAPLE_COLORS.textMuted}`
+}
+
+const squareRowStyle: React.CSSProperties = { display: "flex", gap: 4 }
+
 const periodCaptionStyle: React.CSSProperties = {
   fontSize: 11,
   fontWeight: 700,
   letterSpacing: "0.04em",
+  textTransform: "uppercase",
   color: MAPLE_COLORS.textMuted,
   whiteSpace: "nowrap"
 }

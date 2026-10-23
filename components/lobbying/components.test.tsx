@@ -131,4 +131,50 @@ describe("ActivityTable", () => {
     await userEvent.click(toggle)
     expect(toggle).toHaveAttribute("aria-expanded", "true")
   })
+
+  it("lists every period for each filer, with an empty square when they didn't file", async () => {
+    const filings = [
+      filing,
+      {
+        ...filing,
+        periodEnd: "2025-12-31",
+        disclosureUrl: "https://sos.example/d2"
+      },
+      {
+        ...filing,
+        entityName: "Staffer",
+        entityNameNorm: "staffer",
+        position: "Oppose",
+        disclosureUrl: "https://sos.example/d3"
+      }
+    ]
+    // The 194th's periods that have ended by then: Jan–Jun 2025 through
+    // Jan–Jun 2026.
+    jest.useFakeTimers({ now: new Date("2026-10-23"), advanceTimers: true })
+    let squares: (string | null)[]
+    try {
+      render(
+        <ActivityTable
+          by="client"
+          data={groupActivity(filings, "client", {}, {})}
+        />
+      )
+      await userEvent.click(screen.getByRole("button", { name: /showFilers/ }))
+      squares = screen
+        .getAllByRole("img")
+        .map(el => el.getAttribute("aria-label"))
+    } finally {
+      jest.useRealTimers()
+    }
+    // Each filer gets every period, newest first, empty where they didn't
+    // file (no one filed in Jan–Jun 2026; Staffer not in Jul–Dec 2025).
+    expect(squares).toEqual([
+      "activity.periodPosition(Jan–Jun 2026|activity.noFiling)",
+      "activity.periodPosition(Jul–Dec 2025|position.support)",
+      "activity.periodPosition(Jan–Jun 2025|position.support)",
+      "activity.periodPosition(Jan–Jun 2026|activity.noFiling)",
+      "activity.periodPosition(Jul–Dec 2025|activity.noFiling)",
+      "activity.periodPosition(Jan–Jun 2025|position.oppose)"
+    ])
+  })
 })

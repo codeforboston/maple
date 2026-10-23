@@ -124,7 +124,8 @@
     "whoFirmAgents_other": "{{name}} ({{count}} agents)",
     "barLabel": "Positions by organization: {{counts}}",
     "barSegment_one": "{{position}}: {{count}} organization",
-    "barSegment_other": "{{position}}: {{count}} organizations"
+    "barSegment_other": "{{position}}: {{count}} organizations",
+    "periodPosition": "{{period}}: {{position}}"
   },
   "overview": {
     "keyFigures": "Key figures · {{session}}",
@@ -226,5 +227,11 @@
   },
   "errors": {
     "unavailable": "Failed to get document because the server is not available."
+  },
+  "positionShort": {
+    "support": "S",
+    "oppose": "O",
+    "neutral": "N",
+    "none": "–"
   }
 }

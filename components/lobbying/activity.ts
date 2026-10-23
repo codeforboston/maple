@@ -2,6 +2,7 @@ import { uniq } from "lodash"
 import type { RegistrantInfo } from "components/db/lobbying"
 import type { LobbyingFiling } from "functions/src/lobbying/types"
 import { matchesSearch } from "./searchMatch"
+import { courtStartYear, yearToCourt } from "./sessions"
 
 export type Position = "support" | "oppose" | "neutral" | "none"
 
@@ -44,7 +45,50 @@ export type ActivityFiling = Pick<
  * period's last day ("2025-06-30"), or just the year ("2025") when the filing
  * and its registrant both lack a period, which sorts before that year's
  * dated periods. */
-export type Period = { key: string; label: string }
+export type Period = {
+  key: string
+  label: string
+  // A compact label for tight spaces: "Jan–Jun 26".
+  short: string
+}
+
+function halfYear(year: number, half: 1 | 2): Period {
+  const months = half === 1 ? "Jan–Jun" : "Jul–Dec"
+  return {
+    key: `${year}-${half === 1 ? "06-30" : "12-31"}`,
+    label: `${months} ${year}`,
+    short: `${months} ${String(year).slice(2)}`
+  }
+}
+
+/** The session (General Court) a period belongs to. */
+export function courtOfPeriod(period: Period): number {
+  return yearToCourt(Number(period.key.slice(0, 4)))
+}
+
+/** A session's report periods that have ended by `today`, newest first:
+ * every half-year a filing could cover, whether or not anyone filed. */
+export function sessionPeriods(court: number, today: Date): Period[] {
+  const start = courtStartYear(court)
+  const iso = today.toISOString().slice(0, 10)
+  return [start, start + 1]
+    .flatMap(year => [halfYear(year, 1), halfYear(year, 2)])
+    .filter(p => p.key < iso)
+    .reverse()
+}
+
+/** A session's report periods by `today`, plus the year-only periods of its
+ * filings that have no reporting window (which sessionPeriods can't
+ * generate), newest first. */
+export function sessionPeriodsWith(
+  court: number,
+  known: Period[],
+  today: Date
+): Period[] {
+  const byKey = new Map(sessionPeriods(court, today).map(p => [p.key, p]))
+  for (const p of known) if (courtOfPeriod(p) === court) byKey.set(p.key, p)
+  return [...byKey.values()].sort((a, b) => (a.key < b.key ? 1 : -1))
+}
 
 /** The filing's half-year period: from the filing, else its registrant, else
  * the filing's year. */
@@ -55,11 +99,12 @@ export function periodOf(
   const end =
     filing.periodEnd ?? registrants[filing.registrantId]?.periodEnd ?? null
   const match = end && /^(\d{4})-(\d{2})/.exec(end)
-  if (!match) return { key: String(filing.year), label: String(filing.year) }
+  if (!match) {
+    const year = String(filing.year)
+    return { key: year, label: year, short: year }
+  }
   const [, year, month] = match
-  return Number(month) <= 6
-    ? { key: `${year}-06-30`, label: `Jan–Jun ${year}` }
-    : { key: `${year}-12-31`, label: `Jul–Dec ${year}` }
+  return halfYear(Number(year), Number(month) <= 6 ? 1 : 2)
 }
 
 export type FilerPeriod = { positions: Position[]; disclosureUrls: string[] }
