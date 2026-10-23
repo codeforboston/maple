@@ -32,18 +32,13 @@ import {
   summaryStyle
 } from "components/lobbying/LobbyingPanel"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
-import { MAPLE_COLORS } from "components/lobbying/chartTheme"
+import {
+  MAPLE_COLORS,
+  POSITION_TEXT_COLORS
+} from "components/lobbying/chartTheme"
 import { PositionBar } from "components/lobbying/PositionBar"
 import { PositionSelect } from "components/lobbying/PositionSelect"
 import { courtName } from "components/lobbying/sessions"
-
-// Large position counts, in shades dark enough to read as text.
-const COUNT_COLORS = {
-  support: MAPLE_COLORS.greenSubtleText,
-  oppose: MAPLE_COLORS.orangeSubtleText,
-  neutral: MAPLE_COLORS.primary,
-  multiple: MAPLE_COLORS.purple
-} as const
 
 function BillLobbyingPage() {
   const { t } = useTranslation("lobbying")
@@ -169,7 +164,9 @@ function BillLobbyingPage() {
                   <PositionBar height={16} counts={breakdown} />
                   <ul style={countsStyle}>
                     {(
-                      Object.keys(COUNT_COLORS) as (keyof typeof COUNT_COLORS)[]
+                      Object.keys(
+                        POSITION_TEXT_COLORS
+                      ) as (keyof typeof POSITION_TEXT_COLORS)[]
                     )
                       .filter(p => breakdown[p] > 0)
                       .map(p => (
@@ -178,7 +175,7 @@ function BillLobbyingPage() {
                             style={{
                               fontSize: 22,
                               fontWeight: 700,
-                              color: COUNT_COLORS[p]
+                              color: POSITION_TEXT_COLORS[p]
                             }}
                           >
                             {breakdown[p]}

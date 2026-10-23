@@ -4,7 +4,7 @@ import { useLobbyingFilingsForBill } from "components/db/lobbying"
 import { LobbyingFilingsTable } from "./LobbyingFilingsTable"
 import { LobbyingPaginationBar } from "./LobbyingPaginationBar"
 import { usePagination } from "./usePagination"
-import { MAPLE_COLORS } from "./chartTheme"
+import { MAPLE_COLORS, POSITION_COLORS } from "./chartTheme"
 import { normalizePosition } from "./activity"
 import { BetaTag } from "components/shared/CommonComponents"
 
@@ -83,17 +83,17 @@ export const LobbyingBillCard: React.FC<LobbyingBillCardProps> = ({
       <div style={legendRowStyle}>
         <LegendItem
           label={t("lobbying:position.support")}
-          color={MAPLE_COLORS.green}
+          color={POSITION_COLORS.support}
           count={counts.support}
         />
         <LegendItem
           label={t("lobbying:position.oppose")}
-          color={MAPLE_COLORS.accent}
+          color={POSITION_COLORS.oppose}
           count={counts.oppose}
         />
         <LegendItem
           label={t("lobbying:position.neutral")}
-          color={MAPLE_COLORS.primary}
+          color={POSITION_COLORS.neutral}
           count={counts.neutral}
         />
       </div>
@@ -131,7 +131,7 @@ const PositionBar: React.FC<{
           style={{
             ...barSegmentStyle,
             width: pct(counts.support),
-            background: MAPLE_COLORS.green,
+            background: POSITION_COLORS.support,
             borderRadius:
               counts.oppose === 0 && counts.neutral === 0
                 ? "4px"
@@ -144,7 +144,7 @@ const PositionBar: React.FC<{
           style={{
             ...barSegmentStyle,
             width: pct(counts.oppose),
-            background: MAPLE_COLORS.accent,
+            background: POSITION_COLORS.oppose,
             borderRadius:
               counts.support === 0 && counts.neutral === 0
                 ? "4px"
@@ -161,7 +161,7 @@ const PositionBar: React.FC<{
           style={{
             ...barSegmentStyle,
             width: pct(counts.neutral),
-            background: MAPLE_COLORS.primary,
+            background: POSITION_COLORS.neutral,
             borderRadius: "0 4px 4px 0"
           }}
         />
