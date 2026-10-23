@@ -741,7 +741,8 @@ def test_compute_stats_per_session_counts_for_list_filters():
     firm = {d["entityNameNorm"]: d for d in _batch_set_dicts_with_key(db, "clientCount")}["LARKSPUR STRATEGIES GROUP"]
     assert firm["courts"] == {"193": {"filings": 1, "clientCount": 2}, "194": {"filings": 2, "clientCount": 1}}
     client = {d["clientNameNorm"]: d for d in _batch_set_dicts_with_key(db, "registrantCount")}["CLIENT A"]
-    others = {"bills": 0, "inHouseCount": 0, "individuals": 0, "firmAgents": 0}
+    others = {"bills": 0, "inHouseCount": 0, "individuals": 0, "firmAgents": 0,
+              "inHouseLobbyists": 0, "hiredFirms": 1}
     assert client["courts"] == {
         "193": {"filings": 1, "lobbyistCount": 1, "compensation": 1000.0, **others},
         "194": {"filings": 2, "lobbyistCount": 1, "compensation": 2000.0, **others},
@@ -932,3 +933,36 @@ def test_compute_stats_staff_registered_with_their_organization_as_client_are_in
     assert clients["CHAMBER"]["courts"]["189"]["inHouseCount"] == 1
     assert doc_mocks["inHouseFilers_194"].set.call_args[0][0] == {"CHAMBER": ["STAFFER"]}
     assert doc_mocks["inHouseFilers_189"].set.call_args[0][0] == {"CHAMBER": ["OLD STAFFER"]}
+
+
+def test_compute_stats_counts_in_house_and_hired_lobbyists_per_client():
+    """Every lobbyist or entity working for a client in a session is either
+    its own staff or hired, counted from one set so the two add up; a hired
+    individual counts as a one-person firm (and as its own agent)."""
+    other_firm = [{"name": "Other Firm", "nameNorm": "OTHER FIRM"}]
+    client = [{"name": "Client A", "nameNorm": "CLIENT A"}]
+    registrations = [
+        _registration("STAFFER", 2025, clients=client),               # in-house
+        _registration("INDIE", 2025, employers=other_firm),           # hired individual
+        _registration("SWITCHER", 2023, clients=client),              # in-house in the 193rd...
+        _registration("SWITCHER", 2025, employers=other_firm),        # ...hired in the 194th
+    ]
+    registrants = [
+        _registrant("FIRM 1", 2025, clients=[("CLIENT A", 1.0)]),
+        _registrant("FIRM 2", 2025, clients=[("CLIENT A", 1.0)]),
+        _registrant("FIRM 1", 2023, clients=[("CLIENT A", 1.0)]),
+    ]
+    filings = [
+        _filing("STAFFER", "CLIENT A"), _filing("CLIENT A", "CLIENT A"),  # the client files for itself
+        _filing("INDIE", "CLIENT A"), _filing("SWITCHER", "CLIENT A"),
+        _filing("SWITCHER", "CLIENT A", court=193, year=2023),
+    ]
+    _, _, clients = _run_stats(registrants=registrants, registrations=registrations, filings=filings)
+    a = clients["CLIENT A"]
+    s194, s193 = a["courts"]["194"], a["courts"]["193"]
+    # 194th: staff and the client itself vs two firms, the independent and the switcher.
+    assert (s194["inHouseLobbyists"], s194["hiredFirms"]) == (2, 4)
+    assert s194["firmAgents"] == 2  # the two hired individuals, each its own agent
+    assert (s193["inHouseLobbyists"], s193["hiredFirms"]) == (1, 1)
+    # All time: in-house anywhere wins, so SWITCHER counts once, as in-house.
+    assert (a["inHouseLobbyists"], a["hiredFirms"]) == (3, 3)

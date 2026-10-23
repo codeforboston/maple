@@ -364,16 +364,26 @@ export type ClientSummaryRow = {
       // Distinct people lobbying for the client, and the part who aren't its
       // own staff (a hired firm's agents, or a hired individual lobbyist).
       // Firms name their agents from 2014, so show these from the 189th
-      // session (2015–16) on and lobbyistCount before it: the 188th (2013–14)
-      // has no 2013 firm agents, and earlier sessions count only individual
-      // filers.
+      // session (2015–16) on: the 188th (2013–14) has no 2013 firm agents, and
+      // earlier sessions count only individual filers.
       individuals?: number
       firmAgents?: number
+      // Lobbyists and entities working for the client, split into its own
+      // staff and those it hired, counted from one set so they add up; a
+      // hired individual counts as a one-person firm. From the 189th on,
+      // pair hiredFirms with individuals/firmAgents ("k in-house · m firms
+      // (n agents)"); before it, and for all sessions, the total is
+      // inHouseLobbyists + hiredFirms.
+      inHouseLobbyists?: number
+      hiredFirms?: number
     }
   >
-  // All-time counterparts of the per-session counts above.
+  // All-time counterparts of the per-session counts above (hiredFirms leaves
+  // out anyone in-house in any session).
   inHouseCount?: number
   individuals?: number
+  inHouseLobbyists?: number
+  hiredFirms?: number
   // Earliest registration start date (ISO), the latest registration's year,
   // and its page on the SoS website.
   firstRegistered?: string | null
@@ -571,6 +581,8 @@ export type ClientListRow = {
   totalFilings: number | null
   inHouseCount: number | null
   individuals: number | null
+  inHouseLobbyists: number | null
+  hiredFirms: number | null
   courts: NonNullable<ClientSummaryRow["courts"]>
 }
 
@@ -587,6 +599,8 @@ export async function fetchClientListRows(): Promise<ClientListRow[]> {
     totalFilings: filingCounts[c.clientNameNorm] ?? null,
     inHouseCount: c.inHouseCount ?? null,
     individuals: c.individuals ?? null,
+    inHouseLobbyists: c.inHouseLobbyists ?? null,
+    hiredFirms: c.hiredFirms ?? null,
     courts: c.courts ?? {}
   }))
 }

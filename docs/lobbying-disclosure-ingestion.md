@@ -544,9 +544,13 @@ writes the figures the Lobbying Explorer shows per session (shapes in
 - `clientSummaries/clients/{id}`: per session, `bills`, `inHouseCount`,
   `individuals` (people lobbying for the client) and `firmAgents` (those who
   aren't its own staff: a hired firm's agents, or a hired individual
-  lobbyist); all-time `inHouseCount` and `individuals`;
-  `firstRegistered`, `lastRegisteredYear` and `registrationUrl` from
-  registrations.
+  lobbyist); `inHouseLobbyists` and `hiredFirms`, every lobbyist or entity
+  on the client's disclosures, filings or agent blocks split into its own
+  staff and those it hired, from one set so the two add up (a hired
+  individual counts as a one-person firm; see Terminology); all-time
+  counterparts of these (all-time `hiredFirms` leaves out anyone in-house in
+  any session); `firstRegistered`, `lastRegisteredYear` and
+  `registrationUrl` from registrations.
 - `inHouseFilers_{gc}`: `{clientNameNorm: [entityNameNorm]}`, the filers that
   are each client's own staff that session.
 
@@ -567,8 +571,9 @@ Firms name their agents per client from 2014 (no firm disclosure before 2014
 carries the label), so `individuals` and `firmAgents` include firm agents from
 the 189th session (2015–16) on, and the 188th (2013–14) for 2014 only. Before
 that they count only individual filers. The frontend shows them from the 189th
-on and `lobbyistCount` before it, so no session's count silently misses a
-year of firm agents.
+on, and before it (and for all sessions) counts lobbyists and firms instead,
+`inHouseLobbyists + hiredFirms`, so no session's count silently misses a year
+of firm agents.
 
 The run ends by logging, per year, how many filings have `periodEnd` and how
 many firm disclosures name agents per client, and each `inHouseFilers_{gc}`
