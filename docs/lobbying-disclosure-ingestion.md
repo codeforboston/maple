@@ -638,26 +638,44 @@ GOOGLE_CLOUD_PROJECT=digital-testimony-dev \
 ## Backfilling Newly Parsed Fields
 
 When the parser learns to read a new field (e.g. filing `periodEnd`, registrant
-`clientLobbyists`), new disclosures get it from the weekly run, but existing
-docs only get it by reparsing the archive. Use `migrate_lobbying_data.py`,
-which rewrites every registrant and filing doc in full:
+`clientLobbyists`, a client's own registration page) or skips something it used
+to keep (superseded versions of amended disclosures), new disclosures get the
+change from the weekly run, but existing docs only get it by reparsing the
+archive. Use `migrate_lobbying_data.py`, in this order:
 
 ```bash
 cd lobbying-scraper
-GOOGLE_APPLICATION_CREDENTIALS=... python3 migrate_lobbying_data.py \
-  --project <project> --phase write --out-prefix /tmp/<project>
-# Dry runs: with unchanged doc ids, both should report no stale docs.
-GOOGLE_APPLICATION_CREDENTIALS=... python3 migrate_lobbying_data.py \
-  --project <project> --phase cleanup --collection filings --out-prefix /tmp/<project>
-GOOGLE_APPLICATION_CREDENTIALS=... python3 migrate_lobbying_data.py \
-  --project <project> --phase cleanup --collection registrants --out-prefix /tmp/<project>
+export GOOGLE_APPLICATION_CREDENTIALS=...
+M="python3 migrate_lobbying_data.py --project <project> --out-prefix /tmp/<project>"
+# 1. Re-fetch archived pages that aren't the real page (the portal's error
+#    page, or its Incapsula block page): dry run, then --execute.
+$M --phase refetch-errors
+$M --phase refetch-errors --execute
+# 2. Rewrite every registrant and filing doc from the archived disclosures;
+#    superseded versions are skipped (expect "superseded" > 0 and
+#    superseded_without_current 0).
+$M --phase write
+# 3. Rewrite every registration doc from the archived registration pages
+#    (e.g. clients' own pages, for registrationUrl).
+$M --phase registrations
+# 4. Docs the write phase no longer produces: dry runs first; each prints the
+#    exact --execute command (with --expect-ids/--expect-stale) to run after.
+$M --phase cleanup --collection filings
+$M --phase cleanup --collection registrants
+# 5. Recompute lobbyingMeta.
 GOOGLE_CLOUD_PROJECT=<project> python3 scrape.py --mode stats
 ```
 
-If a cleanup dry run reports stale docs, something changed doc ids: stop and
-don't run `--execute`. Don't use `reparse_archive.py` for this: it skips pages
+Read the cleanup dry runs before running them with `--execute`. Stale filings
+are expected when the write phase skips something it used to keep: the
+filings of superseded versions of amended disclosures (977 for 2008–2026 in
+the October 2026 local rebuild). Anything else stale means doc ids changed:
+stop and find out why. Don't use `reparse_archive.py` for this: it skips pages
 an earlier reparse already marked processed. Docs from disclosures missing from
 the archive keep the field absent.
+
+For a given deploy, the issue that ships it lists the steps and spot checks
+(e.g. hyphacoop/maple#106).
 
 ## Running the Scraper Locally
 
