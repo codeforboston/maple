@@ -732,6 +732,13 @@ archive, are fetched live. Pages are missing when their disclosure was
 processed before archiving was turned on, since the backfill skips processed
 disclosures and never fetches them again.
 
+To rebuild in place, export first and keep a copy outside `emulator-data`
+(e.g. `emulator-data.pre-rebuild`), since `--export-on-exit` and any snapshot
+job overwrite `emulator-data`. Pages fetched live may hit the portal's bot
+protection: the scraper retries a block page with backoff, never archives or
+parses it, and leaves the disclosure unprocessed if the block outlasts the
+retries, so rerunning the backfill for that year picks it up.
+
 ### 5. Looking at the data
 
 The emulator UI is at `http://127.0.0.1:3010/firestore` (with this repo's

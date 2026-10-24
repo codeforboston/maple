@@ -226,6 +226,16 @@ def make_session() -> requests.Session:
     return s
 
 
+class PortalBlocked(RuntimeError):
+    """The portal's bot protection kept serving its block page."""
+
+
+def is_block_page(html: str) -> bool:
+    """Incapsula's bot-protection page ("Request unsuccessful. Incapsula
+    incident ID ..."), served with status 200 in place of the real page."""
+    return len(html) < 5000 and ("_Incapsula_Resource" in html or "Incapsula incident ID" in html)
+
+
 def _get(session: requests.Session, url: str, use_archive: bool = False) -> BeautifulSoup:
     # Archive-first is opt-in and must stay that way: run_weekly() relies on
     # always live-fetching the current year's Summary.aspx page (new
@@ -234,50 +244,52 @@ def _get(session: requests.Session, url: str, use_archive: bool = False) -> Beau
     # years) opts in.
     if use_archive:
         cached = archive.load_page(url)
-        if cached is not None:
+        # An archived block page counts as missing.
+        if cached is not None and not is_block_page(cached):
             return BeautifulSoup(cached, "html.parser")
 
-    for attempt in range(_MAX_RETRIES):
-        time.sleep(_REQUEST_DELAY * (2 ** attempt) if attempt else _REQUEST_DELAY)
-        try:
-            r = session.get(url, timeout=60)
-        except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
-            if attempt == _MAX_RETRIES - 1:
-                raise
-            print(f"  GET network error (attempt {attempt + 1}): {e}")
-            continue
-        if r.status_code in _RETRY_STATUS:
-            print(f"  GET HTTP {r.status_code} (attempt {attempt + 1}) — retrying")
-            if attempt == _MAX_RETRIES - 1:
-                r.raise_for_status()
-            continue
-        r.raise_for_status()
-        # Archive content pages before parsing; excludes the search page which
-        # shares one URL across all years and is trivially regenerable.
-        if "Summary.aspx" in url or "CompleteDisclosure" in url:
-            archive.save_page(url, r.text)
-        return BeautifulSoup(r.text, "html.parser")
-    raise RuntimeError("_get: exhausted retries")  # unreachable
+    text = _request(lambda: session.get(url, timeout=60), "GET", url)
+    # Archive content pages before parsing; excludes the search page which
+    # shares one URL across all years and is trivially regenerable.
+    if "Summary.aspx" in url or "CompleteDisclosure" in url:
+        archive.save_page(url, text)
+    return BeautifulSoup(text, "html.parser")
 
 
 def _post(session: requests.Session, url: str, data: dict) -> BeautifulSoup:
+    return BeautifulSoup(
+        _request(lambda: session.post(url, data=data, timeout=180), "POST", url), "html.parser"
+    )
+
+
+def _request(send, verb: str, url: str) -> str:
+    """Send a request with backoff, retrying network errors, retryable
+    statuses and the portal's block page; return the page text. A block page
+    is a failed fetch, never archived or parsed, so the page stays
+    unprocessed for the next run if the block outlasts the retries."""
     for attempt in range(_MAX_RETRIES):
         time.sleep(_REQUEST_DELAY * (2 ** attempt) if attempt else _REQUEST_DELAY)
+        last = attempt == _MAX_RETRIES - 1
         try:
-            r = session.post(url, data=data, timeout=180)
+            r = send()
         except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
-            if attempt == _MAX_RETRIES - 1:
+            if last:
                 raise
-            print(f"  POST network error (attempt {attempt + 1}): {e}")
+            print(f"  {verb} network error (attempt {attempt + 1}): {e}")
             continue
         if r.status_code in _RETRY_STATUS:
-            print(f"  POST HTTP {r.status_code} (attempt {attempt + 1}) — retrying")
-            if attempt == _MAX_RETRIES - 1:
+            print(f"  {verb} HTTP {r.status_code} (attempt {attempt + 1}) — retrying")
+            if last:
                 r.raise_for_status()
             continue
         r.raise_for_status()
-        return BeautifulSoup(r.text, "html.parser")
-    raise RuntimeError("_post: exhausted retries")  # unreachable
+        if is_block_page(r.text):
+            print(f"  {verb} blocked by Incapsula (attempt {attempt + 1}) — retrying")
+            if last:
+                raise PortalBlocked(f"blocked by Incapsula: {url}")
+            continue
+        return r.text
+    raise RuntimeError(f"{verb}: exhausted retries")  # unreachable
 
 
 # ── Portal scraping ───────────────────────────────────────────────────────────
