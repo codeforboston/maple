@@ -549,8 +549,11 @@ writes the figures the Lobbying Explorer shows per session (shapes in
   staff and those it hired, from one set so the two add up (a hired
   individual counts as a one-person firm; see Terminology); all-time
   counterparts of these (all-time `hiredFirms` leaves out anyone in-house in
-  any session); `firstRegistered`, `lastRegisteredYear` and
-  `registrationUrl` from registrations.
+  any session); `firstRegistered` and `lastRegisteredYear` from
+  registrations; `registrationUrl`, the client's own page on the SoS site from
+  the latest year a registration links it (each registration listing a client
+  links its page, a new one each year), else the latest registration listing
+  the client.
 - `inHouseFilers_{gc}`: `{clientNameNorm: [entityNameNorm]}`, the filers that
   are each client's own staff that session.
 

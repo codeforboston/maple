@@ -392,9 +392,12 @@ def compute_stats(db: firestore.Client) -> None:
     # session: the entities employing them, or, for a lobbyist registered with
     # no employing entity, the client(s) they list (taken as their employer).
     lobbyist_orgs: dict[tuple[str, int], set] = {}
-    # Per client: earliest employment start, and the latest registration
-    # listing them as (year, registration page).
+    # Per client: earliest employment start; the latest year's page of the
+    # client's own (every registration listing a client links to it, a new
+    # page each year); and the latest registration listing them, as (year,
+    # registration page), whose page stands in when no client page is known.
     client_first_start: dict[str, str] = {}
+    client_latest_page: dict[str, tuple[int, str]] = {}
     client_latest_registration: dict[str, tuple[int, str]] = {}
     for doc in _iter_collection(db, REGISTRATIONS_COLLECTION):
         d = doc.to_dict()
@@ -452,6 +455,9 @@ def compute_stats(db: firestore.Client) -> None:
                 client_first_start[key] = start
             if year is not None and latest > client_latest_registration.get(key, (0, "")):
                 client_latest_registration[key] = latest
+            page = p.get("sourceUrl")
+            if year is not None and page and (year, page) > client_latest_page.get(key, (0, "")):
+                client_latest_page[key] = (year, page)
         if urls and year is not None and year >= latest_registration.get(norm, (0, ""))[0]:
             latest_registration[norm] = (year, urls[0])
         # Per-year registration details for the profile page (rolled up here so
@@ -565,7 +571,7 @@ def compute_stats(db: firestore.Client) -> None:
         cs["firstRegistered"] = client_first_start.get(norm)
         last_year, last_url = client_latest_registration.get(norm, (None, ""))
         cs["lastRegisteredYear"] = last_year
-        cs["registrationUrl"] = last_url or None
+        cs["registrationUrl"] = client_latest_page.get(norm, (None, ""))[1] or last_url or None
         for fb in cs["firms"].values():
             fb["years"] = sorted(fb["years"], reverse=True)
         cs["firms"] = sorted(

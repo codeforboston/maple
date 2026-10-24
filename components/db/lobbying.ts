@@ -372,7 +372,8 @@ export type ClientSummaryRow = {
   inHouseLobbyists?: number
   hiredFirms?: number
   // Earliest registration start date (ISO), the latest registration's year,
-  // and its page on the SoS website.
+  // and the client's own page on the SoS website (else the latest
+  // registration listing it).
   firstRegistered?: string | null
   lastRegisteredYear?: number | null
   registrationUrl?: string | null

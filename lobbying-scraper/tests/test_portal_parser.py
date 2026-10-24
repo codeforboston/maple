@@ -387,6 +387,16 @@ def test_registration_individual_with_own_client():
     assert client.purpose.startswith("This lobbyist will be working on")
 
 
+def test_registration_links_each_client_to_its_own_page():
+    """Every listed client links to its own page, before 2019 too (unlike a
+    firm's lobbyist links then)."""
+    for fix in ("2007e_summ", "2011i_summ", "2024e_summ"):
+        r = _registration(fix)
+        urls = [c.url for c in r.clients]
+        assert urls and all(u and "Summary.aspx?sysvalue=" in u for u in urls)
+        assert len(set(urls)) == len(urls) and r.url not in urls
+
+
 def test_registration_error_page_is_none():
     """The portal sometimes serves "An Error Occurred" instead of the page."""
     soup = BeautifulSoup("<html><body>An Error Occurred</body></html>", "html.parser")

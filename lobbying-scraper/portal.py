@@ -437,8 +437,9 @@ def parse_registration(soup: BeautifulSoup, url: str) -> Optional[Registration]:
                            "RptLobbyistEmploymentInfo", keep_urls=lobbyist_urls),
         employers=_parties(soup, "RptEntity", "hlnkEntityInformation", "lblEAmount",
                            "RptEntityEmploymentInfo", keep_urls=True),
+        # Each listed client links to the client's own page for that year.
         clients=_parties(soup, "RptClient", "hlnkClientInformation", "lblAmount",
-                         "RptClientEmploymentInfo", keep_urls=False),
+                         "RptClientEmploymentInfo", keep_urls=True),
         disclosure_urls=meta.disclosure_urls,
     )
 

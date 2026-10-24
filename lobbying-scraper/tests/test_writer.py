@@ -903,6 +903,32 @@ def test_compute_stats_client_registration_dates_and_link():
     assert (b["firstRegistered"], b["lastRegisteredYear"], b["registrationUrl"]) == (None, None, None)
 
 
+def test_compute_stats_links_the_clients_own_registration_page():
+    """The link is the client's own page from the latest year a registration
+    links it, and falls back to the latest registration listing the client
+    when none links it."""
+    def client(norm, page=None):
+        return {"name": norm.title(), "nameNorm": norm, "sourceUrl": page}
+    registrations = [
+        _registration("STAFF ONE", 2024, sourceUrls=["https://sos.test/staff-one-2024"],
+                      clients=[client("CLIENT A", "https://sos.test/client-a-2024")]),
+        _registration("STAFF ONE", 2025, sourceUrls=["https://sos.test/staff-one-2025"],
+                      clients=[client("CLIENT A", "https://sos.test/client-a-2025")]),
+        _registration("STAFF TWO", 2025, sourceUrls=["https://sos.test/staff-two-2025"],
+                      clients=[client("CLIENT A", "https://sos.test/client-a-2025")]),
+        # A later registration with no client link doesn't replace the page.
+        _registration("STAFF THREE", 2026, sourceUrls=["https://sos.test/staff-three-2026"],
+                      clients=[client("CLIENT A")]),
+        _registration("FIRM", 2024, "Employer", sourceUrls=["https://sos.test/firm-2024"],
+                      clients=[client("CLIENT B")]),
+    ]
+    registrants = [_registrant("FIRM", 2025, clients=[("CLIENT A", 1.0), ("CLIENT B", 1.0)])]
+    _, _, clients = _run_stats(registrants=registrants, registrations=registrations)
+    a = clients["CLIENT A"]
+    assert (a["registrationUrl"], a["lastRegisteredYear"]) == ("https://sos.test/client-a-2025", 2026)
+    assert clients["CLIENT B"]["registrationUrl"] == "https://sos.test/firm-2024"
+
+
 def test_registrant_doc_lists_agents_per_client():
     detail = DisclosureDetail(compensation=[Compensation("The Client, Inc.", 1.0)], bills=[],
                               period_start="2025-01-01", client_lobbyists={
