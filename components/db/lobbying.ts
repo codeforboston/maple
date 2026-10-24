@@ -310,6 +310,13 @@ export type BillSummaryEntry = {
   orgSupport?: number
   orgOppose?: number
   orgNeutral?: number
+  // Each organization once, by the positions it reported in its latest
+  // half-year, as on the Bill page: more than one is "multiple". They add up
+  // to the organizations with a position.
+  orgLatestSupport?: number
+  orgLatestOppose?: number
+  orgLatestNeutral?: number
+  orgLatestMultiple?: number
 }
 
 export type BillRow = {
@@ -326,6 +333,10 @@ export type BillRow = {
   orgSupport: number
   orgOppose: number
   orgNeutral: number
+  orgLatestSupport: number
+  orgLatestOppose: number
+  orgLatestNeutral: number
+  orgLatestMultiple: number
 }
 
 async function fetchLobbyingBillSummaries(
@@ -445,6 +456,12 @@ export type ClientSummaryRow = {
       // inHouseLobbyists + hiredFirms.
       inHouseLobbyists?: number
       hiredFirms?: number
+      // Hired firms that named no agents for the client: with individuals,
+      // the exact people total from the 189th session on.
+      firmsWithoutAgents?: number
+      // The client's in-house filers that session (entityNameNorms), as in
+      // inHouseFilers_{gc}.
+      inHouseFilers?: string[]
     }
   >
   // All-time counterparts of the per-session counts above (hiredFirms leaves
@@ -454,7 +471,8 @@ export type ClientSummaryRow = {
   inHouseLobbyists?: number
   hiredFirms?: number
   // Earliest registration start date (ISO), the latest registration's year,
-  // and its page on the SoS website.
+  // and the client's own page on the SoS website (else the latest
+  // registration listing it).
   firstRegistered?: string | null
   lastRegisteredYear?: number | null
   registrationUrl?: string | null
@@ -567,7 +585,11 @@ function toBillRow(
     lobbyists: e.lobbyists ?? 0,
     orgSupport: e.orgSupport ?? 0,
     orgOppose: e.orgOppose ?? 0,
-    orgNeutral: e.orgNeutral ?? 0
+    orgNeutral: e.orgNeutral ?? 0,
+    orgLatestSupport: e.orgLatestSupport ?? 0,
+    orgLatestOppose: e.orgLatestOppose ?? 0,
+    orgLatestNeutral: e.orgLatestNeutral ?? 0,
+    orgLatestMultiple: e.orgLatestMultiple ?? 0
   }
 }
 
@@ -661,6 +683,38 @@ export async function fetchFirmListRows(): Promise<FirmListRow[]> {
     hasFilings: f.hasFilings ?? true,
     courts: f.courts ?? {}
   }))
+}
+
+// Precomputed list docs written by compute_stats, so the list pages' API
+// routes read one document instead of every summary: lobbyingMeta/
+// clientList_{court} and clientList_all, and firmList_{court} (no
+// all-sessions lobbyist doc: it would pass Firestore's 1 MiB limit). Each is a
+// map keyed by the normalized name.
+export type ClientListEntry = {
+  name: string
+  bills: number
+  compensation: number | null
+  // Per session only (absent in clientList_all).
+  individuals?: number
+  firmAgents?: number
+  firmsWithoutAgents?: number
+  inHouseLobbyists: number
+  hiredFirms: number
+}
+
+export type FirmListEntry = Pick<
+  FirmListRow,
+  | "regType"
+  | "years"
+  | "totalFilings"
+  | "lobbyists"
+  | "employers"
+  | "hasFilings"
+> & {
+  name: string
+  // For the doc's session.
+  clientCount: number
+  filings: number
 }
 
 /** A Clients list row for one session, or for all of them: only what the

@@ -537,10 +537,20 @@ writes the figures the Lobbying Explorer shows per session (shapes in
   reported paid. Lobbyists and firms count those registered in the session and
   on a disclosure in it (as filer, or named by a firm). Paid is registrant
   compensation, as in `spendByYear`. `totalLobbyists` and `totalEntities` count
-  the same way across all sessions.
+  the same way across all sessions. A bill is a chamber prefix and a number
+  from 1 up, so H1 (the House budget) counts and H0/S0/HD0 don't: filers enter
+  0 for activity on no bill yet ("N/A", "a bill to be filed next session").
+  The portal's "No client" (a lobbyist's period with no client, "$0.00",
+  activity "N/A") isn't an organization: like the pre-2009 total-salary row
+  it's left out of every client and organization count, while its filings
+  still count toward bills' filings and its compensation toward reported paid.
 - `billSummaries_{gc}/bills/{billId}`: `orgSupport`, `orgOppose`,
   `orgNeutral`, the distinct organizations per position (one with two
-  positions counts in both).
+  positions counts in both); `orgLatestSupport`, `orgLatestOppose`,
+  `orgLatestNeutral`, `orgLatestMultiple`, each organization counted once by
+  the positions it reported in its latest half-year (more than one is
+  "multiple"; one that reported only "none" isn't counted), the same counts as
+  the Bill page, so they add up to the organizations with a position.
 - `clientSummaries/clients/{id}`: per session, `bills`, `inHouseCount`,
   `individuals` (people lobbying for the client) and `firmAgents` (those who
   aren't its own staff: a hired firm's agents, or a hired individual
@@ -549,10 +559,25 @@ writes the figures the Lobbying Explorer shows per session (shapes in
   staff and those it hired, from one set so the two add up (a hired
   individual counts as a one-person firm; see Terminology); all-time
   counterparts of these (all-time `hiredFirms` leaves out anyone in-house in
-  any session); `firstRegistered`, `lastRegisteredYear` and
-  `registrationUrl` from registrations.
+  any session); per session, `firmsWithoutAgents` (hired firms that named no
+  agents for the client, so `individuals + firmsWithoutAgents` is the people
+  total) and `inHouseFilers` (the client's entry in `inHouseFilers_{gc}`);
+  `firstRegistered` and `lastRegisteredYear` from
+  registrations; `registrationUrl`, the client's own page on the SoS site from
+  the latest year a registration links it (each registration listing a client
+  links its page, a new one each year), else the latest registration listing
+  the client.
 - `inHouseFilers_{gc}`: `{clientNameNorm: [entityNameNorm]}`, the filers that
   are each client's own staff that session.
+- `clientList_{gc}`, `clientList_all` and `firmList_{gc}`: one doc per session
+  for the Clients and Lobbyists list pages, keyed by normalized name, holding
+  what the lists show, sort and search on, so their API routes read one
+  document instead of every summary. A lobbyist or entity is in a session's
+  list when it registered in one of the session's years. There's no
+  all-sessions lobbyist doc (about 2 MB, over Firestore's 1 MiB limit), so that
+  view reads `firmSummaries`. The run logs each list doc's size and warns past
+  900 KB: `clientList_all` was about 830 KB in October 2026 and grows with
+  every new client.
 
 A filer is in-house for a client when it is the client, or when its
 registration for that session names the client as its employer (from 2019),
@@ -613,26 +638,44 @@ GOOGLE_CLOUD_PROJECT=digital-testimony-dev \
 ## Backfilling Newly Parsed Fields
 
 When the parser learns to read a new field (e.g. filing `periodEnd`, registrant
-`clientLobbyists`), new disclosures get it from the weekly run, but existing
-docs only get it by reparsing the archive. Use `migrate_lobbying_data.py`,
-which rewrites every registrant and filing doc in full:
+`clientLobbyists`, a client's own registration page) or skips something it used
+to keep (superseded versions of amended disclosures), new disclosures get the
+change from the weekly run, but existing docs only get it by reparsing the
+archive. Use `migrate_lobbying_data.py`, in this order:
 
 ```bash
 cd lobbying-scraper
-GOOGLE_APPLICATION_CREDENTIALS=... python3 migrate_lobbying_data.py \
-  --project <project> --phase write --out-prefix /tmp/<project>
-# Dry runs: with unchanged doc ids, both should report no stale docs.
-GOOGLE_APPLICATION_CREDENTIALS=... python3 migrate_lobbying_data.py \
-  --project <project> --phase cleanup --collection filings --out-prefix /tmp/<project>
-GOOGLE_APPLICATION_CREDENTIALS=... python3 migrate_lobbying_data.py \
-  --project <project> --phase cleanup --collection registrants --out-prefix /tmp/<project>
+export GOOGLE_APPLICATION_CREDENTIALS=...
+M="python3 migrate_lobbying_data.py --project <project> --out-prefix /tmp/<project>"
+# 1. Re-fetch archived pages that aren't the real page (the portal's error
+#    page, or its Incapsula block page): dry run, then --execute.
+$M --phase refetch-errors
+$M --phase refetch-errors --execute
+# 2. Rewrite every registrant and filing doc from the archived disclosures;
+#    superseded versions are skipped (expect "superseded" > 0 and
+#    superseded_without_current 0).
+$M --phase write
+# 3. Rewrite every registration doc from the archived registration pages
+#    (e.g. clients' own pages, for registrationUrl).
+$M --phase registrations
+# 4. Docs the write phase no longer produces: dry runs first; each prints the
+#    exact --execute command (with --expect-ids/--expect-stale) to run after.
+$M --phase cleanup --collection filings
+$M --phase cleanup --collection registrants
+# 5. Recompute lobbyingMeta.
 GOOGLE_CLOUD_PROJECT=<project> python3 scrape.py --mode stats
 ```
 
-If a cleanup dry run reports stale docs, something changed doc ids: stop and
-don't run `--execute`. Don't use `reparse_archive.py` for this: it skips pages
+Read the cleanup dry runs before running them with `--execute`. Stale filings
+are expected when the write phase skips something it used to keep: the
+filings of superseded versions of amended disclosures (977 for 2008–2026 in
+the October 2026 local rebuild). Anything else stale means doc ids changed:
+stop and find out why. Don't use `reparse_archive.py` for this: it skips pages
 an earlier reparse already marked processed. Docs from disclosures missing from
 the archive keep the field absent.
+
+For a given deploy, the issue that ships it lists the steps and spot checks
+(e.g. hyphacoop/maple#106).
 
 ## Running the Scraper Locally
 
@@ -731,6 +774,13 @@ search that lists each year's registrants, and any page missing from the
 archive, are fetched live. Pages are missing when their disclosure was
 processed before archiving was turned on, since the backfill skips processed
 disclosures and never fetches them again.
+
+To rebuild in place, export first and keep a copy outside `emulator-data`
+(e.g. `emulator-data.pre-rebuild`), since `--export-on-exit` and any snapshot
+job overwrite `emulator-data`. Pages fetched live may hit the portal's bot
+protection: the scraper retries a block page with backoff, never archives or
+parses it, and leaves the disclosure unprocessed if the block outlasts the
+retries, so rerunning the backfill for that year picks it up.
 
 ### 5. Looking at the data
 

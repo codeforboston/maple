@@ -78,6 +78,7 @@ import archive
 from portal import (
     DisclosureMeta,
     _get,
+    is_block_page,
     make_session,
     parse_registration,
     parse_summary,
@@ -385,7 +386,9 @@ def _download(blob: Blob) -> str:
 
 
 def _is_error_page(html: str) -> bool:
-    return "An Error Occurred" in html and "There was a problem opening" in html
+    """The portal's "An Error Occurred" page, or its bot-protection block page,
+    archived in place of the real page."""
+    return ("An Error Occurred" in html and "There was a problem opening" in html) or is_block_page(html)
 
 
 def _superseded_versions(project: str, workers: int) -> dict[str, str]:
