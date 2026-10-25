@@ -22,6 +22,7 @@ import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
 import { SosSourceLink } from "components/lobbying/SosSourceLink"
 import { regTypeLabel } from "components/lobbying/regTypeLabel"
+import { compareFilingPeriodsDesc } from "components/lobbying/filingPeriod"
 
 const PAGE_SIZE = 25
 
@@ -56,7 +57,9 @@ function FirmDetail() {
     () =>
       [...(filings ?? [])].sort(
         (a, b) =>
-          b.year - a.year || (a.billId ?? "").localeCompare(b.billId ?? "")
+          b.year - a.year ||
+          (a.billId ?? "").localeCompare(b.billId ?? "") ||
+          compareFilingPeriodsDesc(a, b)
       ),
     [filings]
   )
