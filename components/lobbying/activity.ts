@@ -11,6 +11,34 @@ export type PositionCategory = Position | "multiple"
 
 const POSITION_ORDER: Position[] = ["support", "oppose", "neutral", "none"]
 
+// Mirror _is_placeholder_client and _counts_as_bill in
+// lobbying-scraper/writer.py, so the activity tables count what the stored
+// summaries do.
+const LEGACY_TOTAL_CLIENT = "_total_salary_"
+const NO_CLIENT = "NO CLIENT"
+
+/** Not an organization: the portal's "No client" for a period without one,
+ * or the legacy total-salary row. Its filings aren't an organization's. */
+export function isPlaceholderClient(
+  name: string | null | undefined,
+  nameNorm: string | null | undefined
+): boolean {
+  if (!nameNorm || nameNorm === NO_CLIENT || nameNorm === LEGACY_TOTAL_CLIENT)
+    return true
+  const lc = (name ?? "").toLowerCase()
+  return (
+    name === LEGACY_TOTAL_CLIENT ||
+    lc.includes("total salaries") ||
+    lc.includes("total salary")
+  )
+}
+
+/** A chamber prefix and a bill number from 1 up: filers enter 0 (H0, S0)
+ * for activity on no bill yet. */
+export function countsAsBill(billId: string | null | undefined): boolean {
+  return !!billId && /^[A-Z]+[1-9][0-9]*$/.test(billId)
+}
+
 /** Compares names and bill numbers with numbers in order (H2 before H10).
  * One collator, since sorting builds a comparison per pair. */
 export const naturalCompare = new Intl.Collator("en", { numeric: true }).compare
@@ -157,8 +185,9 @@ function reportedPositions(positions: Iterable<Position>): Position[] {
 
 /**
  * One row per organization (by "client") or per bill (by "bill"), with each
- * filer's positions per period. Filings with no bill are left out of bill
- * rows. `inHouseFilers` is the session's inHouseFilers doc: a filer is
+ * filer's positions per period. Filings with no bill (or H0/S0) are left
+ * out of bill rows, and placeholder clients ("No client") out of
+ * organization rows. `inHouseFilers` is the session's inHouseFilers doc: a filer is
  * in-house when it's listed under the filing's client.
  */
 export function groupActivity(
@@ -170,10 +199,13 @@ export function groupActivity(
   const periods = new Map<string, Period>()
   const groups = new Map<string, ActivityFiling[]>()
   for (const f of filings) {
-    if (by === "bill" && !f.billId) continue
+    // Rows are organizations or bills, so placeholders and non-bills don't
+    // make one.
+    if (by === "bill" && !countsAsBill(f.billId)) continue
+    if (by === "client" && isPlaceholderClient(f.clientName, f.clientNameNorm))
+      continue
     const key =
       by === "client" ? f.clientNameNorm : `${f.generalCourt}/${f.billId}`
-    if (!key) continue
     const group = groups.get(key)
     if (group) group.push(f)
     else groups.set(key, [f])

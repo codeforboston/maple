@@ -17,6 +17,7 @@ import {
   fetchLobbyingStats,
   fetchTopBillRows,
   latestCourt,
+  sessionsNewestFirst,
   type BillRow
 } from "components/db/lobbying"
 import type { LobbyingStats } from "functions/src/lobbying/types"
@@ -45,6 +46,7 @@ import {
   LegendSwatch,
   legendItemStyle,
   legendStyle,
+  billPositionCounts,
   PositionBar,
   PositionLegend
 } from "components/lobbying/PositionBar"
@@ -422,7 +424,7 @@ function TopBills({
           </table>
         </div>
       )}
-      <PositionLegend />
+      <PositionLegend multiple note={t("bill.orgCountNote")} />
     </LobbyingPanel>
   )
 }
@@ -457,14 +459,7 @@ function TopBillRow({
       </td>
       <td style={{ ...tdStyle, fontWeight: 700 }}>{bill.clients}</td>
       <td style={{ ...tdStyle, verticalAlign: "middle" }}>
-        <PositionBar
-          width={160}
-          counts={{
-            support: bill.orgSupport,
-            oppose: bill.orgOppose,
-            neutral: bill.orgNeutral
-          }}
-        />
+        <PositionBar width={160} counts={billPositionCounts(bill)} />
       </td>
     </tr>
   )
@@ -495,7 +490,7 @@ function LobbyingOverview({ stats, topBills }: OverviewProps) {
     [stats]
   )
   const sessions = useMemo(
-    () => [...(stats?.courtsWithData ?? [])].sort((a, b) => b - a),
+    () => sessionsNewestFirst(stats ?? undefined),
     [stats]
   )
 

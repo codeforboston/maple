@@ -1,5 +1,6 @@
 import React from "react"
 import { useTranslation } from "next-i18next"
+import type { BillRow } from "components/db/lobbying"
 import type { PositionCategory } from "./activity"
 import { MAPLE_COLORS, POSITION_COLORS } from "./chartTheme"
 
@@ -78,6 +79,17 @@ export function PositionBar({
       )}
     </div>
   )
+}
+
+/** A bill row's organizations, each counted once by its latest half-year's
+ * positions (as on the Bill page). */
+export function billPositionCounts(bill: BillRow): PositionBarCounts {
+  return {
+    support: bill.orgLatestSupport,
+    oppose: bill.orgLatestOppose,
+    neutral: bill.orgLatestNeutral,
+    multiple: bill.orgLatestMultiple
+  }
 }
 
 /** The bar's colors, named, for a list of bars that show no legend each. */

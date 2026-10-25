@@ -10,6 +10,7 @@ const PEOPLE_COUNTS_FROM_COURT = 189
 type ClientCounts = {
   individuals?: number | null
   firmAgents?: number | null
+  firmsWithoutAgents?: number | null
   inHouseLobbyists?: number | null
   hiredFirms?: number | null
 }
@@ -38,11 +39,10 @@ export function lobbyistMix(
     c.firmAgents != null
   ) {
     const inHouse = c.individuals - c.firmAgents
-    // A hired firm that names no agents still lobbied, so the total is at
-    // least one per firm: a lower bound, since which firms named no agents
-    // isn't stored.
+    // A hired firm that named no agents lobbied too, but adds no one to
+    // individuals.
     return {
-      total: Math.max(c.individuals, inHouse + c.hiredFirms),
+      total: c.individuals + (c.firmsWithoutAgents ?? 0),
       inHouse,
       firms: c.hiredFirms,
       agents: c.firmAgents

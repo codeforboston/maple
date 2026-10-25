@@ -58,27 +58,17 @@ function BillLobbyingPage() {
   const registrants = useLobbyingRegistrantsByIds(registrantIds)
   const inHouseFilers = useLobbyingInHouseFilers(court)
 
-  // A hook keeps its last result while it reloads, so wait for both to
-  // settle on these filings.
   const activity = useMemo(
     () =>
-      filings &&
-      registrants.status === "success" &&
-      inHouseFilers.status === "success"
+      filings && registrants.result && inHouseFilers.result
         ? groupActivity(
             filings,
             "client",
-            registrants.result ?? {},
-            inHouseFilers.result ?? {}
+            registrants.result,
+            inHouseFilers.result
           )
         : undefined,
-    [
-      filings,
-      registrants.status,
-      registrants.result,
-      inHouseFilers.status,
-      inHouseFilers.result
-    ]
+    [filings, registrants.result, inHouseFilers.result]
   )
   const filerCount = useMemo(
     () => new Set((filings ?? []).map(f => f.entityNameNorm)).size,

@@ -18,18 +18,20 @@ describe("lobbyistMix", () => {
     })
   })
 
-  it("counts a hired firm that names no agents as one lobbyist", () => {
+  it("adds hired firms that named no agents to the people count", () => {
+    // One firm named 3 agents, another named none: 4 lobbied.
     const c = {
-      individuals: 1,
-      firmAgents: 1,
+      individuals: 3,
+      firmAgents: 3,
+      firmsWithoutAgents: 1,
       inHouseLobbyists: 0,
       hiredFirms: 2
     }
     expect(lobbyistMix(c, 194)).toEqual({
-      total: 2,
+      total: 4,
       inHouse: 0,
       firms: 2,
-      agents: 1
+      agents: 3
     })
   })
 

@@ -4,7 +4,9 @@ import { Col, Container, Row } from "components/bootstrap"
 import { createPage } from "components/page"
 import {
   fetchClientList,
-  fetchLatestLobbyingCourt,
+  fetchLobbyingStats,
+  latestCourt,
+  sessionsNewestFirst,
   useLobbyingClientRows,
   type ClientListRow
 } from "components/db/lobbying"
@@ -30,6 +32,7 @@ import {
 import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
+import { usePrerenderedRows } from "components/lobbying/usePrerenderedRows"
 import { matchesSearch } from "components/lobbying/searchMatch"
 import { SessionFilter, SessionSelect } from "components/lobbying/SessionSelect"
 import { courtName } from "components/lobbying/sessions"
@@ -68,11 +71,12 @@ function LobbyingClientsTable({
     }
   }
 
-  const prerendered = session === initialCourt
-  const other = useLobbyingClientRows(prerendered ? undefined : session)
-  const rows = prerendered ? initialRows : other.result
-  const loadingOther = !prerendered && other.status !== "success"
-  const otherFailed = !prerendered && other.status === "error"
+  const { rows, loading, error } = usePrerenderedRows(
+    session,
+    initialCourt,
+    initialRows,
+    useLobbyingClientRows
+  )
 
   const clientRows = useMemo(
     () => (rows ?? []).map(c => ({ ...c, lobbyists: lobbyistMix(c, session) })),
@@ -145,7 +149,7 @@ function LobbyingClientsTable({
               : courtName(session)
         })}
         aside={
-          !loadingOther && (
+          !loading && (
             <>
               <strong>
                 {t("clients.count", {
@@ -159,9 +163,9 @@ function LobbyingClientsTable({
         }
         footer={t("clients.paidNote")}
       >
-        {otherFailed ? (
-          <LobbyingLoadError error={other.error} style={{ margin: 0 }} />
-        ) : loadingOther ? (
+        {error ? (
+          <LobbyingLoadError error={error} style={{ margin: 0 }} />
+        ) : loading ? (
           <p style={{ color: MAPLE_COLORS.textMuted, margin: 0 }}>
             {t("loading")}
           </p>
@@ -296,9 +300,13 @@ export default createPage({
 })
 
 export const getStaticProps = createLobbyingListProps(async () => {
-  const initialCourt = await fetchLatestLobbyingCourt()
-  const { sessions, rows } = await fetchClientList(initialCourt)
-  return { sessions, initialCourt, initialRows: rows }
+  const stats = await fetchLobbyingStats()
+  const initialCourt = latestCourt(stats)
+  return {
+    sessions: sessionsNewestFirst(stats),
+    initialCourt,
+    initialRows: await fetchClientList(initialCourt)
+  }
 })
 
 const figureStyle: React.CSSProperties = {

@@ -2,6 +2,7 @@ import {
   ActivityFiling,
   filterActivity,
   groupActivity,
+  isPlaceholderClient,
   normalizePosition,
   orgPositionBreakdown,
   periodOf,
@@ -334,5 +335,32 @@ describe("sessionPeriodsWith", () => {
     expect(
       sessionPeriodsWith(194, known, new Date("2026-10-23")).map(p => p.key)
     ).toEqual(["2026-06-30", "2025-12-31", "2025-06-30", "2025"])
+  })
+})
+
+describe("placeholders", () => {
+  it("leaves 'No client' and the legacy total out of organization rows", () => {
+    const filings = [
+      filing({}),
+      filing({ clientName: "No client", clientNameNorm: "NO CLIENT" }),
+      filing({ clientName: "_total_salary_", clientNameNorm: "_total_salary_" })
+    ]
+    expect(
+      groupActivity(filings, "client", {}, {}).rows.map(r => r.label)
+    ).toEqual(["Widget Co"])
+    expect(
+      isPlaceholderClient("Total salaries paid", "TOTAL SALARIES PAID")
+    ).toBe(true)
+  })
+
+  it("leaves H0/S0 out of bill rows but keeps H1", () => {
+    const filings = [
+      filing({ billId: "H0" }),
+      filing({ billId: "S0" }),
+      filing({ billId: "H1" })
+    ]
+    expect(
+      groupActivity(filings, "bill", {}, {}).rows.map(r => r.label)
+    ).toEqual(["H1"])
   })
 })

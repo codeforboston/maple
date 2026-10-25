@@ -339,7 +339,9 @@ progress, and the attribution line. Missing figures render as "—".
   through the cached `/api/lobbying/bills/[court]` route. Reads `?session=`.
 - Filters: session (one, or all) and bill number or title.
 - Columns: Bill, Title, Organizations (sortable; filings beneath), and a
-  `PositionBar` of `orgSupport/orgOppose/orgNeutral` with hover counts.
+  `PositionBar` of `orgLatestSupport/Oppose/Neutral/Multiple` with hover
+  counts: each organization once, by its latest half-year's positions, as on
+  the Bill page (the Overview's most-lobbied bills use the same counts).
 
 ### `/lobbying/bills/[court]/[billId]` — Bill detail
 
@@ -349,28 +351,33 @@ progress, and the attribution line. Missing figures render as "—".
   (192nd session on) and the SoS search page (it can't link to one bill).
 - Summary: organizations, filings and filers; `PositionBar` of organizations
   by their most recent positions (`orgPositionBreakdown`), with "multiple".
+  Placeholder clients ("No client", the legacy total) aren't organizations,
+  as in the stored counts (`isPlaceholderClient` in `activity.ts` mirrors
+  the scraper).
 - `ActivityTable` with a row per organization, filtered by position and name;
-  a row expands to each filer's positions per period and SoS filing links.
+  a row expands to each filer's position in every report period of the
+  session so far, and SoS filing links.
 
 ### `/lobbying/clients` — Clients (`pages/lobbying/clients/index.tsx`)
 
-- Prerendered with the latest session's rows (ISR, daily), keeping only the
-  fields the list shows; other sessions and "All sessions" load through the
-  cached `/api/lobbying/clients/[session]` route. Every visit would otherwise
-  hydrate all sessions' rows (2.6 MB for 5,553 clients, against 0.35 MB).
+- Prerendered with the latest session's rows (ISR, daily); other sessions
+  and "All sessions" load through the cached `/api/lobbying/clients/[session]`
+  route. Each reads one precomputed doc, `clientList_{court}` or
+  `clientList_all`, written by `compute_stats`.
 - Columns: Client, Bills, Lobbyists ("k in-house · m firms (n agents)", see
   `lobbyistMix` in `components/lobbying/clientCounts.ts`) and Reported paid;
   Client, Lobbyists and Reported paid sort both ways.
-- From the 189th session the lobbyist counts are people (`individuals`,
-  `firmAgents`); before it, and for all sessions, `inHouseLobbyists` and
+- From the 189th session the lobbyist counts are people: `individuals` plus
+  `firmsWithoutAgents` (hired firms that named no agents), with `firmAgents`
+  as the agents; before it, and for all sessions, `inHouseLobbyists` and
   `hiredFirms`.
 
 ### `/lobbying/clients/[clientSlug]` — Client detail
 
 - Prerendered on first visit (ISR, daily) with the client's summary (less its
   `firms`) and the current session. The browser reads the selected session's
-  filings, their registrants and the client's in-house filers (one
-  `inHouseFilers_{court}` doc per session shown, cached per visit).
+  filings and their registrants; the in-house filers come from the summary
+  (`courts[gc].inHouseFilers`).
 - Header: name, registration years and the SoS registration link.
 - Session (default: the client's latest) drives the summary (bills,
   lobbyists, reported paid) and the `ActivityTable` with a row per bill,
@@ -378,8 +385,12 @@ progress, and the attribution line. Missing figures render as "—".
 
 ### `/lobbying/firms` — Lobbyists (`pages/lobbying/firms/index.tsx`)
 
-- Unchanged by the redesign apart from the panel, which shows the count.
-- Filters by session, `regType` (Lobbyist / Employer / all) and name.
+- Prerendered with the current session's rows (ISR, daily), from the
+  precomputed `firmList_{court}` doc; other sessions load through the cached
+  `/api/lobbying/firms/[session]` route, and "All sessions" from every firm
+  summary (no all-sessions doc: it would pass Firestore's 1 MiB limit).
+- Filters by session (opening on the current one), `regType` (Lobbyist /
+  Employer / all) and name; the type shows as a pill.
 
 ### `/lobbying/firms/[registrantId]` — Lobbyist detail (`pages/lobbying/firms/[registrantId].tsx`)
 

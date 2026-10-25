@@ -163,7 +163,6 @@
     "count_other": "{{n}} bills with reported lobbying",
     "sortHint": "select a column heading to sort",
     "title": "Title",
-    "positionsNote": "Each organization is counted once under each position it reported.",
     "items": "bills"
   },
   "clients": {

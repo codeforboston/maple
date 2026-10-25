@@ -26,7 +26,11 @@ import {
 import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
-import { PositionBar, PositionLegend } from "components/lobbying/PositionBar"
+import {
+  billPositionCounts,
+  PositionBar,
+  PositionLegend
+} from "components/lobbying/PositionBar"
 import {
   SessionSelect,
   type SessionFilter
@@ -140,7 +144,7 @@ function LobbyingBillsTable({ initialCourt, initialRows }: BillsPageProps) {
             </>
           )
         }
-        footer={<PositionLegend note={t("billList.positionsNote")} />}
+        footer={<PositionLegend multiple note={t("bill.orgCountNote")} />}
       >
         {loadingOther ? (
           <p style={{ color: MAPLE_COLORS.textMuted, margin: 0 }}>
@@ -222,11 +226,7 @@ function LobbyingBillsTable({ initialCourt, initialRows }: BillsPageProps) {
                       <td style={{ ...listTdStyle, paddingTop: "1.1rem" }}>
                         <PositionBar
                           width={160}
-                          counts={{
-                            support: b.orgSupport,
-                            oppose: b.orgOppose,
-                            neutral: b.orgNeutral
-                          }}
+                          counts={billPositionCounts(b)}
                         />
                       </td>
                     </tr>

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react"
-import { omit } from "lodash"
+import { omit, uniq } from "lodash"
 import { useTranslation } from "next-i18next"
 import { Col, Container, Row } from "components/bootstrap"
 import { createPage } from "components/page"
@@ -7,7 +7,6 @@ import {
   fetchClientSummary,
   fetchLatestLobbyingCourt,
   sumBills,
-  useLobbyingClientInHouseFilers,
   useLobbyingFilingsForClient,
   useLobbyingRegistrantsByIds,
   type ClientSummaryRow
@@ -76,45 +75,26 @@ function ClientDetail({ clientNameNorm, summary, current }: ClientDetailProps) {
     status: filStatus,
     error: filError
   } = useLobbyingFilingsForClient(clientNameNorm, session)
-  // The hook keeps the last session's filings while the next one loads;
-  // leave those out, so their registrants aren't fetched for nothing.
-  const sessionFilings = useMemo(
-    () =>
-      (filings ?? []).filter(
-        f => session === "all" || f.generalCourt === session
-      ),
-    [filings, session]
-  )
   const registrants = useLobbyingRegistrantsByIds(
-    useMemo(() => sessionFilings.map(f => f.registrantId), [sessionFilings])
+    useMemo(() => (filings ?? []).map(f => f.registrantId), [filings])
   )
-  const inHouseFilers = useLobbyingClientInHouseFilers(
-    clientNameNorm,
-    session === "all" ? sessions : [session]
-  )
+  // The client's in-house filers, from its summary: the inHouseFilers shape,
+  // holding only this client (merged over its sessions for all sessions).
+  const inHouseFilers = useMemo(() => {
+    const courts = summary?.courts ?? {}
+    const filers =
+      session === "all"
+        ? uniq(Object.values(courts).flatMap(e => e.inHouseFilers ?? []))
+        : courts[String(session)]?.inHouseFilers ?? []
+    return { [clientNameNorm]: filers }
+  }, [summary, session, clientNameNorm])
 
-  // A hook keeps its last result while it reloads, so wait for both to
-  // settle on this session's filings.
   const activity = useMemo(
     () =>
-      filStatus === "success" &&
-      registrants.status === "success" &&
-      inHouseFilers.status === "success"
-        ? groupActivity(
-            sessionFilings,
-            "bill",
-            registrants.result ?? {},
-            inHouseFilers.result ?? {}
-          )
+      filings && registrants.result
+        ? groupActivity(filings, "bill", registrants.result, inHouseFilers)
         : undefined,
-    [
-      filStatus,
-      sessionFilings,
-      registrants.status,
-      registrants.result,
-      inHouseFilers.status,
-      inHouseFilers.result
-    ]
+    [filings, registrants.result, inHouseFilers]
   )
 
   const [position, setPosition] = useState<PositionFilter>("all")
@@ -124,11 +104,8 @@ function ClientDetail({ clientNameNorm, summary, current }: ClientDetailProps) {
     [activity, position, search]
   )
 
-  const failed =
-    filStatus === "error" ||
-    registrants.status === "error" ||
-    inHouseFilers.status === "error"
-  const failure = filError ?? registrants.error ?? inHouseFilers.error
+  const failed = filStatus === "error" || registrants.status === "error"
+  const failure = filError ?? registrants.error
 
   const displayName =
     summary?.clientName ?? filings?.[0]?.clientName ?? clientNameNorm
