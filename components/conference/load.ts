@@ -108,10 +108,28 @@ export async function loadConferencePage(
   id: string
 ): Promise<ConferencePageProps | null> {
   // The rail needs every conference, and the page's own is among them.
-  const all = await listConferences(court)
-  const conference = all.find(c => c.id === id)
-  if (!conference) return null
+  return pageFor(court, await listConferences(court), id)
+}
 
+/** The page for the first conference in the rail's order, which the landing
+ * opens on; null where the court has none. */
+export async function loadLandingPage(
+  court: number
+): Promise<ConferencePageProps | null> {
+  return pageFor(court, await listConferences(court))
+}
+
+/** The page for conference `id` among `all`, or for the rail's first where
+ * there is no `id`. */
+async function pageFor(
+  court: number,
+  all: Conference[],
+  id?: string
+): Promise<ConferencePageProps | null> {
+  const rail = all.map(summarize).sort(byActivity)
+  const summary = rail.find(c => c.id === (id ?? rail[0]?.id))
+  const conference = all.find(c => c.id === summary?.id)
+  if (!summary || !conference) return null
   const [members, hearings] = await Promise.all([
     membersByRead(court, confereeCodes([conference])),
     Promise.all(conference.hearingIds.map(getEventSummary))
@@ -119,8 +137,8 @@ export async function loadConferencePage(
   const conferees = resolveConferees([conference], members)
 
   return {
-    conference: summarize(conference),
-    conferences: all.map(summarize).sort(byActivity),
+    conference: summary,
+    conferences: rail,
     conferees: conferees[conference.id],
     hearings: hearings
       .flatMap((h): HearingView[] =>

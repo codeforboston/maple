@@ -1,12 +1,19 @@
 import "@testing-library/jest-dom"
 import { fireEvent, render, screen } from "@testing-library/react"
+import Router from "next/router"
 import { ConferenceDetails } from "./ConferenceDetails"
 import type { ConferencePageProps } from "./types"
 
 jest.mock("next-i18next", () => ({
   useTranslation: () => ({
     t: (key: string, opts?: Record<string, unknown>) =>
-      opts && Object.keys(opts).length
+      opts?.returnObjects
+        ? // The hero's five steps.
+          Array.from({ length: 5 }, (_, i) => ({
+            h: `${key}.${i}.h`,
+            p: `${key}.${i}.p`
+          }))
+        : opts && Object.keys(opts).length
         ? `${key} ${Object.values(opts).join(" ")}`
         : key,
     i18n: { language: "en" }
@@ -28,6 +35,16 @@ jest.mock("next-i18next", () => ({
     </span>
   )
 }))
+
+let asPath = "/conferences/194/data-privacy"
+jest.mock("next/router", () => ({
+  __esModule: true,
+  default: { events: { on: jest.fn() } },
+  useRouter: () => ({ asPath })
+}))
+/** Next starting a change of address, as the hooks hear it. */
+const routeChangeStart = (url: string) =>
+  jest.mocked(Router.events.on).mock.calls[0][1](url)
 
 jest.mock("usehooks-ts", () => ({ useMediaQuery: () => false }))
 
@@ -132,6 +149,79 @@ const props: ConferencePageProps = {
 }
 
 describe("ConferenceDetails", () => {
+  const { scrollTo } = window
+
+  beforeEach(() => {
+    asPath = "/conferences/194/data-privacy"
+    // Arriving by a link, unless a test says otherwise.
+    routeChangeStart("/conferences/194/elsewhere")
+    window.scrollTo = jest.fn()
+  })
+
+  afterEach(() => {
+    window.scrollTo = scrollTo
+    Object.defineProperty(window, "scrollY", { value: 0, configurable: true })
+  })
+
+  it("leaves a reader Back brought, even to the top, then re-lands them on a new address", () => {
+    routeChangeStart(location.pathname)
+    const { rerender } = render(<ConferenceDetails {...props} />)
+    expect(window.scrollTo).not.toHaveBeenCalled()
+
+    asPath = "/conferences/194/other"
+    rerender(<ConferenceDetails {...props} />)
+    expect(window.scrollTo).toHaveBeenCalledWith(
+      expect.objectContaining({ behavior: "auto" })
+    )
+  })
+
+  it("lands a reader a link brought, scrolled or not, at the conference", () => {
+    // A rail click from the landing keeps the landing's scroll; Next starts
+    // the change before the address moves.
+    Object.defineProperty(window, "scrollY", { value: 900, configurable: true })
+    routeChangeStart("/conferences/194/data-privacy")
+    render(<ConferenceDetails {...props} />)
+    expect(window.scrollTo).toHaveBeenCalledWith(
+      expect.objectContaining({ behavior: "auto" })
+    )
+    // Back has moved it already.
+    jest.mocked(window.scrollTo).mockClear()
+    routeChangeStart(location.pathname)
+    render(<ConferenceDetails {...props} />)
+    expect(window.scrollTo).not.toHaveBeenCalled()
+  })
+
+  it("has one h1: the conference's, or the hero's on the landing", () => {
+    const { unmount } = render(<ConferenceDetails {...props} />)
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1)
+    unmount()
+    render(<ConferenceDetails {...props} openOnHero />)
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1)
+  })
+
+  it("opens a conference's address at the conference, under the hero", () => {
+    render(<ConferenceDetails {...props} />)
+    expect(
+      screen.getByRole("heading", { name: "hero.steps.0.h" })
+    ).toBeInTheDocument()
+    expect(window.scrollTo).toHaveBeenCalledWith(
+      expect.objectContaining({ top: 0, behavior: "auto" })
+    )
+  })
+
+  it("opens the landing on the hero and links to the explorer", () => {
+    render(<ConferenceDetails {...props} openOnHero />)
+    expect(screen.getAllByRole("listitem").length).toBeGreaterThanOrEqual(5)
+    expect(screen.getByRole("link", { name: "explorer" })).toHaveAttribute(
+      "href",
+      "/conferences/explorer"
+    )
+    fireEvent.click(screen.getByRole("button", { name: /hero.see/ }))
+    expect(window.scrollTo).toHaveBeenLastCalledWith(
+      expect.objectContaining({ behavior: "smooth" })
+    )
+  })
+
   it("names the six, the chairs, the bills and the hearing", () => {
     const { container } = render(<ConferenceDetails {...props} />)
 

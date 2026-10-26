@@ -6,8 +6,8 @@
     "overview": "Overview"
   },
   "banner": {
-    "betaLine1": "MAPLE's lobbying explorer is in beta. Please email",
-    "betaLine2": "with feedback."
+    "beta": "Beta",
+    "feedback": "The lobbying explorer is in beta. Send feedback to"
   },
   "pagination": {
     "prev": "← Prev",
