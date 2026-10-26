@@ -470,6 +470,9 @@ export type ClientSummaryRow = {
   firstRegistered?: string | null
   lastRegisteredYear?: number | null
   registrationUrl?: string | null
+  // The portal's "No client": listed, but not an organization, so not counted
+  // as a client. Absent on every other client.
+  placeholder?: true
 }
 
 export type FirmRegistrationParty = {
@@ -705,6 +708,8 @@ export type ClientListEntry = {
   firmsWithoutAgents?: number
   inHouseLobbyists: number
   hiredFirms: number
+  // "No client" (see ClientSummaryRow.placeholder).
+  placeholder?: true
 }
 
 export type FirmListEntry = {

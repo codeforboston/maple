@@ -1006,20 +1006,34 @@ def test_compute_stats_counts_bills_numbered_1_to_9_but_not_0():
     assert len(_batch_set_dicts_with_key(db, "orgSupport")) == 3  # one summary per bill
 
 
-def test_compute_stats_treats_no_client_as_a_placeholder():
+def test_compute_stats_lists_no_client_but_counts_no_organization():
     """The portal's "No client" (a period with no client) isn't an
-    organization: no client summary or client count, and no organization on a
-    bill; its filings still count, and so does its reported compensation."""
-    filings = [_filing("FIRM", "CLIENT A", "H100"), _filing("SOLO", "NO CLIENT", "H100", "Neutral")]
+    organization: it gets a summary and list rows, marked placeholder, listing
+    the lobbyists who reported it, but no client, organization or firm client
+    count, no in-house filers and no SoS page. The legacy total row gets
+    nothing."""
+    filings = [_filing("FIRM", "CLIENT A", "H100"), _filing("SOLO", "NO CLIENT", "H100", "Neutral"),
+               _filing("SOLO", "TOTAL SALARIES PAID", "H100")]
     registrants = [_registrant("FIRM", 2025, clients=[("CLIENT A", 10.0)]),
                    _registrant("SOLO", 2025, "Lobbyist", clients=[("NO CLIENT", 5.0)])]
-    db, doc_mocks, clients = _run_stats(registrants=registrants, filings=filings)
-    assert "NO CLIENT" not in clients
+    registrations = [_registration("SOLO", 2025, clients=[{"name": "No client", "nameNorm": "NO CLIENT"}])]
+    db, doc_mocks, clients = _run_stats(registrants=registrants, registrations=registrations, filings=filings)
+    nc = clients["NO CLIENT"]
+    assert (nc["placeholder"], nc["registrationUrl"], nc["firstRegistered"], nc["inHouseCount"]) == (
+        True, None, None, 0)
+    c = nc["courts"]["194"]
+    assert (c["filings"], c["bills"], c["lobbyistCount"], c["inHouseFilers"]) == (1, 1, 1, [])
+    assert "TOTAL SALARIES PAID" not in clients
+    for doc in ("clientList_194", "clientList_all"):
+        rows = _captured_data(doc_mocks[doc])
+        assert (rows["NO CLIENT"]["placeholder"], "placeholder" in rows["CLIENT A"]) == (True, False)
     (bill,) = _batch_set_dicts_with_key(db, "orgSupport")
-    assert (bill["clients"], bill["total"], bill["orgNeutral"]) == (1, 2, 0)
-    court = _stats_doc(doc_mocks)["courts"]["194"]
-    assert (court["clients"], court["paid"]) == (1, 15.0)
-    assert "NO CLIENT" not in _captured_data(doc_mocks["clientFilingCounts"])
+    assert (bill["total"], bill["clients"], bill["orgNeutral"], bill["orgLatestNeutral"]) == (3, 1, 0, 0)
+    stats = _stats_doc(doc_mocks)
+    assert (stats["totalClients"], stats["courts"]["194"]["clients"], stats["courts"]["194"]["paid"]) == (1, 1, 15.0)
+    assert _captured_data(doc_mocks["clientFilingCounts"])["NO CLIENT"] == 1
+    firms = {d["entityNameNorm"]: d for d in _batch_set_dicts_with_key(db, "hasFilings")}
+    assert (firms["SOLO"]["clientCount"], firms["SOLO"]["courts"]["194"]["clientCount"]) == (0, 0)
 
 
 def test_compute_stats_counts_hired_firms_that_name_no_agents():
