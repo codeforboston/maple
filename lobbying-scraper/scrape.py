@@ -97,27 +97,44 @@ def _mark_processed(db: firestore.Client, disc_url: str) -> None:
     )
 
 
-def _get_cached_disc_urls(db: firestore.Client, summary_url: str) -> list[str] | None:
-    """Cached disclosure URLs for a registrant's summary page, or None if unseen.
+# A year's last disclosures (Jul–Dec) are due on Jan 15 of the next year, so
+# a registrant's list cached before this (month, day) of the next year may
+# still be missing them.
+_CACHE_TRUSTED_FROM = (2, 1)
 
-    Only consulted for prior years — the current year is always refetched live
-    since its disclosures can still change.
+
+def _get_cached_disc_urls(
+    db: firestore.Client, summary_url: str, year: int
+) -> list[str] | None:
+    """Cached disclosure URLs for a registrant's summary page in a prior year,
+    or None to fetch it live.
+
+    The current year is always refetched live since its disclosures can still
+    change. An entry counts only if it was cached after the year's last
+    reports were due, and lists current versions only (entries written before
+    amendments were tracked list every version and have no supersededUrls).
     """
     h = _url_hash(summary_url)
     doc = db.document(SCRAPER_DOC).collection(SUMMARY_CACHE_COLLECTION).document(h).get()
     if not doc.exists:
         return None
-    return doc.to_dict().get("discUrls", [])
+    data = doc.to_dict()
+    month, day = _CACHE_TRUSTED_FROM
+    trusted_from = f"{year + 1}-{month:02d}-{day:02d}"
+    if "supersededUrls" not in data or data.get("cachedAt", "") < trusted_from:
+        return None
+    return data.get("discUrls", [])
 
 
 def _cache_disc_urls(
-    db: firestore.Client, summary_url: str, disc_urls: list[str]
+    db: firestore.Client, summary_url: str, disc_urls: list[str], superseded: list[str]
 ) -> None:
     h = _url_hash(summary_url)
     db.document(SCRAPER_DOC).collection(SUMMARY_CACHE_COLLECTION).document(h).set(
         {
             "summaryUrl": summary_url,
             "discUrls": disc_urls,
+            "supersededUrls": superseded,
             "cachedAt": datetime.now(tz=timezone.utc).isoformat(),
         }
     )
@@ -199,22 +216,27 @@ def run_weekly(
         print(f"  {_ts()} {len(summary_urls)} registrants on portal")
 
         for summary_url in summary_urls:
-            # Prior years: trust the cache if we have one. Current year:
-            # always refetch live, since its disclosures can still change.
+            # Prior years: trust the cache if it was written after the year's
+            # last reports were due (see _get_cached_disc_urls); amendments
+            # filed after that aren't seen. Current year: always refetch live,
+            # since its disclosures can still change. A list is cached only
+            # once all its disclosures were written and its superseded
+            # versions' filings removed, so a cache hit has nothing left to do
+            # but skip what's processed.
             disc_urls = None
             superseded: list[str] = []
+            fetched_live = False
             if year != current_year and use_cursor:
-                disc_urls = _get_cached_disc_urls(db, summary_url)
+                disc_urls = _get_cached_disc_urls(db, summary_url, year)
 
             if disc_urls is None:
                 try:
                     meta, registration = fetch_summary(session, summary_url)
                     disc_urls = meta.disclosure_urls
                     superseded = list(meta.superseded_urls)
-                    if use_cursor:
-                        _cache_disc_urls(db, summary_url, disc_urls)
-                        if registration is not None:
-                            write_registration(db, registration)
+                    fetched_live = True
+                    if use_cursor and registration is not None:
+                        write_registration(db, registration)
                 except Exception as e:
                     print(f"  failed to fetch summary {summary_url}: {e}", file=sys.stderr)
                     continue
@@ -238,6 +260,8 @@ def run_weekly(
                 removed = remove_superseded_filings(db, superseded)
                 if removed:
                     print(f"  {_ts()} removed {removed} filings of superseded versions")
+            if use_cursor and fetched_live and not failed:
+                _cache_disc_urls(db, summary_url, disc_urls, superseded)
 
     return new_count
 

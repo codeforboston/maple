@@ -420,7 +420,13 @@ in `functions/src/lobbying/types.ts`.
 In steady state (after the initial backfill), each weekly run:
 
 1. One POST to fetch all summary links for current + prior year
-2. For prior-year registrants with all disc URLs in the cursor: zero GETs
+2. For prior-year registrants with all disc URLs in the cursor: zero GETs,
+   once their cached list is trusted. A registrant's list is cached only after
+   all its disclosures were written and its superseded versions' filings
+   removed, and a prior year's cached list counts only if it was cached after
+   Feb 1 of the next year, past the Jan 15 deadline for the Jul–Dec report.
+   Earlier entries are fetched live again. Amendments filed after that to a
+   closed year aren't seen.
 3. For current-year registrants: one GET per summary page to check for new
    disclosure periods
 4. For any new disc URLs: one GET per disclosure page
