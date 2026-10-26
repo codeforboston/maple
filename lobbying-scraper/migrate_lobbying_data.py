@@ -307,12 +307,11 @@ def run_cleanup(project: str, out_prefix: str, collection: str, execute: bool,
     blockers = {
         k: summary[k]
         for k in ("error", "unattributable", "missing_from_archive", "superseded_without_current")
-        if summary[k]
+        if summary.get(k)
     }
-    if summary["processed"] + summary["superseded"] != summary["listed_urls"]:
-        blockers["pages_not_processed"] = (
-            summary["listed_urls"] - summary["processed"] - summary["superseded"]
-        )
+    superseded = summary.get("superseded", 0)
+    if summary["processed"] + superseded != summary["listed_urls"]:
+        blockers["pages_not_processed"] = summary["listed_urls"] - summary["processed"] - superseded
     if summary["project"] != project:
         blockers["summary_project"] = summary["project"]
     if summary.get("limit") is not None:
