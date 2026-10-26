@@ -420,7 +420,13 @@ in `functions/src/lobbying/types.ts`.
 In steady state (after the initial backfill), each weekly run:
 
 1. One POST to fetch all summary links for current + prior year
-2. For prior-year registrants with all disc URLs in the cursor: zero GETs
+2. For prior-year registrants with all disc URLs in the cursor: zero GETs,
+   once their cached list is trusted. A registrant's list is cached only after
+   all its disclosures were written and its superseded versions' filings
+   removed, and a prior year's cached list counts only if it was cached after
+   Feb 1 of the next year, past the Jan 15 deadline for the Jul–Dec report.
+   Earlier entries are fetched live again. Amendments filed after that to a
+   closed year aren't seen.
 3. For current-year registrants: one GET per summary page to check for new
    disclosure periods
 4. For any new disc URLs: one GET per disclosure page
@@ -586,9 +592,11 @@ writes the figures the Lobbying Explorer shows per session (shapes in
   document instead of every summary. A lobbyist or entity is in a session's
   list when it registered in one of the session's years. There's no
   all-sessions lobbyist doc (about 2 MB, over Firestore's 1 MiB limit), so that
-  view reads `firmSummaries`. The run logs each list doc's size and warns past
-  900 KB: `clientList_all` was about 830 KB in October 2026 and grows with
-  every new client.
+  view reads `firmSummaries`. The run measures every single document it
+  writes (these, `stats` and the filing counts) before writing any of them:
+  past 1 MiB it stops with nothing written, naming the doc to split, and past
+  900 KiB it warns. `clientList_all` was about 775 KiB in October 2026 and
+  grows with every new client.
 
 A filer is in-house for a client when it is the client, or when its
 registration for that session names the client as its employer (from 2019),
@@ -663,8 +671,9 @@ M="python3 migrate_lobbying_data.py --project <project> --out-prefix /tmp/<proje
 $M --phase refetch-errors
 $M --phase refetch-errors --execute
 # 2. Rewrite every registrant and filing doc from the archived disclosures;
-#    superseded versions are skipped (expect "superseded" > 0 and
-#    superseded_without_current 0).
+#    superseded versions are skipped, each mapped to its final version even
+#    when registration pages archived at different times chain amendments
+#    (expect "superseded" > 0 and superseded_without_current 0).
 $M --phase write
 # 3. Rewrite every registration doc from the archived registration pages
 #    (e.g. clients' own pages, for registrationUrl).

@@ -307,12 +307,11 @@ def run_cleanup(project: str, out_prefix: str, collection: str, execute: bool,
     blockers = {
         k: summary[k]
         for k in ("error", "unattributable", "missing_from_archive", "superseded_without_current")
-        if summary[k]
+        if summary.get(k)
     }
-    if summary["processed"] + summary["superseded"] != summary["listed_urls"]:
-        blockers["pages_not_processed"] = (
-            summary["listed_urls"] - summary["processed"] - summary["superseded"]
-        )
+    superseded = summary.get("superseded", 0)
+    if summary["processed"] + superseded != summary["listed_urls"]:
+        blockers["pages_not_processed"] = summary["listed_urls"] - summary["processed"] - superseded
     if summary["project"] != project:
         blockers["summary_project"] = summary["project"]
     if summary.get("limit") is not None:
@@ -454,11 +453,31 @@ def _is_error_page(html: str) -> bool:
     return ("An Error Occurred" in html and "There was a problem opening" in html) or is_block_page(html)
 
 
+def resolve_superseded(maps) -> dict[str, str]:
+    """Merge registration pages' {earlier version: current version} maps,
+    pointing each earlier version at its final one. A firm's disclosure is
+    listed on several pages archived at different times, so one page can say
+    A -> B and a later one B -> C: A's current version is then C, since B is
+    itself superseded and never written. A cycle stops on a superseded
+    version, which the write phase then reports as without a current one."""
+    merged: dict[str, str] = {}
+    for versions in maps:
+        merged.update(versions)
+
+    def final(url: str) -> str:
+        seen = {url}
+        while url in merged and merged[url] not in seen:
+            url = merged[url]
+            seen.add(url)
+        return url
+
+    return {old: final(cur) for old, cur in merged.items()}
+
+
 def _superseded_versions(project: str, workers: int) -> dict[str, str]:
-    """Earlier versions of amended disclosures -> their current version, as
-    the archived registration pages list them. A firm's disclosure is listed
-    on several pages, which may have been archived at different times; a
-    version superseded on any of them is superseded."""
+    """Earlier versions of amended disclosures -> their final current
+    version, as the archived registration pages list them. A version
+    superseded on any page is superseded (see resolve_superseded)."""
     pages = _archived_pages(project, "Summary.aspx")
 
     def parse(page):
@@ -468,10 +487,8 @@ def _superseded_versions(project: str, workers: int) -> dict[str, str]:
         except Exception as exc:
             raise SystemExit(f"ABORT: could not read registration page {url}: {exc}")
 
-    superseded: dict[str, str] = {}
     with ThreadPoolExecutor(max_workers=workers) as pool:
-        for _, versions in pool.map(parse, pages):
-            superseded.update(versions)
+        superseded = resolve_superseded(versions for _, versions in pool.map(parse, pages))
     print(f"Registration pages read: {len(pages)}; superseded disclosure versions: {len(superseded)}")
     return superseded
 
