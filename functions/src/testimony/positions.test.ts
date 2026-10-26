@@ -27,3 +27,16 @@ describe("DraftTestimony position", () => {
     )
   })
 })
+
+describe("DraftTestimony target", () => {
+  it("names a ballot question or a conference, not both", () => {
+    expect(
+      DraftTestimony.guard({
+        ...draft,
+        position: "endorse",
+        ballotQuestionId: "bq-1",
+        conferenceId: "data-privacy"
+      })
+    ).toBe(false)
+  })
+})
