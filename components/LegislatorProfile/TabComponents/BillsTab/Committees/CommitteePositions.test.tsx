@@ -51,7 +51,7 @@ describe("CommitteePositions", () => {
               content: { Committees: [{ CommitteeCode: "OTHER" }] }
             })
           case "generalCourts/193":
-            return makeSnapshot({ years: "2023 - 2024" })
+            return makeSnapshot({ years: "2023" })
           default:
             return { exists: () => false }
         }
@@ -61,7 +61,7 @@ describe("CommitteePositions", () => {
     render(<CommitteePositions member={member} />)
 
     await waitFor(() => {
-      expect(screen.getByText("2023 - 2024")).toBeTruthy()
+      expect(screen.getByText("2023")).toBeTruthy()
     })
 
     expect(screen.getByText("Joint Committee on Example")).toBeTruthy()
