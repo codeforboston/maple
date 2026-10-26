@@ -11,6 +11,7 @@ import { TabBlock } from "components/LegislatorProfile/LegislatorComponents"
 import { MemberContent } from "functions/src/members/types"
 import { getFirestore, doc, getDoc } from "firebase/firestore"
 import { CSSProperties } from "react"
+import { supportedGeneralCourts } from "functions/src/shared/constants"
 
 interface CommitteeRow {
   code: string
@@ -60,10 +61,6 @@ export const CommitteePositions = ({
 
           const committeeSnap = await getDoc(committeeRef)
 
-          const courtRef = doc(db, `generalCourts/${courtNum}`)
-
-          const courtSnap = await getDoc(courtRef)
-
           let shortName = code // Fallback
 
           let role = "Member"
@@ -83,15 +80,51 @@ export const CommitteePositions = ({
             role = isChair ? "Chair" : "Member"
           }
 
-          if (courtSnap.exists()) {
-            const courtData = courtSnap.data()
+          let sinceCourtNum = member.GeneralCourtNumber
+          let historyKnown = true
 
-            courtDate =
-              courtData.years || courtData.startDate || `${courtNum}th`
+          const previousCourts = supportedGeneralCourts.filter(
+            courtNum => courtNum < member.GeneralCourtNumber
+          )
+
+          for (const previousCourtNum of previousCourts) {
+            const historicalMemberSnap = await getDoc(
+              doc(db, `generalCourts/${previousCourtNum}/members/${memberCode}`)
+            )
+
+            // A missing record is unknown history, not proof of committee absence.
+            if (!historicalMemberSnap.exists()) {
+              historyKnown = false
+              break
+            }
+
+            const historicalCommittees =
+              historicalMemberSnap.data().content?.Committees ?? []
+            const wasOnCommittee = historicalCommittees.some(
+              (committee: { CommitteeCode: string }) =>
+                committee.CommitteeCode === code
+            )
+
+            if (!wasOnCommittee) break
+
+            sinceCourtNum = previousCourtNum
+          }
+
+          if (!historyKnown) {
+            courtDate = "Unknown"
           } else {
-            const startYear = courtNum * 2 + 1637
+            const sinceCourtSnap = await getDoc(
+              doc(db, `generalCourts/${sinceCourtNum}`)
+            )
 
-            courtDate = `${startYear}`
+            if (sinceCourtSnap.exists()) {
+              const courtData = sinceCourtSnap.data()
+              courtDate =
+                courtData.years || courtData.startDate || `${sinceCourtNum}th`
+            } else {
+              const startYear = sinceCourtNum * 2 + 1637
+              courtDate = `${startYear}`
+            }
           }
 
           return {
