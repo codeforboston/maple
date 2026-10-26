@@ -191,14 +191,14 @@ describe("PolicyActions", () => {
     it("sends an edit to the conference page while it is appointed", () => {
       onConference("appointed")
       expect(
-        screen.getByText("Edit Testimony for Data Privacy").closest("a")
+        screen.getByText("Edit Your Input for Data Privacy").closest("a")
       ).toHaveAttribute("href", "/conferences/194/data-privacy")
     })
 
     it("offers no edit once the conference has reported", () => {
       onConference("reportFiled")
       expect(screen.getByText("Report Testimony")).toBeInTheDocument()
-      expect(screen.queryByText(/Testimony for/)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Input for/)).not.toBeInTheDocument()
     })
   })
 })

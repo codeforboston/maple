@@ -178,7 +178,7 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
       items.push(
         <PolicyActionItem
           key="add-testimony"
-          billName={`${isUser ? "Edit" : "Add"} Testimony for ${conferenceName(
+          billName={`${isUser ? "Edit" : "Add"} Your Input for ${conferenceName(
             conference
           )}`}
           href={maple.conference(conference)}

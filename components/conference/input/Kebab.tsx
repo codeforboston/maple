@@ -60,9 +60,10 @@ const Item = styled.button`
 `
 
 /** Reporting an entry, or asking for one's own to be deleted: the modal the
- * bill page's testimony uses, and its toast. `start` sends a signed-out reader
+ * bill page's testimony uses, worded for input, and its toast. `start` sends a signed-out reader
  * to sign in first; `node` goes anywhere in the tree. */
 export function useReport(testimony: ConferenceTestimony) {
+  const { t } = useTranslation("conferences")
   const { t: tt } = useTranslation("testimony")
   const dispatch = useAppDispatch()
   const { uid, signedIn } = useInputContext()
@@ -85,12 +86,17 @@ export function useReport(testimony: ConferenceTestimony) {
             onClose={() => setOpen(false)}
             onReport={send}
             isLoading={report.isLoading}
-          />
+            title={t("input.report_title")}
+            wrongTarget={t("input.delete_wrong")}
+          >
+            {t("input.rescind")}
+          </RequestDeleteOwnTestimonyModal>
         ) : (
           <ReportModal
             onClose={() => setOpen(false)}
             onReport={send}
             isLoading={report.isLoading}
+            title={t("input.report_title")}
             additionalInformationLabel="Additional information:"
             reasons={[
               tt("reportModal.personalInformation"),
