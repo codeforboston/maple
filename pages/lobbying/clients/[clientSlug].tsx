@@ -18,6 +18,7 @@ import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
+import { compareFilingPeriodsDesc } from "components/lobbying/filingPeriod"
 
 const PAGE_SIZE = 25
 
@@ -63,7 +64,10 @@ function ClientDetail() {
     () =>
       [...(filings ?? [])].sort(
         (a, b) =>
-          b.year - a.year || (a.billId ?? "").localeCompare(b.billId ?? "")
+          b.year - a.year ||
+          (a.billId ?? "").localeCompare(b.billId ?? "") ||
+          a.clientName.localeCompare(b.clientName) ||
+          compareFilingPeriodsDesc(a, b)
       ),
     [filings]
   )

@@ -2,14 +2,15 @@ import { GetServerSideProps } from "next"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import { currentGeneralCourt } from "functions/src/shared"
 import { flags } from "components/featureFlags"
-import { ConferenceExplorer } from "components/conference/ConferenceExplorer"
-import { loadConferenceIndex } from "components/conference/load"
-import { ConferenceIndexProps } from "components/conference/types"
+import { ConferenceDetails } from "components/conference/ConferenceDetails"
+import { loadLandingPage } from "components/conference/load"
+import { ConferencePageProps } from "components/conference/types"
+import { maple } from "components/links"
 import { createPage } from "../../components/page"
 
-export default createPage<ConferenceIndexProps>({
+export default createPage<ConferencePageProps>({
   titleI18nKey: "titles.conferences",
-  Page: props => <ConferenceExplorer {...props} />
+  Page: props => <ConferenceDetails {...props} openOnHero />
 })
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
@@ -20,10 +21,16 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   )
 
   const locale = ctx.locale ?? ctx.defaultLocale ?? "en"
-  const [index, translations] = await Promise.all([
-    loadConferenceIndex(currentGeneralCourt),
+  const [page, translations] = await Promise.all([
+    loadLandingPage(currentGeneralCourt),
     serverSideTranslations(locale, ["auth", "common", "footer", "conferences"])
   ])
+  // A court with no conferences yet has nothing to open on; the explorer says
+  // so, where a 404 would leave the navbar's link dead.
+  if (!page)
+    return {
+      redirect: { destination: maple.conferenceExplorer(), permanent: false }
+    }
 
-  return { props: { ...index, ...translations } }
+  return { props: { ...page, ...translations } }
 }

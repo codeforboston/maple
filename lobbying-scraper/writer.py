@@ -1000,10 +1000,12 @@ def write_filings(
             "activityTitle": bill.activity_title,
             "position": bill.position,
             "amount": bill.amount,
-            # End of the disclosure's half-year reporting window.
-            "periodEnd": detail.period_end,
-            # The SoS disclosure page this activity was reported on.
+            # The SoS disclosure page this activity was reported on, and the
+            # reporting period it covers (a firm files twice a year, so one
+            # position can appear on two disclosures in the same year).
             "disclosureUrl": disc_url,
+            "periodStart": detail.period_start,
+            "periodEnd": detail.period_end,
             "fetchedAt": now,
         }
         batch.set(ref, doc)

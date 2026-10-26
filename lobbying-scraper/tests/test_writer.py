@@ -268,6 +268,23 @@ def test_write_filings_returns_count():
     assert batch.commit.called
 
 
+def test_write_filings_records_reporting_period():
+    """Each filing records the reporting period of its disclosure."""
+    db = MagicMock()
+    batch = MagicMock()
+    db.batch.return_value = batch
+    detail = DisclosureDetail(
+        compensation=[],
+        bills=[BillActivity("Client A", "House Bill", "100", "H100", "An Act", "Support", None)],
+        period_start="2025-07-01",
+        period_end="2025-12-31",
+    )
+    write_filings(db, _meta(), detail, "https://example.test/d")
+    doc = batch.set.call_args[0][1]
+    assert doc["periodStart"] == "2025-07-01"
+    assert doc["periodEnd"] == "2025-12-31"
+
+
 def test_write_filings_returns_zero_when_no_bills():
     """write_filings must return 0 and not touch Firestore when bills list is empty."""
     db = MagicMock()
