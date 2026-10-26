@@ -11,7 +11,7 @@ import {
   useLobbyingFilingsForEntityName
 } from "components/db/lobbying"
 import { LobbyingFilingsTable } from "components/lobbying/LobbyingFilingsTable"
-import { normalizePosition } from "components/lobbying/activity"
+import { isNoClient, normalizePosition } from "components/lobbying/activity"
 import { LobbyingPositionChip } from "components/lobbying/LobbyingPositionChip"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
@@ -20,7 +20,10 @@ import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
 import { SosSourceLink } from "components/lobbying/SosSourceLink"
 import { regTypeLabel } from "components/lobbying/regTypeLabel"
-import { LobbyingLoadError } from "components/lobbying/LobbyingPanel"
+import {
+  LobbyingLoadError,
+  subTextStyle
+} from "components/lobbying/LobbyingPanel"
 
 const PAGE_SIZE = 25
 
@@ -280,6 +283,11 @@ function FirmDetail() {
                       >
                         {c.clientName}
                       </a>
+                      {isNoClient(c.clientNameNorm) && (
+                        <div style={subTextStyle}>
+                          {t("activity.notOrganization")}
+                        </div>
+                      )}
                       {c.periods.map((p, i) => (
                         <div
                           key={i}

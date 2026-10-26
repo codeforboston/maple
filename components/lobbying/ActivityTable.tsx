@@ -10,6 +10,7 @@ import {
   sessionPeriodsWith
 } from "./activity"
 import { MAPLE_COLORS, POSITION_TONES } from "./chartTheme"
+import { subTextStyle } from "./LobbyingPanel"
 import { LobbyingPaginationBar } from "./LobbyingPaginationBar"
 import { LobbyingPositionChip } from "./LobbyingPositionChip"
 import { SortTh, thStyle, type SortDir } from "./SortTh"
@@ -212,6 +213,11 @@ export function ActivityTable({
                           ) : (
                             <span style={{ fontWeight: 700 }}>{row.label}</span>
                           )}
+                          {row.placeholder && (
+                            <div style={subTextStyle}>
+                              {t("activity.noClientNote")}
+                            </div>
+                          )}
                           {row.title && (
                             <div
                               style={{
@@ -362,9 +368,14 @@ function FilerList({ row, data }: { row: ActivityRow; data: Activity }) {
               <div style={{ fontWeight: 700, fontSize: 14 }}>
                 {filer.entityName}
               </div>
-              <div style={{ color: MAPLE_COLORS.graySubtleText, fontSize: 12 }}>
-                {filerKind(filer, t)}
-              </div>
+              {/* In-house and firm don't apply to "No client". */}
+              {!filer.noClient && (
+                <div
+                  style={{ color: MAPLE_COLORS.graySubtleText, fontSize: 12 }}
+                >
+                  {filerKind(filer, t)}
+                </div>
+              )}
               <div
                 style={{ display: "flex", flexWrap: "wrap", gap: "2px 14px" }}
               >

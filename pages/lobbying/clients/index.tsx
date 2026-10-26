@@ -111,6 +111,11 @@ function LobbyingClientsTable({
     sorted,
     PAGE_SIZE
   )
+  // "No client" is listed but isn't a client organization.
+  const clientCount = useMemo(
+    () => totalItems - (sorted.some(c => c.placeholder) ? 1 : 0),
+    [sorted, totalItems]
+  )
 
   useEffect(() => {
     setPage(1)
@@ -153,8 +158,8 @@ function LobbyingClientsTable({
             <>
               <strong>
                 {t("clients.count", {
-                  count: totalItems,
-                  n: formatCount(totalItems)
+                  count: clientCount,
+                  n: formatCount(clientCount)
                 })}
               </strong>{" "}
               · {t("billList.sortHint")}
@@ -226,6 +231,11 @@ function LobbyingClientsTable({
                         >
                           {c.clientName}
                         </a>
+                        {c.placeholder && (
+                          <div style={subTextStyle}>
+                            {t("activity.notOrganization")}
+                          </div>
+                        )}
                       </td>
                       <td style={{ ...listTdStyle, ...figureStyle }}>
                         {c.bills ?? "—"}
@@ -234,7 +244,8 @@ function LobbyingClientsTable({
                         <div style={{ fontWeight: 700 }}>
                           {c.lobbyists?.total ?? "—"}
                         </div>
-                        {c.lobbyists && (
+                        {/* In-house and firms don't apply to "No client". */}
+                        {c.lobbyists && !c.placeholder && (
                           <div style={subTextStyle}>
                             {lobbyistMixText(c.lobbyists, t)}
                           </div>

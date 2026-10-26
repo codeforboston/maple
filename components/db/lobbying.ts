@@ -736,6 +736,9 @@ export type ClientListRow = {
   firmsWithoutAgents: number | null
   inHouseLobbyists: number | null
   hiredFirms: number | null
+  // "No client": listed, but not an organization. Set only when true, so
+  // the other rows' payload doesn't grow.
+  placeholder?: true
 }
 
 /** The Clients list for one session (its active clients) or for all
@@ -758,7 +761,8 @@ export async function fetchClientList(
     firmAgents: e.firmAgents ?? null,
     firmsWithoutAgents: e.firmsWithoutAgents ?? null,
     inHouseLobbyists: e.inHouseLobbyists ?? null,
-    hiredFirms: e.hiredFirms ?? null
+    hiredFirms: e.hiredFirms ?? null,
+    ...(e.placeholder ? { placeholder: true as const } : {})
   }))
 }
 

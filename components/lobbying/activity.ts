@@ -11,26 +11,31 @@ export type PositionCategory = Position | "multiple"
 
 const POSITION_ORDER: Position[] = ["support", "oppose", "neutral", "none"]
 
-// Mirror _is_placeholder_client and _counts_as_bill in
+// Mirror _is_legacy_total_client, NO_CLIENT and _counts_as_bill in
 // lobbying-scraper/writer.py, so the activity tables count what the stored
 // summaries do.
 const LEGACY_TOTAL_CLIENT = "_total_salary_"
 const NO_CLIENT = "NO CLIENT"
 
-/** Not an organization: the portal's "No client" for a period without one,
- * or the legacy total-salary row. Its filings aren't an organization's. */
-export function isPlaceholderClient(
+/** The legacy total-salary row: not a client at all, so it makes no row. */
+export function isLegacyTotalClient(
   name: string | null | undefined,
   nameNorm: string | null | undefined
 ): boolean {
-  if (!nameNorm || nameNorm === NO_CLIENT || nameNorm === LEGACY_TOTAL_CLIENT)
-    return true
+  if (!nameNorm || nameNorm === LEGACY_TOTAL_CLIENT) return true
   const lc = (name ?? "").toLowerCase()
   return (
     name === LEGACY_TOTAL_CLIENT ||
     lc.includes("total salaries") ||
     lc.includes("total salary")
   )
+}
+
+/** The portal's "No client", for a period in which a lobbyist had none:
+ * listed like a client, but not an organization, so it counts toward no
+ * organization count. */
+export function isNoClient(nameNorm: string | null | undefined): boolean {
+  return nameNorm === NO_CLIENT
 }
 
 /** A chamber prefix and a bill number from 1 up: filers enter 0 (H0, S0)
@@ -141,6 +146,8 @@ export type ActivityFiler = {
   entityName: string
   entityNameNorm: string
   inHouse: boolean
+  // Filed for "No client", where in-house and firm don't apply.
+  noClient?: true
   // A firm's lobbyists on this account; empty for in-house filers.
   agents: string[]
   byPeriod: Record<string, FilerPeriod>
@@ -156,6 +163,8 @@ export type ActivityRow = {
   court?: number
   // The bill's title (bill rows only).
   title?: string
+  // "No client" (client rows only): listed, but not an organization.
+  placeholder?: true
   filings: number
   // The row's most recent period and the positions reported in it. "none"
   // appears only when no filer reported a position that period.
@@ -199,10 +208,10 @@ export function groupActivity(
   const periods = new Map<string, Period>()
   const groups = new Map<string, ActivityFiling[]>()
   for (const f of filings) {
-    // Rows are organizations or bills, so placeholders and non-bills don't
-    // make one.
+    // Rows are clients or bills, so the legacy total row and non-bills don't
+    // make one ("No client" does, flagged).
     if (by === "bill" && !countsAsBill(f.billId)) continue
-    if (by === "client" && isPlaceholderClient(f.clientName, f.clientNameNorm))
+    if (by === "client" && isLegacyTotalClient(f.clientName, f.clientNameNorm))
       continue
     const key =
       by === "client" ? f.clientNameNorm : `${f.generalCourt}/${f.billId}`
@@ -227,6 +236,7 @@ export function groupActivity(
           inHouse: (inHouseFilers[f.clientNameNorm] ?? []).includes(
             f.entityNameNorm
           ),
+          ...(isNoClient(f.clientNameNorm) ? { noClient: true as const } : {}),
           agents: [],
           byPeriod: {}
         }
@@ -266,6 +276,8 @@ export function groupActivity(
       label: by === "client" ? first.clientName : (first.billId as string),
       ...(by === "bill"
         ? { court: first.generalCourt, title: first.activityTitle }
+        : isNoClient(key)
+        ? { placeholder: true as const }
         : {}),
       filings: group.length,
       latest: {
@@ -297,11 +309,16 @@ export function groupActivity(
 
 export type PositionBreakdown = Record<PositionCategory, number>
 
-/** Each row (organization) counted once, by the positions in its most recent
+/** The rows that are organizations: all but "No client". */
+export function organizationRows(rows: ActivityRow[]): ActivityRow[] {
+  return rows.filter(r => !r.placeholder)
+}
+
+/** Each organization row counted once, by the positions in its most recent
  * period: more than one is "multiple". */
 export function orgPositionBreakdown(rows: ActivityRow[]): PositionBreakdown {
   const counts = { support: 0, oppose: 0, neutral: 0, multiple: 0, none: 0 }
-  for (const row of rows) {
+  for (const row of organizationRows(rows)) {
     // "none" is only ever the sole position (see reportedPositions).
     const { positions } = row.latest
     if (positions.length > 1) counts.multiple++

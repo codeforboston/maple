@@ -2,9 +2,10 @@ import {
   ActivityFiling,
   filterActivity,
   groupActivity,
-  isPlaceholderClient,
+  isLegacyTotalClient,
   normalizePosition,
   orgPositionBreakdown,
+  organizationRows,
   periodOf,
   sessionPeriods,
   sessionPeriodsWith
@@ -339,18 +340,36 @@ describe("sessionPeriodsWith", () => {
 })
 
 describe("placeholders", () => {
-  it("leaves 'No client' and the legacy total out of organization rows", () => {
-    const filings = [
-      filing({}),
-      filing({ clientName: "No client", clientNameNorm: "NO CLIENT" }),
-      filing({ clientName: "_total_salary_", clientNameNorm: "_total_salary_" })
-    ]
+  const filings = [
+    filing({}),
+    filing({
+      clientName: "No client",
+      clientNameNorm: "NO CLIENT",
+      position: "Oppose"
+    }),
+    filing({ clientName: "_total_salary_", clientNameNorm: "_total_salary_" })
+  ]
+  const { rows } = groupActivity(filings, "client", {}, {})
+
+  it("keeps 'No client' as a flagged row and drops the legacy total", () => {
+    expect(rows.map(r => [r.label, r.placeholder])).toEqual([
+      ["No client", true],
+      ["Widget Co", undefined]
+    ])
     expect(
-      groupActivity(filings, "client", {}, {}).rows.map(r => r.label)
-    ).toEqual(["Widget Co"])
-    expect(
-      isPlaceholderClient("Total salaries paid", "TOTAL SALARIES PAID")
+      isLegacyTotalClient("Total salaries paid", "TOTAL SALARIES PAID")
     ).toBe(true)
+  })
+
+  it("leaves 'No client' out of organization counts", () => {
+    expect(organizationRows(rows).map(r => r.label)).toEqual(["Widget Co"])
+    expect(orgPositionBreakdown(rows)).toEqual({
+      support: 1,
+      oppose: 0,
+      neutral: 0,
+      multiple: 0,
+      none: 0
+    })
   })
 
   it("leaves H0/S0 out of bill rows but keeps H1", () => {

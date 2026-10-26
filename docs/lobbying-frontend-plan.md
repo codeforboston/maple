@@ -351,9 +351,11 @@ progress, and the attribution line. Missing figures render as "—".
   (192nd session on) and the SoS search page (it can't link to one bill).
 - Summary: organizations, filings and filers; `PositionBar` of organizations
   by their most recent positions (`orgPositionBreakdown`), with "multiple".
-  Placeholder clients ("No client", the legacy total) aren't organizations,
-  as in the stored counts (`isPlaceholderClient` in `activity.ts` mirrors
-  the scraper).
+  "No client" (lobbyists who reported no client) is a table row tagged "Not
+  an organization", but isn't counted as one, as in the stored counts
+  (`organizationRows`); its filings and filers count. The legacy total row
+  isn't listed at all. `isLegacyTotalClient` and `isNoClient` in
+  `activity.ts` mirror the scraper.
 - `ActivityTable` with a row per organization, filtered by position and name;
   a row expands to each filer's position in every report period of the
   session so far, and SoS filing links.
@@ -371,6 +373,9 @@ progress, and the attribution line. Missing figures render as "—".
   `firmsWithoutAgents` (hired firms that named no agents), with `firmAgents`
   as the agents; before it, and for all sessions, `inHouseLobbyists` and
   `hiredFirms`.
+- "No client" (`placeholder: true`) sorts in with the rest, tagged "Not an
+  organization", with only its people count under Lobbyists, and is left out
+  of the "N clients" count.
 
 ### `/lobbying/clients/[clientSlug]` — Client detail
 
@@ -382,6 +387,9 @@ progress, and the attribution line. Missing figures render as "—".
 - Session (default: the client's latest) drives the summary (bills,
   lobbyists, reported paid) and the `ActivityTable` with a row per bill,
   filtered by position and bill number or title.
+- "No client"'s page says it isn't an organization instead of the
+  registration line, has no in-house clause, and its filers show no
+  in-house/firm kind (`filerKinds={false}`).
 
 ### `/lobbying/firms` — Lobbyists (`pages/lobbying/firms/index.tsx`)
 
@@ -394,7 +402,8 @@ progress, and the attribution line. Missing figures render as "—".
 
 ### `/lobbying/firms/[registrantId]` — Lobbyist detail (`pages/lobbying/firms/[registrantId].tsx`)
 
-- Unchanged by the redesign.
+- Unchanged by the redesign, except that "No client" in its client list is
+  tagged "Not an organization".
 
 ---
 

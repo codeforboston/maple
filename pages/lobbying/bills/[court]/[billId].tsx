@@ -13,6 +13,7 @@ import {
   filterActivity,
   groupActivity,
   orgPositionBreakdown,
+  organizationRows,
   type PositionFilter
 } from "components/lobbying/activity"
 import { ActivityTable } from "components/lobbying/ActivityTable"
@@ -74,8 +75,15 @@ function BillLobbyingPage() {
     () => new Set((filings ?? []).map(f => f.entityNameNorm)).size,
     [filings]
   )
-  const breakdown = useMemo(
-    () => (activity ? orgPositionBreakdown(activity.rows) : undefined),
+  // "No client" is a row but not an organization.
+  const { breakdown, orgCount } = useMemo(
+    () =>
+      activity
+        ? {
+            breakdown: orgPositionBreakdown(activity.rows),
+            orgCount: organizationRows(activity.rows).length
+          }
+        : { breakdown: undefined, orgCount: 0 },
     [activity]
   )
 
@@ -138,9 +146,9 @@ function BillLobbyingPage() {
               <div style={summaryStyle}>
                 <div style={{ flex: "0 1 260px" }}>
                   <div style={bigFigureRowStyle}>
-                    <span style={bigFigureStyle}>{activity.rows.length}</span>
+                    <span style={bigFigureStyle}>{orgCount}</span>
                     <span style={{ fontWeight: 700 }}>
-                      {t("bill.orgs", { count: activity.rows.length })}
+                      {t("bill.orgs", { count: orgCount })}
                     </span>
                   </div>
                   <div style={summaryNoteStyle}>

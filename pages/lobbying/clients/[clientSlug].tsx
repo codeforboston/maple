@@ -129,8 +129,15 @@ function ClientDetail({ clientNameNorm, summary, current }: ClientDetailProps) {
             </h1>
             <div style={subHeaderStyle}>
               <span style={{ color: MAPLE_COLORS.graySubtleText }}>
-                {t("client.kind")}
-                {summary && registeredText(summary, t)}
+                {/* "No client" has no registration. */}
+                {summary?.placeholder ? (
+                  t("client.noClientKind")
+                ) : (
+                  <>
+                    {t("client.kind")}
+                    {summary && registeredText(summary, t)}
+                  </>
+                )}
               </span>
               <SosSourceLink
                 href={summary?.registrationUrl}
@@ -217,6 +224,7 @@ function ClientSummary({
   const bills = all ? sumBills(summary.courts) : c?.bills
   const paid = all ? summary.totalCompensation : c?.compensation
   const mix = lobbyistMix(all ? summary : c, session)
+  const lobbyists = mix && t("client.lobbyists", { count: mix.total })
   const where = all
     ? t("client.whereAll")
     : t("overview.whereSession", { session: courtName(session) })
@@ -237,15 +245,18 @@ function ClientSummary({
           </div>
           {mix && mix.total > 0 && (
             <div style={summaryNoteStyle}>
-              {t("client.reportedBy", {
-                lobbyists: t("client.lobbyists", { count: mix.total }),
-                inHouse:
-                  mix.inHouse === mix.total
-                    ? t("clients.allInHouse")
-                    : mix.inHouse
-                    ? t("clients.inHouse", { count: mix.inHouse })
-                    : t("client.noneInHouse")
-              })}
+              {/* In-house and firms don't apply to "No client". */}
+              {summary.placeholder
+                ? t("client.reportedByOnly", { lobbyists })
+                : t("client.reportedBy", {
+                    lobbyists,
+                    inHouse:
+                      mix.inHouse === mix.total
+                        ? t("clients.allInHouse")
+                        : mix.inHouse
+                        ? t("clients.inHouse", { count: mix.inHouse })
+                        : t("client.noneInHouse")
+                  })}
             </div>
           )}
         </div>
