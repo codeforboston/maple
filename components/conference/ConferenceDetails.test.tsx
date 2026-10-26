@@ -48,8 +48,12 @@ const routeChangeStart = (url: string) =>
 
 jest.mock("usehooks-ts", () => ({ useMediaQuery: () => false }))
 
+let mockLegislators = false
 jest.mock("../featureFlags", () => ({
-  useFlags: () => ({ legislators: false, hearingsAndTranscriptions: true })
+  useFlags: () => ({
+    legislators: mockLegislators,
+    hearingsAndTranscriptions: true
+  })
 }))
 
 const profile = { representative: { id: "AHP1" } }
@@ -256,6 +260,37 @@ describe("ConferenceDetails", () => {
     expect(screen.getByText("Third Essex")).toBeInTheDocument()
   })
 
+  describe("conferee names", () => {
+    afterEach(() => {
+      mockLegislators = false
+    })
+
+    it("never nests a link in a button", () => {
+      const { container } = render(<ConferenceDetails {...props} />)
+      expect(container.querySelector("button a, a button")).toBeNull()
+    })
+
+    it("sends the name to malegislature.gov as an external link", () => {
+      render(<ConferenceDetails {...props} />)
+      const name = screen.getByText("A. Peisch").closest("a")!
+      expect(name).toHaveAttribute(
+        "href",
+        expect.stringMatching(
+          /^https:\/\/malegislature\.gov\/Legislators\/Profile\//
+        )
+      )
+      expect(name).toHaveAttribute("target", "_blank")
+    })
+
+    it("keeps the name in the app when legislator pages are on", () => {
+      mockLegislators = true
+      render(<ConferenceDetails {...props} />)
+      const name = screen.getByText("A. Peisch").closest("a")!
+      expect(name.getAttribute("href")).toMatch(/^\/legislators\/194\//)
+      expect(name).not.toHaveAttribute("target")
+    })
+  })
+
   it("lists every conference in the rail with the current one marked", () => {
     const { container } = render(<ConferenceDetails {...props} />)
     const other = 'a[href="/conferences/194/data-privacy"]'
@@ -270,8 +305,8 @@ describe("ConferenceDetails", () => {
 
   it("lights a district when a conferee is pointed at", () => {
     const { container } = render(<ConferenceDetails {...props} />)
-    const peisch = screen.getByText("A. Peisch").closest("button")!
-    fireEvent.pointerEnter(peisch)
+    const peisch = screen.getByRole("button", { name: /Peisch,/ })
+    fireEvent.pointerEnter(peisch.parentElement!)
     expect(peisch).toHaveAttribute("aria-pressed", "true")
     const cell = container.querySelector(
       'polygon[aria-label="A. Peisch"][aria-pressed="true"]'
