@@ -2,14 +2,16 @@ import * as fs from "fs"
 import * as yaml from "js-yaml"
 import * as path from "path"
 import { Timestamp } from "../../functions/src/firebase"
+import { createMemberSearchIndex } from "../../functions/src/members/createMemberSearchIndex"
 import { script as syncConferences } from "./syncConferences"
 import { Script } from "./types"
 
 /**
  * Brings a fresh local emulator up with the conference data: the real bills and
  * members every conference file names (fetched by the functions emulator's
- * scrapers, as a scrape would), the conferences themselves, a verified
- * test@example.com, and some sample testimony on one conference. Local only.
+ * scrapers, as a scrape would), the member search index built from them, the
+ * conferences themselves, and some sample testimony on one conference. The
+ * verified test@example.com comes from the emulator's auth export. Local only.
  *
  *   yarn emulators:start          # in another terminal, from a clean start
  *   yarn firebase-admin run-script seedLocal --env local
@@ -64,7 +66,7 @@ const sample: [string, string, string, string][] = [
 ]
 
 export const script: Script = async ctx => {
-  const { env, db, auth } = ctx
+  const { env, db } = ctx
   if (env !== "local") throw Error("only local supported")
 
   const dir = path.resolve(process.cwd(), "conferences", `${COURT}`)
@@ -103,10 +105,11 @@ export const script: Script = async ctx => {
   }
   console.log("\nbills and members are in")
 
-  await syncConferences(ctx)
+  // Scheduled jobs never fire in the emulator, and triggerPubsubFunction does
+  // not reach them, so run the index job's handler here.
+  await createMemberSearchIndex.run({ scheduleTime: new Date().toISOString() })
 
-  const user = await auth.getUserByEmail("test@example.com")
-  await auth.updateUser(user.uid, { emailVerified: true })
+  await syncConferences(ctx)
 
   const conference = `generalCourts/${COURT}/conferences/${SAMPLE}`
   const { canonicalBillId, title } = (await db.doc(conference).get()).data()!
