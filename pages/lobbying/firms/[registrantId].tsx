@@ -24,6 +24,7 @@ import {
   LobbyingLoadError,
   subTextStyle
 } from "components/lobbying/LobbyingPanel"
+import { compareFilingPeriodsDesc } from "components/lobbying/filingPeriod"
 
 const PAGE_SIZE = 25
 
@@ -58,7 +59,10 @@ function FirmDetail() {
     () =>
       [...(filings ?? [])].sort(
         (a, b) =>
-          b.year - a.year || (a.billId ?? "").localeCompare(b.billId ?? "")
+          b.year - a.year ||
+          (a.billId ?? "").localeCompare(b.billId ?? "") ||
+          a.clientName.localeCompare(b.clientName) ||
+          compareFilingPeriodsDesc(a, b)
       ),
     [filings]
   )

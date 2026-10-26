@@ -113,6 +113,7 @@ export function RailList({
         <li key={c.id}>
           <RailRow
             href={maple.conference(c)}
+            scroll={false}
             aria-current={c.id === current ? "page" : undefined}
             $on={c.id === current}
           >

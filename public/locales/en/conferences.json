@@ -35,5 +35,32 @@
   "office": "Office",
   "office_senate": "State Senator, {{district}}",
   "office_house": "State Representative, {{district}}",
-  "conference": "Conference"
+  "conference": "Conference",
+  "hero": {
+    "lead": "When the House and Senate pass different versions of a bill, six legislators work out one final text in a conference committee. Learn how it works, see who’s negotiating and what’s still unresolved, and share your input while they’re still deciding.",
+    "steps": [
+      {
+        "h": "Two versions pass",
+        "p": "Each chamber passes its own text of the bill, and the two don't match."
+      },
+      {
+        "h": "Six are named",
+        "p": "Three from each chamber. In each, one of the three comes from the minority party."
+      },
+      {
+        "h": "They negotiate",
+        "p": "Their meetings are public unless a majority votes to close them, and they can't close the first one."
+      },
+      {
+        "h": "The report is posted",
+        "p": "A majority of each chamber's three has to agree to it. It goes up on the legislature's website, and neither chamber can vote on it for at least 24 hours."
+      },
+      {
+        "h": "Yes or no",
+        "p": "Each chamber accepts or rejects it as written. Changing it takes a new conference committee."
+      }
+    ],
+    "sources": "From MAPLE’s <1>guide to the legislative process</1> and the legislature’s <3>Joint Rules</3>.",
+    "see": "See the committees"
+  }
 }

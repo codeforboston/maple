@@ -17,19 +17,19 @@ export function LobbyingSubnav() {
 
   return (
     <>
-      {/* One running sentence, as on the redesign canvas. The shared Banner
-          is a flex row, which wraps the text and the link as separate
-          pieces. */}
-      <p className="text-center text-white bg-warning p-3 m-0 fs-5 fw-normal lh-sm">
-        {t("banner.betaLine1")}{" "}
-        <a
-          href="mailto:info@mapletestimony.org"
-          style={{ color: "inherit", textDecoration: "underline" }}
-        >
-          info@mapletestimony.org
-        </a>{" "}
-        {t("banner.betaLine2")}
-      </p>
+      <div style={bannerStyle}>
+        <Container>
+          <div style={bannerInnerStyle}>
+            <span style={betaPillStyle}>{t("banner.beta")}</span>
+            <span>
+              {t("banner.feedback")}{" "}
+              <a href="mailto:info@mapletestimony.org" style={bannerLinkStyle}>
+                info@mapletestimony.org
+              </a>
+            </span>
+          </div>
+        </Container>
+      </div>
       <div style={barStyle}>
         <Container>
           <div style={innerStyle}>
@@ -51,6 +51,42 @@ export function LobbyingSubnav() {
       </div>
     </>
   )
+}
+
+const bannerStyle: React.CSSProperties = {
+  background: MAPLE_COLORS.accent,
+  color: "#fff",
+  width: "100%"
+}
+
+const bannerInnerStyle: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  flexWrap: "wrap",
+  gap: "0.5rem 0.625rem",
+  padding: "0.5rem 0",
+  fontSize: 15,
+  fontWeight: 600,
+  textAlign: "center"
+}
+
+const betaPillStyle: React.CSSProperties = {
+  background: "#fff",
+  color: "#c25e00",
+  fontSize: 11,
+  fontWeight: 800,
+  letterSpacing: "0.08em",
+  textTransform: "uppercase",
+  padding: "0.125rem 0.5rem",
+  borderRadius: 999,
+  lineHeight: 1.4
+}
+
+const bannerLinkStyle: React.CSSProperties = {
+  color: "#fff",
+  textDecoration: "underline",
+  textUnderlineOffset: 3
 }
 
 const barStyle: React.CSSProperties = {

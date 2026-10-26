@@ -6,6 +6,7 @@ import { normalizePosition } from "./activity"
 import { LobbyingPositionChip } from "./LobbyingPositionChip"
 import { MAPLE_COLORS } from "./chartTheme"
 import { SosSourceLink } from "./SosSourceLink"
+import { filingPeriodLabel } from "./filingPeriod"
 
 interface LobbyingFilingsTableProps {
   filings: LobbyingFiling[]
@@ -30,7 +31,7 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
   onViewAll,
   bordered = false
 }) => {
-  const { t } = useTranslation("lobbying")
+  const { t, i18n } = useTranslation("lobbying")
   const rows = maxRows ? filings.slice(0, maxRows) : filings
   const truncated = maxRows != null && filings.length > maxRows
   const showSource = rows.some(f => f.disclosureUrl)
@@ -66,7 +67,7 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
             {showAmount && (
               <th style={{ textAlign: "right" }}>{t("fields.amount")}</th>
             )}
-            <th>{t("fields.year")}</th>
+            <th>{t("fields.period")}</th>
             {showSource && <th>{t("fields.source")}</th>}
           </tr>
         </thead>
@@ -132,7 +133,9 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
                     : "—"}
                 </td>
               )}
-              <td style={cellStyle}>{f.year}</td>
+              <td style={{ ...cellStyle, whiteSpace: "nowrap" }}>
+                {filingPeriodLabel(f, i18n.language)}
+              </td>
               {showSource && (
                 <td style={cellStyle}>
                   <SosSourceLink href={f.disclosureUrl} />

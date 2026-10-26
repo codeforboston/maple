@@ -162,8 +162,9 @@ interface LobbyingFiling {
   position: string // "Support" | "Oppose" | "Neutral" | etc.; empty for executive
   amount: number | null // compensation allocated to this activity
   disclosureUrl: string // the SoS disclosure page this activity was reported on
-  // End of the disclosure's half-year window, e.g. "2025-06-30" (absent on
-  // docs the backfill below didn't reach)
+  // The disclosure's half-year window, e.g. "2025-01-01" to "2025-06-30"
+  // (absent on docs the backfill below didn't reach)
+  periodStart?: string | null
   periodEnd?: string | null
   fetchedAt: Timestamp
 }
@@ -496,7 +497,7 @@ running multiple language runtimes in the same Firebase Functions deployment.
 the `maple-lobbying-scraper` Cloud Run job (with `ARCHIVE_RAW=1`), and creates
 or updates the `maple-lobbying-weekly` Cloud Scheduler trigger (Mondays 06:00
 UTC). The trigger runs as a dedicated `lobbying-scheduler` service account that
-can only invoke the job. Re-run it after any scraper change:
+can only invoke the job. Run it once per project to set everything up:
 
 ```bash
 gcloud auth configure-docker us-central1-docker.pkg.dev  # once
@@ -505,6 +506,12 @@ lobbying-scraper/deploy.sh <project>
 
 The project's archive bucket (`<project>-lobbying-archive`) must already exist.
 For a new project, run the historical backfill before the first weekly run.
+
+After that, the [Deploy the lobbying scraper](../.github/workflows/deploy-lobbying-scraper.yml)
+workflow keeps the image current: when a change under `lobbying-scraper/` is
+pushed to `main` (dev) or `prod` (prod), it runs the scraper tests, builds and
+pushes the image, and points the job at it. It doesn't change the job's
+settings or schedule. It can also be run by hand from the Actions tab.
 
 The job must not set `ARCHIVE_DIR`. That variable is for local runs: it keeps
 the archive in a local folder and takes precedence over GCS. On Cloud Run that
@@ -666,7 +673,11 @@ $M --phase registrations
 #    exact --execute command (with --expect-ids/--expect-stale) to run after.
 $M --phase cleanup --collection filings
 $M --phase cleanup --collection registrants
-# 5. Recompute lobbyingMeta.
+# 5. Check that every filing has its period: filings from disclosures missing
+#    from the archive weren't rewritten. Expect "updated" 0 in the dry run;
+#    otherwise --execute copies each one's period from its registrant doc.
+$M --phase filing-periods
+# 6. Recompute lobbyingMeta.
 GOOGLE_CLOUD_PROJECT=<project> python3 scrape.py --mode stats
 ```
 
@@ -677,6 +688,11 @@ the October 2026 local rebuild). Anything else stale means doc ids changed:
 stop and find out why. Don't use `reparse_archive.py` for this: it skips pages
 an earlier reparse already marked processed. Docs from disclosures missing from
 the archive keep the field absent.
+
+The `filing-periods` phase copies each disclosure's period from its registrant
+doc onto filings that lack one, without reparsing. After the write phase it
+only reaches filings whose disclosure isn't in the archive, which is why step 5
+runs it as a check.
 
 For a given deploy, the issue that ships it lists the steps and spot checks
 (e.g. hyphacoop/maple#106).

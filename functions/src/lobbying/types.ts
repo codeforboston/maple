@@ -75,8 +75,10 @@ export const LobbyingFiling = Record({
   // The SoS disclosure page this activity was reported on (absent on filings
   // written before it was recorded).
   disclosureUrl: Optional(String),
-  // End of the disclosure's half-year reporting window, e.g. "2025-06-30"
-  // (absent on filings written before it was recorded).
+  // Reporting period of that disclosure, its half-year, as ISO dates, e.g.
+  // "2025-01-01" to "2025-06-30" (absent on filings written before it was
+  // recorded).
+  periodStart: Optional(Null.Or(String)),
   periodEnd: Optional(Null.Or(String)),
   fetchedAt: InstanceOf(Timestamp)
 })
