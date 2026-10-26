@@ -671,8 +671,9 @@ M="python3 migrate_lobbying_data.py --project <project> --out-prefix /tmp/<proje
 $M --phase refetch-errors
 $M --phase refetch-errors --execute
 # 2. Rewrite every registrant and filing doc from the archived disclosures;
-#    superseded versions are skipped (expect "superseded" > 0 and
-#    superseded_without_current 0).
+#    superseded versions are skipped, each mapped to its final version even
+#    when registration pages archived at different times chain amendments
+#    (expect "superseded" > 0 and superseded_without_current 0).
 $M --phase write
 # 3. Rewrite every registration doc from the archived registration pages
 #    (e.g. clients' own pages, for registrationUrl).
