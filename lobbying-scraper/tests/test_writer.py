@@ -29,6 +29,7 @@ from writer import (
     write_registrant,
     write_filings,
     compute_stats,
+    _firestore_size,
     FILINGS_COLLECTION,
     REGISTRANTS_COLLECTION,
     REGISTRATIONS_COLLECTION,
@@ -665,6 +666,26 @@ def test_compute_stats_overwrites_stats_doc():
         compute_stats(db)
     call = doc_mocks[STATS_DOC_ID].set.call_args
     assert not call[1].get("merge"), "stats doc must not be written with merge"
+
+
+def test_firestore_size_follows_firestore_rules():
+    """Strings are UTF-8 bytes + 1, numbers 8, bools and nulls 1, and each
+    map field adds its name's bytes + 1."""
+    value = {"name": "Café", "n": 3, "x": 1.5, "ok": True, "none": None, "l": ["a", 2]}
+    # name: 5 + 6; n: 2 + 8; x: 2 + 8; ok: 3 + 1; none: 5 + 1; l: 2 + (2 + 8)
+    assert _firestore_size(value) == 11 + 10 + 10 + 4 + 6 + 12
+
+
+def test_compute_stats_writes_nothing_when_a_doc_is_too_big():
+    """A doc over the limit stops the run before any write, so the previous
+    stats stay whole instead of being half-overwritten."""
+    db, doc_mocks = _make_stats_db()
+    with patch("writer._iter_collection", side_effect=lambda _db, _name: iter([])), \
+            patch("writer._DOC_SIZE_LIMIT", 100), \
+            pytest.raises(ValueError, match=STATS_DOC_ID):
+        compute_stats(db)
+    assert not any(m.set.called for m in doc_mocks.values())
+    assert not db.batch.return_value.commit.called
 
 
 def test_registration_doc_shape_and_id():

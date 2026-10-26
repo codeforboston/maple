@@ -586,9 +586,11 @@ writes the figures the Lobbying Explorer shows per session (shapes in
   document instead of every summary. A lobbyist or entity is in a session's
   list when it registered in one of the session's years. There's no
   all-sessions lobbyist doc (about 2 MB, over Firestore's 1 MiB limit), so that
-  view reads `firmSummaries`. The run logs each list doc's size and warns past
-  900 KB: `clientList_all` was about 830 KB in October 2026 and grows with
-  every new client.
+  view reads `firmSummaries`. The run measures every single document it
+  writes (these, `stats` and the filing counts) before writing any of them:
+  past 1 MiB it stops with nothing written, naming the doc to split, and past
+  900 KiB it warns. `clientList_all` was about 775 KiB in October 2026 and
+  grows with every new client.
 
 A filer is in-house for a client when it is the client, or when its
 registration for that session names the client as its employer (from 2019),

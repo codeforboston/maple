@@ -6,7 +6,6 @@ names and field names must stay in sync with that file.
 
 from __future__ import annotations
 
-import json
 import re
 import time
 import urllib.parse
@@ -174,6 +173,35 @@ def _prune_stale(db: firestore.Client, coll_ref, keep: set[str]) -> int:
     if len(stale) % 400:
         batch.commit()
     return len(stale)
+
+
+# Firestore's per-document limit, and where the stats run starts warning.
+_DOC_SIZE_LIMIT = 1_048_576
+_DOC_SIZE_WARN = 900 * 1024
+
+
+def _firestore_size(value) -> int:
+    """A value's stored size under Firestore's documented rules: a string is
+    its UTF-8 bytes + 1, a number 8, a bool or null 1, and a map each field
+    name's bytes + 1 plus its value."""
+    if isinstance(value, str):
+        return len(value.encode()) + 1
+    if isinstance(value, bool) or value is None:
+        return 1
+    if isinstance(value, (int, float)):
+        return 8
+    if isinstance(value, dict):
+        return sum(len(k.encode()) + 1 + _firestore_size(v) for k, v in value.items())
+    if isinstance(value, (list, tuple)):
+        return sum(_firestore_size(v) for v in value)
+    raise TypeError(f"no Firestore size for {type(value).__name__}")
+
+
+def _doc_size(doc_id: str, fields: dict) -> int:
+    """A lobbyingMeta document's stored size: its name (each path segment
+    as a string, + 16), its fields, + 32."""
+    name = _firestore_size(STATS_COLLECTION) + _firestore_size(doc_id) + 16
+    return name + _firestore_size(fields) + 32
 
 
 def compute_stats(db: firestore.Client) -> None:
@@ -712,15 +740,6 @@ def compute_stats(db: firestore.Client) -> None:
         "totalLobbyists": len(set().union(*court_lobbyists.values())),
         "totalEntities": len(set().union(*court_entities.values())),
     }
-    # Full overwrite, not merge: a merge keeps map keys (e.g. a spendByYear
-    # year) that this run no longer produces, so stale values never go away.
-    db.collection(STATS_COLLECTION).document(STATS_DOC_ID).set(stats)
-    db.collection(STATS_COLLECTION).document("entityFilingCounts").set(
-        entity_filing_counts
-    )
-    db.collection(STATS_COLLECTION).document("clientFilingCounts").set(
-        client_filing_counts
-    )
     # One list doc per session for the Clients and Lobbyists list pages, so
     # their API routes read one document instead of every summary. Keyed by
     # normalized name; each row holds what the lists show, sort and search on.
@@ -762,17 +781,33 @@ def compute_stats(db: firestore.Client) -> None:
                 "hasFilings": fs["hasFilings"],
             }
 
-    # Per-session docs (inHouseFilers_{gc}: {client norm: [in-house filer
-    # norms]}; the two lists) and clientList_all, each a full overwrite so a
-    # row no longer present drops out; a session with no rows this run keeps
-    # no stale doc. Sizes are logged against Firestore's 1 MiB doc limit.
+    # The single-document writes: the stats, the filing counts, the
+    # per-session docs (inHouseFilers_{gc}: {client norm: [in-house filer
+    # norms]}; the two lists) and clientList_all. Each is a full overwrite,
+    # not a merge: a merge keeps map keys (e.g. a spendByYear year or a list
+    # row) that this run no longer produces. A session with no rows this run
+    # keeps no stale doc.
     by_session = {"inHouseFilers": in_house_by_court, "clientList": client_lists, "firmList": firm_lists}
-    docs = {f"{prefix}_{gc}": rows for prefix, by_gc in by_session.items() for gc, rows in by_gc.items()}
-    docs["clientList_all"] = client_list_all
-    doc_sizes: dict[str, tuple[int, int]] = {}
-    for name, rows in docs.items():
-        db.collection(STATS_COLLECTION).document(name).set(rows)
-        doc_sizes[name] = (len(rows), len(json.dumps(rows)))
+    docs = {
+        STATS_DOC_ID: stats,
+        "entityFilingCounts": entity_filing_counts,
+        "clientFilingCounts": client_filing_counts,
+        **{f"{prefix}_{gc}": rows for prefix, by_gc in by_session.items() for gc, rows in by_gc.items()},
+        "clientList_all": client_list_all,
+    }
+    # Checked against Firestore's 1 MiB doc limit before anything is written,
+    # so a doc that outgrows it stops the run with the previous stats whole,
+    # instead of failing partway through the writes.
+    doc_sizes = {name: (len(fields), _doc_size(name, fields)) for name, fields in docs.items()}
+    too_big = {name: size for name, (_, size) in doc_sizes.items() if size > _DOC_SIZE_LIMIT}
+    if too_big:
+        raise ValueError(
+            "Stats not written: over Firestore's 1 MiB doc limit: "
+            + ", ".join(f"{name} ({size // 1024} KiB)" for name, size in sorted(too_big.items()))
+            + ". Split the doc into several before rerunning."
+        )
+    for name, fields in docs.items():
+        db.collection(STATS_COLLECTION).document(name).set(fields)
     sessions = courts.union(*by_session.values())
     for prefix, by_gc in by_session.items():
         for gc in sessions - set(by_gc):
@@ -844,14 +879,14 @@ def compute_stats(db: firestore.Client) -> None:
         f"{len(client_summaries)} client summaries, {len(firm_summaries)} firm summaries, "
         f"{pruned} stale summary docs removed"
     )
-    # Coverage of the parsed fields that fail silently, and the in-house docs'
-    # size against Firestore's 1MB document limit.
+    # Coverage of the parsed fields that fail silently, and each single doc's
+    # size against Firestore's 1 MiB document limit.
     for year in sorted(filings_by_year):
         print(f"  {year}: {filings_with_period.get(year, 0)}/{filings_by_year[year]} filings have periodEnd")
     for year, (total, named) in sorted(firm_docs_by_year.items()):
         print(f"  {year}: {named}/{total} firm disclosures name agents per client")
     for name, (rows, size) in sorted(doc_sizes.items()):
-        warn = " (nearing Firestore's 1 MiB doc limit)" if size > 900 * 1024 else ""
+        warn = " (nearing Firestore's 1 MiB doc limit)" if size > _DOC_SIZE_WARN else ""
         print(f"  {name}: {rows} rows, ~{size // 1024} KB{warn}")
 
 
