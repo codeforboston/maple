@@ -23,6 +23,10 @@ type SortKey = "label" | "filings"
 // this many.
 const MAX_NAMED_IN_HOUSE = 3
 
+// The "Most recent position" column: wide enough for a session's period
+// squares in its expanded rows, which line up under it.
+const POSITION_COL_WIDTH = 300
+
 /**
  * One row per organization (on a bill's page) or per bill (on a client's
  * page). Expanding a row lists its filers with the position each reported per
@@ -131,7 +135,7 @@ export function ActivityTable({
         <table
           style={{
             width: "100%",
-            minWidth: 720,
+            minWidth: 840,
             tableLayout: "fixed",
             borderCollapse: "collapse"
           }}
@@ -140,7 +144,7 @@ export function ActivityTable({
               columns; the row label and "who lobbied" share the rest. */}
           <colgroup>
             <col />
-            <col style={{ width: 180 }} />
+            <col style={{ width: POSITION_COL_WIDTH }} />
             <col />
             <col style={{ width: 100 }} />
           </colgroup>
@@ -265,13 +269,16 @@ export function ActivityTable({
                     </td>
                   </tr>
                   {isOpen && (
-                    <tr id={panelId}>
+                    <tr
+                      id={panelId}
+                      style={{ background: MAPLE_COLORS.blueSubtleBg }}
+                    >
+                      {/* The filers sit under "Most recent position", as in
+                          the redesign. */}
+                      <td />
                       <td
-                        colSpan={4}
-                        style={{
-                          padding: "0 0.75rem 0.75rem",
-                          background: MAPLE_COLORS.blueSubtleBg
-                        }}
+                        colSpan={3}
+                        style={{ padding: "0 0.75rem 0.75rem 0" }}
                       >
                         <FilerList row={row} data={data} />
                       </td>
@@ -321,16 +328,21 @@ function FilerList({ row, data }: { row: ActivityRow; data: Activity }) {
           <li
             key={filer.entityNameNorm}
             style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "0.75rem 1.5rem",
-              padding: "0.75rem 1rem",
+              // Squares under "Most recent position", the filer under "Who
+              // lobbied" (less the box's 1px border).
+              display: "grid",
+              gridTemplateColumns: `${POSITION_COL_WIDTH - 1}px minmax(0, 1fr)`,
               borderTop:
                 i > 0 ? `1px solid ${MAPLE_COLORS.borderSubtle}` : undefined
             }}
           >
             <div
-              style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem 1rem" }}
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "0.5rem 1rem",
+                padding: "0.75rem"
+              }}
             >
               {periods.map(p => (
                 <div
@@ -364,7 +376,7 @@ function FilerList({ row, data }: { row: ActivityRow; data: Activity }) {
                 </div>
               ))}
             </div>
-            <div style={{ fontSize: 13, lineHeight: 1.4 }}>
+            <div style={{ fontSize: 13, lineHeight: 1.4, padding: "0.75rem" }}>
               <div style={{ fontWeight: 700, fontSize: 14 }}>
                 {filer.entityName}
               </div>
@@ -397,7 +409,7 @@ function FilerList({ row, data }: { row: ActivityRow; data: Activity }) {
       <p
         style={{
           margin: 0,
-          padding: "0 1rem 0.75rem",
+          padding: "0 0.75rem 0.75rem",
           fontSize: 12,
           color: MAPLE_COLORS.graySubtleText
         }}
