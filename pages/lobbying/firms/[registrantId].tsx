@@ -59,6 +59,7 @@ function FirmDetail() {
         (a, b) =>
           b.year - a.year ||
           (a.billId ?? "").localeCompare(b.billId ?? "") ||
+          a.clientName.localeCompare(b.clientName) ||
           compareFilingPeriodsDesc(a, b)
       ),
     [filings]
