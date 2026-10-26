@@ -1,6 +1,7 @@
 import { uniq } from "lodash"
 import type { RegistrantInfo } from "components/db/lobbying"
 import type { LobbyingFiling } from "functions/src/lobbying/types"
+import { filingPeriodLabel } from "./filingPeriod"
 import { matchesSearch } from "./searchMatch"
 import { courtStartYear, yearToCourt } from "./sessions"
 
@@ -86,11 +87,15 @@ export type Period = {
 }
 
 function halfYear(year: number, half: 1 | 2): Period {
-  const months = half === 1 ? "Jan–Jun" : "Jul–Dec"
+  const f = {
+    year,
+    periodStart: `${year}-${half === 1 ? "01-01" : "07-01"}`,
+    periodEnd: `${year}-${half === 1 ? "06-30" : "12-31"}`
+  }
   return {
-    key: `${year}-${half === 1 ? "06-30" : "12-31"}`,
-    label: `${months} ${year}`,
-    short: `${months} ${String(year).slice(2)}`
+    key: f.periodEnd,
+    label: filingPeriodLabel(f),
+    short: filingPeriodLabel(f, undefined, true)
   }
 }
 

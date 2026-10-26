@@ -24,12 +24,15 @@ import {
   LobbyingLoadError,
   subTextStyle
 } from "components/lobbying/LobbyingPanel"
-import { compareFilingPeriodsDesc } from "components/lobbying/filingPeriod"
+import {
+  compareFilingPeriodsDesc,
+  filingPeriodLabel
+} from "components/lobbying/filingPeriod"
 
 const PAGE_SIZE = 25
 
 function FirmDetail() {
-  const { t } = useTranslation("lobbying")
+  const { t, i18n } = useTranslation("lobbying")
   const { query } = useRouter()
 
   // URL param is the URL-encoded entityNameNorm
@@ -300,7 +303,7 @@ function FirmDetail() {
                             fontSize: 12
                           }}
                         >
-                          {formatDisclosureLabel(p, t, i)}:{" "}
+                          {formatDisclosureLabel(p, t, i, i18n.language)}:{" "}
                           {p.compensation.toLocaleString("en-US", {
                             style: "currency",
                             currency: "USD",
@@ -375,7 +378,7 @@ function FirmDetail() {
                           rel="noreferrer"
                           style={{ color: MAPLE_COLORS.primary }}
                         >
-                          {formatDisclosureLabel(d, t, i)}
+                          {formatDisclosureLabel(d, t, i, i18n.language)}
                         </a>
                       </li>
                     ))}
@@ -487,18 +490,14 @@ function PartyList({ parties }: { parties: Party[] }) {
 function formatDisclosureLabel(
   d: { periodStart?: string | null; periodEnd?: string | null; year: number },
   t: (key: string, opts?: Record<string, unknown>) => string,
-  index: number
+  index: number,
+  locale: string
 ): string {
-  if (d.periodStart && d.periodEnd) {
-    return `${formatIsoDate(d.periodStart)} – ${formatIsoDate(d.periodEnd)}`
-  }
-  if (d.year) return `${t("fields.year")} ${d.year}`
-  return t("misc.disclosureLink", { number: index + 1 })
-}
-
-function formatIsoDate(iso: string): string {
-  const [y, m, day] = iso.split("-").map(Number)
-  return `${m}/${day}/${y}`
+  // The reporting period, as the filings table labels it; a disclosure with
+  // no period or year gets its number.
+  return d.year
+    ? filingPeriodLabel(d, locale)
+    : t("misc.disclosureLink", { number: index + 1 })
 }
 
 export default createPage({
