@@ -456,7 +456,7 @@ running multiple language runtimes in the same Firebase Functions deployment.
 the `maple-lobbying-scraper` Cloud Run job (with `ARCHIVE_RAW=1`), and creates
 or updates the `maple-lobbying-weekly` Cloud Scheduler trigger (Mondays 06:00
 UTC). The trigger runs as a dedicated `lobbying-scheduler` service account that
-can only invoke the job. Re-run it after any scraper change:
+can only invoke the job. Run it once per project to set everything up:
 
 ```bash
 gcloud auth configure-docker us-central1-docker.pkg.dev  # once
@@ -465,6 +465,12 @@ lobbying-scraper/deploy.sh <project>
 
 The project's archive bucket (`<project>-lobbying-archive`) must already exist.
 For a new project, run the historical backfill before the first weekly run.
+
+After that, the [Deploy the lobbying scraper](../.github/workflows/deploy-lobbying-scraper.yml)
+workflow keeps the image current: when a change under `lobbying-scraper/` is
+pushed to `main` (dev) or `prod` (prod), it runs the scraper tests, builds and
+pushes the image, and points the job at it. It doesn't change the job's
+settings or schedule. It can also be run by hand from the Actions tab.
 
 ## Recomputing Stats
 
