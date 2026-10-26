@@ -541,9 +541,13 @@ writes the figures the Lobbying Explorer shows per session (shapes in
   from 1 up, so H1 (the House budget) counts and H0/S0/HD0 don't: filers enter
   0 for activity on no bill yet ("N/A", "a bill to be filed next session").
   The portal's "No client" (a lobbyist's period with no client, "$0.00",
-  activity "N/A") isn't an organization: like the pre-2009 total-salary row
-  it's left out of every client and organization count, while its filings
-  still count toward bills' filings and its compensation toward reported paid.
+  activity usually "N/A", though some report bills) isn't an organization:
+  it's left out of every client and organization count (session and total
+  clients, a bill's organizations, a lobbyist's clients), but it has a client
+  summary and list rows, marked `placeholder: true`, so the lobbyists who
+  reported it can be listed. Its filings count toward bills' filings and its
+  compensation toward reported paid. The pre-2009 total-salary row is left
+  out of everything, summaries included.
 - `billSummaries_{gc}/bills/{billId}`: `orgSupport`, `orgOppose`,
   `orgNeutral`, the distinct organizations per position (one with two
   positions counts in both); `orgLatestSupport`, `orgLatestOppose`,
