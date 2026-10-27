@@ -50,14 +50,22 @@ export function ConferenceTabs({ sections }: { sections: readonly string[] }) {
     // it, its own scroll margin, so the tab pressed is the tab lit. Measured
     // on every scroll rather than observed: an observer picks a band of the
     // window, and the last section on the page may never reach it.
+    // A section is read from where the one above it ends, so a block between
+    // them with no tab of its own, such as the reader's input above the
+    // public's, lights the tab below it.
     const read = () => {
       let last = sections[0]
+      let above: Element | undefined
       for (const s of sections) {
         const el = document.getElementById(s)
         if (!el) continue
         const parked = parseFloat(getComputedStyle(el).scrollMarginTop) || 0
+        const top = above
+          ? above.getBoundingClientRect().bottom
+          : el.getBoundingClientRect().top
         // The half pixel keeps a landing that rounds down from missing it.
-        if (el.getBoundingClientRect().top <= parked + 0.5) last = s
+        if (top <= parked + 0.5) last = s
+        above = el
       }
       setCurrent(last)
     }

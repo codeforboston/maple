@@ -1,6 +1,7 @@
 export * from "./types"
 export * from "./useEditTestimony"
 export * from "./usePublishedTestimonyListing"
+export * from "./useConferenceTestimony"
 export * from "./useDraftTestimonyListing"
 export * from "./useRecentTestimony"
 export * from "./useTestimonyAttachment"

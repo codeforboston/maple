@@ -70,7 +70,19 @@ class Observer {
 Object.assign(global, { ResizeObserver: Observer })
 
 const profile = { representative: { id: "AHP1" } }
-jest.mock("../db", () => ({ useProfile: () => ({ profile }) }))
+jest.mock("../db", () => ({
+  useProfile: () => ({ profile }),
+  useConferenceTestimony: () => ({ items: [], loading: false })
+}))
+
+// Signed out, so the panel is not mounted and the page needs no store.
+jest.mock("../auth", () => ({
+  useAuth: () => ({ user: undefined, authenticated: false })
+}))
+jest.mock("../hooks", () => ({ useAppDispatch: () => jest.fn() }))
+jest.mock("./input/useFollowedAuthors", () => ({
+  useFollowedAuthors: () => new Set()
+}))
 
 const mockBill = jest.fn()
 jest.mock("../db/bills", () => ({
@@ -102,6 +114,7 @@ const conference: ConferencePageProps["conference"] = {
   title: "An Act to promote student learning and mental health",
   senateBillId: "S2581",
   houseBillId: "H5366",
+  canonicalBillId: "S2581",
   status: "appointed"
 }
 
@@ -116,6 +129,7 @@ const props: ConferencePageProps = {
       title: "An Act establishing the Massachusetts data privacy act",
       senateBillId: "S2619",
       houseBillId: "H5479",
+      canonicalBillId: "S2619",
       status: "appointed"
     }
   ],
@@ -359,6 +373,21 @@ describe("ConferenceDetails", () => {
     ).toHaveStyle({ fill: "#b53333", fillOpacity: 0.45 })
   })
 
+  it("takes input only while the conference is appointed", () => {
+    const { unmount } = render(<ConferenceDetails {...props} />)
+    expect(
+      screen.getByRole("button", { name: "input.share" })
+    ).toBeInTheDocument()
+    unmount()
+    const reported = { ...conference, status: "reportFiled" as const }
+    render(<ConferenceDetails {...props} conference={reported} />)
+    expect(
+      screen.queryByRole("button", { name: "input.share" })
+    ).not.toBeInTheDocument()
+    // Public Input stays.
+    expect(screen.getByText("input.empty_title")).toBeInTheDocument()
+  })
+
   it("leads from its tabs to its sections", () => {
     const { container } = render(<ConferenceDetails {...props} />)
     const tabs = within(screen.getByRole("navigation", { name: "tabs_label" }))
@@ -366,6 +395,7 @@ describe("ConferenceDetails", () => {
       .map(a => [a.textContent, a.getAttribute("href")])
     expect(tabs).toEqual([
       ["tab_committee", "#committee"],
+      ["tab_input", "#input"],
       ["tab_text", "#text"]
     ])
     for (const [, href] of tabs)
@@ -373,12 +403,17 @@ describe("ConferenceDetails", () => {
   })
 
   it("lights the tab of the section that has come up under the tabs", () => {
-    // jsdom lays nothing out, so each section says where its top is.
-    const tops: Record<string, number> = { committee: 0, text: 900 }
+    // jsdom lays nothing out, so each section says where it is, 850px tall.
+    const tops: Record<string, number> = {
+      committee: 0,
+      input: 900,
+      text: 1800
+    }
     const rect = jest
       .spyOn(HTMLElement.prototype, "getBoundingClientRect")
       .mockImplementation(function (this: HTMLElement) {
-        return { top: tops[this.id] ?? 0 } as DOMRect
+        const top = tops[this.id] ?? 0
+        return { top, bottom: top + 850 } as DOMRect
       })
     render(<ConferenceDetails {...props} />)
     const lit = () =>
@@ -388,11 +423,14 @@ describe("ConferenceDetails", () => {
         .map(a => a.textContent)
     expect(lit()).toEqual(["tab_committee"])
     // The last section lights too, once a jump has parked it.
+    tops.input = -900
     tops.text = 0
     fireEvent.scroll(document)
     expect(lit()).toEqual(["tab_text"])
-    // A section can move with no scroll, when one above it grows.
-    tops.text = 900
+    // A section can move with no scroll, when one above it grows: posting
+    // puts Your Input above Public Input.
+    tops.input = 900
+    tops.text = 1800
     act(() => resized.forEach(heard => heard()))
     expect(lit()).toEqual(["tab_committee"])
     rect.mockRestore()

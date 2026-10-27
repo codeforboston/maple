@@ -14,6 +14,8 @@ export type ConferenceSummary = {
   title: string
   senateBillId: string
   houseBillId: string
+  /** The bill testimony on the conference is filed against. */
+  canonicalBillId: string
   status: ConferenceStatus
 }
 

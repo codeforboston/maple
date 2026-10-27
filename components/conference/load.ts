@@ -31,6 +31,7 @@ const summarize = (c: Conference): ConferenceSummary => ({
   title: c.title,
   senateBillId: c.senateBillId,
   houseBillId: c.houseBillId,
+  canonicalBillId: c.canonicalBillId,
   status: c.status
 })
 

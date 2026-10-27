@@ -38,21 +38,23 @@ jest.mock("components/db/api", () => ({
   })
 }))
 
+const ballotQuestionDetails = {
+  bill: {
+    id: "H123",
+    court: 194
+  },
+  ballotQuestion: {
+    id: "25-14",
+    title: "Should we do the thing?",
+    description: null
+  },
+  revision: {
+    ballotQuestionId: "25-14"
+  }
+}
+let mockDetails: Record<string, unknown> = ballotQuestionDetails
 jest.mock("./testimonyDetailSlice", () => ({
-  useCurrentTestimonyDetails: () => ({
-    bill: {
-      id: "H123",
-      court: 194
-    },
-    ballotQuestion: {
-      id: "25-14",
-      title: "Should we do the thing?",
-      description: null
-    },
-    revision: {
-      ballotQuestionId: "25-14"
-    }
-  })
+  useCurrentTestimonyDetails: () => mockDetails
 }))
 
 jest.mock("components/shared/FollowingQueries", () => ({
@@ -85,6 +87,7 @@ describe("PolicyActions", () => {
   beforeEach(() => {
     jest.clearAllMocks()
     uid = "user-1"
+    mockDetails = ballotQuestionDetails
     push.mockClear()
     mockFollowsTopic.mockResolvedValue(false)
     mockFollowBill.mockResolvedValue(undefined)
@@ -160,5 +163,42 @@ describe("PolicyActions", () => {
 
     expect(mockFollowBallotQuestion).not.toHaveBeenCalled()
     expect(mockFollowBill).not.toHaveBeenCalled()
+  })
+
+  describe("on conference testimony", () => {
+    const onConference = (status: string) => {
+      mockDetails = {
+        bill: { id: "S2619", court: 194 },
+        ballotQuestion: null,
+        conference: {
+          id: "data-privacy",
+          court: 194,
+          name: "Data Privacy",
+          title: "An Act establishing the Massachusetts data privacy act",
+          status
+        },
+        revision: { conferenceId: "data-privacy" }
+      }
+      render(
+        <FollowContext.Provider
+          value={{ followStatus: {}, setFollowStatus: jest.fn() }}
+        >
+          <PolicyActions isReporting={false} setReporting={jest.fn()} isUser />
+        </FollowContext.Provider>
+      )
+    }
+
+    it("sends an edit to the conference page while it is appointed", () => {
+      onConference("appointed")
+      expect(
+        screen.getByText("Edit Your Input for Data Privacy").closest("a")
+      ).toHaveAttribute("href", "/conferences/194/data-privacy")
+    })
+
+    it("offers no edit once the conference has reported", () => {
+      onConference("reportFiled")
+      expect(screen.getByText("Report Testimony")).toBeInTheDocument()
+      expect(screen.queryByText(/Input for/)).not.toBeInTheDocument()
+    })
   })
 })
