@@ -160,24 +160,65 @@ def test_parse_period_returns_none_on_unrecognized_format():
 
 # ── Summary page parsing ──────────────────────────────────────────────────────
 
-# (fixture, entity_name, year, reg_type, n_disc_urls)
+# (fixture, entity_name, year, reg_type, n_disc_urls, n_superseded)
 SUMMARY_CASES = [
-    ("2007e_summ", "Ventry Associates, LLP",   2007, "Employer",  2),
-    ("2011e_summ", "ML Strategies, LLC",        2011, "Employer",  7),
-    ("2024e_summ", "21c, LLC",                  2024, "Employer",  2),
-    ("2024i_summ", "Anthony Arthur Abdelahad",  2024, "Lobbyist",  2),
-    ("2011i_summ", "Aaron Judd Agulnek",        2011, "Lobbyist",  4),
+    ("2007e_summ", "Ventry Associates, LLP",   2007, "Employer",  2, 0),
+    ("2011e_summ", "ML Strategies, LLC",        2011, "Employer",  2, 5),
+    ("2024e_summ", "21c, LLC",                  2024, "Employer",  2, 0),
+    ("2024i_summ", "Anthony Arthur Abdelahad",  2024, "Lobbyist",  2, 0),
+    ("2011i_summ", "Aaron Judd Agulnek",        2011, "Lobbyist",  2, 2),
 ]
 
 
-@pytest.mark.parametrize("fix,name,year,reg_type,n_urls", SUMMARY_CASES)
-def test_summary_metadata(fix, name, year, reg_type, n_urls):
+@pytest.mark.parametrize("fix,name,year,reg_type,n_urls,n_superseded", SUMMARY_CASES)
+def test_summary_metadata(fix, name, year, reg_type, n_urls, n_superseded):
     meta = parse_summary(_soup(fix))
     assert meta.entity_name == name
     assert meta.year == year
     assert meta.reg_type == reg_type
     assert len(meta.disclosure_urls) == n_urls
+    assert len(meta.superseded_urls) == n_superseded
     assert all("CompleteDisclosure" in u for u in meta.disclosure_urls)
+
+
+def _link_url(soup: BeautifulSoup, el_id: str) -> str:
+    return "https://www.sec.state.ma.us/LobbyistPublicSearch/" + soup.find(id=el_id)["href"]
+
+
+def test_summary_keeps_latest_amendment_of_each_period():
+    """Amendments are listed newest first above the original filing; only
+    the newest version of each period is current."""
+    soup = _soup("2011e_summ")
+    meta = parse_summary(soup)
+    d1 = _link_url(soup, "ContentPlaceHolder1_RptD1Version_hlnkDiscDetails_0")  # 1/12/2012
+    d2 = _link_url(soup, "ContentPlaceHolder1_rptD2Version_hlnkDiscDetails_0")  # 1/16/2012
+    assert meta.disclosure_urls == [d1, d2]
+    assert meta.superseded_urls == {
+        _link_url(soup, "ContentPlaceHolder1_RptD1Version_hlnkDiscDetails_1"): d1,
+        _link_url(soup, "ContentPlaceHolder1_hlnkD1Version"): d1,
+        **{
+            _link_url(soup, f"ContentPlaceHolder1_rptD2Version_hlnkDiscDetails_{i}"): d2
+            for i in (1, 2)
+        },
+        _link_url(soup, "ContentPlaceHolder1_hlnkD2Version"): d2,
+    }
+
+
+def test_summary_single_list_amendment_belongs_to_the_next_period():
+    """2019+ individual pages list every disclosure in one grid; an
+    amendment sits right above the original filing it amends."""
+    def row(i, href, text):
+        return (f'<a id="ContentPlaceHolder1_GrdVwD1Lversion_hlnkbtnD1LVersion_{i}" '
+                f'href="CompleteDisclosure.aspx?sysvalue={href}">{text}<br/>Jane Doe</a>')
+    soup = BeautifulSoup("".join([
+        row(0, "h2", "View disclosure reporting details filed for the period 7/1/2024-12/31/2024"),
+        row(1, "h1-amended", "Report amendment 8/9/2024"),
+        row(2, "h1", "View disclosure reporting details filed for the period 1/1/2024-6/30/2024"),
+    ]), "html.parser")
+    meta = parse_summary(soup)
+    base = "https://www.sec.state.ma.us/LobbyistPublicSearch/CompleteDisclosure.aspx?sysvalue="
+    assert meta.disclosure_urls == [base + "h2", base + "h1-amended"]
+    assert meta.superseded_urls == {base + "h1": base + "h1-amended"}
 
 
 # ── Helper functions ──────────────────────────────────────────────────────────
@@ -346,7 +387,46 @@ def test_registration_individual_with_own_client():
     assert client.purpose.startswith("This lobbyist will be working on")
 
 
+def test_registration_links_each_client_to_its_own_page():
+    """Every listed client links to its own page, before 2019 too (unlike a
+    firm's lobbyist links then)."""
+    for fix in ("2007e_summ", "2011i_summ", "2024e_summ"):
+        r = _registration(fix)
+        urls = [c.url for c in r.clients]
+        assert urls and all(u and "Summary.aspx?sysvalue=" in u for u in urls)
+        assert len(set(urls)) == len(urls) and r.url not in urls
+
+
 def test_registration_error_page_is_none():
     """The portal sometimes serves "An Error Occurred" instead of the page."""
     soup = BeautifulSoup("<html><body>An Error Occurred</body></html>", "html.parser")
     assert parse_registration(soup, "https://example.test/x") is None
+
+
+# ── Agents per client ─────────────────────────────────────────────────────────
+
+
+def test_disclosure_agents_per_client_from_2019():
+    detail = parse_disclosure_detail(_soup("2024e_disc"), 2024)
+    assert detail.client_lobbyists["Amplify Education, Inc."] == ["Hugh R. Jones, III"]
+
+
+def test_disclosure_lists_each_agent_once_per_client():
+    """A firm's page has one block per agent per client."""
+    detail = parse_disclosure_detail(_soup("2024i_disc"), 2024)
+    assert detail.client_lobbyists["Massachusetts Association of Vocational Administrators, Inc."] == [
+        "Anthony Arthur Abdelahad", "Charles McCoy White", "Dennis Michael Murphy"]
+
+
+def test_disclosure_sub_agents_before_2019_skip_the_firm_itself():
+    """2014-2018 pages label agents "Sub-agent:"; the firm's own "Entity:"
+    block names no person."""
+    detail = parse_disclosure_detail(_soup("2016e_disc"), 2016)
+    agents = detail.client_lobbyists["Microsoft Corporation"]
+    assert agents[0] == "Charlie Ahern" and "Murphy Donoghue Partners" not in agents
+    assert len(agents) == len(set(agents))
+
+
+@pytest.mark.parametrize("fix,year", [("2011e", 2011), ("2007e", 2007)])
+def test_disclosure_agents_absent_before_2014(fix, year):
+    assert parse_disclosure_detail(_soup(f"{fix}_disc"), year).client_lobbyists == {}
