@@ -43,8 +43,13 @@ export const resolveReportV2 = onCall(
 
     const rawTestimony = first(res.docs)?.data()
     console.log("res", testimonyId, rawTestimony, res.docs.length)
-    if (!rawTestimony) return { status: "testimony-already-removed" }
-    const testimony = Testimony.check(rawTestimony)
+    // A removal whose delete went through but whose resolution was never
+    // written finishes here.
+    if (!rawTestimony && resolution !== "remove-testimony")
+      return { status: "testimony-already-removed" }
+    const authorUid: string = rawTestimony
+      ? Testimony.check(rawTestimony).authorUid
+      : report.data()?.authorUid
 
     // 3. Get the moderator's profile document
     const moderatorUid = request.auth!.uid
@@ -55,14 +60,14 @@ export const resolveReportV2 = onCall(
 
     // 4. Remove the testimony the way any testimony is deleted
     if (resolution === "remove-testimony")
-      await performDeleteTestimony(testimony.authorUid, testimonyId)
+      await performDeleteTestimony(authorUid, testimonyId)
 
     // 5. Update the report
     const resolutionObj: any = {
       resolution,
       moderatorUid,
       resolvedAt: new Date(),
-      authorUid: testimony.authorUid
+      authorUid
     }
     if (reason) resolutionObj.reason = reason
     if (moderatorName) resolutionObj.moderatorName = moderatorName

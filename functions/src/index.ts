@@ -36,6 +36,7 @@ export {
 export { completePhoneVerificationV2, finishSignupV2 } from "./profile"
 export { checkSearchIndexVersion, searchHealthCheck } from "./search"
 export {
+  deleteCosignsOfDeletedTestimony,
   deleteTestimonyV2,
   publishTestimonyV2,
   updateCosignTally,

@@ -786,6 +786,13 @@ describe("publishTestimony", () => {
         uid2 = (await signInUser2()).uid
       })
 
+      // Triggers keep the tally and delete cosigns, and the emulator runs
+      // triggers one at a time, so a wait can sit behind every earlier test's
+      // events.
+      const triggerTimeout = 60_000
+      const waitForTrigger = (check: () => Promise<void>) =>
+        waitFor(check, { interval: 100, timeout: 30_000 })
+
       const cosignOf = () => ({ cosignOfId: parentId, cosignOfAuthorUid: uid })
       const cosign = async (signIn: () => Promise<User>) => {
         const cosigner = (await signIn()).uid
@@ -1076,15 +1083,11 @@ describe("publishTestimony", () => {
           }
         })
 
-        // A trigger writes the tally, and the emulator runs triggers one at a
-        // time, so the first wait sits behind every earlier test's events.
-        const tallyTimeout = 60_000
         const getParent = () => getPublication(uid, parentId)
         const expectTally = (tally: object) =>
-          waitFor(async () => expect(await getParent()).toMatchObject(tally), {
-            interval: 100,
-            timeout: 30_000
-          })
+          waitForTrigger(async () =>
+            expect(await getParent()).toMatchObject(tally)
+          )
 
         it(
           "Counts cosigns and their distinct districts on the parent",
@@ -1109,7 +1112,7 @@ describe("publishTestimony", () => {
               lastCosignedAt: last.publication.firstPublishedAt
             })
           },
-          tallyTimeout
+          triggerTimeout
         )
 
         it(
@@ -1130,7 +1133,7 @@ describe("publishTestimony", () => {
               lastCosignedAt: second.publication.firstPublishedAt
             })
           },
-          tallyTimeout
+          triggerTimeout
         )
 
         it(
@@ -1153,7 +1156,7 @@ describe("publishTestimony", () => {
               lastCosignedAt: first.publication.firstPublishedAt
             })
           },
-          tallyTimeout
+          triggerTimeout
         )
 
         it(
@@ -1173,7 +1176,7 @@ describe("publishTestimony", () => {
             expect(parent.version).toBe(2)
             expect(parent.cosignCount).toBe(1)
           },
-          tallyTimeout
+          triggerTimeout
         )
 
         it("Records the author's districts on any testimony", async () => {
@@ -1204,7 +1207,14 @@ describe("publishTestimony", () => {
           await signInTestAdmin()
         })
 
+        // The counts reach zero with the last cosign's delete.
         const expectCosignsGone = async () => {
+          await waitForTrigger(async () =>
+            expect(await getConference(conferenceId)).toMatchObject({
+              testimonyCount: 0,
+              passSenateVersionCount: 0
+            })
+          )
           for (const c of cosigns) {
             expect(await getPublication(c.uid, c.publicationId)).toBeUndefined()
             const draft = await testDb
@@ -1212,31 +1222,57 @@ describe("publishTestimony", () => {
               .get()
             expect(draft.data()!.publishedVersion).toBeUndefined()
           }
-          expect(await getConference(conferenceId)).toMatchObject({
-            testimonyCount: 0,
-            passSenateVersionCount: 0
-          })
         }
 
-        it("Deletes its cosigns when an admin deletes it", async () => {
-          await deleteTestimony({ uid, publicationId: parentId })
+        it(
+          "Deletes its cosigns when an admin deletes it",
+          async () => {
+            await deleteTestimony({ uid, publicationId: parentId })
 
-          expect(await getPublication(uid, parentId)).toBeUndefined()
-          await expectCosignsGone()
-        })
+            expect(await getPublication(uid, parentId)).toBeUndefined()
+            await expectCosignsGone()
+          },
+          triggerTimeout
+        )
 
-        it("Deletes its cosigns when a moderator removes it", async () => {
-          const { reportId } = await createNewReport(uid, parentId)
-          const result = await resolveReport({
-            reportId,
-            resolution: "remove-testimony",
-            reason: "important reason"
-          })
+        it(
+          "Deletes its cosigns when a moderator removes it",
+          async () => {
+            const { reportId } = await createNewReport(uid, parentId)
+            const result = await resolveReport({
+              reportId,
+              resolution: "remove-testimony",
+              reason: "important reason"
+            })
 
-          expect(result.data.status).toBe("success")
-          expect(await getPublication(uid, parentId)).toBeUndefined()
-          await expectCosignsGone()
-        })
+            expect(result.data.status).toBe("success")
+            expect(await getPublication(uid, parentId)).toBeUndefined()
+            await expectCosignsGone()
+          },
+          triggerTimeout
+        )
+
+        it(
+          "Resolves a removal whose delete went through without its resolution",
+          async () => {
+            const { reportId, reportRef } = await createNewReport(uid, parentId)
+            await deleteTestimony({ uid, publicationId: parentId })
+            await expectCosignsGone()
+
+            const result = await resolveReport({
+              reportId,
+              resolution: "remove-testimony",
+              reason: "important reason"
+            })
+
+            expect(result.data.status).toBe("success")
+            expect((await reportRef.get()).data()!.resolution).toMatchObject({
+              resolution: "remove-testimony",
+              authorUid: uid
+            })
+          },
+          triggerTimeout
+        )
 
         it("Leaves the parent and other cosigns when one cosign is deleted", async () => {
           const [first, second] = cosigns

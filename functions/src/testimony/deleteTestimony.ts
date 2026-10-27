@@ -1,4 +1,5 @@
 import { DocumentSnapshot } from "@google-cloud/firestore"
+import { onDocumentDeleted } from "firebase-functions/v2/firestore"
 import { onCall } from "firebase-functions/v2/https"
 import type { CallableRequest } from "firebase-functions/v2/https"
 import * as logger from "firebase-functions/logger"
@@ -54,25 +55,29 @@ export const performDeleteTestimony = async (
   const attachments = new Attachments()
   await attachments.applyDelete(output.attachmentId)
 
-  await deleteCosignsOf(publicationId)
-
   return { deleted: output.deleted }
 }
 
-/** Deletes a publication's cosigns, each the way any testimony is deleted.
- * Publish refuses a parent that is gone, so once the parent is deleted no new
- * cosign can appear. This runs even when the parent was already gone, so
- * deleting it again finishes a cascade that stopped partway. */
-const deleteCosignsOf = async (publicationId: string) => {
-  const cosigns = await db
-    .collectionGroup("publishedTestimony")
-    .where("cosignOfId", "==", publicationId)
-    .select()
-    .get()
-  for (const cosign of cosigns.docs) {
-    await performDeleteTestimony(cosign.ref.parent.parent!.id, cosign.id)
+/** Deletes a deleted publication's cosigns, each the way any testimony is
+ * deleted. Publish refuses a parent that is gone, so no new cosign can appear.
+ * A cascade that stops partway is retried, and finds only the cosigns left. */
+export const deleteCosignsOfDeletedTestimony = onDocumentDeleted(
+  {
+    document: "/users/{uid}/publishedTestimony/{testimonyId}",
+    timeoutSeconds: 540,
+    retry: true
+  },
+  async event => {
+    const cosigns = await db
+      .collectionGroup("publishedTestimony")
+      .where("cosignOfId", "==", event.params.testimonyId)
+      .select()
+      .get()
+    for (const cosign of cosigns.docs) {
+      await performDeleteTestimony(cosign.ref.parent.parent!.id, cosign.id)
+    }
   }
-}
+)
 
 type TransactionOutput = { deleted: boolean; attachmentId?: Maybe<string> }
 class DeleteTestimonyTransaction {
