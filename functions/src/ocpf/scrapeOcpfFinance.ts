@@ -299,14 +299,19 @@ export const scrapeOcpfFinanceManual = onRequestV2(
 // ── Scrape run (shared by nightly, manual and backfill triggers) ──────────────
 
 // Set cpfId to run a single member; omit to run all members.
+/** Thrown for a court not in generalCourts (e.g. a mistyped court number). */
+export class UnknownCourtError extends Error {
+  constructor(court: number) {
+    super(`No general court entry for court ${court}. Nothing written.`)
+  }
+}
+
 export async function scrapeFinanceForCourt(
   court: number,
   options: { cpfId?: number } = {}
 ): Promise<{ processed: number; years: string[] }> {
   const courtInfo = generalCourts[court]
-  if (!courtInfo) {
-    throw new Error(`No general court entry for court ${court}`)
-  }
+  if (!courtInfo) throw new UnknownCourtError(court)
   const years = [courtInfo.FirstYear, courtInfo.SecondYear].map(String)
 
   // ── A. Load member mapping ─────────────────────────────────────────────
