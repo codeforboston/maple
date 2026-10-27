@@ -12,6 +12,10 @@ import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar
 import { normalizePosition } from "components/lobbying/LobbyingPositionChip"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
 import { SosSourceLink } from "components/lobbying/SosSourceLink"
+import {
+  compareFilingPeriodsDesc,
+  filingPeriodLabel
+} from "components/lobbying/filingPeriod"
 import type { LobbyingFiling } from "functions/src/lobbying/types"
 import styles from "components/lobbying/lobbying.module.css"
 
@@ -40,7 +44,7 @@ function sortFilings(
           )
         )
       case "year":
-        return mul * (a.year - b.year)
+        return -mul * compareFilingPeriodsDesc(a, b)
       default:
         return 0
     }
@@ -100,7 +104,7 @@ function ordinalSuffix(n: number): string {
 }
 
 function BillFilingsPage() {
-  const { t } = useTranslation("lobbying")
+  const { t, i18n } = useTranslation("lobbying")
   const { query } = useRouter()
   const court = Number(query.court)
   const billId = query.billId as string | undefined
@@ -262,7 +266,7 @@ function BillFilingsPage() {
                           onSort={handleSort}
                         />
                         <SortTh
-                          label={t("fields.year")}
+                          label={t("fields.period")}
                           sortKey="year"
                           current={sortKey}
                           dir={sortDir}
@@ -306,7 +310,9 @@ function BillFilingsPage() {
                               {f.position || "—"}
                             </span>
                           </td>
-                          <td style={cellStyle}>{f.year}</td>
+                          <td style={{ ...cellStyle, whiteSpace: "nowrap" }}>
+                            {filingPeriodLabel(f, i18n.language)}
+                          </td>
                           {showSource && (
                             <td style={cellStyle}>
                               <SosSourceLink href={f.disclosureUrl} />

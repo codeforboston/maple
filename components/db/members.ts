@@ -66,7 +66,9 @@ export async function getMember(
   return member?.content
 }
 
-async function getMemberSearchIndex(): Promise<MemberSearchIndex | undefined> {
+export async function getMemberSearchIndex(): Promise<
+  MemberSearchIndex | undefined
+> {
   return loadDoc(
     `/generalCourts/${currentGeneralCourt}/indexes/memberSearch`
   ) as any

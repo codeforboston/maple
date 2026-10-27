@@ -40,6 +40,10 @@ Phases (run in order, per project):
              Occurred") instead of content, and with --execute re-fetch them
              from the live portal into the archive. Run before the phases above.
     stats    Recompute lobbyingMeta.
+    filing-periods
+             Copy each disclosure's reporting period from its registrant doc
+             onto the filings reported on it, for filings written before
+             filings recorded a period. Dry run by default; --execute writes.
 
     GOOGLE_APPLICATION_CREDENTIALS=... python3 migrate_lobbying_data.py \\
       --project <project> --phase write --out-prefix /tmp/<project>
@@ -337,6 +341,65 @@ def run_cleanup(project: str, out_prefix: str, collection: str, execute: bool,
     print(f"Deleted {count} stale {collection} docs.")
 
 
+def periods_by_disclosure_url(registrants) -> tuple[dict[str, tuple[str, str]], set[str]]:
+    """Map each disclosure URL to the (periodStart, periodEnd) of the
+    registrant docs listing it. URLs whose registrant docs disagree are
+    returned separately and left out of the map."""
+    periods: dict[str, tuple[str, str]] = {}
+    conflicts: set[str] = set()
+    for r in registrants:
+        start, end = r.get("periodStart"), r.get("periodEnd")
+        if not start or not end:
+            continue
+        for url in r.get("disclosureUrls") or []:
+            if url in periods and periods[url] != (start, end):
+                conflicts.add(url)
+            periods.setdefault(url, (start, end))
+    for url in conflicts:
+        periods.pop(url, None)
+    return periods, conflicts
+
+
+def run_filing_periods(project: str, execute: bool) -> None:
+    db = firestore.Client(project=project)
+    print(f"Target project: {db.project}")
+    periods, conflicts = periods_by_disclosure_url(
+        doc.to_dict()
+        for doc in _paginate(db, REGISTRANTS_COLLECTION, ["disclosureUrls", "periodStart", "periodEnd"])
+    )
+    print(f"Disclosures with a known period: {len(periods)}; with conflicting periods (skipped): {len(conflicts)}")
+
+    counts = {"updated": 0, "already_set": 0, "no_url": 0, "no_known_period": 0}
+    batch, pending = db.batch(), 0
+    for doc in _paginate(db, FILINGS_COLLECTION, ["disclosureUrl", "periodStart"]):
+        d = doc.to_dict()
+        if "periodStart" in d:
+            counts["already_set"] += 1
+            continue
+        url = d.get("disclosureUrl")
+        if not url:
+            counts["no_url"] += 1
+            continue
+        if url not in periods:
+            counts["no_known_period"] += 1
+            continue
+        counts["updated"] += 1
+        if execute:
+            start, end = periods[url]
+            batch.update(doc.reference, {"periodStart": start, "periodEnd": end})
+            pending += 1
+            if pending == 400:
+                batch.commit()
+                batch, pending = db.batch(), 0
+        if sum(counts.values()) % 100000 == 0:
+            print(f"  {counts}")
+    if execute and pending:
+        batch.commit()
+    print(counts)
+    if not execute:
+        print("Dry run — nothing written. Re-run with --execute to write the periods.")
+
+
 def _archived_pages(project: str, kind: str) -> list[tuple[Blob, str]]:
     os.environ["GOOGLE_CLOUD_PROJECT"] = project
     bucket = storage.Client(project=project).bucket(archive._get_bucket_name())
@@ -468,13 +531,13 @@ def main() -> None:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--project", required=True)
     p.add_argument("--phase", required=True,
-                   choices=["write", "cleanup", "registrations", "refetch-errors", "stats"])
+                   choices=["write", "cleanup", "registrations", "refetch-errors", "stats", "filing-periods"])
     p.add_argument("--out-prefix", help="write/cleanup: path prefix for recorded ids and summary")
     p.add_argument("--collection", choices=sorted(_COLLECTIONS), help="cleanup: which collection")
     p.add_argument("--workers", type=int, default=_DEFAULT_WORKERS)
     p.add_argument("--limit", type=int, default=None, help="write: only N pages (testing; blocks cleanup)")
     p.add_argument("--execute", action="store_true",
-                   help="cleanup: actually delete; refetch-errors: actually re-fetch")
+                   help="cleanup: actually delete; refetch-errors: actually re-fetch; filing-periods: actually write")
     p.add_argument("--expect-ids", type=int, default=None)
     p.add_argument("--expect-stale", type=int, default=None)
     args = p.parse_args()
@@ -483,6 +546,8 @@ def main() -> None:
         run_write(args.project, args.out_prefix, args.workers, args.limit)
     elif args.phase == "registrations":
         run_registrations(args.project, args.out_prefix, args.workers)
+    elif args.phase == "filing-periods":
+        run_filing_periods(args.project, args.execute)
     elif args.phase == "refetch-errors":
         run_refetch_errors(args.project, args.workers, args.execute)
     elif args.phase == "cleanup":

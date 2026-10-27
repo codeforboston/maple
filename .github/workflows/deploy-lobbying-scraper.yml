@@ -1,0 +1,53 @@
+name: Deploy the lobbying scraper
+on:
+  push:
+    branches:
+      - main
+      - prod
+    paths:
+      - lobbying-scraper/**
+      - .github/workflows/deploy-lobbying-scraper.yml
+  workflow_dispatch:
+
+jobs:
+  build_and_deploy:
+    # Don't deploy forks, even if actions are enabled
+    if: github.repository_owner == 'codeforboston'
+    runs-on: ubuntu-latest
+    # main deploys to dev, prod to prod
+    environment: ${{ github.ref_name == 'prod' && 'prod' || 'dev' }}
+    env:
+      PROJECT_ID: ${{ github.ref_name == 'prod' && 'digital-testimony-prod' || 'digital-testimony-dev' }}
+      REGION: us-central1
+      JOB: maple-lobbying-scraper
+    defaults:
+      run:
+        working-directory: lobbying-scraper
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+      - name: Setup python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Run scraper tests
+        run: |
+          pip install -r requirements.txt pytest
+          python -m pytest -q
+      - uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+      - uses: google-github-actions/setup-gcloud@v3
+      - name: Build and push the image
+        run: |
+          gcloud auth configure-docker "$REGION-docker.pkg.dev" --quiet
+          REPO="$REGION-docker.pkg.dev/$PROJECT_ID/maple-lobbying/scraper"
+          docker build -t "$REPO:$GITHUB_SHA" -t "$REPO:latest" .
+          docker push --all-tags "$REPO"
+          echo "IMAGE=$REPO:$GITHUB_SHA" >> "$GITHUB_ENV"
+      # Only the image changes; the job's env vars and its weekly schedule are
+      # set up by lobbying-scraper/deploy.sh.
+      - name: Point the Cloud Run job at the new image
+        run: |
+          gcloud run jobs update "$JOB" --image="$IMAGE" \
+            --region="$REGION" --project="$PROJECT_ID"

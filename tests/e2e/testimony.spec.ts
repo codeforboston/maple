@@ -163,18 +163,35 @@ test.describe("Testimony Filtering", () => {
   })
 })
 
-test.describe("Testimony Sorting", () => {
-  test("should sort by new -> old", async ({ page }) => {
-    const testimonyPage = new TestimonyPage(page)
-    await testimonyPage.sort("Sort by New -> Old")
-    const sortValue = page.getByText("Sort by New -> Old", { exact: true })
-    await expect(sortValue).toBeVisible()
-  })
+const sortingTests: string[] = [
+  "Sort by Relevance",
+  "Sort by Newest",
+  "Sort by Oldest"
+]
 
-  test("should sort by old -> new", async ({ page }) => {
+test.describe("Testimony Sorting", () => {
+  for (const option of sortingTests) {
+    test(`should sort testimony by ${option}`, async ({ page }) => {
+      const testimonyPage = new TestimonyPage(page)
+      await testimonyPage.sort(option)
+      const sortValue = page.getByText(option, { exact: true })
+      await expect(sortValue).toBeVisible()
+    })
+  }
+
+  test("should follow the search box until a sort is picked", async ({
+    page
+  }) => {
     const testimonyPage = new TestimonyPage(page)
-    await testimonyPage.sort("Sort by Old -> New")
-    const sortValue = page.getByText("Sort by Old -> New", { exact: true })
-    await expect(sortValue).toBeVisible()
+
+    await expect(testimonyPage.selectedSort("Sort by Newest")).toBeVisible()
+    await testimonyPage.search("health")
+    await expect(testimonyPage.selectedSort("Sort by Relevance")).toBeVisible()
+    await testimonyPage.search("")
+    await expect(testimonyPage.selectedSort("Sort by Newest")).toBeVisible()
+
+    await testimonyPage.sort("Sort by Oldest")
+    await testimonyPage.search("health")
+    await expect(testimonyPage.selectedSort("Sort by Oldest")).toBeVisible()
   })
 })
