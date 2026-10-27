@@ -111,6 +111,12 @@ class PublishTestimonyTransaction {
       cosignOfId: this.draft.cosignOfId ?? null,
       cosignOfAuthorUid: this.draft.cosignOfAuthorUid ?? null
     }
+    // Only a first publication knows when that was, so an edit of older
+    // testimony that lacks it leaves it missing.
+    const firstPublishedAt = this.currentPublication
+      ? this.currentPublication.firstPublishedAt
+      : publishInfo.publishedAt
+    if (firstPublishedAt) newPublication.firstPublishedAt = firstPublishedAt
     if (this.profile?.representative?.id) {
       newPublication.representativeId = this.profile.representative.id
     }

@@ -67,7 +67,10 @@ export const Testimony = withDefaults(
     senatorDistrict: Optional(RtString),
     representativeDistrict: Optional(RtString),
     draftAttachmentId: Maybe(RtString),
-    fullName: RtString
+    fullName: RtString,
+    /** When the testimony was first published. Edits keep it, unlike
+     * `publishedAt`. Missing on testimony published before it was recorded. */
+    firstPublishedAt: Optional(InstanceOf(Timestamp))
   }),
   {
     authorRole: "user",

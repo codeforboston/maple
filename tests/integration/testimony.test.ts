@@ -49,6 +49,7 @@ type Testimony = BaseTestimony & {
   authorDisplayName: string
   version: number
   publishedAt: Timestamp
+  firstPublishedAt?: Timestamp
 }
 
 const refs = {
@@ -287,6 +288,37 @@ describe("publishTestimony", () => {
     )
 
     await getDoc(doc(firestore, `/users/${uid}/archivedTestimony/test-id`))
+  })
+
+  it("Keeps the first publication time through edits", async () => {
+    const { publicationId } = (await publishTestimony({ draftId })).data
+    const first = await getPublication(uid, publicationId)
+    expect(first.firstPublishedAt).toEqual(first.publishedAt)
+
+    await updateDoc(refs.draftTestimony(uid, draftId), {
+      content: "updated content",
+      editReason: "edit reason"
+    })
+    await publishTestimony({ draftId })
+    const edited = await getPublication(uid, publicationId)
+    expect(edited.publishedAt).not.toEqual(first.publishedAt)
+    expect(edited.firstPublishedAt).toEqual(first.firstPublishedAt)
+  })
+
+  it("Leaves the first publication time missing on older testimony", async () => {
+    const { publicationId } = (await publishTestimony({ draftId })).data
+    await testDb
+      .doc(`/users/${uid}/publishedTestimony/${publicationId}`)
+      .update({ firstPublishedAt: FieldValue.delete() })
+
+    await updateDoc(refs.draftTestimony(uid, draftId), {
+      content: "updated content",
+      editReason: "edit reason"
+    })
+    await publishTestimony({ draftId })
+    expect(await getPublication(uid, publicationId)).not.toHaveProperty(
+      "firstPublishedAt"
+    )
   })
 
   describe("attachments", () => {
