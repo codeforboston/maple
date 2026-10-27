@@ -72,6 +72,7 @@ class PublishTestimonyTransaction {
   private targetData?: DocumentData
   private publicationRef!: DocumentReference
   private currentPublication?: Testimony
+  private position!: Testimony["position"]
   private profile?: any
   private attachments!: PublishedAttachmentState
 
@@ -84,6 +85,7 @@ class PublishTestimonyTransaction {
   async run() {
     await this.resolveDraft()
     await this.resolvePublication()
+    await this.resolveCosign()
     await this.resolveProfile()
     await this.resolveAttachments()
 
@@ -98,14 +100,16 @@ class PublishTestimonyTransaction {
       billTitle: this.bill.content.Title,
       content: this.draft.content,
       court: this.draft.court,
-      position: this.draft.position,
+      position: this.position,
       ...publishInfo,
       attachmentId: this.attachments.id,
       draftAttachmentId: this.attachments.draftId,
       fullName: this.profile?.fullName ?? "Anonymous",
       public: this.profile?.public ?? true,
       ballotQuestionId: this.bqId,
-      conferenceId: this.conferenceId
+      conferenceId: this.conferenceId,
+      cosignOfId: this.draft.cosignOfId ?? null,
+      cosignOfAuthorUid: this.draft.cosignOfAuthorUid ?? null
     }
     if (this.profile?.representative?.id) {
       newPublication.representativeId = this.profile.representative.id
@@ -239,6 +243,64 @@ class PublishTestimonyTransaction {
     this.targetData = (targetSnap ?? billSnap).data()
     this.draftSnap = draftSnap
     this.bill = Bill.checkWithDefaults(billSnap.data())
+  }
+
+  /** A cosign seconds someone else's testimony on the same conference, and
+   * takes its position when first published. It stays a cosign of that
+   * testimony, and plain testimony stays plain. */
+  private async resolveCosign() {
+    const { cosignOfId } = this.draft
+    const parent = cosignOfId ? await this.resolveParent() : undefined
+    const current = this.currentPublication
+
+    if (current && (current.cosignOfId ?? null) !== (cosignOfId ?? null)) {
+      throw fail(
+        "failed-precondition",
+        current.cosignOfId
+          ? `Testimony ${current.id} cosigns ${current.cosignOfId} and stays a cosign of it`
+          : `Testimony ${current.id} is not a cosign and cannot become one`
+      )
+    }
+
+    this.position = parent
+      ? current?.position ?? parent.position
+      : this.draft.position
+  }
+
+  private async resolveParent() {
+    const { cosignOfId, cosignOfAuthorUid } = this.draft
+
+    if (!this.conferenceId) {
+      throw fail(
+        "failed-precondition",
+        "Only conference testimony can be cosigned"
+      )
+    }
+
+    const parentSnap = await this.t.get(
+      db.doc(`/users/${cosignOfAuthorUid}/publishedTestimony/${cosignOfId}`)
+    )
+    if (!parentSnap.exists) {
+      throw fail(
+        "failed-precondition",
+        `Cosigned testimony ${cosignOfId} no longer exists`
+      )
+    }
+    const parent = Testimony.checkWithDefaults(parentSnap.data())
+
+    if (parent.authorUid === this.uid) {
+      throw fail("failed-precondition", "You cannot cosign your own testimony")
+    }
+    if (parent.cosignOfId) {
+      throw fail("failed-precondition", "A cosign cannot be cosigned")
+    }
+    if (targetOf(parent).ref.path !== this.target.ref.path) {
+      throw fail(
+        "failed-precondition",
+        `Cosigned testimony ${cosignOfId} is not on conference ${this.conferenceId}`
+      )
+    }
+    return parent
   }
 
   private async resolveProfile() {
