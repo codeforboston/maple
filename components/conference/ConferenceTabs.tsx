@@ -8,8 +8,10 @@ const ink = { strong: "#141413", mid: "#73726c" }
 const rule = "rgba(0, 0, 0, 0.16)"
 const brand = "#1f3b61"
 
-/** The row's height, its tabs' padding and rules and one line of text, is
- * what ConferenceDetails parks a section under, with the mockup's 24px. */
+/** The row's height: its tabs' padding and rules and one line of text. What
+ * holds under it, and what a jump parks under it, is placed by this. */
+export const TABS_H = "3rem"
+
 const Row = styled.nav`
   display: flex;
   gap: 22px;

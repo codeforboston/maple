@@ -195,8 +195,48 @@ const props: ConferencePageProps = {
       eventId: 5710,
       startsAt: Date.UTC(2026, 5, 4, 17)
     }
+  ],
+  gist: "This bill regulates how students use technology in schools.",
+  differences: [
+    {
+      heading: "Social media ban",
+      senate: null,
+      house: "Regulates social media companies under Chapter 93M.",
+      notes: { "Chapter 93M": ["Platforms must bar users under 14."] },
+      source: {
+        organisation: "Example Gazette",
+        url: "https://www.example.com/explainer",
+        publishedAt: "2026-09-01"
+      }
+    },
+    {
+      heading: "Use or possession",
+      senate: "Bans use and possession.",
+      house: "Bans use.",
+      notes: {},
+      source: {
+        organisation: "Other Radio",
+        url: "https://example.org/report",
+        publishedAt: null
+      }
+    }
+  ],
+  similarities: [
+    {
+      heading: "Phones barred during the school day",
+      body: "Every district must have a policy.",
+      source: {
+        organisation: "Example Gazette",
+        url: "https://www.example.com/explainer",
+        publishedAt: "2026-09-01"
+      }
+    }
   ]
 }
+
+/** What useWide reads: jsdom lays nothing out, so every element is 0 wide. */
+const widen = (px: number) =>
+  jest.spyOn(HTMLElement.prototype, "clientWidth", "get").mockReturnValue(px)
 
 beforeEach(() => {
   mockBill.mockImplementation((_court: number, id: string) => texts[id])
@@ -375,9 +415,10 @@ describe("ConferenceDetails", () => {
 
   it("takes input only while the conference is appointed", () => {
     const { unmount } = render(<ConferenceDetails {...props} />)
-    expect(
-      screen.getByRole("button", { name: "input.share" })
-    ).toBeInTheDocument()
+    // The title's, and the one beside the reader's own legislator.
+    expect(screen.getAllByRole("button", { name: "input.share" })).toHaveLength(
+      2
+    )
     unmount()
     const reported = { ...conference, status: "reportFiled" as const }
     render(<ConferenceDetails {...props} conference={reported} />)
@@ -395,6 +436,7 @@ describe("ConferenceDetails", () => {
       .map(a => [a.textContent, a.getAttribute("href")])
     expect(tabs).toEqual([
       ["tab_committee", "#committee"],
+      ["tab_decided", "#decided"],
       ["tab_input", "#input"],
       ["tab_text", "#text"]
     ])
@@ -406,8 +448,9 @@ describe("ConferenceDetails", () => {
     // jsdom lays nothing out, so each section says where it is, 850px tall.
     const tops: Record<string, number> = {
       committee: 0,
-      input: 900,
-      text: 1800
+      decided: 900,
+      input: 1800,
+      text: 2700
     }
     const rect = jest
       .spyOn(HTMLElement.prototype, "getBoundingClientRect")
@@ -423,17 +466,99 @@ describe("ConferenceDetails", () => {
         .map(a => a.textContent)
     expect(lit()).toEqual(["tab_committee"])
     // The last section lights too, once a jump has parked it.
+    tops.decided = -1800
     tops.input = -900
     tops.text = 0
     fireEvent.scroll(document)
     expect(lit()).toEqual(["tab_text"])
     // A section can move with no scroll, when one above it grows: posting
     // puts Your Input above Public Input.
-    tops.input = 900
-    tops.text = 1800
+    tops.decided = 900
+    tops.input = 1800
+    tops.text = 2700
     act(() => resized.forEach(heard => heard()))
     expect(lit()).toEqual(["tab_committee"])
     rect.mockRestore()
+  })
+
+  describe("what needs to be resolved", () => {
+    afterEach(() => jest.restoreAllMocks())
+
+    it("opens the first difference, each chamber's text in its own card", () => {
+      render(<ConferenceDetails {...props} />)
+      const [first, second] = screen
+        .getAllByRole("button", { expanded: true })
+        .concat(screen.getAllByRole("button", { expanded: false }))
+        .filter(b => /Social media ban|Use or possession/.test(b.textContent!))
+      expect(first).toHaveTextContent("Social media ban")
+      expect(first).toHaveAttribute("aria-expanded", "true")
+      expect(second).toHaveAttribute("aria-expanded", "false")
+      // The Senate bill has nothing on it, so its card says so.
+      expect(screen.getByText("decided.not_in_bill")).toBeInTheDocument()
+      expect(screen.getByText(/Regulates social media/)).toBeInTheDocument()
+      expect(screen.queryByText("Bans use.")).not.toBeInTheDocument()
+      fireEvent.click(second)
+      expect(screen.getByText("Bans use.")).toBeInTheDocument()
+    })
+
+    it("opens a term's note on hover", () => {
+      render(<ConferenceDetails {...props} />)
+      fireEvent.pointerEnter(screen.getByText("Chapter 93M"))
+      expect(screen.getByRole("tooltip")).toHaveTextContent(
+        "Platforms must bar users under 14."
+      )
+    })
+
+    it("lists the matches beside the differences only when there is room", () => {
+      const { unmount } = render(<ConferenceDetails {...props} />)
+      expect(screen.queryByText("decided.match")).not.toBeInTheDocument()
+      unmount()
+      widen(800)
+      render(<ConferenceDetails {...props} />)
+      const row = screen.getByRole("button", {
+        name: /Phones barred during the school day/
+      })
+      expect(
+        screen.queryByText("Every district must have a policy.")
+      ).toBeNull()
+      fireEvent.click(row)
+      expect(
+        screen.getByText("Every district must have a policy.")
+      ).toBeInTheDocument()
+    })
+
+    it("numbers each source once and lists it with its host", () => {
+      widen(800)
+      render(<ConferenceDetails {...props} />)
+      const items = within(
+        screen.getByText("decided.sources").nextElementSibling as HTMLElement
+      ).getAllByRole("listitem")
+      expect(items).toHaveLength(2)
+      expect(items[0]).toHaveTextContent("Example Gazette, Sep 1, 2026.")
+      expect(within(items[0]).getByRole("link")).toHaveTextContent(
+        "example.com"
+      )
+      expect(items[1]).toHaveTextContent("Other Radio.")
+      // The match cites the first source again rather than a third.
+      expect(
+        screen.getByRole("button", { name: /Phones barred/ })
+      ).toHaveTextContent("1")
+    })
+
+    it("says the reader's own legislator is deciding", () => {
+      render(<ConferenceDetails {...props} />)
+      expect(screen.getByTestId("decided.yours_one")).toHaveTextContent(
+        "your_representative A. Peisch"
+      )
+    })
+
+    it("leaves the section and its tab out where nothing is written", () => {
+      render(
+        <ConferenceDetails {...props} differences={[]} similarities={[]} />
+      )
+      expect(screen.queryByText("decided.title")).not.toBeInTheDocument()
+      expect(screen.queryByText("tab_decided")).not.toBeInTheDocument()
+    })
   })
 
   describe("bill text", () => {

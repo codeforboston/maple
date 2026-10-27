@@ -2,6 +2,9 @@ id: student-learning-and-mental-health
 name: Phone-Free Schools
 court: 194
 title: "An Act to promote student learning and mental health "
+# LOREM IPSUM: gist, differences and similarities are placeholders until the
+# sensemaking is written.
+gist: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.
 senateBillId: S2581
 houseBillId: H5366
 canonicalBillId: S2581
@@ -23,5 +26,102 @@ conferees:
     branch: House
 hearingIds:
   - hearing-5710
-differences: []
-similarities: []
+differences:
+  - heading: Lorem ipsum dolor
+    senate: Not in the Senate bill. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    house: Sed do eiusmod tempor under the Consectetur Adipiscing Chapter, ut labore et dolore magna aliqua.
+    notes:
+      Consectetur Adipiscing Chapter:
+        - Ut enim ad minim veniam, quis nostrud exercitation.
+        - Duis aute irure dolor in reprehenderit in voluptate.
+        - Excepteur sint occaecat cupidatat non proident.
+    source:
+      organisation: Lorem Gazette
+      url: https://example.com/lorem-explainer
+      publishedAt: "2026-09-01"
+  - heading: Sit amet curriculum
+    house: Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    source:
+      organisation: Lorem Gazette
+      url: https://example.com/lorem-explainer
+      publishedAt: "2026-09-01"
+  - heading: Consectetur pilot
+    house: Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+  - heading: Adipiscing or possession
+    senate: Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt.
+    house: Mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem.
+    source:
+      organisation: Ipsum Public Radio
+      url: https://example.org/ipsum-report
+      publishedAt: "2026-09-14"
+  - heading: Elit exceptions
+    senate: Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.
+    house: Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur.
+    source:
+      organisation: Ipsum Public Radio
+      url: https://example.org/ipsum-report
+      publishedAt: "2026-09-14"
+  - heading: Tempor hearing
+    senate: Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit.
+    source:
+      organisation: Dolor Daily
+      url: https://example.net/dolor
+      publishedAt: "2026-10-02"
+  - heading: Incididunt dates
+    senate: Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse.
+    house: At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium.
+    source:
+      organisation: Dolor Daily
+      url: https://example.net/dolor
+      publishedAt: "2026-10-02"
+similarities:
+  - heading: Lorem ipsum barred during the day
+    body: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    source:
+      organisation: Lorem Gazette
+      url: https://example.com/lorem-explainer
+      publishedAt: "2026-09-01"
+  - heading: Dolor issues guidance and a model
+    body: Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    source:
+      organisation: Lorem Gazette
+      url: https://example.com/lorem-explainer
+      publishedAt: "2026-09-01"
+  - heading: Sit amet takes over past a deadline
+    body: Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.
+  - heading: Consectetur filed every year
+    body: Identical in both bills.
+    source:
+      organisation: Lorem Gazette
+      url: https://example.com/lorem-explainer
+      publishedAt: "2026-09-01"
+  - heading: Adipiscing told every year
+    body: "Senate: excepteur sint occaecat. House: cupidatat non proident, sunt in culpa."
+    source:
+      organisation: Lorem Gazette
+      url: https://example.com/lorem-explainer
+      publishedAt: "2026-09-01"
+  - heading: Exceptions for sed do eiusmod
+    body: Qui officia deserunt mollit anim id est laborum.
+    source:
+      organisation: Lorem Gazette
+      url: https://example.com/lorem-explainer
+      publishedAt: "2026-09-01"
+  - heading: A guaranteed way to tempor
+    body: Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium.
+    source:
+      organisation: Lorem Gazette
+      url: https://example.com/lorem-explainer
+      publishedAt: "2026-09-01"
+  - heading: No incididunt for ut labore
+    body: Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit.
+    source:
+      organisation: Lorem Gazette
+      url: https://example.com/lorem-explainer
+      publishedAt: "2026-09-01"
+  - heading: Magna aliqua reports back
+    body: Senate by lorem 2027; House by ipsum 2028.
+    source:
+      organisation: Lorem Gazette
+      url: https://example.com/lorem-explainer
+      publishedAt: "2026-09-01"

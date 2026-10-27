@@ -16,7 +16,7 @@ This drafts each conference that doesn't have a file yet. Finish each draft by h
 1. Resolve every `TODO` (conferee member codes, the partner bill).
 2. Check `status` against the conference report bill, because the guess stops at "Reported by".
 3. Add `hearingIds` (`hearing-{EventId}`) from the hearing list the script prints.
-4. Write `differences` and `similarities`, each with a `source`.
+4. Write the `gist`, then `differences` and `similarities`, each with a `source`. Leave out a chamber's text when its bill doesn't touch the point.
 
 ## Updating a conference
 

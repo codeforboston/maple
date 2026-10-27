@@ -12,10 +12,11 @@ import { takesTestimony } from "../../functions/src/shared"
 import styled from "styled-components"
 import { ConferenceByline } from "./ConferenceByline"
 import { ConferenceCommittee } from "./ConferenceCommittee"
+import { ConferenceDifferences } from "./ConferenceDifferences"
 import { ConferenceHero } from "./ConferenceHero"
 import { ConferencePicker } from "./ConferencePicker"
 import { ConferenceRail } from "./ConferenceRail"
-import { ConferenceTabs } from "./ConferenceTabs"
+import { ConferenceTabs, TABS_H } from "./ConferenceTabs"
 import { ConferenceText } from "./ConferenceText"
 import { useAuth } from "../auth"
 import { authStepChanged } from "../auth/redux"
@@ -108,17 +109,19 @@ const TitleBand = styled(Band)`
   padding-bottom: 0.75rem;
 `
 
-/** A section the tabs lead to, parked under the title and the tabs: 4.5rem is
- * ConferenceTabs' row and the mockup's 24px under it. */
+/** A section the tabs lead to, parked under the title and the tabs with the
+ * mockup's 24px under them. */
 const Section = styled.div`
   margin-top: 1.5rem;
   scroll-margin-top: calc(
-    var(--maple-navbar-height) + var(--title-h, 5rem) + 4.5rem
+    var(--maple-navbar-height) + var(--title-h, 5rem) + ${TABS_H} + 1.5rem
   );
 `
 
-/** In the mockup's order, which goes on to the sections still to come. */
-const SECTIONS = ["committee", "input", "text"] as const
+/** In the mockup's order, which goes on to the sections still to come. A
+ * conference with nothing written on what is unresolved has no such section. */
+const SECTIONS = ["committee", "decided", "input", "text"] as const
+const UNDECIDED = SECTIONS.filter(s => s !== "decided")
 
 /**
  * One conference: who is deciding, and the two texts they are deciding
@@ -140,6 +143,9 @@ function Details({
   conferences,
   conferees,
   hearings,
+  gist,
+  differences,
+  similarities,
   openOnHero = false
 }: ConferencePageProps & { openOnHero?: boolean }) {
   const { top, hero, toConference } = useConferenceTop(openOnHero)
@@ -160,6 +166,7 @@ function Details({
   const followed = useFollowedAuthors(user?.uid)
   const subject = conferenceName(conference)
   const taking = takesTestimony(conference.status)
+  const decided = differences.length > 0 || similarities.length > 0
 
   const close = useCallback(() => setOpen(false), [])
   const edit = useCallback(() => {
@@ -239,7 +246,7 @@ function Details({
               $top="calc(var(--maple-navbar-height) + var(--title-h, 5rem))"
               $z={13}
             >
-              <ConferenceTabs sections={SECTIONS} />
+              <ConferenceTabs sections={decided ? SECTIONS : UNDECIDED} />
             </Band>
             <Section id="committee">
               {/* Keyed so a pinned seat does not outlive its conference. */}
@@ -250,6 +257,18 @@ function Details({
                 hearings={hearings}
               />
             </Section>
+            {decided && (
+              <Section id="decided">
+                <ConferenceDifferences
+                  gist={gist}
+                  differences={differences}
+                  similarities={similarities}
+                  conferees={conferees}
+                  onShare={taking ? share : undefined}
+                  posted={Boolean(mine)}
+                />
+              </Section>
+            )}
             {mine && (
               <Section>
                 <YourInput testimony={mine} />
