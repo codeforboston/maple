@@ -24,8 +24,7 @@ const PublishTestimonyRequest = Record({
 })
 
 const INITIAL_VERSION = 1,
-  MAX_EDITS = 5,
-  MAX_VERSION = INITIAL_VERSION + MAX_EDITS
+  MAX_EDITS = 5
 
 export const publishTestimonyV2 = onCall(async (request: CallableRequest) => {
   const checkEmailVerification = true
@@ -354,8 +353,11 @@ class PublishTestimonyTransaction {
       updatedAt: Timestamp.now()
     }
 
-    if (version > 1) {
+    // Versions number every publication on the scope, so one that replaces a
+    // deleted publication starts past 1 without being an edit.
+    if (this.currentPublication) {
       if (!reason) throw fail("invalid-argument", "Edit reason is required.")
+      await this.checkEditsLeft()
       info.editReason = reason
     }
 
@@ -377,14 +379,21 @@ class PublishTestimonyTransaction {
 
     if (!latest) return INITIAL_VERSION
 
-    const nextVersion = Testimony.checkWithDefaults(latest.data()).version + 1
+    return Testimony.checkWithDefaults(latest.data()).version + 1
+  }
 
-    if (nextVersion > MAX_VERSION)
+  /** Counts the edits of this publication, from its archived versions. */
+  private async checkEditsLeft() {
+    const versions = await this.t.get(
+      db
+        .collection(`/users/${this.uid}/archivedTestimony`)
+        .where("id", "==", this.publicationRef.id)
+        .select()
+    )
+    if (versions.size > MAX_EDITS)
       throw new Error(
         "Cannot update testimony. Max number of edits reached: " + MAX_EDITS
       )
-
-    return nextVersion
   }
 
   private async resolvePublication() {

@@ -1274,6 +1274,74 @@ describe("publishTestimony", () => {
           triggerTimeout
         )
 
+        // The parent is deleted, then the first cosigner cosigns user 4's
+        // testimony on the same conference, from the same draft.
+        const refileFirstCosign = async () => {
+          await deleteTestimony({ uid, publicationId: parentId })
+          await expectCosignsGone()
+
+          const uid4 = (await signInUser4()).uid
+          const { draftId: otherDraftId } = await createConferenceDraft(
+            uid4,
+            billId,
+            conferenceId,
+            "passSenateVersion"
+          )
+          const otherId = (await publishTestimony({ draftId: otherDraftId }))
+            .data.publicationId
+
+          const [first] = cosigns
+          await signInUser2()
+          await updateDoc(refs.draftTestimony(first.uid, first.draftId), {
+            cosignOfId: otherId,
+            cosignOfAuthorUid: uid4
+          })
+          const { publicationId } = (
+            await publishTestimony({ draftId: first.draftId })
+          ).data
+          return { ...first, otherId, publicationId }
+        }
+
+        it(
+          "Files a later cosign on the conference as new, not an edit",
+          async () => {
+            const refiled = await refileFirstCosign()
+
+            const publication = await getPublication(
+              refiled.uid,
+              refiled.publicationId
+            )
+            expect(publication.cosignOfId).toBe(refiled.otherId)
+            expect(publication.version).toBe(2)
+            expect(publication.editReason).toBeUndefined()
+          },
+          triggerTimeout
+        )
+
+        it(
+          "Counts the edit limit on the later cosign alone",
+          async () => {
+            const refiled = await refileFirstCosign()
+            const edit = async (n: number) => {
+              await updateDoc(
+                refs.draftTestimony(refiled.uid, refiled.draftId),
+                {
+                  content: `Edit ${n}`,
+                  editReason: "Say why"
+                }
+              )
+              return publishTestimony({ draftId: refiled.draftId })
+            }
+
+            for (let n = 1; n <= 5; n++) await edit(n)
+            expect(
+              (await getPublication(refiled.uid, refiled.publicationId)).version
+            ).toBe(7)
+            await expect(edit(6)).rejects.toThrow()
+          },
+          triggerTimeout
+        )
+
         it("Leaves the parent and other cosigns when one cosign is deleted", async () => {
           const [first, second] = cosigns
           await deleteTestimony({
