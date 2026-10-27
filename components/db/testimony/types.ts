@@ -49,6 +49,18 @@ export const BaseTestimony = R({
 })
 export type BaseTestimony = Static<typeof BaseTestimony>
 
+/** A testimony is about one thing: its bill, a ballot question on it, or a
+ * conference on it. */
+const oneTarget = ({
+  ballotQuestionId,
+  conferenceId
+}: {
+  ballotQuestionId?: string | null
+  conferenceId?: string | null
+}) =>
+  !(ballotQuestionId && conferenceId) ||
+  "Testimony targets a ballot question or a conference, not both"
+
 export type Testimony = Static<typeof Testimony>
 export const Testimony = BaseTestimony.extend({
   authorUid: Id,
@@ -66,15 +78,16 @@ export const Testimony = BaseTestimony.extend({
   representativeDistrict: Optional(String),
   draftAttachmentId: Maybe(String),
   fullName: String
-})
+}).withConstraint(oneTarget)
 
 export type WorkingDraft = Partial<DraftTestimony>
 export type DraftTestimony = Static<typeof DraftTestimony>
-export const DraftTestimony = BaseTestimony.extend({
+const DraftTestimonyFields = BaseTestimony.extend({
   publishedVersion: Optional(Number),
   /** If present, array of legislator member codes */
   recipientMemberCodes: Maybe(Array(String))
 })
+export const DraftTestimony = DraftTestimonyFields.withConstraint(oneTarget)
 
 /** Testimony and drafts as they read when `conferenceId` is set. The listing
  * and edit hooks for conferences return these; every other hook returns the
@@ -85,9 +98,9 @@ export type ConferenceTestimony = Omit<Testimony, "position"> & {
 export type ConferenceWorkingDraft = Omit<WorkingDraft, "position"> & {
   position?: ConferencePosition
 }
-export const ConferenceDraftTestimony = DraftTestimony.omit("position").extend({
-  position: ConferencePosition
-})
+export const ConferenceDraftTestimony = DraftTestimonyFields.omit("position")
+  .extend({ position: ConferencePosition })
+  .withConstraint(oneTarget)
 
 /** Returns true if both values are either falsy or strictly equal. */
 const eqish = (a: any, b: any) => (a || undefined) === (b || undefined)

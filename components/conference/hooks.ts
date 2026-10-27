@@ -113,20 +113,24 @@ export function useConferenceTop(openOnHero: boolean) {
       sync()
     }
     measure()
-    const observer = new ResizeObserver(measure)
+    const observer =
+      typeof ResizeObserver === "undefined"
+        ? undefined
+        : new ResizeObserver(measure)
     // The hero's own height is where the conference starts: it follows the
     // window's height and its text's wrapping.
-    if (hero.current) observer.observe(hero.current)
+    if (hero.current) observer?.observe(hero.current)
     // Whatever sits above the hero moves it when it changes height, however
     // far up: the siblings before it and before each of its ancestors. The
     // body is no use, being a fixed-height box.
     for (let el = hero.current; el && el !== document.body; ) {
-      if (el.previousElementSibling) observer.observe(el.previousElementSibling)
+      if (el.previousElementSibling)
+        observer?.observe(el.previousElementSibling)
       el = el.parentElement
     }
     window.addEventListener("scroll", sync, { passive: true })
     return () => {
-      observer.disconnect()
+      observer?.disconnect()
       window.removeEventListener("scroll", sync)
       root.style.removeProperty("--conference-nav")
       root.style.scrollSnapType = ""

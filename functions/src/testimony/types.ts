@@ -95,10 +95,24 @@ export const positionMatchesTarget = ({
     ? "Conference testimony takes a conference position"
     : "Bill testimony takes a bill position")
 
+/** A testimony is about one thing: its bill, a ballot question on it, or a
+ * conference on it. */
+export const oneTarget = ({
+  ballotQuestionId,
+  conferenceId
+}: {
+  ballotQuestionId?: string | null
+  conferenceId?: string | null
+}) =>
+  !(ballotQuestionId && conferenceId) ||
+  "Testimony targets a ballot question or a conference, not both"
+
 export type DraftTestimony = Static<typeof DraftTestimony>
 export const DraftTestimony = BaseTestimony.extend({
   publishedVersion: Optional(Number)
-}).withConstraint(positionMatchesTarget)
+})
+  .withConstraint(positionMatchesTarget)
+  .withConstraint(oneTarget)
 
 export const countsByPositions = {
   endorse: "endorseCount",

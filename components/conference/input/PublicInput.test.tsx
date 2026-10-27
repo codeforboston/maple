@@ -79,25 +79,25 @@ describe("PublicInput", () => {
     expect(screen.getAllByRole("article")).toHaveLength(2)
   })
 
-  it("narrows by position and offers a way back from an empty result", () => {
+  it("narrows by position and offers a way back from an empty result", async () => {
     const items = [
       ...many(4).map(x => ({ ...x, position: "passSomething" as const }))
     ]
     render(<PublicInput items={items} loading={false} />)
     fireEvent.click(screen.getByLabelText("input.filter_by_position"))
-    const menu = screen.getByRole("listbox")
+    const menu = await screen.findByRole("menu")
     fireEvent.click(within(menu).getByText("input.position.passNothing.long"))
     expect(screen.getByText("input.no_match_title")).toBeInTheDocument()
     fireEvent.click(screen.getByText("input.clear_filters"))
     expect(screen.getAllByRole("article")).toHaveLength(4)
   })
 
-  it("narrows by account type", () => {
+  it("narrows by account type", async () => {
     render(<PublicInput items={many(6)} loading={false} />)
     // many(): every third author, from the first, is an organization.
     fireEvent.click(screen.getByLabelText("input.filter_by_account_type"))
     fireEvent.click(
-      within(screen.getByRole("listbox")).getByText(
+      within(await screen.findByRole("menu")).getByText(
         "input.account_organization"
       )
     )

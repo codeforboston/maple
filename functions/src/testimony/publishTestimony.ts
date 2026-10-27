@@ -1,18 +1,21 @@
-import { DocumentReference, DocumentSnapshot } from "@google-cloud/firestore"
+import {
+  DocumentData,
+  DocumentReference,
+  DocumentSnapshot
+} from "@google-cloud/firestore"
 import { onCall } from "firebase-functions/v2/https"
 import type { CallableRequest } from "firebase-functions/v2/https"
 import * as logger from "firebase-functions/logger"
 import { nanoid } from "nanoid"
 import { Record } from "runtypes"
-import { BallotQuestion } from "../ballotQuestions/types"
 import { Bill } from "../bills/types"
-import { Conference, conferenceCountFields } from "../conferences/types"
+import { Conference } from "../conferences/types"
 import { checkAuth, checkRequest, DocUpdate, fail, Id } from "../common"
 import { db, FieldValue, Timestamp } from "../firebase"
 import { supportedGeneralCourts, takesTestimony } from "../shared"
 import { Attachments, PublishedAttachmentState } from "./attachments"
-import { billCountFields, DraftTestimony, Testimony } from "./types"
-import { updateTestimonyCounts } from "./updateTestimonyCounts"
+import { targetCountsUpdate, targetOf, TestimonyTarget } from "./target"
+import { DraftTestimony, Testimony } from "./types"
 
 const PublishTestimonyRequest = Record({
   draftId: Id
@@ -63,12 +66,10 @@ class PublishTestimonyTransaction {
   private draftSnap!: DocumentSnapshot
   private draft!: DraftTestimony
   private bqId!: string | null
-  private billSnap!: DocumentSnapshot
   private bill!: Bill
-  private ballotQuestion?: BallotQuestion
   private conferenceId!: string | null
-  private conference?: Conference
-  private conferenceRef?: DocumentReference
+  private target!: TestimonyTarget
+  private targetData?: DocumentData
   private publicationRef!: DocumentReference
   private currentPublication?: Testimony
   private profile?: any
@@ -123,9 +124,7 @@ class PublishTestimonyTransaction {
     this.setPublication(newPublication)
     this.createArchive(newPublication)
     this.updateDraft(newPublication)
-    this.updateBill(newPublication)
-    this.updateBallotQuestion(newPublication)
-    this.updateConference(newPublication)
+    this.updateTarget(newPublication)
 
     return {
       publicationId: this.publicationRef.id,
@@ -153,47 +152,23 @@ class PublishTestimonyTransaction {
     this.t.update(this.draftSnap.ref, update)
   }
 
-  private updateBill(newPublication: Testimony) {
-    if (this.bqId || this.conferenceId) return
-
-    const billTestimonyFields: DocUpdate<Bill> = {
-      latestTestimonyAt: newPublication.publishedAt,
-      latestTestimonyId: this.publicationRef.id,
-      ...updateTestimonyCounts(
-        billCountFields,
-        this.bill,
+  private updateTarget(newPublication: Testimony) {
+    const latest: DocUpdate<Bill> =
+      this.target.kind === "bill"
+        ? {
+            latestTestimonyAt: newPublication.publishedAt,
+            latestTestimonyId: this.publicationRef.id
+          }
+        : {}
+    this.t.update(this.target.ref, {
+      ...latest,
+      ...targetCountsUpdate(
+        this.target,
+        this.targetData,
         this.currentPublication,
         newPublication
       )
-    }
-    this.t.update(this.billSnap.ref, billTestimonyFields)
-  }
-
-  private updateBallotQuestion(newPublication: Testimony) {
-    if (!this.bqId || !this.ballotQuestion) return
-
-    const ballotQuestionFields: DocUpdate<BallotQuestion> =
-      updateTestimonyCounts(
-        billCountFields,
-        this.ballotQuestion,
-        this.currentPublication,
-        newPublication
-      )
-
-    this.t.update(db.doc(`/ballotQuestions/${this.bqId}`), ballotQuestionFields)
-  }
-
-  private updateConference(newPublication: Testimony) {
-    if (!this.conference || !this.conferenceRef) return
-
-    const conferenceFields: DocUpdate<Conference> = updateTestimonyCounts(
-      conferenceCountFields,
-      this.conference,
-      this.currentPublication,
-      newPublication
-    )
-
-    this.t.update(this.conferenceRef, conferenceFields)
+    })
   }
 
   private async resolveDraft() {
@@ -217,18 +192,13 @@ class PublishTestimonyTransaction {
 
     const bqId = draft.ballotQuestionId ?? null
     const conferenceId = draft.conferenceId ?? null
+    const target = targetOf(draft)
     const billRef = db.doc(
       `/generalCourts/${draft.court}/bills/${draft.billId}`
     )
-    const bqRef = bqId !== null ? db.doc(`/ballotQuestions/${bqId}`) : null
-    const conferenceRef =
-      conferenceId !== null
-        ? db.doc(`/generalCourts/${draft.court}/conferences/${conferenceId}`)
-        : null
-    const [billSnap, bqSnap, conferenceSnap] = await Promise.all([
+    const [billSnap, targetSnap] = await Promise.all([
       this.t.get(billRef),
-      bqRef ? this.t.get(bqRef) : Promise.resolve(null),
-      conferenceRef ? this.t.get(conferenceRef) : Promise.resolve(null)
+      target.kind === "bill" ? null : this.t.get(target.ref)
     ])
 
     if (!billSnap.exists) {
@@ -237,47 +207,38 @@ class PublishTestimonyTransaction {
         `Draft testimony has invalid bill ID ${draft.billId}`
       )
     }
-    if (bqSnap !== null && !bqSnap.exists) {
+    if (targetSnap && !targetSnap.exists) {
       throw fail(
         "failed-precondition",
-        `Draft testimony has invalid ballotQuestionId ${bqId}`
+        target.kind === "ballotQuestion"
+          ? `Draft testimony has invalid ballotQuestionId ${bqId}`
+          : `Draft testimony has invalid conferenceId ${conferenceId}`
       )
     }
 
-    const conference = conferenceSnap?.exists
-      ? Conference.checkWithDefaults(conferenceSnap.data())
-      : undefined
-    if (conferenceSnap !== null && !conference) {
-      throw fail(
-        "failed-precondition",
-        `Draft testimony has invalid conferenceId ${conferenceId}`
-      )
-    }
-    if (conference && conference.canonicalBillId !== draft.billId) {
-      throw fail(
-        "failed-precondition",
-        `Conference ${conferenceId} takes testimony on ${conference.canonicalBillId}, not ${draft.billId}`
-      )
-    }
-    if (conference && !takesTestimony(conference.status)) {
-      throw fail(
-        "failed-precondition",
-        `Conference ${conferenceId} is not accepting testimony (status ${conference.status})`
-      )
+    if (target.kind === "conference") {
+      const conference = Conference.checkWithDefaults(targetSnap!.data())
+      if (conference.canonicalBillId !== draft.billId) {
+        throw fail(
+          "failed-precondition",
+          `Conference ${conferenceId} takes testimony on ${conference.canonicalBillId}, not ${draft.billId}`
+        )
+      }
+      if (!takesTestimony(conference.status)) {
+        throw fail(
+          "failed-precondition",
+          `Conference ${conferenceId} is not accepting testimony (status ${conference.status})`
+        )
+      }
     }
 
     this.draft = draft
     this.bqId = bqId
     this.conferenceId = conferenceId
-    this.conferenceRef = conferenceRef ?? undefined
-    this.conference = conference
+    this.target = target
+    this.targetData = (targetSnap ?? billSnap).data()
     this.draftSnap = draftSnap
-    this.billSnap = billSnap
     this.bill = Bill.checkWithDefaults(billSnap.data())
-    this.ballotQuestion =
-      bqSnap && bqSnap.exists
-        ? BallotQuestion.checkWithDefaults(bqSnap.data())
-        : undefined
   }
 
   private async resolveProfile() {

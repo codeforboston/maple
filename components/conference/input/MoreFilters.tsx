@@ -2,11 +2,12 @@ import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { Check, ListFilter } from "./icons"
 import { ink, line, shadow, wash } from "./tokens"
-import { Anchor, Menu, usePopover } from "./popover"
+import { Anchor, Menu, Toggle } from "./menu"
+import { Dropdown } from "components/bootstrap"
 
 type Followable = { id: string; name: string }
 
-const Mark = styled.button<{ $open: boolean }>`
+const Mark = styled.button`
   position: relative;
   display: flex;
   align-items: center;
@@ -15,9 +16,10 @@ const Mark = styled.button<{ $open: boolean }>`
   height: 34px;
   border: 0;
   border-radius: 8px;
-  background: ${({ $open }) => ($open ? wash.default : "none")};
-  color: ${({ $open }) => ($open ? ink.strong : ink.mid)};
-  &:hover {
+  background: none;
+  color: ${ink.mid};
+  &:hover,
+  &[aria-expanded="true"] {
     background: ${wash.default};
     color: ${ink.strong};
   }
@@ -42,8 +44,23 @@ const Badge = styled.span`
 `
 
 const FollowMenu = styled(Menu)`
-  width: 248px;
-  padding: 16px;
+  && {
+    --bs-dropdown-padding-x: 16px;
+    --bs-dropdown-padding-y: 16px;
+    width: 248px;
+  }
+`
+
+/** The rows and the switch are the menu's items, so the arrow keys reach
+ * them, but none of them takes Bootstrap's fill: the mockup marks them by
+ * their own ink, and the keyboard by the focus ring. */
+const Plain = styled.button`
+  --bs-dropdown-link-hover-bg: transparent;
+  --bs-dropdown-link-active-bg: transparent;
+  &:focus-visible {
+    outline: 3px solid var(--maple-focus-ring);
+    outline-offset: 2px;
+  }
 `
 
 const Head = styled.div`
@@ -62,16 +79,21 @@ const Label = styled.span`
   color: ${ink.mid};
 `
 
-const Switch = styled.button<{ $on: boolean }>`
-  flex-shrink: 0;
-  position: relative;
-  width: 28px;
-  height: 16px;
-  padding: 0;
-  border: 0;
-  border-radius: 9999px;
-  background: ${({ $on }) => ($on ? ink.strong : line.strong)};
-  transition: background-color 120ms;
+const Switch = styled(Plain)`
+  && {
+    flex-shrink: 0;
+    position: relative;
+    width: 28px;
+    height: 16px;
+    padding: 0;
+    border: 0;
+    border-radius: 9999px;
+    background: ${line.strong};
+    transition: background-color 120ms;
+  }
+  &&[aria-checked="true"] {
+    background: ${ink.strong};
+  }
   &::after {
     content: "";
     position: absolute;
@@ -82,29 +104,31 @@ const Switch = styled.button<{ $on: boolean }>`
     border-radius: 9999px;
     background: #fff;
     box-shadow: ${shadow.popover};
-    transform: translateX(${({ $on }) => ($on ? 12 : 0)}px);
     transition: transform 120ms;
   }
-`
-
-const Row = styled.button<{ $on: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  padding: 5px 0;
-  border: 0;
-  background: none;
-  text-align: left;
-  font-size: 0.8125rem;
-  font-weight: ${({ $on }) => ($on ? 600 : 400)};
-  color: ${({ $on }) => ($on ? ink.strong : ink.mid)};
-  &:hover {
-    color: ${ink.strong};
+  &[aria-checked="true"]::after {
+    transform: translateX(12px);
   }
 `
 
-const Box = styled.span<{ $on: boolean }>`
+const Row = styled(Plain)`
+  --bs-dropdown-item-padding-y: 5px;
+  --bs-dropdown-item-padding-x: 0;
+  --bs-dropdown-link-color: ${ink.mid};
+  && {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+  }
+  &&[aria-checked="true"] {
+    --bs-dropdown-link-color: ${ink.strong};
+    font-weight: 600;
+  }
+`
+
+/** The tick, drawn from its row's state. */
+const Box = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -112,9 +136,12 @@ const Box = styled.span<{ $on: boolean }>`
   width: 15px;
   height: 15px;
   border-radius: 4px;
-  border: 1px solid ${({ $on }) => ($on ? ink.strong : line.strong)};
-  background: ${({ $on }) => ($on ? ink.strong : "none")};
+  border: 1px solid ${line.strong};
   color: #fff;
+  [aria-checked="true"] > & {
+    border-color: ${ink.strong};
+    background: ${ink.strong};
+  }
 `
 
 const Name = styled.span`
@@ -137,59 +164,45 @@ export function MoreFilters({
   onPick: (ids: string[]) => void
 }) {
   const { t } = useTranslation("conferences")
-  const { ref, open, toggle } = usePopover()
   const all = picked.length === followable.length
 
   return (
-    <Anchor ref={ref}>
-      <Mark
-        type="button"
-        $open={open}
-        onClick={toggle}
-        aria-haspopup="true"
-        aria-expanded={open}
-        aria-label={t("input.filters")}
-      >
+    <Anchor align="end" autoClose="outside">
+      <Toggle as={Mark} type="button" aria-label={t("input.filters")}>
         <ListFilter size={17} />
         {picked.length > 0 && <Badge>1</Badge>}
-      </Mark>
-      {open && (
-        <FollowMenu $right>
-          <Head>
-            <Label>{t("input.following")}</Label>
-            <Switch
+      </Toggle>
+      <FollowMenu role="menu">
+        <Head>
+          <Label>{t("input.following")}</Label>
+          <Dropdown.Item
+            as={Switch}
+            type="button"
+            role="switch"
+            aria-checked={all}
+            aria-label={t("input.follow_all")}
+            onClick={() => onPick(all ? [] : followable.map(u => u.id))}
+          />
+        </Head>
+        {followable.map(u => {
+          const on = picked.includes(u.id)
+          return (
+            <Dropdown.Item
+              key={u.id}
+              as={Row}
               type="button"
-              role="switch"
-              aria-checked={all}
-              aria-label={t("input.follow_all")}
-              $on={all}
-              onClick={() => onPick(all ? [] : followable.map(u => u.id))}
-            />
-          </Head>
-          {followable.map(u => {
-            const on = picked.includes(u.id)
-            return (
-              <Row
-                key={u.id}
-                type="button"
-                role="menuitemcheckbox"
-                aria-checked={on}
-                $on={on}
-                onClick={() =>
-                  onPick(
-                    on ? picked.filter(x => x !== u.id) : [...picked, u.id]
-                  )
-                }
-              >
-                <Box $on={on} aria-hidden>
-                  {on && <Check size={11} />}
-                </Box>
-                <Name>{u.name}</Name>
-              </Row>
-            )
-          })}
-        </FollowMenu>
-      )}
+              role="menuitemcheckbox"
+              aria-checked={on}
+              onClick={() =>
+                onPick(on ? picked.filter(x => x !== u.id) : [...picked, u.id])
+              }
+            >
+              <Box aria-hidden>{on && <Check size={11} />}</Box>
+              <Name>{u.name}</Name>
+            </Dropdown.Item>
+          )
+        })}
+      </FollowMenu>
     </Anchor>
   )
 }

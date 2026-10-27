@@ -111,35 +111,25 @@ describe("updateTestimonyCounts", () => {
     })
   })
 
-  it("moves only the total for a position without a field in the set", () => {
-    const update = updateTestimonyCounts(
-      billCountFields,
-      { testimonyCount: 0, endorseCount: 0, neutralCount: 0, opposeCount: 0 },
-      undefined,
-      { position: "passNothing" }
-    )
-    expect(update).toEqual({
-      testimonyCount: 1,
-      endorseCount: 0,
-      neutralCount: 0,
-      opposeCount: 0
-    })
-    expect(Object.values(update)).not.toContain(NaN)
+  it("throws on a position without a field in the set", () => {
+    expect(() =>
+      updateTestimonyCounts(
+        billCountFields,
+        { testimonyCount: 0, endorseCount: 0, neutralCount: 0, opposeCount: 0 },
+        undefined,
+        { position: "passNothing" }
+      )
+    ).toThrow("No count field for position passNothing")
   })
 
-  it("never writes a field for an unknown position", () => {
-    expect(
+  it("throws on an unknown position", () => {
+    expect(() =>
       updateTestimonyCounts(
         billCountFields,
         { testimonyCount: 1, endorseCount: 0, neutralCount: 0, opposeCount: 0 },
         { position: "bogus" as any },
         undefined
       )
-    ).toEqual({
-      testimonyCount: 0,
-      endorseCount: 0,
-      neutralCount: 0,
-      opposeCount: 0
-    })
+    ).toThrow("No count field for position bogus")
   })
 })

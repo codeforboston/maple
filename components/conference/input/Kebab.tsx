@@ -2,6 +2,7 @@ import { ReactNode, useState } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { ToastContainer } from "react-bootstrap"
+import { Dropdown } from "components/bootstrap"
 import { ConferenceTestimony, Testimony } from "components/db"
 import { useReportTestimony } from "components/api/report"
 import {
@@ -13,7 +14,7 @@ import { useInputContext } from "./context"
 import { useToggleFollow } from "./useToggleFollow"
 import { BellPlus, EllipsisVertical, FileText, Flag, SquarePen } from "./icons"
 import { ink, wash } from "./tokens"
-import { Anchor, Menu, usePopover } from "./popover"
+import { Anchor, Menu, Toggle } from "./menu"
 import { authStepChanged } from "components/auth/redux"
 import { useAppDispatch } from "components/hooks"
 import { nameOf } from "./accounts"
@@ -35,23 +36,19 @@ const Trigger = styled.button`
 `
 
 const KebabMenu = styled(Menu)`
-  min-width: 180px;
-  top: calc(100% + 4px);
+  && {
+    --bs-dropdown-min-width: 180px;
+  }
 `
 
 const Item = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  width: 100%;
-  padding: 7px 12px;
-  border: 0;
-  background: none;
-  text-align: left;
-  font-size: 0.8125rem;
-  color: ${ink.strong};
-  &:hover {
-    background: ${wash.default};
+  --bs-dropdown-item-padding-y: 7px;
+  --bs-dropdown-item-padding-x: 12px;
+  && {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-weight: 500;
   }
   svg {
     flex-shrink: 0;
@@ -60,9 +57,10 @@ const Item = styled.button`
 `
 
 /** Reporting an entry, or asking for one's own to be deleted: the modal the
- * bill page's testimony uses, and its toast. `start` sends a signed-out reader
+ * bill page's testimony uses, worded for input, and its toast. `start` sends a signed-out reader
  * to sign in first; `node` goes anywhere in the tree. */
 export function useReport(testimony: ConferenceTestimony) {
+  const { t } = useTranslation("conferences")
   const { t: tt } = useTranslation("testimony")
   const dispatch = useAppDispatch()
   const { uid, signedIn } = useInputContext()
@@ -85,12 +83,17 @@ export function useReport(testimony: ConferenceTestimony) {
             onClose={() => setOpen(false)}
             onReport={send}
             isLoading={report.isLoading}
-          />
+            title={t("input.report_title")}
+            wrongTarget={t("input.delete_wrong")}
+          >
+            {t("input.rescind")}
+          </RequestDeleteOwnTestimonyModal>
         ) : (
           <ReportModal
             onClose={() => setOpen(false)}
             onReport={send}
             isLoading={report.isLoading}
+            title={t("input.report_title")}
             additionalInformationLabel="Additional information:"
             reasons={[
               tt("reportModal.personalInformation"),
@@ -128,7 +131,6 @@ export function Kebab({
     testimony.authorUid
   )
 
-  const { ref, open, toggle, close } = usePopover()
   const report = useReport(testimony)
   const items: { label: string; icon: ReactNode; act: () => void }[] = [
     ...(onView
@@ -156,35 +158,31 @@ export function Kebab({
   ]
 
   return (
-    <Anchor ref={ref}>
-      <Trigger
-        type="button"
-        onClick={toggle}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        aria-label={t("input.more_actions", { name: nameOf(testimony) })}
-      >
-        <EllipsisVertical size={19} />
-      </Trigger>
-      {open && (
-        <KebabMenu $right role="menu">
+    <>
+      <Anchor align="end">
+        <Toggle
+          as={Trigger}
+          type="button"
+          aria-label={t("input.more_actions", { name: nameOf(testimony) })}
+        >
+          <EllipsisVertical size={19} />
+        </Toggle>
+        <KebabMenu $gap={4} role="menu">
           {items.map(({ label, icon, act }) => (
-            <Item
+            <Dropdown.Item
               key={label}
+              as={Item}
               type="button"
               role="menuitem"
-              onClick={() => {
-                close()
-                act()
-              }}
+              onClick={act}
             >
               {icon}
               {label}
-            </Item>
+            </Dropdown.Item>
           ))}
         </KebabMenu>
-      )}
+      </Anchor>
       {report.node}
-    </Anchor>
+    </>
   )
 }

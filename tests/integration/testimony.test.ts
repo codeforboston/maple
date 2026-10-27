@@ -456,6 +456,17 @@ describe("publishTestimony", () => {
       expect(pubB.ballotQuestionId ?? null).toBeNull()
     })
 
+    it("Refuses testimony on a ballot question and a conference", async () => {
+      const { draftId } = await createDraft(uid, billId, undefined, "bq-test-1")
+      await updateDoc(refs.draftTestimony(uid, draftId), {
+        conferenceId: "data-privacy",
+        position: "passNothing"
+      })
+      await expect(publishTestimony({ draftId })).rejects.toThrow(
+        "Testimony targets a ballot question or a conference, not both"
+      )
+    })
+
     it("Fails to publish testimony with a non-existent ballotQuestionId", async () => {
       const { draftId: bqDraftId } = await createDraft(
         uid,
@@ -610,6 +621,29 @@ describe("publishTestimony", () => {
       expect(conference.testimonyCount).toBe(1)
       expect(conference.passSenateVersionCount).toBe(0)
       expect(conference.passHouseVersionCount).toBe(1)
+    })
+
+    it("Fails the delete of a publication whose position does not fit its conference", async () => {
+      const { draftId: conferenceDraftId } = await createConferenceDraft(
+        uid,
+        billId,
+        conferenceId,
+        "passSenateVersion"
+      )
+      const res = await publishTestimony({ draftId: conferenceDraftId })
+      const publicationPath = `/users/${uid}/publishedTestimony/${res.data.publicationId}`
+      await testDb.doc(publicationPath).update({ position: "endorse" })
+
+      await signInTestAdmin()
+      await expect(
+        deleteTestimony({ uid, publicationId: res.data.publicationId })
+      ).rejects.toThrow()
+      await signOut(auth)
+
+      expect((await testDb.doc(publicationPath).get()).exists).toBe(true)
+      const conference = await getConference(conferenceId)
+      expect(conference.testimonyCount).toBe(1)
+      expect(conference.passSenateVersionCount).toBe(1)
     })
 
     it("Refuses a bill position on conference testimony", async () => {

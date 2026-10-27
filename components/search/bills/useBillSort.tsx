@@ -2,6 +2,18 @@ import { useMemo, useRef } from "react"
 import { SortByWithConfigurationItem } from "../SortBy"
 import { useTranslation } from "next-i18next"
 import { billsRelevanceSort } from "../searchParams"
+/** The InstantSearch index name of the default (Most Recent Testimony) sort.
+ * It is the bare collection rather than "bills/sort/<sort_by>": the adapter
+ * only reads a sort from an index name that has a sort segment, and otherwise
+ * uses the sort_by BillSearch.tsx pins on the adapter. BillSearch.tsx keys the
+ * page on it and links.tsx keys deep links on it, and it is the qs key of the
+ * routed uiState.
+ */
+export const billsDefaultIndex = "bills"
+
+/** Relevance is an ordinary sort option; SortBy moves to it when a term is
+ * typed (see its relevanceValue prop). */
+export const billsRelevanceIndex = `bills/sort/${billsRelevanceSort}`
 
 export const useBillSort = () => {
   const now = useRef(new Date().getTime())
@@ -13,11 +25,11 @@ export const useBillSort = () => {
     () => [
       {
         label: t("sort_by.most_recent_testimony"),
-        value: "bills/sort/latestTestimonyAt:desc"
+        value: billsDefaultIndex
       },
       {
         label: t("sort_by.relevance"),
-        value: `bills/sort/${billsRelevanceSort}`
+        value: billsRelevanceIndex
       },
       {
         label: t("sort_by.testimony_count"),

@@ -5,7 +5,8 @@ import { AccountType, accountTypes } from "./accounts"
 import { ChevronDown, Lectern, Megaphone, UserRound, Users, X } from "./icons"
 import { conferencePositions } from "./positions"
 import { brand, ink, line, wash } from "./tokens"
-import { Anchor, Menu, usePopover } from "./popover"
+import { Anchor, Menu, Toggle, useRoom } from "./menu"
+import { Dropdown } from "components/bootstrap"
 import { ConferencePosition } from "components/db"
 
 export type AccountTypeFilter = "all" | AccountType
@@ -13,21 +14,54 @@ const options: AccountTypeFilter[] = ["all", ...accountTypes]
 
 export type PositionFilter = "all" | ConferencePosition
 
-const Item = styled.button<{ $on: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  padding: 6px 12px;
-  border: 0;
-  background: none;
-  text-align: left;
-  font-size: 0.8125rem;
-  line-height: 1.35;
-  font-weight: ${({ $on }) => ($on ? 600 : 400)};
-  color: ${({ $on }) => ($on ? brand.fill : ink.strong)};
-  &:hover {
-    background: ${wash.default};
+/** A choice in either picker. The current one is marked in the brand's
+ * colour; on a phone the rows grow to a thumb's height. */
+const Item = styled.button`
+  --bs-dropdown-item-padding-y: 6px;
+  --bs-dropdown-item-padding-x: 12px;
+  --bs-dropdown-link-color: ${ink.strong};
+  --bs-dropdown-link-hover-color: var(--bs-dropdown-link-color);
+  --bs-dropdown-link-active-color: var(--bs-dropdown-link-color);
+  && {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: normal;
+    font-weight: 500;
+  }
+  &&[aria-checked="true"] {
+    --bs-dropdown-link-color: ${brand.fill};
+    font-weight: 600;
+  }
+  @media (max-width: 639.98px) {
+    --bs-dropdown-item-padding-y: 16px;
+    --bs-dropdown-item-padding-x: 16px;
+  }
+`
+
+const PickerMenu = styled(Menu)`
+  @media (max-width: 639.98px) {
+    && {
+      --bs-dropdown-padding-y: 8px;
+    }
+  }
+`
+
+/** The position sentences, as wide as the longest on a desktop and wrapping
+ * inside the screen on a phone. */
+const PositionMenu = styled(PickerMenu)`
+  && {
+    --bs-dropdown-min-width: 236px;
+    width: max-content;
+  }
+  && .dropdown-item {
+    line-height: 1.35;
+  }
+  @media (max-width: 639.98px) {
+    && {
+      --bs-dropdown-min-width: 0;
+      width: min(340px, calc(100vw - 32px));
+    }
   }
 `
 
@@ -88,10 +122,17 @@ export function AccountTypePicker({
   onChange: (v: AccountTypeFilter) => void
 }) {
   const { t } = useTranslation("conferences")
-  const { ref, open, toggle, close } = usePopover()
+  const { ref, onToggle, style } = useRoom()
 
-  const label = (v: AccountTypeFilter) =>
-    t(v === "all" ? "input.all_users" : `input.account_${v}`)
+  // The menu names everyone "All Accounts"; the control names them as users.
+  const label = (v: AccountTypeFilter, inMenu = false) =>
+    t(
+      v !== "all"
+        ? `input.account_${v}`
+        : inMenu
+        ? "input.all_accounts"
+        : "input.all_users"
+    )
   const icon = (v: AccountTypeFilter, size: number): ReactNode =>
     v === "all" ? (
       <Users size={size} />
@@ -100,60 +141,53 @@ export function AccountTypePicker({
     )
 
   return (
-    <Anchor ref={ref}>
-      <TypeButton
+    <Anchor ref={ref} onToggle={onToggle}>
+      <Toggle
+        as={TypeButton}
         type="button"
-        onClick={() => toggle()}
-        aria-haspopup="listbox"
-        aria-expanded={open}
         aria-label={t("input.filter_by_account_type")}
       >
         {icon(value, 17)}
         {label(value)}
         <ChevronDown size={15} />
-      </TypeButton>
-      {open && (
-        <Menu role="listbox">
-          {options.map(v => (
-            <Item
-              key={v}
-              type="button"
-              role="option"
-              aria-selected={v === value}
-              $on={v === value}
-              onClick={() => {
-                onChange(v)
-                close()
+      </Toggle>
+      <PickerMenu role="menu" style={style}>
+        {options.map(v => (
+          <Dropdown.Item
+            key={v}
+            as={Item}
+            type="button"
+            role="menuitemradio"
+            aria-checked={v === value}
+            onClick={() => onChange(v)}
+          >
+            <span
+              style={{
+                width: 15,
+                flexShrink: 0,
+                display: "flex",
+                justifyContent: "center"
               }}
             >
-              <span
-                style={{
-                  width: 15,
-                  flexShrink: 0,
-                  display: "flex",
-                  justifyContent: "center"
-                }}
-              >
-                {icon(v, 15)}
-              </span>
-              {label(v)}
-            </Item>
-          ))}
-        </Menu>
-      )}
+              {icon(v, 15)}
+            </span>
+            {label(v, true)}
+          </Dropdown.Item>
+        ))}
+      </PickerMenu>
     </Anchor>
   )
 }
 
-const Pill = styled.div<{ $open: boolean; $set: boolean }>`
+const Pill = styled.div<{ $set: boolean }>`
   display: flex;
   align-items: center;
   height: 34px;
   border: 1px solid ${line.default};
   border-radius: 9999px;
-  background: ${({ $open }) => ($open ? wash.default : "transparent")};
   padding-right: ${({ $set }) => ($set ? "4px" : 0)};
-  &:hover {
+  &:hover,
+  .show > & {
     background: ${wash.default};
   }
 `
@@ -172,6 +206,9 @@ const PillButton = styled.button<{ $set: boolean }>`
   line-height: 1;
   white-space: nowrap;
   color: ${ink.strong};
+  svg {
+    color: ${ink.mid};
+  }
 `
 
 const Clear = styled.button`
@@ -202,18 +239,16 @@ export function PositionPicker({
   onChange: (v: PositionFilter) => void
 }) {
   const { t } = useTranslation("conferences")
-  const { ref, open, toggle, close } = usePopover()
+  const { ref, onToggle, style } = useRoom()
   const short = value === "all" ? null : t(`input.position.${value}.short`)
 
   return (
-    <Anchor ref={ref}>
-      <Pill $open={open} $set={!!short}>
-        <PillButton
+    <Anchor ref={ref} onToggle={onToggle}>
+      <Pill $set={!!short}>
+        <Toggle
+          as={PillButton}
           type="button"
           $set={!!short}
-          onClick={() => toggle()}
-          aria-haspopup="listbox"
-          aria-expanded={open}
           aria-label={
             short
               ? t("input.position_filtered", { position: short })
@@ -222,7 +257,7 @@ export function PositionPicker({
         >
           {short ?? t("input.all_positions")}
           {!short && <ChevronDown size={13} />}
-        </PillButton>
+        </Toggle>
         {short && (
           <Clear
             type="button"
@@ -233,25 +268,20 @@ export function PositionPicker({
           </Clear>
         )}
       </Pill>
-      {open && (
-        <Menu role="listbox" style={{ minWidth: 236, width: "max-content" }}>
-          {conferencePositions.map(p => (
-            <Item
-              key={p}
-              type="button"
-              role="option"
-              aria-selected={p === value}
-              $on={p === value}
-              onClick={() => {
-                onChange(p)
-                close()
-              }}
-            >
-              {t(`input.position.${p}.long`)}
-            </Item>
-          ))}
-        </Menu>
-      )}
+      <PositionMenu role="menu" style={style}>
+        {conferencePositions.map(p => (
+          <Dropdown.Item
+            key={p}
+            as={Item}
+            type="button"
+            role="menuitemradio"
+            aria-checked={p === value}
+            onClick={() => onChange(p)}
+          >
+            {t(`input.position.${p}.long`)}
+          </Dropdown.Item>
+        ))}
+      </PositionMenu>
     </Anchor>
   )
 }
