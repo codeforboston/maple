@@ -7,7 +7,8 @@ export {
   syncBillToSearchIndex,
   updateBillReferences,
   updateBillSearchIndex,
-  upgradeBillSearchIndex
+  upgradeBillSearchIndex,
+  syncBillToVectorIndex
 } from "./bills"
 export { updateBillTracker } from "./analysis"
 export { fetchCityBatch, startCityBatches } from "./cities"
@@ -41,7 +42,8 @@ export {
   runTestimonyBackfillChunk,
   syncTestimonyToSearchIndex,
   upgradeTestimonySearchIndex,
-  resolveReportV2 as adminResolveReportV2
+  resolveReportV2 as adminResolveReportV2,
+  syncTestimonyToVectorIndex
 } from "./testimony"
 export {
   publishNotifications,
@@ -69,6 +71,8 @@ export {
   scrapeOcpfFinanceNightly,
   scrapeOcpfFinanceManual
 } from "./ocpf/scrapeOcpfFinance"
+
+export { syncBallotQuestionToVectorIndex } from "./ballotQuestions/vector"
 
 export * from "./triggerPubsubFunction"
 

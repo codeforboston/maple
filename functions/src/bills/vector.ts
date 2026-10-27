@@ -1,8 +1,4 @@
 import { createVectorIndexer } from "../search/createVectorIndexer"
+import { billVectorConfig } from "../search/vectorConfigs"
 
-export const syncBillToVectorIndex = createVectorIndexer({
-  documentTrigger: "generalCourts/{court}/bills/{id}",
-  textFields: ["content.Title", "content.DocumentText"],
-  vectorField: "vector_embedding",
-  titleField: "content.Title"
-})
+export const syncBillToVectorIndex = createVectorIndexer(billVectorConfig)
