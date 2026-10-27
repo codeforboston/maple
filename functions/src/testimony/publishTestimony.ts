@@ -6,6 +6,7 @@ import {
 import { onCall } from "firebase-functions/v2/https"
 import type { CallableRequest } from "firebase-functions/v2/https"
 import * as logger from "firebase-functions/logger"
+import { pick } from "lodash"
 import { nanoid } from "nanoid"
 import { Record } from "runtypes"
 import { Bill } from "../bills/types"
@@ -14,6 +15,7 @@ import { checkAuth, checkRequest, DocUpdate, fail, Id } from "../common"
 import { db, FieldValue, Timestamp } from "../firebase"
 import { supportedGeneralCourts, takesTestimony } from "../shared"
 import { Attachments, PublishedAttachmentState } from "./attachments"
+import { cosignTallyFields } from "./cosignTally"
 import { targetCountsUpdate, targetOf, TestimonyTarget } from "./target"
 import { DraftTestimony, Testimony } from "./types"
 
@@ -123,10 +125,10 @@ class PublishTestimonyTransaction {
     if (this.profile?.senator?.id) {
       newPublication.senatorId = this.profile.senator.id
     }
-    if (this.profile?.senatorDistrict) {
+    if (this.profile?.senator?.district) {
       newPublication.senatorDistrict = this.profile.senator.district
     }
-    if (this.profile?.representativeDistrict) {
+    if (this.profile?.representative?.district) {
       newPublication.representativeDistrict =
         this.profile.representative.district
     }
@@ -142,8 +144,13 @@ class PublishTestimonyTransaction {
     }
   }
 
+  /** The tally of cosigns belongs to the cosigns' trigger, so a new version
+   * keeps it. The archive records what the author wrote, without it. */
   private setPublication(newPublication: Testimony) {
-    this.t.set(this.publicationRef, newPublication)
+    this.t.set(this.publicationRef, {
+      ...newPublication,
+      ...pick(this.currentPublication, cosignTallyFields)
+    })
   }
 
   private createArchive(newPublication: Testimony) {

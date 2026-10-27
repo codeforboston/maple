@@ -38,6 +38,7 @@ export { checkSearchIndexVersion, searchHealthCheck } from "./search"
 export {
   deleteTestimonyV2,
   publishTestimonyV2,
+  updateCosignTally,
   runTestimonyBackfillChunk,
   syncTestimonyToSearchIndex,
   upgradeTestimonySearchIndex,

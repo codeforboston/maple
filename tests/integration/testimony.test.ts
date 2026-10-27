@@ -1,3 +1,4 @@
+import { waitFor } from "@testing-library/react"
 import { currentGeneralCourt } from "functions/src/shared"
 import { FieldValue } from "firebase-admin/firestore"
 import { signOut, User } from "firebase/auth"
@@ -17,7 +18,8 @@ import {
   signInTestAdmin,
   signInUser1,
   signInUser2,
-  signInUser3
+  signInUser3,
+  signInUser4
 } from "./common"
 
 type BaseTestimony = {
@@ -50,6 +52,7 @@ type Testimony = BaseTestimony & {
   version: number
   publishedAt: Timestamp
   firstPublishedAt?: Timestamp
+  cosignCount?: number
 }
 
 const refs = {
@@ -766,16 +769,16 @@ describe("publishTestimony", () => {
     })
 
     describe("cosign", () => {
-      let parentId: string, uid2: string
+      let parentId: string, parentDraftId: string, uid2: string
 
       // User 1 testifies on the conference, then user 2 signs in.
       beforeEach(async () => {
-        const { draftId: parentDraftId } = await createConferenceDraft(
+        ;({ draftId: parentDraftId } = await createConferenceDraft(
           uid,
           billId,
           conferenceId,
           "passSenateVersion"
-        )
+        ))
         parentId = (await publishTestimony({ draftId: parentDraftId })).data
           .publicationId
         uid2 = (await signInUser2()).uid
@@ -1020,6 +1023,171 @@ describe("publishTestimony", () => {
             "failed validation"
           )
         }
+      })
+
+      describe("tally", () => {
+        // Cosigners' districts, set on their profiles and restored after.
+        let savedProfiles: [ReturnType<typeof testDb.doc>, any][]
+        const setDistricts = async (
+          uid: string,
+          senate?: string,
+          house?: string
+        ) => {
+          const ref = testDb.doc(`/profiles/${uid}`)
+          savedProfiles.push([ref, (await ref.get()).data()])
+          const member = (district: string) => ({
+            id: `member-${district}`,
+            name: "A Member",
+            district
+          })
+          await ref.set(
+            {
+              senator: senate ? member(senate) : FieldValue.delete(),
+              representative: house ? member(house) : FieldValue.delete()
+            },
+            { merge: true }
+          )
+        }
+        beforeEach(() => {
+          savedProfiles = []
+        })
+        afterEach(async () => {
+          for (const [ref, profile] of savedProfiles) {
+            if (profile) await ref.set(profile)
+            else await ref.delete()
+          }
+        })
+
+        // A trigger writes the tally, and the emulator runs triggers one at a
+        // time, so the first wait sits behind every earlier test's events.
+        const tallyTimeout = 60_000
+        const getParent = () => getPublication(uid, parentId)
+        const expectTally = (tally: object) =>
+          waitFor(async () => expect(await getParent()).toMatchObject(tally), {
+            interval: 100,
+            timeout: 30_000
+          })
+        const cosign = async (signIn: () => Promise<User>) => {
+          const cosigner = (await signIn()).uid
+          const { draftId } = await createCosignDraft(
+            cosigner,
+            billId,
+            conferenceId,
+            cosignOf()
+          )
+          const { publicationId } = (await publishTestimony({ draftId })).data
+          return {
+            uid: cosigner,
+            draftId,
+            publicationId,
+            publication: await getPublication(cosigner, publicationId)
+          }
+        }
+
+        it(
+          "Counts cosigns and their distinct districts on the parent",
+          async () => {
+            await setDistricts(uid2, "First Essex", "3rd Essex")
+            const uid3 = (await signInUser3()).uid
+            const uid4 = (await signInUser4()).uid
+            await setDistricts(uid3, "First Essex", "4th Essex")
+            await setDistricts(uid4)
+
+            await cosign(signInUser2)
+            await cosign(signInUser3)
+            const last = await cosign(signInUser4)
+
+            expect(last.publication.firstPublishedAt).toEqual(
+              last.publication.publishedAt
+            )
+            await expectTally({
+              cosignCount: 3,
+              cosignSenateDistrictCount: 1,
+              cosignHouseDistrictCount: 2,
+              lastCosignedAt: last.publication.firstPublishedAt
+            })
+          },
+          tallyTimeout
+        )
+
+        it(
+          "Doesn't count an edit to a note as a new cosign",
+          async () => {
+            const first = await cosign(signInUser2)
+            await expectTally({ cosignCount: 1 })
+
+            await updateDoc(refs.draftTestimony(uid2, first.draftId), {
+              content: "Because it is right",
+              editReason: "Say why"
+            })
+            await publishTestimony({ draftId: first.draftId })
+
+            const second = await cosign(signInUser3)
+            await expectTally({
+              cosignCount: 2,
+              lastCosignedAt: second.publication.firstPublishedAt
+            })
+          },
+          tallyTimeout
+        )
+
+        it(
+          "Drops a cosign deleted by an admin",
+          async () => {
+            const first = await cosign(signInUser2)
+            const second = await cosign(signInUser3)
+            await expectTally({
+              cosignCount: 2,
+              lastCosignedAt: second.publication.firstPublishedAt
+            })
+
+            await signInTestAdmin()
+            await deleteTestimony({
+              uid: second.uid,
+              publicationId: second.publicationId
+            })
+            await expectTally({
+              cosignCount: 1,
+              lastCosignedAt: first.publication.firstPublishedAt
+            })
+          },
+          tallyTimeout
+        )
+
+        it(
+          "Keeps the tally when the parent's author edits",
+          async () => {
+            await cosign(signInUser2)
+            await expectTally({ cosignCount: 1 })
+
+            await signInUser1()
+            await updateDoc(refs.draftTestimony(uid, parentDraftId), {
+              content: "updated content",
+              editReason: "edit reason"
+            })
+            await publishTestimony({ draftId: parentDraftId })
+
+            const parent = await getParent()
+            expect(parent.version).toBe(2)
+            expect(parent.cosignCount).toBe(1)
+          },
+          tallyTimeout
+        )
+
+        it("Records the author's districts on any testimony", async () => {
+          await setDistricts(uid2, "First Essex", "3rd Essex")
+          const { draftId } = await createConferenceDraft(
+            uid2,
+            billId,
+            conferenceId,
+            "passNothing"
+          )
+          const { publicationId } = (await publishTestimony({ draftId })).data
+          expect(await getPublication(uid2, publicationId)).toMatchObject({
+            senatorDistrict: "First Essex",
+            representativeDistrict: "3rd Essex"
+          })
+        })
       })
     })
   })

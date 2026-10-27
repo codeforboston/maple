@@ -70,7 +70,12 @@ export const Testimony = withDefaults(
     fullName: RtString,
     /** When the testimony was first published. Edits keep it, unlike
      * `publishedAt`. Missing on testimony published before it was recorded. */
-    firstPublishedAt: Optional(InstanceOf(Timestamp))
+    firstPublishedAt: Optional(InstanceOf(Timestamp)),
+    /** On cosigned testimony, the tally of its cosigns. See cosignTally. */
+    cosignCount: Optional(Number),
+    cosignSenateDistrictCount: Optional(Number),
+    cosignHouseDistrictCount: Optional(Number),
+    lastCosignedAt: Optional(InstanceOf(Timestamp))
   }),
   {
     authorRole: "user",
