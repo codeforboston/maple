@@ -29,7 +29,7 @@ export function ConferenceBanner({
     <Banner>
       <Trans
         t={t}
-        i18nKey="bill_banner"
+        i18nKey={`bill_banner.${conference.status}`}
         values={{ name: conferenceName(conference) }}
         components={{
           1: <Link href={maple.conference(conference)} />

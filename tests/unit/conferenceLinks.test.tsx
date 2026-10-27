@@ -28,13 +28,19 @@ const conference: ConferenceSummary = {
 }
 
 describe("conference links", () => {
-  it("renders the banner, linked to the conference, from the prop", () => {
-    render(<ConferenceBanner conference={conference} />)
-    expect(screen.getByRole("link")).toHaveAttribute(
-      "href",
-      expect.stringContaining("/conferences/194/h4000-s2500")
-    )
-  })
+  it.each(["appointed", "reportFiled", "enacted", "dissolved"] as const)(
+    "renders the banner for a %s conference, worded by status and linked to it",
+    status => {
+      render(<ConferenceBanner conference={{ ...conference, status }} />)
+      expect(
+        screen.getByText(`bill_banner.${status}:`, { exact: false })
+      ).toBeInTheDocument()
+      expect(screen.getByRole("link")).toHaveAttribute(
+        "href",
+        expect.stringContaining("/conferences/194/h4000-s2500")
+      )
+    }
+  )
 
   it("renders the hearing link from the prop", () => {
     render(<HearingConferenceLink conference={conference} />)
