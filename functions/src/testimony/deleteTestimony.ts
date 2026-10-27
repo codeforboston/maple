@@ -54,7 +54,24 @@ export const performDeleteTestimony = async (
   const attachments = new Attachments()
   await attachments.applyDelete(output.attachmentId)
 
+  await deleteCosignsOf(publicationId)
+
   return { deleted: output.deleted }
+}
+
+/** Deletes a publication's cosigns, each the way any testimony is deleted.
+ * Publish refuses a parent that is gone, so once the parent is deleted no new
+ * cosign can appear. This runs even when the parent was already gone, so
+ * deleting it again finishes a cascade that stopped partway. */
+const deleteCosignsOf = async (publicationId: string) => {
+  const cosigns = await db
+    .collectionGroup("publishedTestimony")
+    .where("cosignOfId", "==", publicationId)
+    .select()
+    .get()
+  for (const cosign of cosigns.docs) {
+    await performDeleteTestimony(cosign.ref.parent.parent!.id, cosign.id)
+  }
 }
 
 type TransactionOutput = { deleted: boolean; attachmentId?: Maybe<string> }

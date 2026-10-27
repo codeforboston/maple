@@ -72,17 +72,16 @@ export const updateCosignTally = onDocumentWritten(
       const parentRef = db.doc(
         `/users/${cosignOfAuthorUid}/publishedTestimony/${cosignOfId}`
       )
-      const [parentSnap, cosigns] = await Promise.all([
-        t.get(parentRef),
-        t.get(
-          db
-            .collectionGroup("publishedTestimony")
-            .where("cosignOfId", "==", cosignOfId)
-            .select(...cosignFields)
-        )
-      ])
-      // A deleted parent takes its cosigns with it.
+      // A deleted parent takes its cosigns with it, so there is nothing to
+      // count, and reading them would cost every cosign the cascade deletes.
+      const parentSnap = await t.get(parentRef)
       if (!parentSnap.exists) return
+      const cosigns = await t.get(
+        db
+          .collectionGroup("publishedTestimony")
+          .where("cosignOfId", "==", cosignOfId)
+          .select(...cosignFields)
+      )
 
       const tally = cosignTally(cosigns.docs.map(d => d.data() as Cosign))
       if (isEqual(pick(parentSnap.data(), cosignTallyFields), tally)) return

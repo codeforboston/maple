@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, Stack } from "@mui/material"
-import { deleteTestimony } from "components/api/delete-testimony"
 import { resolveReport } from "components/db"
 import { getAuth } from "firebase/auth"
 import { doc, getDoc } from "firebase/firestore"
@@ -20,8 +19,6 @@ export const onSubmitReport = async (
   reportId: string,
   resolution: Resolution,
   reason: string,
-  authorUid: string,
-  testimonyId: string,
   refresh: () => void
 ) => {
   const r = await resolveReport({
@@ -34,10 +31,6 @@ export const onSubmitReport = async (
     alert(r.data.status)
   }
 
-  if (resolution === "remove-testimony") {
-    // If removing testimony, call deleteTestimony to move testimony from 'published' to 'archived'
-    const res = await deleteTestimony(authorUid, testimonyId)
-  }
   refresh()
 }
 
@@ -57,14 +50,7 @@ export function RemoveTestimonyForm({ report }: { report: Report }) {
   const onSubmit: FormEventHandler<HTMLFormElement> = async e => {
     e.preventDefault()
     if (resolution && reason && report.id) {
-      await onSubmitReport(
-        report.id,
-        resolution,
-        reason,
-        report.authorUid,
-        report.testimonyId,
-        refresh
-      )
+      await onSubmitReport(report.id, resolution, reason, refresh)
       redirect("list", "reports")
     } else {
       console.log("one of these not defined", resolution, reason, report.id)

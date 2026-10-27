@@ -3,7 +3,7 @@ import type { CallableRequest } from "firebase-functions/v2/https"
 import { db } from "../firebase"
 import { z } from "zod"
 import { fail, checkRequestZod, checkAuth, checkAdmin } from "../common"
-// import { performDeleteTestimony } from "./deleteTestimony"
+import { performDeleteTestimony } from "./deleteTestimony"
 import { first } from "lodash"
 import { Testimony } from "./types"
 
@@ -53,20 +53,9 @@ export const resolveReportV2 = onCall(
       .get()
       .then(d => d.data()?.fullName)
 
-    // ***archived testiomny Id === published testimony Id***
-
-    // 4 Get the archived testimony document
-    // const archivedTestimonyId = await db
-    //   .collection(`/users/${testimony.authorUid}/archivedTestimony`)
-    //   .where("billId", "==", testimony.billId)
-    //   .where("court", "==", testimony.court)
-    //   .where("version", "==", testimony.version)
-    //   .limit(1)
-    //   .get()
-    //   .then(snap => {
-    //     if (snap.empty) return testimony.id // throw fail("not-found", "Archived testimony not found")
-    //     return snap.docs[0].id
-    //   })
+    // 4. Remove the testimony the way any testimony is deleted
+    if (resolution === "remove-testimony")
+      await performDeleteTestimony(testimony.authorUid, testimonyId)
 
     // 5. Update the report
     const resolutionObj: any = {
