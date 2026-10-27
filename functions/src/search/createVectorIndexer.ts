@@ -114,12 +114,14 @@ export function createVectorIndexer(config: VectorIndexerConfig) {
       const input = embeddingInput(config, data)
       if (!input) return
 
-      // Check if text has changed to avoid redundant API calls
-      const previousHash = (
-        change.before.exists ? change.before.data() : null
-      )?.[`${config.vectorField}_hash`]
-
-      if (input.hash === previousHash && data[config.vectorField]) {
+      // Skip if the stored embedding already matches this text. Compare with
+      // the hash on the written document, not the previous version: writing
+      // the embedding fires this trigger again, and the previous version had
+      // no hash yet, so comparing with it embedded every document twice.
+      if (
+        input.hash === data[`${config.vectorField}_hash`] &&
+        data[config.vectorField]
+      ) {
         return // Nothing changed
       }
 
