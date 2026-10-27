@@ -353,14 +353,17 @@ def parse_summary(soup: BeautifulSoup) -> DisclosureMeta:
     # or the single list on 2019+ individual pages), a disclosure's
     # amendments come right before its original filing, newest first. The
     # newest version is the current one; earlier versions must not be
-    # counted alongside it.
+    # counted alongside it. The portal sometimes links an amended period's
+    # row to the amendment itself, so a repeated link is skipped.
     disc_urls: list[str] = []
     superseded: dict[str, str] = {}
     versions: list[str] = []
     for a in soup.find_all("a", href=True):
         if "CompleteDisclosure" not in a["href"]:
             continue
-        versions.append(BASE_URL + a["href"] if not a["href"].startswith("http") else a["href"])
+        url = BASE_URL + a["href"] if not a["href"].startswith("http") else a["href"]
+        if url not in versions:
+            versions.append(url)
         if not a.get_text(strip=True).startswith("Report amendment"):
             disc_urls.append(versions[0])
             superseded.update((url, versions[0]) for url in versions[1:])

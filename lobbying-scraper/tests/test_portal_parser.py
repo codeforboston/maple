@@ -221,6 +221,25 @@ def test_summary_single_list_amendment_belongs_to_the_next_period():
     assert meta.superseded_urls == {base + "h1": base + "h1-amended"}
 
 
+def test_summary_period_row_linking_to_its_amendment_is_one_version():
+    """The portal sometimes links an amended period's row to the amendment
+    itself, leaving the original unlisted: the amendment is current and
+    supersedes nothing on the page."""
+    def row(i, href, text):
+        return (f'<a id="ContentPlaceHolder1_GrdVwD1Lversion_hlnkbtnD1LVersion_{i}" '
+                f'href="CompleteDisclosure.aspx?sysvalue={href}">{text}<br/>Jane Doe</a>')
+    soup = BeautifulSoup("".join([
+        row(0, "h2-amended", "Report amendment 2/12/2025"),
+        row(1, "h2-amended", "View disclosure reporting details filed for the period 7/1/2024-12/31/2024"),
+        row(2, "h1-amended", "Report amendment 8/14/2024"),
+        row(3, "h1-amended", "View disclosure reporting details filed for the period 1/1/2024-6/30/2024"),
+    ]), "html.parser")
+    meta = parse_summary(soup)
+    base = "https://www.sec.state.ma.us/LobbyistPublicSearch/CompleteDisclosure.aspx?sysvalue="
+    assert meta.disclosure_urls == [base + "h2-amended", base + "h1-amended"]
+    assert meta.superseded_urls == {}
+
+
 # ── Helper functions ──────────────────────────────────────────────────────────
 
 def test_parse_amount():

@@ -555,6 +555,37 @@ def test_superseded_versions_removed_after_current_is_written(mode, fail):
         assert events == [("write", "https://x/disc/amended"), ("remove", ["https://x/disc/original"])]
 
 
+@pytest.mark.parametrize("mode", ["weekly", "backfill"])
+def test_a_version_both_current_and_superseded_keeps_its_filings(mode, capsys):
+    """A misread page listing a version as superseded by itself must not
+    delete the filings just written for it; the page is reported."""
+    db = FakeFirestore()
+    summary_url = "https://x/summary/a"
+    meta = _meta(summary_url, ["https://x/disc/amended"])
+    meta.superseded_urls = {"https://x/disc/amended": "https://x/disc/amended"}
+    removed = []
+
+    with patch("scrape.make_session", return_value=None), patch(
+        "scrape.fetch_summary_links", side_effect=lambda session, year: [summary_url]
+    ), patch(
+        "scrape.fetch_disclosure_meta", side_effect=lambda session, url, use_archive=False: meta
+    ), patch(
+        "scrape.fetch_disclosure_detail", return_value=DisclosureDetail()
+    ), patch(
+        "scrape.write_registrant", return_value=None
+    ), patch("scrape.write_filings", return_value=0), patch(
+        "scrape.remove_superseded_filings",
+        side_effect=lambda db, urls: removed.append(urls) or 0,
+    ):
+        if mode == "weekly":
+            scrape.run_weekly(db, years=[2024])
+        else:
+            scrape.run_backfill(db, years=[2024], workers=1)
+
+    assert removed == []
+    assert "1 superseded versions are also current on https://x/summary/a" in capsys.readouterr().err
+
+
 def test_stats_mode_only_recomputes_stats(monkeypatch):
     """--mode stats recomputes lobbyingMeta without fetching or scraping."""
     calls = []

@@ -179,6 +179,17 @@ def process_disclosure(
     return len(detail.compensation), n_filings
 
 
+def _superseded_still_current(summary_url: str, disc_urls: list[str], superseded: list[str]) -> str | None:
+    """An error when a registration page lists a version as both superseded
+    and current (a misread page): removing its filings would delete the
+    current ones, so they're kept and the page is reported instead."""
+    clash = set(superseded) & set(disc_urls)
+    if clash:
+        return (f"{len(clash)} superseded versions are also current on {summary_url}; "
+                f"their filings were kept: {sorted(clash)}")
+    return None
+
+
 # ── Weekly incremental run ────────────────────────────────────────────────────
 
 
@@ -256,6 +267,10 @@ def run_weekly(
                 except Exception as e:
                     failed = True
                     print(f"  failed to process {disc_url}: {e}", file=sys.stderr)
+            clash = _superseded_still_current(summary_url, disc_urls, superseded)
+            if clash:
+                failed = True
+                print(f"  {clash}", file=sys.stderr)
             if use_cursor and superseded and not failed:
                 removed = remove_superseded_filings(db, superseded)
                 if removed:
@@ -327,6 +342,9 @@ def _backfill_one_summary_url(
             processed += 1
         except Exception as e:
             errors.append(f"failed to process {disc_url}: {e}")
+    clash = _superseded_still_current(summary_url, meta.disclosure_urls, list(meta.superseded_urls))
+    if clash:
+        errors.append(clash)
     if db is not None and not dry_run and meta.superseded_urls and not errors:
         remove_superseded_filings(db, list(meta.superseded_urls))
     return processed, errors
