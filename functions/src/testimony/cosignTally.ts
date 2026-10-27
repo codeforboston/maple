@@ -27,9 +27,9 @@ type Cosign = Pick<Testimony, (typeof cosignFields)[number]>
 export function cosignTally(cosigns: Cosign[]) {
   const distinct = (districts: (string | undefined)[]) =>
     new Set(districts.filter(Boolean)).size
-  const lastCosignedAt =
-    maxBy(cosigns, c => c.firstPublishedAt?.toMillis())?.firstPublishedAt ??
-    undefined
+  const lastCosignedAt = maxBy(cosigns, c =>
+    c.firstPublishedAt?.toMillis()
+  )?.firstPublishedAt
   return {
     cosignCount: cosigns.length,
     cosignSenateDistrictCount: distinct(cosigns.map(c => c.senatorDistrict)),
