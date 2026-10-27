@@ -70,6 +70,13 @@ export const matchOcpfMembers = onRequestV2(async (req, res) => {
 // Expected for older courts, not a bug; fix these by hand in ocpfMemberMapping and
 // set manual: true on the entry so later runs don't overwrite it.
 
+/** Thrown for a court with no members (e.g. a mistyped court number). */
+export class NoMembersError extends Error {
+  constructor(court: number) {
+    super(`No members found for court ${court}. Nothing written.`)
+  }
+}
+
 export async function matchMembersForCourt(
   court: number,
   { quiet = false }: { quiet?: boolean } = {}
@@ -81,8 +88,12 @@ export async function matchMembersForCourt(
   const log = quiet ? silentLogger : logger
   const activeFilersOnly = court === currentGeneralCourt
 
-  const filers = await downloadAndParseFilers(activeFilersOnly, log)
+  // Check members first so an unknown court fails before anything is written
+  // (writing the mapping docs would make the court appear in Firestore)
   const members = await loadMembers(court)
+  if (members.length === 0) throw new NoMembersError(court)
+
+  const filers = await downloadAndParseFilers(activeFilersOnly, log)
 
   const mappingPath = `/generalCourts/${court}/ocpfMemberMappingConfig/ocpfMemberMapping`
   const flagsPath = `/generalCourts/${court}/ocpfMemberMappingConfig/ocpfMemberMappingFlags`

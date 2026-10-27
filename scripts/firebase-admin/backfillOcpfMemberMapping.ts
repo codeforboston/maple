@@ -1,7 +1,10 @@
 import { z } from "zod"
 import { Script } from "./types"
 import { courtList, parseArgs } from "./args"
-import { matchMembersForCourt } from "functions/src/ocpf/matchOcpfMembers"
+import {
+  matchMembersForCourt,
+  NoMembersError
+} from "functions/src/ocpf/matchOcpfMembers"
 
 const Args = z.object({
   courts: courtList,
@@ -42,7 +45,10 @@ export const script: Script = async ({ args }) => {
       )
       succeeded.push(court)
     } catch (err) {
-      console.error(`Court ${court} failed:`, err)
+      // Expected for a bad court number, so skip the stack trace
+      if (err instanceof NoMembersError)
+        console.error(`Court ${court} failed: ${err}`)
+      else console.error(`Court ${court} failed:`, err)
       failed.push(court)
     }
   }
