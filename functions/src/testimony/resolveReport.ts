@@ -62,8 +62,7 @@ export const resolveReportV2 = onCall(
       resolution,
       moderatorUid,
       resolvedAt: new Date(),
-      authorUid: testimony.authorUid,
-      archivedTestimonyId: testimonyId
+      authorUid: testimony.authorUid
     }
     if (reason) resolutionObj.reason = reason
     if (moderatorName) resolutionObj.moderatorName = moderatorName
