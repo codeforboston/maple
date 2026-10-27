@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom"
-import { fireEvent, render, screen } from "@testing-library/react"
+import { act, fireEvent, render, screen, within } from "@testing-library/react"
 import Router from "next/router"
 import { ConferenceDetails } from "./ConferenceDetails"
 import type { ConferencePageProps } from "./types"
@@ -56,8 +56,44 @@ jest.mock("../featureFlags", () => ({
   })
 }))
 
+// jsdom has none; the page watches its title's height, and the tabs the
+// column their sections sit in. Kept, so a test can say something resized.
+const resized: (() => void)[] = []
+class Observer {
+  constructor(callback: () => void) {
+    resized.push(callback)
+  }
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+Object.assign(global, { ResizeObserver: Observer })
+
 const profile = { representative: { id: "AHP1" } }
 jest.mock("../db", () => ({ useProfile: () => ({ profile }) }))
+
+const mockBill = jest.fn()
+jest.mock("../db/bills", () => ({
+  useBill: (court: number, id: string) => mockBill(court, id)
+}))
+
+const loaded = (id: string, Title: string, DocumentText?: string) => ({
+  loading: false,
+  result: { id, content: { Title, DocumentText } }
+})
+
+const texts: Record<string, ReturnType<typeof loaded>> = {
+  S2581: loaded(
+    "S2581",
+    "An Act to promote student learning",
+    "\tSECTION 1. Phones.\r\n\r\n\tSECTION 2. Pouches."
+  ),
+  H5366: loaded(
+    "H5366",
+    "An Act relative to student mental health",
+    "SECTION 1. Social media."
+  )
+}
 
 const conference: ConferencePageProps["conference"] = {
   id: "student-learning-and-mental-health",
@@ -147,6 +183,10 @@ const props: ConferencePageProps = {
     }
   ]
 }
+
+beforeEach(() => {
+  mockBill.mockImplementation((_court: number, id: string) => texts[id])
+})
 
 describe("ConferenceDetails", () => {
   const { scrollTo } = window
@@ -317,5 +357,96 @@ describe("ConferenceDetails", () => {
     expect(
       container.querySelector('polygon[aria-label="D. Vieira"]')
     ).toHaveStyle({ fill: "#b53333", fillOpacity: 0.45 })
+  })
+
+  it("leads from its tabs to its sections", () => {
+    const { container } = render(<ConferenceDetails {...props} />)
+    const tabs = within(screen.getByRole("navigation", { name: "tabs_label" }))
+      .getAllByRole("link")
+      .map(a => [a.textContent, a.getAttribute("href")])
+    expect(tabs).toEqual([
+      ["tab_committee", "#committee"],
+      ["tab_text", "#text"]
+    ])
+    for (const [, href] of tabs)
+      expect(container.querySelector(href!)).toBeTruthy()
+  })
+
+  it("lights the tab of the section that has come up under the tabs", () => {
+    // jsdom lays nothing out, so each section says where its top is.
+    const tops: Record<string, number> = { committee: 0, text: 900 }
+    const rect = jest
+      .spyOn(HTMLElement.prototype, "getBoundingClientRect")
+      .mockImplementation(function (this: HTMLElement) {
+        return { top: tops[this.id] ?? 0 } as DOMRect
+      })
+    render(<ConferenceDetails {...props} />)
+    const lit = () =>
+      screen
+        .getAllByRole("link")
+        .filter(a => a.getAttribute("aria-current") === "true")
+        .map(a => a.textContent)
+    expect(lit()).toEqual(["tab_committee"])
+    // The last section lights too, once a jump has parked it.
+    tops.text = 0
+    fireEvent.scroll(document)
+    expect(lit()).toEqual(["tab_text"])
+    // A section can move with no scroll, when one above it grows.
+    tops.text = 900
+    act(() => resized.forEach(heard => heard()))
+    expect(lit()).toEqual(["tab_committee"])
+    rect.mockRestore()
+  })
+
+  describe("bill text", () => {
+    it("shows both texts side by side, Senate first, a paragraph per line", () => {
+      render(<ConferenceDetails {...props} />)
+      const sheets = screen.getAllByRole("article")
+      expect(sheets.map(s => s.getAttribute("aria-label"))).toEqual([
+        "senate S2581",
+        "house H5366"
+      ])
+      expect(sheets[0]).toHaveTextContent("An Act to promote student learning")
+      // Each line on its own: the blank line between them is dropped.
+      expect(screen.getByText("SECTION 1. Phones.")).toBeInTheDocument()
+      expect(screen.getByText("SECTION 2. Pouches.")).toBeInTheDocument()
+      expect(sheets[1]).toHaveTextContent("SECTION 1. Social media.")
+      expect(mockBill).toHaveBeenCalledWith(194, "S2581")
+      expect(mockBill).toHaveBeenCalledWith(194, "H5366")
+    })
+
+    it("shows one chamber's text when one is picked, without fetching again", () => {
+      render(<ConferenceDetails {...props} />)
+      mockBill.mockClear()
+      fireEvent.change(screen.getByLabelText("version"), {
+        target: { value: "house" }
+      })
+      const sheets = screen.getAllByRole("article")
+      expect(sheets).toHaveLength(1)
+      expect(sheets[0]).toHaveAttribute("aria-label", "house H5366")
+      // The hidden Senate text stays fetched, ready for switching back.
+      expect(mockBill).toHaveBeenCalledWith(194, "S2581")
+    })
+
+    it("spins while a bill loads", () => {
+      mockBill.mockImplementation((_court: number, id: string) =>
+        id === "H5366" ? { loading: true } : texts[id]
+      )
+      render(<ConferenceDetails {...props} />)
+      expect(screen.getByRole("status")).toHaveTextContent("text_loading")
+      expect(screen.getAllByRole("article")).toHaveLength(1)
+    })
+
+    it("links to the PDF where MAPLE has no text", () => {
+      mockBill.mockImplementation((_court: number, id: string) =>
+        id === "H5366" ? loaded("H5366", "An Act", undefined) : texts[id]
+      )
+      render(<ConferenceDetails {...props} />)
+      expect(screen.getByText("text_missing H5366")).toBeInTheDocument()
+      expect(screen.getByText("text_pdf").closest("a")).toHaveAttribute(
+        "href",
+        "https://malegislature.gov/Bills/194/H5366.pdf"
+      )
+    })
   })
 })
