@@ -1,8 +1,6 @@
 import { createVectorIndexer } from "../search/createVectorIndexer"
+import { testimonyVectorConfig } from "../search/vectorConfigs"
 
-export const syncTestimonyToVectorIndex = createVectorIndexer({
-  documentTrigger: "users/{uid}/publishedTestimony/{id}",
-  textFields: ["content"],
-  vectorField: "vector_embedding",
-  titleField: "billTitle"
-})
+export const syncTestimonyToVectorIndex = createVectorIndexer(
+  testimonyVectorConfig
+)
