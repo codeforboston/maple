@@ -1,4 +1,5 @@
 import { currentGeneralCourt } from "functions/src/shared"
+import { FieldValue } from "firebase-admin/firestore"
 import { signOut, User } from "firebase/auth"
 import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
@@ -6,6 +7,7 @@ import { ref, uploadBytes } from "firebase/storage"
 import { nanoid } from "nanoid"
 import { auth, firestore, functions, storage } from "../../components/firebase"
 import { terminateFirebase, testDb, testStorage } from "../testUtils"
+import { script as backfillTestimonyScope } from "../../scripts/firebase-admin/backfillTestimonyScope"
 import {
   createFakeBill,
   expectPermissionDenied,
@@ -20,11 +22,19 @@ import {
 type BaseTestimony = {
   billId: string
   court: number
-  position: "endorse" | "oppose" | "neutral"
+  position:
+    | "endorse"
+    | "oppose"
+    | "neutral"
+    | "passNothing"
+    | "passSomething"
+    | "passSenateVersion"
+    | "passHouseVersion"
   content: string
   attachmentId: string | null | undefined
   editReason?: string
   ballotQuestionId?: string | null
+  conferenceId?: string | null
 }
 
 type DraftTestimony = BaseTestimony & {
@@ -446,6 +456,17 @@ describe("publishTestimony", () => {
       expect(pubB.ballotQuestionId ?? null).toBeNull()
     })
 
+    it("Refuses testimony on a ballot question and a conference", async () => {
+      const { draftId } = await createDraft(uid, billId, undefined, "bq-test-1")
+      await updateDoc(refs.draftTestimony(uid, draftId), {
+        conferenceId: "data-privacy",
+        position: "passNothing"
+      })
+      await expect(publishTestimony({ draftId })).rejects.toThrow(
+        "Testimony targets a ballot question or a conference, not both"
+      )
+    })
+
     it("Fails to publish testimony with a non-existent ballotQuestionId", async () => {
       const { draftId: bqDraftId } = await createDraft(
         uid,
@@ -477,6 +498,236 @@ describe("publishTestimony", () => {
       const publication = await getPublication(uid, res2.data.publicationId)
       expect(publication.version).toBe(2)
       expect(publication.ballotQuestionId).toBe("bq-test-1")
+    })
+  })
+
+  describe("conferenceId", () => {
+    let conferenceId: string
+    beforeEach(async () => {
+      conferenceId = await createConference(billId)
+    })
+
+    it("Counts conference testimony on the conference, not the bill", async () => {
+      const { draftId: conferenceDraftId } = await createConferenceDraft(
+        uid,
+        billId,
+        conferenceId,
+        "passSenateVersion"
+      )
+      const res = await publishTestimony({ draftId: conferenceDraftId })
+
+      const publication = await getPublication(uid, res.data.publicationId)
+      expect(publication.conferenceId).toBe(conferenceId)
+      expect(publication.position).toBe("passSenateVersion")
+
+      const conference = await getConference(conferenceId)
+      expect(conference.testimonyCount).toBe(1)
+      expect(conference.passSenateVersionCount).toBe(1)
+
+      const bill = await getBill(billId)
+      expect(bill.testimonyCount).toBe(0)
+      expect(bill.latestTestimonyId).toBeUndefined()
+    })
+
+    it("Keeps bill and conference testimony on the same bill apart", async () => {
+      const resA = await publishTestimony({ draftId })
+      const { draftId: conferenceDraftId } = await createConferenceDraft(
+        uid,
+        billId,
+        conferenceId,
+        "passNothing"
+      )
+      const resB = await publishTestimony({ draftId: conferenceDraftId })
+      // Republishing the bill testimony finds its own publication again.
+      await updateDoc(refs.draftTestimony(uid, draftId), {
+        content: "updated content",
+        editReason: "edit reason"
+      })
+      const resC = await publishTestimony({ draftId })
+
+      expect(resA.data.publicationId).not.toBe(resB.data.publicationId)
+      expect(resC.data.publicationId).toBe(resA.data.publicationId)
+      expect((await getPublication(uid, resC.data.publicationId)).version).toBe(
+        2
+      )
+      expect((await getPublication(uid, resB.data.publicationId)).version).toBe(
+        1
+      )
+
+      const bill = await getBill(billId)
+      expect(bill.testimonyCount).toBe(1)
+      expect(bill.endorseCount).toBe(1)
+      expect(bill.latestTestimonyId).toBe(resA.data.publicationId)
+    })
+
+    it("Republishes backfilled legacy bill testimony in place", async () => {
+      const resA = await publishTestimony({ draftId })
+      // Strip the field from everything the bill testimony wrote, as it was
+      // before conference testimony existed, then backfill it.
+      const legacy = [
+        testDb.doc(paths.draftTestimony(uid, draftId)),
+        testDb.doc(
+          `/users/${uid}/publishedTestimony/${resA.data.publicationId}`
+        ),
+        ...(
+          await testDb
+            .collection(`/users/${uid}/archivedTestimony`)
+            .where("billId", "==", billId)
+            .get()
+        ).docs.map(d => d.ref)
+      ]
+      for (const ref of legacy)
+        await ref.update({ conferenceId: FieldValue.delete() })
+      await backfillTestimonyScope({
+        db: testDb,
+        args: { env: "local", argv: [] }
+      } as any)
+
+      const { draftId: conferenceDraftId } = await createConferenceDraft(
+        uid,
+        billId,
+        conferenceId,
+        "passNothing"
+      )
+      await publishTestimony({ draftId: conferenceDraftId })
+      await updateDoc(refs.draftTestimony(uid, draftId), {
+        content: "updated content",
+        editReason: "edit reason"
+      })
+      const resB = await publishTestimony({ draftId })
+
+      expect(resB.data.publicationId).toBe(resA.data.publicationId)
+      const publication = await getPublication(uid, resB.data.publicationId)
+      expect(publication.version).toBe(2)
+      expect(publication.conferenceId).toBeNull()
+    })
+
+    it("Moves the conference counts when the stance changes", async () => {
+      const { draftId: conferenceDraftId } = await createConferenceDraft(
+        uid,
+        billId,
+        conferenceId,
+        "passSenateVersion"
+      )
+      const res1 = await publishTestimony({ draftId: conferenceDraftId })
+      await updateDoc(refs.draftTestimony(uid, conferenceDraftId), {
+        position: "passHouseVersion",
+        editReason: "changed my mind"
+      })
+      const res2 = await publishTestimony({ draftId: conferenceDraftId })
+
+      expect(res2.data.publicationId).toBe(res1.data.publicationId)
+      const conference = await getConference(conferenceId)
+      expect(conference.testimonyCount).toBe(1)
+      expect(conference.passSenateVersionCount).toBe(0)
+      expect(conference.passHouseVersionCount).toBe(1)
+    })
+
+    it("Fails the delete of a publication whose position does not fit its conference", async () => {
+      const { draftId: conferenceDraftId } = await createConferenceDraft(
+        uid,
+        billId,
+        conferenceId,
+        "passSenateVersion"
+      )
+      const res = await publishTestimony({ draftId: conferenceDraftId })
+      const publicationPath = `/users/${uid}/publishedTestimony/${res.data.publicationId}`
+      await testDb.doc(publicationPath).update({ position: "endorse" })
+
+      await signInTestAdmin()
+      await expect(
+        deleteTestimony({ uid, publicationId: res.data.publicationId })
+      ).rejects.toThrow()
+      await signOut(auth)
+
+      expect((await testDb.doc(publicationPath).get()).exists).toBe(true)
+      const conference = await getConference(conferenceId)
+      expect(conference.testimonyCount).toBe(1)
+      expect(conference.passSenateVersionCount).toBe(1)
+    })
+
+    it("Refuses a bill position on conference testimony", async () => {
+      const { draftId: conferenceDraftId } = await createConferenceDraft(
+        uid,
+        billId,
+        conferenceId,
+        "endorse"
+      )
+      await expect(
+        publishTestimony({ draftId: conferenceDraftId })
+      ).rejects.toThrow("Conference testimony takes a conference position")
+    })
+
+    it("Refuses a conference position on bill testimony", async () => {
+      await updateDoc(refs.draftTestimony(uid, draftId), {
+        position: "passNothing"
+      })
+      await expect(publishTestimony({ draftId })).rejects.toThrow(
+        "Bill testimony takes a bill position"
+      )
+    })
+
+    it("Refuses a conference that does not exist", async () => {
+      const { draftId: conferenceDraftId } = await createConferenceDraft(
+        uid,
+        billId,
+        "nonexistent-conference",
+        "passNothing"
+      )
+      await expect(
+        publishTestimony({ draftId: conferenceDraftId })
+      ).rejects.toThrow("invalid conferenceId")
+    })
+
+    it.each(["reportFiled", "enacted", "dissolved"])(
+      "Refuses testimony on a conference that is %s",
+      async status => {
+        const closedId = await createConference(billId, status)
+        const { draftId: conferenceDraftId } = await createConferenceDraft(
+          uid,
+          billId,
+          closedId,
+          "passNothing"
+        )
+        await expect(
+          publishTestimony({ draftId: conferenceDraftId })
+        ).rejects.toThrow("not accepting testimony")
+        expect((await getConference(closedId)).testimonyCount).toBe(0)
+      }
+    )
+
+    it("Refuses to republish once the conference has closed", async () => {
+      const { draftId: conferenceDraftId } = await createConferenceDraft(
+        uid,
+        billId,
+        conferenceId,
+        "passNothing"
+      )
+      await publishTestimony({ draftId: conferenceDraftId })
+      await testDb
+        .doc(
+          `/generalCourts/${currentGeneralCourt}/conferences/${conferenceId}`
+        )
+        .update({ status: "reportFiled" })
+      await updateDoc(refs.draftTestimony(uid, conferenceDraftId), {
+        content: "updated content"
+      })
+      await expect(
+        publishTestimony({ draftId: conferenceDraftId })
+      ).rejects.toThrow("not accepting testimony")
+    })
+
+    it("Refuses testimony on a bill that is not the conference's", async () => {
+      const otherBillId = await createFakeBill()
+      const { draftId: conferenceDraftId } = await createConferenceDraft(
+        uid,
+        otherBillId,
+        conferenceId,
+        "passNothing"
+      )
+      await expect(
+        publishTestimony({ draftId: conferenceDraftId })
+      ).rejects.toThrow(`takes testimony on ${billId}`)
     })
   })
 })
@@ -547,6 +798,90 @@ describe("deleteTestimony", () => {
     expect(archived.size).toBe(2)
   })
 
+  it("Takes conference testimony off the conference's counts", async () => {
+    const conferenceId = await createConference(billId)
+    const { draftId: conferenceDraftId } = await createConferenceDraft(
+      uid,
+      billId,
+      conferenceId,
+      "passSomething"
+    )
+    const res = await publishTestimony({ draftId: conferenceDraftId })
+
+    await getSignedInAdmin()
+    await deleteTestimony({ uid, publicationId: res.data.publicationId })
+
+    const conference = await getConference(conferenceId)
+    expect(conference.testimonyCount).toBe(0)
+    expect(conference.passSomethingCount).toBe(0)
+    const draft = await testDb
+      .doc(paths.draftTestimony(uid, conferenceDraftId))
+      .get()
+    expect(draft.data()!.publishedVersion).toBeUndefined()
+  })
+
+  it("Lets conference testimony be deleted after the conference closes", async () => {
+    const conferenceId = await createConference(billId)
+    const { draftId: conferenceDraftId } = await createConferenceDraft(
+      uid,
+      billId,
+      conferenceId,
+      "passSomething"
+    )
+    const res = await publishTestimony({ draftId: conferenceDraftId })
+    await testDb
+      .doc(`/generalCourts/${currentGeneralCourt}/conferences/${conferenceId}`)
+      .update({ status: "dissolved" })
+
+    await getSignedInAdmin()
+    await deleteTestimony({ uid, publicationId: res.data.publicationId })
+
+    expect((await getConference(conferenceId)).testimonyCount).toBe(0)
+  })
+
+  it("Never makes conference testimony the bill's latest", async () => {
+    const conferenceId = await createConference(billId)
+    const resBill = await publishTestimony({ draftId })
+    const { draftId: conferenceDraftId } = await createConferenceDraft(
+      uid,
+      billId,
+      conferenceId,
+      "passSomething"
+    )
+    await publishTestimony({ draftId: conferenceDraftId })
+
+    await getSignedInAdmin()
+    await deleteTestimony({ uid, publicationId: resBill.data.publicationId })
+
+    const bill = await getBill(billId)
+    expect(bill.testimonyCount).toBe(0)
+    expect(bill.latestTestimonyId).toBeUndefined()
+    expect((await getConference(conferenceId)).testimonyCount).toBe(1)
+  })
+
+  it("Skips newer conference testimony for the bill's latest", async () => {
+    const resA = await publishTestimony({ draftId })
+    const { draftId: conferenceDraftId } = await createConferenceDraft(
+      uid,
+      billId,
+      await createConference(billId),
+      "passSomething"
+    )
+    await publishTestimony({ draftId: conferenceDraftId })
+    const { uid: uid2 } = await getSignedInAdmin()
+    const { draftId: draftId2 } = await createDraft(uid2, billId)
+    const resB = await publishTestimony({ draftId: draftId2 })
+    expect((await getBill(billId)).latestTestimonyId).toBe(
+      resB.data.publicationId
+    )
+
+    await deleteTestimony({ uid: uid2, publicationId: resB.data.publicationId })
+
+    const bill = await getBill(billId)
+    expect(bill.testimonyCount).toBe(1)
+    expect(bill.latestTestimonyId).toBe(resA.data.publicationId)
+  })
+
   describe("attachments", () => {
     it("deletes attachments", async () => {
       let attachmentId = nanoid()
@@ -615,6 +950,54 @@ async function createDraftAttachment(uid: string, id: string, content: string) {
   })
 }
 
+/** A conference whose canonical bill is `billId`, with its counts zeroed. It
+ * takes testimony only while `status` is appointed. */
+async function createConference(billId: string, status = "appointed") {
+  const id = `conference-${nanoid()}`.toLowerCase()
+  await testDb
+    .doc(`/generalCourts/${currentGeneralCourt}/conferences/${id}`)
+    .set({
+      id,
+      court: currentGeneralCourt,
+      title: "Test conference",
+      senateBillId: billId,
+      houseBillId: "H1",
+      canonicalBillId: billId,
+      conferees: [],
+      status,
+      hearingIds: [],
+      differences: [],
+      similarities: [],
+      testimonyCount: 0,
+      passNothingCount: 0,
+      passSomethingCount: 0,
+      passSenateVersionCount: 0,
+      passHouseVersionCount: 0
+    })
+  return id
+}
+
+async function getConference(id: string) {
+  const doc = await testDb
+    .doc(`/generalCourts/${currentGeneralCourt}/conferences/${id}`)
+    .get()
+  return doc.data() as any
+}
+
+async function createConferenceDraft(
+  uid: string,
+  billId: string,
+  conferenceId: string,
+  position: BaseTestimony["position"]
+) {
+  const { draftId } = await createDraft(uid, billId)
+  await updateDoc(refs.draftTestimony(uid, draftId), {
+    conferenceId,
+    position
+  })
+  return { draftId }
+}
+
 async function createDraft(
   uid: string,
   billId: string,
@@ -628,7 +1011,8 @@ async function createDraft(
     court,
     position: "endorse",
     attachmentId: null,
-    ballotQuestionId: ballotQuestionId ?? null
+    ballotQuestionId: ballotQuestionId ?? null,
+    conferenceId: null
   }
 
   await setDoc(refs.draftTestimony(uid, draftId), draft)

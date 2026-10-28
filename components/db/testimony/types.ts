@@ -22,6 +22,16 @@ export const maxTestimonyLength = 10_000
 export const Position = Union(L("endorse"), L("oppose"), L("neutral"))
 export type Position = Static<typeof Position>
 
+/** What testimony on a committee of conference asks for. Kept apart from
+ * `Position` so the bill and ballot question displays never see these. */
+export const ConferencePosition = Union(
+  L("passSomething"),
+  L("passSenateVersion"),
+  L("passHouseVersion"),
+  L("passNothing")
+)
+export type ConferencePosition = Static<typeof ConferencePosition>
+
 export const Content = String.withConstraint(
   s => s.length > 0 || "Content is empty"
 ).withConstraint(s => s.length < maxTestimonyLength || "Content is too long")
@@ -34,9 +44,22 @@ export const BaseTestimony = R({
   content: Content,
   attachmentId: Maybe(String),
   editReason: Maybe(String),
-  ballotQuestionId: Maybe(String)
+  ballotQuestionId: Maybe(String),
+  conferenceId: Maybe(String)
 })
 export type BaseTestimony = Static<typeof BaseTestimony>
+
+/** A testimony is about one thing: its bill, a ballot question on it, or a
+ * conference on it. */
+const oneTarget = ({
+  ballotQuestionId,
+  conferenceId
+}: {
+  ballotQuestionId?: string | null
+  conferenceId?: string | null
+}) =>
+  !(ballotQuestionId && conferenceId) ||
+  "Testimony targets a ballot question or a conference, not both"
 
 export type Testimony = Static<typeof Testimony>
 export const Testimony = BaseTestimony.extend({
@@ -55,15 +78,29 @@ export const Testimony = BaseTestimony.extend({
   representativeDistrict: Optional(String),
   draftAttachmentId: Maybe(String),
   fullName: String
-})
+}).withConstraint(oneTarget)
 
 export type WorkingDraft = Partial<DraftTestimony>
 export type DraftTestimony = Static<typeof DraftTestimony>
-export const DraftTestimony = BaseTestimony.extend({
+const DraftTestimonyFields = BaseTestimony.extend({
   publishedVersion: Optional(Number),
   /** If present, array of legislator member codes */
   recipientMemberCodes: Maybe(Array(String))
 })
+export const DraftTestimony = DraftTestimonyFields.withConstraint(oneTarget)
+
+/** Testimony and drafts as they read when `conferenceId` is set. The listing
+ * and edit hooks for conferences return these; every other hook returns the
+ * three-position types above. */
+export type ConferenceTestimony = Omit<Testimony, "position"> & {
+  position: ConferencePosition
+}
+export type ConferenceWorkingDraft = Omit<WorkingDraft, "position"> & {
+  position?: ConferencePosition
+}
+export const ConferenceDraftTestimony = DraftTestimonyFields.omit("position")
+  .extend({ position: ConferencePosition })
+  .withConstraint(oneTarget)
 
 /** Returns true if both values are either falsy or strictly equal. */
 const eqish = (a: any, b: any) => (a || undefined) === (b || undefined)

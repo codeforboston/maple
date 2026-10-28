@@ -13,6 +13,9 @@ which change Firestore doc ids:
    credited to the filer named on the page (see portal.resolve_filer).
 3. Registration pages were discarded, so lobbyists whose firm files for them
    had no record. Registrations are now stored in lobbyingRegistrations.
+4. Every version of an amended disclosure was scraped, so filings an
+   amendment corrected or dropped were still counted. Only the current
+   version is now kept.
 
 Every registrant and filing doc is regenerated from the raw-HTML archive, then
 docs that weren't regenerated are deleted. Registrations are written from the
@@ -21,10 +24,11 @@ archived registration pages (additive; nothing is deleted).
 Phases (run in order, per project):
 
     write    Snapshot which registrants currently list each disclosure URL, then
-             reparse every archived CompleteDisclosure page: write its filings,
-             and write each registrant doc once (full overwrite, all of its
-             disclosure URLs). Records the correct ids and a summary under
-             --out-prefix.
+             reparse every archived CompleteDisclosure page except earlier
+             versions of amended disclosures (read from the archived
+             registration pages): write its filings, and write each
+             registrant doc once (full overwrite, all of its disclosure
+             URLs). Records the correct ids and a summary under --out-prefix.
     cleanup  For --collection filings|registrants, diff live doc ids against
              the recorded ids. Dry run by default; the dry run prints the exact
              --execute command, which refuses to delete unless the project,
@@ -40,6 +44,10 @@ Phases (run in order, per project):
              Occurred") instead of content, and with --execute re-fetch them
              from the live portal into the archive. Run before the phases above.
     stats    Recompute lobbyingMeta.
+    filing-periods
+             Copy each disclosure's reporting period from its registrant doc
+             onto the filings reported on it, for filings written before
+             filings recorded a period. Dry run by default; --execute writes.
 
     GOOGLE_APPLICATION_CREDENTIALS=... python3 migrate_lobbying_data.py \\
       --project <project> --phase write --out-prefix /tmp/<project>
@@ -48,7 +56,10 @@ Phases (run in order, per project):
     (same for --collection registrants), then --phase registrations, then
     --phase stats.
 
-Safe to delete once dev and prod have both been migrated.
+Keep it: the write phase is also how existing docs get fields the parser
+learns to read later (e.g. filing periodEnd, registrant clientLobbyists).
+Run write, then the cleanup dry runs, which should find no stale docs when
+ids are unchanged, then stats.
 """
 from __future__ import annotations
 
@@ -71,8 +82,10 @@ import archive
 from portal import (
     DisclosureMeta,
     _get,
+    is_block_page,
     make_session,
     parse_registration,
+    parse_summary,
     filing_id,
     parse_disclosure_detail,
     resolve_filer,
@@ -197,13 +210,20 @@ def run_write(project: str, out_prefix: str, workers: int, limit: int | None) ->
         url = (blob.metadata or {}).get("source-url", "")
         if url in owners:
             pages.append((blob, url))
+    # Earlier versions of amended disclosures are left out, so cleanup deletes
+    # their filings and the registrant docs keep only the current version.
+    superseded = _superseded_versions(project, workers)
+    listed_superseded = {url: superseded[url] for url in owners if url in superseded}
+    pages = [(blob, url) for blob, url in pages if url not in superseded]
     archived = {url for _, url in pages}
-    missing = sorted(set(owners) - archived)
-    print(f"Archived pages to process: {len(pages)}; listed URLs missing from archive: {len(missing)}")
+    missing = sorted(set(owners) - archived - set(listed_superseded))
+    print(f"Archived pages to process: {len(pages)}; superseded versions skipped: "
+          f"{len(listed_superseded)}; listed URLs missing from archive: {len(missing)}")
     if limit is not None:
         pages = pages[:limit]
 
-    counts = {"processed": 0, "unattributable": 0, "error": 0, "reattributed": 0}
+    counts = {"processed": 0, "unattributable": 0, "error": 0, "reattributed": 0,
+              "superseded": len(listed_superseded)}
     registrants: dict[str, dict] = {}
     all_fids: set[str] = set()
     problem_urls: list[str] = []
@@ -227,8 +247,8 @@ def run_write(project: str, out_prefix: str, workers: int, limit: int | None) ->
                 all_fids.update(r["fids"])
                 entry = registrants.setdefault(r["rid"], {"urls": set(), "data": None, "data_url": None})
                 entry["urls"].add(r["url"])
-                # Several pages can map to one registrant (e.g. an amended
-                # disclosure for the same period); keep a deterministic one.
+                # Several pages can map to one registrant (e.g. two
+                # registrations under one name); keep a deterministic one.
                 if entry["data_url"] is None or r["url"] > entry["data_url"]:
                     entry["data"], entry["data_url"] = r["data"], r["url"]
             if done % 2000 == 0 or done == len(pages):
@@ -255,17 +275,23 @@ def run_write(project: str, out_prefix: str, workers: int, limit: int | None) ->
         f.writelines(fid + "\n" for fid in sorted(all_fids))
     with open(f"{out_prefix}.registrants.txt", "w") as f:
         f.writelines(rid + "\n" for rid in sorted(registrants))
+    # A superseded page's filings are deleted at cleanup, so its current
+    # version must have been written in their place.
+    written = {url for entry in registrants.values() for url in entry["urls"]}
+    without_current = sorted(old for old, cur in listed_superseded.items() if cur not in written)
     summary = {
         "project": project,
         "limit": limit,
         **counts,
         "listed_urls": len(owners),
         "missing_from_archive": len(missing),
+        "superseded_without_current": len(without_current),
         "filing_ids": len(all_fids),
         "registrant_ids": len(registrants),
         "registrants_with_multiple_pages": sum(len(e["urls"]) > 1 for e in registrants.values()),
         "problem_urls": problem_urls[:50],
         "missing_urls": missing[:50],
+        "superseded_without_current_urls": without_current[:50],
     }
     with open(f"{out_prefix}.summary.json", "w") as f:
         json.dump(summary, f, indent=2)
@@ -278,9 +304,14 @@ def run_cleanup(project: str, out_prefix: str, collection: str, execute: bool,
         summary = json.load(f)
     # Anything the write phase couldn't regenerate would look stale and be
     # deleted, so refuse unless every listed page was accounted for.
-    blockers = {k: summary[k] for k in ("error", "unattributable", "missing_from_archive") if summary[k]}
-    if summary["processed"] != summary["listed_urls"]:
-        blockers["pages_not_processed"] = summary["listed_urls"] - summary["processed"]
+    blockers = {
+        k: summary[k]
+        for k in ("error", "unattributable", "missing_from_archive", "superseded_without_current")
+        if summary.get(k)
+    }
+    superseded = summary.get("superseded", 0)
+    if summary["processed"] + superseded != summary["listed_urls"]:
+        blockers["pages_not_processed"] = summary["listed_urls"] - summary["processed"] - superseded
     if summary["project"] != project:
         blockers["summary_project"] = summary["project"]
     if summary.get("limit") is not None:
@@ -337,6 +368,65 @@ def run_cleanup(project: str, out_prefix: str, collection: str, execute: bool,
     print(f"Deleted {count} stale {collection} docs.")
 
 
+def periods_by_disclosure_url(registrants) -> tuple[dict[str, tuple[str, str]], set[str]]:
+    """Map each disclosure URL to the (periodStart, periodEnd) of the
+    registrant docs listing it. URLs whose registrant docs disagree are
+    returned separately and left out of the map."""
+    periods: dict[str, tuple[str, str]] = {}
+    conflicts: set[str] = set()
+    for r in registrants:
+        start, end = r.get("periodStart"), r.get("periodEnd")
+        if not start or not end:
+            continue
+        for url in r.get("disclosureUrls") or []:
+            if url in periods and periods[url] != (start, end):
+                conflicts.add(url)
+            periods.setdefault(url, (start, end))
+    for url in conflicts:
+        periods.pop(url, None)
+    return periods, conflicts
+
+
+def run_filing_periods(project: str, execute: bool) -> None:
+    db = firestore.Client(project=project)
+    print(f"Target project: {db.project}")
+    periods, conflicts = periods_by_disclosure_url(
+        doc.to_dict()
+        for doc in _paginate(db, REGISTRANTS_COLLECTION, ["disclosureUrls", "periodStart", "periodEnd"])
+    )
+    print(f"Disclosures with a known period: {len(periods)}; with conflicting periods (skipped): {len(conflicts)}")
+
+    counts = {"updated": 0, "already_set": 0, "no_url": 0, "no_known_period": 0}
+    batch, pending = db.batch(), 0
+    for doc in _paginate(db, FILINGS_COLLECTION, ["disclosureUrl", "periodStart"]):
+        d = doc.to_dict()
+        if "periodStart" in d:
+            counts["already_set"] += 1
+            continue
+        url = d.get("disclosureUrl")
+        if not url:
+            counts["no_url"] += 1
+            continue
+        if url not in periods:
+            counts["no_known_period"] += 1
+            continue
+        counts["updated"] += 1
+        if execute:
+            start, end = periods[url]
+            batch.update(doc.reference, {"periodStart": start, "periodEnd": end})
+            pending += 1
+            if pending == 400:
+                batch.commit()
+                batch, pending = db.batch(), 0
+        if sum(counts.values()) % 100000 == 0:
+            print(f"  {counts}")
+    if execute and pending:
+        batch.commit()
+    print(counts)
+    if not execute:
+        print("Dry run — nothing written. Re-run with --execute to write the periods.")
+
+
 def _archived_pages(project: str, kind: str) -> list[tuple[Blob, str]]:
     os.environ["GOOGLE_CLOUD_PROJECT"] = project
     bucket = storage.Client(project=project).bucket(archive._get_bucket_name())
@@ -358,7 +448,49 @@ def _download(blob: Blob) -> str:
 
 
 def _is_error_page(html: str) -> bool:
-    return "An Error Occurred" in html and "There was a problem opening" in html
+    """The portal's "An Error Occurred" page, or its bot-protection block page,
+    archived in place of the real page."""
+    return ("An Error Occurred" in html and "There was a problem opening" in html) or is_block_page(html)
+
+
+def resolve_superseded(maps) -> dict[str, str]:
+    """Merge registration pages' {earlier version: current version} maps,
+    pointing each earlier version at its final one. A firm's disclosure is
+    listed on several pages archived at different times, so one page can say
+    A -> B and a later one B -> C: A's current version is then C, since B is
+    itself superseded and never written. A cycle stops on a superseded
+    version, which the write phase then reports as without a current one."""
+    merged: dict[str, str] = {}
+    for versions in maps:
+        merged.update(versions)
+
+    def final(url: str) -> str:
+        seen = {url}
+        while url in merged and merged[url] not in seen:
+            url = merged[url]
+            seen.add(url)
+        return url
+
+    return {old: final(cur) for old, cur in merged.items()}
+
+
+def _superseded_versions(project: str, workers: int) -> dict[str, str]:
+    """Earlier versions of amended disclosures -> their final current
+    version, as the archived registration pages list them. A version
+    superseded on any page is superseded (see resolve_superseded)."""
+    pages = _archived_pages(project, "Summary.aspx")
+
+    def parse(page):
+        blob, url = page
+        try:
+            return url, parse_summary(BeautifulSoup(_download(blob), "html.parser")).superseded_urls
+        except Exception as exc:
+            raise SystemExit(f"ABORT: could not read registration page {url}: {exc}")
+
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        superseded = resolve_superseded(versions for _, versions in pool.map(parse, pages))
+    print(f"Registration pages read: {len(pages)}; superseded disclosure versions: {len(superseded)}")
+    return superseded
 
 
 def run_registrations(project: str, out_prefix: str, workers: int) -> None:
@@ -468,13 +600,13 @@ def main() -> None:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--project", required=True)
     p.add_argument("--phase", required=True,
-                   choices=["write", "cleanup", "registrations", "refetch-errors", "stats"])
+                   choices=["write", "cleanup", "registrations", "refetch-errors", "stats", "filing-periods"])
     p.add_argument("--out-prefix", help="write/cleanup: path prefix for recorded ids and summary")
     p.add_argument("--collection", choices=sorted(_COLLECTIONS), help="cleanup: which collection")
     p.add_argument("--workers", type=int, default=_DEFAULT_WORKERS)
     p.add_argument("--limit", type=int, default=None, help="write: only N pages (testing; blocks cleanup)")
     p.add_argument("--execute", action="store_true",
-                   help="cleanup: actually delete; refetch-errors: actually re-fetch")
+                   help="cleanup: actually delete; refetch-errors: actually re-fetch; filing-periods: actually write")
     p.add_argument("--expect-ids", type=int, default=None)
     p.add_argument("--expect-stale", type=int, default=None)
     args = p.parse_args()
@@ -483,6 +615,8 @@ def main() -> None:
         run_write(args.project, args.out_prefix, args.workers, args.limit)
     elif args.phase == "registrations":
         run_registrations(args.project, args.out_prefix, args.workers)
+    elif args.phase == "filing-periods":
+        run_filing_periods(args.project, args.execute)
     elif args.phase == "refetch-errors":
         run_refetch_errors(args.project, args.workers, args.execute)
     elif args.phase == "cleanup":

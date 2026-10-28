@@ -4,16 +4,22 @@ import { BillTopic, CurrentCommittee } from "../functions/src/bills/types"
 import { Testimony } from "components/db/testimony"
 import { Bill, MemberContent } from "./db"
 import { formatBillId } from "./formatting"
+import { billsDefaultIndex } from "./search/bills/useBillSort"
 import { TFunction } from "next-i18next"
 
 type LinkProps = PropsWithChildren<
-  AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }
+  AnchorHTMLAttributes<HTMLAnchorElement> & {
+    href: string
+    /** Leave the scroll where it is on navigating, for a page that lands
+     * itself. */
+    scroll?: boolean
+  }
 >
 
 export const Internal = forwardRef<HTMLAnchorElement, LinkProps>(
-  ({ href, children, className, ...rest }: LinkProps, ref) => {
+  ({ href, children, className, scroll, ...rest }: LinkProps, ref) => {
     return (
-      <Link href={href} legacyBehavior>
+      <Link href={href} scroll={scroll} legacyBehavior>
         <a ref={ref} className={className} {...rest}>
           {children}
         </a>
@@ -77,6 +83,11 @@ export const maple = {
     `/bills/${court}/${id}`,
   legislator: ({ court, memberCode }: { court: number; memberCode: string }) =>
     `/legislators/${court}/${memberCode}`,
+  conferences: () => `/conferences`,
+  conferenceExplorer: () => `/conferences/explorer`,
+  conference: ({ court, id }: { court: number; id: string }) =>
+    `/conferences/${court}/${id}`,
+  hearing: ({ eventId }: { eventId: number }) => `/hearing/${eventId}`,
   testimony: ({ publishedId }: { publishedId: string }) =>
     `/testimony/${publishedId}`,
   userTestimony: ({
@@ -145,9 +156,10 @@ export const twitterShareLink = (publication: Testimony, t: TFunction) => {
 }
 
 export const billSearchByTopicLink = (court: number, topic: BillTopic) => {
+  // Routed uiState is keyed by the page's index name.
   const params = {
-    "bills/sort/latestTestimonyAt:desc[multiselectHierarchicalMenu][topics.lvl1][0]": `${topic.category} > ${topic.topic}`,
-    "bills/sort/latestTestimonyAt:desc[refinementList][court][0]": `${court}`
+    [`${billsDefaultIndex}[multiselectHierarchicalMenu][topics.lvl1][0]`]: `${topic.category} > ${topic.topic}`,
+    [`${billsDefaultIndex}[refinementList][court][0]`]: `${court}`
   }
-  return `/bills?${new URLSearchParams(params).toString()}`
+  return `${maple.billSearch()}?${new URLSearchParams(params).toString()}`
 }
