@@ -920,8 +920,24 @@ describe("publishTestimony", () => {
         await testDb
           .doc(`/users/${uid}/publishedTestimony/${parentId}`)
           .delete()
+        await expect(publishTestimony({ draftId })).rejects.toMatchObject({
+          message: expect.stringContaining("no longer exists"),
+          details: { refusal: "cosignParentGone" }
+        })
+      })
+
+      it("Refuses a cosign of a legislator's testimony", async () => {
+        await testDb
+          .doc(`/users/${uid}/publishedTestimony/${parentId}`)
+          .update({ authorRole: "legislator" })
+        const { draftId } = await createCosignDraft(
+          uid2,
+          billId,
+          conferenceId,
+          cosignOf()
+        )
         await expect(publishTestimony({ draftId })).rejects.toThrow(
-          "no longer exists"
+          "legislator's testimony cannot be cosigned"
         )
       })
 

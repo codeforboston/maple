@@ -13,6 +13,7 @@ import {
 import { Role } from "../auth/types"
 import { Id, Maybe, withDefaults } from "../common"
 import { Timestamp } from "../firebase"
+import { cosignShape } from "./cosign"
 
 const maxTestimonyLength = 10_000
 
@@ -119,25 +120,6 @@ export const oneTarget = ({
   !(ballotQuestionId && conferenceId) ||
   "Testimony targets a ballot question or a conference, not both"
 
-/** A cosign names both its parent's id and author, and carries a note at
- * most: no attachment, and possibly no content. Anything else has content. */
-export const cosignShape = ({
-  content,
-  attachmentId,
-  cosignOfId,
-  cosignOfAuthorUid
-}: {
-  content: string
-  attachmentId?: string | null
-  cosignOfId?: string | null
-  cosignOfAuthorUid?: string | null
-}) => {
-  if (!cosignOfId !== !cosignOfAuthorUid)
-    return "A cosign names its parent's id and author"
-  if (cosignOfId) return !attachmentId || "A cosign takes no attachment"
-  return content.length > 0 || "Content is empty"
-}
-
 export type DraftTestimony = Static<typeof DraftTestimony>
 export const DraftTestimony = BaseTestimony.extend({
   publishedVersion: Optional(Number)
@@ -145,6 +127,11 @@ export const DraftTestimony = BaseTestimony.extend({
   .withConstraint(positionMatchesTarget)
   .withConstraint(oneTarget)
   .withConstraint(cosignShape)
+
+/** The refusals the website words for itself, sent as the error's details. */
+export type RefusalDetails = {
+  refusal: "conferenceClosed" | "cosignParentGone"
+}
 
 export const countsByPositions = {
   endorse: "endorseCount",

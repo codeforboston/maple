@@ -15,9 +15,10 @@ import { checkAuth, checkRequest, DocUpdate, fail, Id } from "../common"
 import { db, FieldValue, Timestamp } from "../firebase"
 import { supportedGeneralCourts, takesTestimony } from "../shared"
 import { Attachments, PublishedAttachmentState } from "./attachments"
+import { cosignRefusal } from "./cosign"
 import { cosignTallyFields } from "./cosignTally"
 import { targetCountsUpdate, targetOf, TestimonyTarget } from "./target"
-import { DraftTestimony, Testimony } from "./types"
+import { DraftTestimony, RefusalDetails, Testimony } from "./types"
 
 const PublishTestimonyRequest = Record({
   draftId: Id
@@ -243,7 +244,8 @@ class PublishTestimonyTransaction {
       if (!takesTestimony(conference.status)) {
         throw fail(
           "failed-precondition",
-          `Conference ${conferenceId} is not accepting testimony (status ${conference.status})`
+          `Conference ${conferenceId} is not accepting testimony (status ${conference.status})`,
+          { refusal: "conferenceClosed" } satisfies RefusalDetails
         )
       }
     }
@@ -295,17 +297,14 @@ class PublishTestimonyTransaction {
     if (!parentSnap.exists) {
       throw fail(
         "failed-precondition",
-        `Cosigned testimony ${cosignOfId} no longer exists`
+        `Cosigned testimony ${cosignOfId} no longer exists`,
+        { refusal: "cosignParentGone" } satisfies RefusalDetails
       )
     }
     const parent = Testimony.checkWithDefaults(parentSnap.data())
 
-    if (parent.authorUid === this.uid) {
-      throw fail("failed-precondition", "You cannot cosign your own testimony")
-    }
-    if (parent.cosignOfId) {
-      throw fail("failed-precondition", "A cosign cannot be cosigned")
-    }
+    const refusal = cosignRefusal(this.uid, parent)
+    if (refusal) throw fail("failed-precondition", refusal)
     if (targetOf(parent).ref.path !== this.target.ref.path) {
       throw fail(
         "failed-precondition",
