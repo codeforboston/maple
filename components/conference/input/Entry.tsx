@@ -52,6 +52,20 @@ export const Disc = styled.div`
   color: ${brand.ink};
 `
 
+/** The card's own portrait, which the mockup brings down with the type: 34
+ * at the site's narrow width, 26 on a phone, its letters a step smaller. */
+const Portrait = styled(Disc)`
+  @media (max-width: 767px) {
+    width: 34px;
+    height: 34px;
+    font-size: 0.625rem;
+  }
+  @media (max-width: 450px) {
+    width: 26px;
+    height: 26px;
+  }
+`
+
 const Who = styled.div`
   flex: 1;
   min-width: 0;
@@ -68,9 +82,24 @@ const NameRow = styled.p`
   line-height: 1;
   color: ${ink.strong};
 
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  @media (max-width: 767px) {
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
   @media (max-width: 450px) {
     gap: 4px;
     font-size: 0.8125rem;
+    svg {
+      width: 13px;
+      height: 13px;
+    }
   }
 `
 
@@ -118,6 +147,11 @@ const Chip = styled.span<{ $bg: string; $ink: string }>`
   font-weight: 600;
   line-height: 1.5;
   white-space: nowrap;
+
+  @media (max-width: 450px) {
+    padding: 1px 6px;
+    font-size: 0.625rem;
+  }
 `
 
 /** A filing's stance, coloured as on the mockup: the short label on a card,
@@ -235,7 +269,7 @@ export function Entry({
   return (
     <Card ref={ref} $bare={bare}>
       <Head $wide={wide}>
-        <Disc>{initialsOf(name)}</Disc>
+        <Portrait>{initialsOf(name)}</Portrait>
         <Who>
           <NameRow>
             <Name title={name}>{name}</Name>
