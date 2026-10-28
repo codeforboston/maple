@@ -1,5 +1,5 @@
 import { currentGeneralCourt } from "functions/src/shared"
-import { listConferences } from "../db/conferences"
+import { Conference, listConferences } from "../db/conferences"
 import { getMember, getMemberSearchIndex } from "../db/members"
 import { loadConferenceIndex, loadConferencePage } from "./load"
 
@@ -7,19 +7,28 @@ jest.mock("../db/conferences")
 jest.mock("../db/events", () => ({ getEventSummary: jest.fn() }))
 jest.mock("../db/members")
 
-const conference = (id: string, memberCodes: string[]) =>
-  ({
-    id,
-    court: currentGeneralCourt,
-    title: id,
-    status: "appointed",
-    hearingIds: [],
-    conferees: memberCodes.map(memberCode => ({
-      memberCode,
-      branch: "Senate",
-      chair: false
-    }))
-  } as any)
+const conference = (id: string, memberCodes: string[]): Conference => ({
+  id,
+  court: currentGeneralCourt,
+  title: id,
+  senateBillId: "S1",
+  houseBillId: "H1",
+  canonicalBillId: "S1",
+  status: "appointed",
+  hearingIds: [],
+  differences: [],
+  similarities: [],
+  testimonyCount: 0,
+  passNothingCount: 0,
+  passSomethingCount: 0,
+  passSenateVersionCount: 0,
+  passHouseVersionCount: 0,
+  conferees: memberCodes.map(memberCode => ({
+    memberCode,
+    branch: "Senate",
+    chair: false
+  }))
+})
 
 const facts = (MemberCode: string, Name: string) => ({
   MemberCode,
