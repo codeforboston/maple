@@ -30,7 +30,7 @@ const Picker = styled.div`
 `
 
 /** The recessed tray the sheets sit in, the height the mockup gives it. */
-const Well = styled.div`
+export const Well = styled.div`
   display: flex;
   gap: 1rem;
   height: min(74vh, 860px);
@@ -47,7 +47,7 @@ const Well = styled.div`
 
 /** One document, which scrolls on its own so a section of one text can be
  * held against the same section of the other. */
-const Paper = styled.article`
+export const Paper = styled.article`
   flex: 1 1 0;
   min-width: 0;
   max-width: 680px;
