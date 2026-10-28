@@ -36,10 +36,14 @@ jobs:
         if: always()
         run: yarn check-formatting
 
-      # TODO: Fix non-functions unit tests
-      - name: Unit Tests
+      - name: Cloud Functions Tests
         if: always()
         run: yarn test
+
+      # TODO: Add the other website tests to test:website once they pass
+      - name: Website Tests
+        if: always()
+        run: yarn test:website
 
       - name: Types
         if: always()
@@ -91,3 +95,4 @@ jobs:
           tests/integration/profile.test.ts
           tests/integration/ballotQuestions.test.ts
           tests/integration/backfillTestimonyScope.test.ts
+          tests/integration/conferences.test.ts

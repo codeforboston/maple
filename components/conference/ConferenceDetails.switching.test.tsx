@@ -29,6 +29,8 @@ jest.mock("./input/useFollowedAuthors", () => ({
 // The feed is not under test, and its actions reach for the store.
 jest.mock("./input/Kebab", () => ({ Kebab: () => null }))
 jest.mock("./input/EntryModal", () => ({ EntryModal: () => null }))
+// The bill text panel would otherwise read the dev backend.
+jest.mock("../db/bills", () => ({ useBill: () => ({ loading: true }) }))
 
 jest.mock("../auth", () => ({
   useAuth: () => ({
