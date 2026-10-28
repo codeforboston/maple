@@ -1,29 +1,30 @@
 import React from "react"
 import { useTranslation } from "next-i18next"
-import { POSITION_COLORS } from "./chartTheme"
+import { MAPLE_COLORS } from "./chartTheme"
 
 type Position = "support" | "oppose" | "neutral" | "none"
 
+/** Each position a pale fill, dark ink and a pale outline in the same hue. */
 const CHIP_STYLES: Record<Position, React.CSSProperties> = {
   support: {
-    background: "#e8f6ea",
-    color: "#1d5d2d",
-    border: "1px solid #c8e7cf"
+    background: MAPLE_COLORS.greenSubtleBg,
+    color: MAPLE_COLORS.greenSubtleText,
+    border: `1px solid ${MAPLE_COLORS.greenBorder}`
   },
   oppose: {
-    background: "#fff4e8",
-    color: "#7a3800",
-    border: "1px solid #ff8600"
+    background: MAPLE_COLORS.orangeSubtleBg,
+    color: MAPLE_COLORS.orangeSubtleText,
+    border: `1px solid ${MAPLE_COLORS.orangeBorder}`
   },
   neutral: {
-    background: "#e8efff",
-    color: "#1d3f8a",
-    border: "1px solid #c9d8ff"
+    background: MAPLE_COLORS.blueSubtleBg,
+    color: MAPLE_COLORS.blueSubtleText,
+    border: `1px solid ${MAPLE_COLORS.blueBorder}`
   },
   none: {
-    background: "#f1f5f9",
-    color: "#64748b",
-    border: "1px solid #d7e0ea"
+    background: MAPLE_COLORS.graySubtleBg,
+    color: MAPLE_COLORS.textMuted,
+    border: `1px solid ${MAPLE_COLORS.graySubtleBorder}`
   }
 }
 

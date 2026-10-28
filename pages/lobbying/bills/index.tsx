@@ -10,6 +10,7 @@ import {
 } from "components/db/lobbying"
 import { createLobbyingListProps } from "components/lobbying/listPageProps"
 import { MAPLE_COLORS, POSITION_COLORS } from "components/lobbying/chartTheme"
+import { selectChevron } from "components/lobbying/selectChevron"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
@@ -89,17 +90,17 @@ function CourtMultiSelect({
 
   return (
     <div ref={ref} style={{ position: "relative" }}>
+      {/* The same chevron as the filter dropdowns beside it. */}
       <button
         onClick={() => setOpen(o => !o)}
         style={{
           ...selectStyle,
           display: "flex",
           alignItems: "center",
-          gap: 6
+          ...selectChevron
         }}
       >
         {label}
-        <span style={{ fontSize: 10, color: MAPLE_COLORS.textMuted }}>▾</span>
       </button>
       {open && (
         <div style={dropdownStyle}>
@@ -350,7 +351,7 @@ function LobbyingBillsTable({ initialCourt, initialRows }: BillsPageProps) {
         <select
           value={posFilter}
           onChange={e => setPosFilter(e.target.value as typeof posFilter)}
-          style={selectStyle}
+          style={{ ...selectStyle, ...selectChevron }}
           aria-label={t("filters.position")}
         >
           <option value="all">{t("filters.allPositions")}</option>

@@ -9,7 +9,6 @@ import { Profile, useProfile, usePublicProfile } from "../db"
 import { NotificationProps, Notifications } from "./NotificationProps"
 import notificationQuery from "./notification-query"
 import {
-  BillCol,
   Header,
   HeaderTitle,
   StyledContainer
@@ -112,8 +111,10 @@ export default function Newsfeed() {
 
     return (
       <>
-        <Row className={`d-flex ms-5 mt-2 ps-4`} xs="auto">
-          <Col className="form-check checkbox mt-3">
+        {/* One row, evenly spaced and in line with the content's left edge;
+            each label on one line, wrapping as a whole on a narrow screen. */}
+        <div className="d-flex flex-wrap column-gap-4 row-gap-2 mt-3">
+          <div className="form-check checkbox">
             <input
               className="form-check-input"
               type="checkbox"
@@ -127,8 +128,8 @@ export default function Newsfeed() {
             <label className="form-check-label" htmlFor="orgCheck">
               {t("user_updates")}
             </label>
-          </Col>
-          <BillCol className="form-check checkbox mt-3">
+          </div>
+          <div className="form-check checkbox">
             <input
               className="form-check-input"
               type="checkbox"
@@ -142,9 +143,9 @@ export default function Newsfeed() {
             <label className="form-check-label" htmlFor="billCheck">
               {t("bill_updates")}
             </label>
-          </BillCol>
+          </div>
           {flags().ballotQuestions && (
-            <BillCol className="form-check checkbox mt-3">
+            <div className="form-check checkbox">
               <input
                 className="form-check-input"
                 type="checkbox"
@@ -157,9 +158,9 @@ export default function Newsfeed() {
               <label className="form-check-label" htmlFor="ballotQuestionCheck">
                 Ballot Question Updates
               </label>
-            </BillCol>
+            </div>
           )}
-        </Row>
+        </div>
       </>
     )
   }

@@ -1,5 +1,6 @@
 import React from "react"
 import { useTranslation } from "next-i18next"
+import { selectChevron } from "./selectChevron"
 import { courtYears } from "./sessions"
 
 export type SessionFilter = "all" | number
@@ -18,7 +19,7 @@ export const SessionSelect: React.FC<{
       onChange={e =>
         onChange(e.target.value === "all" ? "all" : Number(e.target.value))
       }
-      style={style}
+      style={{ ...style, ...selectChevron }}
       aria-label={t("filters.session")}
     >
       <option value="all">{t("filters.allSessions")}</option>

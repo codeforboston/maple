@@ -52,11 +52,14 @@ const barStyle: React.CSSProperties = {
   width: "100%"
 }
 
+/** No room under the row, so the tabs reach the bar's bottom edge (their
+ * underline sits on its border, linkStyle). The label lines up with the tabs'
+ * text rather than their boxes. */
 const innerStyle: React.CSSProperties = {
   display: "flex",
-  alignItems: "center",
+  alignItems: "baseline",
   gap: "1.75rem",
-  padding: "0.5rem 0",
+  padding: "0.7rem 0 0",
   flexWrap: "wrap"
 }
 
@@ -74,8 +77,16 @@ const linkStyle = (active: boolean): React.CSSProperties => ({
   fontWeight: active ? 600 : 400,
   textDecoration: "none",
   fontSize: 14,
-  paddingBottom: "0.4rem",
-  borderBottom: `2px solid ${active ? MAPLE_COLORS.primary : "transparent"}`,
+  // The text in the middle of the bar: 0.7rem above it (innerStyle) and 0.7rem
+  // below it to the bar's border, of which the underline's top 1.5px is part.
+  paddingBottom: "calc(0.7rem - 1.5px)",
+  borderBottom: `3px solid ${active ? MAPLE_COLORS.primary : "transparent"}`,
+  // Down 1.5px, so the 3px underline is centred on the middle of the bar's
+  // 1px border, half inside the bar and half outside. On a layer of its own
+  // so what follows the bar does not paint over the part outside.
+  marginBottom: -1.5,
+  position: "relative",
+  zIndex: 1,
   display: "inline-block",
   transition: "color 0.1s, border-color 0.1s"
 })
