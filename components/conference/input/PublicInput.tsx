@@ -5,6 +5,7 @@ import { TABS_H } from "../ConferenceTabs"
 import { ConferenceTestimony } from "components/db"
 import { useInputContext } from "./context"
 import { CosignButton } from "./CosignButton"
+import { Band, CosignList, Floor } from "./Cosigns"
 import { Entry } from "./Entry"
 import { EntryModal } from "./EntryModal"
 import { Kebab } from "./Kebab"
@@ -23,6 +24,43 @@ import { brand, ink, line } from "./tokens"
  * none, so that an empty feed still shows what could narrow it. */
 const FEED_CONTROLS_MIN = 4
 const PAGE_SIZE = 5
+
+/** A card with the cosigns of it the feed holds, newest first. A cosign whose
+ * card is not here stands as a unit of its own. */
+type Unit = { lead: ConferenceTestimony; cosigns: ConferenceTestimony[] }
+
+/** The unit with only the cosigns that have words, unless all are asked for. */
+const withWords = (u: Unit, wordless: boolean): Unit =>
+  wordless ? u : { ...u, cosigns: u.cosigns.filter(c => c.content) }
+
+const millis = (t?: { toDate: () => Date }) => (t ? t.toDate().getTime() : 0)
+
+/** Gathers each cosign under what it cosigns, newest first, where a card is as
+ * new as its latest cosign: cosigning one brings it back up the feed. */
+function unitsOf(items: ConferenceTestimony[]): Unit[] {
+  const ids = new Set(items.map(x => x.id))
+  const grouped = (x: ConferenceTestimony) =>
+    !!x.cosignOfId && ids.has(x.cosignOfId)
+  const under = new Map<string, ConferenceTestimony[]>()
+  items.filter(grouped).forEach(x => {
+    const group = under.get(x.cosignOfId!) ?? []
+    group.push(x)
+    under.set(x.cosignOfId!, group)
+  })
+  const byDate = (a: ConferenceTestimony, b: ConferenceTestimony) =>
+    millis(b.publishedAt) - millis(a.publishedAt)
+  const units = items
+    .filter(x => !grouped(x))
+    .map(x => ({ lead: x, cosigns: (under.get(x.id) ?? []).sort(byDate) }))
+  // The tally's date, or the newest cosign here while the tally catches up.
+  const rank = ({ lead, cosigns }: Unit) =>
+    Math.max(
+      millis(lead.publishedAt),
+      millis(lead.lastCosignedAt),
+      millis(cosigns[0]?.publishedAt)
+    )
+  return units.sort((a, b) => rank(b) - rank(a))
+}
 
 /** Where a jump to a block of this section parks it: under the bars. */
 const parked = css`
@@ -122,7 +160,10 @@ export function PublicInput({
   const [page, setPage] = useState(0)
   const [pickedAuthors, setPickedAuthors] = useState<string[]>([])
   const [opened, setOpened] = useState<ConferenceTestimony>()
-  const { followed, uid } = useInputContext()
+  // Cosigns with no words of their own wait behind a setting; their cards
+  // count them either way.
+  const [wordless, setWordless] = useState(false)
+  const { uid, followed } = useInputContext()
 
   // The reader's own filing stands first whatever the controls say, so it is
   // set apart from what they narrow.
@@ -130,26 +171,41 @@ export function PublicInput({
     () => (uid ? items.find(x => x.authorUid === uid) : undefined),
     [items, uid]
   )
-  const others = useMemo(
-    () => (mine ? items.filter(x => x !== mine) : items),
-    [items, mine]
-  )
 
   const showFilters = items.length === 0 || items.length >= FEED_CONTROLS_MIN
-  const shown = useMemo(
-    () =>
-      showFilters
-        ? others.filter(
-            (x: ConferenceTestimony) =>
-              (position === "all" || x.position === position) &&
-              (type === "all" || accountTypeOf(x.authorRole) === type) &&
-              (pickedAuthors.length === 0 ||
-                pickedAuthors.includes(x.authorUid))
-          )
-        : others,
-    [others, position, type, pickedAuthors, showFilters]
+  // Ranked with every cosign, so one without words still brings its card up.
+  const ranked = useMemo(() => unitsOf(items), [items])
+  // The reader's own card keeps the cosigns under it, if it has any. If it is
+  // itself a cosign it stands alone here, and is left out of the list under
+  // the card it cosigns, whose tally still counts it.
+  const { ownUnit, others } = useMemo(() => {
+    if (!mine) return { ownUnit: undefined, others: ranked }
+    const ownUnit = ranked.find(u => u.lead === mine) ?? {
+      lead: mine,
+      cosigns: []
+    }
+    return {
+      ownUnit,
+      others: ranked
+        .filter(u => u !== ownUnit)
+        .map(u => ({ ...u, cosigns: u.cosigns.filter(c => c !== mine) }))
+    }
+  }, [ranked, mine])
+  const units = useMemo(
+    () => others.map(u => withWords(u, wordless)),
+    [others, wordless]
   )
-  useEffect(() => setPage(0), [position, type, pickedAuthors])
+  // A card and its cosigns are narrowed as one: either matching keeps both.
+  const shown = useMemo(() => {
+    if (!showFilters) return units
+    const matches = (x: ConferenceTestimony) =>
+      (position === "all" || x.position === position) &&
+      (type === "all" || accountTypeOf(x.authorRole) === type) &&
+      (pickedAuthors.length === 0 || pickedAuthors.includes(x.authorUid))
+    return units.filter(u => matches(u.lead) || u.cosigns.some(matches))
+  }, [units, position, type, pickedAuthors, showFilters])
+  useEffect(() => setPage(0), [position, type, pickedAuthors, wordless])
+  const cosigned = useMemo(() => items.some(x => x.cosignOfId), [items])
 
   // The accounts being followed that have filed here, which is what the
   // filter mark offers.
@@ -166,6 +222,32 @@ export function PublicInput({
   const current = Math.min(page, pageCount - 1)
   const paged = shown.slice(current * PAGE_SIZE, (current + 1) * PAGE_SIZE)
 
+  const card = ({ lead: x, cosigns }: Unit, own = false) => {
+    const banded = !!x.cosignCount && !x.cosignOfId
+    return (
+      <Entry
+        key={`${x.authorUid}-${x.id}`}
+        testimony={x}
+        own={own}
+        lead={!banded && <CosignButton testimony={x} />}
+        band={
+          banded && <Band testimony={x} yours={mine?.cosignOfId === x.id} />
+        }
+        floor={banded && <Floor testimony={x} />}
+        actions={<Kebab testimony={x} onView={() => setOpened(x)} />}
+        onOpen={setOpened}
+      >
+        {wide => (
+          <CosignList
+            cosigns={cosigns}
+            wide={wide}
+            actions={c => <Kebab testimony={c} onView={() => setOpened(c)} />}
+          />
+        )}
+      </Entry>
+    )
+  }
+
   return (
     <Section id="input">
       <Heading>{t("input.title")}</Heading>
@@ -173,40 +255,28 @@ export function PublicInput({
         <Controls>
           <AccountTypePicker value={type} onChange={setType} />
           <PositionPicker value={position} onChange={setPosition} />
-          {followable.length > 0 && (
+          {(followable.length > 0 || cosigned) && (
             <MoreFilters
               followable={followable}
               picked={pickedAuthors}
               onPick={setPickedAuthors}
+              cosigns={cosigned}
+              wordless={wordless}
+              onWordless={setWordless}
             />
           )}
         </Controls>
       )}
       {loading ? null : (
         <>
-          {(mine || paged.length > 0) && (
+          {(ownUnit || paged.length > 0) && (
             <Feed>
-              {mine && (
+              {ownUnit && (
                 <Own id="your-input">
-                  <Entry
-                    testimony={mine}
-                    own
-                    actions={
-                      <Kebab testimony={mine} onView={() => setOpened(mine)} />
-                    }
-                    onOpen={setOpened}
-                  />
+                  {card(withWords(ownUnit, wordless), true)}
                 </Own>
               )}
-              {paged.map(x => (
-                <Entry
-                  key={`${x.authorUid}-${x.id}`}
-                  testimony={x}
-                  lead={<CosignButton testimony={x} />}
-                  actions={<Kebab testimony={x} onView={() => setOpened(x)} />}
-                  onOpen={setOpened}
-                />
-              ))}
+              {paged.map(u => card(u))}
             </Feed>
           )}
           {paged.length > 0 ? (

@@ -5,7 +5,7 @@ import { cosignRefusal } from "functions/src/testimony/cosign"
 import { useInputContext } from "./context"
 import { ink, line, wash } from "./tokens"
 
-const Pill = styled.button`
+export const Pill = styled.button`
   flex-shrink: 0;
   margin-right: 8px;
   padding: 4px 12px;

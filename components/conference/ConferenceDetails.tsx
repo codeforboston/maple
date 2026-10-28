@@ -36,7 +36,7 @@ import { Panel, usePanelWidth } from "./input/Panel"
 import { PublicInput } from "./input/PublicInput"
 import { ShareButton } from "./input/ShareButton"
 import { useFollowedAuthors } from "./input/useFollowedAuthors"
-import { jumpTo } from "./navbar"
+import { jumpToSection } from "./navbar"
 import { PageColumn, Title } from "./styles"
 import { conferenceName, ConferencePageProps, ConferenceSummary } from "./types"
 
@@ -251,9 +251,7 @@ function Details({
   useEffect(() => {
     if (!landing || !mine) return
     setLanding(false)
-    const el = document.getElementById("your-input")
-    if (el) jumpTo(el)
-    history.replaceState(null, "", `${location.pathname}#your-input`)
+    jumpToSection("your-input")
   }, [landing, mine])
   const posted = () => {
     setOpen(false)
