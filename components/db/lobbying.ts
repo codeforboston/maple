@@ -674,7 +674,7 @@ export async function fetchFirmList(
   const snap = await getDoc(
     doc(firestore, LOBBYING_STATS_COLLECTION, `firmList_${session}`)
   )
-  const entries = (snap.data() ?? {}) as Record<string, FirmListEntry>
+  const entries = (snap.data()?.rows ?? {}) as Record<string, FirmListEntry>
   return Object.entries(entries).map(([entityNameNorm, e]) => {
     // Active that session: filings, or clients it reported. Registered with
     // neither, its counts show as "—".
@@ -751,7 +751,7 @@ export async function fetchClientList(
   const snap = await getDoc(
     doc(firestore, LOBBYING_STATS_COLLECTION, `clientList_${session}`)
   )
-  const entries = (snap.data() ?? {}) as Record<string, ClientListEntry>
+  const entries = (snap.data()?.rows ?? {}) as Record<string, ClientListEntry>
   return Object.entries(entries).map(([clientNameNorm, e]) => ({
     clientName: e.name,
     clientNameNorm,
