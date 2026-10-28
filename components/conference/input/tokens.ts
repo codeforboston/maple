@@ -3,6 +3,7 @@
  * ../styles.ts. */
 export const ink = {
   strong: "#141413",
+  midheavy: "#40403d",
   mid: "#73726c",
   muted: "#94938d",
   faint: "#b5b4ae"

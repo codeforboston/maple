@@ -1,4 +1,4 @@
-import { useRef } from "react"
+import { ReactNode, useRef } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { ConferencePosition, ConferenceTestimony } from "components/db"
@@ -66,7 +66,7 @@ const Portrait = styled(Disc)`
   }
 `
 
-const Who = styled.div`
+export const Who = styled.div`
   flex: 1;
   min-width: 0;
 `
@@ -182,14 +182,14 @@ export const Descriptor = styled.p`
   white-space: nowrap;
 `
 
-const When = styled.span`
+export const When = styled.span<{ $quiet: boolean; $banded: boolean }>`
   margin-right: 2px;
-  font-size: 0.75rem;
+  font-size: ${({ $banded }) => ($banded ? "0.8125rem" : "0.75rem")};
   white-space: nowrap;
-  color: ${ink.mid};
+  color: ${({ $quiet }) => ($quiet ? ink.faint : ink.mid)};
 `
 
-const Corner = styled.div`
+export const Corner = styled.div`
   display: flex;
   align-items: center;
   align-self: flex-start;
@@ -208,30 +208,95 @@ const Indent = styled.div`
   flex-shrink: 0;
 `
 
-const Text = styled.div<{ $wide: boolean }>`
+const Text = styled.div<{ $wide: boolean; $banded: boolean }>`
   flex: 1;
   min-width: 0;
-  padding: ${({ $wide }) => ($wide ? "8px 12px 8px 0" : "12px 0 4px")};
+  padding: ${({ $wide, $banded }) =>
+    $banded
+      ? $wide
+        ? "12px 12px 0 0"
+        : "16px 0 0"
+      : $wide
+      ? "8px 12px 8px 0"
+      : "12px 0 4px"};
 `
 
 const FootDate = styled.div`
   display: flex;
   justify-content: flex-end;
+  gap: 6px;
   margin-top: 12px;
   font-size: 0.8125rem;
   color: ${ink.mid};
 `
 
-/** The day an entry was filed, written out. */
-export const filedOn = (
-  testimony: Pick<ConferenceTestimony, "publishedAt">,
-  language: string
-) =>
-  testimony.publishedAt.toDate().toLocaleDateString(language, {
+/** A day written out. */
+const longDate = (at: { toDate: () => Date }, language: string) =>
+  at.toDate().toLocaleDateString(language, {
     year: "numeric",
     month: "long",
     day: "numeric"
   })
+
+/** The day an entry was filed, written out. */
+export const filedOn = (
+  testimony: Pick<ConferenceTestimony, "publishedAt">,
+  language: string
+) => longDate(testimony.publishedAt, language)
+
+/** A date with its month cut to three letters, as the mockup sets dates on a
+ * phone, where "October" and "September" push a line into two. */
+export const shortMonth = (d: string) =>
+  d.replace(
+    /\b(January|February|March|April|May|June|July|August|September|October|November|December)\b/,
+    m => (m.length > 4 ? `${m.slice(0, 3)}.` : m)
+  )
+
+/** The full date on wide screens and the short one on a phone. */
+export function Dated({ date }: { date: string }) {
+  return (
+    <>
+      <Long>{date}</Long>
+      <Short>{shortMonth(date)}</Short>
+    </>
+  )
+}
+
+const Long = styled.span`
+  @media (max-width: 450px) {
+    display: none;
+  }
+`
+
+const Short = styled.span`
+  display: none;
+  @media (max-width: 450px) {
+    display: inline;
+  }
+`
+
+/** When the latest cosign was filed, written out. */
+export const lastCosignedOn = (
+  testimony: Pick<ConferenceTestimony, "lastCosignedAt">,
+  language: string
+) => testimony.lastCosignedAt && longDate(testimony.lastCosignedAt, language)
+
+/** The screen width at and under which the floor has no room for the latest
+ * cosign's date, which moves to the foot line beside the filing's own. */
+export const LATEST_BESIDE = "(max-width: 900px)"
+
+const LatestBeside = styled.span`
+  display: none;
+  white-space: nowrap;
+  @media ${LATEST_BESIDE} {
+    display: inline;
+  }
+`
+
+const Dot = styled.span`
+  margin-left: 6px;
+  color: ${ink.faint};
+`
 
 /** One filing: who wrote it, what they asked for, and their words. A cosign
  * names what it cosigns, and its position is that entry's. */
@@ -241,7 +306,10 @@ export function Entry({
   lead,
   onOpen,
   bare = false,
-  fullBody = false
+  fullBody = false,
+  band,
+  floor,
+  children
 }: {
   testimony: ConferenceTestimony
   /** The kebab at the corner. */
@@ -254,6 +322,13 @@ export function Entry({
   bare?: boolean
   /** The words whole, with no clamp: for where the entry is the point. */
   fullBody?: boolean
+  /** The strip across the top of a cosigned card. */
+  band?: ReactNode
+  /** The tally under the words of a cosigned card. */
+  floor?: ReactNode
+  /** What hangs under the card's words, given whether the card is wide: its
+   * cosigns. */
+  children?: (wide: boolean) => ReactNode
 }) {
   const { t, i18n } = useTranslation("conferences")
   const { byId } = useInputContext()
@@ -265,9 +340,13 @@ export function Entry({
   const type = accountTypeOf(testimony.authorRole)
   const date = filedOn(testimony, i18n.language)
   const name = nameOf(testimony)
+  // A cosigned card carries the latest cosign's date too, which makes the
+  // filing's own the quieter of two.
+  const latest = band ? lastCosignedOn(testimony, i18n.language) : undefined
 
   return (
     <Card ref={ref} $bare={bare}>
+      {band}
       <Head $wide={wide}>
         <Portrait>{initialsOf(name)}</Portrait>
         <Who>
@@ -293,13 +372,17 @@ export function Entry({
         </Who>
         <Corner>
           {lead}
-          {wide && <When>{date}</When>}
+          {wide && (
+            <When $quiet={!!latest} $banded={!!band}>
+              {date}
+            </When>
+          )}
           {actions}
         </Corner>
       </Head>
       <Words>
         {wide && <Indent aria-hidden />}
-        <Text $wide={wide}>
+        <Text $wide={wide} $banded={!!band}>
           {testimony.cosignOfId && !testimony.content ? (
             <NoWords $small={!wide}>{t("input.cosign_no_words")}</NoWords>
           ) : fullBody ? (
@@ -307,9 +390,21 @@ export function Entry({
           ) : (
             <ClampedText text={testimony.content} small={!wide} />
           )}
-          {!wide && <FootDate>{date}</FootDate>}
+          {!wide && (
+            <FootDate>
+              {latest && (
+                <LatestBeside>
+                  {t("input.last_cosigned_short", { date: shortMonth(latest) })}
+                  <Dot aria-hidden>·</Dot>
+                </LatestBeside>
+              )}
+              <Dated date={date} />
+            </FootDate>
+          )}
+          {floor}
         </Text>
       </Words>
+      {children?.(wide)}
     </Card>
   )
 }

@@ -84,7 +84,21 @@ const cosigns: [number, string, string, string, string][] = [
     "First Middlesex",
     "Fourth Middlesex"
   ],
-  [5, "Lee Brandt", "", "Third Essex", "Ninth Essex"]
+  [5, "Lee Brandt", "", "Third Essex", "Ninth Essex"],
+  [
+    6,
+    "Rosa Iglesias",
+    "Teachers at our middle school spend the first ten minutes of every class collecting phones.",
+    "Second Suffolk",
+    "Eighth Suffolk"
+  ],
+  [
+    6,
+    "Owen Park",
+    "Exceptions should cover students who translate for their parents.",
+    "First Worcester",
+    "Thirteenth Worcester"
+  ]
 ]
 
 export const script: Script = async ctx => {
