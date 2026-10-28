@@ -228,7 +228,11 @@ export function PublicInput({
                   testimony={x}
                   lead={!banded && <CosignButton testimony={x} />}
                   band={banded && <Band testimony={x} yours={mine.has(x.id)} />}
-                  floor={banded && <Floor testimony={x} />}
+                  floor={
+                    banded
+                      ? wide => <Floor testimony={x} wide={wide} />
+                      : undefined
+                  }
                   actions={<Kebab testimony={x} onView={() => setOpened(x)} />}
                   onOpen={setOpened}
                 >

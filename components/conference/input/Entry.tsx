@@ -324,8 +324,9 @@ export function Entry({
   fullBody?: boolean
   /** The strip across the top of a cosigned card. */
   band?: ReactNode
-  /** The tally under the words of a cosigned card. */
-  floor?: ReactNode
+  /** The tally under the words of a cosigned card, given whether the card is
+   * wide. */
+  floor?: (wide: boolean) => ReactNode
   /** What hangs under the card's words, given whether the card is wide: its
    * cosigns. */
   children?: (wide: boolean) => ReactNode
@@ -401,7 +402,7 @@ export function Entry({
               <Dated date={date} />
             </FootDate>
           )}
-          {floor}
+          {floor?.(wide)}
         </Text>
       </Words>
       {children?.(wide)}
