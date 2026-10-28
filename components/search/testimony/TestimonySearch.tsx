@@ -8,17 +8,12 @@ import {
 } from "react-instantsearch"
 import { createInstantSearchRouterNext } from "react-instantsearch-router-nextjs"
 import singletonRouter from "next/router"
-import {
-  StyledTabContent,
-  StyledTabNav
-} from "components/EditProfilePage/StyledEditProfileComponents"
 import { currentGeneralCourt } from "functions/src/shared"
 import { SortByItem } from "instantsearch.js/es/connectors/sort-by/connectSortBy"
 import { useState, useMemo } from "react"
-import { TabContainer } from "react-bootstrap"
 import styled from "styled-components"
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
-import { Col, Form, Nav, Row } from "../../bootstrap"
+import { Col, Form, Row } from "../../bootstrap"
 import { NoResults } from "../NoResults"
 import { ResultCount } from "../ResultCount"
 import { SearchContainer } from "../SearchContainer"
@@ -142,15 +137,6 @@ const useSearchStatus = () => {
   }
 }
 
-/* The author-type tabs above the search, hidden: the filter panel's group
-   (AuthorTypeFilterSection) is the control that shows. display: none keeps
-   the tabs out of the accessibility tree. */
-const AuthorTypeTabs = styled.div`
-  [data-maple-theme="dd"] & {
-    display: none;
-  }
-`
-
 const AuthorTypeFilterSection = styled(FilterSection)`
   display: block;
 
@@ -199,8 +185,7 @@ const Layout = () => {
   }
 
   /* The All / Individuals / Organizations choice, as the first group in the
-     filter panel. The tabs above the search (AuthorTypeTabs, hidden) set the
-     same authorRole filter. */
+     filter panel. It sets the authorRole filter. */
   const authorTypeFilter = (
     <AuthorTypeFilterSection>
       <FilterLabel>{t("author_type")}</FilterLabel>
@@ -224,25 +209,6 @@ const Layout = () => {
   return (
     <>
       <FollowContext.Provider value={{ followStatus, setFollowStatus }}>
-        <AuthorTypeTabs>
-          <TabContainer activeKey={key} onSelect={(k: any) => setKey(k)}>
-            <StyledTabNav>
-              {tabs.map((t, i) => (
-                <Nav.Item key={t}>
-                  <Nav.Link
-                    eventKey={t}
-                    className={`rounded-top m-0 p-0`}
-                    onClick={e => onTabClick(t)}
-                  >
-                    <p className={`my-0 ${i == 0 ? "" : "mx-4"}`}>{t}</p>
-                    <hr className={`my-0`} />
-                  </Nav.Link>
-                </Nav.Item>
-              ))}
-            </StyledTabNav>
-            <StyledTabContent></StyledTabContent>
-          </TabContainer>
-        </AuthorTypeTabs>
         <SearchContainer>
           <ControlsBar>
             <SearchBox placeholder="Search For Testimony" />

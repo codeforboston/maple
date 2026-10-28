@@ -5,39 +5,6 @@ import { Col, Button, Nav, NavDropdown, Row } from "../bootstrap"
 import { FC, PropsWithChildren, ReactNode } from "react"
 import { ProfileIcon } from "components/ProfilePage/StyledUserIcons"
 
-export const StyledTabNav = styled(Nav).attrs(props => ({
-  className: props.className
-}))`
-  display: flex;
-
-  height: 2.5em;
-  margin-bottom: 1rem;
-
-  .nav-item {
-    flex-grow: 1;
-    width: auto;
-  }
-
-  text-align: center;
-  font-size: 1.25rem;
-  color: var(--bs-dark);
-
-  .nav-link.active {
-    color: var(--maple-brand-danger);
-  }
-
-  .nav-link {
-    cursor: pointer;
-    overflow: visible;
-    width: auto;
-    margin: 0 1rem;
-  }
-
-  .nav-link:first-child {
-    margin-left: 0;
-  }
-`
-
 export const TabNavWrapper = ({ children, className, ...props }: NavProps) => {
   return (
     <Nav
