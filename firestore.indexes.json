@@ -1169,6 +1169,12 @@
       ]
     },
     {
+      "collectionGroup": "lobbyingMeta",
+      "fieldPath": "rows",
+      "ttl": false,
+      "indexes": []
+    },
+    {
       "collectionGroup": "publishedTestimony",
       "fieldPath": "authorUid",
       "ttl": false,

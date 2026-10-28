@@ -5,6 +5,7 @@ Uses unittest.mock to intercept Firestore calls so no live database is needed.
 
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch, call
@@ -30,6 +31,8 @@ from writer import (
     write_filings,
     compute_stats,
     _firestore_size,
+    _doc_index_entries,
+    _UNINDEXED_FIELDS,
     FILINGS_COLLECTION,
     REGISTRANTS_COLLECTION,
     REGISTRATIONS_COLLECTION,
@@ -688,6 +691,34 @@ def test_compute_stats_writes_nothing_when_a_doc_is_too_big():
     assert not db.batch.return_value.commit.called
 
 
+def test_index_entries_follow_firestore_automatic_indexing():
+    """A scalar is indexed ascending and descending, a map by its subfields,
+    an array once per distinct element; an exempt field not at all."""
+    fields = {"n": 1, "name": None, "m": {"a": "x", "b": {"c": 2}}, "l": ["a", "a", "b"],
+              "rows": {"ROW": {"name": "Row", "years": [2025]}}}
+    # n: 2; name: 2; m: 2 + 2; l: 2; rows: exempt
+    assert _doc_index_entries(fields) == 2 + 2 + 4 + 2
+
+
+def test_unindexed_fields_are_exempt_in_firestore_indexes():
+    """The fields the estimate leaves out must be exempt on lobbyingMeta, or
+    the estimate is too low and Firestore refuses the write."""
+    config = json.loads((Path(__file__).parents[2] / "firestore.indexes.json").read_text())
+    exempt = {o["fieldPath"] for o in config["fieldOverrides"]
+              if o["collectionGroup"] == "lobbyingMeta" and o["indexes"] == []}
+    assert _UNINDEXED_FIELDS <= exempt
+
+
+def test_compute_stats_writes_nothing_when_a_doc_has_too_many_index_entries():
+    db, doc_mocks = _make_stats_db()
+    with patch("writer._iter_collection", side_effect=lambda _db, _name: iter([])), \
+            patch("writer._INDEX_ENTRY_LIMIT", 2), \
+            pytest.raises(ValueError, match="index entries"):
+        compute_stats(db)
+    assert not any(m.set.called for m in doc_mocks.values())
+    assert not db.batch.return_value.commit.called
+
+
 def test_registration_doc_shape_and_id():
     from portal import Registration, RegistrationParty
     reg = Registration(
@@ -1063,7 +1094,7 @@ def test_compute_stats_lists_no_client_but_counts_no_organization():
     assert (c["filings"], c["bills"], c["lobbyistCount"], c["inHouseFilers"]) == (1, 1, 1, [])
     assert "TOTAL SALARIES PAID" not in clients
     for doc in ("clientList_194", "clientList_all"):
-        rows = _captured_data(doc_mocks[doc])
+        rows = _captured_data(doc_mocks[doc])["rows"]
         assert (rows["NO CLIENT"]["placeholder"], "placeholder" in rows["CLIENT A"]) == (True, False)
     (bill,) = _batch_set_dicts_with_key(db, "orgSupport")
     assert (bill["total"], bill["clients"], bill["orgNeutral"], bill["orgLatestNeutral"]) == (3, 1, 0, 0)
@@ -1126,11 +1157,11 @@ def test_compute_stats_writes_one_client_list_per_session_and_one_for_all():
     registrants = [_registrant("FIRM", 2025, clients=[("CLIENT A", 10.0)]),
                    _registrant("FIRM", 2023, clients=[("CLIENT A", 4.0)])]
     _, doc_mocks, _ = _run_stats(registrants=registrants, filings=filings)
-    s194 = _captured_data(doc_mocks["clientList_194"])["CLIENT A"]
-    s193 = _captured_data(doc_mocks["clientList_193"])["CLIENT A"]
+    s194 = _captured_data(doc_mocks["clientList_194"])["rows"]["CLIENT A"]
+    s193 = _captured_data(doc_mocks["clientList_193"])["rows"]["CLIENT A"]
     assert (s194["name"], s194["bills"], s194["compensation"]) == ("CLIENT A", 2, 10.0)
     assert (s193["bills"], s193["compensation"]) == (1, 4.0)
-    every = _captured_data(doc_mocks["clientList_all"])
+    every = _captured_data(doc_mocks["clientList_all"])["rows"]
     assert list(every) == ["CLIENT A"] and (every["CLIENT A"]["bills"], every["CLIENT A"]["compensation"]) == (3, 14.0)
 
 
@@ -1141,8 +1172,8 @@ def test_compute_stats_writes_one_lobbyist_list_per_session():
                    _registrant("FIRM", 2023, clients=[("CLIENT A", 1.0), ("CLIENT B", 1.0)])]
     filings = [_filing("FIRM", "CLIENT A", "H1")]
     _, doc_mocks, _ = _run_stats(registrants=registrants, filings=filings)
-    s194 = _captured_data(doc_mocks["firmList_194"])["FIRM"]
-    s193 = _captured_data(doc_mocks["firmList_193"])["FIRM"]
+    s194 = _captured_data(doc_mocks["firmList_194"])["rows"]["FIRM"]
+    s193 = _captured_data(doc_mocks["firmList_193"])["rows"]["FIRM"]
     assert (s194["clientCount"], s194["filings"], s194["years"]) == (1, 1, [2025, 2023])
     assert (s193["clientCount"], s193["filings"], s193["totalFilings"]) == (2, 0, 1)
 
