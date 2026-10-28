@@ -142,7 +142,7 @@ export const useRefinements = ({
         className={hasRefinements ? "ais-FilterButton-has-refinements" : ""}
         aria-label={t("filter")}
       >
-        {/* The icon alone below 768px; the word stays in the label
+        {/* The icon alone below 420px; the word stays in the label
             (styles/globals.css). */}
         <FontAwesomeIcon icon={faFilter} />
         <span className="filter-button-word"> {t("filter")}</span>

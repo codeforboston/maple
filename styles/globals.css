@@ -335,6 +335,28 @@
   background-color: var(--bs-body-bg) !important;
 }
 
+/* Close buttons are drawn white for the blue modal headers ($btn-close-color
+   in styles/bootstrap.scss). The explorers' filter drawer (below 992px) has a
+   light header instead, so its X is drawn dark: Bootstrap's own white-X
+   filter, the other way round. */
+.offcanvas-header .btn-close {
+  filter: invert(1) grayscale(100%);
+}
+
+/* The first filter card closer under the drawer's title: the header's 16px
+   below the title, without the body's own 16px on top of it. */
+.offcanvas .offcanvas-body {
+  padding-top: 0;
+}
+
+/* On phones the filter drawer takes the screen's full width rather than
+   Bootstrap's 400px. */
+@media (max-width: 575.98px) {
+  .offcanvas.offcanvas-start {
+    --bs-offcanvas-width: 100%;
+  }
+}
+
 .btn-disabled {
   background-color: var(--maple-surface-page);
   color: var(--maple-text-body);
@@ -1060,10 +1082,10 @@
   }
 }
 
-/* The explorers' filter button is the icon alone below 768px, and the icon
+/* The explorers' filter button is the icon alone below 420px, and the icon
    and its word from there until the filters sit in their column at 992px
    (components/search/useFiltersInline.ts). */
-@media (max-width: 767.98px) {
+@media (max-width: 419.98px) {
   :root .filter-button-word {
     display: none;
   }
