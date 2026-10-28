@@ -500,10 +500,11 @@ running multiple language runtimes in the same Firebase Functions deployment.
 ## Deploying the Cloud Run Container
 
 `lobbying-scraper/deploy.sh` builds and pushes the image, creates or updates
-the `maple-lobbying-scraper` Cloud Run job (with `ARCHIVE_RAW=1`), and creates
-or updates the `maple-lobbying-weekly` Cloud Scheduler trigger (Mondays 06:00
-UTC). The trigger runs as a dedicated `lobbying-scheduler` service account that
-can only invoke the job. Run it once per project to set everything up:
+the `maple-lobbying-scraper` Cloud Run job (with `ARCHIVE_RAW=1`, 2 GiB of
+memory and 1 vCPU: the stats step runs out of memory at the 512 MiB default),
+and creates or updates the `maple-lobbying-weekly` Cloud Scheduler trigger
+(Mondays 06:00 UTC). The trigger runs as a dedicated `lobbying-scheduler`
+service account that can only invoke the job. Run it once per project to set everything up:
 
 ```bash
 gcloud auth configure-docker us-central1-docker.pkg.dev  # once
