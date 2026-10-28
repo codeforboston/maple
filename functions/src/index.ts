@@ -31,7 +31,8 @@ export {
 export {
   createMemberSearchIndex,
   fetchMemberBatch,
-  startMemberBatches
+  startMemberBatches,
+  buildMemberBillSummaries
 } from "./members"
 export { completePhoneVerificationV2, finishSignupV2 } from "./profile"
 export { checkSearchIndexVersion, searchHealthCheck } from "./search"
@@ -63,6 +64,7 @@ export {
 export { scrapeElections } from "./legislators"
 
 export { transcriptionV2 } from "./webhooks"
+export { scrapeHouseRollCalls, scrapeSenateRollCalls } from "./votes"
 
 export { matchOcpfMembersV2 } from "./ocpf/matchOcpfMembers"
 export {

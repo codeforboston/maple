@@ -80,7 +80,7 @@ jobs:
           ./node_modules/.bin/firebase --project demo-dtp emulators:exec
           --only auth,firestore
           --import tests/integration/exportedTestData
-          "yarn firebase-admin run-script backfillTestimonyBallotQuestionId --env local"
+          "yarn firebase-admin run-script backfillTestimonyScope --env local"
 
       - name: Run Integration Tests
         run: >
@@ -90,4 +90,4 @@ jobs:
           tests/integration/moderation.test.ts
           tests/integration/profile.test.ts
           tests/integration/ballotQuestions.test.ts
-          tests/integration/backfillTestimonyBallotQuestionId.test.ts
+          tests/integration/backfillTestimonyScope.test.ts

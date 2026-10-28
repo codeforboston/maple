@@ -1,6 +1,7 @@
 import { AnyAction, createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { BallotQuestion, Bill, Profile, Testimony } from "components/db"
 import { TestimonyQuery } from "components/db/api"
+import type { Conference } from "components/db/conferences"
 import { createAppSelector, useAppSelector } from "components/hooks"
 import { check } from "components/utils"
 import { maxBy, nth } from "lodash"
@@ -12,6 +13,7 @@ export type PageData = {
   testimony: Testimony
   bill: Bill
   ballotQuestion: BallotQuestion | null
+  conference: Conference | null
   author: (Profile & { uid: string }) | null
   /** Archived testimony, in descending version order */
   archive: Testimony[]
@@ -60,7 +62,7 @@ export const {
 
 const selectTestimonyDetails = createAppSelector(({ testimonyDetail }) => {
   const {
-    data: { archive, bill, ballotQuestion, author, testimony },
+    data: { archive, bill, ballotQuestion, conference, author, testimony },
     selectedVersion,
     ...rest
   } = check(testimonyDetail)
@@ -75,6 +77,7 @@ const selectTestimonyDetails = createAppSelector(({ testimonyDetail }) => {
     isEdited: revision.version > 1,
     bill,
     ballotQuestion,
+    conference,
     author,
     publishedId: testimony.id,
     version: revision.version,

@@ -1,6 +1,7 @@
 import {
   Array,
   Boolean,
+  Dictionary,
   Literal as L,
   Number,
   Optional,
@@ -21,12 +22,15 @@ export const ConferenceSource = Record({
 })
 
 /** One point the chambers disagree on, with a short blob per chamber. Written
- * by journalists, never computed from the texts. */
+ * by journalists, never computed from the texts. A chamber left out has
+ * nothing on it in its bill. */
 export type ConferenceDifference = Static<typeof ConferenceDifference>
 export const ConferenceDifference = Record({
   heading: String,
-  senate: String,
-  house: String,
+  senate: Optional(String),
+  house: Optional(String),
+  /** Phrases in either blob that open a note, each with its points. */
+  notes: Optional(Dictionary(Array(String), String)),
   source: Optional(ConferenceSource)
 })
 
@@ -68,6 +72,8 @@ export const Conference = withDefaults(
     /** A short name for headings and lists ("Phone-Free Schools"), as the
      * press refers to it. Pages fall back to the title. */
     name: Optional(String),
+    /** What the bill is, in one sentence, above what is unresolved. */
+    gist: Optional(String),
     senateBillId: Id,
     houseBillId: Id,
     /** The bill whose history carries the appointment actions, one of the

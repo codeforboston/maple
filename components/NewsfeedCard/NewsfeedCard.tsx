@@ -5,9 +5,11 @@ import { flags } from "../featureFlags"
 import {
   NewsfeedBallotQuestionCardBody,
   NewsfeedBillCardBody,
+  NewsfeedConferenceTestimonyCardBody,
   NewsfeedTestimonyCardBody
 } from "./NewsfeedCardBody"
 import NewsfeedCardTitle from "./NewsfeedCardTitle"
+import { maple } from "components/links"
 
 const Container = styled.div`
   max-width: 700px;
@@ -19,6 +21,7 @@ export const NewsfeedCard = (props: {
   ballotStatus?: string
   billId?: string
   bodyText: string
+  conferenceId?: string | null
   court?: string
   header: string
   isBallotQuestionMatch?: boolean
@@ -34,10 +37,14 @@ export const NewsfeedCard = (props: {
 }) => {
   const date = props.timestamp.toDate()
   const formattedTimestamp = `${date.toLocaleDateString()}`
+  const conferenceHref = props.conferenceId
+    ? maple.conference({ court: Number(props.court), id: props.conferenceId })
+    : undefined
   const header = (
     <NewsfeedCardTitle
       authorUid={props.authorUid}
       billId={props.billId}
+      conferenceHref={conferenceHref}
       court={props.court}
       header={props.header}
       isBallotQuestionMatch={props.isBallotQuestionMatch}
@@ -59,7 +66,17 @@ export const NewsfeedCard = (props: {
     />
   )
 
-  if (props.type == `testimony`) {
+  if (props.type == `testimony` && conferenceHref) {
+    body = (
+      <NewsfeedConferenceTestimonyCardBody
+        billText={props.header}
+        conferenceHref={conferenceHref}
+        position={props.position}
+        text={props.bodyText}
+        timestamp={formattedTimestamp}
+      />
+    )
+  } else if (props.type == `testimony`) {
     body = (
       <NewsfeedTestimonyCardBody
         billText={props.header}

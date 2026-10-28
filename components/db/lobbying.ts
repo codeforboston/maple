@@ -696,8 +696,8 @@ export async function fetchFirmList(
 // Precomputed list docs written by compute_stats, so the list pages' API
 // routes read one document instead of every summary: lobbyingMeta/
 // clientList_{court} and clientList_all, and firmList_{court} (no
-// all-sessions lobbyist doc: it would pass Firestore's 1 MiB limit). Each is a
-// map keyed by the normalized name.
+// all-sessions lobbyist doc: it would pass Firestore's 1 MiB limit). Each
+// holds its rows under `rows`, a map keyed by the normalized name.
 export type ClientListEntry = {
   name: string
   bills: number

@@ -53,6 +53,7 @@ export const populateTestimonySubmissionNotificationEvents = onDocumentWritten(
 
         ballotQuestionId: bqId,
         ballotQuestionCourt: bqCourt,
+        conferenceId: newData?.conferenceId ?? null,
 
         updateTime: Timestamp.now()
       }
