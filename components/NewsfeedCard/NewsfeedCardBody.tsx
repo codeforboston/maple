@@ -4,6 +4,8 @@ import { useMediaQuery } from "usehooks-ts"
 import { Col, Row } from "../bootstrap"
 import { Internal } from "components/links"
 import { truncateText } from "components/formatting"
+import { ConferencePosition } from "components/db"
+import { PositionChip } from "components/conference/input/Entry"
 
 export const NewsfeedBallotQuestionCardBody = ({
   ballotQuestionId,
@@ -189,6 +191,47 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
           testimonyId={testimonyId}
           timestamp={timestamp}
         />
+      </CardBootstrap.Body>
+    </div>
+  )
+}
+
+/** Testimony on a committee of conference: the stance is the conference
+ * page's chip, and the card leads to the conference, not the bill. */
+export const NewsfeedConferenceTestimonyCardBody = (props: {
+  billText?: string
+  conferenceHref: string
+  position?: string
+  text?: string
+  timestamp?: string
+}) => {
+  const { billText, conferenceHref, text, timestamp } = props
+  const { t } = useTranslation("common")
+
+  return (
+    <div>
+      <CardBootstrap.Body className={`p-2`}>
+        <CardBootstrap.Text className={`text-secondary mb-2`}>
+          <strong>{billText}</strong>
+        </CardBootstrap.Text>
+        <div className={`bg-body mx-0 mt-1 p-3 rounded`}>
+          {ConferencePosition.guard(props.position) && (
+            <PositionChip position={props.position} long />
+          )}
+          <strong className={`d-block mt-2`}>{`"${truncateText(
+            text,
+            600
+          )}"`}</strong>
+        </div>
+        <div className={`d-flex flex-wrap justify-content-between mt-2 mb-2`}>
+          <div>
+            {t("newsfeed.conferenceInputPost")}
+            {timestamp}
+          </div>
+          <Internal href={`${conferenceHref}#input`}>
+            <div>{t("newsfeed.viewConferenceInput")}</div>
+          </Internal>
+        </div>
       </CardBootstrap.Body>
     </div>
   )

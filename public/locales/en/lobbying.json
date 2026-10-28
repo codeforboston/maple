@@ -67,6 +67,7 @@
     "firmName": "Lobbyist",
     "amount": "Compensation",
     "year": "Year",
+    "period": "Period",
     "filings": "Filings",
     "bills": "Bills lobbied",
     "clients": "Clients represented",

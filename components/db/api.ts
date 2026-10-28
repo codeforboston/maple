@@ -29,6 +29,7 @@ export type TestimonyQuery = {
   billId: string
   court: number
   ballotQuestionId?: string
+  conferenceId?: string
 }
 
 export type BillQuery = {
@@ -72,7 +73,8 @@ export class DbService {
     authorUid,
     billId,
     court,
-    ballotQuestionId
+    ballotQuestionId,
+    conferenceId
   }: TestimonyQuery): Promise<Testimony[]> => {
     const result = await this.getDocs(
       query(
@@ -80,6 +82,7 @@ export class DbService {
         where("billId", "==", billId),
         where("court", "==", court),
         where("ballotQuestionId", "==", ballotQuestionId ?? null),
+        where("conferenceId", "==", conferenceId ?? null),
         orderBy("version", "desc")
       )
     )

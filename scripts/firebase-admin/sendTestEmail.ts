@@ -127,6 +127,12 @@ const billResults: BillResult[] = [
     position: "neutral"
   },
   {
+    billId: "S2581",
+    court: "194",
+    conferenceId: "student-learning-and-mental-health",
+    stance: "Pass the Senate version"
+  },
+  {
     billId: "H533",
     court: "194",
     position: "oppose"

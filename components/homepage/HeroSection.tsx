@@ -24,8 +24,8 @@ export type HeroSectionProps = {
    * committees cover, and buttons to them. */
   showAsk?: boolean
   /** The statehouse in its own column, in the search panel's place, rather
-   * than under the copy, laid out like Old Hero: statehouse on the left, copy
-   * on the right. The panel is left out while this is on. */
+   * than under the copy, laid out like main's hero: statehouse on the left,
+   * copy on the right. The panel is left out while this is on. */
   statehouseColumn?: boolean
 }
 

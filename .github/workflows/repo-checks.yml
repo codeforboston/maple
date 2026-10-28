@@ -16,6 +16,9 @@ jobs:
       - run: ruff check llm/
       - run: ruff format --check llm/
       - run: pytest llm/
+      - run: pip install -r lobbying-scraper/requirements.txt
+      # A separate run: both suites have a `tests` package.
+      - run: pytest lobbying-scraper/tests
 
   check_code_quality:
     name: Code Quality
@@ -77,7 +80,7 @@ jobs:
           ./node_modules/.bin/firebase --project demo-dtp emulators:exec
           --only auth,firestore
           --import tests/integration/exportedTestData
-          "yarn firebase-admin run-script backfillTestimonyBallotQuestionId --env local"
+          "yarn firebase-admin run-script backfillTestimonyScope --env local"
 
       - name: Run Integration Tests
         run: >
@@ -87,4 +90,4 @@ jobs:
           tests/integration/moderation.test.ts
           tests/integration/profile.test.ts
           tests/integration/ballotQuestions.test.ts
-          tests/integration/backfillTestimonyBallotQuestionId.test.ts
+          tests/integration/backfillTestimonyScope.test.ts

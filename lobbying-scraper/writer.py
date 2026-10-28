@@ -6,6 +6,7 @@ names and field names must stay in sync with that file.
 
 from __future__ import annotations
 
+import re
 import time
 import urllib.parse
 from datetime import datetime, timezone
@@ -44,6 +45,13 @@ STATS_DOC_ID = "stats"
 LEGACY_TOTAL_CLIENT = "_total_salary_"
 
 
+def _counts_as_bill(bill_id: str | None) -> bool:
+    """A chamber prefix and a bill number from 1 up. Filers enter 0 for
+    activity on no bill yet ("N/A", "a bill to be filed next session"), so
+    H0/S0 aren't bills; H1-H9 are (H1 is the House budget)."""
+    return bool(bill_id and re.fullmatch(r"[A-Z]+[1-9][0-9]*", bill_id))
+
+
 def _is_legacy_total_client(name: str | None, name_norm: str | None) -> bool:
     if not name_norm or name_norm == LEGACY_TOTAL_CLIENT:
         return True
@@ -51,6 +59,13 @@ def _is_legacy_total_client(name: str | None, name_norm: str | None) -> bool:
         return True
     lc = (name or "").lower()
     return "total salaries" in lc or "total salary" in lc
+
+
+# The portal's client for a period in which a lobbyist had no client
+# ("Client: No client", $0.00, activity "N/A", though some report bills).
+# Not an organization: it gets a client summary and list row (marked
+# placeholder) listing those lobbyists, but no client or organization count.
+NO_CLIENT = "NO CLIENT"
 
 
 def _doc_id_for_norm(name_norm: str) -> str:
@@ -123,6 +138,26 @@ def _normalize_position(raw: str | None) -> str:
     return "none"
 
 
+def _party_norm(party: dict) -> str:
+    """A registration party's normalized name (older docs may lack nameNorm)."""
+    return party.get("nameNorm") or normalize_entity_name(party["name"])
+
+
+# The per-session fields a Clients list row carries (lobbyingMeta/
+# clientList_{gc}; ClientListEntry in components/db/lobbying.ts).
+_CLIENT_LIST_FIELDS = ("bills", "compensation", "individuals", "firmAgents",
+                       "inHouseLobbyists", "hiredFirms", "firmsWithoutAgents")
+
+
+def _period_key(filing: dict) -> str:
+    """The filing's half-year as "YYYY-06-30" / "YYYY-12-31" (from periodEnd),
+    else its year: the Bill page's period keys, which sort as strings."""
+    end = filing.get("periodEnd") or ""
+    if len(end) >= 7 and end[:4].isdigit():
+        return f"{end[:4]}-{'06-30' if int(end[5:7]) <= 6 else '12-31'}"
+    return str(filing.get("year", ""))
+
+
 def _prune_stale(db: firestore.Client, coll_ref, keep: set[str]) -> int:
     """Delete docs in a summary subcollection that this run didn't write.
     Summaries are fully regenerated each run, so a doc left over from an
@@ -138,6 +173,35 @@ def _prune_stale(db: firestore.Client, coll_ref, keep: set[str]) -> int:
     if len(stale) % 400:
         batch.commit()
     return len(stale)
+
+
+# Firestore's per-document limit, and where the stats run starts warning.
+_DOC_SIZE_LIMIT = 1_048_576
+_DOC_SIZE_WARN = 900 * 1024
+
+
+def _firestore_size(value) -> int:
+    """A value's stored size under Firestore's documented rules: a string is
+    its UTF-8 bytes + 1, a number 8, a bool or null 1, and a map each field
+    name's bytes + 1 plus its value."""
+    if isinstance(value, str):
+        return len(value.encode()) + 1
+    if isinstance(value, bool) or value is None:
+        return 1
+    if isinstance(value, (int, float)):
+        return 8
+    if isinstance(value, dict):
+        return sum(len(k.encode()) + 1 + _firestore_size(v) for k, v in value.items())
+    if isinstance(value, (list, tuple)):
+        return sum(_firestore_size(v) for v in value)
+    raise TypeError(f"no Firestore size for {type(value).__name__}")
+
+
+def _doc_size(doc_id: str, fields: dict) -> int:
+    """A lobbyingMeta document's stored size: its name (each path segment
+    as a string, + 16), its fields, + 32."""
+    name = _firestore_size(STATS_COLLECTION) + _firestore_size(doc_id) + 16
+    return name + _firestore_size(fields) + 32
 
 
 def compute_stats(db: firestore.Client) -> None:
@@ -159,13 +223,35 @@ def compute_stats(db: firestore.Client) -> None:
     entity_court_clients: dict[str, dict[int, set]] = {}
     client_court_entities: dict[str, dict[int, set]] = {}
     client_court_comp: dict[str, dict[int, float]] = {}
+    # Organizations (client norms) per normalized position on each bill:
+    # gc -> bill -> position -> set. An org with two positions is in both.
+    bill_pos_clients: dict[int, dict[str, dict[str, set]]] = {}
+    # Distinct bills and filers per client per session: client norm -> gc -> set.
+    client_court_bills: dict[str, dict[int, set]] = {}
+    client_court_filers: dict[str, dict[int, set]] = {}
+    # Each organization's latest reporting period on a bill and the positions
+    # it reported then: gc -> bill -> client norm -> [period key, positions].
+    # Counted once per organization below, as the Bill page does.
+    bill_org_latest: dict[int, dict[str, dict[str, list]]] = {}
+    # Clients with filings per session (the overview's key figures).
+    court_clients: dict[int, set] = {}
+    # Filings per year, and how many carry their reporting window; logged so
+    # a parser regression shows up in the job log.
+    filings_with_period: dict[str, int] = {}
 
     for doc in _iter_collection(db, FILINGS_COLLECTION):
         d = doc.to_dict()
         year = str(d.get("year", ""))
         gc = d.get("generalCourt")
         bill_id = d.get("billId")
-        if bill_id and len(bill_id) > 2 and gc:
+        cn = d.get("clientNameNorm")
+        en = d.get("entityNameNorm")
+        # The client, unless it's the legacy total row; and the client when
+        # it's an organization, so not "No client" either. Both count toward
+        # filings; only an organization counts toward client and org counts.
+        client = cn if cn and not _is_legacy_total_client(d.get("clientName"), cn) else None
+        org = client if client != NO_CLIENT else None
+        if _counts_as_bill(bill_id) and gc:
             bills.add(f"{gc}/{bill_id}")
             pos = _normalize_position(d.get("position"))
             if gc not in bill_summaries:
@@ -182,30 +268,53 @@ def compute_stats(db: firestore.Client) -> None:
                     "title": d.get("activityTitle") or "",
                     "clients": 0,
                     "lobbyists": 0,
+                    "orgSupport": 0,
+                    "orgOppose": 0,
+                    "orgNeutral": 0,
+                    "orgLatestSupport": 0,
+                    "orgLatestOppose": 0,
+                    "orgLatestNeutral": 0,
+                    "orgLatestMultiple": 0,
                 }
                 bill_client_sets[gc][bill_id] = set()
                 bill_entity_sets[gc][bill_id] = set()
             bill_summaries[gc][bill_id]["total"] += 1
             bill_summaries[gc][bill_id][pos] += 1
-            cn = d.get("clientNameNorm")
-            en = d.get("entityNameNorm")
-            if cn:
+            if client:
+                client_court_bills.setdefault(cn, {}).setdefault(gc, set()).add(bill_id)
+            if org:
                 bill_client_sets[gc][bill_id].add(cn)
+                if pos != "none":
+                    by_pos = bill_pos_clients.setdefault(gc, {}).setdefault(bill_id, {})
+                    by_pos.setdefault(pos, set()).add(cn)
+                key = _period_key(d)
+                orgs = bill_org_latest.setdefault(gc, {}).setdefault(bill_id, {})
+                slot = orgs.get(cn)
+                if slot is None:
+                    slot = orgs[cn] = [key, set()]
+                elif key > slot[0]:
+                    slot[0], slot[1] = key, set()
+                if key == slot[0]:
+                    slot[1].add(pos)
             if en:
                 bill_entity_sets[gc][bill_id].add(en)
         if gc:
             courts.add(gc)
         if year:
             filings_by_year[year] = filings_by_year.get(year, 0) + 1
+            if d.get("periodEnd"):
+                filings_with_period[year] = filings_with_period.get(year, 0) + 1
         total_filings += 1
-        en = d.get("entityNameNorm")
-        cn = d.get("clientNameNorm")
+        if org and gc:
+            court_clients.setdefault(gc, set()).add(cn)
+        if client and gc and en:
+            client_court_filers.setdefault(cn, {}).setdefault(gc, set()).add(en)
         if en:
             entity_filing_counts[en] = entity_filing_counts.get(en, 0) + 1
             if gc:
                 by_court = entity_court_filings.setdefault(en, {})
                 by_court[gc] = by_court.get(gc, 0) + 1
-        if cn:
+        if client:
             client_filing_counts[cn] = client_filing_counts.get(cn, 0) + 1
             if gc:
                 by_court = client_court_filings.setdefault(cn, {})
@@ -215,6 +324,19 @@ def compute_stats(db: firestore.Client) -> None:
         for bill_id, counts in bills_map.items():
             counts["clients"] = len(bill_client_sets.get(gc, {}).get(bill_id, set()))
             counts["lobbyists"] = len(bill_entity_sets.get(gc, {}).get(bill_id, set()))
+            by_pos = bill_pos_clients.get(gc, {}).get(bill_id, {})
+            counts["orgSupport"] = len(by_pos.get("support", ()))
+            counts["orgOppose"] = len(by_pos.get("oppose", ()))
+            counts["orgNeutral"] = len(by_pos.get("neutral", ()))
+            # Each organization once, by what it reported in its latest
+            # period: one position counts under it, more than one as
+            # multiple; "none" only counts when it's alone, and isn't shown.
+            for _, positions in bill_org_latest.get(gc, {}).get(bill_id, {}).values():
+                reported = positions - {"none"}
+                if len(reported) > 1:
+                    counts["orgLatestMultiple"] += 1
+                elif reported:
+                    counts["orgLatest" + next(iter(reported)).capitalize()] += 1
 
     client_norms: set[str] = set()
     spend_by_year: dict[str, float] = {}
@@ -230,6 +352,17 @@ def compute_stats(db: firestore.Client) -> None:
     # pages/lobbying/firms/index.tsx.
     client_summaries: dict[str, dict] = {}
     firm_summaries: dict[str, dict] = {}
+    # Reported paid per session, on the same basis as spendByYear.
+    paid_by_court: dict[int, float] = {}
+    # People and entities on a disclosure in each session: the filer, plus
+    # the lobbyists a firm's disclosure names.
+    active_by_court: dict[int, set] = {}
+    # Agents each entity names on a client's activity blocks:
+    # client norm -> gc -> entity norm -> set of agent norms.
+    client_court_agents: dict[str, dict[int, dict[str, set]]] = {}
+    # Firm disclosures per year from 2014, and how many name agents per
+    # client; logged so a parser regression shows up in the job log.
+    firm_docs_by_year: dict[int, list[int]] = {}
 
     for doc in _iter_collection(db, REGISTRANTS_COLLECTION):
         d = doc.to_dict()
@@ -240,6 +373,24 @@ def compute_stats(db: firestore.Client) -> None:
         reg_type = d.get("regType")
         clients = d.get("clients", [])
         court = year_to_general_court(year) if year is not None else None
+        client_lobbyists = d.get("clientLobbyists") or {}
+
+        if court is not None:
+            active = active_by_court.setdefault(court, set())
+            active.update(
+                d.get("lobbyistsNorm")
+                or [normalize_entity_name(n) for n in d.get("lobbyists") or []]
+            )
+            if entity_norm:
+                active.add(entity_norm)
+                for cn, names in client_lobbyists.items():
+                    client_court_agents.setdefault(cn, {}).setdefault(court, {}).setdefault(
+                        entity_norm, set()
+                    ).update(normalize_entity_name(n) for n in names)
+        if reg_type == "Employer" and year is not None and year >= 2014:
+            tally = firm_docs_by_year.setdefault(year, [0, 0])
+            tally[0] += 1
+            tally[1] += bool(client_lobbyists)
 
         if entity_norm:
             firm = firm_summaries.setdefault(
@@ -266,25 +417,29 @@ def compute_stats(db: firestore.Client) -> None:
 
             if comp is not None and year_str:
                 spend_by_year[year_str] = spend_by_year.get(year_str, 0) + comp
+                paid_by_court[court] = paid_by_court.get(court, 0) + comp
 
             if _is_legacy_total_client(name, norm):
                 continue
-
-            client_norms.add(norm)
             if court is not None:
                 if comp is not None:
                     by_court = client_court_comp.setdefault(norm, {})
                     by_court[court] = by_court.get(court, 0) + comp
                 if entity_norm:
-                    entity_court_clients.setdefault(entity_norm, {}).setdefault(court, set()).add(norm)
                     client_court_entities.setdefault(norm, {}).setdefault(court, set()).add(entity_norm)
-            if entity_norm:
-                # A set, not a running sum of len(clients): a registrant can
-                # now have multiple docs (one per filing period) for the same
-                # entity+year, and this is shown to users as "Clients
-                # represented" — it must count distinct clients, not filing
-                # periods or repeat appearances across years.
-                firm_summaries[entity_norm]["clientNorms"].add(norm)
+            # "No client" gets a summary, but no client count of its own or
+            # of the lobbyists reporting it.
+            if norm != NO_CLIENT:
+                client_norms.add(norm)
+                if entity_norm:
+                    if court is not None:
+                        entity_court_clients.setdefault(entity_norm, {}).setdefault(court, set()).add(norm)
+                    # A set, not a running sum of len(clients): a registrant
+                    # can now have multiple docs (one per filing period) for
+                    # the same entity+year, and this is shown to users as
+                    # "Clients represented" — it must count distinct clients,
+                    # not filing periods or repeat appearances across years.
+                    firm_summaries[entity_norm]["clientNorms"].add(norm)
 
             cs = client_summaries.setdefault(
                 norm,
@@ -322,6 +477,19 @@ def compute_stats(db: firestore.Client) -> None:
     # The overview's "Individual lobbyists" counts each registered person once.
     registered_individuals: set[str] = set()
     latest_registration: dict[str, tuple[int, str]] = {}
+    # Registered people and entities per session, for the overview's counts.
+    registered_by_court: dict[str, dict[int, set]] = {"Lobbyist": {}, "Employer": {}}
+    # (lobbyist norm, gc) -> norms of the organizations they're staff of that
+    # session: the entities employing them, or, for a lobbyist registered with
+    # no employing entity, the client(s) they list (taken as their employer).
+    lobbyist_orgs: dict[tuple[str, int], set] = {}
+    # Per client: earliest employment start; the latest year's page of the
+    # client's own (every registration listing a client links to it, a new
+    # page each year); and the latest registration listing them, as (year,
+    # registration page), whose page stands in when no client page is known.
+    client_first_start: dict[str, str] = {}
+    client_latest_page: dict[str, tuple[int, str]] = {}
+    client_latest_registration: dict[str, tuple[int, str]] = {}
     for doc in _iter_collection(db, REGISTRATIONS_COLLECTION):
         d = doc.to_dict()
         norm = d.get("nameNorm")
@@ -331,6 +499,9 @@ def compute_stats(db: firestore.Client) -> None:
             continue
         if reg_type == "Lobbyist":
             registered_individuals.add(norm)
+        gc = year_to_general_court(year) if year is not None else None
+        if gc is not None and reg_type in registered_by_court:
+            registered_by_court[reg_type].setdefault(gc, set()).add(norm)
         entry = firm_summaries.setdefault(
             norm,
             {
@@ -351,10 +522,37 @@ def compute_stats(db: firestore.Client) -> None:
         for p in d.get("employers", []):
             if not p.get("name"):
                 continue
-            key = p.get("nameNorm") or normalize_entity_name(p["name"])
+            key = _party_norm(p)
             if key not in employers or (year or 0) >= employers[key][0]:
                 employers[key] = (year or 0, p["name"])
+            if reg_type == "Lobbyist" and gc is not None:
+                lobbyist_orgs.setdefault((norm, gc), set()).add(key)
         urls = sorted(d.get("sourceUrls") or [])
+        # Lobbyists working for a firm register under it and list no clients;
+        # an individual account may have at most one client, normally the
+        # organization employing them. A single-client contractor looks the
+        # same in the data and is counted as in-house too.
+        staff_of_clients = reg_type == "Lobbyist" and not d.get("employers") and gc is not None
+        # Tuple order prefers, within a year, a registration with a page.
+        latest = (year, urls[0] if urls else "")
+        for p in d.get("clients", []):
+            if not p.get("name"):
+                continue
+            key = _party_norm(p)
+            # Not an organization: no one is its staff, and it has no
+            # registration dates or page of its own.
+            if key == NO_CLIENT:
+                continue
+            if staff_of_clients:
+                lobbyist_orgs.setdefault((norm, gc), set()).add(key)
+            start = p.get("startDate")
+            if start and (key not in client_first_start or start < client_first_start[key]):
+                client_first_start[key] = start
+            if year is not None and latest > client_latest_registration.get(key, (0, "")):
+                client_latest_registration[key] = latest
+            page = p.get("sourceUrl")
+            if year is not None and page and (year, page) > client_latest_page.get(key, (0, "")):
+                client_latest_page[key] = (year, page)
         if urls and year is not None and year >= latest_registration.get(norm, (0, ""))[0]:
             latest_registration[norm] = (year, urls[0])
         # Per-year registration details for the profile page (rolled up here so
@@ -373,6 +571,31 @@ def compute_stats(db: firestore.Client) -> None:
         })
     total_lobbyists = len(registered_individuals)
 
+    # The overview's "registered lobbyists" and "firms & entities": registered
+    # in the session and on at least one disclosure in it.
+    court_lobbyists, court_entities = (
+        {gc: norms & active_by_court.get(gc, set()) for gc, norms in registered_by_court[t].items()}
+        for t in ("Lobbyist", "Employer")
+    )
+
+    def is_in_house(entity: str, client: str, gc: int) -> bool:
+        # The client's own staff: the client filing for itself, or a lobbyist
+        # whose registration that session names the client as their employer
+        # (from 2019) or, with no employing entity, as their client.
+        return entity == client or client in lobbyist_orgs.get((entity, gc), ())
+
+    # In-house filers per client and session, for every client with filings.
+    # The summaries' inHouseCount and the inHouseFilers_{gc} docs both read it.
+    client_court_in_house: dict[str, dict[int, set]] = {
+        cn: {gc: {en for en in filers if is_in_house(en, cn, gc)} for gc, filers in by_court.items()}
+        for cn, by_court in client_court_filers.items()
+    }
+    in_house_by_court: dict[int, dict[str, list[str]]] = {}
+    for cn, by_court in client_court_in_house.items():
+        for gc, in_house in by_court.items():
+            if in_house:
+                in_house_by_court.setdefault(gc, {})[cn] = sorted(in_house)
+
     for cs in client_summaries.values():
         # A set of distinct firms (cs["firms"] is already keyed by
         # entityNameNorm), not a running per-doc count — same period-doc
@@ -383,14 +606,79 @@ def compute_stats(db: firestore.Client) -> None:
         filings_by_court = client_court_filings.get(norm, {})
         entities_by_court = client_court_entities.get(norm, {})
         comp_by_court = client_court_comp.get(norm, {})
-        cs["courts"] = {
-            str(gc): {
+        bills_by_court = client_court_bills.get(norm, {})
+        filers_by_court = client_court_filers.get(norm, {})
+        agents_by_court = client_court_agents.get(norm, {})
+        cs["courts"] = {}
+        all_in_house: set[str] = set()
+        all_individuals: set[str] = set()
+        # Every lobbyist or entity on the client's disclosures, filings or
+        # agent blocks is either its own staff or hired, counted from one set
+        # so the two always add up (for sessions without agent counts).
+        all_in_house_units: set[str] = set()
+        all_hired_units: set[str] = set()
+        for gc in (
+            set(filings_by_court) | set(entities_by_court) | set(comp_by_court)
+            | set(bills_by_court) | set(filers_by_court)
+        ):
+            in_house_filers = client_court_in_house.get(norm, {}).get(gc, set())
+            all_in_house |= in_house_filers
+            # People lobbying for the client: individual registrants and the
+            # agents each entity names on the client's activity blocks.
+            agents = agents_by_court.get(gc, {})
+            in_house_people: set[str] = set()
+            hired_people: set[str] = set()
+            in_house_units: set[str] = set()
+            # Hired firms and hired individual lobbyists; an individual counts
+            # as a one-person firm (and as its own agent in firmAgents).
+            hired_units: set[str] = set()
+            # Hired firms naming no agents for the client, so the people total
+            # (individuals + these) isn't short by the firms with no names.
+            firms_without_agents: set[str] = set()
+            for en in set(entities_by_court.get(gc, ())) | filers_by_court.get(gc, set()) | set(agents):
+                people = set(agents.get(en, ()))
+                is_individual = firm_summaries.get(en, {}).get("regType") == "Lobbyist"
+                if is_individual:
+                    people.add(en)
+                if is_in_house(en, norm, gc):
+                    in_house_people.update(people)
+                    in_house_units.add(en)
+                else:
+                    hired_people.update(people)
+                    hired_units.add(en)
+                    if not is_individual and not people:
+                        firms_without_agents.add(en)
+            all_in_house_units |= in_house_units
+            all_hired_units |= hired_units
+            firm_agents = hired_people - in_house_people
+            individuals = in_house_people | firm_agents
+            all_individuals |= individuals
+            cs["courts"][str(gc)] = {
                 "filings": filings_by_court.get(gc, 0),
                 "lobbyistCount": len(entities_by_court.get(gc, ())),
                 "compensation": comp_by_court.get(gc),
+                "bills": len(bills_by_court.get(gc, ())),
+                "inHouseCount": len(in_house_filers),
+                "individuals": len(individuals),
+                "firmAgents": len(firm_agents),
+                "inHouseLobbyists": len(in_house_units),
+                "hiredFirms": len(hired_units),
+                "firmsWithoutAgents": len(firms_without_agents),
+                # This client's entry in inHouseFilers_{gc}, so the Client
+                # page needn't read every client's.
+                "inHouseFilers": sorted(in_house_filers),
             }
-            for gc in set(filings_by_court) | set(entities_by_court) | set(comp_by_court)
-        }
+        cs["inHouseCount"] = len(all_in_house)
+        cs["individuals"] = len(all_individuals)
+        cs["inHouseLobbyists"] = len(all_in_house_units)
+        # In-house in any session wins, so no one is counted on both sides.
+        cs["hiredFirms"] = len(all_hired_units - all_in_house_units)
+        cs["firstRegistered"] = client_first_start.get(norm)
+        last_year, last_url = client_latest_registration.get(norm, (None, ""))
+        cs["lastRegisteredYear"] = last_year
+        cs["registrationUrl"] = client_latest_page.get(norm, (None, ""))[1] or last_url or None
+        if norm == NO_CLIENT:
+            cs["placeholder"] = True
         for fb in cs["firms"].values():
             fb["years"] = sorted(fb["years"], reverse=True)
         cs["firms"] = sorted(
@@ -435,16 +723,95 @@ def compute_stats(db: firestore.Client) -> None:
         "courtsWithData": sorted(courts),
         "spendByYear": spend_by_year,
         "filingsByYear": filings_by_year,
+        # The overview's key figures for one session.
+        "courts": {
+            str(gc): {
+                "bills": len(bill_summaries.get(gc, ())),
+                "clients": len(court_clients.get(gc, ())),
+                "lobbyists": len(court_lobbyists.get(gc, ())),
+                "firms": len(court_entities.get(gc, ())),
+                "paid": paid_by_court.get(gc, 0),
+            }
+            for gc in (
+                set(bill_summaries) | set(court_clients) | set(court_lobbyists)
+                | set(court_entities) | set(paid_by_court)
+            )
+        },
+        "totalLobbyists": len(set().union(*court_lobbyists.values())),
+        "totalEntities": len(set().union(*court_entities.values())),
     }
-    # Full overwrite, not merge: a merge keeps map keys (e.g. a spendByYear
-    # year) that this run no longer produces, so stale values never go away.
-    db.collection(STATS_COLLECTION).document(STATS_DOC_ID).set(stats)
-    db.collection(STATS_COLLECTION).document("entityFilingCounts").set(
-        entity_filing_counts
-    )
-    db.collection(STATS_COLLECTION).document("clientFilingCounts").set(
-        client_filing_counts
-    )
+    # One list doc per session for the Clients and Lobbyists list pages, so
+    # their API routes read one document instead of every summary. Keyed by
+    # normalized name; each row holds what the lists show, sort and search on.
+    client_lists: dict[int, dict] = {}
+    client_list_all: dict[str, dict] = {}
+    for cs in client_summaries.values():
+        norm = cs["clientNameNorm"]
+        # Marks "No client", which the lists show but don't count.
+        placeholder = {"placeholder": True} if cs.get("placeholder") else {}
+        for gc, c in cs["courts"].items():
+            client_lists.setdefault(int(gc), {})[norm] = {
+                "name": cs["clientName"], **{k: c[k] for k in _CLIENT_LIST_FIELDS}, **placeholder
+            }
+        client_list_all[norm] = {
+            "name": cs["clientName"],
+            "bills": sum(c["bills"] for c in cs["courts"].values()),
+            "compensation": cs["totalCompensation"],
+            "inHouseLobbyists": cs["inHouseLobbyists"],
+            "hiredFirms": cs["hiredFirms"],
+            **placeholder,
+        }
+    # A lobbyist or entity is in a session when it registered in one of the
+    # session's years, as the Lobbyists list filters. No all-sessions doc: at
+    # ~2 MB it would pass Firestore's 1 MiB limit, so that view reads
+    # firmSummaries.
+    firm_lists: dict[int, dict] = {}
+    for fs in firm_summaries.values():
+        for gc in {year_to_general_court(y) for y in fs["years"]}:
+            c = fs["courts"].get(str(gc), {})
+            firm_lists.setdefault(gc, {})[fs["entityNameNorm"]] = {
+                "name": fs["entityName"],
+                "regType": fs["regType"],
+                "years": fs["years"],
+                "clientCount": c.get("clientCount", 0),
+                "filings": c.get("filings", 0),
+                "totalFilings": entity_filing_counts.get(fs["entityNameNorm"]),
+                "lobbyists": fs["lobbyists"],
+                "employers": fs["employers"],
+                "hasFilings": fs["hasFilings"],
+            }
+
+    # The single-document writes: the stats, the filing counts, the
+    # per-session docs (inHouseFilers_{gc}: {client norm: [in-house filer
+    # norms]}; the two lists) and clientList_all. Each is a full overwrite,
+    # not a merge: a merge keeps map keys (e.g. a spendByYear year or a list
+    # row) that this run no longer produces. A session with no rows this run
+    # keeps no stale doc.
+    by_session = {"inHouseFilers": in_house_by_court, "clientList": client_lists, "firmList": firm_lists}
+    docs = {
+        STATS_DOC_ID: stats,
+        "entityFilingCounts": entity_filing_counts,
+        "clientFilingCounts": client_filing_counts,
+        **{f"{prefix}_{gc}": rows for prefix, by_gc in by_session.items() for gc, rows in by_gc.items()},
+        "clientList_all": client_list_all,
+    }
+    # Checked against Firestore's 1 MiB doc limit before anything is written,
+    # so a doc that outgrows it stops the run with the previous stats whole,
+    # instead of failing partway through the writes.
+    doc_sizes = {name: (len(fields), _doc_size(name, fields)) for name, fields in docs.items()}
+    too_big = {name: size for name, (_, size) in doc_sizes.items() if size > _DOC_SIZE_LIMIT}
+    if too_big:
+        raise ValueError(
+            "Stats not written: over Firestore's 1 MiB doc limit: "
+            + ", ".join(f"{name} ({size // 1024} KiB)" for name, size in sorted(too_big.items()))
+            + ". Split the doc into several before rerunning."
+        )
+    for name, fields in docs.items():
+        db.collection(STATS_COLLECTION).document(name).set(fields)
+    sessions = courts.union(*by_session.values())
+    for prefix, by_gc in by_session.items():
+        for gc in sessions - set(by_gc):
+            db.collection(STATS_COLLECTION).document(f"{prefix}_{gc}").delete()
     pruned = 0
     for gc, bills_map in bill_summaries.items():
         # One small doc per bill, not one JSON blob per court: a court's blob
@@ -512,6 +879,15 @@ def compute_stats(db: firestore.Client) -> None:
         f"{len(client_summaries)} client summaries, {len(firm_summaries)} firm summaries, "
         f"{pruned} stale summary docs removed"
     )
+    # Coverage of the parsed fields that fail silently, and each single doc's
+    # size against Firestore's 1 MiB document limit.
+    for year in sorted(filings_by_year):
+        print(f"  {year}: {filings_with_period.get(year, 0)}/{filings_by_year[year]} filings have periodEnd")
+    for year, (total, named) in sorted(firm_docs_by_year.items()):
+        print(f"  {year}: {named}/{total} firm disclosures name agents per client")
+    for name, (rows, size) in sorted(doc_sizes.items()):
+        warn = " (nearing Firestore's 1 MiB doc limit)" if size > _DOC_SIZE_WARN else ""
+        print(f"  {name}: {rows} rows, ~{size // 1024} KB{warn}")
 
 
 def registrant_doc(
@@ -532,6 +908,15 @@ def registrant_doc(
         }
         for c in detail.compensation
     ]
+    # Agents named on each client's activity block (2014+). Two spellings of
+    # a client can normalize alike, so merge rather than overwrite.
+    client_lobbyists: dict[str, list[str]] = {}
+    for client, names in detail.client_lobbyists.items():
+        key = normalize_entity_name(client)
+        if not key:  # Firestore rejects empty map keys
+            continue
+        merged = client_lobbyists.setdefault(key, [])
+        merged.extend(n for n in names if n not in merged)
 
     data = {
         "registrantId": doc_id,
@@ -546,6 +931,7 @@ def registrant_doc(
         "periodEnd": detail.period_end,
         "lobbyists": detail.lobbyists,
         "lobbyistsNorm": [normalize_entity_name(n) for n in detail.lobbyists],
+        "clientLobbyists": client_lobbyists,
     }
     return doc_id, data
 
@@ -563,7 +949,10 @@ def write_registrant(
     doc_id, data = built
     data["disclosureUrls"] = firestore.ArrayUnion([disc_url])
     data["fetchedAt"] = _now()
-    db.collection(REGISTRANTS_COLLECTION).document(doc_id).set(data, merge=True)
+    # Replace each field outright (merge=True would keep map keys such as a
+    # client an amendment dropped from clientLobbyists), but keep the union
+    # of disclosure URLs, which the migration reads back.
+    db.collection(REGISTRANTS_COLLECTION).document(doc_id).set(data, merge=list(data))
 
 
 def _party(p: RegistrationParty) -> dict:
@@ -646,8 +1035,12 @@ def write_filings(
             "activityTitle": bill.activity_title,
             "position": bill.position,
             "amount": bill.amount,
-            # The SoS disclosure page this activity was reported on.
+            # The SoS disclosure page this activity was reported on, and the
+            # reporting period it covers (a firm files twice a year, so one
+            # position can appear on two disclosures in the same year).
             "disclosureUrl": disc_url,
+            "periodStart": detail.period_start,
+            "periodEnd": detail.period_end,
             "fetchedAt": now,
         }
         batch.set(ref, doc)
@@ -662,3 +1055,25 @@ def write_filings(
         batch.commit()
 
     return count
+
+
+def remove_superseded_filings(db: firestore.Client, disc_urls: list[str]) -> int:
+    """Delete the filings still credited to earlier versions of amended
+    disclosures. Run after the current versions are written: a filing both
+    versions report already names the current version and is kept."""
+    removed = 0
+    for url in disc_urls:
+        query = db.collection(FILINGS_COLLECTION).where(
+            filter=firestore.FieldFilter("disclosureUrl", "==", url)
+        )
+        refs = [doc.reference for doc in query.stream()]
+        batch = db.batch()
+        for i, ref in enumerate(refs, 1):
+            batch.delete(ref)
+            if i % 400 == 0:
+                batch.commit()
+                batch = db.batch()
+        if len(refs) % 400:
+            batch.commit()
+        removed += len(refs)
+    return removed

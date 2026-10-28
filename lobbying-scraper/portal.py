@@ -91,7 +91,11 @@ class DisclosureMeta:
     entity_name: str
     year: Optional[int]
     reg_type: str          # "Lobbyist" | "Employer"
+    # The current version of each disclosure: its latest amendment, or the
+    # original filing if it was never amended.
     disclosure_urls: list[str] = field(default_factory=list)
+    # Earlier versions of those disclosures -> the current version's URL.
+    superseded_urls: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass
@@ -107,6 +111,9 @@ class DisclosureDetail:
     filer_name: Optional[str] = None
     # Lobbyists the firm reports paying (entity disclosures only).
     lobbyists: list[str] = field(default_factory=list)
+    # Agents named on each client's activity block, keyed by raw client name
+    # (2014+; older pages don't name the agent per client).
+    client_lobbyists: dict[str, list[str]] = field(default_factory=dict)
 
 
 @dataclass
@@ -219,6 +226,16 @@ def make_session() -> requests.Session:
     return s
 
 
+class PortalBlocked(RuntimeError):
+    """The portal's bot protection kept serving its block page."""
+
+
+def is_block_page(html: str) -> bool:
+    """Incapsula's bot-protection page ("Request unsuccessful. Incapsula
+    incident ID ..."), served with status 200 in place of the real page."""
+    return len(html) < 5000 and ("_Incapsula_Resource" in html or "Incapsula incident ID" in html)
+
+
 def _get(session: requests.Session, url: str, use_archive: bool = False) -> BeautifulSoup:
     # Archive-first is opt-in and must stay that way: run_weekly() relies on
     # always live-fetching the current year's Summary.aspx page (new
@@ -227,50 +244,52 @@ def _get(session: requests.Session, url: str, use_archive: bool = False) -> Beau
     # years) opts in.
     if use_archive:
         cached = archive.load_page(url)
-        if cached is not None:
+        # An archived block page counts as missing.
+        if cached is not None and not is_block_page(cached):
             return BeautifulSoup(cached, "html.parser")
 
-    for attempt in range(_MAX_RETRIES):
-        time.sleep(_REQUEST_DELAY * (2 ** attempt) if attempt else _REQUEST_DELAY)
-        try:
-            r = session.get(url, timeout=60)
-        except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
-            if attempt == _MAX_RETRIES - 1:
-                raise
-            print(f"  GET network error (attempt {attempt + 1}): {e}")
-            continue
-        if r.status_code in _RETRY_STATUS:
-            print(f"  GET HTTP {r.status_code} (attempt {attempt + 1}) — retrying")
-            if attempt == _MAX_RETRIES - 1:
-                r.raise_for_status()
-            continue
-        r.raise_for_status()
-        # Archive content pages before parsing; excludes the search page which
-        # shares one URL across all years and is trivially regenerable.
-        if "Summary.aspx" in url or "CompleteDisclosure" in url:
-            archive.save_page(url, r.text)
-        return BeautifulSoup(r.text, "html.parser")
-    raise RuntimeError("_get: exhausted retries")  # unreachable
+    text = _request(lambda: session.get(url, timeout=60), "GET", url)
+    # Archive content pages before parsing; excludes the search page which
+    # shares one URL across all years and is trivially regenerable.
+    if "Summary.aspx" in url or "CompleteDisclosure" in url:
+        archive.save_page(url, text)
+    return BeautifulSoup(text, "html.parser")
 
 
 def _post(session: requests.Session, url: str, data: dict) -> BeautifulSoup:
+    return BeautifulSoup(
+        _request(lambda: session.post(url, data=data, timeout=180), "POST", url), "html.parser"
+    )
+
+
+def _request(send, verb: str, url: str) -> str:
+    """Send a request with backoff, retrying network errors, retryable
+    statuses and the portal's block page; return the page text. A block page
+    is a failed fetch, never archived or parsed, so the page stays
+    unprocessed for the next run if the block outlasts the retries."""
     for attempt in range(_MAX_RETRIES):
         time.sleep(_REQUEST_DELAY * (2 ** attempt) if attempt else _REQUEST_DELAY)
+        last = attempt == _MAX_RETRIES - 1
         try:
-            r = session.post(url, data=data, timeout=180)
+            r = send()
         except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
-            if attempt == _MAX_RETRIES - 1:
+            if last:
                 raise
-            print(f"  POST network error (attempt {attempt + 1}): {e}")
+            print(f"  {verb} network error (attempt {attempt + 1}): {e}")
             continue
         if r.status_code in _RETRY_STATUS:
-            print(f"  POST HTTP {r.status_code} (attempt {attempt + 1}) — retrying")
-            if attempt == _MAX_RETRIES - 1:
+            print(f"  {verb} HTTP {r.status_code} (attempt {attempt + 1}) — retrying")
+            if last:
                 r.raise_for_status()
             continue
         r.raise_for_status()
-        return BeautifulSoup(r.text, "html.parser")
-    raise RuntimeError("_post: exhausted retries")  # unreachable
+        if is_block_page(r.text):
+            print(f"  {verb} blocked by Incapsula (attempt {attempt + 1}) — retrying")
+            if last:
+                raise PortalBlocked(f"blocked by Incapsula: {url}")
+            continue
+        return r.text
+    raise RuntimeError(f"{verb}: exhausted retries")  # unreachable
 
 
 # ── Portal scraping ───────────────────────────────────────────────────────────
@@ -330,17 +349,34 @@ def parse_summary(soup: BeautifulSoup) -> DisclosureMeta:
 
     reg_type = "Employer" if "Entity" in reg_type_raw else "Lobbyist"
 
-    disc_urls = [
-        BASE_URL + a["href"] if not a["href"].startswith("http") else a["href"]
-        for a in soup.find_all("a", href=True)
-        if "CompleteDisclosure" in a["href"]
-    ]
+    # Each amendment is a separate page. In every layout (a list per period,
+    # or the single list on 2019+ individual pages), a disclosure's
+    # amendments come right before its original filing, newest first. The
+    # newest version is the current one; earlier versions must not be
+    # counted alongside it. The portal sometimes links an amended period's
+    # row to the amendment itself, so a repeated link is skipped.
+    disc_urls: list[str] = []
+    superseded: dict[str, str] = {}
+    versions: list[str] = []
+    for a in soup.find_all("a", href=True):
+        if "CompleteDisclosure" not in a["href"]:
+            continue
+        url = BASE_URL + a["href"] if not a["href"].startswith("http") else a["href"]
+        if url not in versions:
+            versions.append(url)
+        if not a.get_text(strip=True).startswith("Report amendment"):
+            disc_urls.append(versions[0])
+            superseded.update((url, versions[0]) for url in versions[1:])
+            versions = []
+    # Amendments with no original after them (not seen on the portal): keep.
+    disc_urls.extend(versions)
 
     return DisclosureMeta(
         entity_name=entity_name,
         year=year,
         reg_type=reg_type,
         disclosure_urls=disc_urls,
+        superseded_urls=superseded,
     )
 
 
@@ -404,8 +440,9 @@ def parse_registration(soup: BeautifulSoup, url: str) -> Optional[Registration]:
                            "RptLobbyistEmploymentInfo", keep_urls=lobbyist_urls),
         employers=_parties(soup, "RptEntity", "hlnkEntityInformation", "lblEAmount",
                            "RptEntityEmploymentInfo", keep_urls=True),
+        # Each listed client links to the client's own page for that year.
         clients=_parties(soup, "RptClient", "hlnkClientInformation", "lblAmount",
-                         "RptClientEmploymentInfo", keep_urls=False),
+                         "RptClientEmploymentInfo", keep_urls=True),
         disclosure_urls=meta.disclosure_urls,
     )
 
@@ -515,6 +552,35 @@ def parse_disclosure_detail(soup: BeautifulSoup, year: int) -> DisclosureDetail:
     return detail
 
 
+def _parse_client_lobbyists(soup: BeautifulSoup) -> dict[str, list[str]]:
+    """Agents named on each client's activity block: {client name: [agents]}.
+
+    Each block is headed by an agent label ("Lobbyist: X" from 2019,
+    "Sub-agent: X" in 2014-2018) and its client name, paired by row index.
+    One block per agent per client, each repeating the bills. A firm's own
+    block ("Entity: <firm>") names no person and is skipped. Read per label,
+    not per bill row, so a block with no bills still counts.
+    """
+    # Index the client-name spans once rather than searching the page per label.
+    client_names: dict[str, str] = {}
+    for span in soup.find_all(id=lambda x: x and re.search(r"lblClientName_\d+$", x or "")):
+        client_names.setdefault(span["id"], span.get_text(strip=True))
+    result: dict[str, list[str]] = {}
+    for label in soup.find_all(
+        "span", id=lambda x: x and re.search(r"lblLobbyistName_\d+$", x or "")
+    ):
+        prefix, sep, name = label.get_text(" ", strip=True).partition(":")
+        if not sep or prefix.strip() == "Entity":
+            continue
+        name = name.strip()
+        client_name = client_names.get(label["id"].replace("lblLobbyistName", "lblClientName"), "")
+        if name and client_name:
+            names = result.setdefault(client_name, [])
+            if name not in names:
+                names.append(name)
+    return result
+
+
 def _parse_disclosure_content(soup: BeautifulSoup, year: int) -> DisclosureDetail:
     """Parse a CompleteDisclosure page's compensation and bills.
 
@@ -622,6 +688,7 @@ def _parse_disclosure_content(soup: BeautifulSoup, year: int) -> DisclosureDetai
             bills=bills,
             period_start=period_start,
             period_end=period_end,
+            client_lobbyists=_parse_client_lobbyists(soup),
         )
 
     # ── Legacy format (2005-2013): single grdvActivities table ───────────────

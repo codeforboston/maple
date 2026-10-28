@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom"
-import { fireEvent, render, screen } from "@testing-library/react"
+import { act, fireEvent, render, screen, within } from "@testing-library/react"
 import Router from "next/router"
 import { ConferenceDetails } from "./ConferenceDetails"
 import type { ConferencePageProps } from "./types"
@@ -48,12 +48,64 @@ const routeChangeStart = (url: string) =>
 
 jest.mock("usehooks-ts", () => ({ useMediaQuery: () => false }))
 
+let mockLegislators = false
 jest.mock("../featureFlags", () => ({
-  useFlags: () => ({ legislators: false, hearingsAndTranscriptions: true })
+  useFlags: () => ({
+    legislators: mockLegislators,
+    hearingsAndTranscriptions: true
+  })
 }))
 
+// jsdom has none; the page watches its title's height, and the tabs the
+// column their sections sit in. Kept, so a test can say something resized.
+const resized: (() => void)[] = []
+class Observer {
+  constructor(callback: () => void) {
+    resized.push(callback)
+  }
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+Object.assign(global, { ResizeObserver: Observer })
+
 const profile = { representative: { id: "AHP1" } }
-jest.mock("../db", () => ({ useProfile: () => ({ profile }) }))
+jest.mock("../db", () => ({
+  useProfile: () => ({ profile }),
+  useConferenceTestimony: () => ({ items: [], loading: false })
+}))
+
+// Signed out, so the panel is not mounted and the page needs no store.
+jest.mock("../auth", () => ({
+  useAuth: () => ({ user: undefined, authenticated: false })
+}))
+jest.mock("../hooks", () => ({ useAppDispatch: () => jest.fn() }))
+jest.mock("./input/useFollowedAuthors", () => ({
+  useFollowedAuthors: () => new Set()
+}))
+
+const mockBill = jest.fn()
+jest.mock("../db/bills", () => ({
+  useBill: (court: number, id: string) => mockBill(court, id)
+}))
+
+const loaded = (id: string, Title: string, DocumentText?: string) => ({
+  loading: false,
+  result: { id, content: { Title, DocumentText } }
+})
+
+const texts: Record<string, ReturnType<typeof loaded>> = {
+  S2581: loaded(
+    "S2581",
+    "An Act to promote student learning",
+    "\tSECTION 1. Phones.\r\n\r\n\tSECTION 2. Pouches."
+  ),
+  H5366: loaded(
+    "H5366",
+    "An Act relative to student mental health",
+    "SECTION 1. Social media."
+  )
+}
 
 const conference: ConferencePageProps["conference"] = {
   id: "student-learning-and-mental-health",
@@ -62,6 +114,7 @@ const conference: ConferencePageProps["conference"] = {
   title: "An Act to promote student learning and mental health",
   senateBillId: "S2581",
   houseBillId: "H5366",
+  canonicalBillId: "S2581",
   status: "appointed"
 }
 
@@ -76,6 +129,7 @@ const props: ConferencePageProps = {
       title: "An Act establishing the Massachusetts data privacy act",
       senateBillId: "S2619",
       houseBillId: "H5479",
+      canonicalBillId: "S2619",
       status: "appointed"
     }
   ],
@@ -141,8 +195,52 @@ const props: ConferencePageProps = {
       eventId: 5710,
       startsAt: Date.UTC(2026, 5, 4, 17)
     }
+  ],
+  gist: "This bill regulates how students use technology in schools.",
+  differences: [
+    {
+      heading: "Social media ban",
+      senate: null,
+      house: "Regulates social media companies under Chapter 93M.",
+      notes: { "Chapter 93M": ["Platforms must bar users under 14."] },
+      source: {
+        organisation: "Example Gazette",
+        url: "https://www.example.com/explainer",
+        publishedAt: "2026-09-01"
+      }
+    },
+    {
+      heading: "Use or possession",
+      senate: "Bans use and possession.",
+      house: "Bans use.",
+      notes: {},
+      source: {
+        organisation: "Other Radio",
+        url: "https://example.org/report",
+        publishedAt: null
+      }
+    }
+  ],
+  similarities: [
+    {
+      heading: "Phones barred during the school day",
+      body: "Every district must have a policy.",
+      source: {
+        organisation: "Example Gazette",
+        url: "https://www.example.com/explainer",
+        publishedAt: "2026-09-01"
+      }
+    }
   ]
 }
+
+/** What useWide reads: jsdom lays nothing out, so every element is 0 wide. */
+const widen = (px: number) =>
+  jest.spyOn(HTMLElement.prototype, "clientWidth", "get").mockReturnValue(px)
+
+beforeEach(() => {
+  mockBill.mockImplementation((_court: number, id: string) => texts[id])
+})
 
 describe("ConferenceDetails", () => {
   const { scrollTo } = window
@@ -256,6 +354,37 @@ describe("ConferenceDetails", () => {
     expect(screen.getByText("Third Essex")).toBeInTheDocument()
   })
 
+  describe("conferee names", () => {
+    afterEach(() => {
+      mockLegislators = false
+    })
+
+    it("never nests a link in a button", () => {
+      const { container } = render(<ConferenceDetails {...props} />)
+      expect(container.querySelector("button a, a button")).toBeNull()
+    })
+
+    it("sends the name to malegislature.gov as an external link", () => {
+      render(<ConferenceDetails {...props} />)
+      const name = screen.getByText("A. Peisch").closest("a")!
+      expect(name).toHaveAttribute(
+        "href",
+        expect.stringMatching(
+          /^https:\/\/malegislature\.gov\/Legislators\/Profile\//
+        )
+      )
+      expect(name).toHaveAttribute("target", "_blank")
+    })
+
+    it("keeps the name in the app when legislator pages are on", () => {
+      mockLegislators = true
+      render(<ConferenceDetails {...props} />)
+      const name = screen.getByText("A. Peisch").closest("a")!
+      expect(name.getAttribute("href")).toMatch(/^\/legislators\/194\//)
+      expect(name).not.toHaveAttribute("target")
+    })
+  })
+
   it("lists every conference in the rail with the current one marked", () => {
     const { container } = render(<ConferenceDetails {...props} />)
     const other = 'a[href="/conferences/194/data-privacy"]'
@@ -270,8 +399,8 @@ describe("ConferenceDetails", () => {
 
   it("lights a district when a conferee is pointed at", () => {
     const { container } = render(<ConferenceDetails {...props} />)
-    const peisch = screen.getByText("A. Peisch").closest("button")!
-    fireEvent.pointerEnter(peisch)
+    const peisch = screen.getByRole("button", { name: /Peisch,/ })
+    fireEvent.pointerEnter(peisch.parentElement!)
     expect(peisch).toHaveAttribute("aria-pressed", "true")
     const cell = container.querySelector(
       'polygon[aria-label="A. Peisch"][aria-pressed="true"]'
@@ -282,5 +411,205 @@ describe("ConferenceDetails", () => {
     expect(
       container.querySelector('polygon[aria-label="D. Vieira"]')
     ).toHaveStyle({ fill: "#b53333", fillOpacity: 0.45 })
+  })
+
+  it("takes input only while the conference is appointed", () => {
+    const { unmount } = render(<ConferenceDetails {...props} />)
+    // The title's, and the one beside the reader's own legislator.
+    expect(screen.getAllByRole("button", { name: "input.share" })).toHaveLength(
+      2
+    )
+    unmount()
+    const reported = { ...conference, status: "reportFiled" as const }
+    render(<ConferenceDetails {...props} conference={reported} />)
+    expect(
+      screen.queryByRole("button", { name: "input.share" })
+    ).not.toBeInTheDocument()
+    // Public Input stays.
+    expect(screen.getByText("input.empty_title")).toBeInTheDocument()
+  })
+
+  it("leads from its tabs to its sections", () => {
+    const { container } = render(<ConferenceDetails {...props} />)
+    const tabs = within(screen.getByRole("navigation", { name: "tabs_label" }))
+      .getAllByRole("link")
+      .map(a => [a.textContent, a.getAttribute("href")])
+    expect(tabs).toEqual([
+      ["tab_committee", "#committee"],
+      ["tab_decided", "#decided"],
+      ["tab_input", "#input"],
+      ["tab_text", "#text"]
+    ])
+    for (const [, href] of tabs)
+      expect(container.querySelector(href!)).toBeTruthy()
+  })
+
+  it("lights the tab of the section that has come up under the tabs", () => {
+    // jsdom lays nothing out, so each section says where it is, 850px tall.
+    const tops: Record<string, number> = {
+      committee: 0,
+      decided: 900,
+      input: 1800,
+      text: 2700
+    }
+    const rect = jest
+      .spyOn(HTMLElement.prototype, "getBoundingClientRect")
+      .mockImplementation(function (this: HTMLElement) {
+        const top = tops[this.id] ?? 0
+        return { top, bottom: top + 850 } as DOMRect
+      })
+    render(<ConferenceDetails {...props} />)
+    const lit = () =>
+      screen
+        .getAllByRole("link")
+        .filter(a => a.getAttribute("aria-current") === "true")
+        .map(a => a.textContent)
+    expect(lit()).toEqual(["tab_committee"])
+    // The last section lights too, once a jump has parked it.
+    tops.decided = -1800
+    tops.input = -900
+    tops.text = 0
+    fireEvent.scroll(document)
+    expect(lit()).toEqual(["tab_text"])
+    // A section can move with no scroll, when one above it grows: posting
+    // puts Your Input above Public Input.
+    tops.decided = 900
+    tops.input = 1800
+    tops.text = 2700
+    act(() => resized.forEach(heard => heard()))
+    expect(lit()).toEqual(["tab_committee"])
+    rect.mockRestore()
+  })
+
+  describe("what needs to be resolved", () => {
+    afterEach(() => jest.restoreAllMocks())
+
+    it("opens the first difference, each chamber's text in its own card", () => {
+      render(<ConferenceDetails {...props} />)
+      const [first, second] = screen
+        .getAllByRole("button", { expanded: true })
+        .concat(screen.getAllByRole("button", { expanded: false }))
+        .filter(b => /Social media ban|Use or possession/.test(b.textContent!))
+      expect(first).toHaveTextContent("Social media ban")
+      expect(first).toHaveAttribute("aria-expanded", "true")
+      expect(second).toHaveAttribute("aria-expanded", "false")
+      // The Senate bill has nothing on it, so its card says so.
+      expect(screen.getByText("decided.not_in_bill")).toBeInTheDocument()
+      expect(screen.getByText(/Regulates social media/)).toBeInTheDocument()
+      expect(screen.queryByText("Bans use.")).not.toBeInTheDocument()
+      fireEvent.click(second)
+      expect(screen.getByText("Bans use.")).toBeInTheDocument()
+    })
+
+    it("opens a term's note on hover", () => {
+      render(<ConferenceDetails {...props} />)
+      fireEvent.pointerEnter(screen.getByText("Chapter 93M"))
+      expect(screen.getByRole("tooltip")).toHaveTextContent(
+        "Platforms must bar users under 14."
+      )
+    })
+
+    it("lists the matches beside the differences only when there is room", () => {
+      const { unmount } = render(<ConferenceDetails {...props} />)
+      expect(screen.queryByText("decided.match")).not.toBeInTheDocument()
+      unmount()
+      widen(800)
+      render(<ConferenceDetails {...props} />)
+      const row = screen.getByRole("button", {
+        name: /Phones barred during the school day/
+      })
+      expect(
+        screen.queryByText("Every district must have a policy.")
+      ).toBeNull()
+      fireEvent.click(row)
+      expect(
+        screen.getByText("Every district must have a policy.")
+      ).toBeInTheDocument()
+    })
+
+    it("numbers each source once and lists it with its host", () => {
+      widen(800)
+      render(<ConferenceDetails {...props} />)
+      const items = within(
+        screen.getByText("decided.sources").nextElementSibling as HTMLElement
+      ).getAllByRole("listitem")
+      expect(items).toHaveLength(2)
+      expect(items[0]).toHaveTextContent("Example Gazette, Sep 1, 2026.")
+      expect(within(items[0]).getByRole("link")).toHaveTextContent(
+        "example.com"
+      )
+      expect(items[1]).toHaveTextContent("Other Radio.")
+      // The match cites the first source again rather than a third.
+      expect(
+        screen.getByRole("button", { name: /Phones barred/ })
+      ).toHaveTextContent("1")
+    })
+
+    it("says the reader's own legislator is deciding", () => {
+      render(<ConferenceDetails {...props} />)
+      expect(screen.getByTestId("decided.yours_one")).toHaveTextContent(
+        "your_representative A. Peisch"
+      )
+    })
+
+    it("leaves the section and its tab out where nothing is written", () => {
+      render(
+        <ConferenceDetails {...props} differences={[]} similarities={[]} />
+      )
+      expect(screen.queryByText("decided.title")).not.toBeInTheDocument()
+      expect(screen.queryByText("tab_decided")).not.toBeInTheDocument()
+    })
+  })
+
+  describe("bill text", () => {
+    it("shows both texts side by side, Senate first, a paragraph per line", () => {
+      render(<ConferenceDetails {...props} />)
+      const sheets = screen.getAllByRole("article")
+      expect(sheets.map(s => s.getAttribute("aria-label"))).toEqual([
+        "senate S2581",
+        "house H5366"
+      ])
+      expect(sheets[0]).toHaveTextContent("An Act to promote student learning")
+      // Each line on its own: the blank line between them is dropped.
+      expect(screen.getByText("SECTION 1. Phones.")).toBeInTheDocument()
+      expect(screen.getByText("SECTION 2. Pouches.")).toBeInTheDocument()
+      expect(sheets[1]).toHaveTextContent("SECTION 1. Social media.")
+      expect(mockBill).toHaveBeenCalledWith(194, "S2581")
+      expect(mockBill).toHaveBeenCalledWith(194, "H5366")
+    })
+
+    it("shows one chamber's text when one is picked, without fetching again", () => {
+      render(<ConferenceDetails {...props} />)
+      mockBill.mockClear()
+      fireEvent.change(screen.getByLabelText("version"), {
+        target: { value: "house" }
+      })
+      const sheets = screen.getAllByRole("article")
+      expect(sheets).toHaveLength(1)
+      expect(sheets[0]).toHaveAttribute("aria-label", "house H5366")
+      // The hidden Senate text stays fetched, ready for switching back.
+      expect(mockBill).toHaveBeenCalledWith(194, "S2581")
+    })
+
+    it("spins while a bill loads", () => {
+      mockBill.mockImplementation((_court: number, id: string) =>
+        id === "H5366" ? { loading: true } : texts[id]
+      )
+      render(<ConferenceDetails {...props} />)
+      expect(screen.getByRole("status")).toHaveTextContent("text_loading")
+      expect(screen.getAllByRole("article")).toHaveLength(1)
+    })
+
+    it("links to the PDF where MAPLE has no text", () => {
+      mockBill.mockImplementation((_court: number, id: string) =>
+        id === "H5366" ? loaded("H5366", "An Act", undefined) : texts[id]
+      )
+      render(<ConferenceDetails {...props} />)
+      expect(screen.getByText("text_missing H5366")).toBeInTheDocument()
+      expect(screen.getByText("text_pdf").closest("a")).toHaveAttribute(
+        "href",
+        "https://malegislature.gov/Bills/194/H5366.pdf"
+      )
+    })
   })
 })

@@ -1310,10 +1310,12 @@
 }
 
 /* The switcher's Statehouse option (HeroSection's statehouseColumn): this
-   hero laid out like Old Hero (legacy/LegacyHomepage.module.css). The
+   hero laid out like main's (legacy/LegacyHomepage.module.css), with the
+   wider column on the left. The
    statehouse has its own column, the wider one on the left, in place of the
-   search panel; the copy sits on the right, vertically centred, with 7.5rem
-   above and below; the content is capped at main's 1120px. The statehouse is
+   search panel; the copy sits on the right, vertically centred in a band
+   about the Digital Democracy hero's height; the content is capped at main's
+   1120px. The statehouse is
    27rem, the size main's works out to, flush on the bottom edge. Stacked, it
    comes first, as the stacked hero already does. Prefixed with .heroSection
    so these win over the skin's own hero rules. */
@@ -1339,14 +1341,19 @@
     gap: clamp(1.8rem, 4vw, 10rem);
     padding-top: 0;
     padding-bottom: 0;
+    /* About the Digital Democracy hero's height on desktop, as a floor so
+       longer copy grows the band rather than overflowing it. */
+    min-height: 610px;
   }
 
   .heroSection.heroStatehouse .heroContent {
     grid-column: 2;
     grid-row: 1;
     align-self: center;
-    padding-top: 7.5rem;
-    padding-bottom: 7.5rem;
+    /* Centred in the 610px band; this is only the least room kept above and
+       below the copy. */
+    padding-top: 2rem;
+    padding-bottom: 2rem;
   }
 
   .heroSection.heroStatehouse .statehouseColumn {
@@ -1358,8 +1365,8 @@
   }
 }
 
-/* Old Hero's copy, set the way Old Hero sets it: the paragraphs like this
-   hero's lead, at every width. */
+/* Main's copy (showBody and showActions), its paragraphs set like this hero's
+   lead, at every width. */
 .heroSection.heroStatehouse .heroBody {
   color: var(--hero-lead-ink);
   font-size: 1rem;

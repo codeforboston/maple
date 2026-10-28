@@ -435,6 +435,11 @@ $utilities: (
 }
 
 [data-maple-theme="dd"] {
+  // The desktop navbar's height in this skin: its 72px logo with 8px above and
+  // below (styles/globals.css). Where the bar is pinned (Mixed and
+  // Statehouse), what sticks or scrolls to an anchor below it clears this.
+  --maple-navbar-height: 5.5rem;
+
   // Surfaces. A near-white page instead of the warm mid-grey, so white cards
   // read as raised without needing a shadow.
   --maple-surface-page: #f7f7f7;

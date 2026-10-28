@@ -1,5 +1,6 @@
 import { Testimony } from "components/db"
 import { dbService } from "components/db/api"
+import { getConference } from "components/db/conferences"
 import { wrapper } from "components/store"
 import {
   pageDataLoaded,
@@ -127,7 +128,8 @@ const fetchDocs = async (q: NonNullable<ReturnType<typeof parseQuery>>) => {
       authorUid,
       billId,
       court,
-      ballotQuestionId
+      ballotQuestionId,
+      conferenceId: testimony.conferenceId ?? undefined
     })
   } else if (q.authorUid) {
     ;({ authorUid, billId, court, ballotQuestionId } = q)
@@ -149,11 +151,14 @@ const fetchDocs = async (q: NonNullable<ReturnType<typeof parseQuery>>) => {
     author = await db.getProfile({ uid: authorUid }),
     ballotQuestion = ballotQuestionId
       ? await db.getBallotQuestion({ id: ballotQuestionId })
+      : null,
+    conference = testimony.conferenceId
+      ? await getConference(court, testimony.conferenceId)
       : null
 
   if (!bill) return
 
-  return { bill, author, archive, testimony, ballotQuestion }
+  return { bill, author, archive, testimony, ballotQuestion, conference }
 }
 
 export const getServerSideProps = wrapper.getServerSideProps(
@@ -194,6 +199,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
         testimony: docs.testimony,
         bill: docs.bill,
         ballotQuestion: docs.ballotQuestion ?? null,
+        conference: docs.conference ?? null,
         author: docs.author ?? null,
         archive: docs.archive,
         version: q.version

@@ -72,8 +72,13 @@ it("writes the document from YAML", async () => {
   expect(doc?.senateBillId).toBe("S9901")
   expect(doc?.houseBillId).toBe("H9901")
   expect(doc?.hearingIds).toEqual(["hearing-9901"])
-  expect(doc?.differences).toHaveLength(1)
+  expect(doc?.gist).toBe(
+    "This bill regulates how students use technology in schools."
+  )
+  expect(doc?.differences).toHaveLength(2)
   expect(doc?.differences[0].source.organisation).toBe("Example Gazette")
+  expect(doc?.differences[1]).not.toHaveProperty("senate")
+  expect(doc?.differences[1].notes["device lockout technology"]).toHaveLength(2)
   expect(doc?.similarities).toHaveLength(1)
   expect(doc?.passSenateVersionCount).toBe(0)
 })

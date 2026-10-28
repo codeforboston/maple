@@ -23,21 +23,28 @@ const conference: ConferenceSummary = {
   title: "An Act relative to testing",
   senateBillId: "S2500",
   houseBillId: "H4000",
+  canonicalBillId: "S2500",
   status: "appointed"
 }
 
 describe("conference links", () => {
-  it("renders the banner, linked to the conference, from the prop", () => {
-    render(<ConferenceBanner conference={conference} />)
-    // One copy per skin (Maple's banner and the slim note), with CSS showing
-    // one, so check every link rather than expecting exactly one.
-    for (const link of screen.getAllByRole("link")) {
-      expect(link).toHaveAttribute(
-        "href",
-        expect.stringContaining("/conferences/194/h4000-s2500")
-      )
+  it.each(["appointed", "reportFiled", "enacted", "dissolved"] as const)(
+    "renders the banner for a %s conference, worded by status and linked to it",
+    status => {
+      render(<ConferenceBanner conference={{ ...conference, status }} />)
+      // One copy per skin (Maple's banner and the slim note), with CSS showing
+      // one, so check every copy rather than expecting exactly one.
+      expect(
+        screen.getAllByText(`bill_banner.${status}:`, { exact: false })[0]
+      ).toBeInTheDocument()
+      for (const link of screen.getAllByRole("link")) {
+        expect(link).toHaveAttribute(
+          "href",
+          expect.stringContaining("/conferences/194/h4000-s2500")
+        )
+      }
     }
-  })
+  )
 
   it("renders the hearing link from the prop", () => {
     render(<HearingConferenceLink conference={conference} />)

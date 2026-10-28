@@ -29,15 +29,16 @@ export function ConferenceBanner({
   const message = (
     <Trans
       t={t}
-      i18nKey="bill_banner"
+      i18nKey={`bill_banner.${conference.status}`}
       values={{ name: conferenceName(conference) }}
       components={{
         1: <Link href={maple.conference(conference)} />
       }}
     />
   )
-  // Maple keeps main's orange banner; Digital Democracy and Mixed get the slim
-  // note the lobbying explorer's beta notice uses.
+  // Maple keeps main's orange banner; Digital Democracy, Mixed and Statehouse
+  // get the slim note the lobbying explorer's beta notice uses. Worded by the
+  // conference's status, as on main.
   return (
     <>
       <MapleOnly>

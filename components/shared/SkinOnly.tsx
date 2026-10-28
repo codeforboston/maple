@@ -24,26 +24,16 @@ export const DigitalDemocracyOnly = styled.div`
 
 /**
  * Which hero the Digital Democracy skin shows: the redesigned one by default,
- * main's with data-maple-hero="old" (the switcher's Old Hero option), or the
- * redesigned one laid out like Old Hero (below).
+ * or the redesigned one laid out like main's (below).
  */
 export const NewHeroOnly = styled.div`
-  [data-maple-hero="old"] &,
   [data-maple-hero="statehouse"] & {
     display: none;
   }
 `
 
-export const OldHeroOnly = styled.div`
-  display: none;
-
-  [data-maple-hero="old"] & {
-    display: block;
-  }
-`
-
-/** The Digital Democracy hero laid out like Old Hero, with the statehouse in
- * its own column in place of the search panel (data-maple-hero="statehouse",
+/** The Digital Democracy hero laid out like main's, with main's copy and the
+ * statehouse in its own column in place of the search panel (data-maple-hero="statehouse",
  * the switcher's Statehouse option, which also gives the navbar its shadow on
  * every page; styles/globals.css). */
 export const StatehouseHeroOnly = styled.div`

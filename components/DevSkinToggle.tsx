@@ -71,24 +71,12 @@ const CONTROLS: Control[] = [
         // Mixed's logic with the neutral bar in place of the blue one: pinned
         // with its shadow on every page but the homepage, no section ground
         // (data-maple-nav="statehouse"), and on the homepage the hero laid out
-        // like Old Hero, the statehouse in place of the search panel.
+        // like main's, with main's copy and the statehouse in place of the
+        // search panel.
         attributes: {
           "data-maple-theme": "dd",
           "data-maple-nav": "statehouse",
           "data-maple-hero": "statehouse"
-        }
-      },
-      {
-        value: "dd-old-hero",
-        label: "Old Hero",
-        // The Digital Democracy skin with main's hero. Only the
-        // homepage has the hero, so everywhere else it is Digital Democracy.
-        onlyOn: ["/"],
-        sameAs: "dd",
-        attributes: {
-          "data-maple-theme": "dd",
-          "data-maple-nav": null,
-          "data-maple-hero": "old"
         }
       },
       {

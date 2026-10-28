@@ -603,24 +603,42 @@ export const LegislativeProcess = () => {
   // navbar, which stays pinned for most of the page on desktop, so the offset
   // tracks the navbar's current bottom edge on scroll.
   //
-  // This runs on desktop only. Below the breakpoint the navbar is the
-  // non-sticky MobileNav: it scrolls away immediately, and the rail does not
-  // reach the top until well after it is gone, so the rail simply sticks at
-  // top: 0 (set in CSS). Tracking there would rewrite the sticky offset every
-  // frame during the navbar's exit -- recomputing the sticky rail each frame --
-  // which is exactly the initial-scroll jank on mobile. So we skip it entirely
-  // when the navbar is not sticky.
+  // This tracks only while the navbar is sticky. The non-sticky MobileNav
+  // scrolls away immediately, and the rail does not reach the top until well
+  // after it is gone, so the rail simply sticks at top: 0 (set in CSS).
+  // Tracking there would rewrite the sticky offset every frame during the
+  // navbar's exit -- recomputing the sticky rail each frame -- which is exactly
+  // the initial-scroll jank on mobile. So while the navbar is not sticky the
+  // measurement is cleared and the CSS value stands.
+  //
+  // Whether it is sticky can change after load: the bar pins or unpins when
+  // the skin changes (the dev switcher's Mixed and Statehouse options set an
+  // attribute after the page has rendered), and the desktop and mobile bars
+  // swap with the window width. So stickiness is re-read when the navbar's
+  // classes change (sticky-top comes and goes there) and on resize, not just
+  // once on mount.
   useLayoutEffect(() => {
     const scope = scopeRef.current
-    const nav = document.querySelector<HTMLElement>(".main-navbar")
-    if (!scope || !nav) return
-    if (getComputedStyle(nav).position !== "sticky") return
+    if (!scope) return
 
+    let nav: HTMLElement | null = null
+    let sticky = false
     let frame = 0
+    const classObserver = new MutationObserver(() => refresh())
+    const sizeObserver = new ResizeObserver(() => schedule())
+
+    // Written as --maple-navbar-sticky-offset, which the rail and the rows
+    // read: that property is set on the root from --maple-navbar-height, and
+    // a custom property resolves where it is set, so a new navbar height
+    // written here would never reach them.
     const publishNavOffset = () => {
+      if (!nav || !sticky) {
+        scope.style.removeProperty("--maple-navbar-sticky-offset")
+        return
+      }
       const bottom = nav.getBoundingClientRect().bottom
       scope.style.setProperty(
-        "--maple-navbar-height",
+        "--maple-navbar-sticky-offset",
         `${Math.max(0, bottom)}px`
       )
     }
@@ -631,19 +649,40 @@ export const LegislativeProcess = () => {
         publishNavOffset()
       })
     }
+    // Find the navbar again (the desktop and mobile bars are different
+    // elements) and re-read whether it is sticky.
+    function refresh() {
+      const next = document.querySelector<HTMLElement>(".main-navbar")
+      if (next !== nav) {
+        classObserver.disconnect()
+        sizeObserver.disconnect()
+        nav = next
+        if (nav) {
+          classObserver.observe(nav, {
+            attributes: true,
+            attributeFilter: ["class"]
+          })
+          sizeObserver.observe(nav)
+        }
+      }
+      sticky = !!nav && getComputedStyle(nav).position === "sticky"
+      schedule()
+    }
+    const onScroll = () => {
+      if (sticky) schedule()
+    }
 
+    refresh()
     publishNavOffset()
-    window.addEventListener("scroll", schedule, { passive: true })
-    window.addEventListener("resize", schedule)
-
-    const observer = new ResizeObserver(schedule)
-    observer.observe(nav)
+    window.addEventListener("scroll", onScroll, { passive: true })
+    window.addEventListener("resize", refresh)
 
     return () => {
       if (frame) cancelAnimationFrame(frame)
-      window.removeEventListener("scroll", schedule)
-      window.removeEventListener("resize", schedule)
-      observer.disconnect()
+      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("resize", refresh)
+      classObserver.disconnect()
+      sizeObserver.disconnect()
     }
   }, [])
 

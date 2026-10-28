@@ -256,6 +256,18 @@ export type BillSummaryEntry = {
   title?: string
   clients?: number
   lobbyists?: number
+  // Distinct organizations per position; one with two positions is in both.
+  // Absent on summaries computed before they existed.
+  orgSupport?: number
+  orgOppose?: number
+  orgNeutral?: number
+  // Each organization once, by the positions it reported in its latest
+  // half-year, as on the Bill page: more than one is "multiple". They add up
+  // to the organizations with a position.
+  orgLatestSupport?: number
+  orgLatestOppose?: number
+  orgLatestNeutral?: number
+  orgLatestMultiple?: number
 }
 
 export type BillRow = {
@@ -269,6 +281,13 @@ export type BillRow = {
   title: string
   clients: number
   lobbyists: number
+  orgSupport: number
+  orgOppose: number
+  orgNeutral: number
+  orgLatestSupport: number
+  orgLatestOppose: number
+  orgLatestNeutral: number
+  orgLatestMultiple: number
 }
 
 async function fetchLobbyingBillSummaries(
@@ -293,6 +312,22 @@ export function useLobbyingBillSummaries(court: number) {
   return useAsync(fetchLobbyingBillSummaries, [court])
 }
 
+// For one session: each client's in-house filers (entityNameNorms of its own
+// staff, or the client filing for itself), keyed by clientNameNorm. Clients
+// with no in-house filer are absent.
+export async function fetchInHouseFilers(
+  court: number
+): Promise<Record<string, string[]>> {
+  const snap = await getDoc(
+    doc(firestore, LOBBYING_STATS_COLLECTION, `inHouseFilers_${court}`)
+  )
+  return snap.exists() ? (snap.data() as Record<string, string[]>) : {}
+}
+
+export function useLobbyingInHouseFilers(court: number) {
+  return useAsync(fetchInHouseFilers, [court])
+}
+
 // ── Client / firm summaries (precomputed server-side by compute_stats in
 // lobbying-scraper/writer.py). Replaces client-side derivation over
 // useLobbyingAllRegistrants(), which only fetches the first 2,000 of
@@ -315,8 +350,53 @@ export type ClientSummaryRow = {
   // summaries computed before session filters existed.
   courts?: Record<
     string,
-    { filings: number; lobbyistCount: number; compensation: number | null }
+    {
+      filings: number
+      lobbyistCount: number
+      compensation: number | null
+      // Fields below are absent on summaries computed before they existed.
+      // Distinct bills in the client's filings.
+      bills?: number
+      // Distinct filers that are the client's own staff.
+      inHouseCount?: number
+      // Distinct people lobbying for the client, and the part who aren't its
+      // own staff (a hired firm's agents, or a hired individual lobbyist).
+      // Firms name their agents from 2014, so show these from the 189th
+      // session (2015–16) on: the 188th (2013–14) has no 2013 firm agents, and
+      // earlier sessions count only individual filers.
+      individuals?: number
+      firmAgents?: number
+      // Lobbyists and entities working for the client, split into its own
+      // staff and those it hired, counted from one set so they add up; a
+      // hired individual counts as a one-person firm. From the 189th on,
+      // pair hiredFirms with individuals/firmAgents ("k in-house · m firms
+      // (n agents)"); before it, and for all sessions, the total is
+      // inHouseLobbyists + hiredFirms.
+      inHouseLobbyists?: number
+      hiredFirms?: number
+      // Hired firms that named no agents for the client: with individuals,
+      // the exact people total from the 189th session on.
+      firmsWithoutAgents?: number
+      // The client's in-house filers that session (entityNameNorms), as in
+      // inHouseFilers_{gc}.
+      inHouseFilers?: string[]
+    }
   >
+  // All-time counterparts of the per-session counts above (hiredFirms leaves
+  // out anyone in-house in any session).
+  inHouseCount?: number
+  individuals?: number
+  inHouseLobbyists?: number
+  hiredFirms?: number
+  // Earliest registration start date (ISO), the latest registration's year,
+  // and the client's own page on the SoS website (else the latest
+  // registration listing it).
+  firstRegistered?: string | null
+  lastRegisteredYear?: number | null
+  registrationUrl?: string | null
+  // The portal's "No client": listed, but not an organization, so not counted
+  // as a client. Absent on every other client.
+  placeholder?: true
 }
 
 export type FirmRegistrationParty = {
@@ -424,7 +504,14 @@ export async function fetchBillRows(court: number): Promise<BillRow[]> {
     none: e.none,
     title: e.title ?? "",
     clients: e.clients ?? 0,
-    lobbyists: e.lobbyists ?? 0
+    lobbyists: e.lobbyists ?? 0,
+    orgSupport: e.orgSupport ?? 0,
+    orgOppose: e.orgOppose ?? 0,
+    orgNeutral: e.orgNeutral ?? 0,
+    orgLatestSupport: e.orgLatestSupport ?? 0,
+    orgLatestOppose: e.orgLatestOppose ?? 0,
+    orgLatestNeutral: e.orgLatestNeutral ?? 0,
+    orgLatestMultiple: e.orgLatestMultiple ?? 0
   }))
 }
 
@@ -498,12 +585,50 @@ export async function fetchFirmListRows(): Promise<FirmListRow[]> {
   }))
 }
 
+// Precomputed list docs written by compute_stats, so the list pages' API
+// routes read one document instead of every summary: lobbyingMeta/
+// clientList_{court} and clientList_all, and firmList_{court} (no
+// all-sessions lobbyist doc: it would pass Firestore's 1 MiB limit). Each is a
+// map keyed by the normalized name.
+export type ClientListEntry = {
+  name: string
+  bills: number
+  compensation: number | null
+  // Per session only (absent in clientList_all).
+  individuals?: number
+  firmAgents?: number
+  firmsWithoutAgents?: number
+  inHouseLobbyists: number
+  hiredFirms: number
+  // "No client" (see ClientSummaryRow.placeholder).
+  placeholder?: true
+}
+
+export type FirmListEntry = Pick<
+  FirmListRow,
+  | "regType"
+  | "years"
+  | "totalFilings"
+  | "lobbyists"
+  | "employers"
+  | "hasFilings"
+> & {
+  name: string
+  // For the doc's session.
+  clientCount: number
+  filings: number
+}
+
 export type ClientListRow = {
   clientName: string
   clientNameNorm: string
   totalCompensation: number | null
   registrantCount: number
   totalFilings: number | null
+  inHouseCount: number | null
+  individuals: number | null
+  inHouseLobbyists: number | null
+  hiredFirms: number | null
   courts: NonNullable<ClientSummaryRow["courts"]>
 }
 
@@ -518,6 +643,10 @@ export async function fetchClientListRows(): Promise<ClientListRow[]> {
     totalCompensation: c.totalCompensation ?? null,
     registrantCount: c.registrantCount,
     totalFilings: filingCounts[c.clientNameNorm] ?? null,
+    inHouseCount: c.inHouseCount ?? null,
+    individuals: c.individuals ?? null,
+    inHouseLobbyists: c.inHouseLobbyists ?? null,
+    hiredFirms: c.hiredFirms ?? null,
     courts: c.courts ?? {}
   }))
 }

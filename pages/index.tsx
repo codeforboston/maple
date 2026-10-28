@@ -12,7 +12,6 @@ import {
   MapleOnly,
   DigitalDemocracyOnly,
   NewHeroOnly,
-  OldHeroOnly,
   StatehouseHeroOnly
 } from "components/shared/SkinOnly"
 
@@ -21,10 +20,9 @@ export default createPage({
     <main className={styles.page}>
       {/* The Maple skin keeps the hero from main; Digital Democracy and Mixed
           get the redesigned one. Both are rendered and the skin picks one, so
-          nothing swaps in after the page loads. The switcher's Old Hero option
-          keeps the Digital Democracy skin but shows main's hero, as Maple does,
-          and Statehouse lays the redesigned hero out like Old Hero, with Old
-          Hero's copy and the statehouse in place of the right-hand panel. */}
+          nothing swaps in after the page loads. The switcher's Statehouse
+          option lays the redesigned hero out like main's, with main's copy and
+          the statehouse in place of the right-hand panel. */}
       <MapleOnly>
         <LegacyHeroSection />
       </MapleOnly>
@@ -32,9 +30,6 @@ export default createPage({
         <NewHeroOnly>
           <HeroSection />
         </NewHeroOnly>
-        <OldHeroOnly>
-          <LegacyHeroSection />
-        </OldHeroOnly>
         <StatehouseHeroOnly>
           <HeroSection statehouseColumn showLead={false} showBody showActions />
         </StatehouseHeroOnly>
