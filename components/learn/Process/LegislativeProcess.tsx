@@ -609,7 +609,7 @@ export const LegislativeProcess = () => {
   // Tracking there would rewrite the sticky offset every frame during the
   // navbar's exit -- recomputing the sticky rail each frame -- which is exactly
   // the initial-scroll jank on mobile. So while the navbar is not sticky the
-  // measurement is cleared and the CSS value stands.
+  // offset is set to 0 once, and nothing runs per frame.
   //
   // Whether it is sticky can change after load: the bar pins or unpins when
   // the skin changes (the dev switcher's Mixed and Statehouse options set an
@@ -632,8 +632,12 @@ export const LegislativeProcess = () => {
     // a custom property resolves where it is set, so a new navbar height
     // written here would never reach them.
     const publishNavOffset = () => {
+      // No pinned bar, nothing to clear. Set rather than left to the
+      // stylesheet, which reserves the bar's height wherever the skin pins it
+      // on desktop, and the mobile bar can show above the CSS breakpoint below
+      // (Digital Democracy's skins collapse at 950px).
       if (!nav || !sticky) {
-        scope.style.removeProperty("--maple-navbar-sticky-offset")
+        scope.style.setProperty("--maple-navbar-sticky-offset", "0px")
         return
       }
       const bottom = nav.getBoundingClientRect().bottom

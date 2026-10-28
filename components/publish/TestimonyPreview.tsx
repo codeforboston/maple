@@ -19,6 +19,8 @@ import {
   useTestimonyEmail
 } from "./hooks"
 import { useTranslation, Trans } from "next-i18next"
+import { useHtmlAttribute } from "components/shared/useHtmlAttribute"
+import { SectionHead } from "./SectionHead"
 
 export const positionActions = (
   isBallotQuestion: boolean
@@ -107,20 +109,40 @@ export const CopyTestimony = styled(props => {
 export const YourTestimony = styled<{ type: "draft" | "published" }>(
   ({ className, children, type }) => {
     const { copy } = usePublishCopy()
+    // Digital Democracy skins: the title row Email Recipients has
+    // (SelectRecipients.tsx), so the two read alike. Maple keeps main's.
+    const dd = useHtmlAttribute("data-maple-theme") === "dd"
+    const title = copy(
+      "yourTestimony.title",
+      "ballotQuestion.yourTestimony.title"
+    )
     return (
       <div className={className}>
-        <div className="d-flex justify-content-between mb-2">
-          <div className="title fs-4">
-            {copy("yourTestimony.title", "ballotQuestion.yourTestimony.title")}
+        {dd ? (
+          <SectionHead>
+            <h3>{title}</h3>
+            <CopyTestimony />
+          </SectionHead>
+        ) : (
+          <div className="d-flex justify-content-between mb-2">
+            <div className="title fs-4">{title}</div>
+            <CopyTestimony />
           </div>
-          <CopyTestimony />
-        </div>
-        <TestimonyPreview type={type} />
+        )}
+        <TestimonyPreview type={type} className="testimony-preview" />
       </div>
     )
   }
 )`
   border-radius: 1rem;
+
+  /* Digital Democracy skins: the testimony in a white box with an edge, which
+     the page's grey would otherwise swallow (SubmitTestimonyForm.tsx). Only
+     here; the bill page's panel keeps its own. */
+  [data-maple-theme="dd"] & .testimony-preview {
+    background: var(--maple-surface-base);
+    border: 1px solid rgba(15, 23, 42, 0.2);
+  }
 `
 
 export const TestimonyPreview = styled<{ type: "draft" | "published" }>(
@@ -128,6 +150,7 @@ export const TestimonyPreview = styled<{ type: "draft" | "published" }>(
     const { draft, publication, authorUid } = usePublishState()
     const mode = usePublishMode()
     const isBallotQuestion = mode === "ballotQuestion"
+    const dd = useHtmlAttribute("data-maple-theme") === "dd"
     const { position, content, attachmentId } =
       (props.type === "draft" ? draft : publication) ?? {}
 
@@ -145,7 +168,19 @@ export const TestimonyPreview = styled<{ type: "draft" | "published" }>(
     return (
       <div {...props}>
         {position && (
-          <p className="text-center">
+          // Digital Democracy skins: at the left, with the thumb; Maple keeps
+          // main's centred line.
+          <p className={dd ? undefined : "text-center"}>
+            {/* Digital Democracy skins: the stance's thumb beside it, in the
+                testimony pages' colours (search/testimony/TestimonyHit.tsx). */}
+            {dd && (
+              <img
+                alt=""
+                src={`/thumbs-${position}.svg`}
+                className="me-2"
+                style={{ height: "1.5em", width: "auto" }}
+              />
+            )}
             {positionActions(isBallotQuestion)[position]}
           </p>
         )}

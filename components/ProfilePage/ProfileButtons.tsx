@@ -79,18 +79,22 @@ export const EditProfileButton = ({
 export function ProfileButtons({
   isUser,
   hideTestimonyButton,
-  onSettingsModalOpen
+  onSettingsModalOpen,
+  className = "m-3"
 }: {
   isUser: boolean
   hideTestimonyButton: boolean
   onSettingsModalOpen: () => void
+  /** The stack's margin: room all round by default; the newsfeed's header
+   * (Digital Democracy skins) sets it flush. */
+  className?: string
 }) {
   const { t } = useTranslation("editProfile")
 
   return (
     <>
       {isUser ? (
-        <div className={`d-grid gap-2 col-12 m-3`}>
+        <div className={`d-grid gap-2 col-12 ${className} profile-buttons`}>
           <EditProfileButton
             className={`py-1`}
             tab={"button.followedContent"}

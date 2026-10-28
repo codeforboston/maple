@@ -118,6 +118,41 @@ const CalloutBalloon = styled.div`
     }
   }
 
+  /* Digital Democracy, Mixed and Statehouse: on a narrow bubble (the phone
+     carousel), a long author name ran past the edge. The bill number keeps its
+     width, the name takes what is left and ends in an ellipsis, and the two
+     get a gap. An ellipsis rather than wrapping, as the bubble's height is
+     fixed. */
+  /* The layer the hand and text sit in is set to the full width and also
+     indented 4em, so it ran 4em past the bubble's right edge and everything
+     on the right was cut off there. The bubble's width less the indent
+     instead, and the text column may shrink, so a long word cannot widen it
+     again. */
+  [data-maple-theme="dd"] & .foreground {
+    width: calc(100% - 4em);
+  }
+
+  [data-maple-theme="dd"] & .content-container {
+    min-width: 0;
+  }
+
+  [data-maple-theme="dd"] & .footer {
+    gap: 0.75rem;
+  }
+
+  [data-maple-theme="dd"] & .footer .bill {
+    flex: none;
+    white-space: nowrap;
+  }
+
+  [data-maple-theme="dd"] & .footer .author {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: right;
+  }
+
   .endorse {
     background-color: var(--bs-green);
   }

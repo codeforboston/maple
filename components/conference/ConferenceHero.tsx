@@ -24,6 +24,13 @@ const Section = styled(PageColumn)`
   scroll-snap-align: start;
   scroll-snap-stop: always;
 
+  /* Digital Democracy skins: the title in Lexend whether it is the page's h1
+     or, above a conference, an h2, which would otherwise take Bootstrap's
+     Nunito. */
+  [data-maple-theme="dd"] & .title {
+    font-family: var(--maple-font-heading);
+  }
+
   .block {
     margin: auto 0;
   }

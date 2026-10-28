@@ -75,23 +75,27 @@ export const Avatar = () => {
   const result = useProfile()
   let isOrg = result?.profile?.role === "organization"
 
+  const kind = isOrg ? "org" : "individual"
+
+  // White for the blue bar, blue for the neutral one; styles/globals.css shows
+  // the one that suits the bar, as it does the logos. One alt between them,
+  // since only one is ever shown.
   return (
     <>
-      {isOrg ? (
-        <Image
-          src="/profile-org-white.svg"
-          alt={t("profileMenu")}
-          width="35"
-          height="35"
-        />
-      ) : (
-        <Image
-          src="/profile-individual-white.svg"
-          alt={t("profileMenu")}
-          width="35"
-          height="35"
-        />
-      )}
+      <Image
+        className="navbar-avatar-light"
+        src={`/profile-${kind}-white.svg`}
+        alt={t("profileMenu")}
+        width="35"
+        height="35"
+      />
+      <Image
+        className="navbar-avatar-dark"
+        src={`/profile-${kind}-blue.svg`}
+        alt={t("profileMenu")}
+        width="35"
+        height="35"
+      />
     </>
   )
 }

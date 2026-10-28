@@ -52,6 +52,13 @@ const Table = styled.table`
     cursor: pointer;
     transition: background-color 150ms ease-out;
   }
+  /* More room above and below a row than the header has, so a name that
+     wraps to two lines is not pressed against the rules. */
+  tbody th,
+  tbody td {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
   tbody tr[aria-selected="true"] {
     background: var(--maple-surface-page);
   }
@@ -75,18 +82,25 @@ const SubLabel = styled.span`
 
 const NameButton = styled.button<{ $tone: "strong" | "mid" | "faint" }>`
   display: block;
-  width: 150px;
+  /* Wider than the mockup's 150px, so fewer names wrap. */
+  width: 190px;
   padding: 0;
   border: 0;
   background: none;
   text-align: left;
-  font-size: 0.875rem;
+  /* The mockup's 13px. */
+  font-size: 0.8125rem;
   line-height: 1.3;
   color: ${({ $tone }) =>
     $tone === "faint" ? "var(--maple-text-muted)" : "var(--maple-text-strong)"};
-  font-weight: ${({ $tone }) => ($tone === "mid" ? 700 : 400)};
+  font-weight: ${({ $tone }) => ($tone === "mid" ? 600 : 300)};
   &[aria-pressed="true"] {
-    font-weight: 600;
+    font-weight: 500;
+  }
+  /* Digital Democracy skins: in Lexend, as the conference list beside a
+     conference is (ConferenceRail.tsx), though the card is Nunito. */
+  [data-maple-theme="dd"] & {
+    font-family: var(--maple-font-heading);
   }
 `
 
@@ -94,8 +108,11 @@ const Bills = styled.span`
   display: block;
   margin-top: 1px;
   font-size: 0.6875rem;
-  font-weight: 400;
+  font-weight: 300;
   color: var(--maple-text-muted);
+  [data-maple-theme="dd"] & {
+    font-family: var(--maple-font-heading);
+  }
   .status {
     margin-left: 0.375rem;
     font-style: italic;
@@ -289,7 +306,10 @@ const ListRow = styled(Internal)`
 
   .name {
     display: block;
-    font-weight: 600;
+    font-weight: 500;
+  }
+  [data-maple-theme="dd"] & .name {
+    font-family: var(--maple-font-heading);
   }
   .text {
     flex: 1 1 auto;

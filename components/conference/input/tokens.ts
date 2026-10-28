@@ -18,6 +18,15 @@ export const wash = {
   strong: "rgba(0, 0, 0, 0.09)"
 }
 
+/** The mockup's recessed grey (--color-sunken): the well a bill's text sits
+ * in (../ConferenceText.tsx), and the land and empty seats of the district
+ * maps (../DistrictMap.tsx). */
+export const sunken = "#e2e2e2"
+
+/** The mockup's page grey (--color-ground), the edge between the district
+ * maps' seats. */
+export const ground = "#f7f7f7"
+
 export const brand = {
   fill: "#1f3b61",
   hover: "#152842",

@@ -1,8 +1,7 @@
 import { Trans, useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { Internal, maple } from "../links"
-import { DigitalDemocracyOnly, MapleOnly } from "../shared/SkinOnly"
-import { Banner, SlimBanner } from "../shared/StyledSharedComponents"
+import { PageBanner } from "../shared/PageBanner"
 import { ConferenceSummary, conferenceName } from "./types"
 
 const Link = styled(Internal)`
@@ -36,17 +35,7 @@ export function ConferenceBanner({
       }}
     />
   )
-  // Maple keeps main's orange banner; Digital Democracy, Mixed and Statehouse
-  // get the slim note the lobbying explorer's beta notice uses. Worded by the
-  // conference's status, as on main.
-  return (
-    <>
-      <MapleOnly>
-        <Banner>{message}</Banner>
-      </MapleOnly>
-      <DigitalDemocracyOnly>
-        <SlimBanner>{message}</SlimBanner>
-      </DigitalDemocracyOnly>
-    </>
-  )
+  // Maple keeps main's orange banner; the other skins get the slim note
+  // (PageBanner). Worded by the conference's status, as on main.
+  return <PageBanner>{message}</PageBanner>
 }

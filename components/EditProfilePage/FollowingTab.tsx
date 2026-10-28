@@ -15,6 +15,8 @@ import { useAuth } from "../auth"
 import { Alert, Col, Row, Spinner } from "../bootstrap"
 import { firestore } from "../firebase"
 import { FollowUserCard } from "./FollowUserCard"
+import { FollowedItemRow } from "./FollowedItemRow"
+import { useHtmlAttribute } from "components/shared/useHtmlAttribute"
 import {
   LoadableItemsState,
   PaginatedItemsCard
@@ -22,12 +24,16 @@ import {
 
 export function FollowingTab({ className }: { className?: string }) {
   const { t } = useTranslation("editProfile")
+  // Digital Democracy skins: titles in the cards' header bands, as on the
+  // profile page.
+  const dd = useHtmlAttribute("data-maple-theme") === "dd"
   const followedBallotQuestions = useFollowedBallotQuestions()
   return (
     <>
       <PaginatedItemsCard
         className={className}
         title={t("follow.bills")}
+        titleInHeader={dd}
         ItemCard={FollowedBillCard}
         {...useFollowedBills()}
       />
@@ -35,6 +41,7 @@ export function FollowingTab({ className }: { className?: string }) {
         <PaginatedItemsCard
           className={className}
           title={t("follow.ballotQuestions")}
+          titleInHeader={dd}
           ItemCard={FollowedBallotQuestionCard}
           {...followedBallotQuestions}
         />
@@ -42,6 +49,7 @@ export function FollowingTab({ className }: { className?: string }) {
       <PaginatedItemsCard
         className={className}
         title={t("follow.orgs")}
+        titleInHeader={dd}
         ItemCard={item => <FollowUserCard {...item} confirmUnfollow={true} />}
         {...useFollowedUsers()}
       />
@@ -126,9 +134,23 @@ function FollowedBillCard({
 }) {
   const { loading, error, result: bill } = useBill(court, billId)
   const { t } = useTranslation("editProfile")
+  const dd = useHtmlAttribute("data-maple-theme") === "dd"
   if (loading) return <Spinner animation="border" className="mx-auto" />
   if (error) return <Alert variant="danger">{t("content.error")}</Alert>
   if (!bill) return null
+
+  if (dd)
+    return (
+      <FollowedItemRow
+        lead={
+          <Internal href={`/bills/${court}/${billId}`}>
+            {formatBillId(billId)}
+          </Internal>
+        }
+        title={bill.content.Title}
+        action={<FollowBillButton bill={bill} confirmUnfollow={true} />}
+      />
+    )
 
   return (
     <div className={`fs-3 lh-lg`}>
@@ -156,6 +178,7 @@ function FollowedBallotQuestionCard({
   court: number
 }) {
   const { t } = useTranslation("editProfile")
+  const dd = useHtmlAttribute("data-maple-theme") === "dd"
   const {
     loading,
     error,
@@ -172,6 +195,19 @@ function FollowedBallotQuestionCard({
     bq.ballotQuestionNumber != null
       ? `Question ${bq.ballotQuestionNumber}`
       : bq.description ?? ballotQuestionId
+
+  if (dd)
+    return (
+      <FollowedItemRow
+        lead={
+          <Internal href={`/ballotQuestions/${ballotQuestionId}`}>
+            {label}
+          </Internal>
+        }
+        title={bq.title ?? bq.description}
+        action={<FollowBallotQuestionButton ballotQuestion={bq} />}
+      />
+    )
 
   return (
     <div className={`fs-3 lh-lg`}>

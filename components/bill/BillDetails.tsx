@@ -2,7 +2,7 @@ import { useTranslation } from "next-i18next"
 import { useAuth } from "../auth"
 import { Col, Container, Row } from "../bootstrap"
 import { TestimonyFormPanel } from "../publish"
-import { Banner } from "../shared/StyledSharedComponents"
+import { PageBanner } from "../shared/PageBanner"
 import { BillNumber, Styled } from "./BillNumber"
 import { BillTestimonies } from "./BillTestimonies"
 import BillTrackerConnectedView from "./BillTracker"
@@ -43,9 +43,13 @@ export const BillDetails = ({
     <>
       {isPendingUpgrade && <PendingUpgradeBanner />}
       {!isCurrentCourt(bill.court) && (
-        <Banner>{t("bill.old_session", { billCourt: bill.court })}</Banner>
+        <PageBanner>
+          {t("bill.old_session", { billCourt: bill.court })}
+        </PageBanner>
       )}
-      {isBallotMeasure && <Banner>{t("bill.ballot_initiative")}</Banner>}
+      {isBallotMeasure && (
+        <PageBanner>{t("bill.ballot_initiative")}</PageBanner>
+      )}
       <ConferenceBanner conference={conference} />
 
       <Container className="mt-3 mb-3">

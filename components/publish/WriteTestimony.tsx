@@ -9,10 +9,12 @@ import { useAppDispatch } from "../hooks"
 import * as links from "../links"
 import * as nav from "./NavigationButtons"
 import { SelectRecipients } from "./SelectRecipients"
+import { SectionHead } from "./SectionHead"
 import { StepHeader } from "./StepHeader"
 import { useFormRedirection, usePublishCopy, usePublishState } from "./hooks"
 import { setAttachmentId, setContent } from "./redux"
 import { Trans, useTranslation } from "next-i18next"
+import { useHtmlAttribute } from "components/shared/useHtmlAttribute"
 type TabKey = "text" | "import"
 type UseWriteTestimony = ReturnType<typeof useWriteTestimony>
 
@@ -42,6 +44,63 @@ export const WriteTestimony = styled(props => {
   // const tabs = useTabs(write)
 
   const valid = !!write.content
+  // Digital Democracy skins: the testimony under a title row of its own, as
+  // the recipients above it are (SelectRecipients.tsx), with no divider
+  // between them. Maple keeps main's divider.
+  const dd = useHtmlAttribute("data-maple-theme") === "dd"
+  const testimonyLabel = copy(
+    "submitTestimonyForm.write.testimonyLabel",
+    "ballotQuestion.submitTestimonyForm.write.testimonyLabel"
+  )
+  const testimony = (
+    <>
+      <TextArea
+        setContent={write.setContent}
+        content={write.content}
+        error={write.error}
+        label={testimonyLabel}
+        placeholder={copy(
+          "submitTestimonyForm.write.testimonyPlaceholder",
+          "ballotQuestion.submitTestimonyForm.write.testimonyPlaceholder"
+        )}
+        help={copy(
+          "submitTestimonyForm.write.testimonyHelp",
+          "ballotQuestion.submitTestimonyForm.write.testimonyHelp"
+        )}
+        className="text-container"
+      />
+      <div>
+        <Trans
+          t={t}
+          i18nKey={
+            isBallotQuestion
+              ? "ballotQuestion.submitTestimonyForm.write.tips"
+              : "submitTestimonyForm.write.tips"
+          }
+          components={[
+            // eslint-disable-next-line react/jsx-key
+            <links.Internal href="/writing-effective-testimony" />
+          ]}
+        />
+      </div>
+
+      <div>
+        <links.Internal href="/policies/code-of-conduct">
+          {t("submitTestimonyForm.write.codeOfConduct")}
+        </links.Internal>
+      </div>
+
+      <Attachment
+        className="mt-3"
+        attachment={write.attachment}
+        confirmRemove={true}
+        label={copy(
+          "submitTestimonyForm.write.attachmentLabel",
+          "ballotQuestion.submitTestimonyForm.write.attachmentLabel"
+        )}
+      />
+    </>
+  )
 
   return (
     <div {...props}>
@@ -52,60 +111,20 @@ export const WriteTestimony = styled(props => {
         )}
       </StepHeader>
       {!isBallotQuestion && <SelectRecipients className="my-4" />}
+      {dd ? (
+        <section className="mb-4 titled">
+          <SectionHead>
+            <h3>{testimonyLabel}</h3>
+          </SectionHead>
+          {testimony}
+        </section>
+      ) : (
+        <>
+          <div className="divider" />
 
-      <div className="divider" />
-
-      <div className="mt-4">
-        <TextArea
-          setContent={write.setContent}
-          content={write.content}
-          error={write.error}
-          label={copy(
-            "submitTestimonyForm.write.testimonyLabel",
-            "ballotQuestion.submitTestimonyForm.write.testimonyLabel"
-          )}
-          placeholder={copy(
-            "submitTestimonyForm.write.testimonyPlaceholder",
-            "ballotQuestion.submitTestimonyForm.write.testimonyPlaceholder"
-          )}
-          help={copy(
-            "submitTestimonyForm.write.testimonyHelp",
-            "ballotQuestion.submitTestimonyForm.write.testimonyHelp"
-          )}
-          className="text-container"
-        />
-        <div>
-          <Trans
-            t={t}
-            i18nKey={
-              isBallotQuestion
-                ? "ballotQuestion.submitTestimonyForm.write.tips"
-                : "submitTestimonyForm.write.tips"
-            }
-            components={[
-              // eslint-disable-next-line react/jsx-key
-              <links.Internal href="/writing-effective-testimony" />
-            ]}
-          />
-        </div>
-
-        <div>
-          <links.Internal href="/policies/code-of-conduct">
-            {t("submitTestimonyForm.write.codeOfConduct")}
-          </links.Internal>
-        </div>
-
-        <Attachment
-          className="mt-3"
-          attachment={write.attachment}
-          confirmRemove={true}
-          label={copy(
-            "submitTestimonyForm.write.attachmentLabel",
-            "ballotQuestion.submitTestimonyForm.write.attachmentLabel"
-          )}
-        />
-      </div>
-
+          <div className="mt-4">{testimony}</div>
+        </>
+      )}
       <nav.FormNavigation
         left={<nav.Previous />}
         right={<nav.Next disabled={!valid} />}
@@ -119,6 +138,25 @@ export const WriteTestimony = styled(props => {
 
   .text-container label {
     font-size: 1.5rem;
+  }
+
+  /* Under its section's title (Digital Democracy skins) the title names the
+     box, so its own label is kept for screen readers only. */
+  .titled .text-container > .form-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  /* Digital Democracy skins: the testimony box's edge darker than the skin's
+     faint field border, so the space to write in is plain to see. Focused, it
+     keeps Bootstrap's focus border. */
+  [data-maple-theme="dd"] & .text-container .form-control:not(:focus) {
+    border-color: rgba(15, 23, 42, 0.3);
   }
 
   .divider {

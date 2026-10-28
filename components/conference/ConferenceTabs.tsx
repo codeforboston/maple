@@ -6,7 +6,6 @@ import { jumpTo } from "./navbar"
 /** The mockup's theme.css values, for the colours the site has no token for. */
 const ink = { strong: "#141413", mid: "#73726c" }
 const rule = "rgba(0, 0, 0, 0.16)"
-const brand = "#1f3b61"
 
 /** The row's height: its tabs' padding and rules and one line of text. What
  * holds under it, and what a jump parks under it, is placed by this. */
@@ -30,12 +29,13 @@ const Tab = styled.a`
   white-space: nowrap;
   color: ${ink.mid};
   text-decoration: none;
-  &:hover,
-  &[aria-current="true"] {
+  &:hover {
     color: ${ink.strong};
   }
+  /* The tab being read in the page title's blue, text and rule. */
   &[aria-current="true"] {
-    border-bottom-color: ${brand};
+    color: var(--maple-brand-primary-strong);
+    border-bottom-color: var(--maple-brand-primary-strong);
     font-weight: 600;
   }
 `

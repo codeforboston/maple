@@ -5,6 +5,7 @@ import { SignInWithButton, useAuth } from "../../auth"
 import { Wrap } from "../../links"
 import { formUrl, usePublishState } from "../hooks"
 import { useTranslation } from "next-i18next"
+import { useHtmlAttribute } from "components/shared/useHtmlAttribute"
 
 export type PanelCtaVariant = "default" | "ballotQuestion"
 
@@ -102,6 +103,10 @@ export const CompleteTestimony = ({
   variant?: PanelCtaVariant
 }) => {
   const { t } = useTranslation("testimony")
+  // Digital Democracy skins: white with blue text on the panel's blue
+  // (styles/globals.css), where main's white on Bootstrap's pale info is
+  // hard to read. Maple keeps main's.
+  const dd = useHtmlAttribute("data-maple-theme") === "dd"
   const namespace =
     variant === "ballotQuestion" ? "ballotQuestion.panel" : "panel"
   const cta = (
@@ -111,6 +116,8 @@ export const CompleteTestimony = ({
       className={
         variant === "ballotQuestion"
           ? "w-100 py-2 small fw-semibold"
+          : dd
+          ? "inverse-button"
           : "text-white"
       }
     />

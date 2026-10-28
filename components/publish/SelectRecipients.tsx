@@ -26,15 +26,33 @@ import {
 } from "./redux"
 import { isNotNull } from "components/utils"
 import { useTranslation } from "next-i18next"
+import { useHtmlAttribute } from "components/shared/useHtmlAttribute"
+import { SectionHead } from "./SectionHead"
 
-const BillSelectRecipients = (props: { className?: string }) => {
+const BillSelectRecipients = ({ className }: { className?: string }) => {
   useEmailRecipients()
   const email = useTestimonyEmail()
   const { t } = useTranslation("testimony")
   const isMobile = useMediaQuery("(max-width: 1199px)")
+  // Digital Democracy skins: a title row with Copy Email Recipients at its
+  // far right, then the add and remove buttons, then the list, the same on
+  // every step that shows it. Maple keeps main's three columns.
+  const dd = useHtmlAttribute("data-maple-theme") === "dd"
+
+  if (dd)
+    return (
+      <div className={className}>
+        <SectionHead>
+          <h3>{t("publish.emailRecipients")}</h3>
+          <CopyRecipientsButton />
+        </SectionHead>
+        <RecipientControls />
+        <SelectLegislatorEmails className="my-2" />
+      </div>
+    )
 
   return (
-    <div {...props}>
+    <div className={className}>
       <Row className="d-flex">
         <Col className="align-self-center fs-4" xl={3} lg={12}>
           {t("publish.emailRecipients")}
@@ -66,7 +84,25 @@ const BillSelectRecipients = (props: { className?: string }) => {
   )
 }
 
-export const SelectRecipients = styled(props => {
+/** Copy Email Recipients on its own, for the section's title row under the
+ * Digital Democracy skins. Nothing while there are no recipients. */
+const CopyRecipientsButton = () => {
+  const email = useTestimonyEmail()
+  const { t } = useTranslation("testimony")
+  return email.to ? (
+    <CopyButton
+      variant="outline-secondary"
+      text={email.to}
+      className="py-1 px-2 d-inline-flex align-items-center gap-2"
+      format="text/plain"
+    >
+      <FontAwesomeIcon icon={faCopy} />
+      {t("publish.copyEmailRecipients")}
+    </CopyButton>
+  ) : null
+}
+
+export const SelectRecipients = styled((props: { className?: string }) => {
   const mode = usePublishMode()
   if (mode === "ballotQuestion") return null
 
@@ -87,6 +123,18 @@ export const SelectRecipients = styled(props => {
     background-size: auto 6rem;
     min-height: 10rem;
     border-radius: 1rem;
+  }
+
+  /* Digital Democracy skins: the search white, as the testimony box is, with
+     an edge, which main draws in the box's own grey and so without one.
+     Focused, it keeps react-select's focus colour. */
+  [data-maple-theme="dd"] & .leg-search__control {
+    background-color: var(--maple-surface-base);
+  }
+  [data-maple-theme="dd"]
+    &
+    .leg-search__control:not(.leg-search__control--is-focused) {
+    border-color: rgba(15, 23, 42, 0.3);
   }
 
   .leg-search__value-container {

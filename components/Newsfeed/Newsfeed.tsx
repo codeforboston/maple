@@ -18,6 +18,7 @@ import ProfileSettingsModal from "components/EditProfilePage/ProfileSettingsModa
 import LoginPage from "components/Login/Login"
 import { NewsfeedCard } from "components/NewsfeedCard/NewsfeedCard"
 import { ProfileButtons } from "components/ProfilePage/ProfileButtons"
+import { useHtmlAttribute } from "components/shared/useHtmlAttribute"
 
 export default function Newsfeed() {
   const { t } = useTranslation("common")
@@ -26,6 +27,9 @@ export default function Newsfeed() {
   const uid = user?.uid
   const result = useProfile()
   const isUser = user?.uid !== undefined
+  // Digital Democracy skins: Followed Content and Settings sit beside the
+  // title, as Edit Profile's do, rather than at the end of the filters.
+  const dd = useHtmlAttribute("data-maple-theme") === "dd"
 
   const [isShowingOrgs, setIsShowingOrgs] = useState<boolean>(true)
   const [isShowingBills, setIsShowingBills] = useState<boolean>(true)
@@ -162,13 +166,19 @@ export default function Newsfeed() {
               </label>
             </BillCol>
           )}
-          <Buttons profile={profile} />
+          {!dd && <Buttons profile={profile} />}
         </Row>
       </>
     )
   }
 
-  function Buttons({ profile }: { profile: Profile }) {
+  function Buttons({
+    profile,
+    inHeader = false
+  }: {
+    profile: Profile
+    inHeader?: boolean
+  }) {
     const {
       public: isPublic,
       notificationFrequency: notificationFrequency
@@ -199,6 +209,7 @@ export default function Newsfeed() {
             isUser={isUser}
             hideTestimonyButton={true}
             onSettingsModalOpen={onSettingsModalOpen}
+            className={inHeader ? "m-0" : undefined}
           />
         </div>
         <ProfileSettingsModal
@@ -236,6 +247,11 @@ export default function Newsfeed() {
                   <HeaderTitle className={`mb-4`}>
                     {t("navigation.newsfeed")}
                   </HeaderTitle>
+                  {dd && (
+                    <Col xs={12} md="auto" className="mb-4">
+                      <Buttons profile={result.profile} inHeader />
+                    </Col>
+                  )}
                   <Filters profile={result.profile} />
                 </Header>
                 {filteredResults.length > 0 ? (

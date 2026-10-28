@@ -9,6 +9,7 @@ import { OrgCategory, OrgCategories } from "components/auth"
 import { TooltipButton } from "components/buttons"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
+import { useHtmlAttribute } from "components/shared/useHtmlAttribute"
 
 export type UpdateProfileData = {
   fullName: string
@@ -110,158 +111,201 @@ export function PersonalInfoTab({
   )
 
   const { t } = useTranslation("editProfile")
+  // Digital Democracy, Mixed and Statehouse: the cards take the profile page's
+  // look, a header band with the title and the card's own padding, and from
+  // 992px the legislators card sits to the right of General info.
+  const dd = useHtmlAttribute("data-maple-theme") === "dd"
 
-  return (
-    <Form onSubmit={onSubmit}>
-      <TitledSectionCard className={className}>
-        <div className={`mx-4 mt-3 d-flex flex-column`}>
+  const generalInfoCard = (
+    <TitledSectionCard
+      // Side by side under the Digital Democracy skins, the margin goes on
+      // the pair (below), so the two cards start level.
+      className={dd && !isOrg ? undefined : className}
+      title={dd ? t("tabs.personalInfo") : undefined}
+    >
+      <div
+        // Under the band, just the card's own padding above the content, as
+        // in the legislators card beside it.
+        className={dd ? "d-flex flex-column" : `mx-4 mt-3 d-flex flex-column`}
+      >
+        {/* Digital Democracy skins: a minor subheading, as Social Media is. */}
+        {dd ? (
+          <h6 className="mb-3">{t("forms.generalInfo")}</h6>
+        ) : (
           <h4 className="mb-3">{t("forms.generalInfo")}</h4>
-          <Row>
-            <Input
-              label={t(isOrg ? "forms.orgName" : "forms.fullName")}
-              {...register("fullName", {
-                value: fullName?.trim(),
-                validate: value =>
-                  value.trim().length >= 2 ||
-                  t("forms.errEmptyAndMinLength").toString(),
-                required: t(
-                  isOrg ? "forms.errOrgNameRequired" : "forms.errNameRequired"
-                ).toString()
-              })}
-              className="w-100"
-              defaultValue={fullName}
-              error={errors.fullName?.message}
+        )}
+        <Row>
+          <Input
+            label={t(isOrg ? "forms.orgName" : "forms.fullName")}
+            {...register("fullName", {
+              value: fullName?.trim(),
+              validate: value =>
+                value.trim().length >= 2 ||
+                t("forms.errEmptyAndMinLength").toString(),
+              required: t(
+                isOrg ? "forms.errOrgNameRequired" : "forms.errNameRequired"
+              ).toString()
+            })}
+            className="w-100"
+            defaultValue={fullName}
+            error={errors.fullName?.message}
+          />
+        </Row>
+        <Row>
+          <Input
+            as="textarea"
+            {...register("aboutYou")}
+            style={{ height: "10rem" }}
+            className="mt-3"
+            label={t("forms.aboutYou")}
+            defaultValue={about}
+          />
+        </Row>
+        <Row xs="auto" className="mt-2">
+          <Col>
+            <TooltipButton
+              text={t("forms.aboutYouTip")}
+              tooltip={t("tooltipText")}
+              variant="link"
             />
-          </Row>
-          <Row>
-            <Input
-              as="textarea"
-              {...register("aboutYou")}
-              style={{ height: "10rem" }}
-              className="mt-3"
-              label={t("forms.aboutYou")}
-              defaultValue={about}
-            />
-          </Row>
-          <Row xs="auto" className="mt-2">
-            <Col>
-              <TooltipButton
-                text={t("forms.aboutYouTip")}
-                tooltip={t("tooltipText")}
-                variant="link"
-              />
-            </Col>
-          </Row>
-          {isOrg && (
-            <SelectOrgCategory
-              t={t}
-              register={register}
-              category={category}
-              setCategory={setCategory}
-            />
-          )}
+          </Col>
+        </Row>
+        {isOrg && (
+          <SelectOrgCategory
+            t={t}
+            register={register}
+            category={category}
+            setCategory={setCategory}
+          />
+        )}
 
-          <div className="mb-3">
+        <div className="mb-3">
+          {/* Digital Democracy skins: smaller, as a minor subheading. */}
+          {dd ? (
+            <h6 className="mb-3 mt-5">{t("socialLinks.socialMedia")}</h6>
+          ) : (
             <h4 className="mb-3 mt-5">{t("socialLinks.socialMedia")}</h4>
-            <div className={`row`}>
-              <SocialInput
-                label={t("socialLinks.twitter")}
-                defaultValue={social?.twitter}
-                className="col-sm-12 col-md-6 mb-1"
-                iconSrc="/twitter.svg"
-                {...register("twitter")}
-              />
-              <SocialInput
-                label={t("socialLinks.linkedIn")}
-                defaultValue={social?.linkedIn}
-                className="col-sm-12 col-md-6 mb-1"
-                iconSrc="/linkedin.svg"
-                {...register("linkedIn")}
-              />
-              <SocialInput
-                label={t("socialLinks.blueSky")}
-                defaultValue={social?.blueSky}
-                className="col-sm-12 col-md-6 mb-1"
-                iconSrc="/bluesky.svg"
-                {...register("blueSky")}
-              />
-              <SocialInput
-                label={t("socialLinks.mastodon")}
-                defaultValue={social?.mastodon}
-                className="col-sm-12 col-md-6 mb-1"
-                iconSrc="/mastodon.svg"
-                {...register("mastodon")}
-              />
-              {isOrg && (
-                <>
-                  <SocialInput
-                    label={t("socialLinks.instagram")}
-                    defaultValue={social?.instagram}
-                    className="col-sm-12 col-md-6 mb-1"
-                    iconSrc="/instagram.svg"
-                    {...register("instagram")}
-                  />
-                  <SocialInput
-                    label={t("socialLinks.facebook")}
-                    defaultValue={social?.fb}
-                    className="col-sm-12 col-md-6"
-                    iconSrc="/facebook.svg"
-                    {...register("fb")}
-                  />
-                </>
-              )}
-            </div>
+          )}
+          <div className={`row`}>
+            <SocialInput
+              label={t("socialLinks.twitter")}
+              defaultValue={social?.twitter}
+              className="col-sm-12 col-md-6 mb-1"
+              iconSrc="/twitter.svg"
+              {...register("twitter")}
+            />
+            <SocialInput
+              label={t("socialLinks.linkedIn")}
+              defaultValue={social?.linkedIn}
+              className="col-sm-12 col-md-6 mb-1"
+              iconSrc="/linkedin.svg"
+              {...register("linkedIn")}
+            />
+            <SocialInput
+              label={t("socialLinks.blueSky")}
+              defaultValue={social?.blueSky}
+              className="col-sm-12 col-md-6 mb-1"
+              iconSrc="/bluesky.svg"
+              {...register("blueSky")}
+            />
+            <SocialInput
+              label={t("socialLinks.mastodon")}
+              defaultValue={social?.mastodon}
+              className="col-sm-12 col-md-6 mb-1"
+              iconSrc="/mastodon.svg"
+              {...register("mastodon")}
+            />
             {isOrg && (
               <>
-                <h4 className="mb-3 mt-5">{t("contact.contactInfo")}</h4>
-                <Row>
-                  <Input
-                    label={t("contact.email")}
-                    defaultValue={contactInfo?.publicEmail}
-                    {...register("publicEmail")}
-                  />
-                </Row>
-                <Row className="mt-3">
-                  <Input
-                    label={t("contact.phone")}
-                    defaultValue={contactInfo?.publicPhone}
-                    {...register("publicPhone", {
-                      minLength: {
-                        value: 10,
-                        message: t("contact.phoneLenWarning1")
-                      },
-                      maxLength: {
-                        value: 10,
-                        message: t("contact.phoneLenWarning2")
-                      },
-                      validate: () => {
-                        const phoneNum = getValues("publicPhone")
-                        return isNaN(phoneNum)
-                          ? t("contact.phoneNumWarning").toString()
-                          : undefined
-                      }
-                    })}
-                    error={errors.publicPhone?.message}
-                  />
-                </Row>
-                <Row className="mt-3">
-                  <Input
-                    label={t("contact.website")}
-                    defaultValue={contactInfo?.website}
-                    {...register("website")}
-                  />
-                </Row>
+                <SocialInput
+                  label={t("socialLinks.instagram")}
+                  defaultValue={social?.instagram}
+                  className="col-sm-12 col-md-6 mb-1"
+                  iconSrc="/instagram.svg"
+                  {...register("instagram")}
+                />
+                <SocialInput
+                  label={t("socialLinks.facebook")}
+                  defaultValue={social?.fb}
+                  className="col-sm-12 col-md-6"
+                  iconSrc="/facebook.svg"
+                  {...register("fb")}
+                />
               </>
             )}
           </div>
+          {isOrg && (
+            <>
+              <h4 className="mb-3 mt-5">{t("contact.contactInfo")}</h4>
+              <Row>
+                <Input
+                  label={t("contact.email")}
+                  defaultValue={contactInfo?.publicEmail}
+                  {...register("publicEmail")}
+                />
+              </Row>
+              <Row className="mt-3">
+                <Input
+                  label={t("contact.phone")}
+                  defaultValue={contactInfo?.publicPhone}
+                  {...register("publicPhone", {
+                    minLength: {
+                      value: 10,
+                      message: t("contact.phoneLenWarning1")
+                    },
+                    maxLength: {
+                      value: 10,
+                      message: t("contact.phoneLenWarning2")
+                    },
+                    validate: () => {
+                      const phoneNum = getValues("publicPhone")
+                      return isNaN(phoneNum)
+                        ? t("contact.phoneNumWarning").toString()
+                        : undefined
+                    }
+                  })}
+                  error={errors.publicPhone?.message}
+                />
+              </Row>
+              <Row className="mt-3">
+                <Input
+                  label={t("contact.website")}
+                  defaultValue={contactInfo?.website}
+                  {...register("website")}
+                />
+              </Row>
+            </>
+          )}
         </div>
-      </TitledSectionCard>
+      </div>
+    </TitledSectionCard>
+  )
 
-      {!isOrg && (
-        <TitledSectionCard>
-          <h2>{t("legislator.yourLegislators")}</h2>
-          <YourLegislators {...legislatorsProps} />
-        </TitledSectionCard>
+  const legislatorsCard = (
+    <TitledSectionCard title={dd ? t("legislator.yourLegislators") : undefined}>
+      {!dd && <h2>{t("legislator.yourLegislators")}</h2>}
+      <YourLegislators {...legislatorsProps} stacked={dd} />
+    </TitledSectionCard>
+  )
+
+  return (
+    <Form onSubmit={onSubmit}>
+      {dd && !isOrg ? (
+        <div className={className}>
+          <Row className="g-4">
+            <Col xs={12} lg={7}>
+              {generalInfoCard}
+            </Col>
+            <Col xs={12} lg={5}>
+              {legislatorsCard}
+            </Col>
+          </Row>
+        </div>
+      ) : (
+        <>
+          {generalInfoCard}
+          {!isOrg && legislatorsCard}
+        </>
       )}
 
       <Row>

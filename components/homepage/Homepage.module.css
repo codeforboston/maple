@@ -1379,6 +1379,29 @@
     justify-self: center;
     width: min(24rem, 70%);
   }
+
+  /* Stacked, the buttons stack too, centred under the centred copy, as this
+     hero's buttons already do below 900px (the rule in the 900px block above,
+     repeated here for the widths in between). Room below them, as the regular
+     hero leaves under its panel, so they do not sit on the bottom edge. */
+  .heroSection.heroStatehouse .heroContent {
+    padding-bottom: 3.5rem;
+  }
+
+  .heroSection.heroStatehouse .heroActions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    width: 100%;
+    max-width: 24rem;
+    margin: 0 auto;
+  }
+
+  .heroSection.heroStatehouse :is(.primaryAction, .secondaryAction) {
+    width: 100%;
+    min-height: 3.5rem;
+    padding: 0.75rem 1.5rem;
+  }
 }
 
 /* Raised 1.5rem off the bottom edge. Offset rather than taken out of flow, so
@@ -1750,4 +1773,22 @@
 
 :global([data-maple-theme="dd"]) .skylineSlice2 {
   display: none;
+}
+
+/* Digital Democracy skins: the section headings (Did You Know?, the features,
+   Upcoming Hearings and What does MAPLE do?) at the size of "What people are
+   saying..." (components/TestimonyCallout/TestimonyCalloutSection.tsx), a
+   plain h2 at Bootstrap's size, at every width. Maple keeps main's sizes. */
+:global([data-maple-theme="dd"]) .sectionTitle,
+:global([data-maple-theme="dd"]) .hearingsTitle,
+:global([data-maple-theme="dd"]) .explainerTitle {
+  font-size: calc(1.3625rem + 1.35vw);
+}
+
+@media (min-width: 1200px) {
+  :global([data-maple-theme="dd"]) .sectionTitle,
+  :global([data-maple-theme="dd"]) .hearingsTitle,
+  :global([data-maple-theme="dd"]) .explainerTitle {
+    font-size: 2.375rem;
+  }
 }

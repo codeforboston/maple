@@ -5,6 +5,7 @@ import { Step } from "./redux"
 import { Internal } from "components/links"
 import { usePublishCopy, usePublishMode } from "./hooks"
 import { Trans, useTranslation } from "next-i18next"
+import { useHtmlAttribute } from "components/shared/useHtmlAttribute"
 
 export const KeepNote = (props: { currentStep: Step }) => {
   const { t } = useTranslation("testimony")
@@ -107,7 +108,7 @@ export const YourTestimony = () => {
     <NoteContent>
       <div className="text-center">
         <Image
-          className="px-5"
+          className="px-5 keep-note-art"
           alt=""
           src="/mailbox.svg"
           style={{ transform: "scaleY(0.85)" }}
@@ -134,7 +135,7 @@ export const BallotQuestionYourTestimony = () => {
     <NoteContent>
       <div className="text-center">
         <Image
-          className="px-5"
+          className="px-5 keep-note-art"
           alt=""
           src="/mailbox.svg"
           style={{ transform: "scaleY(0.85)" }}
@@ -160,10 +161,17 @@ export const BallotQuestionYourTestimony = () => {
 
 export const PublishingToMAPLE = () => {
   const { t, copy, isBallotQuestion } = usePublishCopy()
+  // Digital Democracy skins: the rules in the text colour the other steps'
+  // notes are in, rather than blue. Maple keeps main's blue.
+  const dd = useHtmlAttribute("data-maple-theme") === "dd"
   return (
     <NoteContent>
       <div className="text-center">
-        <Image className="mx-auto" alt="" src="/computertextblob.svg" />
+        <Image
+          className="mx-auto keep-note-art"
+          alt=""
+          src="/computertextblob.svg"
+        />
       </div>
       <NoteSubtitle>
         {copy(
@@ -171,7 +179,7 @@ export const PublishingToMAPLE = () => {
           "ballotQuestion.submitTestimonyForm.keepNote.rulesHeader"
         )}
       </NoteSubtitle>
-      <ul style={{ color: "var(--bs-blue)" }}>
+      <ul style={dd ? undefined : { color: "var(--bs-blue)" }}>
         <NoteItem>
           {copy(
             "submitTestimonyForm.keepNote.editLimit",
@@ -204,6 +212,13 @@ const NoteContainer = styled.div`
     flex-direction: column;
     padding: 0rem 0rem 1rem 0rem;
     height: 100%;
+
+    /* Digital Democracy skins: a rule down its left, now the form beside it
+       is the same grey (SubmitTestimonyForm.tsx), as dark as the cards'
+       edges. */
+    [data-maple-theme="dd"] & {
+      border-left: 1px solid rgba(15, 23, 42, 0.2);
+    }
   `,
   HeaderContainer = styled.h4`
     background: var(--bs-orange);
@@ -218,6 +233,12 @@ const NoteContainer = styled.div`
   `,
   NoteContent = styled.div`
     line-height: normal;
+
+    /* Digital Democracy skins: the panel's illustration smaller, so the
+       notes under it come up the page. */
+    [data-maple-theme="dd"] & .keep-note-art {
+      max-width: 70%;
+    }
   `,
   NoteItem = styled.li`
     margin-top: 20px;

@@ -17,6 +17,13 @@ const Toggle = styled(Dropdown.Toggle)`
   text-align: left;
   color: inherit;
 
+  /* A title, not a link: Bootstrap underlines its link buttons. && lifts
+     this over that whatever order the stylesheets load in. */
+  &&,
+  &&:hover,
+  &&:focus {
+    text-decoration: none;
+  }
   &::after {
     display: none;
   }

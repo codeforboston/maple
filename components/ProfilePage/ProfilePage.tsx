@@ -9,7 +9,7 @@ import ViewTestimony from "../TestimonyCard/ViewTestimony"
 import { Role, useAuth } from "../auth"
 import { Col, Container, Row, Spinner } from "../bootstrap"
 import { usePublicProfile, usePublishedTestimonyListing } from "../db"
-import { Banner } from "../shared/StyledSharedComponents"
+import { PageBanner } from "../shared/PageBanner"
 import { OrgContactInfo } from "./OrgContactInfo"
 import { ProfileAboutSection } from "./ProfileAboutSection"
 import { ProfileHeader } from "./ProfileHeader"
@@ -17,6 +17,7 @@ import { ProfileLegislators } from "./ProfileLegislators"
 import { VerifyAccountSection } from "components/shared"
 import { VerifyAccountSectionLegacy } from "./VerifyAccountSectionLegacy"
 import { useFlags } from "components/featureFlags"
+import { useHtmlAttribute } from "components/shared/useHtmlAttribute"
 
 export function ProfilePage(profileprops: {
   id: string
@@ -41,6 +42,9 @@ export function ProfilePage(profileprops: {
   >()
 
   const { phoneVerificationUI } = useFlags()
+  // Digital Democracy skins: Verify Account as a plain white card with its
+  // heading inside, as on Edit Profile (styles/globals.css).
+  const dd = useHtmlAttribute("data-maple-theme") === "dd"
 
   useEffect(() => {
     const countPublishedTestimony = async () => {
@@ -87,22 +91,42 @@ export function ProfilePage(profileprops: {
     return <ErrorPage statusCode={404} withDarkMode={false} />
   }
 
+  const verifyAccount =
+    phoneVerificationUI &&
+    isCurrentUser &&
+    (!user.emailVerified || !profile.phoneVerified) ? (
+      <Row className={dd ? "mt-4" : undefined}>
+        <Col className="verify-account-card">
+          <VerifyAccountSection
+            className="mb-4"
+            user={user}
+            profile={profile}
+            titleInside={dd}
+            onlyVisibleNote={dd}
+          />
+        </Col>
+      </Row>
+    ) : null
+
   return (
     <FollowContext.Provider value={{ followStatus, setFollowStatus }}>
       {isPendingUpgrade && isCurrentUser && <PendingUpgradeBanner />}
       {["user", "admin"].includes(role) && isCurrentUser ? (
         <>
-          <Banner>
+          <PageBanner>
             {" "}
             {t("content.viewingProfile")}
             <br />
             {isProfilePublic
               ? t("content.publicProfile")
               : t("content.privateProfile")}
-          </Banner>
+          </PageBanner>
         </>
       ) : null}
       <Container>
+        {/* Digital Democracy skins: Verify Account first, right under the
+            banner that asks for it; Maple keeps it under the header. */}
+        {dd && verifyAccount}
         <ProfileHeader
           profileId={profileprops.id}
           isUser={isCurrentUser}
@@ -117,19 +141,7 @@ export function ProfilePage(profileprops: {
           </Row>
         ) : null}
 
-        {phoneVerificationUI &&
-        isCurrentUser &&
-        (!user.emailVerified || !profile.phoneVerified) ? (
-          <Row>
-            <Col>
-              <VerifyAccountSection
-                className="mb-4"
-                user={user}
-                profile={profile}
-              />
-            </Col>
-          </Row>
-        ) : null}
+        {!dd && verifyAccount}
 
         <Row>{isOrg ? <OrgContactInfo profile={profile} /> : <></>}</Row>
 

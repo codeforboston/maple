@@ -61,6 +61,12 @@ export const ProgressBar = styled<{ currentStep: Step }>(
   justify-content: space-between;
   align-content: flex-start;
   font-size: 0.75rem;
+
+  /* Digital Democracy skins: the step being worked on in MAPLE blue, green
+     kept for the steps checked off. Maple keeps main's green for both. */
+  [data-maple-theme="dd"] & .step-current {
+    background-color: var(--maple-brand-primary);
+  }
 `
 
 const StepBox: React.FC<
@@ -72,7 +78,10 @@ const StepBox: React.FC<
 > = ({ step, current, complete, children }) => {
   return (
     <div>
-      <StepChip className="m-auto mb-2" active={current || complete}>
+      <StepChip
+        className={`m-auto mb-2 ${current && !complete ? "step-current" : ""}`}
+        active={current || complete}
+      >
         {complete ? <FontAwesomeIcon icon={faCheck} /> : step}
       </StepChip>
       {children}

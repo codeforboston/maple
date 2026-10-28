@@ -1,10 +1,12 @@
 import styled from "styled-components"
+import { line } from "./input/tokens"
 import { Internal } from "../links"
 
 /** The site's eyebrow, a size down: the mockup sets these at 11px. */
 export const Eyebrow = styled.p.attrs((props): { className: string } => ({
   className: `maple-eyebrow m-0 ${props.className ?? ""}`
 }))`
+  font-family: var(--maple-font-body);
   font-size: 0.6875rem;
 `
 
@@ -48,6 +50,15 @@ export const Card = styled.section`
   }
 `
 
+/** A card on the conference committee page or the explorer, outlined in the
+ * mockup's line rather than the site's lighter border, its text in Nunito.
+ * Its title (CardTitle) and any empty state keep Lexend. */
+export const CommitteeCard = styled(Card)`
+  border-color: ${line.default};
+  font-family: var(--maple-font-body);
+`
+
+/** Every section's title on the conference committee page, in a card or not. */
 export const CardTitle = styled.h2`
   margin: 0 0 1.25rem;
   font-family: var(--maple-font-heading);

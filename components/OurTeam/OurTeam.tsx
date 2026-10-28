@@ -65,7 +65,7 @@ export const OurTeam = () => {
 // longest label -- is the first to run out of room and wrap to a second line,
 // which drops its underline below the other two. On smaller screens, scale the
 // type down fluidly and keep each label on one line so all three stay aligned.
-const TabsRow = styled(Row)`
+export const TabsRow = styled(Row)`
   @media (max-width: 48rem) {
     font-size: clamp(0.55rem, 3.25vw, 0.9375rem);
 

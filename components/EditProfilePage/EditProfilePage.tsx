@@ -1,10 +1,10 @@
 import { useTranslation } from "next-i18next"
 import Router from "next/router"
 import { useState } from "react"
-import { TabPane } from "react-bootstrap"
+import { Nav, TabPane } from "react-bootstrap"
 import TabContainer from "react-bootstrap/TabContainer"
 import { Frequency, useAuth } from "../auth"
-import { Container, Row, Spinner } from "../bootstrap"
+import { Col, Container, Row, Spinner } from "../bootstrap"
 import {
   Profile,
   ProfileHook,
@@ -29,6 +29,9 @@ import { useFlags } from "components/featureFlags"
 import LoginPage from "components/Login/Login"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 import { FollowersTab } from "./FollowersTab"
+import { TabsRow } from "components/OurTeam/OurTeam"
+import { DigitalDemocracyOnly, MapleOnly } from "components/shared/SkinOnly"
+import { useHtmlAttribute } from "components/shared/useHtmlAttribute"
 
 const tabTitle = ["about-you", "testimonies", "following", "followers"] as const
 export type TabTitles = (typeof tabTitle)[number]
@@ -167,6 +170,25 @@ export function EditProfileForm({
   ]
 
   const { followOrg, phoneVerificationUI } = useFlags()
+  // Digital Democracy skins: Verify Account as a plain white card with its
+  // heading inside, like General info, rather than a header band.
+  const dd = useHtmlAttribute("data-maple-theme") === "dd"
+
+  const verifyAccount = phoneVerificationUI &&
+    user &&
+    (!user.emailVerified || !profile.phoneVerified) && (
+      <div
+        className="verify-account-card"
+        style={dd ? { marginTop: "1.5rem" } : { marginBottom: "3.5rem" }}
+      >
+        <VerifyAccountSection
+          user={user}
+          profile={profile}
+          className=""
+          titleInside={dd}
+        />
+      </div>
+    )
 
   if (followOrg === false) {
     tabs.splice(2, 1)
@@ -177,33 +199,44 @@ export function EditProfileForm({
       {isPendingUpgrade && <PendingUpgradeBanner />}
 
       <Container>
+        {/* Digital Democracy skins: Verify Account first, above the heading,
+            as on the profile page; Maple keeps it under the heading. */}
+        {dd && verifyAccount}
         <EditProfileHeader
           formUpdated={formUpdated}
           onSettingsModalOpen={onSettingsModalOpen}
           uid={uid}
           role={profile.role}
         />
-        {phoneVerificationUI &&
-          user &&
-          (!user.emailVerified || !profile.phoneVerified) && (
-            <div style={{ marginBottom: "3.5rem" }}>
-              <VerifyAccountSection
-                user={user}
-                profile={profile}
-                className=""
-              />
-            </div>
-          )}
+        {!dd && verifyAccount}
         <TabContainer
           defaultActiveKey="about-you"
           activeKey={tabTitle}
           onSelect={(tabTitle: any) => handleOnClick(tabTitle)}
         >
-          <TabNavWrapper>
-            {tabs.map((t, i) => (
-              <TabNavItem key={i} tab={t} i={i} />
-            ))}
-          </TabNavWrapper>
+          {/* Maple: main's tabs. Digital Democracy, Mixed and Statehouse: the
+              About > Our Team tabs (the our-team-tab class and its row), one
+              column each. Both bars drive the same tabs; the skin shows one. */}
+          <MapleOnly>
+            <TabNavWrapper>
+              {tabs.map((t, i) => (
+                <TabNavItem key={i} tab={t} i={i} />
+              ))}
+            </TabNavWrapper>
+          </MapleOnly>
+          <DigitalDemocracyOnly>
+            <TabsRow className="py-2 g-0">
+              {tabs.map(t => (
+                <Col key={t.eventKey} className="text-center">
+                  <Nav className="our-team-tab flex-column">
+                    <Nav.Item>
+                      <Nav.Link eventKey={t.eventKey}>{t.title}</Nav.Link>
+                    </Nav.Item>
+                  </Nav>
+                </Col>
+              ))}
+            </TabsRow>
+          </DigitalDemocracyOnly>
           <StyledTabContent>
             {tabs.map(t => (
               <TabPane key={t.eventKey} title={t.title} eventKey={t.eventKey}>

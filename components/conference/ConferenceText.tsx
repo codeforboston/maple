@@ -5,7 +5,8 @@ import { useMediaQuery } from "usehooks-ts"
 import { Form, Spinner } from "../bootstrap"
 import { useBill } from "../db/bills"
 import { billPdfUrl, External } from "../links"
-import { Card, CardTitle, Eyebrow } from "./styles"
+import { ink, sunken } from "./input/tokens"
+import { CardTitle } from "./styles"
 import { ConferenceSummary } from "./types"
 
 const SIDES = ["senate", "house", "both"] as const
@@ -36,7 +37,7 @@ const Well = styled.div`
   height: min(74vh, 860px);
   margin-top: 1rem;
   padding: 1.25rem;
-  background: var(--maple-surface-muted);
+  background: ${sunken};
   border: 1px solid var(--maple-surface-border);
   border-radius: var(--maple-radius-xl);
 
@@ -64,19 +65,33 @@ const Paper = styled.article`
   }
 `
 
+/* The sheet set as the mockup sets it, in every skin: the title alone in
+   Lexend, the chamber and number above it and the text below in Nunito. */
+
+/** Which chamber's text this is, and its number. */
+const SheetLabel = styled.p`
+  margin: 0;
+  font-family: var(--maple-font-body);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  color: ${ink.mid};
+`
+
 const SheetTitle = styled.h3`
-  margin: 0.125rem 0 1.5rem;
+  margin: 2px 0 24px;
   font-family: var(--maple-font-heading);
   font-weight: 500;
-  font-size: 1.125rem;
+  font-size: 1rem;
   line-height: 1.3;
-  color: var(--maple-text-strong);
+  color: ${ink.strong};
 `
 
 const Line = styled.p`
   margin: 0 0 0.75rem;
-  font-size: 0.875rem;
-  line-height: 1.7;
+  font-family: var(--maple-font-body);
+  font-size: 0.8125rem;
+  line-height: 1.75;
+  color: ${ink.strong};
   white-space: pre-wrap;
   overflow-wrap: break-word;
 
@@ -135,9 +150,9 @@ function Sheet({
   // only structure a bill has.
   return (
     <Paper aria-label={`${name} ${billId}`}>
-      <Eyebrow>
+      <SheetLabel>
         {name} – {billId}
-      </Eyebrow>
+      </SheetLabel>
       <SheetTitle>{content?.Title}</SheetTitle>
       {text
         .split(/\r?\n/)
@@ -173,8 +188,10 @@ export function ConferenceText({
     { chamber: "house", billId: houseBillId, fetched: house }
   ] as const
 
+  // On the page itself rather than in a white card, as the mockup sets it: the
+  // well is the frame.
   return (
-    <Card>
+    <section>
       <CardTitle>{t("bill_text")}</CardTitle>
       <Picker>
         <Form.Label htmlFor="conference-text-version">
@@ -199,6 +216,6 @@ export function ConferenceText({
             <Sheet key={s.chamber} court={court} {...s} />
           ))}
       </Well>
-    </Card>
+    </section>
   )
 }

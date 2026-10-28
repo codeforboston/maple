@@ -161,7 +161,7 @@ export function LegislatorProfilePage({
   }
 
   return (
-    <Container className="my-3">
+    <Container className="my-3 legislator-profile-page">
       <MapleOnly>
         <DirectoryPath>
           <Internal className="text-decoration-none" href="/">

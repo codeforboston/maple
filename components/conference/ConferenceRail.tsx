@@ -4,7 +4,9 @@ import { formatBillId } from "../formatting"
 import { Internal, maple } from "../links"
 import { conferenceName, ConferenceSummary } from "./types"
 
+/** In Nunito in every skin, the conference names and bill numbers alike. */
 const Nav = styled.nav`
+  font-family: var(--maple-font-body);
   flex: 0 0 auto;
   width: clamp(168px, 19vw, 236px);
   position: sticky;
@@ -44,7 +46,7 @@ const RailRow = styled(Internal)<{ $on: boolean }>`
 
   .name {
     display: block;
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     line-height: 1.35;
     font-weight: ${({ $on }) => ($on ? 600 : 400)};
     color: ${({ $on }) =>
@@ -53,7 +55,7 @@ const RailRow = styled(Internal)<{ $on: boolean }>`
   .bills {
     display: block;
     margin-top: 1px;
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
     line-height: 1.35;
     color: var(--maple-text-muted);
   }

@@ -16,6 +16,7 @@ import { Step } from "./redux"
 import { SelectLegislatorsCta } from "./SelectLegislatorsCta"
 import { ShareTestimony } from "./ShareTestimony"
 import { WriteTestimony } from "./WriteTestimony"
+import { useHtmlAttribute } from "components/shared/useHtmlAttribute"
 import { Trans, useTranslation } from "next-i18next"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons"
@@ -23,6 +24,16 @@ import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons"
 const Background = styled.div`
   background: var(--bs-white);
   height: 100%;
+
+  /* Digital Democracy skins: the redesign's page grey, so the steps' white
+     cards stand off it, and the outline buttons white on it. Maple keeps
+     main's white. */
+  [data-maple-theme="dd"] & {
+    background: var(--bs-body-bg);
+  }
+  [data-maple-theme="dd"] & .btn-outline-secondary {
+    --bs-btn-bg: var(--maple-surface-base);
+  }
 `
 
 export const SubmitTestimonyForm = () => {
@@ -61,6 +72,10 @@ const FormContainer = styled.div`
   padding-right: 2rem;
   height: 100%;
   padding-top: 1rem;
+
+  [data-maple-theme="dd"] & {
+    background: var(--bs-body-bg);
+  }
 `
 
 const Divider = styled.div`
@@ -153,6 +168,8 @@ export const Form = ({
 
 const Overview = ({ className }: { className: string }) => {
   const { copy } = usePublishCopy()
+  // Digital Democracy skins: the intro at the page's own weight, not bolder.
+  const dd = useHtmlAttribute("data-maple-theme") === "dd"
   return (
     <div className={clsx("d-flex", className)}>
       <Row className="align-items-center">
@@ -164,7 +181,10 @@ const Overview = ({ className }: { className: string }) => {
             )}
           </h1>
           <Divider className="me-5" />
-          <div className="mt-2" style={{ fontWeight: "bolder" }}>
+          <div
+            className="mt-2"
+            style={dd ? undefined : { fontWeight: "bolder" }}
+          >
             {copy(
               "submitTestimonyForm.overview.description",
               "ballotQuestion.submitTestimonyForm.overview.description"

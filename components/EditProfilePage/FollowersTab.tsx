@@ -3,6 +3,7 @@ import { httpsCallable } from "firebase/functions"
 import { useTranslation } from "next-i18next"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { useAuth } from "../auth"
+import { useHtmlAttribute } from "components/shared/useHtmlAttribute"
 import { FollowUserCard } from "./FollowUserCard"
 import {
   LoadableItemsState,
@@ -25,6 +26,7 @@ export const FollowersTab = ({
     }
   )
   const { t } = useTranslation("editProfile")
+  const dd = useHtmlAttribute("data-maple-theme") === "dd"
 
   const fetchFollowers = async () => {
     try {
@@ -61,6 +63,7 @@ export const FollowersTab = ({
     <PaginatedItemsCard
       className={className}
       title={t("follow.your_followers")}
+      titleInHeader={dd}
       description={t("follow.follower_info_disclaimer")}
       ItemCard={FollowUserCard}
       {...state}

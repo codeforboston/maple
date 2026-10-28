@@ -5,8 +5,12 @@ import { MessageBanner } from "./MessageBanner"
 describe("MessageBanner", () => {
   it("renders the heading and content", () => {
     render(<MessageBanner heading="Welcome" content="Get started here" />)
-    expect(screen.getByText("Welcome")).toBeInTheDocument()
-    expect(screen.getByText("Get started here")).toBeInTheDocument()
+    // One copy per skin (Maple's banner and the slim note), with CSS showing
+    // one, so find every copy rather than expecting exactly one.
+    expect(screen.getAllByText("Welcome")[0]).toBeInTheDocument()
+    expect(
+      screen.getAllByText("Get started here", { exact: false })[0]
+    ).toBeInTheDocument()
   })
 
   it("renders the icon image when provided", () => {

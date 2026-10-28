@@ -1,3 +1,5 @@
+import { faCheck } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import CustomDropdownToggle from "components/BootstrapCustomDropdownToggle"
 import { FillButton, OutlineButton, ToggleButton } from "components/buttons"
 import { flags } from "components/featureFlags"
@@ -8,6 +10,7 @@ import Dropdown from "react-bootstrap/Dropdown"
 import { Frequency, Role } from "../auth"
 import { Col, Form, Image, Modal, Row } from "../bootstrap"
 import { ProfileHook } from "../db"
+import { useHtmlAttribute } from "components/shared/useHtmlAttribute"
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
   actions: ProfileHook
@@ -90,6 +93,24 @@ export default function ProfileSettingsModal({
 
   const privacyText = RenderPrivacyText(role, isProfilePublic)
   const { t } = useTranslation("editProfile")
+  const dd = useHtmlAttribute("data-maple-theme") === "dd"
+
+  const saveButton = (
+    <FillButton
+      size="sm"
+      className={`py-1 settings-save`}
+      onClick={handleSave}
+      label={t("save")}
+    />
+  )
+  const cancelButton = (
+    <OutlineButton
+      size="sm"
+      className={`py-1 btn-bg-white`}
+      onClick={handleCancel}
+      label={t("cancel")}
+    />
+  )
 
   return (
     <Modal
@@ -97,6 +118,8 @@ export default function ProfileSettingsModal({
       onHide={onHide}
       aria-labelledby="notifications-modal"
       centered
+      // Digital Democracy skins: a touch wider (styles/globals.css).
+      dialogClassName={dd ? "settings-dialog" : undefined}
     >
       <Modal.Header>
         <Modal.Title id="notifications-modal">{t("setting")}</Modal.Title>
@@ -116,7 +139,9 @@ export default function ProfileSettingsModal({
             <ModalSubheader title={t("forms.notification")} />
             <Row className={`p-2 d-flex justify-content-md-end`}>
               <Col className={`col-12 col-md-8 mb-3 mb-md-0`}>
-                <small>{t("forms.notificationText")}</small>
+                <small className="settings-text">
+                  {t("forms.notificationText")}
+                </small>
               </Col>
               <Col className={`col-fill`}>
                 <ToggleButton
@@ -124,9 +149,25 @@ export default function ProfileSettingsModal({
                   toggleState={notifications === "None"}
                   stateTrueLabel={t("enable")}
                   stateFalseLabel={t("enabled")}
-                  className={`col-12 py-1 rounded-1`}
+                  className={`col-12 py-1 rounded-1 settings-control ${
+                    dd ? "align-items-center" : ""
+                  }`}
                   onClick={handleToggleNotifications}
-                  Icon={<EmailIcon />}
+                  // Digital Democracy skins: a check while enabled, and no
+                  // icon on "Enable"; Maple keeps main's mail icon.
+                  Icon={
+                    dd ? (
+                      notifications === "None" ? undefined : (
+                        <FontAwesomeIcon
+                          icon={faCheck}
+                          className="me-2"
+                          aria-hidden="true"
+                        />
+                      )
+                    ) : (
+                      <EmailIcon />
+                    )
+                  }
                 />
               </Col>
             </Row>
@@ -136,10 +177,15 @@ export default function ProfileSettingsModal({
           >
             <Row className={`p-2 d-flex justify-content-start`}>
               <Col className={`col-12 col-md-8 mb-3 mb-md-0`}>
-                <small>{t("email.frequencyQuery")}</small>
+                <small className="settings-text">
+                  {t("email.frequencyQuery")}
+                </small>
               </Col>
               <Col className={`col-auto ms-auto d-flex flex-grow-1`}>
-                <Dropdown align="end" className={`flex-grow-1 d-flex`}>
+                <Dropdown
+                  align="end"
+                  className={`flex-grow-1 d-flex settings-control`}
+                >
                   <CustomDropdownToggle
                     label={t(`email.${notifications.toLocaleLowerCase()}`)}
                     className={`btn-sm btn-light py-1 flex-grow-1 d-flex gap-2 justify-content-center align-items-center`}
@@ -160,43 +206,68 @@ export default function ProfileSettingsModal({
               </Col>
             </Row>
           </HideableSection>
-          <ModalSubheader title={t("privacySetting")} />
+          {/* Digital Democracy skins: more room above Privacy Settings, so
+              it reads as its own section after the email settings. */}
+          <ModalSubheader
+            title={t("privacySetting")}
+            className={dd ? "mt-4" : undefined}
+          />
           <Row className={`p-2 d-flex justify-content-start`}>
             <Col
               className={`col-12 ${role === "user" && "col-md-8"} mb-3 mb-md-0`}
             >
-              <small>{privacyText}</small>
+              <small className="settings-text">{privacyText}</small>
             </Col>
             {role === "user" && (
               <Col className={`col-12 col-md-4`}>
-                <ToggleButton
-                  size={"sm"}
-                  className={`py-1 rounded-1`}
-                  toggleState={isProfilePublic}
-                  stateTrueLabel={t("forms.makePrivate")}
-                  stateFalseLabel={t("forms.makePublic")}
-                  onClick={() => setIsProfilePublic(current => !current)}
-                />
+                {/* Digital Democracy skins: a dropdown showing the current
+                    setting, set like the email frequency dropdown above.
+                    Maple keeps main's Make Public / Make Private button.
+                    Either way the change is kept only when Save is pressed. */}
+                {dd ? (
+                  <Dropdown
+                    align="end"
+                    className={`flex-grow-1 d-flex settings-control`}
+                  >
+                    <CustomDropdownToggle
+                      label={t(
+                        isProfilePublic ? "forms.public" : "forms.private"
+                      )}
+                      className={`btn-sm btn-light py-1 flex-grow-1 d-flex gap-2 justify-content-center align-items-center`}
+                      variant="outline-secondary"
+                    />
+                    <Dropdown.Menu className={`col-12 bg-white `}>
+                      <Dropdown.Item onClick={() => setIsProfilePublic(true)}>
+                        {t("forms.public")}
+                      </Dropdown.Item>
+                      <Dropdown.Item onClick={() => setIsProfilePublic(false)}>
+                        {t("forms.private")}
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                ) : (
+                  <ToggleButton
+                    size={"sm"}
+                    className={`py-1 rounded-1`}
+                    toggleState={isProfilePublic}
+                    stateTrueLabel={t("forms.makePrivate")}
+                    stateFalseLabel={t("forms.makePublic")}
+                    onClick={() => setIsProfilePublic(current => !current)}
+                  />
+                )}
               </Col>
             )}
           </Row>
-          <Row className={`p-2 d-flex align-items-start`}>
-            <Col md={{ offset: 3 }}>
-              <FillButton
-                size="sm"
-                className={`py-1`}
-                onClick={handleSave}
-                label={t("save")}
-              />
-            </Col>
-            <Col>
-              <OutlineButton
-                size="sm"
-                className={`py-1 btn-bg-white`}
-                onClick={handleCancel}
-                label={t("cancel")}
-              />
-            </Col>
+          {/* Digital Democracy skins: more room above the buttons, which keep
+              their 500px dialog size in the wider dialog (styles/
+              globals.css). */}
+          <Row
+            className={`p-2 d-flex align-items-start ${
+              dd ? "mt-3 settings-actions" : ""
+            }`}
+          >
+            <Col md={{ offset: 3 }}>{saveButton}</Col>
+            <Col>{cancelButton}</Col>
           </Row>
         </Form>
       </Modal.Body>
@@ -204,9 +275,15 @@ export default function ProfileSettingsModal({
   )
 }
 
-export const ModalSubheader = ({ title }: { title: string }) => {
+export const ModalSubheader = ({
+  title,
+  className
+}: {
+  title: string
+  className?: string
+}) => {
   return (
-    <Row className="pt-2 pb-0 px-2">
+    <Row className={`pt-2 pb-0 px-2 ${className ?? ""}`}>
       <Col>
         <h5 className="p-0">{title}</h5>
       </Col>

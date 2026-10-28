@@ -26,7 +26,7 @@ import {
 } from "./input/tokens"
 import { useWide } from "./input/useWide"
 import { TABS_H } from "./ConferenceTabs"
-import { Card } from "./styles"
+import { CardTitle, CommitteeCard } from "./styles"
 import {
   CHAMBERS,
   ConfereeView,
@@ -36,7 +36,7 @@ import {
 } from "./types"
 
 /** The mockup's card, which keeps its gutters at every width. */
-const Frame = styled(Card)`
+const Frame = styled(CommitteeCard)`
   --pad-x: 32px;
   padding: 24px 32px 32px 34px;
 `
@@ -51,22 +51,6 @@ const HeadingBand = styled.div`
   padding: 12px var(--pad-x);
   background: var(--maple-surface-base);
   border-radius: var(--maple-radius-xl) var(--maple-radius-xl) 0 0;
-`
-
-const Heading = styled.h2`
-  position: relative;
-  left: -4px;
-  margin: 0;
-  font-family: var(--maple-font-heading);
-  font-weight: 400;
-  font-size: 1.25rem;
-  line-height: 1.4;
-  color: ${ink.strong};
-  text-wrap: balance;
-
-  @media (min-width: 992px) {
-    font-size: 1.375rem;
-  }
 `
 
 const Body = styled.div`
@@ -419,7 +403,9 @@ export function ConferenceDifferences({
   return (
     <Frame aria-labelledby="decided-q">
       <HeadingBand>
-        <Heading id="decided-q">{t("decided.title")}</Heading>
+        <CardTitle id="decided-q" className="mb-0">
+          {t("decided.title")}
+        </CardTitle>
       </HeadingBand>
       <Body ref={body}>
         {gist && (

@@ -17,13 +17,18 @@ export function PaginatedItemsCard<T extends object>({
   ItemCard,
   loading = false,
   error = null,
-  description
+  description,
+  titleInHeader = false
 }: LoadableItemsState<T> & {
   className?: string
   title: string | React.ReactNode
   itemsPerPage?: number
   ItemCard: React.ComponentType<T>
   description?: React.ReactNode
+  /** The title in the card's header band, as on the profile page's cards,
+   * with the card's own padding, rather than as a heading inside. Edit
+   * Profile turns it on under the Digital Democracy skins. Off by default. */
+  titleInHeader?: boolean
 }) {
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -44,10 +49,19 @@ export function PaginatedItemsCard<T extends object>({
   }, [items, currentPage, itemsPerPage])
 
   return (
-    <TitledSectionCard className={className}>
-      <div className="mx-4 mt-3 d-flex flex-column gap-3">
+    <TitledSectionCard
+      className={className}
+      title={titleInHeader && typeof title === "string" ? title : undefined}
+    >
+      <div
+        className={
+          titleInHeader
+            ? "d-flex flex-column gap-3"
+            : "mx-4 mt-3 d-flex flex-column gap-3"
+        }
+      >
         <Stack>
-          <h2>{title}</h2>
+          {!titleInHeader && <h2>{title}</h2>}
           {description && <div className="mt-0 text-muted">{description}</div>}
           <div className="mt-3">
             {error ? (

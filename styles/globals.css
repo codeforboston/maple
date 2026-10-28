@@ -665,6 +665,29 @@
   --maple-navbar-bg: transparent;
 }
 
+/* The signed-in avatar (components/NavbarComponents.tsx), like the logos:
+   white by default and on the blue bar, the blue icon on the neutral bar,
+   where the white one all but disappears. */
+.navbar-avatar-dark {
+  display: none;
+}
+
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .navbar-avatar-light {
+  display: none;
+}
+
+:is(
+    [data-navbar-variant="neutral"],
+    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+  )
+  .navbar-avatar-dark {
+  display: inline-block;
+}
+
 /* Default: the light logo shows, the navy one is not rendered. */
 .navbar-logo-dark,
 .navbar-logo-mixed,
@@ -716,8 +739,14 @@ html:not([data-maple-theme="dd"])
 
 /* Red is reserved for one deliberate call to action, not the default button.
    $primary compiles to red at build time, so this reaches past that. */
-/* Not inside a blue navbar, where the sign-in button keeps its red. */
-[data-maple-theme="dd"] .btn-primary:not([data-navbar-variant="blue"] *) {
+/* Not inside a blue navbar, where the sign-in button keeps its red, nor the
+   Follow button (components/shared/FollowButton.tsx) or the Settings dialog's
+   Save (components/EditProfilePage/ProfileSettingsModal.tsx), which keep
+   their red in every skin. */
+[data-maple-theme="dd"]
+  .btn-primary:not([data-navbar-variant="blue"] *):not(.follow-button *):not(
+    .settings-save
+  ) {
   --bs-btn-bg: var(--maple-brand-primary);
   --bs-btn-border-color: var(--maple-brand-primary);
   --bs-btn-hover-bg: var(--maple-brand-primary-strong);
@@ -728,23 +757,194 @@ html:not([data-maple-theme="dd"])
   --bs-btn-disabled-border-color: var(--maple-brand-primary);
 }
 
-/* On the neutral bar, the sign-in button (the bar's only .btn-primary) is a
-   ghost button: blue text with no fill or border at rest, filling blue with
-   white text on hover like the skin's other outline buttons, so it shows as a
-   button when pointed at. The blue bar keeps the red button. After the rule
-   above so it wins. */
+/* The Follow button (components/shared/FollowButton.tsx) is btn-lg; under
+   these skins it is set like the explorers' sort control beside it
+   (components/search/SortBy.tsx): the same text size and weight, a step
+   bolder below 992px, with less padding at the sides. Not the bill page's,
+   which keeps the full size (follow-button-large). */
+[data-maple-theme="dd"] .follow-button:not(.follow-button-large) .btn {
+  --bs-btn-font-size: 0.875rem;
+  --bs-btn-font-weight: 500;
+  --bs-btn-padding-x: 1rem;
+}
+
+@media (max-width: 991.98px) {
+  [data-maple-theme="dd"] .follow-button:not(.follow-button-large) .btn {
+    --bs-btn-font-weight: 600;
+  }
+}
+
+/* Followed, the Follow button (components/shared/FollowButton.tsx) is the
+   secondary red under these skins: a red border and red text on white,
+   filling red with white text on hover. It reads "Following" with a check,
+   and "Unfollow" with an x on hover or focus; Maple keeps main's "Unfollow"
+   with a check. The check, a white image, is drawn as a mask in the text's
+   colour, so it reads on white. */
+.follow-label-following,
+.follow-label-unfollow {
+  display: none;
+}
+
+[data-maple-theme="dd"] .follow-button .follow-label-maple {
+  display: none;
+}
+
+[data-maple-theme="dd"] .follow-button .follow-label-following {
+  display: inline;
+}
+
 [data-maple-theme="dd"]
-  :is([data-navbar-variant="neutral"], [data-navbar-variant="auto"])
-  .btn-primary {
-  --bs-btn-bg: transparent;
-  --bs-btn-border-color: transparent;
-  --bs-btn-color: var(--maple-brand-primary);
-  --bs-btn-hover-bg: var(--maple-brand-primary);
-  --bs-btn-hover-border-color: var(--maple-brand-primary);
+  .follow-button
+  .btn:is(:hover, :focus-visible)
+  .follow-label-following {
+  display: none;
+}
+
+[data-maple-theme="dd"]
+  .follow-button
+  .btn:is(:hover, :focus-visible)
+  .follow-label-unfollow {
+  display: inline;
+}
+
+[data-maple-theme="dd"] .follow-button .follow-x {
+  margin-left: 8px;
+}
+
+[data-maple-theme="dd"] .follow-button .btn.follow-button-following {
+  --bs-btn-bg: var(--maple-surface-base);
+  --bs-btn-color: var(--bs-red);
+  --bs-btn-border-color: var(--bs-red);
+  --bs-btn-hover-bg: var(--bs-red);
   --bs-btn-hover-color: var(--maple-text-inverse);
-  --bs-btn-active-bg: var(--maple-brand-primary-strong);
-  --bs-btn-active-border-color: var(--maple-brand-primary-strong);
+  --bs-btn-hover-border-color: var(--bs-red);
+  --bs-btn-active-bg: var(--bs-red);
   --bs-btn-active-color: var(--maple-text-inverse);
+  --bs-btn-active-border-color: var(--bs-red);
+}
+
+[data-maple-theme="dd"] .follow-button .follow-check-mask {
+  display: inline-block;
+  width: 14.77px;
+  height: 12.66px;
+  margin-left: 8px;
+  background-color: currentColor;
+  -webkit-mask: url("/check-white.svg") no-repeat center / contain;
+  mask: url("/check-white.svg") no-repeat center / contain;
+}
+
+/* The stacked profile buttons (components/ProfilePage/ProfileButtons.tsx, on
+   the profile page and the newsfeed) at one height under these skins:
+   Followed Content and Your Testimonies take the 0.25rem top and bottom
+   padding Settings has from its py-1. Their own py-1 is on the link around
+   the button, so it never reaches the button. */
+[data-maple-theme="dd"] .profile-buttons .btn {
+  --bs-btn-padding-y: 0.25rem;
+}
+
+/* The legislator profile's cards (components/LegislatorProfile) a step darker
+   under these skins than the skin's card outline (0.12), so they hold their
+   edge on the page's grey. The finance tab's cards take it too. */
+[data-maple-theme="dd"] .legislator-profile-page {
+  --maple-card-outline: rgba(15, 23, 42, 0.2);
+}
+
+/* A button on MAPLE blue: white with blue text. The bill page testimony
+   panel's Complete Testimony (components/publish/panel/ctas.tsx), rather than
+   white on Bootstrap's pale info. */
+[data-maple-theme="dd"] .btn.inverse-button {
+  --bs-btn-bg: var(--maple-surface-base);
+  --bs-btn-border-color: var(--maple-surface-base);
+  --bs-btn-color: var(--maple-brand-primary);
+  --bs-btn-hover-bg: var(--maple-surface-page);
+  --bs-btn-hover-border-color: var(--maple-surface-page);
+  --bs-btn-hover-color: var(--maple-brand-primary-strong);
+  --bs-btn-active-bg: var(--maple-surface-page);
+  --bs-btn-active-border-color: var(--maple-surface-page);
+  --bs-btn-active-color: var(--maple-brand-primary-strong);
+}
+
+/* The "Verify Account" card on Edit Profile and the profile page under these
+   skins (the verify-account-card wrapper): its heading in Lexend, as Edit
+   Profile's tab headings are
+   (components/EditProfilePage/StyledEditProfileComponents.tsx). */
+[data-maple-theme="dd"] .verify-account-card h4 {
+  font-family: var(--maple-font-heading);
+}
+
+/* The card itself lifted off the page, which this skin's cards otherwise are
+   not (its shadow tokens are all but off), with the pinned navbar's shadow.
+   Submit Testimony's legislators card (publish-card: components/publish/
+   SelectLegislatorsCta.tsx) is lifted the same way. */
+[data-maple-theme="dd"] .verify-account-card > .card,
+[data-maple-theme="dd"] .publish-card {
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+}
+
+/* Its buttons (Resend link, Verify), the secondary button, on white rather
+   than the light grey of the box they sit in. */
+[data-maple-theme="dd"] .verify-account-card .btn-outline-secondary {
+  --bs-btn-bg: var(--maple-surface-base);
+}
+
+/* The conference committee byline (components/conference/ConferenceByline.tsx)
+   at 25px once its column is 800px wide. The mockup steps up at 980, but
+   beside the conference list this column is 964px at most. Here rather than
+   in the component: styled-components 5 cannot write a container query, and
+   the broken rule it writes takes the next rule in its sheet down with it. */
+@container (min-width: 800px) {
+  .conference-byline-wrap .conference-byline {
+    font-size: 1.5625rem;
+  }
+}
+
+/* The Settings dialog (components/EditProfilePage/ProfileSettingsModal.tsx)
+   a touch wider under these skins than Bootstrap's 500px. Phones keep the
+   full-width dialog. */
+@media (min-width: 576px) {
+  [data-maple-theme="dd"] .modal-dialog.settings-dialog {
+    max-width: 560px;
+  }
+}
+
+/* The settings' wording a little tighter between lines than body text. */
+[data-maple-theme="dd"] .settings-dialog .settings-text {
+  line-height: 1.35;
+}
+
+/* Its controls kept at the widths they had in the 500px dialog, worked out
+   from the layout (the columns are percentages of the dialog, so they would
+   otherwise widen with it): Save and Cancel about 154px each, together at the
+   right with the usual gutter between them; the Enabled button and the two
+   dropdowns about 134px, at the right of their rows. From 768px, where they
+   sit in columns; below that they run the full width. */
+@media (min-width: 768px) {
+  [data-maple-theme="dd"] .settings-dialog .settings-actions {
+    justify-content: flex-end;
+  }
+
+  [data-maple-theme="dd"] .settings-dialog .settings-actions > * {
+    flex: 0 0 auto;
+    width: auto;
+    margin-left: 0;
+  }
+
+  [data-maple-theme="dd"] .settings-dialog .settings-actions .btn {
+    width: 154px;
+  }
+
+  [data-maple-theme="dd"] .settings-dialog .settings-control {
+    max-width: 134px;
+    margin-left: auto;
+  }
+
+  /* The wording beside them a touch wider than it was in the 500px dialog
+     (about 292px there), with the rest of the extra room between it and the
+     control. */
+  [data-maple-theme="dd"] .settings-dialog .settings-text {
+    display: block;
+    max-width: 316px;
+  }
 }
 
 /* The desktop navbar carries data-bs-theme="dark", which drives Bootstrap's
