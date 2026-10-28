@@ -5,19 +5,11 @@ import { onSchedule } from "firebase-functions/v2/scheduler"
 import { last } from "lodash"
 import { db, DocumentData, FieldValue, Timestamp } from "./firebase"
 import { currentGeneralCourt } from "./shared"
-import {
-  chooseBatches,
-  isRefreshCycleComplete,
-  selectBatchRun
-} from "./scraperBatching"
-
-export { chooseBatches } from "./scraperBatching"
 
 /** Batch documents trigger the batch fetch function to scrape `ids` */
 type Batch = {
   court: number
   ids: string[]
-  cycleId?: number
 }
 
 /** List all ids of the resources to scrape. Falsey values will be filtered out.
@@ -77,8 +69,7 @@ export function createScraper<T>({
   resourcesPerBatch,
   batchesPerRun,
   startBatchTimeout,
-  fetchBatchTimeout,
-  trackFullRefresh = false
+  fetchBatchTimeout
 }: {
   resourceName: string
   listIds: ListIds
@@ -88,40 +79,31 @@ export function createScraper<T>({
   fetchBatchTimeout: number
   resourcesPerBatch: number
   batchesPerRun: number
-  trackFullRefresh?: boolean
 }) {
   const startBatches = onSchedule(
     { schedule: startBatchSchedule, timeoutSeconds: startBatchTimeout },
     async () => {
-      const scraperRef = db.doc(`/scrapers/${resourceName}`)
-      const court = currentGeneralCourt
-      const ids = await listIds(court)
-
-      if (trackFullRefresh) {
-        await startTrackedBatchRun({
-          scraperRef,
-          resourceName,
-          court,
-          ids,
+      const scraper = await db.doc(`/scrapers/${resourceName}`).get(),
+        lastId = scraper.data()?.lastId ?? "",
+        court = currentGeneralCourt,
+        ids = await listIds(court),
+        batchedIds = chooseBatches({
+          startAfterId: lastId,
           docsPerBatch: resourcesPerBatch,
-          numBatches: batchesPerRun
+          numBatches: batchesPerRun,
+          ids
         })
-        return
-      }
 
-      const scraper = await scraperRef.get()
-      const batchedIds = chooseBatches({
-        startAfterId: scraper.data()?.lastId ?? "",
-        docsPerBatch: resourcesPerBatch,
-        numBatches: batchesPerRun,
-        ids
-      })
-      const writer = db.bulkWriter()
-      const batches = scraperRef.collection("batches")
+      const writer = db.bulkWriter(),
+        batches = scraper.ref.collection("batches")
 
-      await scraperRef.set({ lastId: last(last(batchedIds)) }, { merge: true })
+      // Step the document ID for the next round of batches
+      await scraper.ref.set({ lastId: last(last(batchedIds)) }, { merge: true })
+
+      // Delete old batch documents
       await db.recursiveDelete(batches, writer)
 
+      // Trigger batch execution by writing batch documents
       batchedIds.forEach(ids => {
         const batch: Batch = { court, ids }
         writer.create(batches.doc(), batch)
@@ -138,8 +120,7 @@ export function createScraper<T>({
   const fetchBatch = onDocumentCreated(
     {
       document: `/scrapers/${resourceName}/batches/{batchId}`,
-      timeoutSeconds: fetchBatchTimeout,
-      retry: trackFullRefresh
+      timeoutSeconds: fetchBatchTimeout
     },
     async event => {
       const snap = event.data
@@ -172,7 +153,6 @@ export function createScraper<T>({
               logger.warn(
                 `Could not fetch resource ${resourceName}/${id}: ${e.message}`
               )
-              if (trackFullRefresh) throw e
             }
           } else {
             throw e
@@ -181,131 +161,10 @@ export function createScraper<T>({
       }
 
       await writer.close()
-
-      if (trackFullRefresh && batch.cycleId !== undefined) {
-        await completeTrackedBatch({
-          scraperRef: db.doc(`/scrapers/${resourceName}`),
-          batchRef: snap.ref,
-          completedCycleRef: db.doc(
-            `/scrapers/${resourceName}/completedCycles/${batch.cycleId}`
-          ),
-          cycleId: batch.cycleId,
-          court
-        })
-      }
     }
   )
 
   return { startBatches, fetchBatch }
-}
-
-async function startTrackedBatchRun({
-  scraperRef,
-  resourceName,
-  court,
-  ids,
-  docsPerBatch,
-  numBatches
-}: {
-  scraperRef: FirebaseFirestore.DocumentReference
-  resourceName: string
-  court: number
-  ids: (string | undefined | null)[]
-  docsPerBatch: number
-  numBatches: number
-}) {
-  const batchCollection = scraperRef.collection("batches")
-
-  await db.runTransaction(async transaction => {
-    const scraperSnapshot = await transaction.get(scraperRef)
-    const state = scraperSnapshot.data() ?? {}
-    let cycleId = typeof state.cycleId === "number" ? state.cycleId : 1
-    let expectedBatches =
-      typeof state.expectedBatches === "number" ? state.expectedBatches : 0
-    let completedBatches =
-      typeof state.completedBatches === "number" ? state.completedBatches : 0
-    let cycleClosed = state.cycleClosed === true
-
-    if (cycleClosed) {
-      if (completedBatches < expectedBatches) return
-      cycleId += 1
-      expectedBatches = 0
-      completedBatches = 0
-      cycleClosed = false
-    }
-
-    const selection = selectBatchRun({
-      startAfterId: typeof state.lastId === "string" ? state.lastId : "",
-      docsPerBatch,
-      numBatches,
-      ids
-    })
-    if (selection.batches.length === 0) return
-
-    selection.batches.forEach(batchIds => {
-      transaction.create(batchCollection.doc(), {
-        court,
-        ids: batchIds,
-        cycleId
-      })
-    })
-
-    transaction.set(
-      scraperRef,
-      {
-        lastId: selection.nextLastId,
-        cycleId,
-        expectedBatches: expectedBatches + selection.batches.length,
-        completedBatches,
-        cycleClosed: selection.cycleComplete
-      },
-      { merge: true }
-    )
-  })
-}
-
-async function completeTrackedBatch({
-  scraperRef,
-  batchRef,
-  completedCycleRef,
-  cycleId,
-  court
-}: {
-  scraperRef: FirebaseFirestore.DocumentReference
-  batchRef: FirebaseFirestore.DocumentReference
-  completedCycleRef: FirebaseFirestore.DocumentReference
-  cycleId: number
-  court: number
-}) {
-  await db.runTransaction(async transaction => {
-    const [batchSnapshot, scraperSnapshot] = await Promise.all([
-      transaction.get(batchRef),
-      transaction.get(scraperRef)
-    ])
-    if (!batchSnapshot.exists) return
-
-    const state = scraperSnapshot.data() ?? {}
-    const completedBatches =
-      (typeof state.completedBatches === "number"
-        ? state.completedBatches
-        : 0) + 1
-    const expectedBatches =
-      typeof state.expectedBatches === "number" ? state.expectedBatches : 0
-    const cycleClosed = state.cycleClosed === true
-
-    transaction.delete(batchRef)
-    transaction.set(scraperRef, { completedBatches }, { merge: true })
-
-    if (
-      isRefreshCycleComplete({
-        cycleClosed,
-        completedBatches,
-        expectedBatches
-      })
-    ) {
-      transaction.create(completedCycleRef, { court, cycleId })
-    }
-  })
 }
 
 function missingResource(e: AxiosError) {
@@ -313,4 +172,30 @@ function missingResource(e: AxiosError) {
     e.response?.status === 400 &&
     !!e.response.statusText.match(/the requested .* could not be found/i)
   )
+}
+
+export function chooseBatches({
+  startAfterId,
+  docsPerBatch,
+  numBatches,
+  ids: rawIds
+}: {
+  startAfterId: string
+  docsPerBatch: number
+  numBatches: number
+  ids: (string | undefined | null)[]
+}): string[][] {
+  const allIds = rawIds.filter(Boolean).sort() as string[],
+    startIndex = allIds.findIndex(id => id > startAfterId),
+    count = Math.min(docsPerBatch * numBatches, allIds.length),
+    after = allIds.slice(startIndex, startIndex + count),
+    wrapped = allIds.slice(0, count - after.length),
+    ids = [...after, ...wrapped],
+    batchedIds = []
+
+  for (let start = 0; start < ids.length; start += docsPerBatch) {
+    batchedIds.push(ids.slice(start, start + docsPerBatch))
+  }
+
+  return batchedIds
 }
