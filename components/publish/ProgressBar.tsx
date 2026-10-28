@@ -62,8 +62,8 @@ export const ProgressBar = styled<{ currentStep: Step }>(
   align-content: flex-start;
   font-size: 0.75rem;
 
-  /* Digital Democracy skins: the step being worked on in MAPLE blue, green
-     kept for the steps checked off. Maple keeps main's green for both. */
+  /* The step being worked on in MAPLE blue, green kept for the steps checked
+     off. */
   [data-maple-theme="dd"] & .step-current {
     background-color: var(--maple-brand-primary);
   }

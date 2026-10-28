@@ -6,7 +6,7 @@ import styled from "styled-components"
  * Every value here is read from the live custom properties with
  * `getComputedStyle`, never restated. That means this story cannot drift from
  * styles/bootstrap.scss, and it re-reads when a theme attribute changes, so it
- * shows whichever skin is currently applied.
+ * always shows the values in effect.
  */
 
 type SwatchKind =
@@ -206,7 +206,7 @@ function useTokenValues(): Record<string, string> {
 
     read()
 
-    // Re-read when a theme attribute flips, so the story follows the toggle.
+    // Re-read if a theme attribute or inline style on the document changes.
     const observer = new MutationObserver(read)
     observer.observe(document.documentElement, {
       attributes: true,

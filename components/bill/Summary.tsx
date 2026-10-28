@@ -12,7 +12,7 @@ import {
   FeatureCalloutButton
 } from "../shared/CommonComponents"
 import { SmartDisclaimer } from "./SmartDisclaimer"
-import { SmartIcon, smartIconSrc } from "./SmartIcon"
+import { smartIconSrc } from "./SmartIcon"
 import { TestimonyCounts } from "./TestimonyCounts"
 import { BillProps } from "./types"
 import { BillTopic } from "functions/src/bills/types"
@@ -32,8 +32,8 @@ const FormattedBillDetails = styled(Col)`
   white-space: pre-wrap;
 `
 
-/* Digital Democracy and Mixed: more room between the title row above and
-   the description, on both kinds of summary row below. */
+/* More room between the title row above and the description, on both kinds
+   of summary row below. */
 const SummaryRow = styled(Row)`
   [data-maple-theme="dd"] & {
     margin-top: 1rem;
@@ -44,46 +44,15 @@ const BallotSummaryRow = styled(SummaryRow)`
   white-space: pre-wrap;
 `
 
-/* The current MAPLE tag: a solid button-styled link. Shown under the Maple
-   skin; the Digital Democracy (and Mixed) skins use SmartTag below. */
-const ClassicSmartTag = ({ topic }: { topic: BillTopic }) => {
-  return (
-    <links.Internal
-      href={links.billSearchByTopicLink(currentGeneralCourt, topic)}
-      // Opens the topic search in a new tab, so the bill stays open here.
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <SmartTagButton
-        className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
-      >
-        &nbsp;
-        <SmartIcon icon={topic.category} />
-        &nbsp;
-        {topic.topic}
-        &nbsp;
-      </SmartTagButton>
-    </links.Internal>
-  )
-}
-
 const SmartTagButton = styled.button`
   border-radius: var(--maple-radius-xl);
   font-size: 12px;
 `
 
-/* Only one of the two tag rows shows, by skin. display: none also takes the
-   hidden row out of the accessibility tree, so links are not announced twice. */
-const ClassicSmartTagRow = styled(Row)`
-  [data-maple-theme="dd"] & {
-    display: none !important;
-  }
-`
-
-/* Digital Democracy and Mixed: the same tag, built and sized like the classic
-   one, in pale tinted colours instead of solid blue and fully rounded. Hover still fills
-   it blue. The icon is the topic's icon file used as a mask, filled with the
-   text colour so it matches the text and turns white with it on hover. */
+/* A topic tag: a button-styled link, in pale tinted colours and fully
+   rounded. Hover fills it blue. The icon is the topic's icon file used as a
+   mask, filled with the text colour so it matches the text and turns white
+   with it on hover. */
 const SoftSmartTag = ({ topic }: { topic: BillTopic }) => {
   const iconSrc = smartIconSrc(topic.category)
 
@@ -120,7 +89,7 @@ const SoftSmartTagLink = styled(links.Internal)`
 `
 
 /* Doubled class so the colours win over Bootstrap's .btn-secondary. Fully
-   rounded, unlike the classic tag. */
+   rounded. */
 const SoftSmartTagButton = styled(SmartTagButton)`
   && {
     border-radius: 999px;
@@ -147,13 +116,8 @@ const SoftSmartTagButton = styled(SmartTagButton)`
   }
 `
 
-/* The soft row only shows under the Digital Democracy (and Mixed) skins. */
 const SoftSmartTagRow = styled(Row)`
-  display: none !important;
-
-  [data-maple-theme="dd"] & {
-    display: flex !important;
-  }
+  display: flex !important;
 `
 
 const StyledButton = styled(Button)`
@@ -350,11 +314,6 @@ export const Summary = ({
       ) : (
         <SummaryRow className="mx-1 mb-3">{bill.summary}</SummaryRow>
       )}
-      <ClassicSmartTagRow className={`d-flex mx-0 my-1`} xs="auto">
-        {bill.topics?.map(t => (
-          <ClassicSmartTag key={t.topic} topic={t} />
-        ))}
-      </ClassicSmartTagRow>
       <SoftSmartTagRow className={`mx-0 my-1`} xs="auto">
         {bill.topics?.map(t => (
           <SoftSmartTag key={t.topic} topic={t} />

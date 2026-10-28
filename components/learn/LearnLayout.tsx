@@ -11,9 +11,9 @@ export const maxWidths: Record<Width, string> = {
   xwide: "80rem"
 }
 
-/* Learn and About keep Maple's type in every skin: Nunito for text, Lexend
-   only where a heading asks for it (--maple-font-heading). Digital Democracy
-   and Mixed otherwise set all text in Lexend (styles/bootstrap.scss). */
+/* Learn and About keep Nunito for text, with Lexend only where a heading asks
+   for it (--maple-font-heading). The rest of the site sets all text in Lexend
+   (styles/bootstrap.scss). */
 const Page = styled.div`
   background-color: var(--maple-surface-learn);
   min-height: 100vh;
@@ -22,34 +22,22 @@ const Page = styled.div`
     --bs-font-sans-serif: var(--maple-font-body);
     --bs-body-font-family: var(--maple-font-body);
     font-family: var(--maple-font-body);
-  }
 
-  /* Digital Democracy and Statehouse (not Mixed): on the section's darker
-     ground, borders a
-     touch darker too (0.12 elsewhere). Both are set here, since the card edge
-     takes its value where it is defined. */
-  [data-maple-theme="dd"]:not([data-maple-nav="mixed"]) & {
+    /* On the section's darker ground, borders a touch darker too (0.12
+       elsewhere). Both are set here, since the card edge takes its value
+       where it is defined. */
     --maple-surface-border: rgba(15, 23, 42, 0.16);
     --maple-card-edge: rgba(15, 23, 42, 0.16);
   }
 `
 
-/* Digital Democracy and Mixed, on desktop: the page in the "wide" column,
-   whatever width the page asks for, with reading text a step larger. Pages
-   that pass enlarge={false} keep their own width and sizes (the legislative
-   process page). */
+/* On desktop: the page in the "wide" column, whatever width the page asks
+   for, with reading text a step larger. Pages that pass enlarge={false} keep
+   their own width and sizes (the legislative process page). */
 const Inner = styled.div<{ $width: Width }>`
   max-width: ${p => maxWidths[p.$width]};
   margin: 0 auto;
   padding: 3.25rem 2rem 3.5rem;
-
-  /* Digital Democracy (not Mixed or Statehouse, which set data-maple-nav):
-     the bar is not pinned here and shares the page's ground, so the page
-     starts closer to it, as the explorers do
-     (components/shared/PageColumn.tsx). */
-  [data-maple-theme="dd"]:not([data-maple-nav]) & {
-    padding-top: 1.5rem;
-  }
 
   @media (max-width: 36rem) {
     padding: 1.75rem 1rem 2rem;

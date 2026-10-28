@@ -12,18 +12,13 @@ export const VerifyAccountSection = ({
   user,
   profile,
   className,
-  titleInside = false,
   onlyVisibleNote = false
 }: {
   user: User
   profile: Profile
   className: string
-  /** A plain white card with the title as a heading inside it, rather than
-   * in the blue header band, with room above and below the content. Edit
-   * Profile uses it under the Digital Democracy skins. Off by default. */
-  titleInside?: boolean
-  /** With titleInside, "Only visible to you" at the far right of the heading,
-   * for a page others can also see (the profile). Off by default. */
+  /** "Only visible to you" at the far right of the heading, for a page others
+   * can also see (the profile). Off by default. */
   onlyVisibleNote?: boolean
 }) => {
   const sendEmailVerification = useSendEmailVerification()
@@ -34,22 +29,19 @@ export const VerifyAccountSection = ({
   )
 
   return (
-    <TitledSectionCard
-      title={titleInside ? undefined : t("verifyAccountSection.title")}
-      className={className}
-    >
-      <div className={titleInside ? "mt-3 mb-3" : undefined}>
-        {titleInside && (
-          <div className="d-flex flex-wrap align-items-baseline justify-content-between gap-2 mb-3">
-            <h4 className="mb-0">{t("verifyAccountSection.title")}</h4>
-            {/* Only the account's owner ever sees this card. */}
-            {onlyVisibleNote && (
-              <span className="small text-muted">
-                {t("verifyAccountSection.onlyVisibleToYou")}
-              </span>
-            )}
-          </div>
-        )}
+    // A plain white card with the title as a heading inside it, with room
+    // above and below the content.
+    <TitledSectionCard className={className}>
+      <div className="mt-3 mb-3">
+        <div className="d-flex flex-wrap align-items-baseline justify-content-between gap-2 mb-3">
+          <h4 className="mb-0">{t("verifyAccountSection.title")}</h4>
+          {/* Only the account's owner ever sees this card. */}
+          {onlyVisibleNote && (
+            <span className="small text-muted">
+              {t("verifyAccountSection.onlyVisibleToYou")}
+            </span>
+          )}
+        </div>
         <p>
           <Trans
             t={t}
@@ -104,13 +96,7 @@ export const VerifyAccountSection = ({
                       padding: "0.5rem 0.75rem"
                     }}
                   >
-                    {t(
-                      // The white card (Digital Democracy skins) says just
-                      // "Resend"; the banded card keeps "Resend link".
-                      titleInside
-                        ? "verifyAccountSection.resend"
-                        : "verifyAccountSection.sendAnotherLink"
-                    )}
+                    {t("verifyAccountSection.resend")}
                   </LoadingButton>
                 </div>
               ) : null}

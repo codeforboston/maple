@@ -1,12 +1,10 @@
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { Internal } from "../../links"
-import LearnBreadcrumb from "../LearnBreadcrumb"
 import LearnHeader from "../LearnHeader"
 import LearnLayout from "../LearnLayout"
 import { CheckIcon } from "../icons"
 import { NAVY, STAGE_COLORS, alpha } from "../palette"
-import { MapleOnly } from "components/shared/SkinOnly"
 
 /* Near-black for headings, a shade deeper than the page's body ink. */
 const INK = "#0f1828"
@@ -236,11 +234,8 @@ export const WritingTips = () => {
 
   return (
     <LearnLayout width="medium">
-      {/* Maple only: Digital Democracy and Mixed list this page under the
-          footer's Other Resources, not Learn, so it has no Learn trail. */}
-      <MapleOnly>
-        <LearnBreadcrumb section={t("writingTips.breadcrumb")} />
-      </MapleOnly>
+      {/* No breadcrumb: the footer lists this page under Other Resources, not
+          Learn, so it has no Learn trail. */}
       <LearnHeader
         title={t("writingTips.title")}
         subhead={t("writingTips.subhead")}

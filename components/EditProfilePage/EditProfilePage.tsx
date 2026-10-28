@@ -19,19 +19,13 @@ import { FollowingTab } from "./FollowingTab"
 import { PersonalInfoTab } from "./PersonalInfoTab"
 import ProfileSettingsModal from "./ProfileSettingsModal"
 import { VerifyAccountSection } from "components/shared"
-import {
-  StyledTabContent,
-  TabNavItem,
-  TabNavWrapper
-} from "./StyledEditProfileComponents"
+import { StyledTabContent } from "./StyledEditProfileComponents"
 import { TestimoniesTab } from "./TestimoniesTab"
 import { useFlags } from "components/featureFlags"
 import LoginPage from "components/Login/Login"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 import { FollowersTab } from "./FollowersTab"
 import { TabsRow } from "components/OurTeam/OurTeam"
-import { DigitalDemocracyOnly, MapleOnly } from "components/shared/SkinOnly"
-import { useHtmlAttribute } from "components/shared/useHtmlAttribute"
 
 const tabTitle = ["about-you", "testimonies", "following", "followers"] as const
 export type TabTitles = (typeof tabTitle)[number]
@@ -170,23 +164,14 @@ export function EditProfileForm({
   ]
 
   const { followOrg, phoneVerificationUI } = useFlags()
-  // Digital Democracy skins: Verify Account as a plain white card with its
-  // heading inside, like General info, rather than a header band.
-  const dd = useHtmlAttribute("data-maple-theme") === "dd"
 
+  // Verify Account as a plain white card with its heading inside, like
+  // General info, rather than a header band.
   const verifyAccount = phoneVerificationUI &&
     user &&
     (!user.emailVerified || !profile.phoneVerified) && (
-      <div
-        className="verify-account-card"
-        style={dd ? { marginTop: "1.5rem" } : { marginBottom: "3.5rem" }}
-      >
-        <VerifyAccountSection
-          user={user}
-          profile={profile}
-          className=""
-          titleInside={dd}
-        />
+      <div className="verify-account-card" style={{ marginTop: "1.5rem" }}>
+        <VerifyAccountSection user={user} profile={profile} className="" />
       </div>
     )
 
@@ -199,32 +184,22 @@ export function EditProfileForm({
       {isPendingUpgrade && <PendingUpgradeBanner />}
 
       <Container>
-        {/* Digital Democracy skins: Verify Account first, above the heading,
-            as on the profile page; Maple keeps it under the heading. */}
-        {dd && verifyAccount}
+        {/* Verify Account first, above the heading, as on the profile page. */}
+        {verifyAccount}
         <EditProfileHeader
           formUpdated={formUpdated}
           onSettingsModalOpen={onSettingsModalOpen}
           uid={uid}
           role={profile.role}
         />
-        {!dd && verifyAccount}
         <TabContainer
           defaultActiveKey="about-you"
           activeKey={tabTitle}
           onSelect={(tabTitle: any) => handleOnClick(tabTitle)}
         >
-          {/* Maple: main's tabs. Digital Democracy, Mixed and Statehouse: the
-              About > Our Team tabs (the our-team-tab class and its row), one
-              column each. Both bars drive the same tabs; the skin shows one. */}
-          <MapleOnly>
-            <TabNavWrapper>
-              {tabs.map((t, i) => (
-                <TabNavItem key={i} tab={t} i={i} />
-              ))}
-            </TabNavWrapper>
-          </MapleOnly>
-          <DigitalDemocracyOnly>
+          {/* The About > Our Team tabs (the our-team-tab class and its row),
+              one column each. */}
+          <div>
             <TabsRow className="py-2 g-0">
               {tabs.map(t => (
                 <Col key={t.eventKey} className="text-center">
@@ -236,7 +211,7 @@ export function EditProfileForm({
                 </Col>
               ))}
             </TabsRow>
-          </DigitalDemocracyOnly>
+          </div>
           <StyledTabContent>
             {tabs.map(t => (
               <TabPane key={t.eventKey} title={t.title} eventKey={t.eventKey}>

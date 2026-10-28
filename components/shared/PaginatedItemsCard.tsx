@@ -27,7 +27,7 @@ export function PaginatedItemsCard<T extends object>({
   description?: React.ReactNode
   /** The title in the card's header band, as on the profile page's cards,
    * with the card's own padding, rather than as a heading inside. Edit
-   * Profile turns it on under the Digital Democracy skins. Off by default. */
+   * Profile turns it on. Off by default. */
   titleInHeader?: boolean
 }) {
   const [currentPage, setCurrentPage] = useState(1)

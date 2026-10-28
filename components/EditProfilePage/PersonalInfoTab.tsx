@@ -9,7 +9,6 @@ import { OrgCategory, OrgCategories } from "components/auth"
 import { TooltipButton } from "components/buttons"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
-import { useHtmlAttribute } from "components/shared/useHtmlAttribute"
 
 export type UpdateProfileData = {
   fullName: string
@@ -111,29 +110,23 @@ export function PersonalInfoTab({
   )
 
   const { t } = useTranslation("editProfile")
-  // Digital Democracy, Mixed and Statehouse: the cards take the profile page's
-  // look, a header band with the title and the card's own padding, and from
-  // 992px the legislators card sits to the right of General info.
-  const dd = useHtmlAttribute("data-maple-theme") === "dd"
-
+  // The cards take the profile page's look, a header band with the title and
+  // the card's own padding, and from 992px the legislators card sits to the
+  // right of General info.
   const generalInfoCard = (
     <TitledSectionCard
-      // Side by side under the Digital Democracy skins, the margin goes on
-      // the pair (below), so the two cards start level.
-      className={dd && !isOrg ? undefined : className}
-      title={dd ? t("tabs.personalInfo") : undefined}
+      // Side by side for a person, the margin goes on the pair (below), so
+      // the two cards start level.
+      className={isOrg ? className : undefined}
+      title={t("tabs.personalInfo")}
     >
       <div
         // Under the band, just the card's own padding above the content, as
         // in the legislators card beside it.
-        className={dd ? "d-flex flex-column" : `mx-4 mt-3 d-flex flex-column`}
+        className="d-flex flex-column"
       >
-        {/* Digital Democracy skins: a minor subheading, as Social Media is. */}
-        {dd ? (
-          <h6 className="mb-3">{t("forms.generalInfo")}</h6>
-        ) : (
-          <h4 className="mb-3">{t("forms.generalInfo")}</h4>
-        )}
+        {/* A minor subheading, as Social Media is. */}
+        <h6 className="mb-3">{t("forms.generalInfo")}</h6>
         <Row>
           <Input
             label={t(isOrg ? "forms.orgName" : "forms.fullName")}
@@ -180,12 +173,8 @@ export function PersonalInfoTab({
         )}
 
         <div className="mb-3">
-          {/* Digital Democracy skins: smaller, as a minor subheading. */}
-          {dd ? (
-            <h6 className="mb-3 mt-5">{t("socialLinks.socialMedia")}</h6>
-          ) : (
-            <h4 className="mb-3 mt-5">{t("socialLinks.socialMedia")}</h4>
-          )}
+          {/* Smaller, as a minor subheading. */}
+          <h6 className="mb-3 mt-5">{t("socialLinks.socialMedia")}</h6>
           <div className={`row`}>
             <SocialInput
               label={t("socialLinks.twitter")}
@@ -282,15 +271,16 @@ export function PersonalInfoTab({
   )
 
   const legislatorsCard = (
-    <TitledSectionCard title={dd ? t("legislator.yourLegislators") : undefined}>
-      {!dd && <h2>{t("legislator.yourLegislators")}</h2>}
-      <YourLegislators {...legislatorsProps} stacked={dd} />
+    <TitledSectionCard title={t("legislator.yourLegislators")}>
+      <YourLegislators {...legislatorsProps} />
     </TitledSectionCard>
   )
 
   return (
     <Form onSubmit={onSubmit}>
-      {dd && !isOrg ? (
+      {isOrg ? (
+        generalInfoCard
+      ) : (
         <div className={className}>
           <Row className="g-4">
             <Col xs={12} lg={7}>
@@ -301,11 +291,6 @@ export function PersonalInfoTab({
             </Col>
           </Row>
         </div>
-      ) : (
-        <>
-          {generalInfoCard}
-          {!isOrg && legislatorsCard}
-        </>
       )}
 
       <Row>

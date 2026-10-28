@@ -3,9 +3,9 @@ import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { Plus } from "./icons"
 
-/* The site's primary button (MAPLE blue under the Digital Democracy skins,
-   styles/globals.css), set in Lexend. && lifts these over Bootstrap's own
-   .btn rules whatever order the stylesheets load in. */
+/* The site's primary button (MAPLE blue, styles/globals.css), set in Lexend.
+   && lifts these over Bootstrap's own .btn rules whatever order the
+   stylesheets load in. */
 const ShareCta = styled(Button)`
   && {
     display: inline-flex;

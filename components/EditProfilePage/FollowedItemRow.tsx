@@ -58,9 +58,9 @@ const Row = styled.div`
 
 /**
  * One followed bill, ballot question or person in Edit Profile's Following
- * and Followers tabs, under Digital Democracy, Mixed and Statehouse: what it
- * is (a link, with an icon for a person), its title where it has one, and
- * the Follow button at the end, over a thin divider. Maple keeps main's rows.
+ * and Followers tabs: what it is (a link, with an icon for a person), its
+ * title where it has one, and the Follow button at the end, over a thin
+ * divider.
  */
 export function FollowedItemRow({
   lead,

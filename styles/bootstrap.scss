@@ -268,7 +268,7 @@ $utilities: (
   --bs-gold: #{$gold};
 
   --maple-font-heading: #{$maple-font-heading};
-  // Maple's body face, Nunito, for places that keep it under every skin.
+  // Nunito, the original body face, for places that keep it instead of Lexend.
   --maple-font-body: #{$font-family-sans-serif};
 
   // Height of the sticky site navbar. The Learn process rail sticks below it,
@@ -400,13 +400,15 @@ $utilities: (
 }
 
 // -----------------------------------------------------------------------------
-// Alternate skin: Digital Democracy.
+// The Digital Democracy skin, on every page.
 //
-// An experiment, off by default. Nothing above changes value; this block only
-// overrides custom properties, the same way Bootstrap 5.3's own `data-bs-theme`
-// works. Switch it in Storybook's toolbar, or set the attribute by hand:
+// pages/_document.tsx sets the attribute on every page, and
+// .storybook/preview.js on every story:
 //
 //   <html data-maple-theme="dd">
+//
+// Nothing above changes value; this block only overrides custom properties,
+// the same way Bootstrap 5.3's own `data-bs-theme` works.
 //
 // What it borrows is surface and shape, not hue. MAPLE stays blue. Type is
 // deliberately untouched: the CalMatters and Honolulu Civil Beat editions of
@@ -414,30 +416,10 @@ $utilities: (
 // two share.
 // -----------------------------------------------------------------------------
 
-// Digital Democracy (not Mixed or Statehouse, the dev switcher's options that
-// set data-maple-nav) does not pin the navbar on the Learn and About pages
-// (components/Navbar.tsx), the only pages that read this offset, so their
-// sticky step rail and section jumps need no room for it.
-[data-maple-theme="dd"]:not([data-maple-nav]) {
-  --maple-navbar-sticky-offset: 0px;
-}
-
-// Learn and About sit on a ground a touch darker than the page grey elsewhere
-// (#f7f7f7), halfway to #f2f2f2. Statehouse too: its pages look like Digital
-// Democracy's under a pinned bar.
-[data-maple-theme="dd"]:not([data-maple-nav="mixed"]) {
-  --maple-surface-learn: #f5f5f5;
-}
-
-// Mixed keeps Maple's pale blue-grey on Learn and About, under its blue bar.
-[data-maple-theme="dd"][data-maple-nav="mixed"] {
-  --maple-surface-learn: #{$maple-surface-learn};
-}
-
 [data-maple-theme="dd"] {
   // The desktop navbar's height in this skin: its 72px logo with 8px above and
-  // below (styles/globals.css). Where the bar is pinned (Mixed and
-  // Statehouse), what sticks or scrolls to an anchor below it clears this.
+  // below (styles/globals.css). Where the bar is pinned (every page but the
+  // homepage), what sticks or scrolls to an anchor below it clears this.
   --maple-navbar-height: 5.5rem;
 
   // Surfaces. A near-white page instead of the warm mid-grey, so white cards
@@ -445,9 +427,10 @@ $utilities: (
   --maple-surface-page: #f7f7f7;
   --maple-surface-base: #ffffff;
   --maple-surface-muted: #fafafa;
-  // Learn and About share the page ground too, in place of Maple's pale
-  // blue-grey, so the neutral navbar and the page read as one surface.
-  --maple-surface-learn: var(--maple-surface-page);
+  // Learn and About sit on a ground a touch darker than the page grey
+  // elsewhere (#f7f7f7), halfway to #f2f2f2, in place of Maple's pale
+  // blue-grey.
+  --maple-surface-learn: #f5f5f5;
 
   // Borders do the work the shadows used to.
   --maple-surface-border: rgba(15, 23, 42, 0.12);
@@ -489,8 +472,7 @@ $utilities: (
 }
 
 // -----------------------------------------------------------------------------
-// Typeface: Lexend, part of the Digital Democracy skin (and so of Mixed). The
-// Maple skin stays in Nunito.
+// Typeface: Lexend, part of the Digital Democracy skin.
 // -----------------------------------------------------------------------------
 
 [data-maple-theme="dd"] {
@@ -502,13 +484,12 @@ $utilities: (
     "Helvetica Neue", Arial, sans-serif;
 }
 
-// Page titles under the Digital Democracy skin match the homepage hero title under the Digital
-// Democracy skin: its size (up to 38px), weight (600) and colour, MAPLE's
-// blue-black (--maple-brand-dark). The line height is the Learn title's
-// (components/learn/LearnHeader.tsx). :where() keeps this at plain h1
-// strength, so any heading a component styles itself (the homepage hero
-// title, the Learn titles) keeps its own look.
-// Not on the Learn and About pages, which keep Maple's type in every skin
+// Page titles match the homepage hero title: its size (up to 38px), weight
+// (600) and colour, MAPLE's blue-black (--maple-brand-dark). The line height
+// is the Learn title's (components/learn/LearnHeader.tsx). :where() keeps
+// this at plain h1 strength, so any heading a component styles itself (the
+// homepage hero title, the Learn titles) keeps its own look.
+// Not on the Learn and About pages, which keep their own type
 // (components/learn/LearnLayout.tsx).
 :where([data-maple-theme="dd"]) h1:where(:not(.maple-learn-page h1)),
 :where([data-maple-theme="dd"]) .h1:where(:not(.maple-learn-page .h1)) {
@@ -519,8 +500,8 @@ $utilities: (
   color: var(--maple-brand-dark);
 }
 
-// The blue navbar keeps the current MAPLE shape whichever skin is showing, so
-// its sign-in button is not squared off by a skin's tighter radii.
+// The blue navbar keeps the current MAPLE shape, so its sign-in button is not
+// squared off by the tighter radii above.
 [data-navbar-variant="blue"] {
   --maple-radius-sm: #{$maple-radius-sm};
   --maple-radius-md: #{$maple-radius-md};

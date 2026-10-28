@@ -25,8 +25,8 @@ export const NoTooltip: Story = {
   }
 }
 
-/* The standing note on the ballot questions explorer (Digital Democracy and
-   Mixed), with its close button. */
+/* The standing note on the ballot questions explorer, with its close
+   button. */
 export const Info: Story = {
   args: {
     alertFlag:

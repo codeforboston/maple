@@ -350,16 +350,16 @@
   border: none;
 }
 
-/* Digital Democracy and Mixed: links to a bill (H5405 and the like) are in
-   Lexend even inside text that is set in Nunito, such as the Status & History
-   table, so bill numbers read the same everywhere. Not on the Learn and About
-   pages, which keep Maple's type in every skin. */
+/* Links to a bill (H5405 and the like) are in Lexend even inside text that is
+   set in Nunito, such as the Status & History table, so bill numbers read the
+   same everywhere. Not on the Learn and About pages, which keep their own
+   type. */
 [data-maple-theme="dd"] a[href^="/bills/"]:not(.maple-learn-page a) {
   font-family: var(--maple-font-heading);
 }
 
-/* Digital Democracy and Mixed: modals sit on a grey a step darker than the
-   page, so white cell gutters and white panels inside them still read. */
+/* Modals sit on a grey a step darker than the page, so white cell gutters and
+   white panels inside them still read. */
 [data-maple-theme="dd"] .modal {
   --bs-modal-bg: color-mix(in srgb, var(--maple-surface-page) 96%, #000000);
 }
@@ -551,26 +551,6 @@
   outline-offset: 3px;
 }
 
-.maple-info-alert {
-  --bs-btn-close-color: var(--bs-secondary);
-}
-
-.maple-info-alert .btn-close {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%231a3185'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e");
-  opacity: 1;
-  transition: transform var(--maple-transition-fast),
-    opacity var(--maple-transition-fast);
-}
-
-.maple-info-alert .btn-close:hover {
-  transform: rotate(90deg);
-}
-
-.maple-info-alert .btn-close:hover,
-.maple-info-alert .btn-close:focus {
-  opacity: 1;
-}
-
 .maple-nav-link {
   cursor: pointer;
   background-color: var(--maple-surface-muted);
@@ -647,17 +627,18 @@
 }
 
 /* ---------------------------------------------------------------------------
-   Digital Democracy skin: navbar.
+   The neutral navbar.
 
-   The navbar is a solid brand-blue band with a white logo and white links. On
-   a white band none of that is legible, so the ink inverts. Scoped to the skin
-   attribute; the current MAPLE navbar is untouched.
+   The blue navbar is a solid brand-blue band with white links, kept only for
+   the Navbar story; it has no logo or avatar. On a white band white is not
+   legible, so the ink inverts. Scoped to the neutral bar, so the blue one is
+   untouched.
    --------------------------------------------------------------------------- */
 
 /* The neutral navbar (see components/Navbar.tsx) is a transparent gutter: the
-   surface belongs to the container inside it. Its ink inverts to suit, and the
-   logo swaps asset rather than recolouring. Every neutral rule below is scoped
-   to the variant, so the blue bar can appear under either skin. */
+   surface belongs to the container inside it. Its ink inverts to suit, and it
+   carries the navy logo. Every neutral rule below is scoped to the variant,
+   so the blue bar can still appear (the Navbar story). */
 .main-navbar:is(
     [data-navbar-variant="neutral"],
     [data-maple-theme="dd"] [data-navbar-variant="auto"]
@@ -665,18 +646,9 @@
   --maple-navbar-bg: transparent;
 }
 
-/* The signed-in avatar (components/NavbarComponents.tsx), like the logos:
-   white by default and on the blue bar, the blue icon on the neutral bar,
-   where the white one all but disappears. */
+/* The signed-in avatar (components/NavbarComponents.tsx), like the logo: the
+   blue icon, on the neutral bar. */
 .navbar-avatar-dark {
-  display: none;
-}
-
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
-  .navbar-avatar-light {
   display: none;
 }
 
@@ -688,41 +660,8 @@
   display: inline-block;
 }
 
-/* Default: the light logo shows, the navy one is not rendered. */
-.navbar-logo-dark,
-.navbar-logo-mixed,
-.navbar-logo-original {
-  display: none;
-}
-
-/* The Maple skin: on its blue bar, the logo from main. */
-html:not([data-maple-theme="dd"])
-  :is([data-navbar-variant="blue"], [data-navbar-variant="auto"])
-  .navbar-logo-light {
-  display: none;
-}
-
-html:not([data-maple-theme="dd"])
-  :is([data-navbar-variant="blue"], [data-navbar-variant="auto"])
-  .navbar-logo-original {
-  display: inline-block;
-}
-
-/* Mixed: on the blue bar, a blue logo laid out as the neutral bar's is, with
-   its word all white. */
-[data-maple-nav="mixed"] [data-navbar-variant="blue"] .navbar-logo-light {
-  display: none;
-}
-
-[data-maple-nav="mixed"] [data-navbar-variant="blue"] .navbar-logo-mixed {
-  display: inline-block;
-}
-
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
-  .navbar-logo-light {
+/* The navy logo, on the neutral bar. */
+.navbar-logo-dark {
   display: none;
 }
 
@@ -742,7 +681,7 @@ html:not([data-maple-theme="dd"])
 /* Not inside a blue navbar, where the sign-in button keeps its red, nor the
    Follow button (components/shared/FollowButton.tsx) or the Settings dialog's
    Save (components/EditProfilePage/ProfileSettingsModal.tsx), which keep
-   their red in every skin. */
+   their red. */
 [data-maple-theme="dd"]
   .btn-primary:not([data-navbar-variant="blue"] *):not(.follow-button *):not(
     .settings-save
@@ -757,11 +696,11 @@ html:not([data-maple-theme="dd"])
   --bs-btn-disabled-border-color: var(--maple-brand-primary);
 }
 
-/* The Follow button (components/shared/FollowButton.tsx) is btn-lg; under
-   these skins it is set like the explorers' sort control beside it
-   (components/search/SortBy.tsx): the same text size and weight, a step
-   bolder below 992px, with less padding at the sides. Not the bill page's,
-   which keeps the full size (follow-button-large). */
+/* The Follow button (components/shared/FollowButton.tsx) is btn-lg, but set
+   like the explorers' sort control beside it (components/search/SortBy.tsx):
+   the same text size and weight, a step bolder below 992px, with less padding
+   at the sides. Not the bill page's, which keeps the full size
+   (follow-button-large). */
 [data-maple-theme="dd"] .follow-button:not(.follow-button-large) .btn {
   --bs-btn-font-size: 0.875rem;
   --bs-btn-font-weight: 500;
@@ -775,17 +714,12 @@ html:not([data-maple-theme="dd"])
 }
 
 /* Followed, the Follow button (components/shared/FollowButton.tsx) is the
-   secondary red under these skins: a red border and red text on white,
-   filling red with white text on hover. It reads "Following" with a check,
-   and "Unfollow" with an x on hover or focus; Maple keeps main's "Unfollow"
-   with a check. The check, a white image, is drawn as a mask in the text's
-   colour, so it reads on white. */
+   secondary red: a red border and red text on white, filling red with white
+   text on hover. It reads "Following" with a check, and "Unfollow" with an x
+   on hover or focus. The check, a white image, is drawn as a mask in the
+   text's colour, so it reads on white. */
 .follow-label-following,
 .follow-label-unfollow {
-  display: none;
-}
-
-[data-maple-theme="dd"] .follow-button .follow-label-maple {
   display: none;
 }
 
@@ -834,7 +768,7 @@ html:not([data-maple-theme="dd"])
 }
 
 /* The stacked profile buttons (components/ProfilePage/ProfileButtons.tsx, on
-   the profile page and the newsfeed) at one height under these skins:
+   the profile page and the newsfeed) at one height:
    Followed Content and Your Testimonies take the 0.25rem top and bottom
    padding Settings has from its py-1. Their own py-1 is on the link around
    the button, so it never reaches the button. */
@@ -843,8 +777,8 @@ html:not([data-maple-theme="dd"])
 }
 
 /* The legislator profile's cards (components/LegislatorProfile) a step darker
-   under these skins than the skin's card outline (0.12), so they hold their
-   edge on the page's grey. The finance tab's cards take it too. */
+   than the card outline elsewhere (0.12), so they hold their edge on the
+   page's grey. The finance tab's cards take it too. */
 [data-maple-theme="dd"] .legislator-profile-page {
   --maple-card-outline: rgba(15, 23, 42, 0.2);
 }
@@ -864,9 +798,9 @@ html:not([data-maple-theme="dd"])
   --bs-btn-active-color: var(--maple-brand-primary-strong);
 }
 
-/* The "Verify Account" card on Edit Profile and the profile page under these
-   skins (the verify-account-card wrapper): its heading in Lexend, as Edit
-   Profile's tab headings are
+/* The "Verify Account" card on Edit Profile and the profile page (the
+   verify-account-card wrapper): its heading in Lexend, as Edit Profile's tab
+   headings are
    (components/EditProfilePage/StyledEditProfileComponents.tsx). */
 [data-maple-theme="dd"] .verify-account-card h4 {
   font-family: var(--maple-font-heading);
@@ -899,8 +833,7 @@ html:not([data-maple-theme="dd"])
 }
 
 /* The Settings dialog (components/EditProfilePage/ProfileSettingsModal.tsx)
-   a touch wider under these skins than Bootstrap's 500px. Phones keep the
-   full-width dialog. */
+   a touch wider than Bootstrap's 500px. Phones keep the full-width dialog. */
 @media (min-width: 576px) {
   [data-maple-theme="dd"] .modal-dialog.settings-dialog {
     max-width: 560px;
@@ -1159,21 +1092,10 @@ html:not([data-maple-theme="dd"])
     [data-navbar-variant="neutral"],
     [data-maple-theme="dd"] [data-navbar-variant="auto"]
   ) {
-  /* Pinned to the top as in the current MAPLE skin (sticky-top). The bar is
-     transparent, so give it the page ground or the page would show through it
-     as it scrolls underneath. */
+  /* Pinned to the top (sticky-top) on every page but the homepage
+     (components/Navbar.tsx). The bar is transparent, so give it the page
+     ground or the page would show through it as it scrolls underneath. */
   background-color: var(--maple-surface-page) !important;
-}
-
-/* Digital Democracy (not Mixed or Statehouse, which set data-maple-nav), Learn
-   and About: the bar takes the section's ground, a touch darker than the page
-   grey elsewhere (styles/bootstrap.scss). */
-[data-maple-theme="dd"]:not([data-maple-nav])
-  .main-navbar[data-section-ground]:is(
-    [data-navbar-variant="neutral"],
-    [data-navbar-variant="auto"]
-  ) {
-  background-color: var(--maple-surface-learn) !important;
 }
 
 /* Both navbars: the logo sets the bar's height, with 8px of padding above and
@@ -1183,32 +1105,15 @@ html:not([data-maple-theme="dd"])
   padding-bottom: 8px !important;
 }
 
-/* Both logos, the same size in either bar. */
+/* The logo's size on the desktop bar. */
 .desktop-navbar .navbar-logo {
   width: auto;
   height: 72px;
 }
 
-/* The logo from main keeps main's size. */
-.desktop-navbar .navbar-logo-original {
-  width: 80px;
-  height: 80px;
-}
-
-/* A pinned bar casts a shadow only while content is scrolling under it; the
-   class is set in components/Navbar.tsx. Both skins. */
-.main-navbar.desktop-navbar {
-  transition: box-shadow var(--maple-transition-fast);
-}
-
-.main-navbar.desktop-navbar.navbar-scrolled {
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
-}
-
 /* A pinned neutral bar always has a shadow, even at the top: on the light
-   ground it is otherwise hard to tell where the bar ends. A neutral bar that
-   is not pinned (the homepage, and the explorers under Digital Democracy) has
-   none. Pinning is decided in components/Navbar.tsx. */
+   ground it is otherwise hard to tell where the bar ends. The homepage's bar
+   is not pinned and has none. Pinning is decided in components/Navbar.tsx. */
 .main-navbar.sticky-top:is(
     [data-navbar-variant="neutral"],
     [data-maple-theme="dd"] [data-navbar-variant="auto"]
@@ -1217,91 +1122,79 @@ html:not([data-maple-theme="dd"])
 }
 
 /* Logo and nav items sit together on this. Its width and position are shared
-   by both skins, so the logo starts in the same place whichever skin, and
-   whichever logo graphic, is showing. The bar gives up its own side padding so
-   both measure the column from the same edge. */
+   by both bars, blue and neutral, so the logo starts in the same place
+   whichever is showing. The bar gives up its own side padding so both measure
+   the column from the same edge. */
 .main-navbar.desktop-navbar {
   padding-left: 0;
   padding-right: 0;
 }
 
-/* Digital Democracy and Mixed: the explorers' filter column a touch wider than
-   Bootstrap's quarter (lg={3}), since Lexend runs wider than Nunito and the
-   filter labels wrapped. The results take the rest of the row. */
+/* The explorers' filter column a touch wider than Bootstrap's quarter
+   (lg={3}), since Lexend runs wider than Nunito and the filter labels
+   wrapped. The results take the rest of the row. */
 @media (min-width: 992px) {
   [data-maple-theme="dd"] .search-filter-column {
     width: 27%;
   }
 }
 
-/* Digital Democracy and Mixed: the explorers' filter button is the icon alone
-   below 768px, and the icon and its word from there until the filters sit in
-   their column at 992px (components/search/useFiltersInline.ts). */
+/* The explorers' filter button is the icon alone below 768px, and the icon
+   and its word from there until the filters sit in their column at 992px
+   (components/search/useFiltersInline.ts). */
 @media (max-width: 767.98px) {
   [data-maple-theme="dd"] .filter-button-word {
     display: none;
   }
 }
 
-/* Digital Democracy and Mixed, desktop: the footer's disclaimer and
-   newsletter line moves into its Account column (components/Footer). */
+/* Desktop: the footer's disclaimer and newsletter line moves into its Account
+   column (components/Footer). */
 @media (min-width: 768px) {
   [data-maple-theme="dd"] .footer-bottom-line {
     display: none;
   }
 }
 
-/* Navbar and footer links for one look only: Policies in the About menu
-   under Digital Democracy and Mixed, and How MAPLE Uses AI under About for
-   Maple but under Policies for Digital Democracy and Mixed. */
-[data-maple-theme="dd"] .maple-only,
-.dd-only {
-  display: none !important;
-}
-
-[data-maple-theme="dd"] .dd-only {
-  display: block !important;
-}
-
-/* Digital Democracy and Mixed: a sign-in button that wraps breaks after the
-   slash, "Log in /" over "Sign up" (components/auth/SignInWithButton.tsx). */
+/* A sign-in button that wraps breaks after the slash, "Log in /" over
+   "Sign up" (components/auth/SignInWithButton.tsx). */
 [data-maple-theme="dd"] .sign-in-label-half {
   white-space: nowrap;
 }
 
-/* Digital Democracy and Mixed: on the mobile bar, room between the logo and the
-   sign-in button (or the profile menu). */
+/* On the mobile bar, room between the logo and the sign-in button (or the
+   profile menu). */
 [data-maple-theme="dd"] .mobile-navbar-account {
   padding-left: 1rem;
 }
 
-/* Digital Democracy and Mixed, under 600px: the navbar's sign-in button at the
-   explorers' sort text size (components/search/SortBy.tsx), still bold. Set on
-   the button, since .btn declares its own size over the skin's. */
+/* Under 600px: the navbar's sign-in button at the explorers' sort text size
+   (components/search/SortBy.tsx), still bold. Set on the button, since .btn
+   declares its own size over the skin's. */
 @media (max-width: 599.98px) {
   [data-maple-theme="dd"] .main-navbar .btn-primary {
     --bs-btn-font-size: 0.875rem;
   }
 }
 
-/* Digital Democracy and Mixed: the sign-in button (or the profile menu) set a
-   little apart from the menu items, 1rem beyond the usual gap. */
+/* The sign-in button (or the profile menu) set a little apart from the menu
+   items, 1rem beyond the usual gap. */
 [data-maple-theme="dd"] .desktop-navbar-account {
   margin-left: 1rem;
 }
 
-/* Digital Democracy and Mixed: every nav item stays on one line, in the
-   desktop bar and the mobile one. The sign-in button may wrap. */
+/* Every nav item stays on one line, in the desktop bar and the mobile one.
+   The sign-in button may wrap. */
 [data-maple-theme="dd"]
   .main-navbar
   :is(.desktop-navbar-link, .desktop-navbar-dropdown, .nav-link) {
   white-space: nowrap;
 }
 
-/* While the desktop bar measures whether its links fit (components/Navbar.tsx,
-   Digital Democracy and Mixed), they keep their natural width rather than
-   shrinking, so not fitting shows as overflow and the bar collapses to the
-   hamburger instead of squeezing the sign-in button. */
+/* While the desktop bar measures whether its links fit (components/Navbar.tsx),
+   they keep their natural width rather than shrinking, so not fitting shows as
+   overflow and the bar collapses to the hamburger instead of squeezing the
+   sign-in button. */
 .desktop-navbar-bar[data-measure-fit] > * {
   flex-shrink: 0;
 }

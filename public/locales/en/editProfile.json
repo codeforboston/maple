@@ -39,13 +39,10 @@
     "weekly": "Weekly",
     "monthly": "Monthly"
   },
-  "emailIconAlt": "open envelope with letter, toggles update frequency options",
   "legislator": {
     "representative": "Representative",
-    "searchRepresentative": "Search your representative",
     "selectRepresentative": "Select your representative",
     "senator": "Senator",
-    "searchSenator": "Search your senator",
     "selectSenator": "Select your senator",
     "yourLegislators": "Your Legislators",
     "politeWords": "Please use the ",
@@ -57,8 +54,6 @@
     "fullName": "Full Name",
     "orgName": "Organization Name",
     "nickname": "Nickname",
-    "makePublic": "Make Public",
-    "makePrivate": "Make Private",
     "public": "Public",
     "private": "Private",
     "errNameRequired": "Name is required",

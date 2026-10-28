@@ -65,8 +65,8 @@ const Paper = styled.article`
   }
 `
 
-/* The sheet set as the mockup sets it, in every skin: the title alone in
-   Lexend, the chamber and number above it and the text below in Nunito. */
+/* The sheet set as the mockup sets it: the title alone in Lexend, the
+   chamber and number above it and the text below in Nunito. */
 
 /** Which chamber's text this is, and its number. */
 const SheetLabel = styled.p`

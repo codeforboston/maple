@@ -118,11 +118,10 @@ const CalloutBalloon = styled.div`
     }
   }
 
-  /* Digital Democracy, Mixed and Statehouse: on a narrow bubble (the phone
-     carousel), a long author name ran past the edge. The bill number keeps its
-     width, the name takes what is left and ends in an ellipsis, and the two
-     get a gap. An ellipsis rather than wrapping, as the bubble's height is
-     fixed. */
+  /* On a narrow bubble (the phone carousel), a long author name ran past the
+     edge. The bill number keeps its width, the name takes what is left and
+     ends in an ellipsis, and the two get a gap. An ellipsis rather than
+     wrapping, as the bubble's height is fixed. */
   /* The layer the hand and text sit in is set to the full width and also
      indented 4em, so it ran 4em past the bubble's right edge and everything
      on the right was cut off there. The bubble's width less the indent

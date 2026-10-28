@@ -1,4 +1,4 @@
-import { Alert, Button, Card, Form, Image } from "components/bootstrap"
+import { Button, Card, Form, Image } from "components/bootstrap"
 import { useTranslation } from "next-i18next"
 import Link from "next/link"
 import { useDeferredValue, useState } from "react"
@@ -8,7 +8,6 @@ import { maple } from "../links"
 import { QuestionTooltip } from "../tooltip"
 import { BallotQuestionAlert } from "./BallotQuestionAlert"
 import { SearchContainer } from "../search/SearchContainer"
-import { MapleOnly, DigitalDemocracyOnly } from "components/shared/SkinOnly"
 
 type BallotQuestionStatus = BallotQuestion["ballotStatus"]
 
@@ -421,29 +420,16 @@ export const BrowseBallotQuestions = ({
 
   return (
     <>
-      {/* The note on question numbers, one per skin: Maple keeps the alert
-          from main; Digital Democracy and Mixed use the ballot question flag
+      {/* The note on question numbers: the ballot question flag
           (BallotQuestionAlert) in its info form. */}
       {showInfo && (
-        <>
-          <MapleOnly>
-            <Alert
-              variant="info"
-              dismissible
-              onClose={() => setShowInfo(false)}
-              className="maple-info-alert mb-3 rounded-4"
-            >
-              {questionNumberDisclaimer}
-            </Alert>
-          </MapleOnly>
-          <DigitalDemocracyOnly className="mb-3">
-            <BallotQuestionAlert
-              alertFlag={questionNumberDisclaimer}
-              variant="info"
-              dismiss={() => setShowInfo(false)}
-            />
-          </DigitalDemocracyOnly>
-        </>
+        <div className="mb-3">
+          <BallotQuestionAlert
+            alertFlag={questionNumberDisclaimer}
+            variant="info"
+            dismiss={() => setShowInfo(false)}
+          />
+        </div>
       )}
 
       <SearchContainer>

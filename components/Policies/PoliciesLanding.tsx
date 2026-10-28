@@ -44,9 +44,9 @@ const POLICIES = [
 ] as const
 
 /**
- * Digital Democracy and Mixed: /policies as a landing page for the three
- * policies and How MAPLE Uses AI, laid out like the Learn hub
- * (components/learn/Hub/LearnHub.tsx), one card each, two to a row. The Maple skin keeps main's /policies, the privacy policy.
+ * /policies as a landing page for the three policies and How MAPLE Uses AI,
+ * laid out like the Learn hub (components/learn/Hub/LearnHub.tsx), one card
+ * each, two to a row.
  */
 export const PoliciesLanding = () => {
   const { t } = useTranslation(["policies", "common", "learn"])

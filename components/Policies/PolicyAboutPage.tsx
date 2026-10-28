@@ -90,11 +90,10 @@ const VALUES = [
 ] as const
 
 /**
- * Digital Democracy and Mixed: a policy as its own page under Policies, laid
- * out like the AI Tools page (components/learn/AiTools/AiTools.tsx): each
- * section a white card with a navy title bar and its text below, nothing
- * collapsing, sub-headings as bold lines. Our Shared Values closes the page
- * the same way. The Maple skin keeps main's page (PolicyPage.tsx).
+ * A policy as its own page under Policies, laid out like the AI Tools page
+ * (components/learn/AiTools/AiTools.tsx): each section a white card with a
+ * navy title bar and its text below, nothing collapsing, sub-headings as bold
+ * lines. Our Shared Values closes the page the same way.
  */
 export const PolicyAboutPage = ({ policy }: { policy: Policy }) => {
   const { t } = useTranslation(["policies", "common"])

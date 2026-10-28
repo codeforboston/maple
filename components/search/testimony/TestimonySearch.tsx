@@ -142,8 +142,9 @@ const useSearchStatus = () => {
   }
 }
 
-/* Only one of the two author-type controls shows, by skin; display: none keeps
-   the other out of the accessibility tree. */
+/* The author-type tabs above the search, hidden: the filter panel's group
+   (AuthorTypeFilterSection) is the control that shows. display: none keeps
+   the tabs out of the accessibility tree. */
 const AuthorTypeTabs = styled.div`
   [data-maple-theme="dd"] & {
     display: none;
@@ -151,11 +152,7 @@ const AuthorTypeTabs = styled.div`
 `
 
 const AuthorTypeFilterSection = styled(FilterSection)`
-  display: none;
-
-  [data-maple-theme="dd"] & {
-    display: block;
-  }
+  display: block;
 
   /* Bootstrap's primary here is red (styles/bootstrap.scss), which checked
      radios take; these use the site's navy instead. */
@@ -201,9 +198,9 @@ const Layout = () => {
     })
   }
 
-  /* The All / Individuals / Organizations choice comes two ways, one per skin,
-     both setting the same authorRole filter. Maple: tabs above the search.
-     Digital Democracy and Mixed: the first group in the filter panel. */
+  /* The All / Individuals / Organizations choice, as the first group in the
+     filter panel. The tabs above the search (AuthorTypeTabs, hidden) set the
+     same authorRole filter. */
   const authorTypeFilter = (
     <AuthorTypeFilterSection>
       <FilterLabel>{t("author_type")}</FilterLabel>

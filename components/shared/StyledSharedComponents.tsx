@@ -1,14 +1,7 @@
 import styled from "styled-components"
-import { Row } from "../bootstrap"
-
-export const Banner = styled(Row).attrs(props => ({
-  className: `h3 text-center text-white justify-content-center p-3 bg-warning m-0 gx-0 w-100 ${props.className}`,
-  children: props.children
-}))``
 
 /**
- * The Digital Democracy and Mixed skins' slim note across the top of a page,
- * in place of Banner's large orange bar: a pale tint of the Beta tag's orange,
+ * A slim note across the top of a page: a pale tint of the Beta tag's orange,
  * with the amber note's dark ink and bold, underlined links. Used by the
  * lobbying explorer's beta note and the bill page's conference banner.
  */

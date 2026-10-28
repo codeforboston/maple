@@ -3,12 +3,10 @@
     "follow": "Follow MAPLE",
     "browse": "Browse",
     "account": "Account",
-    "resources": "Resources",
     "policies": "Policies",
     "otherResources": "Other Resources"
   },
   "links": {
-    "learnWriting": "About Testimony",
     "learnProcess": "About the Legislative Process",
     "learnWhy": "Why Use MAPLE",
     "learnAi": "AI Research Tools",
@@ -32,6 +30,5 @@
     "TOS": "Terms of Service",
     "codeOfConduct": "Code of Conduct"
   },
-  "newsletter": "Click Here to Subscribe to Our Newsletter",
   "logo": "MAPLE Massachusetts Platform for Legislative Engagement logo"
 }

@@ -4,7 +4,8 @@ import { formatBillId } from "../formatting"
 import { Internal, maple } from "../links"
 import { conferenceName, ConferenceSummary } from "./types"
 
-/** In Nunito in every skin, the conference names and bill numbers alike. */
+/** In Nunito rather than Lexend, the conference names and bill numbers
+ * alike. */
 const Nav = styled.nav`
   font-family: var(--maple-font-body);
   flex: 0 0 auto;

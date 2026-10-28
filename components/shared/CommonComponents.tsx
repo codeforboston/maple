@@ -71,7 +71,7 @@ export const FeatureCalloutButton = styled.span`
 
 export const BetaTag = styled.span`
   display: inline-block;
-  /* Orange in every skin: Digital Democracy turns the brand accent gold. */
+  /* Orange, not the brand accent, which is gold (styles/bootstrap.scss). */
   background: var(--bs-orange);
   color: #fff;
   font-size: 10px;

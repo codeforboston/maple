@@ -3,9 +3,6 @@ import { BrowseBallotQuestions } from "components/ballotquestions/BrowseBallotQu
 import type { BallotQuestionBrowseItem } from "components/ballotquestions/BrowseBallotQuestions"
 import { createPage } from "components/page"
 import { PageColumn } from "components/shared/PageColumn"
-import { PageArt } from "components/shared/PageArt"
-import { SectionGround } from "components/shared/SectionGround"
-import { SECTION_GROUND_PAGES } from "components/Navbar"
 import styled from "styled-components"
 import type { BallotQuestion } from "components/db"
 import { useTranslation } from "next-i18next"
@@ -25,15 +22,6 @@ export default createPage({
 
     return (
       <ArtColumn $width="xwide" className="mt-3 mb-4">
-        {/* An open envelope (a mailed ballot). */}
-        <PageArt
-          src="/Mail with Blob.svg"
-          out={1.5}
-          sameSize
-          size={8}
-          leftLift={1}
-        />
-        {SECTION_GROUND_PAGES.includes("/ballotQuestions") && <SectionGround />}
         <h1>{t("browse_ballot_questions")}</h1>
         <p className="text-muted mb-4 col-lg-8 px-0">
           {t("browse_ballot_questions_intro")}
@@ -44,7 +32,7 @@ export default createPage({
   }
 })
 
-/* The page art places itself against this column. */
+/* Positioned, as it has been since the page carried art placed against it. */
 const ArtColumn = styled(PageColumn)`
   position: relative;
 `

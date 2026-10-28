@@ -33,9 +33,8 @@ export default function SignInWithButton({
 }
 
 /* A label such as "Log in / Sign up" in halves that each keep to one line
-   under Digital Democracy and Mixed (styles/globals.css), so a narrow button
-   wraps after the slash rather than inside "Sign up". The text is unchanged,
-   and under Maple the halves are plain spans. */
+   (styles/globals.css), so a narrow button wraps after the slash rather than
+   inside "Sign up". The text is unchanged. */
 const SplitLabel = ({ label }: { label: string }) => {
   const halves = label.split(" / ")
   if (halves.length !== 2) return <>{label}</>

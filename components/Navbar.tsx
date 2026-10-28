@@ -8,14 +8,12 @@ import { useIsomorphicLayoutEffect, useMediaQuery } from "usehooks-ts"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import { Col, Container, Dropdown, Nav, Navbar, NavDropdown } from "./bootstrap"
 import { flags } from "./featureFlags"
-import { useHtmlAttribute } from "./shared/useHtmlAttribute"
 
 import {
   Avatar,
   NavbarLinkBallotQuestions,
   NavbarLinkConferences,
   DESKTOP_NAV_ITEM_CLASS,
-  NavbarLinkAI,
   NavbarLinkPolicies,
   NavbarLinkBills,
   NavbarLinkAiTools,
@@ -35,7 +33,6 @@ import {
   NavbarLinkSupport,
   NavbarLinkTeam,
   NavbarLinkTestimony,
-  NavbarLinkWritingTestimony,
   NavbarLinkViewProfile
 } from "./NavbarComponents"
 
@@ -44,78 +41,30 @@ const MobileCollapse = styled(Navbar.Collapse)`
 `
 
 /**
- * The site navbar comes in two looks:
+ * The site navbar's look, set as data-navbar-variant for styles/globals.css.
  *
- * - "blue": the current MAPLE bar, a brand-blue band with the white logo and
- *   white links.
- * - "neutral": the Digital Democracy bar, a light band with the long navy logo
- *   and dark links.
- *
- * "auto" follows the skin: neutral under the Digital Democracy skin, blue
- * otherwise. The styles key off data-navbar-variant in styles/globals.css.
+ * - "auto", the default, follows data-maple-theme on <html>.
+ *   pages/_document.tsx sets that to "dd", which gives the neutral bar.
+ * - "neutral": a light band with the long navy logo and dark links.
+ * - "blue": the blue bar. No page uses it; it is kept for the Navbar story
+ *   (stories/organisms/Navbar.stories.tsx).
  */
 export type NavbarVariant = "blue" | "neutral" | "auto"
 
-/** The Learn and About sections (Policies counts as About, and the writing
- * guide, out of /learn, as Learn), whose bar is not pinned under Digital
- * Democracy. */
-const isLearnOrAbout = (pathname: string) =>
-  [
-    "/learn",
-    "/about",
-    "/why-use-maple",
-    "/policies",
-    "/writing-effective-testimony"
-  ].some(section => pathname === section || pathname.startsWith(`${section}/`))
-
-/** The four explorers. Their bar is not pinned under Digital Democracy, and
- * the dev switcher's art row (components/DevSkinToggle.tsx) shows only on
- * them. */
-export const EXPLORERS = [
-  "/bills",
-  "/hearings",
-  "/testimony",
-  "/ballotQuestions"
-]
-
-/** Pages outside Learn and About that take their look under Digital
- * Democracy: the section's ground on page and bar (styles/globals.css). Now
- * the four explorers. Each page also renders SectionGround
- * (components/shared/SectionGround.tsx) for its own ground. */
-export const SECTION_GROUND_PAGES = EXPLORERS
-
 export const MainNavbar: React.FC<{ variant?: NavbarVariant }> = ({
-  variant
+  variant = "auto"
 }) => {
   const narrow = useMediaQuery("(max-width: 768px)")
   const { pathname } = useRouter()
   const { authenticated } = useAuth()
 
-  // By default the bar follows the skin ("auto"): neutral under the Digital
-  // Democracy skin, blue under Maple. The "mixed" skin (data-maple-nav="mixed",
-  // alongside Digital Democracy) is neutral on the homepage only and blue
-  // everywhere else.
-  const isHome = pathname === "/"
-  // Mixed and the dev switcher's Statehouse option both set a navbar mode; only
-  // Mixed turns the bar blue. Statehouse keeps it neutral.
-  const navMode = useHtmlAttribute("data-maple-nav")
-  const mixed = navMode === "mixed"
-  const pageDefault: NavbarVariant = mixed
-    ? isHome
-      ? "neutral"
-      : "blue"
-    : "auto"
-
-  const resolved = variant ?? pageDefault
-
-  // Digital Democracy and Mixed: the bar collapses to the hamburger whenever
-  // its links do not fit, rather than at a set width, so it follows whichever
-  // links are showing (feature flags, signed in or not). DesktopNav reports
-  // the window width its links need when they overflow; narrower than that,
-  // the mobile bar shows. Maple keeps main's 768px.
-  const dd = useHtmlAttribute("data-maple-theme") === "dd"
+  // The bar collapses to the hamburger whenever its links do not fit, rather
+  // than at a set width, so it follows whichever links are showing (feature
+  // flags, signed in or not). DesktopNav reports the window width its links
+  // need when they overflow; narrower than that, the mobile bar shows. At
+  // 768px and below it always does.
   // A measurement holds only for the links it was taken with.
-  const linksKey = `${dd}|${resolved}|${authenticated}`
+  const linksKey = `${variant}|${authenticated}`
   const [fit, setFit] = useState<{ linksKey: string; needed: number } | null>(
     null
   )
@@ -138,40 +87,30 @@ export const MainNavbar: React.FC<{ variant?: NavbarVariant }> = ({
     [linksKey]
   )
 
-  const isMobile = narrow || (dd && fitsFrom !== null && windowWidth < fitsFrom)
+  const isMobile = narrow || (fitsFrom !== null && windowWidth < fitsFrom)
 
   // Pinned everywhere except the homepage, where the bar scrolls away with the
-  // hero, and, under Digital Democracy only (not Mixed or Statehouse, which
-  // set a navbar mode), the four explorers and the Learn and About sections.
-  const ddOnly = useHtmlAttribute("data-maple-theme") === "dd" && !navMode
-  const sectionGround =
-    isLearnOrAbout(pathname) || SECTION_GROUND_PAGES.includes(pathname)
-  const pinned =
-    !isHome && !(ddOnly && (EXPLORERS.includes(pathname) || sectionGround))
+  // hero.
+  const pinned = pathname !== "/"
 
   return (
     <NavbarMobileContext.Provider value={isMobile}>
       {isMobile ? (
-        <MobileNav variant={resolved} sectionGround={sectionGround} />
+        <MobileNav variant={variant} />
       ) : (
         <DesktopNav
-          variant={resolved}
+          variant={variant}
           pinned={pinned}
-          sectionGround={sectionGround}
-          onOverflow={dd ? handleOverflow : undefined}
+          onOverflow={handleOverflow}
         />
       )}
     </NavbarMobileContext.Provider>
   )
 }
 
-/* sectionGround marks the pages on the Learn and About ground (Learn, About,
-   Policies, the writing guide and SECTION_GROUND_PAGES; data-section-ground),
-   whose bar takes that ground under Digital Democracy (styles/globals.css). */
 const MobileNav: React.FC<{
   variant: NavbarVariant
-  sectionGround: boolean
-}> = ({ variant, sectionGround }) => {
+}> = ({ variant }) => {
   const ProfileLinks = () => {
     return (
       <Nav className="my-4 d-flex align-items-start">
@@ -222,13 +161,11 @@ const MobileNav: React.FC<{
           <NavbarLinkSupport handleClick={closeNav} />
           <NavbarLinkInTheNews handleClick={closeNav} />
           <NavbarLinkFAQ handleClick={closeNav} />
-          <NavbarLinkAI handleClick={closeNav} />
           <NavbarLinkPolicies handleClick={closeNav} />
         </NavDropdown>
 
         <NavDropdown className={"navLink-primary"} title={t("learn")}>
           <NavbarLinkEffective handleClick={closeNav} />
-          <NavbarLinkWritingTestimony handleClick={closeNav} />
           <NavbarLinkProcess handleClick={closeNav} />
           <NavbarLinkWhyUse handleClick={closeNav} />
           <NavbarLinkAiTools handleClick={closeNav} />
@@ -266,12 +203,10 @@ const MobileNav: React.FC<{
     <Navbar
       className={`main-navbar w-100 ${isExpanded ? "pb-0" : ""}`}
       data-navbar-variant={variant}
-      data-section-ground={sectionGround ? "" : undefined}
       style={{ backgroundColor: "var(--maple-navbar-bg)" }}
       data-bs-theme="dark"
-      // Never laid out open: under Digital Democracy and Mixed this bar can
-      // show at any width (MainNavbar). Below 992px, where Maple shows it, this
-      // is the same as expand="lg".
+      // Never laid out open: this bar shows at any width where the desktop
+      // links do not fit (MainNavbar).
       expand={false}
       expanded={isExpanded}
     >
@@ -343,10 +278,9 @@ const MobileNav: React.FC<{
 const DesktopNav: React.FC<{
   variant: NavbarVariant
   pinned: boolean
-  sectionGround: boolean
   /** Called with the window width the links need, when they overflow. */
-  onOverflow?: (needed: number) => void
-}> = ({ variant, pinned, sectionGround, onOverflow }) => {
+  onOverflow: (needed: number) => void
+}> = ({ variant, pinned, onOverflow }) => {
   const { authenticated } = useAuth()
   const { t } = useTranslation(["common", "auth"])
 
@@ -357,7 +291,7 @@ const DesktopNav: React.FC<{
   const barRef = useRef<HTMLDivElement>(null)
   useIsomorphicLayoutEffect(() => {
     const bar = barRef.current
-    if (!onOverflow || !bar) return
+    if (!bar) return
     const overflow = () => bar.scrollWidth - bar.clientWidth
     if (overflow() > 0) onOverflow(window.innerWidth + overflow())
     const observer = new ResizeObserver(() => {
@@ -369,38 +303,23 @@ const DesktopNav: React.FC<{
     return () => observer.disconnect()
   }, [onOverflow])
 
-  // While pinned, the bar casts a shadow once the page has scrolled at all,
-  // which is when content starts passing underneath it. At the top there is
-  // nothing under it, so no shadow.
-  const [scrolled, setScrolled] = useState(false)
-  useEffect(() => {
-    if (!pinned) {
-      setScrolled(false)
-      return
-    }
-    const update = () => setScrolled(window.scrollY > 0)
-    update()
-    window.addEventListener("scroll", update, { passive: true })
-    return () => window.removeEventListener("scroll", update)
-  }, [pinned])
-
+  // Pinned, the bar always casts its shadow (sticky-top, styles/globals.css).
   return (
     <Container
       fluid
       className={`main-navbar desktop-navbar d-flex py-2 ${
         pinned ? "sticky-top" : ""
-      } ${scrolled ? "navbar-scrolled" : ""} justify-content-end gap-2`}
+      } justify-content-end gap-2`}
       data-navbar-variant={variant}
-      data-section-ground={sectionGround ? "" : undefined}
       style={{ backgroundColor: "var(--maple-navbar-bg)" }}
     >
-      {/* Logo, nav items and the sign-in action share one container, so the
-          Digital Democracy skin can seat the whole lot on its own surface and
-          leave the bar itself transparent. */}
+      {/* Logo, nav items and the sign-in action share one container, set to
+          the page's content column (styles/globals.css) and measured above to
+          tell whether the links fit. */}
       <div
         ref={barRef}
         className={`desktop-navbar-bar align-items-center d-flex gap-2`}
-        data-measure-fit={onOverflow ? "" : undefined}
+        data-measure-fit=""
       >
         <div className={`me-auto`}>
           <NavbarLinkLogo />
@@ -463,7 +382,6 @@ const DesktopNav: React.FC<{
                 <NavbarLinkSupport />
                 <NavbarLinkInTheNews />
                 <NavbarLinkFAQ />
-                <NavbarLinkAI />
                 <NavbarLinkPolicies />
               </Dropdown.Menu>
             </Dropdown>
@@ -479,7 +397,6 @@ const DesktopNav: React.FC<{
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 <NavbarLinkEffective />
-                <NavbarLinkWritingTestimony />
                 <NavbarLinkProcess />
                 <NavbarLinkWhyUse />
                 <NavbarLinkAiTools />

@@ -26,66 +26,27 @@ import {
 } from "./redux"
 import { isNotNull } from "components/utils"
 import { useTranslation } from "next-i18next"
-import { useHtmlAttribute } from "components/shared/useHtmlAttribute"
 import { SectionHead } from "./SectionHead"
 
 const BillSelectRecipients = ({ className }: { className?: string }) => {
   useEmailRecipients()
-  const email = useTestimonyEmail()
   const { t } = useTranslation("testimony")
-  const isMobile = useMediaQuery("(max-width: 1199px)")
-  // Digital Democracy skins: a title row with Copy Email Recipients at its
-  // far right, then the add and remove buttons, then the list, the same on
-  // every step that shows it. Maple keeps main's three columns.
-  const dd = useHtmlAttribute("data-maple-theme") === "dd"
-
-  if (dd)
-    return (
-      <div className={className}>
-        <SectionHead>
-          <h3>{t("publish.emailRecipients")}</h3>
-          <CopyRecipientsButton />
-        </SectionHead>
-        <RecipientControls />
-        <SelectLegislatorEmails className="my-2" />
-      </div>
-    )
-
+  // A title row with Copy Email Recipients at its far right, then the add and
+  // remove buttons, then the list, the same on every step that shows it.
   return (
     <div className={className}>
-      <Row className="d-flex">
-        <Col className="align-self-center fs-4" xl={3} lg={12}>
-          {t("publish.emailRecipients")}
-        </Col>
-        <Col xl={6} lg={12}>
-          <RecipientControls />
-        </Col>
-        <Col
-          className={`align-self-center ${isMobile ? "py-2" : ""}`}
-          xl={3}
-          lg={12}
-        >
-          {email.to ? (
-            <CopyButton
-              key="copy"
-              variant="outline-secondary"
-              text={email.to}
-              className={`copy py-1 px-2 ${isMobile ? "ms-3" : ""}`}
-              format="text/plain"
-            >
-              <FontAwesomeIcon icon={faCopy} />
-              {t("publish.copyEmailRecipients")}
-            </CopyButton>
-          ) : null}
-        </Col>
-      </Row>
+      <SectionHead>
+        <h3>{t("publish.emailRecipients")}</h3>
+        <CopyRecipientsButton />
+      </SectionHead>
+      <RecipientControls />
       <SelectLegislatorEmails className="my-2" />
     </div>
   )
 }
 
-/** Copy Email Recipients on its own, for the section's title row under the
- * Digital Democracy skins. Nothing while there are no recipients. */
+/** Copy Email Recipients on its own, for the section's title row. Nothing
+ * while there are no recipients. */
 const CopyRecipientsButton = () => {
   const email = useTestimonyEmail()
   const { t } = useTranslation("testimony")
@@ -125,9 +86,8 @@ export const SelectRecipients = styled((props: { className?: string }) => {
     border-radius: 1rem;
   }
 
-  /* Digital Democracy skins: the search white, as the testimony box is, with
-     an edge, which main draws in the box's own grey and so without one.
-     Focused, it keeps react-select's focus colour. */
+  /* The search white over the grey above, as the testimony box is, with an
+     edge. Focused, it keeps react-select's focus colour. */
   [data-maple-theme="dd"] & .leg-search__control {
     background-color: var(--maple-surface-base);
   }

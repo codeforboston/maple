@@ -17,7 +17,6 @@ import { ProfileLegislators } from "./ProfileLegislators"
 import { VerifyAccountSection } from "components/shared"
 import { VerifyAccountSectionLegacy } from "./VerifyAccountSectionLegacy"
 import { useFlags } from "components/featureFlags"
-import { useHtmlAttribute } from "components/shared/useHtmlAttribute"
 
 export function ProfilePage(profileprops: {
   id: string
@@ -42,9 +41,6 @@ export function ProfilePage(profileprops: {
   >()
 
   const { phoneVerificationUI } = useFlags()
-  // Digital Democracy skins: Verify Account as a plain white card with its
-  // heading inside, as on Edit Profile (styles/globals.css).
-  const dd = useHtmlAttribute("data-maple-theme") === "dd"
 
   useEffect(() => {
     const countPublishedTestimony = async () => {
@@ -91,18 +87,19 @@ export function ProfilePage(profileprops: {
     return <ErrorPage statusCode={404} withDarkMode={false} />
   }
 
+  // Verify Account as a plain white card with its heading inside, as on Edit
+  // Profile (styles/globals.css).
   const verifyAccount =
     phoneVerificationUI &&
     isCurrentUser &&
     (!user.emailVerified || !profile.phoneVerified) ? (
-      <Row className={dd ? "mt-4" : undefined}>
+      <Row className="mt-4">
         <Col className="verify-account-card">
           <VerifyAccountSection
             className="mb-4"
             user={user}
             profile={profile}
-            titleInside={dd}
-            onlyVisibleNote={dd}
+            onlyVisibleNote
           />
         </Col>
       </Row>
@@ -124,9 +121,8 @@ export function ProfilePage(profileprops: {
         </>
       ) : null}
       <Container>
-        {/* Digital Democracy skins: Verify Account first, right under the
-            banner that asks for it; Maple keeps it under the header. */}
-        {dd && verifyAccount}
+        {/* Verify Account first, right under the banner that asks for it. */}
+        {verifyAccount}
         <ProfileHeader
           profileId={profileprops.id}
           isUser={isCurrentUser}
@@ -140,8 +136,6 @@ export function ProfilePage(profileprops: {
             </Col>
           </Row>
         ) : null}
-
-        {!dd && verifyAccount}
 
         <Row>{isOrg ? <OrgContactInfo profile={profile} /> : <></>}</Row>
 

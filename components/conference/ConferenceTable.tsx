@@ -97,8 +97,7 @@ const NameButton = styled.button<{ $tone: "strong" | "mid" | "faint" }>`
   &[aria-pressed="true"] {
     font-weight: 500;
   }
-  /* Digital Democracy skins: in Lexend, as the conference list beside a
-     conference is (ConferenceRail.tsx), though the card is Nunito. */
+  /* In Lexend, though the card is Nunito. */
   [data-maple-theme="dd"] & {
     font-family: var(--maple-font-heading);
   }

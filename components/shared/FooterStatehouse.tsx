@@ -4,9 +4,7 @@ import styled, { createGlobalStyle } from "styled-components"
  * The statehouse standing on the footer's top edge, at the left of the
  * window, behind the page's content. Placed against the page's main area,
  * which stretches to meet the footer however short the page is
- * (components/layout.tsx). Desktop widths, and the Digital Democracy and
- * Mixed skins, only; it shows whether or not the rest of the explorer art is
- * on.
+ * (components/layout.tsx). Desktop widths only.
  */
 export const FooterStatehouse = () => (
   <>
@@ -15,11 +13,13 @@ export const FooterStatehouse = () => (
   </>
 )
 
-/* The statehouse is placed against main, so main must be positioned. Only on
-   pages that show it. */
+/* The statehouse is placed against main, so main must be positioned, and it
+   reaches past main's left edge, which clips it sideways (clip, unlike
+   hidden, leaves sticky elements working). Only on pages that show it. */
 const MainIsPositioned = createGlobalStyle`
   main#main-content {
     position: relative;
+    overflow-x: clip;
   }
 `
 
@@ -27,11 +27,7 @@ const Statehouse = styled.img`
   display: none;
 
   @media (min-width: 992px) {
-    /* Shown with Regular Background too: it stays when the rest of the
-       explorer art is switched off (data-maple-art). */
-    [data-maple-theme="dd"] & {
-      display: block;
-    }
+    display: block;
   }
 
   position: absolute;

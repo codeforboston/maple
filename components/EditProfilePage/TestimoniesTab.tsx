@@ -7,7 +7,6 @@ import { TestimonyFAQ } from "./TestimonyFAQ"
 import { Testimony, DraftTestimony, Pagination } from "../db"
 import { useTranslation } from "next-i18next"
 import { PaginationButtons } from "../table"
-import { useHtmlAttribute } from "components/shared/useHtmlAttribute"
 
 export const TestimoniesTab = ({
   publishedTestimonies,
@@ -40,21 +39,19 @@ export const TestimoniesTab = ({
     )
   }, [orderBy, publishedTestimonies])
 
-  // Digital Democracy, Mixed and Statehouse: the cards take the profile page's
-  // look, with the title in a header band rather than in the card.
-  const dd = useHtmlAttribute("data-maple-theme") === "dd"
-
+  // The cards take the profile page's look, with the title in a header band
+  // rather than in the card.
   return (
     <div className={`mb-4 ${className}`}>
       <Row className="mt-0">
         <Col xs={12} md={8}>
           <TitledSectionCard
             className="mt-3 mb-4"
-            title={dd ? t("testimonies.published") : undefined}
+            title={t("testimonies.published")}
           >
             <div>
               <Row>
-                <Col>{!dd && <h2>{t("testimonies.published")}</h2>}</Col>
+                <Col />
                 <Col xs="auto">
                   <SortTestimonyDropDown
                     orderBy={orderBy}
@@ -79,10 +76,9 @@ export const TestimoniesTab = ({
           </TitledSectionCard>
           <TitledSectionCard
             className="mt-3 mb-4"
-            title={dd ? t("testimonies.draft") : undefined}
+            title={t("testimonies.draft")}
           >
             <div>
-              {!dd && <h2>{t("testimonies.draft")}</h2>}
               {draftTestimonies.map(t => (
                 <TestimonyItem
                   key={t.billId + t.court + t.position}

@@ -13,7 +13,6 @@ import CustomDropdown, {
 import { FooterContainer } from "./FooterContainer"
 import { NEWSLETTER_SIGNUP_URL } from "components/common"
 import { flags } from "../featureFlags"
-import { MapleOnly, DigitalDemocracyOnly } from "components/shared/SkinOnly"
 
 export type PageFooterProps = {
   children?: any
@@ -30,29 +29,11 @@ const TextHeader = styled.h6`
   margin: 0;
 `
 
-/* Digital Democracy and Mixed: a section heading that follows another
-   section in the same column (About after Browse, Policies after Learn,
-   Other Resources after Account), set apart from what is above it. */
+/* A section heading that follows another section in the same column (About
+   after Browse, Policies after Learn, Other Resources after Account), set
+   apart from what is above it. */
 const NextSectionHeader = styled(TextHeader)`
   margin-top: 1.5rem;
-`
-
-const BrowseHeader = styled(NavLink)`
-  font-size: 1rem;
-  color: var(--maple-text-inverse);
-  padding: 0.5rem 1rem 0 0;
-  margin: 0 0 var(--maple-space-sm) 0;
-
-  @media (max-width: 768px) {
-    padding-bottom: var(--maple-space-sm);
-    border-bottom: solid 1.5px var(--maple-border-inverse-soft);
-    margin: 0;
-  }
-
-  &:hover {
-    color: var(--maple-text-inverse);
-    text-decoration: underline 1.5px;
-  }
 `
 
 const StyledInternalLink = styled(NavLink)`
@@ -159,8 +140,8 @@ const StyledExternalLink = styled(ExternalNavLink)`
   }
 `
 
-/* Digital Democracy and Mixed: Other Resources, the writing guide (out of
-   the Learn menu there) and two links outside MAPLE. */
+/* Other Resources: the writing guide (which the navbar's Learn menu leaves
+   out) and two links outside MAPLE. */
 const OtherResources = () => {
   const { t } = useTranslation("footer")
   return (
@@ -191,8 +172,8 @@ const TermsAndPolicies = () => {
       <StyledInternalLink href="/policies/code-of-conduct">
         {t("legal.codeOfConduct")}
       </StyledInternalLink>
-      {/* Digital Democracy and Mixed: How MAPLE Uses AI sits under Policies. */}
-      <StyledInternalLink href="/about/how-maple-uses-ai" className="dd-only">
+      {/* How MAPLE Uses AI sits under Policies, not About. */}
+      <StyledInternalLink href="/about/how-maple-uses-ai">
         {t("links.mapleAI")}
       </StyledInternalLink>
     </>
@@ -233,12 +214,8 @@ const LearnLinks = () => {
   const { t } = useTranslation(["footer", "common"])
   return (
     <>
-      {/* Maple keeps main's "About Testimony"; Digital Democracy and Mixed use
-          the page's own title, as the navbar's Learn menu does. */}
-      <StyledInternalLink href="/learn/testimony" className="maple-only">
-        {t("links.learnWriting")}
-      </StyledInternalLink>
-      <StyledInternalLink href="/learn/testimony" className="dd-only">
+      {/* The page's own title, as the navbar's Learn menu has it. */}
+      <StyledInternalLink href="/learn/testimony">
         {t("navigation.aboutTestimony", { ns: "common" })}
       </StyledInternalLink>
       <StyledInternalLink href="/learn/legislative-process">
@@ -270,41 +247,12 @@ const AboutLinks = () => {
       <StyledInternalLink href="/about/faq-page">
         {t("links.faq")}
       </StyledInternalLink>
-      {/* Maple only: Digital Democracy and Mixed list it under Policies. */}
-      <StyledInternalLink
-        href="/about/how-maple-uses-ai"
-        className="maple-only"
-      >
-        {t("links.mapleAI")}
-      </StyledInternalLink>
     </>
   )
 }
 
-const BrowseList = () => {
-  const { t } = useTranslation("common")
-  return (
-    <>
-      <BrowseHeader href="/testimony">
-        {t("navigation.browseTestimony")}
-      </BrowseHeader>
-      {flags().hearingsAndTranscriptions ? (
-        <BrowseHeader href="/hearings">
-          {t("navigation.browseHearings")}
-        </BrowseHeader>
-      ) : null}
-      <BrowseHeader href="/bills">{t("navigation.browseBills")}</BrowseHeader>
-      {flags().ballotQuestions ? (
-        <BrowseHeader href="/ballotQuestions">
-          {t("navigation.browseBallotQuestions")}
-        </BrowseHeader>
-      ) : null}
-    </>
-  )
-}
-
-/* Digital Democracy and Mixed: a Browse heading like the other groups, with
-   the explorers listed under it as plain links. */
+/* The Browse group: the explorers, listed as plain links under a heading like
+   the other groups'. */
 const BrowseLinks = () => {
   const { t } = useTranslation("common")
   return (
@@ -329,13 +277,9 @@ const BrowseLinks = () => {
   )
 }
 
-/* The Maple skin keeps the footer from main; Digital Democracy and Mixed get
-   the Browse group. Both are rendered and the skin picks one. */
-
-/* Digital Democracy and Mixed, desktop: the disclaimer and newsletter link
-   sit in the last column, under Policies, so the bottom line is not shown
-   there. Phones have
-   no columns and keep it. */
+/* Desktop: the disclaimer sits at the foot of the last column, so the bottom
+   line is not shown there (styles/globals.css). Phones have no columns and
+   keep it. */
 const ColumnNote = styled.p`
   /* At the foot of the column, level with the bottom of the others. */
   margin: auto 0 0;
@@ -363,17 +307,17 @@ const BottomNote = styled.p`
   line-height: 1.5;
 `
 
-/* Digital Democracy and Mixed only, its contents stacked as a column. */
-const DigitalDemocracyStack = styled(DigitalDemocracyOnly)`
+/* A column's contents, stacked. */
+const ColumnStack = styled.div`
   [data-maple-theme="dd"] & {
     display: flex;
     flex-direction: column;
   }
 `
 
-/* The last column (Digital Democracy and Mixed) runs the full height of the
-   footer's columns, so its note can sit at the foot. */
-const NoteColumn = styled(DigitalDemocracyStack)`
+/* The last column runs the full height of the footer's columns, so its note
+   can sit at the foot. */
+const NoteColumn = styled(ColumnStack)`
   [data-maple-theme="dd"] & {
     flex: 1 1 auto;
   }
@@ -393,28 +337,9 @@ const PageFooter = (props: PageFooterProps) => {
         className="d-md-none w-100 order-1 p-2 mb-2"
       >
         <Nav className={`d-flex w-100`}>
-          <MapleOnly className="w-100">
-            <BrowseList />
-
-            <CustomDropdown title={t("headers.account")}>
-              <AccountLinks {...props} />
-            </CustomDropdown>
-
-            <CustomDropdown title={t("learn", { ns: "common" })}>
-              <LearnLinks />
-            </CustomDropdown>
-
-            <CustomDropdown title={t("about", { ns: "common" })}>
-              <AboutLinks />
-            </CustomDropdown>
-
-            <CustomDropdown title={t("headers.resources")}>
-              <TermsAndPolicies />
-            </CustomDropdown>
-          </MapleOnly>
-          {/* Digital Democracy and Mixed: the desktop footer's groups, in its
-              reading order, each a menu. */}
-          <DigitalDemocracyOnly className="w-100">
+          {/* Phones: the desktop footer's groups, in its reading order, each
+              a menu. */}
+          <div className="w-100">
             <CustomDropdown title={t("headers.browse")}>
               <BrowseLinks />
             </CustomDropdown>
@@ -433,48 +358,31 @@ const PageFooter = (props: PageFooterProps) => {
             <CustomDropdown title={t("headers.otherResources")}>
               <OtherResources />
             </CustomDropdown>
-          </DigitalDemocracyOnly>
+          </div>
         </Nav>
       </Navbar>
       <div className={`d-none d-md-flex order-1 flex-grow-1`}>
-        {/* Maple keeps main's columns; Digital Democracy and Mixed have
-            Browse and About, Learn and Policies, then Account and Other
-            Resources, with the disclaimer (Maple's bottom line, whose
-            newsletter link is under Other Resources) at the foot. */}
+        {/* Browse and About, Learn and Policies, then Account and Other
+            Resources, with the disclaimer at the foot. */}
         <Col>
-          <MapleOnly>
-            <BrowseList />
-            <TextHeader>{t("headers.account")}</TextHeader>
-            <AccountLinks {...props} />
-          </MapleOnly>
-          <DigitalDemocracyStack>
+          <ColumnStack>
             <TextHeader>{t("headers.browse")}</TextHeader>
             <BrowseLinks />
             <NextSectionHeader>
               {t("about", { ns: "common" })}
             </NextSectionHeader>
             <AboutLinks />
-          </DigitalDemocracyStack>
+          </ColumnStack>
         </Col>
         <Col>
-          <MapleOnly>
-            <TextHeader>{t("about", { ns: "common" })}</TextHeader>
-            <AboutLinks />
-            <TextHeader>{t("learn", { ns: "common" })}</TextHeader>
-            <LearnLinks />
-          </MapleOnly>
-          <DigitalDemocracyStack>
+          <ColumnStack>
             <TextHeader>{t("learn", { ns: "common" })}</TextHeader>
             <LearnLinks />
             <NextSectionHeader>{t("headers.policies")}</NextSectionHeader>
             <TermsAndPolicies />
-          </DigitalDemocracyStack>
+          </ColumnStack>
         </Col>
         <Col className="d-flex flex-column">
-          <MapleOnly>
-            <TextHeader>{t("headers.resources")}</TextHeader>
-            <TermsAndPolicies />
-          </MapleOnly>
           <NoteColumn>
             <TextHeader>{t("headers.account")}</TextHeader>
             <AccountLinks {...props} />
@@ -489,24 +397,10 @@ const PageFooter = (props: PageFooterProps) => {
         className={`footer-bottom-line col-12 order-md-3 text-center text-md-start`}
         style={{ color: "var(--maple-text-inverse)" }}
       >
-        <MapleOnly>
-          {t("legal.disclaimer")}
-          {" - "}
-          <a
-            href={NEWSLETTER_SIGNUP_URL}
-            style={{ color: "var(--maple-text-inverse)" }}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t("newsletter")}
-          </a>
-        </MapleOnly>
-        {/* Digital Democracy and Mixed, on phones (the desktop shows it in
-            the last column): the disclaimer alone, as a note; the newsletter
-            link is under Other Resources. */}
-        <DigitalDemocracyOnly>
-          <BottomNote>{t("legal.disclaimer")}</BottomNote>
-        </DigitalDemocracyOnly>
+        {/* On phones (the desktop shows it in the last column): the
+            disclaimer alone, as a note; the newsletter link is under Other
+            Resources. */}
+        <BottomNote>{t("legal.disclaimer")}</BottomNote>
       </div>
     </FooterContainer>
   )

@@ -1,8 +1,8 @@
 import styled from "styled-components"
 
-/** A section's title row on Submit Testimony under the Digital Democracy
- * skins: the title, an h3 in Lexend rather than Bootstrap's heading Nunito at
- * 1.25rem, and anything for the far right. */
+/** A section's title row on Submit Testimony: the title, an h3 in Lexend
+ * rather than Bootstrap's heading Nunito at 1.25rem, and anything for the far
+ * right. */
 export const SectionHead = styled.div`
   display: flex;
   flex-wrap: wrap;

@@ -35,7 +35,7 @@ export function ConferenceBanner({
       }}
     />
   )
-  // Maple keeps main's orange banner; the other skins get the slim note
-  // (PageBanner). Worded by the conference's status, as on main.
+  // The slim note across the top of the page (PageBanner), worded by the
+  // conference's status.
   return <PageBanner>{message}</PageBanner>
 }

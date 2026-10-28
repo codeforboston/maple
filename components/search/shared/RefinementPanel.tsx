@@ -137,8 +137,8 @@ const createMobileFilterElements = ({
         className={hasRefinements ? "ais-FilterButton-has-refinements" : ""}
         aria-label={title}
       >
-        {/* Digital Democracy and Mixed show the icon alone below 768px; the
-            word stays in the label (styles/globals.css). */}
+        {/* The icon alone below 768px; the word stays in the label
+            (styles/globals.css). */}
         <FontAwesomeIcon icon={faFilter} />
         <span className="filter-button-word"> {title}</span>
       </FilterButton>

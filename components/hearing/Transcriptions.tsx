@@ -115,8 +115,8 @@ const TranscriptContainer = styled(Container)`
   background-color: var(--maple-surface-base);
   border-left: 1px solid var(--maple-card-edge);
   border-right: 1px solid var(--maple-card-edge);
-  /* Long-form reading text stays in Nunito even when the typeface switch puts
-     the rest of the page in Lexend. The search box above is not in here. */
+  /* Long-form reading text stays in Nunito, while the rest of the page is in
+     Lexend. The search box above is not in here. */
   font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
 `
 

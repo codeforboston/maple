@@ -5,7 +5,6 @@ import { Step } from "./redux"
 import { Internal } from "components/links"
 import { usePublishCopy, usePublishMode } from "./hooks"
 import { Trans, useTranslation } from "next-i18next"
-import { useHtmlAttribute } from "components/shared/useHtmlAttribute"
 
 export const KeepNote = (props: { currentStep: Step }) => {
   const { t } = useTranslation("testimony")
@@ -161,9 +160,6 @@ export const BallotQuestionYourTestimony = () => {
 
 export const PublishingToMAPLE = () => {
   const { t, copy, isBallotQuestion } = usePublishCopy()
-  // Digital Democracy skins: the rules in the text colour the other steps'
-  // notes are in, rather than blue. Maple keeps main's blue.
-  const dd = useHtmlAttribute("data-maple-theme") === "dd"
   return (
     <NoteContent>
       <div className="text-center">
@@ -179,7 +175,7 @@ export const PublishingToMAPLE = () => {
           "ballotQuestion.submitTestimonyForm.keepNote.rulesHeader"
         )}
       </NoteSubtitle>
-      <ul style={dd ? undefined : { color: "var(--bs-blue)" }}>
+      <ul>
         <NoteItem>
           {copy(
             "submitTestimonyForm.keepNote.editLimit",
@@ -213,9 +209,8 @@ const NoteContainer = styled.div`
     padding: 0rem 0rem 1rem 0rem;
     height: 100%;
 
-    /* Digital Democracy skins: a rule down its left, now the form beside it
-       is the same grey (SubmitTestimonyForm.tsx), as dark as the cards'
-       edges. */
+    /* A rule down its left, since the form beside it is the same grey
+       (SubmitTestimonyForm.tsx), as dark as the cards' edges. */
     [data-maple-theme="dd"] & {
       border-left: 1px solid rgba(15, 23, 42, 0.2);
     }
@@ -234,8 +229,8 @@ const NoteContainer = styled.div`
   NoteContent = styled.div`
     line-height: normal;
 
-    /* Digital Democracy skins: the panel's illustration smaller, so the
-       notes under it come up the page. */
+    /* The panel's illustration smaller, so the notes under it come up the
+       page. */
     [data-maple-theme="dd"] & .keep-note-art {
       max-width: 70%;
     }

@@ -6,11 +6,7 @@ import { ButtonGroup } from "react-bootstrap"
 import { Col, Container, Image, Row, Button } from "../bootstrap"
 import * as links from "../links"
 import { committeeURL, External } from "../links"
-import {
-  Back,
-  ButtonContainer,
-  FeatureCalloutButton
-} from "../shared/CommonComponents"
+import { Back } from "../shared/CommonComponents"
 import { HearingSidebar } from "./HearingSidebar"
 import {
   HearingData,
@@ -25,43 +21,21 @@ import { Transcriptions } from "./Transcriptions"
 import { HearingConferenceLink } from "components/conference/HearingConferenceLink"
 import { ConferenceSummary } from "components/conference/types"
 
-/* The feature tag above the title shows under the Maple skin only. The
-   Digital Democracy and Mixed skins leave it out: the AI banner over the video
-   already says the same thing. */
-const ClassicFeatureTag = styled.div`
-  [data-maple-theme="dd"] & {
-    display: none;
-  }
-`
-
-/* The page header comes in two arrangements, one per skin; only one shows.
-
-   Maple: the committee name as the title, the description under it. */
-const ClassicHeader = styled.div`
-  [data-maple-theme="dd"] & {
-    display: none;
-  }
-`
-
-/* Digital Democracy and Mixed: the title is the description, in title case,
-   with the committee as a smaller linked line below it. Without a description
-   the committee is the title, and without either it is "Hearing on" the date,
-   which otherwise lives in the sidebar as the recording date. */
+/* The title is the description, in title case, with the committee as a
+   smaller linked line below it. Without a description the committee is the
+   title, and without either it is "Hearing on" the date, which otherwise
+   lives in the sidebar as the recording date. */
 const TopicHeader = styled.header`
-  display: none;
+  display: block;
   margin-bottom: 1rem;
-
-  [data-maple-theme="dd"] & {
-    display: block;
-  }
 
   h1 {
     margin-bottom: 0.25rem;
   }
 
-  /* Supporting text, so Nunito even when the typeface switch puts headings in
-     Lexend, in the body text colour like a subtitle. The committee link takes
-     that colour too and drops its underline, showing it only on hover. */
+  /* Supporting text, so Nunito rather than the headings' Lexend, in the body
+     text colour like a subtitle. The committee link takes that colour too and
+     drops its underline, showing it only on hover. */
   .committee {
     font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
     font-size: 1.125rem;
@@ -271,46 +245,6 @@ export const HearingDetails = ({
           <Back href="/hearings">{t("back_to_hearings")}</Back>
         </Col>
       </Row>
-
-      {videos.length ? (
-        <>
-          <ClassicFeatureTag>
-            <ButtonContainer className={`mb-2`}>
-              {/* ButtonContainer contrains clickable area of link so that it doesn't exceed
-              the button and strech invisibly across the width of the page */}
-              <FeatureCalloutButton
-                className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
-              >
-                &nbsp;{" "}
-                {t("video_and_transcription_feature_callout", {
-                  ns: "hearing"
-                })}{" "}
-                &nbsp;
-              </FeatureCalloutButton>
-            </ButtonContainer>
-          </ClassicFeatureTag>
-        </>
-      ) : (
-        <></>
-      )}
-
-      <ClassicHeader>
-        {committeeName ? (
-          committeeCode ? (
-            <h1>
-              <External href={committeeURL(committeeCode)}>
-                {committeeName}
-              </External>
-            </h1>
-          ) : (
-            <h1>{committeeName}</h1>
-          )
-        ) : (
-          <></>
-        )}
-
-        <h5 className={`mb-3`}>{description}</h5>
-      </ClassicHeader>
 
       <TopicHeader>
         {/* The title is the description; failing that, the committee; failing

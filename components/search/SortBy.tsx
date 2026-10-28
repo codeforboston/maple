@@ -42,7 +42,7 @@ const StyledSelect = styled(Select)`
     color: var(--bs-gray-500);
   }
 
-  /* Digital Democracy and Mixed: the sort text a step smaller, menu included. */
+  /* The sort text a step smaller, menu included. */
   [data-maple-theme="dd"] & .s__control,
   [data-maple-theme="dd"] & .s__menu {
     font-size: 0.875rem;

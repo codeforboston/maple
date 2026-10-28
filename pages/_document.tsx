@@ -16,10 +16,9 @@ class MapleDocument extends Document {
 
   render() {
     return (
-      // Branch-local: set to "dd" to render the app in the Digital Democracy
-      // skin so changes can be judged in context, or "maple" for the current
-      // look. The token overrides live in styles/bootstrap.scss. Drop the
-      // attribute before this branch merges.
+      // The redesign, on every page from the first paint: its tokens and the
+      // rules built on them are scoped to this attribute
+      // (styles/bootstrap.scss, styles/globals.css and the components).
       <Html lang={this.props.locale ?? "en"} data-maple-theme="dd">
         <Head />
         <body>

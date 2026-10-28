@@ -27,8 +27,8 @@ const Svg = styled.svg`
   width: 100%;
   height: auto;
 
-  /* The mockup's greys in every skin: empty seats in its sunken grey, every
-     seat edged in its page grey. */
+  /* The mockup's greys: empty seats in its sunken grey, every seat edged in
+     its page grey. */
   polygon {
     fill: ${sunken};
     stroke: ${ground};

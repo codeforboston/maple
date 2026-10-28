@@ -34,49 +34,15 @@
     "body2a": "New to MAPLE? For extra support, check",
     "body2b": "and join an upcoming training session!",
     "calendar": "Our Calendar",
-    "lead": "State government works better when more of us take part. MAPLE makes it easier to see how laws take shape in Massachusetts, learn about the bills that affect your life, and share what you know with the people who represent you.\n\nMAPLE is the place to put your civic energy to work, and the more of us who join, the stronger our collective voice becomes.",
     "newsletter": "Click Here to Subscribe to Our Newsletter",
     "primaryAction": "Get Started",
-    "searchDefault": "Bills: sponsors, hearings, testimony",
-    "searchLabel": "Digital Democracy Database",
-    "searchLead": "Ask about:",
-    "searchPlaceholder": "e.g. Which committee is hearing the tenant protection bill?",
     "secondaryAction": "Learn More",
-    "suggest": {
-      "bills": "Bills (e.g. H.1234)",
-      "hearings": "Hearings, agendas, and transcripts",
-      "people": "Legislators, committees, and sponsors",
-      "testimony": "Testimony on a topic (e.g. housing)"
-    },
-    "suggestHeading": "Suggested searches",
     "title": "Your Voice Matters"
   },
   "how": {
     "bodytext": "We help you craft your testimony, publish it to the community, and send it directly to the right legislators.",
     "title": "How"
   },
-  "topics": {
-    "climate": "Climate, Energy & Environment",
-    "democracy": "Democracy, Rights & Safety",
-    "education": "Education, Youth & Families",
-    "health": "Healthcare & Human Services",
-    "housing": "Housing, Transit & Community",
-    "work": "Work, Money & Business"
-  },
-  "conferenceLinks": {
-    "intro": "The legislative session has come to an end, but some of its laws are still being decided in conference committees. This is where your voice matters right now!",
-    "addInput": "Add Your Input",
-    "learnMore": "Learn More",
-    "topicsHeading": "Some topics of the laws being decided:",
-    "topics": [
-      "Data Privacy",
-      "Government Transparency",
-      "Energy Affordability",
-      "Pet Equity",
-      "...and more"
-    ]
-  },
-  "topicsHeading": "Wrapping up the 194th legislative session...",
   "what": {
     "bodytext": "MAPLE makes it easy to submit testimony and see testimony submitted by others.",
     "title": "What"

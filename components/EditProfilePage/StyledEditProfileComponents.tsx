@@ -130,8 +130,8 @@ export const StyledTabContent = styled(TabContent)`
     margin-top: -0.5rem;
   }
 
-  /* Digital Democracy, Mixed and Statehouse: under the Our Team tabs, which
-     take their own room, the content follows in normal flow. */
+  /* Under the Our Team tabs, which take their own room, the content follows
+     in normal flow. */
   [data-maple-theme="dd"] && {
     margin-top: 1rem;
     z-index: auto;

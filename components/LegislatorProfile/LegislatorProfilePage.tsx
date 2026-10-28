@@ -1,6 +1,4 @@
 import { collection, getDocs, limit, query, where } from "firebase/firestore"
-import { faChevronRight } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import ErrorPage from "next/error"
 import { useTranslation } from "next-i18next"
 import { useEffect, useState } from "react"
@@ -25,11 +23,9 @@ import { useAuth } from "components/auth"
 import { Col, Container, Row, Spinner } from "components/bootstrap"
 import { useDistrict, useMember } from "components/db"
 import { useMembersFinance } from "components/db/membersFinance"
-import { Internal } from "components/links"
 import { FollowUserButton } from "components/shared/FollowButton"
 import { OutlineButton } from "components/buttons"
 import LearnBreadcrumb from "components/learn/LearnBreadcrumb"
-import { DigitalDemocracyOnly, MapleOnly } from "components/shared/SkinOnly"
 import { CircleImage } from "components/shared/LabeledIcon"
 
 const ButtonContainer = styled(Col).attrs(props => ({
@@ -38,12 +34,6 @@ const ButtonContainer = styled(Col).attrs(props => ({
   sm: `4`
 }))`
   width: max-content;
-`
-
-const DirectoryPath = styled.div.attrs(props => ({
-  className: `align-items-center d-flex flex-nowrap ${props.className}`
-}))`
-  font-size: 12px;
 `
 
 const HeaderBlock = styled.div.attrs(props => ({
@@ -162,27 +152,9 @@ export function LegislatorProfilePage({
 
   return (
     <Container className="my-3 legislator-profile-page">
-      <MapleOnly>
-        <DirectoryPath>
-          <Internal className="text-decoration-none" href="/">
-            {t("home")}
-          </Internal>
-          <FontAwesomeIcon className="fa-2xs px-2 " icon={faChevronRight} />
-
-          {/* update with link to legistators search page when that is created */}
-          <div style={{ color: "#6c757d" }}>{t("legislators")}</div>
-          {/* */}
-
-          <FontAwesomeIcon className="fa-2xs px-2 " icon={faChevronRight} />
-          <div style={{ color: "#6c757d" }}>{member.Name}</div>
-        </DirectoryPath>
-      </MapleOnly>
-      {/* Digital Democracy and Mixed: the Learn and About pages' breadcrumb
-          (Home > Legislators > name). Legislators is plain text until there is
-          a legislators page. */}
-      <DigitalDemocracyOnly>
-        <LearnBreadcrumb eyebrow={t("legislators")} section={member.Name} />
-      </DigitalDemocracyOnly>
+      {/* The Learn and About pages' breadcrumb (Home > Legislators > name).
+          Legislators is plain text until there is a legislators page. */}
+      <LearnBreadcrumb eyebrow={t("legislators")} section={member.Name} />
 
       <HeaderBlock>
         <CircleImage className="me-2">
@@ -335,30 +307,20 @@ export function LegislatorProfilePage({
           ) : (
             <></>
           )}
-          <MapleOnly>
-            <links.External
-              href={`mailto:${member.EmailAddress}`}
-              className="border border-2 border-secondary btn btn-lg fw-bold py-1 text-decoration-none text-secondary w-100"
-            >
-              {t("contact")}
-            </links.External>
-          </MapleOnly>
-          {/* Digital Democracy and Mixed: the shared outline button, at the
-              standard size, with the 2px border Maple's has. */}
-          <DigitalDemocracyOnly>
-            <OutlineButton
-              href={`mailto:${member.EmailAddress}`}
-              label={t("contact")}
-              className="fw-bold border-2"
-              // Blue, as Maple's: the Digital Democracy skin gives outline
-              // buttons a pale grey edge (styles/globals.css).
-              style={
-                {
-                  "--bs-btn-border-color": "var(--maple-brand-primary)"
-                } as React.CSSProperties
-              }
-            />
-          </DigitalDemocracyOnly>
+          {/* The shared outline button, at the standard size, with a 2px
+              border. */}
+          <OutlineButton
+            href={`mailto:${member.EmailAddress}`}
+            label={t("contact")}
+            className="fw-bold border-2"
+            // Blue: outline buttons otherwise have a pale grey edge
+            // (styles/globals.css).
+            style={
+              {
+                "--bs-btn-border-color": "var(--maple-brand-primary)"
+              } as React.CSSProperties
+            }
+          />
         </ButtonContainer>
       </HeaderBlock>
 

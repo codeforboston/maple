@@ -44,20 +44,20 @@ export const FooterContainer = styled(Container)`
     background-position: right;
   }
 
-  /* Digital Democracy and Mixed: the rules between the mobile dropdowns
+  /* The rules between the mobile dropdowns
      (components/Footer/CustomFooterDropdown.tsx) softer than its 75%. */
   [data-maple-theme="dd"] & .border-bottom.border-white {
     --bs-border-opacity: 0.35;
   }
 
-  /* Digital Democracy and Mixed: the mobile dropdowns' titles in full white,
-     not the muted white of the links. */
+  /* The mobile dropdowns' titles in full white, not the muted white of the
+     links. */
   [data-maple-theme="dd"] & .navbar-nav .nav-link.dropdown-toggle {
     color: var(--maple-text-inverse);
   }
 
-  /* Digital Democracy and Mixed: smaller arrows, the same size open or closed.
-     Sized by height, since the two images are framed at different widths. */
+  /* Smaller arrows, the same size open or closed. Sized by height, since the
+     two images are framed at different widths. */
   [data-maple-theme="dd"] & .dropdown-toggle::after,
   [data-maple-theme="dd"] & .dropdown-toggle[aria-expanded="true"]::after {
     background-size: auto 0.9em;

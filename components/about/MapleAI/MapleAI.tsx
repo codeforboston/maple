@@ -13,7 +13,6 @@ import {
 import LearnBreadcrumb from "../../learn/LearnBreadcrumb"
 import LearnHeader from "../../learn/LearnHeader"
 import LearnLayout from "../../learn/LearnLayout"
-import { MapleOnly, DigitalDemocracyOnly } from "components/shared/SkinOnly"
 
 // Readability/scannability tuning scoped to this page. DescrContainer and
 // NameContainer are shared with other pages, so we override locally rather than
@@ -95,20 +94,12 @@ const MapleAI = () => {
   // section bodies below keep the existing copy.
   return (
     <LearnLayout width="medium">
-      {/* Digital Democracy and Mixed list this page under Policies. */}
-      <MapleOnly>
-        <LearnBreadcrumb
-          section={t("breadcrumb")}
-          eyebrow={t("common:about")}
-        />
-      </MapleOnly>
-      <DigitalDemocracyOnly>
-        <LearnBreadcrumb
-          section={t("breadcrumb")}
-          eyebrow={t("common:about")}
-          parent={{ label: t("footer:headers.policies"), href: "/policies" }}
-        />
-      </DigitalDemocracyOnly>
+      {/* The trail runs through Policies, where this page is listed. */}
+      <LearnBreadcrumb
+        section={t("breadcrumb")}
+        eyebrow={t("common:about")}
+        parent={{ label: t("footer:headers.policies"), href: "/policies" }}
+      />
       <LearnHeader
         title={t("title")}
         subhead={t("mission-statement")}

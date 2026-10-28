@@ -16,7 +16,6 @@ import { Step } from "./redux"
 import { SelectLegislatorsCta } from "./SelectLegislatorsCta"
 import { ShareTestimony } from "./ShareTestimony"
 import { WriteTestimony } from "./WriteTestimony"
-import { useHtmlAttribute } from "components/shared/useHtmlAttribute"
 import { Trans, useTranslation } from "next-i18next"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons"
@@ -25,9 +24,8 @@ const Background = styled.div`
   background: var(--bs-white);
   height: 100%;
 
-  /* Digital Democracy skins: the redesign's page grey, so the steps' white
-     cards stand off it, and the outline buttons white on it. Maple keeps
-     main's white. */
+  /* The redesign's page grey over the white above, so the steps' white cards
+     stand off it, and the outline buttons white on it. */
   [data-maple-theme="dd"] & {
     background: var(--bs-body-bg);
   }
@@ -168,8 +166,6 @@ export const Form = ({
 
 const Overview = ({ className }: { className: string }) => {
   const { copy } = usePublishCopy()
-  // Digital Democracy skins: the intro at the page's own weight, not bolder.
-  const dd = useHtmlAttribute("data-maple-theme") === "dd"
   return (
     <div className={clsx("d-flex", className)}>
       <Row className="align-items-center">
@@ -181,10 +177,7 @@ const Overview = ({ className }: { className: string }) => {
             )}
           </h1>
           <Divider className="me-5" />
-          <div
-            className="mt-2"
-            style={dd ? undefined : { fontWeight: "bolder" }}
-          >
+          <div className="mt-2">
             {copy(
               "submitTestimonyForm.overview.description",
               "ballotQuestion.submitTestimonyForm.overview.description"

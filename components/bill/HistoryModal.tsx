@@ -37,8 +37,8 @@ export const StyledModalTitle = styled(Modal.Title)`
   letter-spacing: -1.5px;
   text-align: justified;
 
-  /* Digital Democracy and Mixed: in the skin's Lexend, which headings like
-     this one do not otherwise pick up, at normal letter spacing. */
+  /* In Lexend, which headings like this one do not otherwise pick up, at
+     normal letter spacing. */
   [data-maple-theme="dd"] & {
     font-family: var(--maple-font-heading);
     letter-spacing: normal;
@@ -49,7 +49,6 @@ export const StyledModalTitle = styled(Modal.Title)`
  * modal (here and components/bill/Status.tsx). */
 export const BillHistoryHeading = ({ bill }: BillProps) => (
   <>
-    <StyledBillTitle>{bill.id + " - " + bill.content.Title}</StyledBillTitle>
     <BillHeading>
       <p className="number">{formatBillId(bill.id)}</p>
       <p className="title">{bill.content.Title}</p>
@@ -57,29 +56,11 @@ export const BillHistoryHeading = ({ bill }: BillProps) => (
   </>
 )
 
-export const StyledBillTitle = styled.div`
-  font-size: 32px;
-  font-weight: 600;
-  line-height: 44px;
-  letter-spacing: -1.5px;
-  text-align: justified;
-  margin: 1rem 2rem 0 2rem;
-
-  [data-maple-theme="dd"] & {
-    display: none;
-  }
-`
-
-/* Digital Democracy and Mixed: the bill named the way the page behind the
-   modal names it, the number as on the page (H.5004) over the title in the
-   summary card's italic. Replaces StyledBillTitle above. */
+/* The bill named the way the page behind the modal names it, the number as
+   on the page (H.5004) over the title in the summary card's italic. */
 const BillHeading = styled.div`
-  display: none;
+  display: block;
   margin: 1.25rem 2rem 0;
-
-  [data-maple-theme="dd"] & {
-    display: block;
-  }
 
   .number {
     color: var(--bs-blue);

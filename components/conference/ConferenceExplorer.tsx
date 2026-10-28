@@ -37,9 +37,9 @@ type Sitting = {
   on: { conference: ConferenceSummary; chair: boolean }[]
 }
 
-/** The page's title in Lexend under the Digital Democracy skins, as the
- * conference page's "Conference Committees" is (ConferenceHero.tsx). Each
- * conference's own title keeps the mockup's bold Nunito. */
+/** The page's title in Lexend, as the conference page's "Conference
+ * Committees" is (ConferenceHero.tsx). Each conference's own title keeps the
+ * mockup's bold Nunito. */
 const ExplorerTitle = styled(Title)`
   /* The room the intro left under the title, while the intro is out. */
   margin-bottom: 1rem;

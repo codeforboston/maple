@@ -86,7 +86,7 @@ export function ProfileButtons({
   hideTestimonyButton: boolean
   onSettingsModalOpen: () => void
   /** The stack's margin: room all round by default; the newsfeed's header
-   * (Digital Democracy skins) sets it flush. */
+   * sets it flush. */
   className?: string
 }) {
   const { t } = useTranslation("editProfile")
