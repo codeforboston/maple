@@ -500,10 +500,11 @@ running multiple language runtimes in the same Firebase Functions deployment.
 ## Deploying the Cloud Run Container
 
 `lobbying-scraper/deploy.sh` builds and pushes the image, creates or updates
-the `maple-lobbying-scraper` Cloud Run job (with `ARCHIVE_RAW=1`), and creates
-or updates the `maple-lobbying-weekly` Cloud Scheduler trigger (Mondays 06:00
-UTC). The trigger runs as a dedicated `lobbying-scheduler` service account that
-can only invoke the job. Run it once per project to set everything up:
+the `maple-lobbying-scraper` Cloud Run job (with `ARCHIVE_RAW=1`, 2 GiB of
+memory and 1 vCPU: the stats step runs out of memory at the 512 MiB default),
+and creates or updates the `maple-lobbying-weekly` Cloud Scheduler trigger
+(Mondays 06:00 UTC). The trigger runs as a dedicated `lobbying-scheduler`
+service account that can only invoke the job. Run it once per project to set everything up:
 
 ```bash
 gcloud auth configure-docker us-central1-docker.pkg.dev  # once
@@ -587,16 +588,25 @@ writes the figures the Lobbying Explorer shows per session (shapes in
 - `inHouseFilers_{gc}`: `{clientNameNorm: [entityNameNorm]}`, the filers that
   are each client's own staff that session.
 - `clientList_{gc}`, `clientList_all` and `firmList_{gc}`: one doc per session
-  for the Clients and Lobbyists list pages, keyed by normalized name, holding
-  what the lists show, sort and search on, so their API routes read one
-  document instead of every summary. A lobbyist or entity is in a session's
-  list when it registered in one of the session's years. There's no
-  all-sessions lobbyist doc (about 2 MB, over Firestore's 1 MiB limit), so that
-  view reads `firmSummaries`. The run measures every single document it
-  writes (these, `stats` and the filing counts) before writing any of them:
-  past 1 MiB it stops with nothing written, naming the doc to split, and past
-  900 KiB it warns. `clientList_all` was about 775 KiB in October 2026 and
-  grows with every new client.
+  for the Clients and Lobbyists list pages, `{rows: {normalized name: row}}`,
+  each row holding what the lists show, sort and search on, so their API
+  routes read one document instead of every summary. A lobbyist or entity is
+  in a session's list when it registered in one of the session's years.
+  There's no all-sessions lobbyist doc (about 2 MB, over Firestore's 1 MiB
+  limit), so that view reads `firmSummaries`. `rows` is exempt from indexing
+  (`fieldOverrides` in `firestore.indexes.json`): Firestore indexes every
+  field by default and allows 40,000 index entries per document, which
+  `firmList_192` and `clientList_all` passed with their rows as indexed
+  fields. Nothing queries these docs; each is read whole by id.
+- The run measures every single document it writes (these, `stats`, the
+  filing counts and `inHouseFilers_{gc}`) before writing any of them: its
+  size, and its index entries (2 per scalar, one per distinct array element,
+  none for `rows`). Past 1 MiB or 40,000 entries it stops with nothing
+  written, naming the doc, and past 900 KiB or 36,000 entries it warns; the
+  log lists each doc's figures. `clientList_all` was about 775 KiB in October
+  2026 and grows with every new client. The emulator enforces neither the
+  index entry limit nor index exemptions, so a local run doesn't prove a doc
+  will fit; these figures do.
 
 A filer is in-house for a client when it is the client, or when its
 registration for that session names the client as its employer (from 2019),

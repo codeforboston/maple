@@ -6,6 +6,7 @@ names and field names must stay in sync with that file.
 
 from __future__ import annotations
 
+import json
 import re
 import time
 import urllib.parse
@@ -195,6 +196,31 @@ def _firestore_size(value) -> int:
     if isinstance(value, (list, tuple)):
         return sum(_firestore_size(v) for v in value)
     raise TypeError(f"no Firestore size for {type(value).__name__}")
+
+
+# Firestore's per-document limit on index entries, and where the stats run
+# starts warning. The emulator enforces neither this nor index exemptions.
+_INDEX_ENTRY_LIMIT = 40_000
+_INDEX_ENTRY_WARN = 36_000
+# Top-level lobbyingMeta fields exempt from indexing (fieldOverrides in
+# firestore.indexes.json): the list docs' rows, which are only read whole.
+_UNINDEXED_FIELDS = {"rows"}
+
+
+def _index_entries(value) -> int:
+    """A value's automatic single-field index entries: a scalar is indexed
+    ascending and descending, a map by each of its subfields, and an array
+    once per distinct element (array-contains)."""
+    if isinstance(value, dict):
+        return sum(_index_entries(v) for v in value.values())
+    if isinstance(value, (list, tuple)):
+        return len({json.dumps(v, sort_keys=True, default=str) for v in value})
+    return 2
+
+
+def _doc_index_entries(fields: dict) -> int:
+    """A lobbyingMeta document's index entries, leaving out exempt fields."""
+    return sum(_index_entries(v) for k, v in fields.items() if k not in _UNINDEXED_FIELDS)
 
 
 def _doc_size(doc_id: str, fields: dict) -> int:
@@ -743,6 +769,8 @@ def compute_stats(db: firestore.Client) -> None:
     # One list doc per session for the Clients and Lobbyists list pages, so
     # their API routes read one document instead of every summary. Keyed by
     # normalized name; each row holds what the lists show, sort and search on.
+    # Written under one unindexed "rows" field: indexed, each row's fields
+    # would pass Firestore's 40,000 index entries per doc.
     client_lists: dict[int, dict] = {}
     client_list_all: dict[str, dict] = {}
     for cs in client_summaries.values():
@@ -783,28 +811,39 @@ def compute_stats(db: firestore.Client) -> None:
 
     # The single-document writes: the stats, the filing counts, the
     # per-session docs (inHouseFilers_{gc}: {client norm: [in-house filer
-    # norms]}; the two lists) and clientList_all. Each is a full overwrite,
-    # not a merge: a merge keeps map keys (e.g. a spendByYear year or a list
-    # row) that this run no longer produces. A session with no rows this run
-    # keeps no stale doc.
-    by_session = {"inHouseFilers": in_house_by_court, "clientList": client_lists, "firmList": firm_lists}
+    # norms]}; the two lists, {"rows": {norm: row}}) and clientList_all.
+    # Each is a full overwrite, not a merge: a merge keeps map keys (e.g. a
+    # spendByYear year or a list row) that this run no longer produces. A
+    # session with no rows this run keeps no stale doc.
+    by_session = {
+        "inHouseFilers": in_house_by_court,
+        "clientList": {gc: {"rows": rows} for gc, rows in client_lists.items()},
+        "firmList": {gc: {"rows": rows} for gc, rows in firm_lists.items()},
+    }
     docs = {
         STATS_DOC_ID: stats,
         "entityFilingCounts": entity_filing_counts,
         "clientFilingCounts": client_filing_counts,
-        **{f"{prefix}_{gc}": rows for prefix, by_gc in by_session.items() for gc, rows in by_gc.items()},
-        "clientList_all": client_list_all,
+        **{f"{prefix}_{gc}": fields for prefix, by_gc in by_session.items() for gc, fields in by_gc.items()},
+        "clientList_all": {"rows": client_list_all},
     }
-    # Checked against Firestore's 1 MiB doc limit before anything is written,
-    # so a doc that outgrows it stops the run with the previous stats whole,
-    # instead of failing partway through the writes.
-    doc_sizes = {name: (len(fields), _doc_size(name, fields)) for name, fields in docs.items()}
-    too_big = {name: size for name, (_, size) in doc_sizes.items() if size > _DOC_SIZE_LIMIT}
+    # Checked against Firestore's 1 MiB and 40,000 index entry doc limits
+    # before anything is written, so a doc that outgrows either stops the run
+    # with the previous stats whole, instead of failing partway through.
+    doc_sizes = {
+        name: (len(fields.get("rows", fields)), _doc_size(name, fields), _doc_index_entries(fields))
+        for name, fields in docs.items()
+    }
+    too_big = [
+        f"{name} ({size // 1024} KiB, {entries} index entries)"
+        for name, (_, size, entries) in sorted(doc_sizes.items())
+        if size > _DOC_SIZE_LIMIT or entries > _INDEX_ENTRY_LIMIT
+    ]
     if too_big:
         raise ValueError(
-            "Stats not written: over Firestore's 1 MiB doc limit: "
-            + ", ".join(f"{name} ({size // 1024} KiB)" for name, size in sorted(too_big.items()))
-            + ". Split the doc into several before rerunning."
+            "Stats not written: over Firestore's 1 MiB or 40,000 index entry doc limit: "
+            + ", ".join(too_big)
+            + ". Split the doc into several, or exempt its rows from indexing, before rerunning."
         )
     for name, fields in docs.items():
         db.collection(STATS_COLLECTION).document(name).set(fields)
@@ -880,14 +919,18 @@ def compute_stats(db: firestore.Client) -> None:
         f"{pruned} stale summary docs removed"
     )
     # Coverage of the parsed fields that fail silently, and each single doc's
-    # size against Firestore's 1 MiB document limit.
+    # size and index entries against Firestore's document limits.
     for year in sorted(filings_by_year):
         print(f"  {year}: {filings_with_period.get(year, 0)}/{filings_by_year[year]} filings have periodEnd")
     for year, (total, named) in sorted(firm_docs_by_year.items()):
         print(f"  {year}: {named}/{total} firm disclosures name agents per client")
-    for name, (rows, size) in sorted(doc_sizes.items()):
-        warn = " (nearing Firestore's 1 MiB doc limit)" if size > _DOC_SIZE_WARN else ""
-        print(f"  {name}: {rows} rows, ~{size // 1024} KB{warn}")
+    for name, (rows, size, entries) in sorted(doc_sizes.items()):
+        warn = ""
+        if size > _DOC_SIZE_WARN:
+            warn += " (nearing Firestore's 1 MiB doc limit)"
+        if entries > _INDEX_ENTRY_WARN:
+            warn += " (nearing Firestore's 40,000 index entry limit)"
+        print(f"  {name}: {rows} rows, ~{size // 1024} KB, ~{entries} index entries{warn}")
 
 
 def registrant_doc(
