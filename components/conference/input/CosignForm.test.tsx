@@ -91,6 +91,26 @@ describe("CosignForm", () => {
     )
   })
 
+  it("warns that agreeing writes over a note cosigning another", () => {
+    mount(
+      editing({
+        draft: { cosignOfId: "p0", content: "My note." }
+      } as Partial<UseEditConferenceTestimony>),
+      "confirm"
+    )
+    expect(screen.getByRole("note")).toHaveTextContent(
+      "input.cosign_replaces_gone"
+    )
+  })
+
+  it.each([
+    ["this parent", { cosignOfId: "p1", content: "My note." }],
+    ["no words", { cosignOfId: "p0", content: " " }]
+  ])("does not warn over a draft cosigning %s", (_, draft) => {
+    mount(editing({ draft } as Partial<UseEditConferenceTestimony>), "confirm")
+    expect(screen.queryByRole("note")).not.toBeInTheDocument()
+  })
+
   it("asks for words or for none before filing", async () => {
     const draft = { cosignOfId: "p1", content: "" }
     const edit = editing({ draft } as Partial<UseEditConferenceTestimony>)

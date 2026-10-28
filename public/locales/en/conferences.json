@@ -191,6 +191,8 @@
     "cosign_rule_one": "You can only cosign one position.",
     "cosign_agree": "I have read {{name}}’s input and want to cosign it as my own.",
     "cosign_continue": "Continue",
+    "cosign_replaces": "You have an unposted note on your cosign of {{name}}. You can cosign only one input, so continuing will delete that note and cosign this one instead.",
+    "cosign_replaces_gone": "You have an unposted note on another cosign. You can cosign only one input, so continuing will delete that note and cosign this one instead.",
     "cosigned": "cosigned",
     "cosign_including_you": ", including you! ",
     "cosign_view_yours": "View input",
