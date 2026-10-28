@@ -426,7 +426,11 @@ function InputPanel({
     conference.canonicalBillId,
     conference.id
   )
-  useEffect(() => onDraft(edit.draft), [edit.draft, onDraft])
+  // Signing out takes the draft with it.
+  useEffect(() => {
+    onDraft(edit.draft)
+    return () => onDraft(undefined)
+  }, [edit.draft, onDraft])
 
   const title =
     cosigning && edit.publication

@@ -275,12 +275,13 @@ export function CosignForm({
   useEffect(() => {
     if (edit.loading || seeded.current) return
     seeded.current = true
-    setNote(
+    const seed =
       edit.draft?.cosignOfId === parent.id
         ? edit.draft.content ?? ""
         : edit.publication?.content ?? ""
-    )
-    if (edit.publication && !edit.publication.content) setNoWords(true)
+    setNote(seed)
+    // Words drafted since are kept over the posted cosign's having none.
+    if (edit.publication && !edit.publication.content && !seed) setNoWords(true)
     if (edit.draft?.editReason) setReason(edit.draft.editReason)
   }, [edit.loading, edit.draft, edit.publication, parent.id])
 
@@ -348,8 +349,9 @@ export function CosignForm({
         parent={parent}
         problem={problem}
         onAgree={() => {
-          // Agreeing makes this the user's draft, on this parent.
-          flush()
+          // Agreeing makes this the user's draft, on this parent. A failure
+          // shows through saveDraft.error.
+          flush().catch(() => {})
           onStep("write")
         }}
       />

@@ -291,11 +291,14 @@ export function InputForm({
   const ask = useAsk(field)
 
   // Start from what the user already has: their draft, else what they posted.
+  // A cosign's words are not this form's, and seeding them would save over
+  // the cosign, since this form sits mounted behind a closed panel.
   const seeded = useRef(false)
   useEffect(() => {
     if (edit.loading || seeded.current) return
     seeded.current = true
     const source = edit.draft ?? edit.publication
+    if (source?.cosignOfId) return
     if (source?.position) setPosition(source.position)
     if (source?.content) setContent(source.content)
     if (edit.draft?.editReason) setReason(edit.draft.editReason)
@@ -305,7 +308,9 @@ export function InputForm({
   const { save, dirty, posting, post, reset } = useAutosave({
     edit,
     fields: { position, content, reason },
+    // A cosign's draft is not this form's, whatever its words.
     matches: (draft, f) =>
+      !draft?.cosignOfId &&
       draft?.content === f.content &&
       draft?.position === f.position &&
       (draft?.editReason ?? "") === f.reason,

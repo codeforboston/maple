@@ -52,6 +52,17 @@ export function useAutosave<F>({
   const timer = useRef<ReturnType<typeof setTimeout>>()
   const touched = useRef(false)
   const dirty = useRef(false)
+  // A write in flight, for a handler called before saveDraft.loading has
+  // rendered.
+  const inFlight = useRef(false)
+  const keep = async (f: F) => {
+    inFlight.current = true
+    try {
+      await write(f)
+    } finally {
+      inFlight.current = false
+    }
+  }
 
   const key = JSON.stringify(fields)
   useEffect(() => {
@@ -60,13 +71,21 @@ export function useAutosave<F>({
       touched.current = true
       return
     }
-    if (idle(shown.current) || inSync()) return setSave("none")
+    if (idle(shown.current) || inSync()) {
+      dirty.current = false
+      return setSave("none")
+    }
     dirty.current = true
     setSave("saving")
     timer.current = setTimeout(async () => {
-      await write(shown.current)
-      dirty.current = false
-      setSave("saved")
+      try {
+        await keep(shown.current)
+        dirty.current = false
+        setSave("saved")
+      } catch {
+        // A failure shows through saveDraft.error.
+        setSave("none")
+      }
     }, SAVE_AFTER)
     return () => clearTimeout(timer.current)
     // The fields are what matter; the callbacks are new each render.
@@ -83,25 +102,38 @@ export function useAutosave<F>({
     }
   }, [save])
 
-  /** Saves now what a pending save would, if the draft differs. */
+  /** Saves now what a pending save would, if the draft differs. A write
+   * already in flight goes first; a post waiting on it saves the rest. */
   const flush = async () => {
     clearTimeout(timer.current)
     dirty.current = false
     setSave("none")
-    if (!inSync()) await write(shown.current)
+    if (!inFlight.current && !inSync()) await keep(shown.current)
   }
 
   const post = async () => {
     setPosting(true)
-    await flush()
+    try {
+      await flush()
+    } catch {
+      // A failure shows through saveDraft.error, and the post can be retried.
+      setPosting(false)
+    }
   }
+  // The edit hook drops a save made while it loads the draft, so a post that
+  // finds the draft behind once it settles saves again.
   useEffect(() => {
-    if (!posting || edit.draftLoading || !inSync()) return
+    if (!posting || edit.draftLoading) return
+    if (!inSync()) {
+      if (!edit.saveDraft.loading)
+        keep(shown.current).catch(() => setPosting(false))
+      return
+    }
     setPosting(false)
     // A failure shows through publishTestimony.error.
     edit.publishTestimony.execute().then(onPosted, () => {})
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [posting, edit.draft, edit.draftLoading])
+  }, [posting, edit.draft, edit.draftLoading, edit.saveDraft.loading])
 
   const reset = useCallback(() => setSave("none"), [])
 
