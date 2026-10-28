@@ -55,16 +55,26 @@ module.exports = {
             ? "/learn/testimony"
             : `/learn/testimony#${slug}`,
         permanent: true
-      }))
+      })),
+      // The writing guide moved out of /learn. Not permanent while the address
+      // may change.
+      {
+        source: "/learn/writing-effective-testimony",
+        destination: "/writing-effective-testimony",
+        permanent: false
+      },
+      // The privacy policy moved to /policies/privacy from
+      // /policies/privacy-policy. Not permanent while the address may change.
+      // /policies is its own page (pages/policies/index.tsx).
+      {
+        source: "/policies/privacy-policy",
+        destination: "/policies/privacy",
+        permanent: false
+      }
     ]
   },
   async rewrites() {
-    const rewrites = [
-      {
-        source: "/policies",
-        destination: "/policies/privacy-policy"
-      }
-    ]
+    const rewrites = []
     if (process.env.MCP_PROXY_URL) {
       rewrites.push({
         source: "/api/mcp/:path*",

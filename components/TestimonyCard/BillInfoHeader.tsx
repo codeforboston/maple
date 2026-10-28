@@ -1,11 +1,26 @@
 import { Col, Row } from "react-bootstrap"
 import { Internal } from "components/links"
 import { Testimony } from "components/db"
+import { useBill } from "components/db/bills"
 import { formatBillId } from "components/formatting"
 import { PositionLabel } from "./PositionBug"
 
 function formatBallotQuestionLabel(ballotQuestionId: string) {
   return `Ballot Question ${ballotQuestionId}`
+}
+
+/** The bill's title, looked up for a testimony that does not carry one: a
+ * testimony is given its bill's title only when it is published, so drafts
+ * have none. Nothing shows while it loads. */
+const FetchedBillTitle = ({
+  court,
+  billId
+}: {
+  court: number
+  billId: string
+}) => {
+  const { result: bill } = useBill(court, billId)
+  return <>{bill?.content?.Title ?? null}</>
 }
 
 export const BillInfoHeader = ({
@@ -24,11 +39,13 @@ export const BillInfoHeader = ({
   const policyLabel = ballotQuestionId
     ? formatBallotQuestionLabel(ballotQuestionId)
     : formatBillId(testimony.billId)
-  const policyTitle =
-    testimony.billTitle ||
-    (ballotQuestionId
-      ? formatBallotQuestionLabel(ballotQuestionId)
-      : "Bill Title")
+  const policyTitle = testimony.billTitle ? (
+    testimony.billTitle
+  ) : ballotQuestionId ? (
+    formatBallotQuestionLabel(ballotQuestionId)
+  ) : (
+    <FetchedBillTitle court={testimony.court} billId={testimony.billId} />
+  )
 
   return (
     <>

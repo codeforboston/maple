@@ -14,9 +14,11 @@ const List = styled.ul`
   line-height: 1.6;
 `
 
+/** Light, in the card's Nunito. */
 const Empty = styled.p`
   margin: 0.25rem 0 0;
   font-size: 0.8125rem;
+  font-weight: 300;
   color: var(--maple-text-muted);
 `
 

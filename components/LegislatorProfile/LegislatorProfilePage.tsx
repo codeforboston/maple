@@ -1,6 +1,4 @@
 import { collection, getDocs, limit, query, where } from "firebase/firestore"
-import { faChevronRight } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import ErrorPage from "next/error"
 import { useTranslation } from "next-i18next"
 import { useEffect, useState } from "react"
@@ -25,8 +23,9 @@ import { useAuth } from "components/auth"
 import { Col, Container, Row, Spinner } from "components/bootstrap"
 import { useDistrict, useMember } from "components/db"
 import { useMembersFinance } from "components/db/membersFinance"
-import { Internal } from "components/links"
 import { FollowUserButton } from "components/shared/FollowButton"
+import { OutlineButton } from "components/buttons"
+import LearnBreadcrumb from "components/learn/LearnBreadcrumb"
 import { CircleImage } from "components/shared/LabeledIcon"
 
 const ButtonContainer = styled(Col).attrs(props => ({
@@ -37,17 +36,11 @@ const ButtonContainer = styled(Col).attrs(props => ({
   width: max-content;
 `
 
-const DirectoryPath = styled.div.attrs(props => ({
-  className: `align-items-center d-flex flex-nowrap ${props.className}`
-}))`
-  font-size: 12px;
-`
-
 const HeaderBlock = styled.div.attrs(props => ({
   className: `d-flex flex-wrap justify-content-between ${props.className}`
 }))`
   background-color: white;
-  border: 1px #b8c0c9 solid;
+  border: 1px var(--maple-card-outline, #b8c0c9) solid;
   border-radius: 5px;
   margin-top: 8px;
   padding: 16px;
@@ -82,7 +75,7 @@ const StatBlock = styled(Col).attrs(props => ({
   md: `2`
 }))`
   background-color: white;
-  border: 1px #b8c0c9 solid;
+  border: 1px var(--maple-card-outline, #b8c0c9) solid;
   border-radius: 5px;
   margin-top: 4px;
   padding: 16px;
@@ -158,20 +151,10 @@ export function LegislatorProfilePage({
   }
 
   return (
-    <Container className="my-3">
-      <DirectoryPath>
-        <Internal className="text-decoration-none" href="/">
-          {t("home")}
-        </Internal>
-        <FontAwesomeIcon className="fa-2xs px-2 " icon={faChevronRight} />
-
-        {/* update with link to legistators search page when that is created */}
-        <div style={{ color: "#6c757d" }}>{t("legislators")}</div>
-        {/* */}
-
-        <FontAwesomeIcon className="fa-2xs px-2 " icon={faChevronRight} />
-        <div style={{ color: "#6c757d" }}>{member.Name}</div>
-      </DirectoryPath>
+    <Container className="my-3 legislator-profile-page">
+      {/* The Learn and About pages' breadcrumb (Home > Legislators > name).
+          Legislators is plain text until there is a legislators page. */}
+      <LearnBreadcrumb eyebrow={t("legislators")} section={member.Name} />
 
       <HeaderBlock>
         <CircleImage className="me-2">
@@ -324,12 +307,20 @@ export function LegislatorProfilePage({
           ) : (
             <></>
           )}
-          <links.External
+          {/* The shared outline button, at the standard size, with a 2px
+              border. */}
+          <OutlineButton
             href={`mailto:${member.EmailAddress}`}
-            className="border border-2 border-secondary btn btn-lg fw-bold py-1 text-decoration-none text-secondary w-100"
-          >
-            {t("contact")}
-          </links.External>
+            label={t("contact")}
+            className="fw-bold border-2"
+            // Blue: outline buttons otherwise have a pale grey edge
+            // (styles/globals.css).
+            style={
+              {
+                "--bs-btn-border-color": "var(--maple-brand-primary)"
+              } as React.CSSProperties
+            }
+          />
         </ButtonContainer>
       </HeaderBlock>
 

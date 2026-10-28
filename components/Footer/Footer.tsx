@@ -5,7 +5,7 @@ import { useAppDispatch } from "components/hooks"
 import { User } from "firebase/auth"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
-import { NavLink } from "../Navlink"
+import { ExternalNavLink, NavLink } from "../Navlink"
 import { Button, Col, Image, Container, Row, Nav, Navbar } from "../bootstrap"
 import CustomDropdown, {
   CustomDropdownProps
@@ -29,22 +29,11 @@ const TextHeader = styled.h6`
   margin: 0;
 `
 
-const BrowseHeader = styled(NavLink)`
-  font-size: 1rem;
-  color: var(--maple-text-inverse);
-  padding: 0.5rem 1rem 0 0;
-  margin: 0 0 var(--maple-space-sm) 0;
-
-  @media (max-width: 768px) {
-    padding-bottom: var(--maple-space-sm);
-    border-bottom: solid 1.5px var(--maple-border-inverse-soft);
-    margin: 0;
-  }
-
-  &:hover {
-    color: var(--maple-text-inverse);
-    text-decoration: underline 1.5px;
-  }
+/* A section heading that follows another section in the same column (About
+   after Browse, Policies after Learn, Other Resources after Account), set
+   apart from what is above it. */
+const NextSectionHeader = styled(TextHeader)`
+  margin-top: 1.5rem;
 `
 
 const StyledInternalLink = styled(NavLink)`
@@ -129,7 +118,7 @@ function MapleContainer({ className }: { className?: string }) {
       <Row style={{ marginTop: 10 }}>
         <Image
           className="bg-transparent"
-          src="/maple-footer-white.png"
+          src="/whitelogo_new.svg"
           alt={t("logo")}
           width={100}
         />
@@ -138,11 +127,43 @@ function MapleContainer({ className }: { className?: string }) {
   )
 }
 
+/* Footer links that leave MAPLE, styled as the others. */
+const StyledExternalLink = styled(ExternalNavLink)`
+  color: var(--maple-text-inverse-muted);
+  letter-spacing: -0.63px;
+  padding-top: var(--maple-space-xs);
+  margin: var(--maple-space-xs) 0;
+
+  &:hover {
+    color: var(--maple-text-inverse);
+    text-decoration: none;
+  }
+`
+
+/* Other Resources: the writing guide (which the navbar's Learn menu leaves
+   out) and two links outside MAPLE. */
+const OtherResources = () => {
+  const { t } = useTranslation("footer")
+  return (
+    <>
+      <StyledInternalLink href="/writing-effective-testimony">
+        {t("links.writingTestimony")}
+      </StyledInternalLink>
+      <StyledExternalLink href={NEWSLETTER_SIGNUP_URL}>
+        {t("links.subscribeNewsletter")}
+      </StyledExternalLink>
+      <StyledExternalLink href="https://malegislature.gov/Search/FindMyLegislator">
+        {t("links.findLegislator")}
+      </StyledExternalLink>
+    </>
+  )
+}
+
 const TermsAndPolicies = () => {
   const { t } = useTranslation("footer")
   return (
     <>
-      <StyledInternalLink href="/policies">
+      <StyledInternalLink href="/policies/privacy">
         {t("legal.privacyPolicy")}
       </StyledInternalLink>
       <StyledInternalLink href="/policies/copyright">
@@ -150,6 +171,10 @@ const TermsAndPolicies = () => {
       </StyledInternalLink>
       <StyledInternalLink href="/policies/code-of-conduct">
         {t("legal.codeOfConduct")}
+      </StyledInternalLink>
+      {/* How MAPLE Uses AI sits under Policies, not About. */}
+      <StyledInternalLink href="/about/how-maple-uses-ai">
+        {t("links.mapleAI")}
       </StyledInternalLink>
     </>
   )
@@ -189,8 +214,9 @@ const LearnLinks = () => {
   const { t } = useTranslation(["footer", "common"])
   return (
     <>
+      {/* The page's own title, as the navbar's Learn menu has it. */}
       <StyledInternalLink href="/learn/testimony">
-        {t("links.learnWriting")}
+        {t("navigation.aboutTestimony", { ns: "common" })}
       </StyledInternalLink>
       <StyledInternalLink href="/learn/legislative-process">
         {t("links.learnProcess")}
@@ -221,34 +247,81 @@ const AboutLinks = () => {
       <StyledInternalLink href="/about/faq-page">
         {t("links.faq")}
       </StyledInternalLink>
-      <StyledInternalLink href="/about/how-maple-uses-ai">
-        {t("links.mapleAI")}
-      </StyledInternalLink>
     </>
   )
 }
 
-const BrowseList = () => {
+/* The Browse group: the explorers, listed as plain links under a heading like
+   the other groups'. */
+const BrowseLinks = () => {
   const { t } = useTranslation("common")
   return (
     <>
-      <BrowseHeader href="/testimony">
-        {t("navigation.browseTestimony")}
-      </BrowseHeader>
+      <StyledInternalLink href="/bills">
+        {t("navigation.bills")}
+      </StyledInternalLink>
       {flags().hearingsAndTranscriptions ? (
-        <BrowseHeader href="/hearings">
-          {t("navigation.browseHearings")}
-        </BrowseHeader>
+        <StyledInternalLink href="/hearings">
+          {t("navigation.hearings")}
+        </StyledInternalLink>
       ) : null}
-      <BrowseHeader href="/bills">{t("navigation.browseBills")}</BrowseHeader>
+      <StyledInternalLink href="/testimony">
+        {t("navigation.testimony")}
+      </StyledInternalLink>
       {flags().ballotQuestions ? (
-        <BrowseHeader href="/ballotQuestions">
-          {t("navigation.browseBallotQuestions")}
-        </BrowseHeader>
+        <StyledInternalLink href="/ballotQuestions">
+          {t("navigation.ballotQuestions")}
+        </StyledInternalLink>
       ) : null}
     </>
   )
 }
+
+/* Desktop: the disclaimer sits at the foot of the last column, so the bottom
+   line is not shown there (styles/globals.css). Phones have no columns and
+   keep it. */
+const ColumnNote = styled.p`
+  /* At the foot of the column, level with the bottom of the others. */
+  margin: auto 0 0;
+  padding-top: var(--maple-space-lg);
+  color: var(--maple-text-inverse-muted);
+  /* The footer links' spacing (StyledInternalLink), in italics so it reads
+     as a note rather than a link. */
+  letter-spacing: -0.63px;
+  line-height: 1.5;
+  font-style: italic;
+  font-weight: 300;
+  /* Lexend, at the links' size. */
+  font-family: var(--maple-font-heading);
+`
+
+/* The disclaimer as a note on phones, styled as in the desktop's column
+   (ColumnNote). */
+const BottomNote = styled.p`
+  margin: 0;
+  color: var(--maple-text-inverse-muted);
+  font-family: var(--maple-font-heading);
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: -0.63px;
+  line-height: 1.5;
+`
+
+/* A column's contents, stacked. */
+const ColumnStack = styled.div`
+  *:root & {
+    display: flex;
+    flex-direction: column;
+  }
+`
+
+/* The last column runs the full height of the footer's columns, so its note
+   can sit at the foot. */
+const NoteColumn = styled(ColumnStack)`
+  *:root & {
+    flex: 1 1 auto;
+  }
+`
 
 const PageFooter = (props: PageFooterProps) => {
   const { t } = useTranslation(["footer", "common"])
@@ -264,58 +337,70 @@ const PageFooter = (props: PageFooterProps) => {
         className="d-md-none w-100 order-1 p-2 mb-2"
       >
         <Nav className={`d-flex w-100`}>
-          <BrowseList />
-
-          <CustomDropdown title={t("headers.account")}>
-            <AccountLinks {...props} />
-          </CustomDropdown>
-
-          <CustomDropdown title={t("learn", { ns: "common" })}>
-            <LearnLinks />
-          </CustomDropdown>
-
-          <CustomDropdown title={t("about", { ns: "common" })}>
-            <AboutLinks />
-          </CustomDropdown>
-
-          <CustomDropdown title={t("headers.resources")}>
-            <TermsAndPolicies />
-          </CustomDropdown>
+          {/* Phones: the desktop footer's groups, in its reading order, each
+              a menu. */}
+          <div className="w-100">
+            <CustomDropdown title={t("headers.browse")}>
+              <BrowseLinks />
+            </CustomDropdown>
+            <CustomDropdown title={t("about", { ns: "common" })}>
+              <AboutLinks />
+            </CustomDropdown>
+            <CustomDropdown title={t("learn", { ns: "common" })}>
+              <LearnLinks />
+            </CustomDropdown>
+            <CustomDropdown title={t("headers.policies")}>
+              <TermsAndPolicies />
+            </CustomDropdown>
+            <CustomDropdown title={t("headers.account")}>
+              <AccountLinks {...props} />
+            </CustomDropdown>
+            <CustomDropdown title={t("headers.otherResources")}>
+              <OtherResources />
+            </CustomDropdown>
+          </div>
         </Nav>
       </Navbar>
       <div className={`d-none d-md-flex order-1 flex-grow-1`}>
+        {/* Browse and About, Learn and Policies, then Account and Other
+            Resources, with the disclaimer at the foot. */}
         <Col>
-          <BrowseList />
-          <TextHeader>{t("headers.account")}</TextHeader>
-
-          <AccountLinks {...props} />
+          <ColumnStack>
+            <TextHeader>{t("headers.browse")}</TextHeader>
+            <BrowseLinks />
+            <NextSectionHeader>
+              {t("about", { ns: "common" })}
+            </NextSectionHeader>
+            <AboutLinks />
+          </ColumnStack>
         </Col>
         <Col>
-          <TextHeader>{t("about", { ns: "common" })}</TextHeader>
-          <AboutLinks />
-          <TextHeader>{t("learn", { ns: "common" })}</TextHeader>
-          <LearnLinks />
+          <ColumnStack>
+            <TextHeader>{t("learn", { ns: "common" })}</TextHeader>
+            <LearnLinks />
+            <NextSectionHeader>{t("headers.policies")}</NextSectionHeader>
+            <TermsAndPolicies />
+          </ColumnStack>
         </Col>
-        <Col>
-          <TextHeader>{t("headers.resources")}</TextHeader>
-          <TermsAndPolicies />
+        <Col className="d-flex flex-column">
+          <NoteColumn>
+            <TextHeader>{t("headers.account")}</TextHeader>
+            <AccountLinks {...props} />
+            <NextSectionHeader>{t("headers.otherResources")}</NextSectionHeader>
+            <OtherResources />
+            <ColumnNote>{t("legal.disclaimer")}</ColumnNote>
+          </NoteColumn>
         </Col>
       </div>
       <MapleContainer className={`col-auto order-md-2 justify-self-end `} />
       <div
-        className={`col-12 order-md-3 text-center text-md-start`}
+        className={`footer-bottom-line col-12 order-md-3 text-center text-md-start`}
         style={{ color: "var(--maple-text-inverse)" }}
       >
-        {t("legal.disclaimer")}
-        {" - "}
-        <a
-          href={NEWSLETTER_SIGNUP_URL}
-          style={{ color: "var(--maple-text-inverse)" }}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {t("newsletter")}
-        </a>
+        {/* On phones (the desktop shows it in the last column): the
+            disclaimer alone, as a note; the newsletter link is under Other
+            Resources. */}
+        <BottomNote>{t("legal.disclaimer")}</BottomNote>
       </div>
     </FooterContainer>
   )

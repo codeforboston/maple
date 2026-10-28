@@ -207,6 +207,32 @@
   line-height: 1;
 }
 
+/* The info note (the question-number note on the ballot questions explorer):
+   the full width of the column, in Nunito, Maple's body face. */
+.ballot-question-alert--info {
+  width: 100%;
+  font-family: var(--maple-font-body);
+}
+
+/* The close button (dismiss): small and quiet, navy on hover. */
+.ballot-question-alert-close {
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding: 0.25rem;
+  border: 0;
+  background: transparent;
+  color: var(--maple-text-muted);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color var(--maple-transition-fast);
+}
+
+.ballot-question-alert-close:hover,
+.ballot-question-alert-close:focus-visible {
+  color: var(--maple-color-blue-subtle-text);
+}
+
 .ballot-question-alert-content {
   font-size: 0.95rem;
   font-weight: 650;
@@ -309,6 +335,28 @@
   background-color: var(--bs-body-bg) !important;
 }
 
+/* Close buttons are drawn white for the blue modal headers ($btn-close-color
+   in styles/bootstrap.scss). The explorers' filter drawer (below 992px) has a
+   light header instead, so its X is drawn dark: Bootstrap's own white-X
+   filter, the other way round. */
+.offcanvas-header .btn-close {
+  filter: invert(1) grayscale(100%);
+}
+
+/* The first filter card closer under the drawer's title: the header's 16px
+   below the title, without the body's own 16px on top of it. */
+.offcanvas .offcanvas-body {
+  padding-top: 0;
+}
+
+/* On phones the filter drawer takes the screen's full width rather than
+   Bootstrap's 400px. */
+@media (max-width: 575.98px) {
+  .offcanvas.offcanvas-start {
+    --bs-offcanvas-width: 100%;
+  }
+}
+
 .btn-disabled {
   background-color: var(--maple-surface-page);
   color: var(--maple-text-body);
@@ -322,6 +370,20 @@
 
 .modal-content {
   border: none;
+}
+
+/* Links to a bill (H5405 and the like) are in Lexend even inside text that is
+   set in Nunito, such as the Status & History table, so bill numbers read the
+   same everywhere. Not on the Learn and About pages, which keep their own
+   type. */
+:root a[href^="/bills/"]:not(.maple-learn-page a) {
+  font-family: var(--maple-font-heading);
+}
+
+/* Modals sit on a grey a step darker than the page, so white cell gutters and
+   white panels inside them still read. */
+:root .modal {
+  --bs-modal-bg: color-mix(in srgb, var(--maple-surface-page) 96%, #000000);
 }
 
 .whitebackground {
@@ -511,26 +573,6 @@
   outline-offset: 3px;
 }
 
-.maple-info-alert {
-  --bs-btn-close-color: var(--bs-secondary);
-}
-
-.maple-info-alert .btn-close {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%231a3185'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e");
-  opacity: 1;
-  transition: transform var(--maple-transition-fast),
-    opacity var(--maple-transition-fast);
-}
-
-.maple-info-alert .btn-close:hover {
-  transform: rotate(90deg);
-}
-
-.maple-info-alert .btn-close:hover,
-.maple-info-alert .btn-close:focus {
-  opacity: 1;
-}
-
 .maple-nav-link {
   cursor: pointer;
   background-color: var(--maple-surface-muted);
@@ -604,6 +646,513 @@
 
 .finance-spending-group {
   background-color: var(--maple-surface-page, #f4f5f7);
+}
+
+/* ---------------------------------------------------------------------------
+   The neutral navbar.
+
+   The blue navbar is a solid brand-blue band with white links, kept only for
+   the Navbar story; it has no logo or avatar. On a white band white is not
+   legible, so the ink inverts. Scoped to the neutral bar, so the blue one is
+   untouched.
+   --------------------------------------------------------------------------- */
+
+/* The neutral navbar (see components/Navbar.tsx) is a transparent gutter: the
+   surface belongs to the container inside it. Its ink inverts to suit, and it
+   carries the navy logo. Every neutral rule below is scoped to the variant,
+   so the blue bar can still appear (the Navbar story). */
+.main-navbar:is(
+    [data-navbar-variant="neutral"],
+    :root [data-navbar-variant="auto"]
+  ) {
+  --maple-navbar-bg: transparent;
+}
+
+/* The signed-in avatar (components/NavbarComponents.tsx), like the logo: the
+   blue icon, on the neutral bar. */
+.navbar-avatar-dark {
+  display: none;
+}
+
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .navbar-avatar-dark {
+  display: inline-block;
+}
+
+/* The navy logo, on the neutral bar. */
+.navbar-logo-dark {
+  display: none;
+}
+
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .navbar-logo-dark {
+  display: inline-block;
+}
+
+/* No border: the navbar and the hero share a surface and should read as one
+   band, the way the Civil Beat header does. */
+
+/* Red is reserved for one deliberate call to action, not the default button.
+   $primary compiles to red at build time, so this reaches past that. */
+/* Not inside a blue navbar, where the sign-in button keeps its red, nor the
+   Follow button (components/shared/FollowButton.tsx) or the Settings dialog's
+   Save (components/EditProfilePage/ProfileSettingsModal.tsx), which keep
+   their red. */
+:root
+  .btn-primary:not([data-navbar-variant="blue"] *):not(.follow-button *):not(
+    .settings-save
+  ) {
+  --bs-btn-bg: var(--maple-brand-primary);
+  --bs-btn-border-color: var(--maple-brand-primary);
+  --bs-btn-hover-bg: var(--maple-brand-primary-strong);
+  --bs-btn-hover-border-color: var(--maple-brand-primary-strong);
+  --bs-btn-active-bg: var(--maple-brand-primary-strong);
+  --bs-btn-active-border-color: var(--maple-brand-primary-strong);
+  --bs-btn-disabled-bg: var(--maple-brand-primary);
+  --bs-btn-disabled-border-color: var(--maple-brand-primary);
+}
+
+/* The Follow button (components/shared/FollowButton.tsx) is btn-lg, but set
+   like the explorers' sort control beside it (components/search/SortBy.tsx):
+   the same text size and weight, a step bolder below 992px, with less padding
+   at the sides. Not the bill page's, which keeps the full size
+   (follow-button-large). */
+:root .follow-button:not(.follow-button-large) .btn {
+  --bs-btn-font-size: 0.875rem;
+  --bs-btn-font-weight: 500;
+  --bs-btn-padding-x: 1rem;
+}
+
+@media (max-width: 991.98px) {
+  :root .follow-button:not(.follow-button-large) .btn {
+    --bs-btn-font-weight: 600;
+  }
+}
+
+/* Followed, the Follow button (components/shared/FollowButton.tsx) is the
+   secondary red: a red border and red text on white, filling red with white
+   text on hover. It reads "Following" with a check, and "Unfollow" with an x
+   on hover or focus. The check, a white image, is drawn as a mask in the
+   text's colour, so it reads on white. */
+.follow-label-following,
+.follow-label-unfollow {
+  display: none;
+}
+
+:root .follow-button .follow-label-following {
+  display: inline;
+}
+
+:root .follow-button .btn:is(:hover, :focus-visible) .follow-label-following {
+  display: none;
+}
+
+:root .follow-button .btn:is(:hover, :focus-visible) .follow-label-unfollow {
+  display: inline;
+}
+
+:root .follow-button .follow-x {
+  margin-left: 8px;
+}
+
+:root .follow-button .btn.follow-button-following {
+  --bs-btn-bg: var(--maple-surface-base);
+  --bs-btn-color: var(--bs-red);
+  --bs-btn-border-color: var(--bs-red);
+  --bs-btn-hover-bg: var(--bs-red);
+  --bs-btn-hover-color: var(--maple-text-inverse);
+  --bs-btn-hover-border-color: var(--bs-red);
+  --bs-btn-active-bg: var(--bs-red);
+  --bs-btn-active-color: var(--maple-text-inverse);
+  --bs-btn-active-border-color: var(--bs-red);
+}
+
+:root .follow-button .follow-check-mask {
+  display: inline-block;
+  width: 14.77px;
+  height: 12.66px;
+  margin-left: 8px;
+  background-color: currentColor;
+  -webkit-mask: url("/check-white.svg") no-repeat center / contain;
+  mask: url("/check-white.svg") no-repeat center / contain;
+}
+
+/* The stacked profile buttons (components/ProfilePage/ProfileButtons.tsx, on
+   the profile page and the newsfeed) at one height:
+   Followed Content and Your Testimonies take the 0.25rem top and bottom
+   padding Settings has from its py-1. Their own py-1 is on the link around
+   the button, so it never reaches the button. */
+:root .profile-buttons .btn {
+  --bs-btn-padding-y: 0.25rem;
+}
+
+/* The legislator profile's cards (components/LegislatorProfile) a step darker
+   than the card outline elsewhere (0.12), so they hold their edge on the
+   page's grey. The finance tab's cards take it too. */
+:root .legislator-profile-page {
+  --maple-card-outline: rgba(15, 23, 42, 0.2);
+}
+
+/* A button on MAPLE blue: white with blue text. The bill page testimony
+   panel's Complete Testimony (components/publish/panel/ctas.tsx), rather than
+   white on Bootstrap's pale info. */
+:root .btn.inverse-button {
+  --bs-btn-bg: var(--maple-surface-base);
+  --bs-btn-border-color: var(--maple-surface-base);
+  --bs-btn-color: var(--maple-brand-primary);
+  --bs-btn-hover-bg: var(--maple-surface-page);
+  --bs-btn-hover-border-color: var(--maple-surface-page);
+  --bs-btn-hover-color: var(--maple-brand-primary-strong);
+  --bs-btn-active-bg: var(--maple-surface-page);
+  --bs-btn-active-border-color: var(--maple-surface-page);
+  --bs-btn-active-color: var(--maple-brand-primary-strong);
+}
+
+/* The "Verify Account" card on Edit Profile and the profile page (the
+   verify-account-card wrapper): its heading in Lexend, as Edit Profile's tab
+   headings are
+   (components/EditProfilePage/StyledEditProfileComponents.tsx). */
+:root .verify-account-card h4 {
+  font-family: var(--maple-font-heading);
+}
+
+/* The card itself lifted off the page, which this skin's cards otherwise are
+   not (its shadow tokens are all but off), with the pinned navbar's shadow.
+   Submit Testimony's legislators card (publish-card: components/publish/
+   SelectLegislatorsCta.tsx) is lifted the same way. */
+:root .verify-account-card > .card,
+:root .publish-card {
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+}
+
+/* Its buttons (Resend link, Verify), the secondary button, on white rather
+   than the light grey of the box they sit in. */
+:root .verify-account-card .btn-outline-secondary {
+  --bs-btn-bg: var(--maple-surface-base);
+}
+
+/* The conference committee byline (components/conference/ConferenceByline.tsx)
+   at 25px once its column is 800px wide. The mockup steps up at 980, but
+   beside the conference list this column is 964px at most. Here rather than
+   in the component: styled-components 5 cannot write a container query, and
+   the broken rule it writes takes the next rule in its sheet down with it. */
+@container (min-width: 800px) {
+  .conference-byline-wrap .conference-byline {
+    font-size: 1.5625rem;
+  }
+}
+
+/* The Settings dialog (components/EditProfilePage/ProfileSettingsModal.tsx)
+   a touch wider than Bootstrap's 500px. Phones keep the full-width dialog. */
+@media (min-width: 576px) {
+  :root .modal-dialog.settings-dialog {
+    max-width: 560px;
+  }
+}
+
+/* The settings' wording a little tighter between lines than body text. */
+:root .settings-dialog .settings-text {
+  line-height: 1.35;
+}
+
+/* Its controls kept at the widths they had in the 500px dialog, worked out
+   from the layout (the columns are percentages of the dialog, so they would
+   otherwise widen with it): Save and Cancel about 154px each, together at the
+   right with the usual gutter between them; the Enabled button and the two
+   dropdowns about 134px, at the right of their rows. From 768px, where they
+   sit in columns; below that they run the full width. */
+@media (min-width: 768px) {
+  :root .settings-dialog .settings-actions {
+    justify-content: flex-end;
+  }
+
+  :root .settings-dialog .settings-actions > * {
+    flex: 0 0 auto;
+    width: auto;
+    margin-left: 0;
+  }
+
+  :root .settings-dialog .settings-actions .btn {
+    width: 154px;
+  }
+
+  :root .settings-dialog .settings-control {
+    max-width: 134px;
+    margin-left: auto;
+  }
+
+  /* The wording beside them a touch wider than it was in the 500px dialog
+     (about 292px there), with the rest of the extra room between it and the
+     control. */
+  :root .settings-dialog .settings-text {
+    display: block;
+    max-width: 316px;
+  }
+}
+
+/* The mobile navbar (components/Navbar.tsx) carries data-bs-theme="dark",
+   which drives Bootstrap's own link colours there. Point those, and the
+   desktop bar's links, at the skin's ink instead. */
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .nav-link,
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .navbar-nav
+  .nav-link {
+  color: var(--maple-text-body);
+}
+
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .nav-link:hover,
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .nav-link:focus,
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .navbar-nav
+  .nav-link.active {
+  color: var(--maple-brand-primary);
+}
+
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .navbar-toggler-icon {
+  filter: invert(1);
+}
+
+/* The mobile menu: .navLink-primary and the trigger's close icon force white,
+   for the blue bar. The neutral bar's collapse is transparent over the light
+   page, so they take the desktop links' dark ink instead. */
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .navLink-primary,
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .navLink-primary
+  .dropdown-toggle {
+  color: var(--maple-text-strong) !important;
+  /* A step under the blue bar's bold, which reads heavy in dark ink. */
+  font-weight: 600;
+}
+
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .navLink-primary.show
+  .dropdown-toggle,
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .navLink-primary
+  .dropdown-toggle:hover {
+  background: rgba(15, 23, 42, 0.06) !important;
+}
+
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .mobile-nav-close-icon::before,
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .mobile-nav-close-icon::after {
+  background-color: var(--maple-text-strong);
+}
+
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .mobile-nav-trigger:focus-visible {
+  outline-color: var(--maple-text-strong);
+}
+
+/* HighContrastButton and OutlineButton attach .btn-hover-* automatically, and
+   that class sets the resting background to white, not just the hover one. On
+   a white page those buttons disappear. Give them the skin's surface and a
+   visible edge so they read as buttons at rest. */
+:root .btn-hover-primary,
+:root .btn-hover-secondary {
+  --bs-btn-bg: var(--maple-surface-base);
+  --bs-btn-border-color: var(--maple-surface-border);
+  --bs-btn-color: var(--maple-brand-primary);
+  --bs-btn-hover-bg: var(--maple-brand-primary);
+  --bs-btn-hover-color: var(--maple-text-inverse);
+  --bs-btn-hover-border-color: var(--maple-brand-primary);
+}
+
+/* The circular logo needs no border radius from the skin. */
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .navbar-logo-dark {
+  border-radius: 50%;
+}
+
+/* .desktop-navbar-link forces white with !important, which was correct on a
+   blue band and invisible on a light one. The hover wash is white-alpha for
+   the same reason, so it inverts to dark-alpha here. */
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .desktop-navbar-link,
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .desktop-navbar-dropdown,
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .desktop-navbar-dropdown
+  .dropdown-toggle {
+  color: var(--maple-text-strong) !important;
+}
+
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .desktop-navbar-link:hover,
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .desktop-navbar-link:focus-visible {
+  color: var(--maple-brand-primary) !important;
+  background-color: rgba(15, 23, 42, 0.06) !important;
+}
+
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .desktop-navbar-dropdown.btn {
+  --bs-btn-color: var(--maple-text-strong);
+  --bs-btn-hover-color: var(--maple-brand-primary);
+  --bs-btn-hover-bg: rgba(15, 23, 42, 0.06);
+  --bs-btn-active-color: var(--maple-brand-primary);
+  --bs-btn-active-bg: rgba(15, 23, 42, 0.06);
+}
+
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .navbar-logo-dark {
+  border-radius: 0;
+  /* Sized by the shared logo rule below, the same as the blue bar's. */
+  position: relative;
+  z-index: 3;
+}
+
+/* Nothing in the header may clip the overhang. */
+.main-navbar:is(
+    [data-navbar-variant="neutral"],
+    :root [data-navbar-variant="auto"]
+  ),
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .nav-link {
+  overflow: visible;
+}
+
+/* The navbar's logo, logo-ple-neutral-bg.svg, is a vector with a transparent
+   ground, so it needs no blend trick. */
+
+/* The nav items and sign-in action sit on their own white surface, floating on
+   the transparent header, so they stay legible over whatever the hero artwork
+   puts behind them. */
+/* The container only groups the nav items and the sign-in action; it carries
+   no surface of its own. */
+
+/* The bar itself carries the breathing room instead of the container, so the
+   white block reads as thin and floating rather than as a full-height strip. */
+/* The bar itself is a transparent gutter: it stays in normal flow so nothing
+   slides underneath it, and the surface belongs to the container inside. */
+.main-navbar.desktop-navbar:is(
+    [data-navbar-variant="neutral"],
+    :root [data-navbar-variant="auto"]
+  ) {
+  /* Pinned to the top (sticky-top) on every page but the homepage
+     (components/Navbar.tsx). The bar is transparent, so give it the page
+     ground or the page would show through it as it scrolls underneath. */
+  background-color: var(--maple-surface-page) !important;
+}
+
+/* Both navbars: the logo sets the bar's height, with 8px of padding above and
+   below it. Overrides the bar's py-2 and the logo's own 80px. */
+.main-navbar.desktop-navbar {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+/* The logo's size on the desktop bar. */
+.desktop-navbar .navbar-logo {
+  width: auto;
+  height: 72px;
+}
+
+/* A pinned neutral bar always has a shadow, even at the top: on the light
+   ground it is otherwise hard to tell where the bar ends. The homepage's bar
+   is not pinned and has none. Pinning is decided in components/Navbar.tsx. */
+.main-navbar.sticky-top:is(
+    [data-navbar-variant="neutral"],
+    :root [data-navbar-variant="auto"]
+  ) {
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+}
+
+/* Logo and nav items sit together on this. Its width and position are shared
+   by both bars, blue and neutral, so the logo starts in the same place
+   whichever is showing. The bar gives up its own side padding so both measure
+   the column from the same edge. */
+.main-navbar.desktop-navbar {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* The explorers' filter column a touch wider than Bootstrap's quarter
+   (lg={3}), since Lexend runs wider than Nunito and the filter labels
+   wrapped. The results take the rest of the row. */
+@media (min-width: 992px) {
+  :root .search-filter-column {
+    width: 27%;
+  }
+}
+
+/* The explorers' filter button is the icon alone below 420px, and the icon
+   and its word from there until the filters sit in their column at 992px
+   (components/search/useFiltersInline.ts). */
+@media (max-width: 419.98px) {
+  :root .filter-button-word {
+    display: none;
+  }
+}
+
+/* Desktop: the footer's disclaimer and newsletter line moves into its Account
+   column (components/Footer). */
+@media (min-width: 768px) {
+  :root .footer-bottom-line {
+    display: none;
+  }
+}
+
+/* A sign-in button that wraps breaks after the slash, "Log in /" over
+   "Sign up" (components/auth/SignInWithButton.tsx). */
+:root .sign-in-label-half {
+  white-space: nowrap;
+}
+
+/* On the mobile bar, room between the logo and the sign-in button (or the
+   profile menu). */
+:root .mobile-navbar-account {
+  padding-left: 1rem;
+}
+
+/* Under 600px: the navbar's sign-in button at the explorers' sort text size
+   (components/search/SortBy.tsx), still bold. Set on the button, since .btn
+   declares its own size over the skin's. */
+@media (max-width: 599.98px) {
+  :root .main-navbar .btn-primary {
+    --bs-btn-font-size: 0.875rem;
+  }
+}
+
+/* The sign-in button (or the profile menu) set a little apart from the menu
+   items, 1rem beyond the usual gap. */
+:root .desktop-navbar-account {
+  margin-left: 1rem;
+}
+
+/* Every nav item stays on one line, in the desktop bar and the mobile one.
+   The sign-in button may wrap. */
+:root
+  .main-navbar
+  :is(.desktop-navbar-link, .desktop-navbar-dropdown, .nav-link) {
+  white-space: nowrap;
+}
+
+/* While the desktop bar measures whether its links fit (components/Navbar.tsx),
+   they keep their natural width rather than shrinking, so not fitting shows as
+   overflow and the bar collapses to the hamburger instead of squeezing the
+   sign-in button. */
+.desktop-navbar-bar[data-measure-fit] > * {
+  flex-shrink: 0;
+}
+
+.desktop-navbar-bar {
+  /* The same content column the page body uses (.sectionShell), so the logo
+     and the nav line up with everything below them while the bar itself stays
+     full-bleed. */
+  width: min(1660px, calc(100% - 3rem));
+  margin: 0 auto;
+}
+
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
+  .desktop-navbar-bar {
+  background-color: transparent;
 }
 
 @media (prefers-reduced-motion: reduce) {

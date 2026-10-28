@@ -48,7 +48,7 @@ const RailWrapper = styled.div`
   position: sticky;
   /* Desktop: measured at runtime to sit below the sticky navbar (see the
      nav-offset effect). Falls back to a sensible constant before first paint. */
-  top: var(--maple-navbar-height, 6rem);
+  top: var(--maple-navbar-sticky-offset, 6rem);
   z-index: 2;
   margin-inline: -2rem;
   padding: 0.5rem 2rem 1rem;
@@ -72,6 +72,7 @@ const RailCard = styled.div`
   background: var(--maple-surface-base);
   border-radius: var(--maple-radius-xl);
   box-shadow: var(--maple-shadow-sm);
+  border: 1px solid var(--maple-card-edge);
   padding: 1.25rem 1.5rem;
 
   /* The rail scrolls horizontally on narrow screens and its scrollbar is
@@ -191,7 +192,7 @@ const RailNode = styled.li`
 `
 
 const HeaderAnchor = styled.div`
-  scroll-margin-top: calc(var(--maple-navbar-height) + 0.75rem);
+  scroll-margin-top: calc(var(--maple-navbar-sticky-offset) + 0.75rem);
 `
 
 const StickyScope = styled.div`
@@ -204,6 +205,7 @@ const Row = styled.div`
   background: var(--maple-surface-base);
   border-radius: var(--maple-radius-xl);
   box-shadow: var(--maple-shadow-sm);
+  border: 1px solid var(--maple-card-edge);
   overflow: hidden;
 
   /* We compute the post-collapse scroll position ourselves, so the browser must
@@ -214,7 +216,7 @@ const Row = styled.div`
      when they align to the top, and keep a little air when they align to the
      bottom (scrollIntoView block: "nearest"). */
   scroll-margin-top: calc(
-    var(--maple-navbar-height) + var(--learn-rail-height, 10rem) + 1rem
+    var(--maple-navbar-sticky-offset) + var(--learn-rail-height, 10rem) + 1rem
   );
   scroll-margin-bottom: 1rem;
 `
@@ -601,24 +603,44 @@ export const LegislativeProcess = () => {
   // navbar, which stays pinned for most of the page on desktop, so the offset
   // tracks the navbar's current bottom edge on scroll.
   //
-  // This runs on desktop only. Below the breakpoint the navbar is the
-  // non-sticky MobileNav: it scrolls away immediately, and the rail does not
-  // reach the top until well after it is gone, so the rail simply sticks at
-  // top: 0 (set in CSS). Tracking there would rewrite the sticky offset every
-  // frame during the navbar's exit -- recomputing the sticky rail each frame --
-  // which is exactly the initial-scroll jank on mobile. So we skip it entirely
-  // when the navbar is not sticky.
+  // This tracks only while the navbar is sticky. The non-sticky MobileNav
+  // scrolls away immediately, and the rail does not reach the top until well
+  // after it is gone, so the rail simply sticks at top: 0 (set in CSS).
+  // Tracking there would rewrite the sticky offset every frame during the
+  // navbar's exit -- recomputing the sticky rail each frame -- which is exactly
+  // the initial-scroll jank on mobile. So while the navbar is not sticky the
+  // offset is set to 0 once, and nothing runs per frame.
+  //
+  // Whether it is sticky can change after load: the desktop and mobile bars
+  // swap with the window width. So stickiness is re-read when the navbar's
+  // classes change (sticky-top comes and goes there) and on resize, not just
+  // once on mount.
   useLayoutEffect(() => {
     const scope = scopeRef.current
-    const nav = document.querySelector<HTMLElement>(".main-navbar")
-    if (!scope || !nav) return
-    if (getComputedStyle(nav).position !== "sticky") return
+    if (!scope) return
 
+    let nav: HTMLElement | null = null
+    let sticky = false
     let frame = 0
+    const classObserver = new MutationObserver(() => refresh())
+    const sizeObserver = new ResizeObserver(() => schedule())
+
+    // Written as --maple-navbar-sticky-offset, which the rail and the rows
+    // read: that property is set on the root from --maple-navbar-height, and
+    // a custom property resolves where it is set, so a new navbar height
+    // written here would never reach them.
     const publishNavOffset = () => {
+      // No pinned bar, nothing to clear. Set rather than left to the
+      // stylesheet, which always reserves the bar's height, and the mobile bar
+      // can show above the CSS breakpoint below (the bar collapses whenever
+      // its links do not fit, components/Navbar.tsx).
+      if (!nav || !sticky) {
+        scope.style.setProperty("--maple-navbar-sticky-offset", "0px")
+        return
+      }
       const bottom = nav.getBoundingClientRect().bottom
       scope.style.setProperty(
-        "--maple-navbar-height",
+        "--maple-navbar-sticky-offset",
         `${Math.max(0, bottom)}px`
       )
     }
@@ -629,19 +651,40 @@ export const LegislativeProcess = () => {
         publishNavOffset()
       })
     }
+    // Find the navbar again (the desktop and mobile bars are different
+    // elements) and re-read whether it is sticky.
+    function refresh() {
+      const next = document.querySelector<HTMLElement>(".main-navbar")
+      if (next !== nav) {
+        classObserver.disconnect()
+        sizeObserver.disconnect()
+        nav = next
+        if (nav) {
+          classObserver.observe(nav, {
+            attributes: true,
+            attributeFilter: ["class"]
+          })
+          sizeObserver.observe(nav)
+        }
+      }
+      sticky = !!nav && getComputedStyle(nav).position === "sticky"
+      schedule()
+    }
+    const onScroll = () => {
+      if (sticky) schedule()
+    }
 
+    refresh()
     publishNavOffset()
-    window.addEventListener("scroll", schedule, { passive: true })
-    window.addEventListener("resize", schedule)
-
-    const observer = new ResizeObserver(schedule)
-    observer.observe(nav)
+    window.addEventListener("scroll", onScroll, { passive: true })
+    window.addEventListener("resize", refresh)
 
     return () => {
       if (frame) cancelAnimationFrame(frame)
-      window.removeEventListener("scroll", schedule)
-      window.removeEventListener("resize", schedule)
-      observer.disconnect()
+      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("resize", refresh)
+      classObserver.disconnect()
+      sizeObserver.disconnect()
     }
   }, [])
 
@@ -889,7 +932,7 @@ export const LegislativeProcess = () => {
 
   return (
     // "medium" rather than "narrow": the h1 wraps at 48rem.
-    <LearnLayout width="medium">
+    <LearnLayout width="medium" enlarge={false}>
       <div ref={scopeRef}>
         <LearnBreadcrumb section={t("process.breadcrumb")} />
         <HeaderAnchor ref={headerRef}>

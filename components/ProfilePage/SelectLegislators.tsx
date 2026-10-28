@@ -35,6 +35,12 @@ export const SelectLegislators: React.FC<
   return <SelectLegislatorsWithHooks />
 }
 
+/** The representative and senator pickers. Their menus open on a layer over
+ * the page (react-select's menu portal), so a card with overflow hidden
+ * around them cannot cut them off: above the page's content, below
+ * Bootstrap's sticky navbar (1020), and in Lexend, since the layer sits
+ * outside the page. The labels take a heading's size and weight (Bootstrap's
+ * h6, so they stay labels) in Lexend rather than Bootstrap's heading Nunito. */
 export const LegislatorForm: React.FC<
   React.PropsWithChildren<{
     index: MemberSearchIndex
@@ -42,28 +48,46 @@ export const LegislatorForm: React.FC<
   }>
 > = ({ index, profile }) => {
   const { t } = useTranslation("editProfile")
+  const menuPortal = {
+    menuPortalTarget: document.body,
+    styles: {
+      menuPortal: (base: object) => ({
+        ...base,
+        zIndex: 1000,
+        fontFamily: "var(--maple-font-heading)"
+      })
+    }
+  }
+  const headingLabel = {
+    className: "h6",
+    style: { fontFamily: "var(--maple-font-heading)" }
+  }
 
   return (
     <div>
       <Form.Group className="mb-4">
-        <Form.Label>{t("legislator.representative")}</Form.Label>
+        <Form.Label {...headingLabel}>
+          {t("legislator.representative")}
+        </Form.Label>
         <Search
-          placeholder={t("legislator.searchRepresentative")}
+          placeholder={t("legislator.selectRepresentative")}
           index={index?.representatives}
           isLoading={profile.updatingRep}
           memberId={profile.profile?.representative?.id}
           update={profile.updateRep}
+          {...menuPortal}
         />
       </Form.Group>
 
       <Form.Group>
-        <Form.Label>{t("legislator.senator")}</Form.Label>
+        <Form.Label {...headingLabel}>{t("legislator.senator")}</Form.Label>
         <Search
-          placeholder={t("legislator.searchSenator")}
+          placeholder={t("legislator.selectSenator")}
           index={index?.senators}
           isLoading={profile.updatingSenator}
           memberId={profile.profile?.senator?.id}
           update={profile.updateSenator}
+          {...menuPortal}
         />
       </Form.Group>
     </div>

@@ -1,5 +1,6 @@
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
+import { Internal } from "../links"
 import { ChevronRightIcon } from "./icons"
 
 const Nav = styled.nav`
@@ -40,34 +41,93 @@ const Nav = styled.nav`
     color: var(--bs-blue);
     font-weight: 700;
   }
+
+  /* Home leads the trail. */
+  .home-step {
+    display: flex;
+  }
+
+  /* Lexend, and colour by role: links in the link blue, everything else
+     (plain steps and the current page) in the same grey; all of it medium
+     (500). */
+  *:root & {
+    font-family: var(--maple-font-heading);
+
+    /* A step under the 0.875rem above: Lexend runs wider than Nunito. */
+    ol {
+      font-size: 0.8125rem;
+    }
+
+    a {
+      color: var(--bs-blue);
+      font-weight: 500;
+    }
+
+    .disabled,
+    .current {
+      color: var(--maple-text-body);
+      font-weight: 500;
+    }
+  }
 `
 
 /**
  * "{eyebrow} > {section}" trail shown at the top of a Learn or About sub-page.
  * The eyebrow defaults to "Learn"; pass one (e.g. "About") to reuse the trail on
- * other sections.
+ * other sections. parent adds a step between them, for a page a level further
+ * down ("About > Policies > Privacy Policy"), linked when it has an href. The
+ * trail starts with Home.
  */
 export const LearnBreadcrumb = ({
   section,
-  eyebrow
+  eyebrow,
+  parent
 }: {
   section: string
   eyebrow?: string
+  /** The middle step; plain text when it has no href. */
+  parent?: { label: string; href?: string }
 }) => {
-  const { t } = useTranslation("learn")
+  const { t } = useTranslation(["learn", "common"])
 
   return (
     <Nav aria-label={t("breadcrumbLabel")}>
       <ol>
+        <li className="home-step">
+          <Internal href="/">{t("navigation.home", { ns: "common" })}</Internal>
+        </li>
+        <li
+          aria-hidden="true"
+          className="separator home-step align-items-center"
+        >
+          <ChevronRightIcon fontSize="inherit" />
+        </li>
         {/* The parent link is disabled for now -- the hub pages still exist, we
-            just are not surfacing them yet. Restore the <Internal> wrapper (and
-            its import) to re-enable it. */}
+            just are not surfacing them yet. Restore the <Internal> wrapper to
+            re-enable it. */}
         <li>
           <span className="disabled">{eyebrow ?? t("hub.eyebrow")}</span>
         </li>
         <li aria-hidden="true" className="separator d-flex align-items-center">
           <ChevronRightIcon fontSize="inherit" />
         </li>
+        {parent && (
+          <>
+            <li>
+              {parent.href ? (
+                <Internal href={parent.href}>{parent.label}</Internal>
+              ) : (
+                <span className="disabled">{parent.label}</span>
+              )}
+            </li>
+            <li
+              aria-hidden="true"
+              className="separator d-flex align-items-center"
+            >
+              <ChevronRightIcon fontSize="inherit" />
+            </li>
+          </>
+        )}
         <li className="current" aria-current="page">
           {section}
         </li>

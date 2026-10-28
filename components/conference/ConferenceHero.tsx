@@ -24,6 +24,12 @@ const Section = styled(PageColumn)`
   scroll-snap-align: start;
   scroll-snap-stop: always;
 
+  /* The title in Lexend whether it is the page's h1 or, above a conference,
+     an h2, which would otherwise take Bootstrap's Nunito. */
+  *:root & .title {
+    font-family: var(--maple-font-heading);
+  }
+
   .block {
     margin: auto 0;
   }

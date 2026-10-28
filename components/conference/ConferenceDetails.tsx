@@ -60,12 +60,23 @@ const Shift = styled.div`
   }
 `
 
-/** The title, with the way to share input at its end. */
+/** The title, with the way to share input at its end. The title, or the
+ * picker standing in for it below md, keeps its line: where the two do not
+ * fit side by side the button goes under it and runs the row's width
+ * (ShareButton.tsx), and the title wraps only where it is wider than the row
+ * on its own. */
 const TitleRow = styled.div`
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
-  justify-content: space-between;
-  gap: 24px;
+  gap: 12px 24px;
+`
+
+/** Nearly all the room the row has spare, so beside the title the button
+ * keeps its own size, and on a line of its own takes the width. */
+const TitleCell = styled.div`
+  flex: 9999 1 auto;
+  min-width: 0;
 `
 
 /** The header and the sections under it. */
@@ -110,9 +121,9 @@ const TitleBand = styled(Band)`
 `
 
 /** A section the tabs lead to, parked under the title and the tabs with the
- * mockup's 24px under them. */
+ * mockup's 24px under them, and 40px from the section before. */
 const Section = styled.div`
-  margin-top: 1.5rem;
+  margin-top: 2.5rem;
   scroll-margin-top: calc(
     var(--maple-navbar-height) + var(--title-h, 5rem) + ${TABS_H} + 1.5rem
   );
@@ -230,14 +241,16 @@ function Details({
           />
           <Main ref={main}>
             <TitleBand ref={band} $top="var(--maple-navbar-height)" $z={14}>
-              <div className="d-md-none">
-                <ConferencePicker
-                  conferences={conferences}
-                  current={conference}
-                />
-              </div>
               <TitleRow>
-                <PageTitle as={openOnHero ? "h2" : "h1"}>{subject}</PageTitle>
+                <TitleCell>
+                  <div className="d-md-none">
+                    <ConferencePicker
+                      conferences={conferences}
+                      current={conference}
+                    />
+                  </div>
+                  <PageTitle as={openOnHero ? "h2" : "h1"}>{subject}</PageTitle>
+                </TitleCell>
                 {taking && !mine && <ShareButton onClick={share} />}
               </TitleRow>
             </TitleBand>

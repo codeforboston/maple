@@ -7,6 +7,45 @@ const Spacer = styled.div`
   top: 0.5px;
 `
 
+/**
+ * The icon file for each topic category, for callers that draw the icon
+ * themselves (as a CSS mask, say) rather than as an <img>. Same files as
+ * SmartIcon below.
+ */
+const SMART_ICON_SRC: Record<string, string> = {
+  Commerce: "/SmartTagIcons/Commerce.svg",
+  "Crime and Law Enforcement": "/SmartTagIcons/Crime-and-Law-Enforcement.svg",
+  "Economics and Public Finance":
+    "/SmartTagIcons/Economics-and-Public-Finance.svg",
+  Education: "/SmartTagIcons/Education.svg",
+  "Emergency Management": "/SmartTagIcons/Emergency-Management.svg",
+  Energy: "/SmartTagIcons/Energy.svg",
+  "Environmental Protection": "/SmartTagIcons/Environmental-Protection.svg",
+  Families: "/SmartTagIcons/Families.svg",
+  "Food, Drugs and Alcohol": "/SmartTagIcons/Food-Drugs-and-Alcohol.svg",
+  "Government Operations and Elections":
+    "/SmartTagIcons/Government-Operations-and-Elections.svg",
+  Healthcare: "/SmartTagIcons/Healthcare.svg",
+  "Housing and Community Development":
+    "/SmartTagIcons/Housing-and-Community-Development.svg",
+  "Immigrants and Foreign Nationals":
+    "/SmartTagIcons/Immigrants-and-Foreign-Nationals.svg",
+  "Labor and Employment": "/SmartTagIcons/Labor-and-Employment.svg",
+  "Law and Judiciary": "/SmartTagIcons/Law-and-Judiciary.svg",
+  "Public and Natural Resources":
+    "/SmartTagIcons/Public-and-Natural-Resources.svg",
+  "Social Services": "/SmartTagIcons/Social-Services.svg",
+  "Sports and Recreation": "/SmartTagIcons/Sports-and-Recreation.svg",
+  Taxation: "/SmartTagIcons/Taxation.svg",
+  "Technology and Communications":
+    "/SmartTagIcons/Technology-and-Communications.svg",
+  "Transportation and Public Works":
+    "/SmartTagIcons/Transportation-and-Public-Works.svg"
+}
+
+export const smartIconSrc = (category: string): string | undefined =>
+  SMART_ICON_SRC[category]
+
 export const SmartIcon = ({ icon }: { icon: String }) => {
   const { t } = useTranslation("common")
 

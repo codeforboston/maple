@@ -1,6 +1,8 @@
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Carousel, CarouselItem } from "react-bootstrap"
 import { useMediaQuery } from "usehooks-ts"
-import { Button, Col, Container, Row } from "../bootstrap"
+import { Col, Container, Row } from "../bootstrap"
 import { useRecentTestimony } from "../db"
 import TestimonyCallout from "./TestimonyCallout"
 import { useTranslation } from "next-i18next"
@@ -18,19 +20,6 @@ export default function TestimonyCalloutSection() {
       <Row className={styles.peopleSaying}>
         <Col xs={12} sm={12} md={7} className={styles.sectionTitle}>
           <h2>{t("testimonyCalloutSection.peopleSaying")}</h2>
-        </Col>
-        <Col xs={12} sm={12} md={5}>
-          <div
-            className={`d-flex ${
-              isMobile ? "justify-content-center" : "justify-content-end"
-            }  me-2`}
-          >
-            <Internal href="/testimony">
-              <Button className={`btn btn-lg py-1`}>
-                {t("testimonyCalloutSection.browseTestimony")}
-              </Button>
-            </Internal>
-          </div>
         </Col>
       </Row>
       {isMobile ? (
@@ -67,6 +56,14 @@ export default function TestimonyCalloutSection() {
           </Col>
         </Row>
       )}
+      {/* Browse All Testimony, as a text link with an arrow under the
+          testimony. */}
+      <div className={styles.browseTestimony}>
+        <Internal href="/testimony" className={styles.browseTestimonyLink}>
+          {t("testimonyCalloutSection.browseTestimony")}
+          <FontAwesomeIcon icon={faArrowRight} aria-hidden />
+        </Internal>
+      </div>
     </section>
   )
 }

@@ -97,7 +97,7 @@ function StatsBar({ stats }: { stats: LobbyingStats | undefined }) {
         value={
           stats ? stats.totalRegistrants.toLocaleString("en-US") : undefined
         }
-        href="/lobbying/firms"
+        href="/lobbying/firms?type=Lobbyist"
         description={t("explainers.statLobbyists")}
       />
       <StatCard
@@ -366,7 +366,7 @@ const statValueStyle: React.CSSProperties = {
   fontSize: 24,
   fontWeight: 700,
   color: MAPLE_COLORS.primary,
-  fontFamily: "Nunito, system-ui, sans-serif",
+  fontFamily: "var(--maple-font-heading)",
   lineHeight: 1.2
 }
 

@@ -261,6 +261,22 @@ export const SearchContainer = styled.div`
     border-top: dashed 1px;
   }
 
+  /* Filter items with tighter lines, so a label that wraps stays one block,
+     and a little room above and below each. The checkbox lists draw their
+     dashed line under the label, so the room goes inside the label, between
+     the text and its line; Topics draws it on the item. */
+  *:root & .ais-RefinementList-item,
+  *:root & .ais-MultiselectHierarchicalMenu-item,
+  *:root & .ais-MultiselectHierarchicalMenu-item--child {
+    line-height: 1.25;
+  }
+
+  *:root & .ais-RefinementList-label,
+  *:root & .ais-MultiselectHierarchicalMenu-item,
+  *:root & .ais-MultiselectHierarchicalMenu-item--child {
+    padding-block: 0.25rem;
+  }
+
   .ais-MultiselectHierarchicalMenu-count--child {
     background: var(--bs-blue);
     color: var(--maple-text-inverse);

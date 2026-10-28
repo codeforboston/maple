@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { TABS_H } from "../ConferenceTabs"
+import { CardTitle } from "../styles"
 import { ConferenceTestimony } from "components/db"
 import { Entry } from "./Entry"
 import { EntryModal } from "./EntryModal"
@@ -15,21 +16,13 @@ const Section = styled.section`
   );
 `
 
+/** The title's row, with the title's own room under it (CardTitle). */
 const Head = styled.div`
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 16px;
-  margin: 12px 0 16px;
-`
-
-const Heading = styled.h2`
-  margin: 0;
-  font-family: var(--maple-font-heading);
-  font-weight: 400;
-  font-size: 1.375rem;
-  line-height: 1.4;
-  color: ${ink.strong};
+  margin: 0 0 1.25rem;
 `
 
 const OnRecord = styled.p`
@@ -45,7 +38,9 @@ const OnRecord = styled.p`
   }
 `
 
+/** Its text in Nunito, as the page's other cards' is. */
 const Box = styled.div`
+  font-family: var(--maple-font-body);
   background: var(--maple-surface-base);
   border: 1px solid ${line.default};
   border-radius: 8px;
@@ -67,7 +62,7 @@ export function YourInput({ testimony }: { testimony: ConferenceTestimony }) {
   return (
     <Section id="your-input">
       <Head>
-        <Heading>{t("input.yours_title")}</Heading>
+        <CardTitle className="mb-0">{t("input.yours_title")}</CardTitle>
         <OnRecord>
           <Check size={14} />
           {t("input.yours_on_record")}

@@ -47,6 +47,11 @@ $maple-brand-dark: #0b0a3e;
 $maple-brand-senate: #a92929;
 $maple-brand-stage-past: #8ebc81;
 
+// The navbar sets its background with an inline style in two places, which no
+// stylesheet can override. Pointing that inline value at a variable puts the
+// colour back under the theme's control.
+$maple-navbar-bg: $maple-brand-primary;
+
 // Text
 $maple-text-strong: #1e293b;
 $maple-text-body: #334155;
@@ -154,6 +159,8 @@ $maple-color-gray-subtle-bg: #f1f5f9;
 $maple-color-gray-subtle-text: #475569;
 $maple-color-gray-subtle-border: #d7e0ea;
 
+$maple-color-amber-subtle-text: #7a4c10;
+
 // Ballot question status palettes — aliases of the semantic color palette
 $maple-status-expectedonballot-bg: $maple-color-blue-subtle-bg;
 $maple-status-expectedonballot-text: $maple-color-blue-subtle-text;
@@ -245,7 +252,7 @@ $utilities: (
 
 // Import fonts using the default bootstrap weights.
 // Lexend is the display face for the Learn section headings; Nunito remains the body face.
-@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Lexend:wght@400;600;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;700&family=Lexend:wght@300;400;500;600;700;900&display=swap");
 
 :root {
   --bs-blue-100: #{$blue-100};
@@ -255,16 +262,24 @@ $utilities: (
   --bs-gold: #{$gold};
 
   --maple-font-heading: #{$maple-font-heading};
+  // Nunito, the original body face, for places that keep it instead of Lexend.
+  --maple-font-body: #{$font-family-sans-serif};
 
   // Height of the sticky site navbar. The Learn process rail sticks below it,
   // and section rows use it for scroll-margin so smooth-scroll targets clear it.
   --maple-navbar-height: 4.5rem;
+
+  // How far a pinned element must sit below the top of the viewport to clear
+  // the navbar. Same as the navbar height while the bar is sticky; zero when
+  // it is not, so nothing reserves space for a header that scrolls away.
+  --maple-navbar-sticky-offset: var(--maple-navbar-height);
 
   // Maple design tokens — emitted from the SCSS variables defined above so
   // the compile-time (Bootstrap) and runtime (app components) layers stay
   // structurally linked. Edit the SCSS variable, not the custom property.
   --maple-nav-link-color: #{$maple-nav-link-color};
   --maple-nav-link-color-active: #{$maple-nav-link-color-active};
+  --maple-navbar-bg: #{$maple-navbar-bg};
 
   --maple-brand-primary: #{$maple-brand-primary};
   --maple-brand-primary-strong: #{$maple-brand-primary-strong};
@@ -288,6 +303,10 @@ $utilities: (
   --maple-surface-accent: #{$maple-surface-accent};
   --maple-surface-accent-strong: #{$maple-surface-accent-strong};
   --maple-surface-border: #{$maple-surface-border};
+  // The edge on white cards that otherwise rely on a shadow or the page ground
+  // to stand out. Invisible here; the Digital Democracy skin, which drops the
+  // shadows, gives it the soft surface border.
+  --maple-card-edge: transparent;
   --maple-surface-hearing-search: #{$maple-surface-hearing-search};
   --maple-surface-hearing-header: #{$maple-surface-hearing-header};
   --maple-surface-transcript-stripe: #{$maple-surface-transcript-stripe};
@@ -365,6 +384,117 @@ $utilities: (
   --maple-color-gray-subtle-bg: #{$maple-color-gray-subtle-bg};
   --maple-color-gray-subtle-text: #{$maple-color-gray-subtle-text};
   --maple-color-gray-subtle-border: #{$maple-color-gray-subtle-border};
+
+  --maple-color-amber-subtle-text: #{$maple-color-amber-subtle-text};
+}
+
+// -----------------------------------------------------------------------------
+// The redesign's values, over the originals above.
+//
+// Nothing above changes value; this block only overrides custom properties.
+// It and the redesign's rules across the site are written under :root (in
+// styled-components, *:root, since their parser joins a selector that starts
+// with a colon onto the component's own class). :root always matches, and it
+// keeps the specificity these rules had when they sat over the originals, so
+// they still win where the two meet.
+//
+// What it borrows is surface and shape, not hue. MAPLE stays blue. Type is
+// deliberately untouched: the CalMatters and Honolulu Civil Beat editions of
+// Digital Democracy use different typefaces, so type is not part of what the
+// two share.
+// -----------------------------------------------------------------------------
+
+:root {
+  // The desktop navbar's height in this skin: its 72px logo with 8px above and
+  // below (styles/globals.css). Where the bar is pinned (every page but the
+  // homepage), what sticks or scrolls to an anchor below it clears this.
+  --maple-navbar-height: 5.5rem;
+
+  // Surfaces. A near-white page instead of the warm mid-grey, so white cards
+  // read as raised without needing a shadow.
+  --maple-surface-page: #f7f7f7;
+  --maple-surface-base: #ffffff;
+  --maple-surface-muted: #fafafa;
+  // Learn and About sit on a ground a touch darker than the page grey
+  // elsewhere (#f7f7f7), halfway to #f2f2f2, in place of Maple's pale
+  // blue-grey.
+  --maple-surface-learn: #f5f5f5;
+
+  // Borders do the work the shadows used to.
+  --maple-surface-border: rgba(15, 23, 42, 0.12);
+  --maple-card-edge: var(--maple-surface-border);
+  // Cards that draw their own outline (the legislator profile's, which fall
+  // back to their own #b8c0c9) take the card edge instead.
+  --maple-card-outline: var(--maple-card-edge);
+  --maple-border-default: rgba(15, 23, 42, 0.14);
+
+  // Shape. Near-square, 2 to 6px rather than 4 to 16. The pill is left alone,
+  // since a half-rounded pill is just a bad rectangle.
+  --maple-radius-sm: 2px;
+  --maple-radius-md: 3px;
+  --maple-radius-lg: 4px;
+  --maple-radius-xl: 6px;
+
+  // Shadow. Almost gone. Kept faintly on hover so interactive things still
+  // signal that they are interactive.
+  --maple-shadow-sm: none;
+  --maple-shadow-md: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --maple-shadow-hover: 0 2px 6px rgba(15, 23, 42, 0.1);
+
+  // Accent moves from orange toward gold. The blues are untouched.
+  --maple-brand-accent: #e5b93c;
+
+  // Buttons run smaller in this skin.
+  --bs-btn-padding-x: 0.85rem;
+  --bs-btn-padding-y: 0.3rem;
+  --bs-btn-font-size: 0.875rem;
+
+  // Bootstrap's own runtime layer, so components styled by Bootstrap classes
+  // follow the skin instead of staying behind.
+  --bs-body-bg: #f7f7f7;
+  --bs-border-color: rgba(15, 23, 42, 0.14);
+  --bs-border-radius-sm: 2px;
+  --bs-border-radius: 3px;
+  --bs-border-radius-lg: 4px;
+  --bs-border-radius-xl: 6px;
+}
+
+// -----------------------------------------------------------------------------
+// Typeface: Lexend, part of the Digital Democracy skin.
+// -----------------------------------------------------------------------------
+
+:root {
+  // Lexend everywhere, not just the headings. Bootstrap emits its body face as
+  // a runtime custom property, so this reaches every component that inherits
+  // it. Four places hardcode Nunito and will not follow: AboutPagesCard,
+  // HistoryTable, and three rules in globals.css.
+  --bs-font-sans-serif: "Lexend", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+// Page titles match the homepage hero title: its size (up to 38px), weight
+// (600) and colour, MAPLE's blue-black (--maple-brand-dark). The line height
+// is the Learn title's (components/learn/LearnHeader.tsx). :where() keeps
+// this at plain h1 strength, so any heading a component styles itself (the
+// homepage hero title, the Learn titles) keeps its own look.
+// Not on the Learn and About pages, which keep their own type
+// (components/learn/LearnLayout.tsx).
+:where(:root) h1:where(:not(.maple-learn-page h1)),
+:where(:root) .h1:where(:not(.maple-learn-page .h1)) {
+  font-family: var(--maple-font-heading);
+  font-size: clamp(1.9rem, 3vw, 38px);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--maple-brand-dark);
+}
+
+// The blue navbar keeps the current MAPLE shape, so its sign-in button is not
+// squared off by the tighter radii above.
+[data-navbar-variant="blue"] {
+  --maple-radius-sm: #{$maple-radius-sm};
+  --maple-radius-md: #{$maple-radius-md};
+  --maple-radius-lg: #{$maple-radius-lg};
+  --maple-radius-xl: #{$maple-radius-xl};
 }
 
 .btn {

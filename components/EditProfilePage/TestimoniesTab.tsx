@@ -39,47 +39,58 @@ export const TestimoniesTab = ({
     )
   }, [orderBy, publishedTestimonies])
 
+  // The cards take the profile page's look, with the title in a header band
+  // rather than in the card.
   return (
     <div className={`mb-4 ${className}`}>
       <Row className="mt-0">
         <Col xs={12} md={8}>
-          <TitledSectionCard className="mt-3 mb-4">
-            <Row>
-              <Col>
-                <h2>{t("testimonies.published")}</h2>
-              </Col>
-              <Col xs="auto">
-                <SortTestimonyDropDown
-                  orderBy={orderBy}
-                  setOrderBy={setOrderBy}
+          <TitledSectionCard
+            className="mt-3 mb-4"
+            title={t("testimonies.published")}
+          >
+            <div>
+              <Row>
+                <Col />
+                <Col xs="auto">
+                  <SortTestimonyDropDown
+                    orderBy={orderBy}
+                    setOrderBy={setOrderBy}
+                  />
+                </Col>
+              </Row>
+              {publishedTestimoniesOrdered.map(t => (
+                <TestimonyItem
+                  key={t.authorUid + t.billId + t.publishedAt}
+                  testimony={t}
+                  isUser={true}
+                  onProfilePage={true}
                 />
-              </Col>
-            </Row>
-            {publishedTestimoniesOrdered.map(t => (
-              <TestimonyItem
-                key={t.authorUid + t.billId + t.publishedAt}
-                testimony={t}
-                isUser={true}
-                onProfilePage={true}
-              />
-            ))}
-            {publishedTestimoniesPagination && (
-              <PaginationButtons pagination={publishedTestimoniesPagination} />
-            )}
+              ))}
+              {publishedTestimoniesPagination && (
+                <PaginationButtons
+                  pagination={publishedTestimoniesPagination}
+                />
+              )}
+            </div>
           </TitledSectionCard>
-          <TitledSectionCard className="mt-3 mb-4">
-            <h2>{t("testimonies.draft")}</h2>
-            {draftTestimonies.map(t => (
-              <TestimonyItem
-                key={t.billId + t.court + t.position}
-                testimony={t as any}
-                isUser={true}
-                onProfilePage={true}
-              />
-            ))}
-            {draftTestimoniesPagination && (
-              <PaginationButtons pagination={draftTestimoniesPagination} />
-            )}
+          <TitledSectionCard
+            className="mt-3 mb-4"
+            title={t("testimonies.draft")}
+          >
+            <div>
+              {draftTestimonies.map(t => (
+                <TestimonyItem
+                  key={t.billId + t.court + t.position}
+                  testimony={t as any}
+                  isUser={true}
+                  onProfilePage={true}
+                />
+              ))}
+              {draftTestimoniesPagination && (
+                <PaginationButtons pagination={draftTestimoniesPagination} />
+              )}
+            </div>
           </TitledSectionCard>
         </Col>
         <Col>

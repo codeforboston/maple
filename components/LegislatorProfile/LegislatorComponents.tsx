@@ -26,7 +26,7 @@ export const SubmitButton = styled.button`
 
 export const TabBlock = styled.div`
   background-color: white;
-  border: 1px #b8c0c9 solid;
+  border: 1px var(--maple-card-outline, #b8c0c9) solid;
   border-radius: 5px;
   margin-bottom: 10px;
   padding: 16px;

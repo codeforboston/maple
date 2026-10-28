@@ -68,7 +68,7 @@ export const PublishTestimony = styled(({ ...rest }) => {
 
   return (
     <div {...rest}>
-      <StepHeader step={3}>
+      <StepHeader>
         {copy(
           "publish.confirmAndSend",
           "ballotQuestion.publish.confirmAndPublish"

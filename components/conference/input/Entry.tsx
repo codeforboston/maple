@@ -9,9 +9,11 @@ import { positionColours } from "./positions"
 import { brand, ink, line, shadow } from "./tokens"
 import { useWide } from "./useWide"
 
+/** Its text in Nunito, as the page's other cards' is. */
 const Card = styled.article<{ $bare: boolean }>`
   position: relative;
   padding: 20px;
+  font-family: var(--maple-font-body);
   ${({ $bare }) =>
     $bare
       ? ""

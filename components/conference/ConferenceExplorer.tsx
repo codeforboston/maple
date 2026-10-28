@@ -1,15 +1,19 @@
 import { useMemo, useState } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faChevronRight } from "@fortawesome/free-solid-svg-icons"
 import { Form } from "../bootstrap"
 import { Internal, maple } from "../links"
 import { Chair, Conferees, ConfereeFace, yoursKey } from "./Conferees"
 import { ConferenceList, ConferenceTable } from "./ConferenceTable"
 import { DistrictMap, seatsOf } from "./DistrictMap"
 import { useHover, useMyLegislators } from "./hooks"
-import { Card, DottedInternal, Eyebrow, PageColumn, Title } from "./styles"
+import {
+  CommitteeCard,
+  DottedInternal,
+  Eyebrow,
+  PageColumn,
+  Title
+} from "./styles"
 import {
   CHAMBERS,
   conferenceName,
@@ -33,8 +37,25 @@ type Sitting = {
   on: { conference: ConferenceSummary; chair: boolean }[]
 }
 
+/** The page's title in Lexend, as the conference page's "Conference
+ * Committees" is (ConferenceHero.tsx). Each conference's own title keeps the
+ * mockup's bold Nunito. */
+const ExplorerTitle = styled(Title)`
+  /* The room the intro left under the title, while the intro is out. */
+  margin-bottom: 1rem;
+  *:root & {
+    font-family: var(--maple-font-heading);
+  }
+`
+
+/** Widened to 1320 from 992, as the conference page is
+ * (ConferenceDetails.tsx). */
 const Page = styled(PageColumn)`
   padding-top: 1.25rem;
+
+  @media (min-width: 992px) {
+    max-width: 1320px;
+  }
 `
 
 const Intro = styled.p`
@@ -64,6 +85,8 @@ const Wide = styled.div`
     display: flex;
     gap: 24px;
     align-items: flex-start;
+    /* More room between the card's edge and the table. */
+    padding-left: 1rem;
   }
 `
 
@@ -78,6 +101,10 @@ const Panel = styled.div`
   padding: 1rem 1.25rem;
   background: #f7f7f7;
   border-radius: var(--maple-radius-xl);
+  /* A column, so the prompt can centre itself in the room under the heading
+     (Empty). */
+  display: flex;
+  flex-direction: column;
 `
 
 const PanelHead = styled.div`
@@ -88,10 +115,13 @@ const PanelHead = styled.div`
   margin-bottom: 1rem;
 `
 
+/** In Nunito, as the mockup sets it, at 500: the site loads Nunito at 500
+ * and 700 but not the mockup's 600, which would draw at 700. */
 const PanelTitle = styled.h2`
   margin: 0;
+  font-family: var(--maple-font-body);
   font-size: 0.9375rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--maple-text-muted);
 `
 
@@ -104,10 +134,6 @@ const CommitteeLink = styled(Internal)`
   &:hover {
     color: var(--maple-brand-primary-strong);
     text-decoration: underline;
-  }
-  svg {
-    margin-left: 0.375rem;
-    font-size: 0.75rem;
   }
 `
 
@@ -123,8 +149,9 @@ const ClearButton = styled.button`
   }
 `
 
+/** Centred in the panel under its heading, as the mockup's is. */
 const Empty = styled.p`
-  margin: 2.5rem auto 0;
+  margin: auto;
   max-width: 22rem;
   text-align: center;
   font-size: 0.875rem;
@@ -149,7 +176,7 @@ const Maps = styled.div`
 const Below = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin-top: 0.75rem;
+  margin-top: 1.5rem;
   font-size: 0.8125rem;
 `
 
@@ -296,9 +323,11 @@ export function ConferenceExplorer({
 
   return (
     <Page>
-      <Title>{t("index_title")}</Title>
-      <Intro>{t("index_intro")}</Intro>
-      <Card>
+      <ExplorerTitle>{t("index_title")}</ExplorerTitle>
+      {/* The intro, out for now. With it back, take the title's
+          margin-bottom out of ExplorerTitle. */}
+      {/* <Intro>{t("index_intro")}</Intro> */}
+      <CommitteeCard>
         <Narrow>
           <ConferenceList conferences={conferences} conferees={conferees} />
         </Narrow>
@@ -316,7 +345,6 @@ export function ConferenceExplorer({
                 {held ? (
                   <CommitteeLink href={maple.conference(held)}>
                     {conferenceName(held)}
-                    <FontAwesomeIcon icon={faChevronRight} />
                   </CommitteeLink>
                 ) : (
                   <PanelTitle>{t("explorer")}</PanelTitle>
@@ -385,7 +413,7 @@ export function ConferenceExplorer({
             </Below>
           </Explorer>
         </Wide>
-      </Card>
+      </CommitteeCard>
     </Page>
   )
 }

@@ -49,6 +49,7 @@ export const MAPLE_COLORS = {
   greenBorder: "#c8e7cf",
   orangeSubtleBg: "#fff4e8",
   orangeSubtleText: "#7a3800",
+  orangeBorder: "#ffd8b3",
   redSubtleBg: "#fde8ef",
   redSubtleText: "#902141",
   graySubtleBg: "#f1f5f9",

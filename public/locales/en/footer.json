@@ -3,10 +3,10 @@
     "follow": "Follow MAPLE",
     "browse": "Browse",
     "account": "Account",
-    "resources": "Resources"
+    "policies": "Policies",
+    "otherResources": "Other Resources"
   },
   "links": {
-    "learnWriting": "About Testimony",
     "learnProcess": "About the Legislative Process",
     "learnWhy": "Why Use MAPLE",
     "learnAi": "AI Research Tools",
@@ -19,7 +19,10 @@
       "instagram": "Follow MAPLE on Intagram",
       "linkedin": "Follow MAPLE on LinkedIn",
       "twitter": "Follow MAPLE on Twitter"
-    }
+    },
+    "findLegislator": "Find Your Legislator",
+    "subscribeNewsletter": "Subscribe to Our Newsletter",
+    "writingTestimony": "How to Write Effective Testimony"
   },
   "legal": {
     "disclaimer": "MAPLE is an independent project, not affiliated with the Massachusetts legislature",
@@ -27,6 +30,5 @@
     "TOS": "Terms of Service",
     "codeOfConduct": "Code of Conduct"
   },
-  "newsletter": "Click Here to Subscribe to Our Newsletter",
   "logo": "MAPLE Massachusetts Platform for Legislative Engagement logo"
 }

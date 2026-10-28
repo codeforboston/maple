@@ -2,6 +2,7 @@ import React from "react"
 import { useRouter } from "next/router"
 import { useTranslation } from "next-i18next"
 import { Container } from "components/bootstrap"
+import { SlimBanner } from "components/shared/StyledSharedComponents"
 import { MAPLE_COLORS } from "./chartTheme"
 
 export function LobbyingSubnav() {
@@ -17,19 +18,11 @@ export function LobbyingSubnav() {
 
   return (
     <>
-      <div style={bannerStyle}>
-        <Container>
-          <div style={bannerInnerStyle}>
-            <span style={betaPillStyle}>{t("banner.beta")}</span>
-            <span>
-              {t("banner.feedback")}{" "}
-              <a href="mailto:info@mapletestimony.org" style={bannerLinkStyle}>
-                info@mapletestimony.org
-              </a>
-            </span>
-          </div>
-        </Container>
-      </div>
+      {/* The beta note: a slim pale orange note asking for feedback. */}
+      <SlimBanner>
+        {t("banner.feedback")}{" "}
+        <a href="mailto:info@mapletestimony.org">info@mapletestimony.org</a>
+      </SlimBanner>
       <div style={barStyle}>
         <Container>
           <div style={innerStyle}>
@@ -53,53 +46,20 @@ export function LobbyingSubnav() {
   )
 }
 
-const bannerStyle: React.CSSProperties = {
-  background: MAPLE_COLORS.accent,
-  color: "#fff",
-  width: "100%"
-}
-
-const bannerInnerStyle: React.CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  flexWrap: "wrap",
-  gap: "0.5rem 0.625rem",
-  padding: "0.5rem 0",
-  fontSize: 15,
-  fontWeight: 600,
-  textAlign: "center"
-}
-
-const betaPillStyle: React.CSSProperties = {
-  background: "#fff",
-  color: "#c25e00",
-  fontSize: 11,
-  fontWeight: 800,
-  letterSpacing: "0.08em",
-  textTransform: "uppercase",
-  padding: "0.125rem 0.5rem",
-  borderRadius: 999,
-  lineHeight: 1.4
-}
-
-const bannerLinkStyle: React.CSSProperties = {
-  color: "#fff",
-  textDecoration: "underline",
-  textUnderlineOffset: 3
-}
-
 const barStyle: React.CSSProperties = {
   background: "#fff",
   borderBottom: `1px solid ${MAPLE_COLORS.borderDefault}`,
   width: "100%"
 }
 
+/** No room under the row, so the tabs reach the bar's bottom edge (their
+ * underline sits on its border, linkStyle). The label lines up with the tabs'
+ * text rather than their boxes. */
 const innerStyle: React.CSSProperties = {
   display: "flex",
-  alignItems: "center",
+  alignItems: "baseline",
   gap: "1.75rem",
-  padding: "0.5rem 0",
+  padding: "0.7rem 0 0",
   flexWrap: "wrap"
 }
 
@@ -117,8 +77,16 @@ const linkStyle = (active: boolean): React.CSSProperties => ({
   fontWeight: active ? 600 : 400,
   textDecoration: "none",
   fontSize: 14,
-  paddingBottom: "0.4rem",
-  borderBottom: `2px solid ${active ? MAPLE_COLORS.primary : "transparent"}`,
+  // The text in the middle of the bar: 0.7rem above it (innerStyle) and 0.7rem
+  // below it to the bar's border, of which the underline's top 1.5px is part.
+  paddingBottom: "calc(0.7rem - 1.5px)",
+  borderBottom: `3px solid ${active ? MAPLE_COLORS.primary : "transparent"}`,
+  // Down 1.5px, so the 3px underline is centred on the middle of the bar's
+  // 1px border, half inside the bar and half outside. On a layer of its own
+  // so what follows the bar does not paint over the part outside.
+  marginBottom: -1.5,
+  position: "relative",
+  zIndex: 1,
   display: "inline-block",
   transition: "color 0.1s, border-color 0.1s"
 })

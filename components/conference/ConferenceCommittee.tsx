@@ -5,7 +5,7 @@ import { Conferees } from "./Conferees"
 import { DistrictMap, seatsOf } from "./DistrictMap"
 import { ConferenceHearings } from "./ConferenceHearings"
 import { useHover, useMyLegislators } from "./hooks"
-import { Card, CardTitle } from "./styles"
+import { CardTitle, CommitteeCard } from "./styles"
 import { CHAMBERS, ConfereeView, HearingView } from "./types"
 
 /**
@@ -59,7 +59,7 @@ export function ConferenceCommittee({
   )
 
   return (
-    <Card>
+    <CommitteeCard>
       <CardTitle>{t("who")}</CardTitle>
       {/* The names and the maps are one area to the pointer: leaving the
           block is what lets a reading go. */}
@@ -88,6 +88,6 @@ export function ConferenceCommittee({
       <div className="mt-4">
         <ConferenceHearings hearings={hearings} />
       </div>
-    </Card>
+    </CommitteeCard>
   )
 }

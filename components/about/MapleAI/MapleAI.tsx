@@ -21,7 +21,7 @@ const MapleAIBody = styled(Container)`
   /* Match the values (Principles) card body size (0.9375rem); DescrContainer
      defaults to 16px. */
   ${DescrContainer} {
-    font-size: 0.9375rem;
+    font-size: var(--learn-small-text, 0.9375rem);
     line-height: 1.5;
   }
 
@@ -80,7 +80,7 @@ const Principle = styled.div`
   p {
     margin: 0;
     color: var(--maple-text-body);
-    font-size: 0.9375rem;
+    font-size: var(--learn-small-text, 0.9375rem);
     line-height: 1.4;
   }
 `
@@ -88,13 +88,18 @@ const Principle = styled.div`
 const PRINCIPLES = ["desc1", "desc2", "desc3", "desc4"]
 
 const MapleAI = () => {
-  const { t } = useTranslation(["mapleAI", "common"])
+  const { t } = useTranslation(["mapleAI", "common", "footer"])
 
   // Header, subhead and breadcrumb follow the Learn section's styling; the
   // section bodies below keep the existing copy.
   return (
     <LearnLayout width="medium">
-      <LearnBreadcrumb section={t("breadcrumb")} eyebrow={t("common:about")} />
+      {/* The trail runs through Policies, where this page is listed. */}
+      <LearnBreadcrumb
+        section={t("breadcrumb")}
+        eyebrow={t("common:about")}
+        parent={{ label: t("footer:headers.policies"), href: "/policies" }}
+      />
       <LearnHeader
         title={t("title")}
         subhead={t("mission-statement")}

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { TABS_H } from "../ConferenceTabs"
+import { CardTitle } from "../styles"
 import { ConferenceTestimony } from "components/db"
 import { useInputContext } from "./context"
 import { Entry } from "./Entry"
@@ -27,15 +28,6 @@ const Section = styled.section`
   scroll-margin-top: calc(
     var(--maple-navbar-height) + var(--title-h, 5rem) + ${TABS_H} + 1.5rem
   );
-`
-
-const Heading = styled.h2`
-  margin: 12px 0 16px;
-  font-family: var(--maple-font-heading);
-  font-weight: 400;
-  font-size: 1.375rem;
-  line-height: 1.4;
-  color: ${ink.strong};
 `
 
 const Controls = styled.div`
@@ -145,7 +137,7 @@ export function PublicInput({
 
   return (
     <Section id="input">
-      <Heading>{t("input.title")}</Heading>
+      <CardTitle>{t("input.title")}</CardTitle>
       {showFilters && (
         <Controls>
           <AccountTypePicker value={type} onChange={setType} />

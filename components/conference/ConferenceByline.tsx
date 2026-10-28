@@ -5,15 +5,25 @@ import { maple } from "../links"
 import { DottedInternal } from "./styles"
 import { ConferenceSummary } from "./types"
 
-const Line = styled.p`
-  margin: 0.625rem 0 0;
+/** The mockup's spacing: 24px under the byline before the tabs. A container,
+ * so the line steps up with the room the page column has, as the mockup's
+ * does, rather than with the window (styles/globals.css, since
+ * styled-components 5 cannot write a container query). */
+const Wrap = styled.div.attrs({ className: "conference-byline-wrap" })`
+  container-type: inline-size;
+  padding-bottom: 24px;
+`
+
+/** The mockup's byline in Nunito at 20px, and 25px once the column is 800px
+ * wide (styles/globals.css), in the site's muted blue-grey. Straight under
+ * the title band, whose own 12px is the gap. */
+const Line = styled.p.attrs({ className: "conference-byline" })`
+  margin: 0;
+  font-family: var(--maple-font-body);
   font-size: 1.25rem;
+  font-weight: 400;
   line-height: 1.4;
   color: var(--maple-text-muted);
-
-  @media (min-width: 980px) {
-    font-size: 1.5rem;
-  }
 `
 
 const Status = styled.span`
@@ -43,7 +53,7 @@ export function ConferenceByline({
     <DottedInternal href={maple.bill({ court: conference.court, id })} />
   )
   return (
-    <div>
+    <Wrap>
       <Line>
         <Trans
           t={t}
@@ -63,6 +73,6 @@ export function ConferenceByline({
       {conference.status !== "appointed" && (
         <Status>{t(`status.${conference.status}`)}</Status>
       )}
-    </div>
+    </Wrap>
   )
 }

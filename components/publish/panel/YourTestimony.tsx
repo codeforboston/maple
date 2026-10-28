@@ -81,6 +81,7 @@ const MainPanel = styled(
 )`
   --previewPadding: 1rem;
   background-color: white;
+  border: 1px solid var(--maple-card-edge);
   border-radius: 1rem;
   padding: var(--previewPadding);
   .divider {

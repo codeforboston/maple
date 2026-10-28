@@ -1,10 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "next-i18next"
+import { useRouter } from "next/router"
 import { Col, Container, Row } from "components/bootstrap"
 import { createPage } from "components/page"
 import { FirmListRow, fetchFirmListRows } from "components/db/lobbying"
 import { createLobbyingListProps } from "components/lobbying/listPageProps"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
+import { selectChevron } from "components/lobbying/selectChevron"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
@@ -75,6 +77,15 @@ function LobbyingFirmsTable({ rows }: { rows: FirmListRow[] }) {
   const [regTypeFilter, setRegTypeFilter] = useState<
     "all" | "Lobbyist" | "Employer"
   >("all")
+  // A link can open the list on one type (?type=Lobbyist or ?type=Employer),
+  // as the overview's Individual Lobbyists card does. The page is static, so
+  // the query arrives once the router is ready.
+  const router = useRouter()
+  useEffect(() => {
+    if (!router.isReady) return
+    const type = router.query.type
+    if (type === "Lobbyist" || type === "Employer") setRegTypeFilter(type)
+  }, [router.isReady, router.query.type])
   const [search, setSearch] = useState("")
   const [session, setSession] = useState<SessionFilter>("all")
   const [sortKey, setSortKey] = useState<FirmSortKey>("name")
@@ -188,7 +199,7 @@ function LobbyingFirmsTable({ rows }: { rows: FirmListRow[] }) {
           onChange={e =>
             setRegTypeFilter(e.target.value as typeof regTypeFilter)
           }
-          style={selectStyle}
+          style={{ ...selectStyle, ...selectChevron }}
           aria-label={t("filters.allTypes")}
         >
           <option value="all">{t("registrantType.all")}</option>

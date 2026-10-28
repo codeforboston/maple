@@ -9,21 +9,23 @@ export type YourLegislatorsProps = {
   profile?: ProfileHook
 }
 
+/** The pickers above the note, for Edit Profile's narrow right-hand column. */
 export const YourLegislators = ({ index, profile }: YourLegislatorsProps) => {
   const { t } = useTranslation("editProfile")
   return (
     <>
-      <Row className="mt-3 mb-3 gap-3">
-        <Col xs={12} md={6} className="your-legislators-width">
+      {/* Stacked in a card with a header band, no extra room above: the
+          card's own padding is enough. */}
+      <Row className="mb-3 gap-3">
+        <Col xs={12} className="your-legislators-width">
           <SelectLegislators index={index} profile={profile} />
         </Col>
-        <Col className="bg-secondary text-white rounded d-flex justify-content-center align-items-center pt-4 your-legislators-width">
-          <p className="flex-grow-1">
+        {/* Plain body text under the pickers, with the tool as an ordinary
+            link. */}
+        <Col xs={12} className="your-legislators-width">
+          <p className="mb-0">
             {t("legislator.politeWords")}
-            <External
-              href="https://malegislature.gov/Search/FindMyLegislator"
-              className={"text-white"}
-            >
+            <External href="https://malegislature.gov/Search/FindMyLegislator">
               {t("legislator.findTool")}
             </External>
             {t("legislator.findToolTip")}

@@ -1,7 +1,7 @@
 import { Trans, useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { Internal, maple } from "../links"
-import { Banner } from "../shared/StyledSharedComponents"
+import { PageBanner } from "../shared/PageBanner"
 import { ConferenceSummary, conferenceName } from "./types"
 
 const Link = styled(Internal)`
@@ -25,16 +25,17 @@ export function ConferenceBanner({
 }) {
   const { t } = useTranslation("conferences")
   if (!conference) return null
-  return (
-    <Banner>
-      <Trans
-        t={t}
-        i18nKey={`bill_banner.${conference.status}`}
-        values={{ name: conferenceName(conference) }}
-        components={{
-          1: <Link href={maple.conference(conference)} />
-        }}
-      />
-    </Banner>
+  const message = (
+    <Trans
+      t={t}
+      i18nKey={`bill_banner.${conference.status}`}
+      values={{ name: conferenceName(conference) }}
+      components={{
+        1: <Link href={maple.conference(conference)} />
+      }}
+    />
   )
+  // The slim note across the top of the page (PageBanner), worded by the
+  // conference's status.
+  return <PageBanner>{message}</PageBanner>
 }

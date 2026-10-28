@@ -11,6 +11,8 @@ import styles from "components/homepage/Homepage.module.css"
 export default createPage({
   Page: () => (
     <main className={styles.page}>
+      {/* The hero laid out like main's, with main's copy and the statehouse
+          in place of the right-hand panel. */}
       <HeroSection />
       <TestimonyCalloutSection />
       <DidYouKnowSection />

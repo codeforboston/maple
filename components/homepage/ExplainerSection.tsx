@@ -13,7 +13,11 @@ export default function ExplainerSection() {
           <div className={styles.explainerCopy}>
             <h2 className={styles.explainerTitle}>{t("explainer.title")}</h2>
             <p className={styles.explainerBody}>{t("explainer.body")}</p>
-            <Internal href="/bills" className={styles.primaryAction}>
+            {/* explainerAction: the secondary style (Homepage.module.css). */}
+            <Internal
+              href="/bills"
+              className={`${styles.primaryAction} ${styles.explainerAction}`}
+            >
               {t("explainer.action")}
             </Internal>
           </div>

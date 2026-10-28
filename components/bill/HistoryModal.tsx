@@ -4,6 +4,7 @@ import { Button, Modal } from "../bootstrap"
 import { HistoryTable } from "./HistoryTable"
 import { BillProps } from "./types"
 import { useTranslation } from "next-i18next"
+import { formatBillId } from "../formatting"
 
 export const HistoryModal = ({ bill }: BillProps) => {
   const [showBillHistory, setShowBillHistory] = useState(false)
@@ -20,9 +21,7 @@ export const HistoryModal = ({ bill }: BillProps) => {
         <Modal.Header closeButton onClick={handleCloseBillHistory}>
           <StyledModalTitle>{t("bill.status_and_history")}</StyledModalTitle>
         </Modal.Header>
-        <StyledBillTitle>
-          {bill.id + " - " + bill.content.Title}
-        </StyledBillTitle>
+        <BillHistoryHeading bill={bill} />
         <Modal.Body>
           <HistoryTable billHistory={bill.history} />
         </Modal.Body>
@@ -37,13 +36,43 @@ export const StyledModalTitle = styled(Modal.Title)`
   line-height: 55px;
   letter-spacing: -1.5px;
   text-align: justified;
+
+  /* In Lexend, which headings like this one do not otherwise pick up, at
+     normal letter spacing. */
+  *:root & {
+    font-family: var(--maple-font-heading);
+    letter-spacing: normal;
+  }
 `
 
-export const StyledBillTitle = styled.div`
-  font-size: 32px;
-  font-weight: 600;
-  line-height: 44px;
-  letter-spacing: -1.5px;
-  text-align: justified;
-  margin: 1rem 2rem 0 2rem;
+/** The bill named under the modal title, shared by every Status & History
+ * modal (here and components/bill/Status.tsx). */
+export const BillHistoryHeading = ({ bill }: BillProps) => (
+  <>
+    <BillHeading>
+      <p className="number">{formatBillId(bill.id)}</p>
+      <p className="title">{bill.content.Title}</p>
+    </BillHeading>
+  </>
+)
+
+/* The bill named the way the page behind the modal names it, the number as
+   on the page (H.5004) over the title in the summary card's italic. */
+const BillHeading = styled.div`
+  display: block;
+  margin: 1.25rem 2rem 0;
+
+  .number {
+    color: var(--bs-blue);
+    font-size: 2.25rem;
+    font-weight: 500;
+    line-height: 1.1;
+    margin-bottom: 0.25rem;
+  }
+
+  .title {
+    font-size: 1.25rem;
+    font-style: italic;
+    margin-bottom: 0;
+  }
 `

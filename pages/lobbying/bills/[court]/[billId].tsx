@@ -9,8 +9,12 @@ import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
-import { normalizePosition } from "components/lobbying/LobbyingPositionChip"
+import {
+  LobbyingPositionChip,
+  normalizePosition
+} from "components/lobbying/LobbyingPositionChip"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
+import { selectChevron } from "components/lobbying/selectChevron"
 import { SosSourceLink } from "components/lobbying/SosSourceLink"
 import {
   compareFilingPeriodsDesc,
@@ -224,7 +228,7 @@ function BillFilingsPage() {
                     onChange={e =>
                       setPosFilter(e.target.value as typeof posFilter)
                     }
-                    style={selectStyle}
+                    style={{ ...selectStyle, ...selectChevron }}
                     aria-label={t("filters.position")}
                   >
                     <option value="all">{t("filters.allPositions")}</option>
@@ -301,14 +305,10 @@ function BillFilingsPage() {
                             </a>
                           </td>
                           <td style={cellStyle}>
-                            <span
-                              style={{
-                                ...chipStyle,
-                                ...posChipStyle(normalizePosition(f.position))
-                              }}
-                            >
-                              {f.position || "—"}
-                            </span>
+                            <LobbyingPositionChip
+                              position={f.position}
+                              showReported
+                            />
                           </td>
                           <td style={{ ...cellStyle, whiteSpace: "nowrap" }}>
                             {filingPeriodLabel(f, i18n.language)}
@@ -404,33 +404,4 @@ const trStyle: React.CSSProperties = {
 const cellStyle: React.CSSProperties = {
   padding: "0.45rem 0.75rem",
   verticalAlign: "middle"
-}
-
-const chipStyle: React.CSSProperties = {
-  display: "inline-block",
-  padding: "0.15rem 0.5rem",
-  borderRadius: 12,
-  fontSize: 11,
-  fontWeight: 600,
-  border: "1px solid",
-  whiteSpace: "nowrap" as const
-}
-
-function posChipStyle(pos: string): React.CSSProperties {
-  if (pos === "support")
-    return { color: MAPLE_COLORS.green, borderColor: MAPLE_COLORS.greenBorder }
-  if (pos === "oppose")
-    return {
-      color: MAPLE_COLORS.orangeSubtleText,
-      borderColor: MAPLE_COLORS.accent
-    }
-  if (pos === "neutral")
-    return {
-      color: MAPLE_COLORS.blueSubtleText,
-      borderColor: MAPLE_COLORS.blueBorder
-    }
-  return {
-    color: MAPLE_COLORS.textMuted,
-    borderColor: MAPLE_COLORS.borderDefault
-  }
 }
