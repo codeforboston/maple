@@ -25,7 +25,7 @@ import styles from "./Homepage.module.css"
  * derived from the taxonomy. Unlinked for now, since what each should filter
  * to is still open.
  */
-const topics = [
+export const topics = [
   { key: "education", icon: faGraduationCap, tint: "blue" },
   { key: "health", icon: faHeartPulse, tint: "red" },
   { key: "climate", icon: faLeaf, tint: "green" },
@@ -33,33 +33,6 @@ const topics = [
   { key: "housing", icon: faHouse, tint: "amber" },
   { key: "work", icon: faBriefcase, tint: "gray" }
 ] as const
-
-/**
- * The same circles at a smaller size, used inside the hero's ask panel: a disc
- * and its name side by side, so they read as a row of shortcuts.
- */
-export function TopicChips() {
-  const { t } = useTranslation("homepage")
-
-  return (
-    <div className={styles.topicChips}>
-      {topics.map(({ key, icon, tint }) => (
-        <span className={styles.topicChip} key={key}>
-          <span
-            className={styles.topicChipDisc}
-            style={{
-              background: `var(--maple-color-${tint}-subtle-bg)`,
-              color: `var(--maple-color-${tint}-subtle-text)`
-            }}
-          >
-            <FontAwesomeIcon icon={icon} />
-          </span>
-          {t(`topics.${key}`)}
-        </span>
-      ))}
-    </div>
-  )
-}
 
 export default function TopicsSection() {
   const { t } = useTranslation("homepage")

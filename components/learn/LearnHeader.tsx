@@ -20,8 +20,8 @@ const Title = styled.h1`
   font-size: clamp(1.75rem, 6vw, var(--learn-title-size, 2.375rem));
 
   /* Mixed only: the same title style as every other page there
-     (styles/bootstrap.scss), in place of the Learn blue and weight. Maple and
-     Digital Democracy keep the Learn title as it is. */
+     (styles/bootstrap.scss), in place of the Learn blue and weight. Maple,
+     Digital Democracy and Statehouse keep the Learn title as it is. */
   [data-maple-nav="mixed"] & {
     font-weight: 600;
     color: var(--maple-brand-dark);

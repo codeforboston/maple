@@ -2,17 +2,17 @@ import React, { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "next-i18next"
 import { Col, Container, Row } from "components/bootstrap"
 import { createPage } from "components/page"
-import { createGetStaticTranslationProps } from "components/translations"
-import {
-  useLobbyingFirmSummaries,
-  useLobbyingEntityFilingCounts
-} from "components/db/lobbying"
+import { FirmListRow, fetchFirmListRows } from "components/db/lobbying"
+import { createLobbyingListProps } from "components/lobbying/listPageProps"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 import { matchesSearch } from "components/lobbying/searchMatch"
+import { regTypeLabel } from "components/lobbying/regTypeLabel"
+import { SessionFilter, SessionSelect } from "components/lobbying/SessionSelect"
+import { yearToCourt } from "components/lobbying/sessions"
 
 const PAGE_SIZE = 50
 
@@ -66,14 +66,17 @@ type FirmRow = {
   lobbyists: string[]
   // Lobbyists whose name matched the search when the firm's own name didn't.
   matchedLobbyists: string[]
+  employers: string[]
+  hasFilings: boolean
 }
 
-function LobbyingFirmsTable() {
+function LobbyingFirmsTable({ rows }: { rows: FirmListRow[] }) {
   const { t } = useTranslation("lobbying")
   const [regTypeFilter, setRegTypeFilter] = useState<
     "all" | "Lobbyist" | "Employer"
   >("all")
   const [search, setSearch] = useState("")
+  const [session, setSession] = useState<SessionFilter>("all")
   const [sortKey, setSortKey] = useState<FirmSortKey>("name")
   const [sortDir, setSortDir] = useState<SortDir>("asc")
 
@@ -86,21 +89,49 @@ function LobbyingFirmsTable() {
     }
   }
 
-  const { result: summaries, status, error } = useLobbyingFirmSummaries()
-  const { result: filCounts } = useLobbyingEntityFilingCounts()
+  const sessions = useMemo(
+    () =>
+      [...new Set(rows.flatMap(f => f.years.map(yearToCourt)))].sort(
+        (a, b) => b - a
+      ),
+    [rows]
+  )
+
+  // With a session selected, show only lobbyists and entities registered or
+  // filing in it, with that session's clients and filings.
   const firmsWithCounts = useMemo<FirmRow[]>(() => {
-    if (!summaries) return []
-    return summaries.map(f => ({
-      entityName: f.entityName,
-      entityNameNorm: f.entityNameNorm,
-      regType: f.regType,
-      years: f.years,
-      clientCount: f.clientCount,
-      totalFilings: filCounts?.[f.entityNameNorm],
-      lobbyists: f.lobbyists ?? [],
-      matchedLobbyists: []
-    }))
-  }, [summaries, filCounts])
+    return rows.flatMap(f => {
+      const row = {
+        entityName: f.entityName,
+        entityNameNorm: f.entityNameNorm,
+        regType: f.regType,
+        years: f.years,
+        lobbyists: f.lobbyists,
+        matchedLobbyists: [],
+        employers: f.employers
+      }
+      if (session === "all") {
+        return [
+          {
+            ...row,
+            clientCount: f.clientCount,
+            totalFilings: f.totalFilings ?? undefined,
+            hasFilings: f.hasFilings
+          }
+        ]
+      }
+      if (!f.years.some(y => yearToCourt(y) === session)) return []
+      const inSession = f.courts[String(session)]
+      return [
+        {
+          ...row,
+          clientCount: inSession?.clientCount ?? 0,
+          totalFilings: inSession?.filings,
+          hasFilings: Boolean(inSession)
+        }
+      ]
+    })
+  }, [rows, session])
 
   // A firm's disclosures are credited to the firm, so a lobbyist who only
   // appears on a firm's disclosures is found through the firm.
@@ -141,11 +172,17 @@ function LobbyingFirmsTable() {
 
   useEffect(() => {
     setPage(1)
-  }, [regTypeFilter, search, sortKey, sortDir, setPage])
+  }, [regTypeFilter, session, search, sortKey, sortDir, setPage])
 
   return (
     <>
       <div style={filterRowStyle}>
+        <SessionSelect
+          sessions={sessions}
+          value={session}
+          onChange={setSession}
+          style={selectStyle}
+        />
         <select
           value={regTypeFilter}
           onChange={e =>
@@ -169,120 +206,120 @@ function LobbyingFirmsTable() {
         />
       </div>
 
-      {status === "loading" || status === "not-requested" ? (
-        <p style={{ color: MAPLE_COLORS.textMuted, padding: "2rem 0" }}>
-          {t("loading")}
+      <>
+        <p
+          style={{
+            color: MAPLE_COLORS.textMuted,
+            fontSize: 13,
+            marginBottom: "0.5rem"
+          }}
+        >
+          {totalItems} {t("sections.firms").toLowerCase()}
         </p>
-      ) : status === "error" ? (
-        <p style={{ color: MAPLE_COLORS.danger, padding: "1rem 0" }}>
-          Error: {error?.message}
-        </p>
-      ) : (
-        <>
-          <p
-            style={{
-              color: MAPLE_COLORS.textMuted,
-              fontSize: 13,
-              marginBottom: "0.5rem"
-            }}
-          >
-            {totalItems} {t("sections.firms").toLowerCase()}
-          </p>
-          <div style={{ overflowX: "auto" }}>
-            <table style={tableStyle}>
-              <thead>
-                <tr style={theadStyle}>
-                  <SortTh
-                    label={t("fields.firmName")}
-                    sortKey="name"
-                    current={sortKey}
-                    dir={sortDir}
-                    onSort={handleSort}
-                  />
-                  <th style={thStyle}>{t("fields.type")}</th>
-                  <SortTh
-                    label={t("fields.sessions")}
-                    sortKey="sessions"
-                    current={sortKey}
-                    dir={sortDir}
-                    onSort={handleSort}
-                  />
-                  <SortTh
-                    label={t("fields.clients")}
-                    sortKey="clients"
-                    current={sortKey}
-                    dir={sortDir}
-                    onSort={handleSort}
-                  />
-                  <SortTh
-                    label={t("fields.filings")}
-                    sortKey="filings"
-                    current={sortKey}
-                    dir={sortDir}
-                    onSort={handleSort}
-                  />
-                </tr>
-              </thead>
-              <tbody>
-                {pageItems.map(f => (
-                  <tr key={f.entityNameNorm} style={trStyle}>
-                    <td style={tdStyle}>
-                      <a
-                        href={`/lobbying/firms/${encodeURIComponent(
-                          f.entityNameNorm
-                        )}`}
-                        style={{ color: MAPLE_COLORS.primary, fontWeight: 600 }}
-                      >
-                        {f.entityName}
-                      </a>
-                      {f.matchedLobbyists.length > 0 && (
-                        <div
-                          style={{
-                            color: MAPLE_COLORS.textMuted,
-                            fontSize: 12
-                          }}
-                        >
-                          {t("misc.matchedLobbyists", {
-                            names: f.matchedLobbyists.join(", ")
-                          })}
-                        </div>
-                      )}
-                    </td>
-                    <td style={tdStyle}>{f.regType}</td>
-                    <td
-                      style={{
-                        ...tdStyle,
-                        color: MAPLE_COLORS.textMuted,
-                        fontSize: 12
-                      }}
+        <div style={{ overflowX: "auto" }}>
+          <table style={tableStyle}>
+            <thead>
+              <tr style={theadStyle}>
+                <SortTh
+                  label={t("fields.firmName")}
+                  sortKey="name"
+                  current={sortKey}
+                  dir={sortDir}
+                  onSort={handleSort}
+                />
+                <th style={thStyle}>{t("fields.type")}</th>
+                <SortTh
+                  label={t("fields.sessions")}
+                  sortKey="sessions"
+                  current={sortKey}
+                  dir={sortDir}
+                  onSort={handleSort}
+                />
+                <SortTh
+                  label={t("fields.clients")}
+                  sortKey="clients"
+                  current={sortKey}
+                  dir={sortDir}
+                  onSort={handleSort}
+                />
+                <SortTh
+                  label={t("fields.filings")}
+                  sortKey="filings"
+                  current={sortKey}
+                  dir={sortDir}
+                  onSort={handleSort}
+                />
+              </tr>
+            </thead>
+            <tbody>
+              {pageItems.map(f => (
+                <tr key={f.entityNameNorm} style={trStyle}>
+                  <td style={tdStyle}>
+                    <a
+                      href={`/lobbying/firms/${encodeURIComponent(
+                        f.entityNameNorm
+                      )}`}
+                      style={{ color: MAPLE_COLORS.primary, fontWeight: 600 }}
                     >
-                      {f.years.length === 1
-                        ? f.years[0]
-                        : `${f.years[f.years.length - 1]}–${f.years[0]}`}
-                    </td>
-                    <td style={tdStyle}>{f.clientCount}</td>
-                    <td style={{ ...tdStyle, color: MAPLE_COLORS.textMuted }}>
-                      {f.totalFilings !== undefined ? f.totalFilings : "—"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <LobbyingPaginationBar
-            page={page}
-            totalPages={totalPages}
-            totalItems={totalItems}
-            pageSize={PAGE_SIZE}
-            onPage={setPage}
-          />
-        </>
-      )}
+                      {f.entityName}
+                    </a>
+                    {f.matchedLobbyists.length > 0 && (
+                      <div
+                        style={{
+                          color: MAPLE_COLORS.textMuted,
+                          fontSize: 12
+                        }}
+                      >
+                        {t("misc.matchedLobbyists", {
+                          names: f.matchedLobbyists.join(", ")
+                        })}
+                      </div>
+                    )}
+                    {f.employers.length > 0 && (
+                      <div
+                        style={{
+                          color: MAPLE_COLORS.textMuted,
+                          fontSize: 12
+                        }}
+                      >
+                        {t("misc.atFirms", { firms: f.employers.join(", ") })}
+                      </div>
+                    )}
+                  </td>
+                  <td style={tdStyle}>{regTypeLabel(f.regType, t)}</td>
+                  <td
+                    style={{
+                      ...tdStyle,
+                      color: MAPLE_COLORS.textMuted,
+                      fontSize: 12
+                    }}
+                  >
+                    {f.years.length === 1
+                      ? f.years[0]
+                      : `${f.years[f.years.length - 1]}–${f.years[0]}`}
+                  </td>
+                  <td style={tdStyle}>{f.hasFilings ? f.clientCount : "—"}</td>
+                  <td style={{ ...tdStyle, color: MAPLE_COLORS.textMuted }}>
+                    {f.totalFilings !== undefined ? f.totalFilings : "—"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <LobbyingPaginationBar
+          page={page}
+          totalPages={totalPages}
+          totalItems={totalItems}
+          pageSize={PAGE_SIZE}
+          onPage={setPage}
+        />
+      </>
     </>
   )
 }
 
-function LobbyingFirmsPage() {
+function LobbyingFirmsPage({ rows }: { rows: FirmListRow[] }) {
   const { t } = useTranslation("lobbying")
   return (
     <>
@@ -298,7 +335,7 @@ function LobbyingFirmsPage() {
         </Row>
         <Row>
           <Col>
-            <LobbyingFirmsTable />
+            <LobbyingFirmsTable rows={rows} />
           </Col>
         </Row>
         <Row>
@@ -316,12 +353,9 @@ export default createPage({
   Page: LobbyingFirmsPage
 })
 
-export const getStaticProps = createGetStaticTranslationProps([
-  "auth",
-  "common",
-  "footer",
-  "lobbying"
-])
+export const getStaticProps = createLobbyingListProps(async () => ({
+  rows: await fetchFirmListRows()
+}))
 
 const filterRowStyle: React.CSSProperties = {
   display: "flex",

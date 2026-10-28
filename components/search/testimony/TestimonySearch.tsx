@@ -25,7 +25,11 @@ import { SearchContainer } from "../SearchContainer"
 import { SearchErrorBoundary } from "../SearchErrorBoundary"
 import { SortBy } from "../SortBy"
 import { getServerConfig, VirtualFilters } from "../common"
-import { testimonyRelevanceSort, testimonySearchParams } from "../searchParams"
+import {
+  testimonyDefaultSort,
+  testimonyRelevanceSort,
+  testimonySearchParams
+} from "../searchParams"
 import { TestimonyHit } from "./TestimonyHit"
 import { useTestimonyRefinements } from "./useTestimonyRefinements"
 import { FilterLabel, FilterSection } from "../useRefinements"
@@ -33,10 +37,26 @@ import { FollowContext, OrgFollowStatus } from "components/shared/FollowContext"
 import { pathToSearchState, searchStateToUrl } from "../routingHelpers"
 import { useTranslation } from "next-i18next"
 
+/** The InstantSearch index name of the default (Newest) sort: the bare
+ * collection, with the sort pinned on the adapter below, the same way Browse
+ * Bills does it (see billsDefaultIndex in bills/useBillSort.tsx).
+ */
+export const testimonyDefaultIndex = "publishedTestimony"
+
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
-  additionalSearchParameters: testimonySearchParams
+  // sort_by only reaches Typesense under the default option, whose index name
+  // has no sort segment; the other options' "publishedTestimony/sort/<sort_by>"
+  // index names override it in the adapter.
+  additionalSearchParameters: {
+    ...testimonySearchParams,
+    sort_by: testimonyDefaultSort
+  }
 }).searchClient
+
+/** Relevance is an ordinary sort option; SortBy moves to it when a term is
+ * typed (see its relevanceValue prop). */
+export const testimonyRelevanceIndex = `publishedTestimony/sort/${testimonyRelevanceSort}`
 
 export const useTestimonySort = () => {
   const { t } = useTranslation("search")
@@ -44,15 +64,15 @@ export const useTestimonySort = () => {
     () => [
       {
         label: t("sort_by.newest"),
-        value: "publishedTestimony/sort/publishedAt:desc"
+        value: testimonyDefaultIndex
+      },
+      {
+        label: t("sort_by.relevance"),
+        value: testimonyRelevanceIndex
       },
       {
         label: t("sort_by.oldest"),
         value: "publishedTestimony/sort/publishedAt:asc"
-      },
-      {
-        label: t("sort_by.relevance"),
-        value: `publishedTestimony/sort/${testimonyRelevanceSort}`
       }
     ],
     [t]
@@ -61,13 +81,12 @@ export const useTestimonySort = () => {
 }
 
 export const TestimonySearch = () => {
-  const initialSortByValue = useTestimonySort()[0].value
   return (
     <SearchErrorBoundary>
       <InstantSearch
-        indexName={initialSortByValue}
+        indexName={testimonyDefaultIndex}
         initialUiState={{
-          [initialSortByValue]: {
+          [testimonyDefaultIndex]: {
             refinementList: { court: [String(currentGeneralCourt)] }
           }
         }}
@@ -232,7 +251,11 @@ const Layout = () => {
             <SearchBox placeholder="Search For Testimony" />
             <RefinementRow>
               <ResultCount className="flex-grow-1" />
-              <SortBy items={useTestimonySort()} />
+              <SortBy
+                items={useTestimonySort()}
+                relevanceValue={testimonyRelevanceIndex}
+                relevanceHelp={t("sort_by.relevance_help_testimony")}
+              />
               {refinements.show}
             </RefinementRow>
             <CurrentRefinements excludedAttributes={["authorRole"]} />

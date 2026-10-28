@@ -728,6 +728,25 @@ html:not([data-maple-theme="dd"])
   --bs-btn-disabled-border-color: var(--maple-brand-primary);
 }
 
+/* On the neutral bar, the sign-in button (the bar's only .btn-primary) is a
+   ghost button: blue text with no fill or border at rest, filling blue with
+   white text on hover like the skin's other outline buttons, so it shows as a
+   button when pointed at. The blue bar keeps the red button. After the rule
+   above so it wins. */
+[data-maple-theme="dd"]
+  :is([data-navbar-variant="neutral"], [data-navbar-variant="auto"])
+  .btn-primary {
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: transparent;
+  --bs-btn-color: var(--maple-brand-primary);
+  --bs-btn-hover-bg: var(--maple-brand-primary);
+  --bs-btn-hover-border-color: var(--maple-brand-primary);
+  --bs-btn-hover-color: var(--maple-text-inverse);
+  --bs-btn-active-bg: var(--maple-brand-primary-strong);
+  --bs-btn-active-border-color: var(--maple-brand-primary-strong);
+  --bs-btn-active-color: var(--maple-text-inverse);
+}
+
 /* The desktop navbar carries data-bs-theme="dark", which drives Bootstrap's
    own link colours. Point those at the skin's ink instead. */
 :is(
@@ -946,9 +965,10 @@ html:not([data-maple-theme="dd"])
   background-color: var(--maple-surface-page) !important;
 }
 
-/* Digital Democracy (not Mixed), Learn and About: the bar takes the section's
-   ground, a touch darker than the page grey elsewhere (styles/bootstrap.scss). */
-[data-maple-theme="dd"]:not([data-maple-nav="mixed"])
+/* Digital Democracy (not Mixed or Statehouse, which set data-maple-nav), Learn
+   and About: the bar takes the section's ground, a touch darker than the page
+   grey elsewhere (styles/bootstrap.scss). */
+[data-maple-theme="dd"]:not([data-maple-nav])
   .main-navbar[data-section-ground]:is(
     [data-navbar-variant="neutral"],
     [data-navbar-variant="auto"]

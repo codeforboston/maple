@@ -7,7 +7,7 @@ import { useAuth } from "./auth"
 import { Nav, NavDropdown } from "./bootstrap"
 import { useProfile } from "./db"
 import { NavLink } from "./Navlink"
-import { Wrap } from "./links"
+import { maple, Wrap } from "./links"
 import { BetaTag } from "./shared/CommonComponents"
 
 export const DESKTOP_NAV_ITEM_CLASS = "desktop-navbar-link px-3 py-1"
@@ -196,6 +196,32 @@ export const NavbarLinkBallotQuestions: React.FC<
         {...other}
       >
         {t("navigation.ballotQuestions")}
+      </NavLink>
+    </Nav.Item>
+  )
+}
+
+export const NavbarLinkConferences: React.FC<
+  React.PropsWithChildren<{
+    handleClick?: any
+    other?: any
+  }>
+> = ({ handleClick, other }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  const { t } = useTranslation(["common", "auth"])
+  const { pathname } = useRouter()
+  return (
+    <Nav.Item onClick={handleClick}>
+      <NavLink
+        className={isMobile ? "navLink-primary" : DESKTOP_NAV_ITEM_CLASS}
+        href={maple.conferences()}
+        // The landing, the explorer and every conference are this section.
+        other={{
+          active: pathname.startsWith(maple.conferences()),
+          ...other
+        }}
+      >
+        {t("navigation.conferences")}
       </NavLink>
     </Nav.Item>
   )

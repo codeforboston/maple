@@ -1,16 +1,12 @@
 import { useTranslation } from "next-i18next"
-import { useState } from "react"
 import Image from "react-bootstrap/Image"
 
 import styles from "./Homepage.module.css"
 
 import { NEWSLETTER_SIGNUP_URL, TRAINING_CALENDAR_URL } from "components/common"
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Internal } from "components/links"
-import { TopicChips } from "./TopicsSection"
-import TypedPrompt from "./TypedPrompt"
-import { useMediaQuery } from "usehooks-ts"
+import HeroSearchPanel from "./HeroSearchPanel"
+import { ConferenceActions, ConferenceTopics } from "./ConferenceLinks"
 
 /**
  * Which blocks the hero shows. These are content choices, not skin choices:
@@ -18,29 +14,36 @@ import { useMediaQuery } from "usehooks-ts"
  * The defaults are what the homepage shows today.
  */
 export type HeroSectionProps = {
+  /** The redesign's lead paragraph under the title. */
+  showLead?: boolean
   /** The original body copy, with the calendar and newsletter links. */
   showBody?: boolean
   /** The Get Started and Learn More buttons. */
   showActions?: boolean
-  /** The topic chips and the ask field. */
+  /** The search panel: its heading, introduction, what the open conference
+   * committees cover, and buttons to them. */
   showAsk?: boolean
+  /** The statehouse in its own column, in the search panel's place, rather
+   * than under the copy, laid out like Old Hero: statehouse on the left, copy
+   * on the right. The panel is left out while this is on. */
+  statehouseColumn?: boolean
 }
 
 export default function HeroSection({
+  showLead = true,
   showBody = false,
   showActions = false,
-  showAsk = true
+  showAsk = true,
+  statehouseColumn = false
 }: HeroSectionProps) {
   const { t } = useTranslation("homepage")
-  /* The ask field is a demo: focusing it swaps the typed placeholder for a real
-     input and raises a panel of suggestions, as on the Digital Democracy
-     heroes. Nothing submits. */
-  const [asking, setAsking] = useState(false)
-  // On a phone the field drops its "Ask about:" lead-in to make room.
-  const isMobile = useMediaQuery("(max-width: 768px)")
 
   return (
-    <section className={styles.heroSection}>
+    <section
+      className={`${styles.heroSection} ${
+        statehouseColumn ? styles.heroStatehouse : ""
+      }`}
+    >
       <div className={styles.skylineBackground} aria-hidden="true">
         {/* Four building clusters, cut at the natural gaps in the skyline.
             Styled only under the Digital Democracy skin; inert otherwise. */}
@@ -79,11 +82,13 @@ export default function HeroSection({
                 independently of the grid column it sits in. */}
             <div className={styles.heroCopy}>
               <h1 className={styles.heroTitle}>{t("hero.title")}</h1>
-              <p className={styles.heroLead}>{t("hero.lead")}</p>
+              {showLead && <p className={styles.heroLead}>{t("hero.lead")}</p>}
               {/* The full-colour statehouse for the current MAPLE look, under
                   the copy. The Digital Democracy skin hides it and tints its
                   own silhouette into the background instead. */}
-              <span className={styles.statehouseArt} aria-hidden="true" />
+              {!statehouseColumn && (
+                <span className={styles.statehouseArt} aria-hidden="true" />
+              )}
 
               {showBody && (
                 <>
@@ -129,66 +134,19 @@ export default function HeroSection({
             </div>
           </div>
 
-          {/* Demo only: mimics the search block in the Digital Democracy
-              heroes. Not wired to anything. */}
-          {showAsk && (
-            <div className={styles.heroSearch}>
-              <p className={styles.heroSearchLabel}>{t("topicsHeading")}</p>
-              <TopicChips />
-              <div className={styles.heroAsk}>
-                <div
-                  className={styles.heroSearchField}
-                  onClick={() => setAsking(true)}
-                >
-                  {/* Decorative and inert: it marks the field as MAPLE's, and
-                      is not a control. */}
-                  <img
-                    className={styles.heroSearchMascot}
-                    src="/maple-mascot.png"
-                    alt=""
-                    aria-hidden="true"
-                  />
-                  {asking ? (
-                    <input
-                      autoFocus
-                      className={styles.heroSearchInput}
-                      onBlur={() => setAsking(false)}
-                      /* On focus the typed animation stops, so the field keeps
-                         a full prompt rather than emptying to the lead-in
-                         alone. */
-                      placeholder={
-                        isMobile
-                          ? t("hero.searchDefault")
-                          : `${t("hero.searchLead")}  ${t(
-                              "hero.searchDefault"
-                            )}`
-                      }
-                      aria-label={t("hero.searchLabel")}
-                    />
-                  ) : (
-                    <span className={styles.heroSearchText}>
-                      {!isMobile && <strong>{t("hero.searchLead")}</strong>}{" "}
-                      <TypedPrompt />
-                    </span>
-                  )}
-                  <FontAwesomeIcon icon={faArrowRight} />
-                </div>
+          {/* With statehouseColumn, the statehouse takes its own column and
+              the panel below is left out. */}
+          {statehouseColumn && (
+            <span className={styles.statehouseColumn} aria-hidden="true" />
+          )}
 
-                {asking && (
-                  <div className={styles.heroSuggest}>
-                    <p className={styles.heroSuggestHeading}>
-                      {t("hero.suggestHeading")}
-                    </p>
-                    <ul>
-                      <li>{t("hero.suggest.people")}</li>
-                      <li>{t("hero.suggest.bills")}</li>
-                      <li>{t("hero.suggest.hearings")}</li>
-                      <li>{t("hero.suggest.testimony")}</li>
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </div>
+          {showAsk && !statehouseColumn && (
+            <HeroSearchPanel
+              title={t("topicsHeading")}
+              description={t("conferenceLinks.intro")}
+              topics={<ConferenceTopics />}
+              search={<ConferenceActions />}
+            />
           )}
         </div>
       </div>

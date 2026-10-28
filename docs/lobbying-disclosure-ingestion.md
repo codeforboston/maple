@@ -134,6 +134,7 @@ interface LobbyingFiling {
   activityTitle: string // bill title (legislative) or meeting description (executive)
   position: string // "Support" | "Oppose" | "Neutral" | etc.; empty for executive
   amount: number | null // compensation allocated to this activity
+  disclosureUrl: string // the SoS disclosure page this activity was reported on
   fetchedAt: Timestamp
 }
 ```
@@ -172,6 +173,43 @@ interface LobbyingFiling {
   }
 ]
 ```
+
+### `/lobbyingRegistrations/{registrationId}`
+
+One doc per registration page (`Summary.aspx`): a lobbyist or lobbyist entity
+in one year. It records people who never file a disclosure themselves because
+the entity employing them files on their behalf. `registrationId` is a hash of
+`registration|{regType}|{year}|{name}`; before 2019 the portal served one
+identical page per firm per lobbyist, and those collapse into one doc.
+
+```typescript
+interface RegistrationParty {
+  name: string
+  nameNorm: string
+  sourceUrl: string | null // that party's registration page (lobbyists: 2019+ only)
+  amount: number | null // salary paid / received, or client compensation
+  startDate: string | null // ISO date
+  endDate: string | null
+  purpose: string | null // clients only
+}
+
+interface LobbyingRegistration {
+  registrationId: string
+  name: string
+  nameNorm: string
+  year: number
+  regType: "Lobbyist" | "Employer" // "Employer" = SoS "Lobbyist Entity"
+  lobbyists: RegistrationParty[] // entities: lobbyists they employ
+  employers: RegistrationParty[] // individuals: entities employing them (2019+)
+  clients: RegistrationParty[]
+  disclosureUrls: string[]
+  sourceUrls: string[] // the registration page(s) on the SoS website
+  fetchedAt: Timestamp
+}
+```
+
+The frontend doesn't read this collection directly: `compute_stats` rolls each
+person's or entity's registrations into its `lobbyingMeta/firmSummaries` doc.
 
 ### Constructing `billId` from Raw Portal Data
 
@@ -244,16 +282,23 @@ normalized form.
    `PLLC`.
 6. **Remove "THE"** — whole-word removal anywhere in the string (not just as a
    leading prefix).
-7. **Ampersand → AND** — replace `&` with `AND`.
-8. **Fix known typo** — replace `ASSICIATES` with `ASSOCIATES` (legacy portal
-   data).
-9. **Remove professional suffix phrases** — whole-phrase removal of: `LAW
-OFFICE OF`, `AND ASSOCIATES`, `& ASSOCIATES`, `AND ASSOC`, `ATTORNEY AT
-LAW`, `ATTORNEY@LAW`, `ATTORNET AT LAW`, `AND PARTNERS`, `PUBLIC POLICY
-GROUP`, `LEGISLATIVE SERVICES`, `POLICY GROUP`, `ASSOCIATES`, `COUNSELLORS
-AT LAW`.
-10. **Collapse whitespace** — replace runs of whitespace with a single space and
+7. **Ampersand → AND** — replace `&` with `AND` (spaced, so `A&B` and
+   `A & B` match), and `ATTORNEY@LAW` with `ATTORNEY AT LAW`.
+8. **Split glued suffix** — `XYZASSOCIATES` → `XYZ ASSOCIATES`.
+9. **Fix known portal typos** — `ASSICIATES` → `ASSOCIATES`, `ATTORNET` →
+   `ATTORNEY`.
+10. **Remove descriptive phrases** — whole-word removal of: `LAW OFFICE OF`,
+    `AND ASSOCIATES`, `AND ASSOC`, `ATTORNEY AT LAW`, `AND PARTNERS`, `PUBLIC
+POLICY GROUP`, `LEGISLATIVE SERVICES`, `POLICY GROUP`, `ASSOCIATES`,
+    `COUNSELLORS AT LAW`, so variants of one firm's name group together —
+    **unless that would leave a single word**. A bare surname would merge
+    different firms that share it (e.g. `X Associates`, `X Legislative
+Services` and `X Policy Group`), so in that case the descriptor is kept
+    (with `AND ASSOCIATES` shortened to `ASSOCIATES`).
+11. **Collapse whitespace** — replace runs of whitespace with a single space and
     strip leading/trailing whitespace.
+
+The implementation is `lobbying-scraper/normalize.py`.
 
 ### Usage
 
@@ -384,13 +429,12 @@ amount is available for these years.
 ```
 functions/src/lobbying/
   types.ts     — Runtypes schema definitions for LobbyingRegistrant, LobbyingFiling
-  normalize.ts — Entity name normalization pipeline (also used client-side)
   index.ts     — Re-exports
 
 lobbying-scraper/
-  scrape.py           — Entry point: --mode weekly (incremental) | --mode backfill
+  scrape.py           — Entry point: --mode weekly (incremental) | backfill | stats
   portal.py           — HTTP fetch wrappers + pure HTML parsers for all 4 format eras
-  normalize.py        — Port of normalize.ts
+  normalize.py        — Entity name normalization pipeline
   writer.py           — Firestore document construction + writes
   archive.py          — GCS raw-HTML archive (write-only; enabled by ARCHIVE_RAW=1)
   reparse_archive.py  — Offline driver to re-ingest archived HTML into Firestore
@@ -408,41 +452,28 @@ running multiple language runtimes in the same Firebase Functions deployment.
 
 ## Deploying the Cloud Run Container
 
-Follows the same pattern as the MCP server. The Artifact Registry repo
-(`maple-lobbying`) and Cloud Run job (`maple-lobbying-scraper`) are already
-created in `digital-testimony-dev`.
+`lobbying-scraper/deploy.sh` builds and pushes the image, creates or updates
+the `maple-lobbying-scraper` Cloud Run job (with `ARCHIVE_RAW=1`), and creates
+or updates the `maple-lobbying-weekly` Cloud Scheduler trigger (Mondays 06:00
+UTC). The trigger runs as a dedicated `lobbying-scheduler` service account that
+can only invoke the job. Re-run it after any scraper change:
 
 ```bash
-cd lobbying-scraper
-IMAGE=us-central1-docker.pkg.dev/digital-testimony-dev/maple-lobbying/scraper:latest
-docker build -t $IMAGE . && docker push $IMAGE
-
-gcloud run jobs update maple-lobbying-scraper \
-  --image=$IMAGE \
-  --project=digital-testimony-dev \
-  --region=us-central1
+gcloud auth configure-docker us-central1-docker.pkg.dev  # once
+lobbying-scraper/deploy.sh <project>
 ```
 
-For a new project (prod), create the job first:
+The project's archive bucket (`<project>-lobbying-archive`) must already exist.
+For a new project, run the historical backfill before the first weekly run.
+
+## Recomputing Stats
+
+`lobbyingMeta` (overview stats, the Lobbyists and Clients lists, per-bill
+summaries) is recomputed automatically at the end of any scraper run that
+writes new data. To recompute it by hand from what's already in Firestore:
 
 ```bash
-gcloud artifacts repositories create maple-lobbying \
-  --repository-format=docker --location=us-central1 --project=<project>
-
-gcloud run jobs create maple-lobbying-scraper \
-  --image=$IMAGE \
-  --project=<project> \
-  --region=us-central1 \
-  --task-timeout=30m \
-  --max-retries=0
-
-# Schedule weekly (Mondays 6am UTC)
-gcloud scheduler jobs create http maple-lobbying-weekly \
-  --schedule="0 6 * * 1" \
-  --uri="https://us-central1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/<project>/jobs/maple-lobbying-scraper:run" \
-  --http-method=POST \
-  --oauth-service-account-email=<scheduler-sa>@<project>.iam.gserviceaccount.com \
-  --location=us-central1
+GOOGLE_CLOUD_PROJECT=<project> python3 scrape.py --mode stats
 ```
 
 ## Historical Backfill
@@ -510,11 +541,10 @@ Note: bill-join queries should always filter on `chamber` (or check
 | File                                  | Status     | Notes                                                            |
 | ------------------------------------- | ---------- | ---------------------------------------------------------------- |
 | `functions/src/lobbying/types.ts`     | ✅ Done    | Firestore schema types; imported by future frontend code         |
-| `functions/src/lobbying/normalize.ts` | ✅ Done    | Normalization pipeline; also ported to `normalize.py`            |
-| `functions/src/lobbying/index.ts`     | ✅ Done    | Re-exports types and normalize                                   |
+| `functions/src/lobbying/index.ts`     | ✅ Done    | Re-exports types                                                 |
 | `firestore.rules`                     | ✅ Done    |                                                                  |
 | `firestore.indexes.json`              | ✅ Done    |                                                                  |
-| `lobbying-scraper/normalize.py`       | ✅ Done    | Port of normalize.ts                                             |
+| `lobbying-scraper/normalize.py`       | ✅ Done    | Entity name normalization pipeline                               |
 | `lobbying-scraper/portal.py`          | ✅ Done    | All 4 format eras; pure parsers separated from fetch wrappers    |
 | `lobbying-scraper/writer.py`          | ✅ Done    | Firestore document construction                                  |
 | `lobbying-scraper/scrape.py`          | ✅ Done    | Entry point; `--mode weekly` and `--mode backfill`               |
@@ -707,17 +737,11 @@ resumption.
 
 ### Step 8 — Deploy and verify Cloud Run scraper
 
-Build and push the container image, then update the Cloud Run job:
+Build, push and schedule the job (see
+[Deploying the Cloud Run Container](#deploying-the-cloud-run-container)):
 
 ```bash
-cd lobbying-scraper
-IMAGE=us-central1-docker.pkg.dev/digital-testimony-dev/maple-lobbying/scraper:latest
-docker build -t $IMAGE . && docker push $IMAGE
-
-gcloud run jobs update maple-lobbying-scraper \
-  --image=$IMAGE \
-  --project=digital-testimony-dev \
-  --region=us-central1
+lobbying-scraper/deploy.sh digital-testimony-dev
 ```
 
 Trigger a manual run via the Cloud Run console or:

@@ -24,7 +24,8 @@ const Page = styled.div`
     font-family: var(--maple-font-body);
   }
 
-  /* Digital Democracy (not Mixed): on the section's darker ground, borders a
+  /* Digital Democracy and Statehouse (not Mixed): on the section's darker
+     ground, borders a
      touch darker too (0.12 elsewhere). Both are set here, since the card edge
      takes its value where it is defined. */
   [data-maple-theme="dd"]:not([data-maple-nav="mixed"]) & {
@@ -42,10 +43,11 @@ const Inner = styled.div<{ $width: Width }>`
   margin: 0 auto;
   padding: 3.25rem 2rem 3.5rem;
 
-  /* Digital Democracy (not Mixed): the bar is not pinned here and shares the
-     page's ground, so the page starts closer to it, as the explorers do
+  /* Digital Democracy (not Mixed or Statehouse, which set data-maple-nav):
+     the bar is not pinned here and shares the page's ground, so the page
+     starts closer to it, as the explorers do
      (components/shared/PageColumn.tsx). */
-  [data-maple-theme="dd"]:not([data-maple-nav="mixed"]) & {
+  [data-maple-theme="dd"]:not([data-maple-nav]) & {
     padding-top: 1.5rem;
   }
 

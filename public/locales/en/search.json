@@ -35,6 +35,8 @@
     "newest": "Sort by Newest",
     "oldest": "Sort by Oldest",
     "relevance": "Sort by Relevance",
+    "relevance_help_bills": "Relevance ranks bills by how well they match your search, weighing the bill number most, then title, sponsor and committee, then the summary, cosponsors and bill text. Procedural Orders sort last, and ties go to the bill with more testimony.",
+    "relevance_help_testimony": "Relevance ranks testimony by how well it matches your search, weighing the bill number most, then the author, then the testimony text. Ties go to the newest.",
     "testimony_count": "Sort by Testimony Count",
     "cosponsor_count": "Sort by Cosponsor Count",
     "next_hearing_date": "Sort by Next Hearing Date",

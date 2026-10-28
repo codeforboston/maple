@@ -3,6 +3,7 @@ import axios from "axios"
 import { https, logger } from "firebase-functions"
 import { CallableRequest } from "firebase-functions/v2/https"
 import {
+  Literal,
   Null,
   Nullish,
   Optional,
@@ -10,7 +11,8 @@ import {
   Result,
   Runtype,
   Static,
-  String
+  String,
+  Union
 } from "runtypes"
 import { ZodTypeAny, z } from "zod"
 /** Parse the request and return the result or fail. */
@@ -130,3 +132,7 @@ type RecordType<T extends RecordSpec> = Static<Record<T, false>>
 export type DocUpdate<T> = {
   [Prop in keyof T]?: T[Prop] | FieldValue
 }
+
+/** A legislative chamber. */
+export type Branch = Static<typeof Branch>
+export const Branch = Union(Literal("House"), Literal("Senate"))

@@ -1,0 +1,66 @@
+{
+  "in_conference": "In conference",
+  "byline": "Conference committee to pass <1>{{title}}</1> by resolving differences between <3>{{senate}}</3> and <5>{{house}}</5>",
+  "status": {
+    "reportFiled": "Report filed",
+    "enacted": "Enacted",
+    "dissolved": "Dissolved"
+  },
+  "who": "Who’s in the committee?",
+  "senate": "Senate",
+  "house": "House",
+  "seats_lit": "{{chamber}} · {{count}} of {{total}}",
+  "chair": "chair",
+  "your_senator": "Your Senator",
+  "your_representative": "Your Representative",
+  "hearings": "Hearings",
+  "hearing_held": "Hearing held {{date}}",
+  "hearing_scheduled": "Hearing scheduled for {{date}}",
+  "no_hearings": "No hearings have been disclosed.",
+  "pick_conference": "Choose a conference committee",
+  "bill_banner": "This bill is in a conference committee: <1>{{name}}</1>",
+  "hearing_backlink": "A meeting of the conference committee on <1>{{name}}</1>",
+  "map_label": "Massachusetts {{chamber}} districts, with the committee's seats marked",
+  "index_title": "Conference Committees",
+  "index_intro": "In Massachusetts, when the House and Senate pass different versions of a bill, six legislators negotiate the final text in a conference committee. It's the last point where a bill can still change, and it's normally an opaque process. This is the group of legislators determining the fate of these future laws.",
+  "chair_col": "Chair",
+  "minority_col": "Minority",
+  "explorer": "Conference Explorer",
+  "explorer_empty": "Select a committee, map area, or toggle to highlight specific legislators.",
+  "clear": "Clear",
+  "clear_committee": "Clear this committee",
+  "my_legislators": "My legislators",
+  "mine_none": "Your legislators are not serving on these conference committees.",
+  "go_to_conference": "Go to conference committee →",
+  "office": "Office",
+  "office_senate": "State Senator, {{district}}",
+  "office_house": "State Representative, {{district}}",
+  "conference": "Conference",
+  "hero": {
+    "lead": "When the House and Senate pass different versions of a bill, six legislators work out one final text in a conference committee. Learn how it works, see who’s negotiating and what’s still unresolved, and share your input while they’re still deciding.",
+    "steps": [
+      {
+        "h": "Two versions pass",
+        "p": "Each chamber passes its own text of the bill, and the two don't match."
+      },
+      {
+        "h": "Six are named",
+        "p": "Three from each chamber. In each, one of the three comes from the minority party."
+      },
+      {
+        "h": "They negotiate",
+        "p": "Their meetings are public unless a majority votes to close them, and they can't close the first one."
+      },
+      {
+        "h": "The report is posted",
+        "p": "A majority of each chamber's three has to agree to it. It goes up on the legislature's website, and neither chamber can vote on it for at least 24 hours."
+      },
+      {
+        "h": "Yes or no",
+        "p": "Each chamber accepts or rejects it as written. Changing it takes a new conference committee."
+      }
+    ],
+    "sources": "From MAPLE’s <1>guide to the legislative process</1> and the legislature’s <3>Joint Rules</3>.",
+    "see": "See the committees"
+  }
+}

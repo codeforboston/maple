@@ -13,6 +13,7 @@ import { useHtmlAttribute } from "./shared/useHtmlAttribute"
 import {
   Avatar,
   NavbarLinkBallotQuestions,
+  NavbarLinkConferences,
   DESKTOP_NAV_ITEM_CLASS,
   NavbarLinkAI,
   NavbarLinkPolicies,
@@ -95,7 +96,10 @@ export const MainNavbar: React.FC<{ variant?: NavbarVariant }> = ({
   // alongside Digital Democracy) is neutral on the homepage only and blue
   // everywhere else.
   const isHome = pathname === "/"
-  const mixed = useHtmlAttribute("data-maple-nav") === "mixed"
+  // Mixed and the dev switcher's Statehouse option both set a navbar mode; only
+  // Mixed turns the bar blue. Statehouse keeps it neutral.
+  const navMode = useHtmlAttribute("data-maple-nav")
+  const mixed = navMode === "mixed"
   const pageDefault: NavbarVariant = mixed
     ? isHome
       ? "neutral"
@@ -137,9 +141,9 @@ export const MainNavbar: React.FC<{ variant?: NavbarVariant }> = ({
   const isMobile = narrow || (dd && fitsFrom !== null && windowWidth < fitsFrom)
 
   // Pinned everywhere except the homepage, where the bar scrolls away with the
-  // hero, and, under Digital Democracy only (not Mixed), the four explorers
-  // and the Learn and About sections.
-  const ddOnly = useHtmlAttribute("data-maple-theme") === "dd" && !mixed
+  // hero, and, under Digital Democracy only (not Mixed or Statehouse, which
+  // set a navbar mode), the four explorers and the Learn and About sections.
+  const ddOnly = useHtmlAttribute("data-maple-theme") === "dd" && !navMode
   const sectionGround =
     isLearnOrAbout(pathname) || SECTION_GROUND_PAGES.includes(pathname)
   const pinned =
@@ -200,6 +204,9 @@ const MobileNav: React.FC<{
         <NavbarLinkBills handleClick={closeNav} />
         {flags().ballotQuestions ? (
           <NavbarLinkBallotQuestions handleClick={closeNav} />
+        ) : null}
+        {flags().conferences ? (
+          <NavbarLinkConferences handleClick={closeNav} />
         ) : null}
         {flags().hearingsAndTranscriptions ? (
           <NavbarLinkHearings handleClick={closeNav} />
@@ -407,6 +414,12 @@ const DesktopNav: React.FC<{
           {flags().ballotQuestions ? (
             <div className={`align-self-center`}>
               <NavbarLinkBallotQuestions />
+            </div>
+          ) : null}
+
+          {flags().conferences ? (
+            <div className={`align-self-center`}>
+              <NavbarLinkConferences />
             </div>
           ) : null}
 

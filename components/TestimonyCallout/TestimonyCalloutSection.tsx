@@ -1,3 +1,5 @@
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Carousel, CarouselItem } from "react-bootstrap"
 import { useMediaQuery } from "usehooks-ts"
 import { Button, Col, Container, Row } from "../bootstrap"
@@ -6,6 +8,7 @@ import TestimonyCallout from "./TestimonyCallout"
 import { useTranslation } from "next-i18next"
 import { Internal } from "components/links"
 import styles from "components/homepage/Homepage.module.css"
+import { DigitalDemocracyOnly, MapleOnly } from "components/shared/SkinOnly"
 
 export default function TestimonyCalloutSection() {
   const recentTestimony = useRecentTestimony(4)
@@ -20,17 +23,21 @@ export default function TestimonyCalloutSection() {
           <h2>{t("testimonyCalloutSection.peopleSaying")}</h2>
         </Col>
         <Col xs={12} sm={12} md={5}>
-          <div
-            className={`d-flex ${
-              isMobile ? "justify-content-center" : "justify-content-end"
-            }  me-2`}
-          >
-            <Internal href="/testimony">
-              <Button className={`btn btn-lg py-1`}>
-                {t("testimonyCalloutSection.browseTestimony")}
-              </Button>
-            </Internal>
-          </div>
+          {/* Maple keeps main's button beside the heading; Digital Democracy
+              and Mixed have a text link under the testimony instead. */}
+          <MapleOnly>
+            <div
+              className={`d-flex ${
+                isMobile ? "justify-content-center" : "justify-content-end"
+              }  me-2`}
+            >
+              <Internal href="/testimony">
+                <Button className={`btn btn-lg py-1`}>
+                  {t("testimonyCalloutSection.browseTestimony")}
+                </Button>
+              </Internal>
+            </div>
+          </MapleOnly>
         </Col>
       </Row>
       {isMobile ? (
@@ -67,6 +74,14 @@ export default function TestimonyCalloutSection() {
           </Col>
         </Row>
       )}
+      <DigitalDemocracyOnly>
+        <div className={styles.browseTestimony}>
+          <Internal href="/testimony" className={styles.browseTestimonyLink}>
+            {t("testimonyCalloutSection.browseTestimony")}
+            <FontAwesomeIcon icon={faArrowRight} aria-hidden />
+          </Internal>
+        </div>
+      </DigitalDemocracyOnly>
     </section>
   )
 }

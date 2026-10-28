@@ -19,6 +19,38 @@
   padding: 5rem 0 1rem 0;
 }
 
+/* Digital Democracy and Mixed: Browse All Testimony as a text link with an
+   arrow under the testimony, in place of the button beside the heading
+   (components/TestimonyCallout/TestimonyCalloutSection). */
+.browseTestimony {
+  display: flex;
+  justify-content: flex-end;
+  /* In line with the right edge of the testimony grid, which is 11 of 12
+     columns, centred. */
+  padding: 1rem calc(100% / 24) 0;
+}
+
+.browseTestimonyLink {
+  align-items: center;
+  color: var(--maple-brand-primary);
+  display: inline-flex;
+  font-weight: 600;
+  gap: 0.45rem;
+  text-decoration: none;
+}
+
+.browseTestimonyLink:hover,
+.browseTestimonyLink:focus-visible {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .browseTestimony {
+    justify-content: center;
+    padding: 0;
+  }
+}
+
 .heroSection {
   /* Hero tokens. Every hero rule that sets a colour reads one of these, so a
      skin restyles the hero by giving them new values rather than by
@@ -1013,6 +1045,9 @@
   font-weight: var(--hero-lead-weight);
   line-height: 1.6;
   margin: 0 0 var(--hero-lead-gap);
+  /* Line breaks in the copy (\n in homepage.json) show as breaks, and a
+     blank line (\n\n) as a gap between paragraphs. */
+  white-space: pre-line;
 }
 
 /* A slightly wider content column than the default 1120px, so the hero copy and
@@ -1274,6 +1309,71 @@
   pointer-events: none;
 }
 
+/* The switcher's Statehouse option (HeroSection's statehouseColumn): this
+   hero laid out like Old Hero (legacy/LegacyHomepage.module.css). The
+   statehouse has its own column, the wider one on the left, in place of the
+   search panel; the copy sits on the right, vertically centred, with 7.5rem
+   above and below; the content is capped at main's 1120px. The statehouse is
+   27rem, the size main's works out to, flush on the bottom edge. Stacked, it
+   comes first, as the stacked hero already does. Prefixed with .heroSection
+   so these win over the skin's own hero rules. */
+.statehouseColumn {
+  display: block;
+  aspect-ratio: 487 / 326;
+  background: url("/statehouse.svg") no-repeat bottom center / contain;
+  pointer-events: none;
+}
+
+@media (min-width: 1101px) {
+  .heroSection.heroStatehouse .sectionShell {
+    width: min(1120px, calc(100% - 2rem));
+    max-width: none;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .heroSection.heroStatehouse .hero {
+    grid-template-columns: minmax(30rem, 2fr) minmax(30rem, 1.05fr);
+    justify-content: normal;
+    align-items: center;
+    gap: clamp(1.8rem, 4vw, 10rem);
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .heroSection.heroStatehouse .heroContent {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    padding-top: 7.5rem;
+    padding-bottom: 7.5rem;
+  }
+
+  .heroSection.heroStatehouse .statehouseColumn {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: end;
+    justify-self: center;
+    width: 27rem;
+  }
+}
+
+/* Old Hero's copy, set the way Old Hero sets it: the paragraphs like this
+   hero's lead, at every width. */
+.heroSection.heroStatehouse .heroBody {
+  color: var(--hero-lead-ink);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 1100px) {
+  .heroSection.heroStatehouse .statehouseColumn {
+    order: 1;
+    justify-self: center;
+    width: min(24rem, 70%);
+  }
+}
+
 /* Raised 1.5rem off the bottom edge. Offset rather than taken out of flow, so
    the column still reserves its full height and the copy can never run into
    it. Desktop only: stacked, the ask panel sits right below it. */
@@ -1374,6 +1474,16 @@
   /* Lighter than the hero title, so the panel heading sits below it. */
   font-weight: 500;
   margin: 0 0 1.25rem;
+}
+
+/* The introduction under the panel heading: the hero lead's ink, a touch
+   smaller so it sits back from the heading and the bullets. */
+.heroSearchDescription {
+  color: var(--hero-lead-ink);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  /* Pulled up to the heading; a blank line's worth of space below. */
+  margin: -0.5rem 0 1.5rem;
 }
 
 .heroSearchField {
@@ -1528,6 +1638,84 @@
    past the edge of the screen. */
 @media (max-width: 900px) {
   .heroSearch .topicChips {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Conference committees (./ConferenceLinks): a name and its two bill numbers,
+   in two columns like the topic chips, set like the conference page's rail,
+   then the button to the conference committees page. On the homepage panel
+   the button follows the topics instead. */
+.conferenceLinks {
+  margin: 0 0 1rem;
+}
+
+.conferenceList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.conferenceLink {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  text-decoration: none;
+}
+
+.conferenceName {
+  color: var(--hero-heading-ink);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.conferenceBills {
+  color: var(--hero-lead-ink);
+  font-size: 0.85rem;
+  line-height: 1.3;
+}
+
+.conferenceLink:hover .conferenceName,
+.conferenceLink:focus-visible .conferenceName {
+  color: var(--hero-link);
+  text-decoration: underline;
+}
+
+/* Room above the button when it follows the list. */
+.conferenceList + .conferenceAction {
+  margin-top: 0.9rem;
+}
+
+/* The small heading over the topic bullets. */
+.conferenceTopicsHeading {
+  color: var(--hero-heading-ink);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 0 0 0.5rem;
+}
+
+/* What the open conference committees cover, as plain bullets in one
+   column. */
+.conferenceTopics {
+  color: var(--hero-ink-body);
+  font-size: 0.95rem;
+  line-height: 1.35;
+  /* Space before the buttons, by eye to match the gap above the subheader. */
+  margin: 0 0 2rem;
+  padding-left: 1.1rem;
+}
+
+.conferenceTopics li + li {
+  margin-top: 0.35rem;
+}
+
+@media (max-width: 900px) {
+  .conferenceList {
     grid-template-columns: 1fr;
   }
 }

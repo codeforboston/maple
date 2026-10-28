@@ -2,22 +2,23 @@ import React, { useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "next-i18next"
 import { Col, Container, Row } from "components/bootstrap"
 import { createPage } from "components/page"
-import { createGetStaticTranslationProps } from "components/translations"
-import { useLobbyingBillRows, type BillRow } from "components/db/lobbying"
+import {
+  fetchBillRows,
+  fetchLatestLobbyingCourt,
+  useLobbyingBillRows,
+  type BillRow
+} from "components/db/lobbying"
+import { createLobbyingListProps } from "components/lobbying/listPageProps"
 import { MAPLE_COLORS, POSITION_COLORS } from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 import styles from "components/lobbying/lobbying.module.css"
+import { courtYears } from "components/lobbying/sessions"
 
 const ALL_COURTS = [194, 193, 192, 191, 190, 189, 188, 187, 186, 185, 184]
 const PAGE_SIZE = 50
-
-function courtYears(court: number): string {
-  const start = 2 * (court - 184) + 2005
-  return `${start}–${String(start + 1).slice(2)}`
-}
 
 type BillSortKey =
   | "id"
@@ -224,9 +225,15 @@ function PositionMiniBar({ row }: { row: BillRow }) {
 
 // ── Main table component ──────────────────────────────────────────────────────
 
-function LobbyingBillsTable() {
+type BillsPageProps = {
+  // The latest session's rows are prerendered; other sessions load on demand.
+  initialCourt: number
+  initialRows: BillRow[]
+}
+
+function LobbyingBillsTable({ initialCourt, initialRows }: BillsPageProps) {
   const { t } = useTranslation("lobbying")
-  const [selectedCourts, setSelectedCourts] = useState<number[]>([194])
+  const [selectedCourts, setSelectedCourts] = useState<number[]>([initialCourt])
   const [posFilter, setPosFilter] = useState<
     "all" | "support" | "oppose" | "neutral"
   >("all")
@@ -249,7 +256,21 @@ function LobbyingBillsTable() {
     setSortDir("desc")
   }
 
-  const { result: allRows, status, error } = useLobbyingBillRows(selectedCourts)
+  const otherCourts = selectedCourts.filter(c => c !== initialCourt)
+  const { result: otherRows, status, error } = useLobbyingBillRows(otherCourts)
+  const loadingOther =
+    otherCourts.length > 0 &&
+    (status === "loading" || status === "not-requested")
+  const otherFailed = otherCourts.length > 0 && status === "error"
+  const allRows = useMemo(
+    () => [
+      ...(selectedCourts.includes(initialCourt) ? initialRows : []),
+      ...(otherCourts.length > 0 ? otherRows ?? [] : [])
+    ],
+    // otherCourts is derived from selectedCourts
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [selectedCourts, initialCourt, initialRows, otherRows]
+  )
 
   const multiCourt = selectedCourts.length > 1
 
@@ -347,11 +368,11 @@ function LobbyingBillsTable() {
         />
       </div>
 
-      {status === "loading" || status === "not-requested" ? (
+      {loadingOther ? (
         <p style={{ color: MAPLE_COLORS.textMuted, padding: "2rem 0" }}>
           {t("loading")}
         </p>
-      ) : status === "error" ? (
+      ) : otherFailed ? (
         <p style={{ color: MAPLE_COLORS.danger, padding: "1rem 0" }}>
           Error: {error?.message}
         </p>
@@ -579,7 +600,7 @@ function LobbyingBillsTable() {
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
-function LobbyingBillsPage() {
+function LobbyingBillsPage(props: BillsPageProps) {
   const { t } = useTranslation("lobbying")
   return (
     <>
@@ -595,7 +616,7 @@ function LobbyingBillsPage() {
         </Row>
         <Row>
           <Col>
-            <LobbyingBillsTable />
+            <LobbyingBillsTable {...props} />
           </Col>
         </Row>
       </Container>
@@ -608,12 +629,10 @@ export default createPage({
   Page: LobbyingBillsPage
 })
 
-export const getStaticProps = createGetStaticTranslationProps([
-  "auth",
-  "common",
-  "footer",
-  "lobbying"
-])
+export const getStaticProps = createLobbyingListProps(async () => {
+  const initialCourt = await fetchLatestLobbyingCourt()
+  return { initialCourt, initialRows: await fetchBillRows(initialCourt) }
+})
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 

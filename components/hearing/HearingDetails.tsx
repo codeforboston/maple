@@ -22,6 +22,8 @@ import {
   toVTT
 } from "./hearing"
 import { Transcriptions } from "./Transcriptions"
+import { HearingConferenceLink } from "components/conference/HearingConferenceLink"
+import { ConferenceSummary } from "components/conference/types"
 
 /* The feature tag above the title shows under the Maple skin only. The
    Digital Democracy and Mixed skins leave it out: the AI banner over the video
@@ -138,9 +140,11 @@ export const HearingDetails = ({
     hearingDate,
     hearingId,
     videos
-  }
+  },
+  conference
 }: {
   hearingData: HearingData
+  conference?: ConferenceSummary | null
 }) => {
   const { t } = useTranslation(["common", "hearing"])
 
@@ -344,6 +348,8 @@ export const HearingDetails = ({
           <></>
         )}
       </TopicHeader>
+
+      <HearingConferenceLink conference={conference} />
 
       <Row>
         <Col className={`col-md-8 mt-4`}>

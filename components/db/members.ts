@@ -57,7 +57,7 @@ export function useMemberSearch() {
   return { index, loading }
 }
 
-async function getMember(
+export async function getMember(
   court: number,
   memberCode?: string
 ): Promise<MemberContent | undefined> {

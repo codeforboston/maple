@@ -34,7 +34,7 @@
     "body2a": "New to MAPLE? For extra support, check",
     "body2b": "and join an upcoming training session!",
     "calendar": "Our Calendar",
-    "lead": "Every bill in the Massachusetts Legislature is open to public comment, and anyone can testify. MAPLE shows you which bills are moving, when their hearings are, and what people across the Commonwealth have already said about them. Everything published here stays public, so the record of who said what is open to anyone who wants to read it.",
+    "lead": "State government works better when more of us take part. MAPLE makes it easier to see how laws take shape in Massachusetts, learn about the bills that affect your life, and share what you know with the people who represent you.\n\nMAPLE is the place to put your civic energy to work, and the more of us who join, the stronger our collective voice becomes.",
     "newsletter": "Click Here to Subscribe to Our Newsletter",
     "primaryAction": "Get Started",
     "searchDefault": "Bills: sponsors, hearings, testimony",
@@ -62,6 +62,19 @@
     "health": "Healthcare & Human Services",
     "housing": "Housing, Transit & Community",
     "work": "Work, Money & Business"
+  },
+  "conferenceLinks": {
+    "intro": "The legislative session has come to an end, but some of its laws are still being decided in conference committees. This is where your voice matters right now!",
+    "addInput": "Add Your Input",
+    "learnMore": "Learn More",
+    "topicsHeading": "Some topics of the laws being decided:",
+    "topics": [
+      "Data Privacy",
+      "Government Transparency",
+      "Energy Affordability",
+      "Pet Equity",
+      "...and more"
+    ]
   },
   "topicsHeading": "Wrapping up the 194th legislative session...",
   "what": {

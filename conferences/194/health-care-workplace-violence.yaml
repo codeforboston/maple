@@ -1,0 +1,30 @@
+id: health-care-workplace-violence
+name: Health Worker Safety
+court: 194
+title: >-
+  An Act requiring health care employers to develop and implement programs to prevent workplace
+  violence
+senateBillId: S3184
+houseBillId: H4767
+canonicalBillId: H4767
+status: appointed
+conferees:
+  - memberCode: MSD1
+    branch: House
+    chair: true
+  - memberCode: BFR1
+    branch: House
+  - memberCode: HEK1
+    branch: House
+  - memberCode: CFF0
+    branch: Senate
+    chair: true
+  - memberCode: JBL0
+    branch: Senate
+  - memberCode: KAD0
+    branch: Senate
+hearingIds:
+  - hearing-5774
+  - hearing-5780
+differences: []
+similarities: []

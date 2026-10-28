@@ -29,6 +29,8 @@ type Option = {
   /** Paths where the option is left out because it looks the same as
    * another there (sameAs); while it is chosen, that one shows as chosen. */
   hideOn?: string[]
+  /** The other way round: the only paths the option shows on. */
+  onlyOn?: string[]
   sameAs?: string
 }
 
@@ -48,12 +50,46 @@ const CONTROLS: Control[] = [
       {
         value: "maple",
         label: "Maple",
-        attributes: { "data-maple-theme": "maple", "data-maple-nav": null }
+        attributes: {
+          "data-maple-theme": "maple",
+          "data-maple-nav": null,
+          "data-maple-hero": null
+        }
       },
       {
         value: "dd",
         label: "Digital Democracy",
-        attributes: { "data-maple-theme": "dd", "data-maple-nav": null }
+        attributes: {
+          "data-maple-theme": "dd",
+          "data-maple-nav": null,
+          "data-maple-hero": null
+        }
+      },
+      {
+        value: "dd-statehouse",
+        label: "Statehouse",
+        // Mixed's logic with the neutral bar in place of the blue one: pinned
+        // with its shadow on every page but the homepage, no section ground
+        // (data-maple-nav="statehouse"), and on the homepage the hero laid out
+        // like Old Hero, the statehouse in place of the search panel.
+        attributes: {
+          "data-maple-theme": "dd",
+          "data-maple-nav": "statehouse",
+          "data-maple-hero": "statehouse"
+        }
+      },
+      {
+        value: "dd-old-hero",
+        label: "Old Hero",
+        // The Digital Democracy skin with main's hero. Only the
+        // homepage has the hero, so everywhere else it is Digital Democracy.
+        onlyOn: ["/"],
+        sameAs: "dd",
+        attributes: {
+          "data-maple-theme": "dd",
+          "data-maple-nav": null,
+          "data-maple-hero": "old"
+        }
       },
       {
         value: "mixed",
@@ -61,7 +97,11 @@ const CONTROLS: Control[] = [
         // On the homepage Mixed has Digital Democracy's neutral bar too.
         hideOn: ["/"],
         sameAs: "dd",
-        attributes: { "data-maple-theme": "dd", "data-maple-nav": "mixed" }
+        attributes: {
+          "data-maple-theme": "dd",
+          "data-maple-nav": "mixed",
+          "data-maple-hero": null
+        }
       }
     ]
   },
@@ -129,7 +169,9 @@ function Switch({ control, pathname }: { control: Control; pathname: string }) {
     }
   }, [control, value])
 
-  const hidden = (option: Option) => option.hideOn?.includes(pathname)
+  const hidden = (option: Option) =>
+    option.hideOn?.includes(pathname) ||
+    (option.onlyOn !== undefined && !option.onlyOn.includes(pathname))
   const chosen = control.options.find(option => option.value === value)
   const shownValue = chosen && hidden(chosen) ? chosen.sameAs : value
 

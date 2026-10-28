@@ -24,10 +24,12 @@ from portal import (
 from normalize import normalize_entity_name
 from writer import (
     registrant_doc,
+    registration_doc,
     write_registrant,
     write_filings,
     compute_stats,
     REGISTRANTS_COLLECTION,
+    REGISTRATIONS_COLLECTION,
     STATS_DOC_ID,
 )
 
@@ -202,11 +204,11 @@ def test_registrant_id_no_period_matches_pre_fix_hash_exactly():
     unconditional trailing separator ("{year}|{entity_name}|") even when no
     period was known, which changed the hash and caused reparse to write a
     spurious duplicate doc instead of falling back onto the original one for
-    any page whose reporting period failed to parse (found via two real
-    2005-era entities in dev, Mayforth Group and Peter C Chisholm)."""
+    any page whose reporting period failed to parse (found via two 2005-era
+    entities in dev)."""
     import hashlib
 
-    entity_name = "Mayforth Group, LLC"
+    entity_name = "Pemberton Group, LLC"
     year = 2005
     pre_fix_id = hashlib.sha256(f"{year}|{entity_name}".encode()).hexdigest()[:40]
     assert registrant_id(entity_name, year, None) == pre_fix_id
@@ -229,7 +231,7 @@ def test_write_filings_returns_count():
             BillActivity("Client A", "Senate Bill", "200", "S200", "An Act", "Oppose", None),
         ],
     )
-    count = write_filings(db, _meta(), detail)
+    count = write_filings(db, _meta(), detail, "https://example.test/d")
     assert count == 2
     assert batch.commit.called
 
@@ -238,7 +240,7 @@ def test_write_filings_returns_zero_when_no_bills():
     """write_filings must return 0 and not touch Firestore when bills list is empty."""
     db = MagicMock()
     detail = DisclosureDetail(compensation=[], bills=[])
-    count = write_filings(db, _meta(), detail)
+    count = write_filings(db, _meta(), detail, "https://example.test/d")
     assert count == 0
     db.batch.assert_not_called()
 
@@ -259,11 +261,13 @@ def test_write_filings_uses_period_start_in_id():
         db,
         _meta(),
         DisclosureDetail(compensation=[], bills=[bill], period_start="2024-01-01"),
+        "https://example.test/h1",
     )
     write_filings(
         db,
         _meta(),
         DisclosureDetail(compensation=[], bills=[bill], period_start="2024-07-01"),
+        "https://example.test/h2",
     )
 
     assert len(documented_ids) == 2
@@ -340,61 +344,62 @@ def _make_stats_db():
     return db, doc_mocks
 
 
-def test_compute_stats_registrant_count_deduped_across_periods():
-    """Splitting one entity-year into two period docs (the fix's whole point)
-    must not double-count totalRegistrants — it must count distinct
-    (entity, year) registrations, not raw docs, since it's shown to users as
-    the "Lobbying Firms" stat on the overview page."""
-    db, doc_mocks = _make_stats_db()
-    registrants = [
-        _fake_doc({
-            "entityNameNorm": "ACME LOBBYING",
-            "year": 2024,
-            "clients": [{"clientNameNorm": "CLIENT A", "compensation": 1000.0}],
-        }),
-        _fake_doc({
-            "entityNameNorm": "ACME LOBBYING",
-            "year": 2024,
-            "clients": [{"clientNameNorm": "CLIENT A", "compensation": 2000.0}],
-        }),
-    ]
-
+def _stats_iter(registrants=(), registrations=()):
     def _iter(_db, collection_name):
         if collection_name == REGISTRANTS_COLLECTION:
             return iter(registrants)
+        if collection_name == REGISTRATIONS_COLLECTION:
+            return iter(registrations)
         return iter([])
-
-    with patch("writer._iter_collection", side_effect=_iter):
-        compute_stats(db)
-
-    stats = doc_mocks[STATS_DOC_ID].set.call_args[0][0]
-    assert stats["totalRegistrants"] == 1, (
-        "two period-docs for the same entity+year must count as one registrant"
-    )
-    # And compensation from both periods must both be reflected — the fix's
-    # actual point, not just an inflation guard.
-    assert stats["spendByYear"]["2024"] == pytest.approx(3000.0)
+    return _iter
 
 
-def test_compute_stats_registrant_count_not_deduped_across_different_entities():
-    """Sanity check on the other direction: genuinely distinct entities must
-    still be counted separately, not accidentally collapsed."""
+def test_compute_stats_lobbyist_count_is_distinct_registered_individuals():
+    """totalRegistrants is shown as "Individual lobbyists": each registered
+    person once, across years, whether or not they file disclosures."""
     db, doc_mocks = _make_stats_db()
-    registrants = [
-        _fake_doc({"entityNameNorm": "ACME LOBBYING", "year": 2024, "clients": []}),
-        _fake_doc({"entityNameNorm": "BETA LOBBYING", "year": 2024, "clients": []}),
+    registrations = [
+        _fake_doc({"name": "Jane Doe", "nameNorm": "JANE DOE", "regType": "Lobbyist", "year": 2024}),
+        _fake_doc({"name": "Jane Doe", "nameNorm": "JANE DOE", "regType": "Lobbyist", "year": 2025}),
+        _fake_doc({"name": "John Roe", "nameNorm": "JOHN ROE", "regType": "Lobbyist", "year": 2025}),
+        _fake_doc({"name": "Acme Lobbying", "nameNorm": "ACME LOBBYING", "regType": "Employer", "year": 2025}),
     ]
+    registrants = [_fake_doc({
+        "entityNameNorm": "JANE DOE", "regType": "Lobbyist", "year": 2024,
+        "clients": [{"clientNameNorm": "CLIENT A", "compensation": 1000.0}],
+    })]
 
-    def _iter(_db, collection_name):
-        if collection_name == REGISTRANTS_COLLECTION:
-            return iter(registrants)
-        return iter([])
-
-    with patch("writer._iter_collection", side_effect=_iter):
+    with patch("writer._iter_collection", side_effect=_stats_iter(registrants, registrations)):
         compute_stats(db)
 
     stats = doc_mocks[STATS_DOC_ID].set.call_args[0][0]
     assert stats["totalRegistrants"] == 2
+    assert stats["spendByYear"]["2024"] == pytest.approx(1000.0)
+
+
+def test_compute_stats_lists_lobbyists_who_only_register():
+    """A lobbyist whose firm files for them has no disclosures of their own,
+    but must still be listed, with their firm and SoS registration page."""
+    db, _ = _make_stats_db()
+    registrations = [
+        _fake_doc({"name": "Jordan Ellery", "nameNorm": "JORDAN ELLERY", "regType": "Lobbyist", "year": 2024,
+                   "sourceUrls": ["https://sos.test/2024"],
+                   "employers": [{"name": "Barlow, Finch & Kerr"}]}),
+        _fake_doc({"name": "Jordan Ellery", "nameNorm": "JORDAN ELLERY", "regType": "Lobbyist", "year": 2025,
+                   "sourceUrls": ["https://sos.test/2025"],
+                   "employers": [{"name": "Barlow, Finch & Kerr"}]}),
+    ]
+
+    with patch("writer._iter_collection", side_effect=_stats_iter(registrations=registrations)):
+        compute_stats(db)
+
+    firms = {d["entityNameNorm"]: d for d in _batch_set_dicts_with_key(db, "clientCount")}
+    basile = firms["JORDAN ELLERY"]
+    assert basile["regType"] == "Lobbyist"
+    assert basile["years"] == [2025, 2024]
+    assert basile["employers"] == ["Barlow, Finch & Kerr"]
+    assert basile["hasFilings"] is False
+    assert basile["sourceUrl"] == "https://sos.test/2025"
 
 
 def _batch_set_dicts_with_key(db: MagicMock, key: str) -> list[dict]:
@@ -498,19 +503,19 @@ def _firm_detail():
         period_start="2025-01-01",
         period_end="2025-06-30",
         filer_type="Employer",
-        filer_name="Tremont Strategies Group LLC",
-        lobbyists=["Chet Atkins", "Jason Aluia"],
+        filer_name="Larkspur Strategies Group LLC",
+        lobbyists=["Riley Okafor", "Morgan Tate"],
     )
 
 
 def test_registrant_doc_credits_firm_page_to_firm():
-    lobbyist_meta = _meta(entity_name="Chet Atkins", year=2025, reg_type="Lobbyist")
+    lobbyist_meta = _meta(entity_name="Riley Okafor", year=2025, reg_type="Lobbyist")
     doc_id, data = registrant_doc(lobbyist_meta, _firm_detail())
-    assert data["entityName"] == "Tremont Strategies Group LLC"
+    assert data["entityName"] == "Larkspur Strategies Group LLC"
     assert data["regType"] == "Employer"
-    assert data["lobbyists"] == ["Chet Atkins", "Jason Aluia"]
-    assert data["lobbyistsNorm"] == [normalize_entity_name("Chet Atkins"), normalize_entity_name("Jason Aluia")]
-    assert doc_id == registrant_id("Tremont Strategies Group LLC", 2025, "2025-01-01")
+    assert data["lobbyists"] == ["Riley Okafor", "Morgan Tate"]
+    assert data["lobbyistsNorm"] == [normalize_entity_name("Riley Okafor"), normalize_entity_name("Morgan Tate")]
+    assert doc_id == registrant_id("Larkspur Strategies Group LLC", 2025, "2025-01-01")
 
 
 def test_registrant_doc_same_for_any_linking_summary():
@@ -519,8 +524,8 @@ def test_registrant_doc_same_for_any_linking_summary():
     detail = _firm_detail()
     ids = {
         registrant_doc(_meta(entity_name=n, year=2025, reg_type=t), detail)[0]
-        for n, t in [("Chet Atkins", "Lobbyist"), ("Jason Aluia", "Lobbyist"),
-                     ("Tremont Strategies Group LLC", "Employer")]
+        for n, t in [("Riley Okafor", "Lobbyist"), ("Morgan Tate", "Lobbyist"),
+                     ("Larkspur Strategies Group LLC", "Employer")]
     }
     assert len(ids) == 1
 
@@ -528,8 +533,8 @@ def test_registrant_doc_same_for_any_linking_summary():
 def test_registrant_doc_individual_page_unchanged():
     detail = DisclosureDetail(compensation=[], bills=[], period_start="2025-01-01",
                               filer_type="Lobbyist")
-    _, data = registrant_doc(_meta(entity_name="Melissa Brooke Stacy", reg_type="Lobbyist"), detail)
-    assert data["entityName"] == "Melissa Brooke Stacy"
+    _, data = registrant_doc(_meta(entity_name="Taylor Brooke Vance", reg_type="Lobbyist"), detail)
+    assert data["entityName"] == "Taylor Brooke Vance"
     assert data["regType"] == "Lobbyist"
     assert data["lobbyists"] == []
 
@@ -542,12 +547,14 @@ def test_write_filings_credits_firm_page_to_firm():
     db.batch.return_value.set.side_effect = lambda ref, doc: written.append((ref.id, doc))
 
     detail = _firm_detail()
-    write_filings(db, _meta(entity_name="Chet Atkins", year=2025, reg_type="Lobbyist"), detail)
+    write_filings(db, _meta(entity_name="Riley Okafor", year=2025, reg_type="Lobbyist"), detail,
+                  "https://example.test/tremont")
 
     (fid, doc), = written
-    assert doc["entityName"] == "Tremont Strategies Group LLC"
+    assert doc["entityName"] == "Larkspur Strategies Group LLC"
+    assert doc["disclosureUrl"] == "https://example.test/tremont"
     bill = detail.bills[0]
-    assert fid == filing_id("Tremont Strategies Group LLC", bill.client_name, bill.chamber,
+    assert fid == filing_id("Larkspur Strategies Group LLC", bill.client_name, bill.chamber,
                             bill.bill_id, 194, bill.position, "2025-01-01")
 
 
@@ -555,11 +562,11 @@ def test_compute_stats_firm_summary_lists_lobbyists_across_periods():
     """Firm summaries carry the union of lobbyists named in the firm's
     disclosures, so the firms list can find a firm by a lobbyist's name."""
     db, _ = _make_stats_db()
-    base = {"entityName": "Tremont Strategies Group LLC", "entityNameNorm": "TREMONT STRATEGIES GROUP",
+    base = {"entityName": "Larkspur Strategies Group LLC", "entityNameNorm": "LARKSPUR STRATEGIES GROUP",
             "regType": "Employer", "year": 2025, "clients": []}
     registrants = [
-        _fake_doc({**base, "lobbyists": ["Jason Aluia", "Chet Atkins"]}),
-        _fake_doc({**base, "lobbyists": ["Chet Atkins", "Michael Bergan"]}),
+        _fake_doc({**base, "lobbyists": ["Morgan Tate", "Riley Okafor"]}),
+        _fake_doc({**base, "lobbyists": ["Riley Okafor", "Casey Lindqvist"]}),
         _fake_doc({"entityName": "Solo Person", "entityNameNorm": "SOLO PERSON",
                    "regType": "Lobbyist", "year": 2025, "clients": []}),
     ]
@@ -571,7 +578,7 @@ def test_compute_stats_firm_summary_lists_lobbyists_across_periods():
         compute_stats(db)
 
     firms = {d["entityNameNorm"]: d for d in _batch_set_dicts_with_key(db, "clientCount")}
-    assert firms["TREMONT STRATEGIES GROUP"]["lobbyists"] == ["Chet Atkins", "Jason Aluia", "Michael Bergan"]
+    assert firms["LARKSPUR STRATEGIES GROUP"]["lobbyists"] == ["Casey Lindqvist", "Morgan Tate", "Riley Okafor"]
     assert firms["SOLO PERSON"]["lobbyists"] == []
 
 
@@ -606,3 +613,100 @@ def test_compute_stats_overwrites_stats_doc():
         compute_stats(db)
     call = doc_mocks[STATS_DOC_ID].set.call_args
     assert not call[1].get("merge"), "stats doc must not be written with merge"
+
+
+def test_registration_doc_shape_and_id():
+    from portal import Registration, RegistrationParty
+    reg = Registration(
+        url="https://sos.test/a", name="Jordan Ellery", year=2024, reg_type="Lobbyist",
+        employers=[RegistrationParty(name="Barlow, Finch & Kerr", url="https://sos.test/scc",
+                                     amount=100.0, start_date="2024-01-01")],
+        disclosure_urls=["https://sos.test/d1"],
+    )
+    doc_id, data = registration_doc(reg)
+    assert data["nameNorm"] == "JORDAN ELLERY"
+    assert data["employers"][0]["nameNorm"] == "BARLOW FINCH AND KERR"
+    assert data["employers"][0]["sourceUrl"] == "https://sos.test/scc"
+    assert data["disclosureUrls"] == ["https://sos.test/d1"]
+    # A duplicate page (another URL, same registrant and year) is the same doc.
+    dup = Registration(url="https://sos.test/b", name="Jordan Ellery", year=2024, reg_type="Lobbyist")
+    assert registration_doc(dup)[0] == doc_id
+
+
+def test_compute_stats_rolls_up_registrations_for_profiles():
+    db, _ = _make_stats_db()
+    registrations = [
+        _fake_doc({"name": "Jordan Ellery", "nameNorm": "JORDAN ELLERY", "regType": "Lobbyist", "year": 2024,
+                   "sourceUrls": ["https://sos.test/cb24"],
+                   "employers": [{"name": "Barlow, Finch & Kerr", "nameNorm": "BARLOW FINCH AND KERR"}]}),
+        _fake_doc({"name": "Barlow, Finch & Kerr", "nameNorm": "BARLOW FINCH AND KERR",
+                   "regType": "Employer", "year": 2024, "sourceUrls": ["https://sos.test/scc24"],
+                   "lobbyists": [{"name": "Jordan Ellery", "nameNorm": "JORDAN ELLERY"},
+                                 {"name": "Pat Unregistered", "nameNorm": "PAT UNREGISTERED"}]}),
+    ]
+    with patch("writer._iter_collection", side_effect=_stats_iter(registrations=registrations)):
+        compute_stats(db)
+
+    firms = {d["entityNameNorm"]: d for d in _batch_set_dicts_with_key(db, "clientCount")}
+    (basile_reg,) = firms["JORDAN ELLERY"]["registrations"]
+    assert basile_reg["year"] == 2024 and basile_reg["sourceUrl"] == "https://sos.test/cb24"
+    assert basile_reg["employers"] == [
+        {"name": "Barlow, Finch & Kerr", "nameNorm": "BARLOW FINCH AND KERR", "hasProfile": True}
+    ]
+    (scc_reg,) = firms["BARLOW FINCH AND KERR"]["registrations"]
+    assert [(p["name"], p["hasProfile"]) for p in scc_reg["lobbyists"]] == [
+        ("Jordan Ellery", True), ("Pat Unregistered", False)
+    ]
+
+
+def test_compute_stats_employer_listed_once_across_spellings():
+    """An employer spelled differently across years is one employer, shown
+    with its most recent spelling."""
+    db, _ = _make_stats_db()
+    registrations = [
+        _fake_doc({"name": "Jordan Ellery", "nameNorm": "JORDAN ELLERY", "regType": "Lobbyist", "year": year,
+                   "employers": [{"name": spelling, "nameNorm": "BARLOW FINCH AND KERR"}]})
+        for year, spelling in [(2020, "Barlow Finch & Kerr"), (2023, "Barlow, Finch & Kerr Public Policy Group, LLC")]
+    ]
+    with patch("writer._iter_collection", side_effect=_stats_iter(registrations=registrations)):
+        compute_stats(db)
+    firms = {d["entityNameNorm"]: d for d in _batch_set_dicts_with_key(db, "clientCount")}
+    assert firms["JORDAN ELLERY"]["employers"] == ["Barlow, Finch & Kerr Public Policy Group, LLC"]
+
+
+def test_compute_stats_per_session_counts_for_list_filters():
+    """Lobbyist and client summaries carry per-session (general court) counts
+    so the lists can be filtered by session with exact numbers."""
+    db, _ = _make_stats_db()
+    registrants = [
+        _fake_doc({"entityName": "Larkspur Strategies Group LLC", "entityNameNorm": "LARKSPUR STRATEGIES GROUP",
+                   "regType": "Employer", "year": 2023,          # session 193
+                   "clients": [{"clientName": "Client A", "clientNameNorm": "CLIENT A", "compensation": 1000.0},
+                               {"clientName": "Client B", "clientNameNorm": "CLIENT B", "compensation": 500.0}]}),
+        _fake_doc({"entityName": "Larkspur Strategies Group LLC", "entityNameNorm": "LARKSPUR STRATEGIES GROUP",
+                   "regType": "Employer", "year": 2025,          # session 194
+                   "clients": [{"clientName": "Client A", "clientNameNorm": "CLIENT A", "compensation": 2000.0}]}),
+    ]
+    filings = [
+        _fake_doc({"entityNameNorm": "LARKSPUR STRATEGIES GROUP", "clientNameNorm": "CLIENT A", "generalCourt": 193, "year": 2023}),
+        _fake_doc({"entityNameNorm": "LARKSPUR STRATEGIES GROUP", "clientNameNorm": "CLIENT A", "generalCourt": 194, "year": 2025}),
+        _fake_doc({"entityNameNorm": "LARKSPUR STRATEGIES GROUP", "clientNameNorm": "CLIENT A", "generalCourt": 194, "year": 2025}),
+    ]
+
+    def _iter(_db, collection_name):
+        if collection_name == REGISTRANTS_COLLECTION:
+            return iter(registrants)
+        if collection_name == "lobbyingFilings":
+            return iter(filings)
+        return iter([])
+
+    with patch("writer._iter_collection", side_effect=_iter):
+        compute_stats(db)
+
+    firm = {d["entityNameNorm"]: d for d in _batch_set_dicts_with_key(db, "clientCount")}["LARKSPUR STRATEGIES GROUP"]
+    assert firm["courts"] == {"193": {"filings": 1, "clientCount": 2}, "194": {"filings": 2, "clientCount": 1}}
+    client = {d["clientNameNorm"]: d for d in _batch_set_dicts_with_key(db, "registrantCount")}["CLIENT A"]
+    assert client["courts"] == {
+        "193": {"filings": 1, "lobbyistCount": 1, "compensation": 1000.0},
+        "194": {"filings": 2, "lobbyistCount": 1, "compensation": 2000.0},
+    }

@@ -20,9 +20,11 @@ type Story = StoryObj
 export const Hero: StoryObj<HeroSectionProps & { version: "new" | "old" }> = {
   args: {
     version: "new",
+    showLead: true,
     showBody: false,
     showActions: false,
-    showAsk: true
+    showAsk: true,
+    statehouseColumn: false
   },
   argTypes: {
     version: {

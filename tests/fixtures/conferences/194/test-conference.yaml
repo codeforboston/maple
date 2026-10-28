@@ -1,0 +1,28 @@
+id: test-conference
+name: Test Conference
+court: 194
+title: Test conference committee
+senateBillId: S9901
+houseBillId: H9901
+canonicalBillId: S9901
+status: appointed
+conferees:
+  - { memberCode: TST1, branch: Senate, chair: true }
+  - { memberCode: TST2, branch: Senate }
+  - { memberCode: TST3, branch: Senate }
+  - { memberCode: TST4, branch: House, chair: true }
+  - { memberCode: TST5, branch: House }
+  - { memberCode: TST6, branch: House }
+hearingIds:
+  - hearing-9901
+differences:
+  - heading: Social media ban
+    senate: Not in the Senate bill.
+    house: Regulates social media companies under Chapter 93M.
+    source:
+      organisation: Example Gazette
+      url: https://example.com/explainer
+      publishedAt: "2026-09-01"
+similarities:
+  - heading: Phones barred during the school day
+    body: Every district must have a policy prohibiting student use of personal electronic devices.
