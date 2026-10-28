@@ -53,8 +53,8 @@
 .heroSection {
   /* Hero tokens. Every hero rule that sets a colour reads one of these, so the
      hero is restyled by giving them new values rather than by overriding the
-     rules. These defaults are main's blue band with white ink; the
-     [data-maple-theme="dd"] rules further down replace them. */
+     rules. These defaults are main's blue band with white ink; the :root
+     rules further down replace them. */
   --hero-bg: var(--maple-brand-primary);
   --hero-ink: #ffffff;
   --hero-heading-ink: var(--hero-ink);
@@ -740,7 +740,7 @@
    are for its layout and artwork.
    --------------------------------------------------------------------------- */
 
-:global([data-maple-theme="dd"]) .heroSection {
+:root .heroSection {
   --hero-bg: var(--maple-surface-page);
   --hero-ink: var(--maple-text-strong);
   /* MAPLE's near-black with a blue tint, for the title. */
@@ -760,7 +760,7 @@
 /* Experiment: this skin with the coloured statehouse grounded under the copy,
    as in the current MAPLE look. Delete this block, and restore the parked rule
    and markup, to go back. */
-:global([data-maple-theme="dd"]) .heroSection {
+:root .heroSection {
   --hero-pad-bottom: 0;
   --hero-content-align: stretch;
   --hero-content-pad-bottom: 0;
@@ -772,7 +772,7 @@
    more than about 5% ink. skyline-mask.svg is the same artwork with that
    removed, used as a mask so the colour comes from CSS and the skyline can sit
    at full strength the way the Civil Beat hero does. */
-:global([data-maple-theme="dd"]) .skylineBackground {
+:root .skylineBackground {
   left: 0;
   right: 0;
   width: 100%;
@@ -782,88 +782,39 @@
 }
 
 /* This skin draws its skyline in slices, below, not as one layer. */
-:global([data-maple-theme="dd"]) .skylineBackground::before {
+:root .skylineBackground::before {
   content: none;
-}
-
-/* One layer for now: the whole long skyline, full width, faint, along the
-   bottom. Further layers get added on top of this. */
-:global([data-maple-theme="dd"]) .skylineSlice1 {
-  position: absolute;
-  inset: 0;
-  /* Flat equivalent of brand blue at 12% over the page surface: opaque, but
-     reads as the same colour a 12% layer would. */
-  background-color: #cfd4e4;
-  opacity: 1;
-  z-index: 2;
-  display: none;
-  -webkit-mask-image: url("/skyline-long.svg");
-  mask-image: url("/skyline-long.svg");
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: bottom center;
-  mask-position: bottom center;
-  -webkit-mask-size: 100% auto;
-  mask-size: 100% auto;
-}
-
-/* Second layer: the original Boston skyline, starting a third across, fainter
-   than the long one behind it. */
-:global([data-maple-theme="dd"]) .skylineSlice2 {
-  position: absolute;
-  left: 37.25%;
-  right: 0;
-  top: -5%;
-  bottom: 15%;
-  background-color: var(--maple-brand-primary);
-  opacity: 0.06;
-  z-index: 1;
-  /* Sized from the hero height rather than the viewport width, so it keeps
-     the same proportion whatever the window is doing. Width follows. */
-  -webkit-mask-image: url("/skyline-alt.svg");
-  mask-image: url("/skyline-alt.svg");
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: bottom left;
-  mask-position: bottom left;
-  -webkit-mask-size: auto 88%;
-  mask-size: auto 88%;
-}
-
-:global([data-maple-theme="dd"]) .skylineSlice3,
-:global([data-maple-theme="dd"]) .skylineSlice4 {
-  display: none;
 }
 
 /* Primary action moves from red to blue, per the skin's rule that red is
    reserved rather than used for the default action. */
-:global([data-maple-theme="dd"]) .primaryAction {
+:root .primaryAction {
   background: var(--maple-brand-primary);
   border-color: var(--maple-brand-primary);
   color: var(--maple-text-inverse);
 }
 
-:global([data-maple-theme="dd"]) .primaryAction:hover,
-:global([data-maple-theme="dd"]) .primaryAction:focus-visible {
+:root .primaryAction:hover,
+:root .primaryAction:focus-visible {
   background: var(--maple-surface-base);
   border-color: var(--maple-brand-primary);
   color: var(--maple-brand-primary);
 }
 
-:global([data-maple-theme="dd"]) .secondaryAction {
+:root .secondaryAction {
   border-color: var(--maple-surface-border);
 }
 
 /* The explainer's Get Started as the secondary action, white with the thin
    outline, rather than solid blue (components/homepage/ExplainerSection). */
-:global([data-maple-theme="dd"]) .primaryAction.explainerAction {
+:root .primaryAction.explainerAction {
   background: var(--maple-surface-base);
   border-color: var(--maple-surface-border);
   color: var(--maple-brand-primary-strong);
 }
 
-:global([data-maple-theme="dd"]) .primaryAction.explainerAction:hover,
-:global([data-maple-theme="dd"]) .primaryAction.explainerAction:focus-visible {
+:root .primaryAction.explainerAction:hover,
+:root .primaryAction.explainerAction:focus-visible {
   background: #f0f2f8;
   border-color: var(--maple-surface-border);
   color: var(--maple-brand-primary-strong);
@@ -893,12 +844,12 @@
 }
 
 /* Lexend, the Digital Democracy skin's face. */
-:global([data-maple-theme="dd"]) .heroTitle {
+:root .heroTitle {
   font-family: var(--maple-font-heading);
   letter-spacing: -0.015em;
 }
 
-:global([data-maple-theme="dd"]) .heroTitle {
+:root .heroTitle {
   font-weight: 600;
 }
 
@@ -941,7 +892,7 @@
 
 /* A slightly wider content column than the default 1120px, so the hero copy and
    the topic panel are not squeezed against each other. */
-:global([data-maple-theme="dd"]) .sectionShell,
+:root .sectionShell,
 .heroSection .sectionShell {
   width: min(1260px, calc(100% - 2rem));
 }
@@ -1163,7 +1114,7 @@
 /* Temporary: the full-width skyline from the current MAPLE look, in this
    skin's blue at the same 6% as the slice, in place of the slice. Delete this
    block to go back. */
-:global([data-maple-theme="dd"]) .heroSection {
+:root .heroSection {
   --hero-skyline: color-mix(
     in srgb,
     var(--maple-brand-primary) 6%,
@@ -1173,7 +1124,7 @@
 
 /* Shown in this skin, framed by the shared rule, in skyline_blue.svg's
    #1a3185 at 6%. */
-:global([data-maple-theme="dd"]) .skylineBackground::before {
+:root .skylineBackground::before {
   content: "";
   background-color: #1a3185;
   opacity: 0.06;
@@ -1181,24 +1132,20 @@
   bottom: 0;
 }
 
-:global([data-maple-theme="dd"]) .skylineSlice2 {
-  display: none;
-}
-
 /* The section headings (Did You Know?, the features, Upcoming Hearings and
    What does MAPLE do?) at the size of "What people are saying..."
    (components/TestimonyCallout/TestimonyCalloutSection.tsx), a plain h2 at
    Bootstrap's size, at every width. */
-:global([data-maple-theme="dd"]) .sectionTitle,
-:global([data-maple-theme="dd"]) .hearingsTitle,
-:global([data-maple-theme="dd"]) .explainerTitle {
+:root .sectionTitle,
+:root .hearingsTitle,
+:root .explainerTitle {
   font-size: calc(1.3625rem + 1.35vw);
 }
 
 @media (min-width: 1200px) {
-  :global([data-maple-theme="dd"]) .sectionTitle,
-  :global([data-maple-theme="dd"]) .hearingsTitle,
-  :global([data-maple-theme="dd"]) .explainerTitle {
+  :root .sectionTitle,
+  :root .hearingsTitle,
+  :root .explainerTitle {
     font-size: 2.375rem;
   }
 }

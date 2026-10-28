@@ -35,23 +35,23 @@ const Row = styled.div`
      listed here is followed, labelled "Unfollow" with its x from the start
      rather than "Following". Doubled class to win over the site-wide Follow
      rules in styles/globals.css. */
-  [data-maple-theme="dd"] && .follow-button .btn {
+  *:root && .follow-button .btn {
     --bs-btn-font-size: 0.875rem;
     --bs-btn-font-weight: 500;
     --bs-btn-padding-x: 1rem;
   }
 
   @media (max-width: 991.98px) {
-    [data-maple-theme="dd"] && .follow-button .btn {
+    *:root && .follow-button .btn {
       --bs-btn-font-weight: 600;
     }
   }
 
-  [data-maple-theme="dd"] && .follow-label-following {
+  *:root && .follow-label-following {
     display: none;
   }
 
-  [data-maple-theme="dd"] && .follow-label-unfollow {
+  *:root && .follow-label-unfollow {
     display: inline;
   }
 `

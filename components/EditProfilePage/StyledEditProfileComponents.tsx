@@ -99,7 +99,7 @@ export const StyledTabContent = styled(TabContent)`
 
   /* Under the Our Team tabs, which take their own room, the content follows
      in normal flow. */
-  [data-maple-theme="dd"] && {
+  *:root && {
     margin-top: 1rem;
     z-index: auto;
   }
@@ -109,39 +109,39 @@ export const StyledTabContent = styled(TabContent)`
      and the others), Bootstrap's h4, so all the headings match. Same font,
      weight and line height already; only the size differs. Below 1200px it
      scales as Bootstrap scales h4. */
-  [data-maple-theme="dd"] && h2 {
+  *:root && h2 {
     font-size: calc(1.275rem + 0.3vw);
   }
 
   @media (min-width: 1200px) {
-    [data-maple-theme="dd"] && h2 {
+    *:root && h2 {
       font-size: 1.5rem;
     }
   }
 
   /* Every heading in the tabs, the card headings and the form's subheadings
      alike, in Lexend rather than Bootstrap's Nunito. */
-  [data-maple-theme="dd"] && :is(h2, h4, h5, h6, .h6) {
+  *:root && :is(h2, h4, h5, h6, .h6) {
     font-family: var(--maple-font-heading);
   }
 
   /* What is typed or filled in, in Nunito; placeholders stay in Lexend, the
      skin's face. Covers the form fields and the legislator search
      (react-select, leg-search). */
-  [data-maple-theme="dd"] && :is(input, textarea, select) {
+  *:root && :is(input, textarea, select) {
     font-family: var(--maple-font-body);
   }
 
   /* The legislator search is the exception: its chosen name and what is
      typed in it are in Lexend, as its open list is. */
-  [data-maple-theme="dd"] && .leg-search__single-value,
-  [data-maple-theme="dd"] && .leg-search__input-container,
-  [data-maple-theme="dd"] && .leg-search__input-container input {
+  *:root && .leg-search__single-value,
+  *:root && .leg-search__input-container,
+  *:root && .leg-search__input-container input {
     font-family: var(--maple-font-heading);
   }
 
-  [data-maple-theme="dd"] && :is(input, textarea)::placeholder,
-  [data-maple-theme="dd"] && .leg-search__placeholder {
+  *:root && :is(input, textarea)::placeholder,
+  *:root && .leg-search__placeholder {
     font-family: var(--maple-font-heading);
   }
 `

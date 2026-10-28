@@ -39,7 +39,7 @@ export const StyledModalTitle = styled(Modal.Title)`
 
   /* In Lexend, which headings like this one do not otherwise pick up, at
      normal letter spacing. */
-  [data-maple-theme="dd"] & {
+  *:root & {
     font-family: var(--maple-font-heading);
     letter-spacing: normal;
   }

@@ -139,7 +139,7 @@ export const WriteTestimony = styled(props => {
   /* The testimony box's edge darker than the site's faint field border, so the
      space to write in is plain to see. Focused, it keeps Bootstrap's focus
      border. */
-  [data-maple-theme="dd"] & .text-container .form-control:not(:focus) {
+  *:root & .text-container .form-control:not(:focus) {
     border-color: rgba(15, 23, 42, 0.3);
   }
 `

@@ -119,7 +119,7 @@ const StyledTable = styled.table`
      nesting does not appear to be applied by styled-components), and the
      header row in Lexend. Both at normal letter spacing; the tight -1.125px
      crowds Lexend. */
-  [data-maple-theme="dd"] & {
+  *:root & {
     th {
       letter-spacing: normal;
     }

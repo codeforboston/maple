@@ -16,13 +16,7 @@ export default function HeroSection() {
 
   return (
     <section className={`${styles.heroSection} ${styles.heroStatehouse}`}>
-      <div className={styles.skylineBackground} aria-hidden="true">
-        {/* Four building clusters, cut at the natural gaps in the skyline. */}
-        <span className={styles.skylineSlice1} />
-        <span className={styles.skylineSlice2} />
-        <span className={styles.skylineSlice3} />
-        <span className={styles.skylineSlice4} />
-      </div>
+      <div className={styles.skylineBackground} aria-hidden="true" />
       <div className={styles.sectionShell}>
         <div className={styles.hero}>
           {/* Hidden: the statehouse takes its own column (.statehouseColumn)

@@ -68,15 +68,6 @@ export const parameters = {
   }
 }
 
-/**
- * The redesign's attribute on the document the stories render in, as
- * pages/_document.tsx sets it on every page, so a story looks as it does on
- * the site.
- */
-if (typeof document !== "undefined") {
-  document.documentElement.setAttribute("data-maple-theme", "dd")
-}
-
 export const decorators = [
   (Story, context) => {
     if (typeof window !== "undefined") {

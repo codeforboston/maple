@@ -98,7 +98,7 @@ const NameButton = styled.button<{ $tone: "strong" | "mid" | "faint" }>`
     font-weight: 500;
   }
   /* In Lexend, though the card is Nunito. */
-  [data-maple-theme="dd"] & {
+  *:root & {
     font-family: var(--maple-font-heading);
   }
 `
@@ -109,7 +109,7 @@ const Bills = styled.span`
   font-size: 0.6875rem;
   font-weight: 300;
   color: var(--maple-text-muted);
-  [data-maple-theme="dd"] & {
+  *:root & {
     font-family: var(--maple-font-heading);
   }
   .status {
@@ -307,7 +307,7 @@ const ListRow = styled(Internal)`
     display: block;
     font-weight: 500;
   }
-  [data-maple-theme="dd"] & .name {
+  *:root & .name {
     font-family: var(--maple-font-heading);
   }
   .text {

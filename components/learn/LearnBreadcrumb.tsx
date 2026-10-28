@@ -50,7 +50,7 @@ const Nav = styled.nav`
   /* Lexend, and colour by role: links in the link blue, everything else
      (plain steps and the current page) in the same grey; all of it medium
      (500). */
-  [data-maple-theme="dd"] & {
+  *:root & {
     font-family: var(--maple-font-heading);
 
     /* A step under the 0.875rem above: Lexend runs wider than Nunito. */

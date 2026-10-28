@@ -43,20 +43,20 @@ const StyledSelect = styled(Select)`
   }
 
   /* The sort text a step smaller, menu included. */
-  [data-maple-theme="dd"] & .s__control,
-  [data-maple-theme="dd"] & .s__menu {
+  *:root & .s__control,
+  *:root & .s__menu {
     font-size: 0.875rem;
   }
 
   /* The selected value a step bolder; the menu stays regular. */
-  [data-maple-theme="dd"] & .s__control {
+  *:root & .s__control {
     font-weight: 500;
   }
 
   /* Below 992px, where the filters collapse to the filter button
      (components/search/useFiltersInline.ts), a step bolder again. */
   @media (max-width: 991.98px) {
-    [data-maple-theme="dd"] & .s__control {
+    *:root & .s__control {
       font-weight: 600;
     }
   }

@@ -35,7 +35,7 @@ const FormattedBillDetails = styled(Col)`
 /* More room between the title row above and the description, on both kinds
    of summary row below. */
 const SummaryRow = styled(Row)`
-  [data-maple-theme="dd"] & {
+  *:root & {
     margin-top: 1rem;
   }
 `

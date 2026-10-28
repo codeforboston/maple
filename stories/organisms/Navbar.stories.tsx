@@ -4,9 +4,8 @@ import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
 
-/* The site navbar's two looks. "auto", what the site uses, follows
-   data-maple-theme, which is always "dd", so it gives the neutral bar
-   (components/Navbar.tsx). */
+/* The site navbar's two looks. "auto", what the site uses, gives the neutral
+   bar (components/Navbar.tsx). */
 const meta: Meta<typeof MainNavbar> = {
   title: "Organisms/Navbar",
   component: MainNavbar,

@@ -354,13 +354,13 @@
    set in Nunito, such as the Status & History table, so bill numbers read the
    same everywhere. Not on the Learn and About pages, which keep their own
    type. */
-[data-maple-theme="dd"] a[href^="/bills/"]:not(.maple-learn-page a) {
+:root a[href^="/bills/"]:not(.maple-learn-page a) {
   font-family: var(--maple-font-heading);
 }
 
 /* Modals sit on a grey a step darker than the page, so white cell gutters and
    white panels inside them still read. */
-[data-maple-theme="dd"] .modal {
+:root .modal {
   --bs-modal-bg: color-mix(in srgb, var(--maple-surface-page) 96%, #000000);
 }
 
@@ -641,7 +641,7 @@
    so the blue bar can still appear (the Navbar story). */
 .main-navbar:is(
     [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+    :root [data-navbar-variant="auto"]
   ) {
   --maple-navbar-bg: transparent;
 }
@@ -652,10 +652,7 @@
   display: none;
 }
 
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .navbar-avatar-dark {
   display: inline-block;
 }
@@ -665,10 +662,7 @@
   display: none;
 }
 
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .navbar-logo-dark {
   display: inline-block;
 }
@@ -682,7 +676,7 @@
    Follow button (components/shared/FollowButton.tsx) or the Settings dialog's
    Save (components/EditProfilePage/ProfileSettingsModal.tsx), which keep
    their red. */
-[data-maple-theme="dd"]
+:root
   .btn-primary:not([data-navbar-variant="blue"] *):not(.follow-button *):not(
     .settings-save
   ) {
@@ -701,14 +695,14 @@
    the same text size and weight, a step bolder below 992px, with less padding
    at the sides. Not the bill page's, which keeps the full size
    (follow-button-large). */
-[data-maple-theme="dd"] .follow-button:not(.follow-button-large) .btn {
+:root .follow-button:not(.follow-button-large) .btn {
   --bs-btn-font-size: 0.875rem;
   --bs-btn-font-weight: 500;
   --bs-btn-padding-x: 1rem;
 }
 
 @media (max-width: 991.98px) {
-  [data-maple-theme="dd"] .follow-button:not(.follow-button-large) .btn {
+  :root .follow-button:not(.follow-button-large) .btn {
     --bs-btn-font-weight: 600;
   }
 }
@@ -723,29 +717,23 @@
   display: none;
 }
 
-[data-maple-theme="dd"] .follow-button .follow-label-following {
+:root .follow-button .follow-label-following {
   display: inline;
 }
 
-[data-maple-theme="dd"]
-  .follow-button
-  .btn:is(:hover, :focus-visible)
-  .follow-label-following {
+:root .follow-button .btn:is(:hover, :focus-visible) .follow-label-following {
   display: none;
 }
 
-[data-maple-theme="dd"]
-  .follow-button
-  .btn:is(:hover, :focus-visible)
-  .follow-label-unfollow {
+:root .follow-button .btn:is(:hover, :focus-visible) .follow-label-unfollow {
   display: inline;
 }
 
-[data-maple-theme="dd"] .follow-button .follow-x {
+:root .follow-button .follow-x {
   margin-left: 8px;
 }
 
-[data-maple-theme="dd"] .follow-button .btn.follow-button-following {
+:root .follow-button .btn.follow-button-following {
   --bs-btn-bg: var(--maple-surface-base);
   --bs-btn-color: var(--bs-red);
   --bs-btn-border-color: var(--bs-red);
@@ -757,7 +745,7 @@
   --bs-btn-active-border-color: var(--bs-red);
 }
 
-[data-maple-theme="dd"] .follow-button .follow-check-mask {
+:root .follow-button .follow-check-mask {
   display: inline-block;
   width: 14.77px;
   height: 12.66px;
@@ -772,21 +760,21 @@
    Followed Content and Your Testimonies take the 0.25rem top and bottom
    padding Settings has from its py-1. Their own py-1 is on the link around
    the button, so it never reaches the button. */
-[data-maple-theme="dd"] .profile-buttons .btn {
+:root .profile-buttons .btn {
   --bs-btn-padding-y: 0.25rem;
 }
 
 /* The legislator profile's cards (components/LegislatorProfile) a step darker
    than the card outline elsewhere (0.12), so they hold their edge on the
    page's grey. The finance tab's cards take it too. */
-[data-maple-theme="dd"] .legislator-profile-page {
+:root .legislator-profile-page {
   --maple-card-outline: rgba(15, 23, 42, 0.2);
 }
 
 /* A button on MAPLE blue: white with blue text. The bill page testimony
    panel's Complete Testimony (components/publish/panel/ctas.tsx), rather than
    white on Bootstrap's pale info. */
-[data-maple-theme="dd"] .btn.inverse-button {
+:root .btn.inverse-button {
   --bs-btn-bg: var(--maple-surface-base);
   --bs-btn-border-color: var(--maple-surface-base);
   --bs-btn-color: var(--maple-brand-primary);
@@ -802,7 +790,7 @@
    verify-account-card wrapper): its heading in Lexend, as Edit Profile's tab
    headings are
    (components/EditProfilePage/StyledEditProfileComponents.tsx). */
-[data-maple-theme="dd"] .verify-account-card h4 {
+:root .verify-account-card h4 {
   font-family: var(--maple-font-heading);
 }
 
@@ -810,14 +798,14 @@
    not (its shadow tokens are all but off), with the pinned navbar's shadow.
    Submit Testimony's legislators card (publish-card: components/publish/
    SelectLegislatorsCta.tsx) is lifted the same way. */
-[data-maple-theme="dd"] .verify-account-card > .card,
-[data-maple-theme="dd"] .publish-card {
+:root .verify-account-card > .card,
+:root .publish-card {
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
 }
 
 /* Its buttons (Resend link, Verify), the secondary button, on white rather
    than the light grey of the box they sit in. */
-[data-maple-theme="dd"] .verify-account-card .btn-outline-secondary {
+:root .verify-account-card .btn-outline-secondary {
   --bs-btn-bg: var(--maple-surface-base);
 }
 
@@ -835,13 +823,13 @@
 /* The Settings dialog (components/EditProfilePage/ProfileSettingsModal.tsx)
    a touch wider than Bootstrap's 500px. Phones keep the full-width dialog. */
 @media (min-width: 576px) {
-  [data-maple-theme="dd"] .modal-dialog.settings-dialog {
+  :root .modal-dialog.settings-dialog {
     max-width: 560px;
   }
 }
 
 /* The settings' wording a little tighter between lines than body text. */
-[data-maple-theme="dd"] .settings-dialog .settings-text {
+:root .settings-dialog .settings-text {
   line-height: 1.35;
 }
 
@@ -852,21 +840,21 @@
    dropdowns about 134px, at the right of their rows. From 768px, where they
    sit in columns; below that they run the full width. */
 @media (min-width: 768px) {
-  [data-maple-theme="dd"] .settings-dialog .settings-actions {
+  :root .settings-dialog .settings-actions {
     justify-content: flex-end;
   }
 
-  [data-maple-theme="dd"] .settings-dialog .settings-actions > * {
+  :root .settings-dialog .settings-actions > * {
     flex: 0 0 auto;
     width: auto;
     margin-left: 0;
   }
 
-  [data-maple-theme="dd"] .settings-dialog .settings-actions .btn {
+  :root .settings-dialog .settings-actions .btn {
     width: 154px;
   }
 
-  [data-maple-theme="dd"] .settings-dialog .settings-control {
+  :root .settings-dialog .settings-control {
     max-width: 134px;
     margin-left: auto;
   }
@@ -874,7 +862,7 @@
   /* The wording beside them a touch wider than it was in the 500px dialog
      (about 292px there), with the rest of the extra room between it and the
      control. */
-  [data-maple-theme="dd"] .settings-dialog .settings-text {
+  :root .settings-dialog .settings-text {
     display: block;
     max-width: 316px;
   }
@@ -882,43 +870,25 @@
 
 /* The desktop navbar carries data-bs-theme="dark", which drives Bootstrap's
    own link colours. Point those at the skin's ink instead. */
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .nav-link,
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .navbar-nav
   .nav-link {
   color: var(--maple-text-body);
 }
 
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .nav-link:hover,
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .nav-link:focus,
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .navbar-nav
   .nav-link.active {
   color: var(--maple-brand-primary);
 }
 
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .navbar-toggler-icon {
   filter: invert(1);
 }
@@ -926,15 +896,9 @@
 /* The mobile menu: .navLink-primary and the trigger's close icon force white,
    for the blue bar. The neutral bar's collapse is transparent over the light
    page, so they take the desktop links' dark ink instead. */
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .navLink-primary,
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .navLink-primary
   .dropdown-toggle {
   color: var(--maple-text-strong) !important;
@@ -942,38 +906,23 @@
   font-weight: 600;
 }
 
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .navLink-primary.show
   .dropdown-toggle,
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .navLink-primary
   .dropdown-toggle:hover {
   background: rgba(15, 23, 42, 0.06) !important;
 }
 
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .mobile-nav-close-icon::before,
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .mobile-nav-close-icon::after {
   background-color: var(--maple-text-strong);
 }
 
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .mobile-nav-trigger:focus-visible {
   outline-color: var(--maple-text-strong);
 }
@@ -982,10 +931,10 @@
    that class sets the resting background to white, not just the hover one. On
    a white page those buttons disappear. Give them the skin's surface and a
    visible edge so they read as buttons at rest. */
-[data-maple-theme="dd"] .btn-hover-primary,
-[data-maple-theme="dd"] .btn-hover-secondary,
-[data-maple-theme="dd"] .btn-active-outline-primary,
-[data-maple-theme="dd"] .btn-active-outline-secondary {
+:root .btn-hover-primary,
+:root .btn-hover-secondary,
+:root .btn-active-outline-primary,
+:root .btn-active-outline-secondary {
   --bs-btn-bg: var(--maple-surface-base);
   --bs-btn-border-color: var(--maple-surface-border);
   --bs-btn-color: var(--maple-brand-primary);
@@ -995,10 +944,7 @@
 }
 
 /* The circular logo needs no border radius from the skin. */
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .navbar-logo-dark {
   border-radius: 50%;
 }
@@ -1006,43 +952,25 @@
 /* .desktop-navbar-link forces white with !important, which was correct on a
    blue band and invisible on a light one. The hover wash is white-alpha for
    the same reason, so it inverts to dark-alpha here. */
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .desktop-navbar-link,
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .desktop-navbar-dropdown,
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .desktop-navbar-dropdown
   .dropdown-toggle {
   color: var(--maple-text-strong) !important;
 }
 
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .desktop-navbar-link:hover,
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .desktop-navbar-link:focus-visible {
   color: var(--maple-brand-primary) !important;
   background-color: rgba(15, 23, 42, 0.06) !important;
 }
 
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .desktop-navbar-dropdown.btn {
   --bs-btn-color: var(--maple-text-strong);
   --bs-btn-hover-color: var(--maple-brand-primary);
@@ -1051,10 +979,7 @@
   --bs-btn-active-bg: rgba(15, 23, 42, 0.06);
 }
 
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .navbar-logo-dark {
   border-radius: 0;
   /* Sized by the shared logo rule below, the same as the blue bar's. */
@@ -1065,12 +990,9 @@
 /* Nothing in the header may clip the overhang. */
 .main-navbar:is(
     [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+    :root [data-navbar-variant="auto"]
   ),
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .nav-link {
   overflow: visible;
 }
@@ -1090,7 +1012,7 @@
    slides underneath it, and the surface belongs to the container inside. */
 .main-navbar.desktop-navbar:is(
     [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+    :root [data-navbar-variant="auto"]
   ) {
   /* Pinned to the top (sticky-top) on every page but the homepage
      (components/Navbar.tsx). The bar is transparent, so give it the page
@@ -1116,7 +1038,7 @@
    is not pinned and has none. Pinning is decided in components/Navbar.tsx. */
 .main-navbar.sticky-top:is(
     [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
+    :root [data-navbar-variant="auto"]
   ) {
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
 }
@@ -1134,7 +1056,7 @@
    (lg={3}), since Lexend runs wider than Nunito and the filter labels
    wrapped. The results take the rest of the row. */
 @media (min-width: 992px) {
-  [data-maple-theme="dd"] .search-filter-column {
+  :root .search-filter-column {
     width: 27%;
   }
 }
@@ -1143,7 +1065,7 @@
    and its word from there until the filters sit in their column at 992px
    (components/search/useFiltersInline.ts). */
 @media (max-width: 767.98px) {
-  [data-maple-theme="dd"] .filter-button-word {
+  :root .filter-button-word {
     display: none;
   }
 }
@@ -1151,20 +1073,20 @@
 /* Desktop: the footer's disclaimer and newsletter line moves into its Account
    column (components/Footer). */
 @media (min-width: 768px) {
-  [data-maple-theme="dd"] .footer-bottom-line {
+  :root .footer-bottom-line {
     display: none;
   }
 }
 
 /* A sign-in button that wraps breaks after the slash, "Log in /" over
    "Sign up" (components/auth/SignInWithButton.tsx). */
-[data-maple-theme="dd"] .sign-in-label-half {
+:root .sign-in-label-half {
   white-space: nowrap;
 }
 
 /* On the mobile bar, room between the logo and the sign-in button (or the
    profile menu). */
-[data-maple-theme="dd"] .mobile-navbar-account {
+:root .mobile-navbar-account {
   padding-left: 1rem;
 }
 
@@ -1172,20 +1094,20 @@
    (components/search/SortBy.tsx), still bold. Set on the button, since .btn
    declares its own size over the skin's. */
 @media (max-width: 599.98px) {
-  [data-maple-theme="dd"] .main-navbar .btn-primary {
+  :root .main-navbar .btn-primary {
     --bs-btn-font-size: 0.875rem;
   }
 }
 
 /* The sign-in button (or the profile menu) set a little apart from the menu
    items, 1rem beyond the usual gap. */
-[data-maple-theme="dd"] .desktop-navbar-account {
+:root .desktop-navbar-account {
   margin-left: 1rem;
 }
 
 /* Every nav item stays on one line, in the desktop bar and the mobile one.
    The sign-in button may wrap. */
-[data-maple-theme="dd"]
+:root
   .main-navbar
   :is(.desktop-navbar-link, .desktop-navbar-dropdown, .nav-link) {
   white-space: nowrap;
@@ -1207,10 +1129,7 @@
   margin: 0 auto;
 }
 
-:is(
-    [data-navbar-variant="neutral"],
-    [data-maple-theme="dd"] [data-navbar-variant="auto"]
-  )
+:is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .desktop-navbar-bar {
   background-color: transparent;
 }

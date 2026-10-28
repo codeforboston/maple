@@ -64,7 +64,7 @@ export const ProgressBar = styled<{ currentStep: Step }>(
 
   /* The step being worked on in MAPLE blue, green kept for the steps checked
      off. */
-  [data-maple-theme="dd"] & .step-current {
+  *:root & .step-current {
     background-color: var(--maple-brand-primary);
   }
 `

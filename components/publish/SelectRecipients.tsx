@@ -88,12 +88,10 @@ export const SelectRecipients = styled((props: { className?: string }) => {
 
   /* The search white over the grey above, as the testimony box is, with an
      edge. Focused, it keeps react-select's focus colour. */
-  [data-maple-theme="dd"] & .leg-search__control {
+  *:root & .leg-search__control {
     background-color: var(--maple-surface-base);
   }
-  [data-maple-theme="dd"]
-    &
-    .leg-search__control:not(.leg-search__control--is-focused) {
+  *:root & .leg-search__control:not(.leg-search__control--is-focused) {
     border-color: rgba(15, 23, 42, 0.3);
   }
 

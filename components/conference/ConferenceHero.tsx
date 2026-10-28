@@ -26,7 +26,7 @@ const Section = styled(PageColumn)`
 
   /* The title in Lexend whether it is the page's h1 or, above a conference,
      an h2, which would otherwise take Bootstrap's Nunito. */
-  [data-maple-theme="dd"] & .title {
+  *:root & .title {
     font-family: var(--maple-font-heading);
   }
 

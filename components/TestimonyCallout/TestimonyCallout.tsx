@@ -127,24 +127,24 @@ const CalloutBalloon = styled.div`
      on the right was cut off there. The bubble's width less the indent
      instead, and the text column may shrink, so a long word cannot widen it
      again. */
-  [data-maple-theme="dd"] & .foreground {
+  *:root & .foreground {
     width: calc(100% - 4em);
   }
 
-  [data-maple-theme="dd"] & .content-container {
+  *:root & .content-container {
     min-width: 0;
   }
 
-  [data-maple-theme="dd"] & .footer {
+  *:root & .footer {
     gap: 0.75rem;
   }
 
-  [data-maple-theme="dd"] & .footer .bill {
+  *:root & .footer .bill {
     flex: none;
     white-space: nowrap;
   }
 
-  [data-maple-theme="dd"] & .footer .author {
+  *:root & .footer .author {
     flex: 1 1 auto;
     min-width: 0;
     overflow: hidden;

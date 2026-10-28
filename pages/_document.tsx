@@ -16,10 +16,7 @@ class MapleDocument extends Document {
 
   render() {
     return (
-      // The redesign, on every page from the first paint: its tokens and the
-      // rules built on them are scoped to this attribute
-      // (styles/bootstrap.scss, styles/globals.css and the components).
-      <Html lang={this.props.locale ?? "en"} data-maple-theme="dd">
+      <Html lang={this.props.locale ?? "en"}>
         <Head />
         <body>
           <Main />

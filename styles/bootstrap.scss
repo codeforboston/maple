@@ -400,15 +400,14 @@ $utilities: (
 }
 
 // -----------------------------------------------------------------------------
-// The Digital Democracy skin, on every page.
+// The redesign's values, over the originals above.
 //
-// pages/_document.tsx sets the attribute on every page, and
-// .storybook/preview.js on every story:
-//
-//   <html data-maple-theme="dd">
-//
-// Nothing above changes value; this block only overrides custom properties,
-// the same way Bootstrap 5.3's own `data-bs-theme` works.
+// Nothing above changes value; this block only overrides custom properties.
+// It and the redesign's rules across the site are written under :root (in
+// styled-components, *:root, since their parser joins a selector that starts
+// with a colon onto the component's own class). :root always matches, and it
+// keeps the specificity these rules had when they sat over the originals, so
+// they still win where the two meet.
 //
 // What it borrows is surface and shape, not hue. MAPLE stays blue. Type is
 // deliberately untouched: the CalMatters and Honolulu Civil Beat editions of
@@ -416,7 +415,7 @@ $utilities: (
 // two share.
 // -----------------------------------------------------------------------------
 
-[data-maple-theme="dd"] {
+:root {
   // The desktop navbar's height in this skin: its 72px logo with 8px above and
   // below (styles/globals.css). Where the bar is pinned (every page but the
   // homepage), what sticks or scrolls to an anchor below it clears this.
@@ -475,7 +474,7 @@ $utilities: (
 // Typeface: Lexend, part of the Digital Democracy skin.
 // -----------------------------------------------------------------------------
 
-[data-maple-theme="dd"] {
+:root {
   // Lexend everywhere, not just the headings. Bootstrap emits its body face as
   // a runtime custom property, so this reaches every component that inherits
   // it. Four places hardcode Nunito and will not follow: AboutPagesCard,
@@ -491,8 +490,8 @@ $utilities: (
 // homepage hero title, the Learn titles) keeps its own look.
 // Not on the Learn and About pages, which keep their own type
 // (components/learn/LearnLayout.tsx).
-:where([data-maple-theme="dd"]) h1:where(:not(.maple-learn-page h1)),
-:where([data-maple-theme="dd"]) .h1:where(:not(.maple-learn-page .h1)) {
+:where(:root) h1:where(:not(.maple-learn-page h1)),
+:where(:root) .h1:where(:not(.maple-learn-page .h1)) {
   font-family: var(--maple-font-heading);
   font-size: clamp(1.9rem, 3vw, 38px);
   font-weight: 600;

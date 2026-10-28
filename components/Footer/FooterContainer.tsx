@@ -46,20 +46,20 @@ export const FooterContainer = styled(Container)`
 
   /* The rules between the mobile dropdowns
      (components/Footer/CustomFooterDropdown.tsx) softer than its 75%. */
-  [data-maple-theme="dd"] & .border-bottom.border-white {
+  *:root & .border-bottom.border-white {
     --bs-border-opacity: 0.35;
   }
 
   /* The mobile dropdowns' titles in full white, not the muted white of the
      links. */
-  [data-maple-theme="dd"] & .navbar-nav .nav-link.dropdown-toggle {
+  *:root & .navbar-nav .nav-link.dropdown-toggle {
     color: var(--maple-text-inverse);
   }
 
   /* Smaller arrows, the same size open or closed. Sized by height, since the
      two images are framed at different widths. */
-  [data-maple-theme="dd"] & .dropdown-toggle::after,
-  [data-maple-theme="dd"] & .dropdown-toggle[aria-expanded="true"]::after {
+  *:root & .dropdown-toggle::after,
+  *:root & .dropdown-toggle[aria-expanded="true"]::after {
     background-size: auto 0.9em;
     background-position: right center;
   }

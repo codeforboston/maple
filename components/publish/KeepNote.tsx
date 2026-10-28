@@ -211,7 +211,7 @@ const NoteContainer = styled.div`
 
     /* A rule down its left, since the form beside it is the same grey
        (SubmitTestimonyForm.tsx), as dark as the cards' edges. */
-    [data-maple-theme="dd"] & {
+    *:root & {
       border-left: 1px solid rgba(15, 23, 42, 0.2);
     }
   `,
@@ -231,7 +231,7 @@ const NoteContainer = styled.div`
 
     /* The panel's illustration smaller, so the notes under it come up the
        page. */
-    [data-maple-theme="dd"] & .keep-note-art {
+    *:root & .keep-note-art {
       max-width: 70%;
     }
   `,

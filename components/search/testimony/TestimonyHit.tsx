@@ -74,7 +74,7 @@ const ThumbIcon = styled.div<{ $position: string }>`
 
   /* The whole thumb, never cropped (cover crops the taller endorse and oppose
      drawings), inset 4px within the same box. */
-  [data-maple-theme="dd"] & {
+  *:root & {
     box-sizing: border-box;
     padding: 4px;
     background-origin: content-box;

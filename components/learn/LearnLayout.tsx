@@ -18,7 +18,7 @@ const Page = styled.div`
   background-color: var(--maple-surface-learn);
   min-height: 100vh;
 
-  [data-maple-theme="dd"] & {
+  *:root & {
     --bs-font-sans-serif: var(--maple-font-body);
     --bs-body-font-family: var(--maple-font-body);
     font-family: var(--maple-font-body);
@@ -44,7 +44,7 @@ const Inner = styled.div<{ $width: Width }>`
   }
 
   @media (min-width: 992px) {
-    [data-maple-theme="dd"] &[data-enlarge="true"] {
+    *:root &[data-enlarge="true"] {
       max-width: ${maxWidths.wide};
       /* Reading text a step larger. Text that sets no size of its own takes
          the base; components whose text is set smaller read the two sizes

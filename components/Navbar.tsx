@@ -43,8 +43,7 @@ const MobileCollapse = styled(Navbar.Collapse)`
 /**
  * The site navbar's look, set as data-navbar-variant for styles/globals.css.
  *
- * - "auto", the default, follows data-maple-theme on <html>.
- *   pages/_document.tsx sets that to "dd", which gives the neutral bar.
+ * - "auto", the default: the neutral bar, as the site shows it.
  * - "neutral": a light band with the long navy logo and dark links.
  * - "blue": the blue bar. No page uses it; it is kept for the Navbar story
  *   (stories/organisms/Navbar.stories.tsx).

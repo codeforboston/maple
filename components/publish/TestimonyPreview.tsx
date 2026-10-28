@@ -128,7 +128,7 @@ export const YourTestimony = styled<{ type: "draft" | "published" }>(
   /* The testimony in a white box with an edge, which the page's grey would
      otherwise swallow (SubmitTestimonyForm.tsx). Only here; the bill page's
      panel keeps its own. */
-  [data-maple-theme="dd"] & .testimony-preview {
+  *:root & .testimony-preview {
     background: var(--maple-surface-base);
     border: 1px solid rgba(15, 23, 42, 0.2);
   }

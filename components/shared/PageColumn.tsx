@@ -26,7 +26,7 @@ export const PageColumn = styled.div<{ $width: Width }>`
      the bar's own padding already sets the title apart. */
   .main-navbar:not(.sticky-top):is(
       [data-navbar-variant="neutral"],
-      [data-maple-theme="dd"] [data-navbar-variant="auto"]
+      *:root [data-navbar-variant="auto"]
     )
     ~ main
     & {
@@ -35,7 +35,7 @@ export const PageColumn = styled.div<{ $width: Width }>`
 
   /* The page title gets more room below it before the search box, in place
      of Bootstrap's default 0.5rem. */
-  [data-maple-theme="dd"] & > h1 {
+  *:root & > h1 {
     margin-bottom: 1.5rem;
   }
 `

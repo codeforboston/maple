@@ -309,7 +309,7 @@ const BottomNote = styled.p`
 
 /* A column's contents, stacked. */
 const ColumnStack = styled.div`
-  [data-maple-theme="dd"] & {
+  *:root & {
     display: flex;
     flex-direction: column;
   }
@@ -318,7 +318,7 @@ const ColumnStack = styled.div`
 /* The last column runs the full height of the footer's columns, so its note
    can sit at the foot. */
 const NoteColumn = styled(ColumnStack)`
-  [data-maple-theme="dd"] & {
+  *:root & {
     flex: 1 1 auto;
   }
 `

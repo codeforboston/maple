@@ -26,10 +26,10 @@ const Background = styled.div`
 
   /* The redesign's page grey over the white above, so the steps' white cards
      stand off it, and the outline buttons white on it. */
-  [data-maple-theme="dd"] & {
+  *:root & {
     background: var(--bs-body-bg);
   }
-  [data-maple-theme="dd"] & .btn-outline-secondary {
+  *:root & .btn-outline-secondary {
     --bs-btn-bg: var(--maple-surface-base);
   }
 `
@@ -71,7 +71,7 @@ const FormContainer = styled.div`
   height: 100%;
   padding-top: 1rem;
 
-  [data-maple-theme="dd"] & {
+  *:root & {
     background: var(--bs-body-bg);
   }
 `

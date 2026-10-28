@@ -43,7 +43,7 @@ type Sitting = {
 const ExplorerTitle = styled(Title)`
   /* The room the intro left under the title, while the intro is out. */
   margin-bottom: 1rem;
-  [data-maple-theme="dd"] & {
+  *:root & {
     font-family: var(--maple-font-heading);
   }
 `

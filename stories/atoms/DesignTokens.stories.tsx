@@ -210,7 +210,7 @@ function useTokenValues(): Record<string, string> {
     const observer = new MutationObserver(read)
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["data-maple-theme", "data-bs-theme", "class", "style"]
+      attributeFilter: ["data-bs-theme", "class", "style"]
     })
     return () => observer.disconnect()
   }, [])
