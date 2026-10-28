@@ -196,9 +196,14 @@ function useTestimony(
   useEffect(() => {
     if (draftRef)
       return onSnapshot(draftRef, {
+        // Gone on the server is deleted elsewhere, as by another tab.
         next: snap =>
-          snap.exists() &&
-          dispatch({ type: "loadDraft", value: snap.data() as WorkingDraft }),
+          snap.exists()
+            ? dispatch({
+                type: "loadDraft",
+                value: snap.data() as WorkingDraft
+              })
+            : !snap.metadata.fromCache && dispatch({ type: "discardDraft" }),
         error: error => dispatch({ type: "error", error })
       })
   }, [dispatch, draftRef])
@@ -206,12 +211,16 @@ function useTestimony(
   useEffect(() => {
     if (publicationRef)
       return onSnapshot(publicationRef, {
+        // Gone on the server is deleted elsewhere, as a cosign is with the
+        // testimony it cosigns.
         next: snap =>
-          snap.exists() &&
-          dispatch({
-            type: "loadPublication",
-            value: snap.data() as Testimony
-          }),
+          snap.exists()
+            ? dispatch({
+                type: "loadPublication",
+                value: snap.data() as Testimony
+              })
+            : !snap.metadata.fromCache &&
+              dispatch({ type: "deletePublication" }),
         error: error => dispatch({ type: "error", error })
       })
   }, [dispatch, publicationRef])
