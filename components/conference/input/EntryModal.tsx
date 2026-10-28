@@ -4,7 +4,9 @@ import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { ConferenceTestimony } from "components/db"
 import { useInputContext } from "./context"
+import { useCosign } from "./CosignButton"
 import { useReport } from "./Kebab"
+import { useLockedScroll } from "./useLockedScroll"
 import { useToggleFollow } from "./useToggleFollow"
 import { Entry } from "./Entry"
 import { X } from "./icons"
@@ -153,6 +155,7 @@ export function EntryModal({
     testimony.authorUid
   )
   const report = useReport(testimony)
+  const cosign = useCosign(testimony)
 
   const escape = useCallback(
     (e: KeyboardEvent) => e.key === "Escape" && onClose(),
@@ -160,13 +163,9 @@ export function EntryModal({
   )
   useEffect(() => {
     document.addEventListener("keydown", escape)
-    const prev = document.body.style.overflow
-    document.body.style.overflow = "hidden"
-    return () => {
-      document.removeEventListener("keydown", escape)
-      document.body.style.overflow = prev
-    }
+    return () => document.removeEventListener("keydown", escape)
   }, [escape])
+  useLockedScroll(true)
 
   return createPortal(
     <Backdrop role="dialog" aria-modal="true" onClick={onClose}>
@@ -183,6 +182,17 @@ export function EntryModal({
           </Main>
           <Aside>
             <Label>{t("input.actions")}</Label>
+            {cosign && (
+              <Action
+                type="button"
+                onClick={() => {
+                  onClose()
+                  cosign()
+                }}
+              >
+                {t("input.cosign_this")}
+              </Action>
+            )}
             {!report.own && (
               <Action type="button" onClick={toggleFollow}>
                 {t(

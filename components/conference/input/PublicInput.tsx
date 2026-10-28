@@ -4,6 +4,7 @@ import styled from "styled-components"
 import { TABS_H } from "../ConferenceTabs"
 import { ConferenceTestimony } from "components/db"
 import { useInputContext } from "./context"
+import { CosignButton } from "./CosignButton"
 import { Entry } from "./Entry"
 import { EntryModal } from "./EntryModal"
 import { Kebab } from "./Kebab"
@@ -166,7 +167,9 @@ export function PublicInput({
               <Entry
                 key={`${x.authorUid}-${x.id}`}
                 testimony={x}
+                lead={<CosignButton testimony={x} />}
                 actions={<Kebab testimony={x} onView={() => setOpened(x)} />}
+                onOpen={setOpened}
               />
             ))}
           </Feed>

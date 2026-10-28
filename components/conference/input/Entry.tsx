@@ -5,6 +5,7 @@ import { ConferencePosition, ConferenceTestimony } from "components/db"
 import { AccountTypeIcon } from "./Pickers"
 import { Body, ClampedText } from "./ClampedText"
 import { accountTypeOf, initialsOf, nameOf } from "./accounts"
+import { useInputContext } from "./context"
 import { positionColours } from "./positions"
 import { brand, ink, line, shadow } from "./tokens"
 import { useWide } from "./useWide"
@@ -35,7 +36,7 @@ const Head = styled.div<{ $wide: boolean }>`
   }
 `
 
-const Disc = styled.div`
+export const Disc = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -77,6 +78,36 @@ const Name = styled.span`
   min-width: 0;
 `
 
+export const Cosigned = styled.span`
+  font-weight: 400;
+  color: ${ink.mid};
+`
+
+/** The cosigned entry's name, which opens it where the caller can. */
+const ParentName = styled.button`
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  text-decoration: underline dotted ${ink.faint};
+  text-underline-offset: 3px;
+  &:disabled {
+    cursor: text;
+  }
+  &:hover:not(:disabled) {
+    text-decoration-color: ${ink.mid};
+  }
+`
+
+/** A cosign posted without words of its own says so, set apart from words. */
+export const NoWords = styled(Body)`
+  font-style: italic;
+  color: ${ink.faint};
+`
+
 const Chip = styled.span<{ $bg: string; $ink: string }>`
   flex-shrink: 0;
   padding: 1px 8px;
@@ -107,7 +138,7 @@ export function PositionChip({
   )
 }
 
-const Descriptor = styled.p`
+export const Descriptor = styled.p`
   margin: 8px 0 0;
   font-size: 0.75rem;
   line-height: 1.4;
@@ -157,32 +188,48 @@ const FootDate = styled.div`
   color: ${ink.mid};
 `
 
-/** One filing: who wrote it, what they asked for, and their words. */
+/** The day an entry was filed, written out. */
+export const filedOn = (
+  testimony: Pick<ConferenceTestimony, "publishedAt">,
+  language: string
+) =>
+  testimony.publishedAt.toDate().toLocaleDateString(language, {
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  })
+
+/** One filing: who wrote it, what they asked for, and their words. A cosign
+ * names what it cosigns, and its position is that entry's. */
 export function Entry({
   testimony,
   actions,
+  lead,
+  onOpen,
   bare = false,
   fullBody = false
 }: {
   testimony: ConferenceTestimony
   /** The kebab at the corner. */
   actions?: React.ReactNode
+  /** What goes before the date at the corner. */
+  lead?: React.ReactNode
+  /** Open another entry: here, the one a cosign cosigns. */
+  onOpen?: (testimony: ConferenceTestimony) => void
   /** Without the card's own edge, for a caller that draws one around it. */
   bare?: boolean
   /** The words whole, with no clamp: for where the entry is the point. */
   fullBody?: boolean
 }) {
   const { t, i18n } = useTranslation("conferences")
+  const { byId } = useInputContext()
+  const parent = testimony.cosignOfId
+    ? byId.get(testimony.cosignOfId)
+    : undefined
   const ref = useRef<HTMLElement>(null)
   const wide = useWide(ref, 600)
   const type = accountTypeOf(testimony.authorRole)
-  const date = testimony.publishedAt
-    .toDate()
-    .toLocaleDateString(i18n.language, {
-      year: "numeric",
-      month: "long",
-      day: "numeric"
-    })
+  const date = filedOn(testimony, i18n.language)
   const name = nameOf(testimony)
 
   return (
@@ -193,11 +240,25 @@ export function Entry({
           <NameRow>
             <Name title={name}>{name}</Name>
             <AccountTypeIcon type={type} />
+            {parent && (
+              <>
+                <Cosigned>{t("input.cosigned")}</Cosigned>
+                <ParentName
+                  type="button"
+                  disabled={!onOpen}
+                  onClick={() => onOpen?.(parent)}
+                >
+                  {nameOf(parent)}
+                </ParentName>
+                <AccountTypeIcon type={accountTypeOf(parent.authorRole)} />
+              </>
+            )}
             <PositionChip position={testimony.position} />
           </NameRow>
           <Descriptor>{t(`input.descriptor_${type}`)}</Descriptor>
         </Who>
         <Corner>
+          {lead}
           {wide && <When>{date}</When>}
           {actions}
         </Corner>
@@ -205,7 +266,9 @@ export function Entry({
       <Words>
         {wide && <Indent aria-hidden />}
         <Text $wide={wide}>
-          {fullBody ? (
+          {testimony.cosignOfId && !testimony.content ? (
+            <NoWords $small={!wide}>{t("input.cosign_no_words")}</NoWords>
+          ) : fullBody ? (
             <Body $small={!wide}>{testimony.content}</Body>
           ) : (
             <ClampedText text={testimony.content} small={!wide} />

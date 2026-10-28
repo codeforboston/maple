@@ -1,6 +1,7 @@
 import "@testing-library/jest-dom"
 import { fireEvent, render, screen, within } from "@testing-library/react"
 import type { ConferenceTestimony } from "components/db"
+import { InputContext } from "./context"
 import { PublicInput } from "./PublicInput"
 
 jest.mock("next-i18next", () => ({
@@ -102,5 +103,77 @@ describe("PublicInput", () => {
       )
     )
     expect(screen.getAllByRole("article")).toHaveLength(2)
+  })
+
+  describe("cosigning", () => {
+    const org = entry(1, { authorRole: "organization" })
+    const person = entry(2)
+    const legislator = entry(3, { authorRole: "legislator" })
+    const cosign = entry(4, { cosignOfId: "t1", cosignOfAuthorUid: "u1" })
+    const own = entry(5, { authorUid: "me" })
+    const items = [org, person, legislator, cosign, own]
+
+    const mount = (onCosign?: (t: ConferenceTestimony) => void) =>
+      render(
+        <InputContext.Provider
+          value={{
+            uid: "me",
+            subject: "Phone-Free Schools",
+            followed: new Set(),
+            signedIn: true,
+            onCosign,
+            byId: new Map(items.map(x => [x.id, x]))
+          }}
+        >
+          <PublicInput items={items} loading={false} />
+        </InputContext.Provider>
+      )
+
+    const cosignable = () =>
+      screen
+        .getAllByRole("article")
+        .filter(a => within(a).queryByRole("button", { name: "input.cosign" }))
+        .map(a => a.querySelector("p span")?.textContent)
+
+    it("offers an individual's or an organization's input, not a legislator's, a cosign or your own", () => {
+      const onCosign = jest.fn()
+      mount(onCosign)
+      expect(cosignable()).toEqual(["Author 1", "Author 2"])
+      fireEvent.click(
+        within(screen.getAllByRole("article")[0]).getByRole("button", {
+          name: "input.cosign"
+        })
+      )
+      expect(onCosign).toHaveBeenCalledWith(org)
+    })
+
+    it("offers nothing while the page does not", () => {
+      mount()
+      expect(cosignable()).toEqual([])
+    })
+
+    it("names what a cosign cosigns", () => {
+      mount()
+      const card = within(screen.getAllByRole("article")[3])
+      expect(card.getByText("input.cosigned")).toBeInTheDocument()
+      expect(card.getByRole("button", { name: "Author 1" })).toBeInTheDocument()
+      expect(card.queryByText("input.cosign_no_words")).not.toBeInTheDocument()
+    })
+
+    it("says so where a cosign has no words of its own", () => {
+      render(
+        <InputContext.Provider
+          value={{
+            subject: "Phone-Free Schools",
+            followed: new Set(),
+            signedIn: false,
+            byId: new Map([[org.id, org]])
+          }}
+        >
+          <PublicInput items={[{ ...cosign, content: "" }]} loading={false} />
+        </InputContext.Provider>
+      )
+      expect(screen.getByText("input.cosign_no_words")).toBeInTheDocument()
+    })
   })
 })

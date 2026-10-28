@@ -63,7 +63,7 @@ const Private = styled.p`
  * section's controls, and says it is also in the record below. */
 export function YourInput({ testimony }: { testimony: ConferenceTestimony }) {
   const { t } = useTranslation("conferences")
-  const [opened, setOpened] = useState(false)
+  const [opened, setOpened] = useState<ConferenceTestimony>()
   return (
     <Section id="your-input">
       <Head>
@@ -78,13 +78,20 @@ export function YourInput({ testimony }: { testimony: ConferenceTestimony }) {
           testimony={testimony}
           bare
           actions={
-            <Kebab testimony={testimony} onView={() => setOpened(true)} />
+            <Kebab testimony={testimony} onView={() => setOpened(testimony)} />
           }
+          onOpen={setOpened}
         />
       </Box>
-      <Private>{t("input.yours_private")}</Private>
+      <Private>
+        {t(
+          testimony.cosignOfId
+            ? "input.yours_private_cosign"
+            : "input.yours_private"
+        )}
+      </Private>
       {opened && (
-        <EntryModal testimony={testimony} onClose={() => setOpened(false)} />
+        <EntryModal testimony={opened} onClose={() => setOpened(undefined)} />
       )}
     </Section>
   )
