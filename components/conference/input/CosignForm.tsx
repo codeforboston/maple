@@ -35,8 +35,9 @@ import {
   Status,
   useAsk
 } from "./InputForm"
+import { useInputContext } from "./context"
 import { UsersRound } from "./icons"
-import { brand, ink, line, red, wash } from "./tokens"
+import { brand, caution, ink, line, red, wash } from "./tokens"
 import { useAutosave } from "./useAutosave"
 
 export type CosignStep = "confirm" | "write"
@@ -94,6 +95,19 @@ const Facts = styled.p`
 
 const Dot = styled.span`
   color: ${ink.faint};
+`
+
+/** The reader's other cosign note, which agreeing here writes over. */
+const Replaces = styled.p`
+  flex-shrink: 0;
+  margin: 16px 0 0;
+  padding: 10px 12px;
+  border-left: 3px solid ${caution};
+  border-radius: 4px;
+  background: ${wash.default};
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: ${ink.strong};
 `
 
 const Tally = styled.span`
@@ -259,6 +273,7 @@ export function CosignForm({
 }) {
   const { t } = useTranslation("conferences")
   const { claims } = useAuth()
+  const { byId } = useInputContext()
   const { profile } = useProfile()
   const { saveDraft, publishTestimony, discardDraft } = edit
   const editing = !!edit.publication
@@ -343,10 +358,25 @@ export function CosignForm({
     </Problem>
   )
 
+  // The one draft holds one cosign, so agreeing here writes over a note
+  // drafted for another.
+  const other =
+    edit.draft?.cosignOfId !== parent.id &&
+    edit.draft?.content?.trim() &&
+    edit.draft.cosignOfId
+  const replaced = other ? byId.get(other) : undefined
+  const replaces = other && (
+    <Replaces role="note">
+      {replaced
+        ? t("input.cosign_replaces", { name: nameOf(replaced) })
+        : t("input.cosign_replaces_gone")}
+    </Replaces>
+  )
   if (step === "confirm")
     return (
       <CosignConfirm
         parent={parent}
+        replaces={replaces}
         problem={problem}
         onAgree={() => {
           // Agreeing makes this the user's draft, on this parent. A failure
@@ -449,10 +479,13 @@ export function CosignForm({
  * they have read it. */
 function CosignConfirm({
   parent,
+  replaces,
   problem,
   onAgree
 }: {
   parent: ConferenceTestimony
+  /** The warning that agreeing writes over a note cosigning another. */
+  replaces: React.ReactNode
   problem: React.ReactNode
   onAgree: () => void
 }) {
@@ -495,6 +528,7 @@ function CosignConfirm({
             </Rules>
           </CardSection>
         </Card>
+        {replaces}
         <Tick
           $asked={asked && !agreed}
           $washed={asked && !agreed}
