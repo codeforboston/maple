@@ -305,7 +305,10 @@ function BillFilingsPage() {
                             </a>
                           </td>
                           <td style={cellStyle}>
-                            <LobbyingPositionChip position={f.position} />
+                            <LobbyingPositionChip
+                              position={f.position}
+                              showReported
+                            />
                           </td>
                           <td style={{ ...cellStyle, whiteSpace: "nowrap" }}>
                             {filingPeriodLabel(f, i18n.language)}

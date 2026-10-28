@@ -187,8 +187,13 @@ const Layout = () => {
   /* The All / Individuals / Organizations choice, as the first group in the
      filter panel. It sets the authorRole filter. */
   const authorTypeFilter = (
-    <AuthorTypeFilterSection>
-      <FilterLabel>{t("author_type")}</FilterLabel>
+    // A radio group named by its heading, so the choice is announced as
+    // "Author type".
+    <AuthorTypeFilterSection
+      role="radiogroup"
+      aria-labelledby="author-type-label"
+    >
+      <FilterLabel id="author-type-label">{t("author_type")}</FilterLabel>
       {tabs.map(tab => (
         <Form.Check
           key={tab}

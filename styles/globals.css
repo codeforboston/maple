@@ -868,8 +868,9 @@
   }
 }
 
-/* The desktop navbar carries data-bs-theme="dark", which drives Bootstrap's
-   own link colours. Point those at the skin's ink instead. */
+/* The mobile navbar (components/Navbar.tsx) carries data-bs-theme="dark",
+   which drives Bootstrap's own link colours there. Point those, and the
+   desktop bar's links, at the skin's ink instead. */
 :is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
   .nav-link,
 :is([data-navbar-variant="neutral"], :root [data-navbar-variant="auto"])
@@ -932,9 +933,7 @@
    a white page those buttons disappear. Give them the skin's surface and a
    visible edge so they read as buttons at rest. */
 :root .btn-hover-primary,
-:root .btn-hover-secondary,
-:root .btn-active-outline-primary,
-:root .btn-active-outline-secondary {
+:root .btn-hover-secondary {
   --bs-btn-bg: var(--maple-surface-base);
   --bs-btn-border-color: var(--maple-surface-border);
   --bs-btn-color: var(--maple-brand-primary);
@@ -997,8 +996,8 @@
   overflow: visible;
 }
 
-/* maple-logo-navy.svg is the existing white logo recoloured, so it carries a
-   real alpha channel and needs no blend trick. */
+/* The navbar's logo, logo-ple-neutral-bg.svg, is a vector with a transparent
+   ground, so it needs no blend trick. */
 
 /* The nav items and sign-in action sit on their own white surface, floating on
    the transparent header, so they stay legible over whatever the hero artwork

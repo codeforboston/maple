@@ -62,14 +62,15 @@ export function ProfilePage(profileprops: {
     boolean | undefined
   >(false)
 
-  /* profile?.public will not cause the <Banner> component to properly rerender 
-     to show current "publicity" when the "Make Public/Private" button is used.  
-     The leads to the <Banner> displaying incorrect/unsynced information. 
-     
-     A state variable is used to enforce a rerender on profile update when publicity
-     button is used.
-  
-     see variable: bannerContent, onProfilePublicityChanged
+  /* profile?.public will not cause the <PageBanner> component to properly
+     rerender to show current "publicity" when it is changed in the Settings
+     dialog's Public/Private menu. This leads to the <PageBanner> displaying
+     incorrect/unsynced information.
+
+     A state variable is used to enforce a rerender on profile update when
+     publicity is changed.
+
+     see variable: isProfilePublic, onProfilePublicityChanged
    */
 
   useEffect(() => {

@@ -32,17 +32,13 @@ describe("conference links", () => {
     "renders the banner for a %s conference, worded by status and linked to it",
     status => {
       render(<ConferenceBanner conference={{ ...conference, status }} />)
-      // One copy per skin (Maple's banner and the slim note), with CSS showing
-      // one, so check every copy rather than expecting exactly one.
       expect(
-        screen.getAllByText(`bill_banner.${status}:`, { exact: false })[0]
+        screen.getByText(`bill_banner.${status}:`, { exact: false })
       ).toBeInTheDocument()
-      for (const link of screen.getAllByRole("link")) {
-        expect(link).toHaveAttribute(
-          "href",
-          expect.stringContaining("/conferences/194/h4000-s2500")
-        )
-      }
+      expect(screen.getByRole("link")).toHaveAttribute(
+        "href",
+        expect.stringContaining("/conferences/194/h4000-s2500")
+      )
     }
   )
 

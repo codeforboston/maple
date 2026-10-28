@@ -62,16 +62,11 @@
   --hero-lead-ink: var(--hero-ink-body);
   --hero-link: #ffffff;
   --hero-skyline: rgba(255, 255, 255, 0.08);
-  --hero-lead-weight: 400;
   /* The copy column runs to the hero's bottom edge so the statehouse under the
      copy sits on it, as the original hero's did. */
   --hero-pad-bottom: 0;
   --hero-content-align: stretch;
   --hero-content-pad-bottom: 0;
-  /* Room between the paragraph and the statehouse under it, and the
-     statehouse's width. */
-  --hero-lead-gap: 3.5rem;
-  --hero-statehouse-width: 19.5rem;
 
   position: relative;
   width: 100%;
@@ -498,6 +493,13 @@
     width: calc(100% - 1rem);
   }
 
+  /* Room under Browse All Testimony, the testimony section's last line, as
+     the sections below keep under theirs, so the gap before Did You Know?
+     matches the gaps between them. */
+  .browseTestimony {
+    padding-bottom: 2rem;
+  }
+
   .hero,
   .didYouKnow,
   .features,
@@ -750,11 +752,9 @@
      muted (#64748b). */
   --hero-lead-ink: #475569;
   --hero-link: var(--maple-brand-primary);
-  --hero-lead-weight: 400;
   --hero-pad-bottom: 10rem;
   --hero-content-align: center;
   --hero-content-pad-bottom: 1.5rem;
-  --hero-lead-gap: 1.5rem;
 }
 
 /* Experiment: this skin with the coloured statehouse grounded under the copy,
@@ -764,14 +764,13 @@
   --hero-pad-bottom: 0;
   --hero-content-align: stretch;
   --hero-content-pad-bottom: 0;
-  --hero-lead-gap: 3.5rem;
-  --hero-statehouse-width: 19.5rem;
 }
 
-/* The original asset bakes opacity into its path, so it can never render at
-   more than about 5% ink. skyline-mask.svg is the same artwork with that
-   removed, used as a mask so the colour comes from CSS and the skyline can sit
-   at full strength the way the Civil Beat hero does. */
+/* The original asset (skyline.svg) bakes opacity into its path, so it can
+   never render at more than about 5% ink. So the element draws no image of
+   its own: its ::before (above) uses skyline-long.svg as a mask, so the colour
+   comes from CSS and the skyline can sit at full strength the way the Civil
+   Beat hero does. */
 :root .skylineBackground {
   left: 0;
   right: 0;
@@ -779,11 +778,6 @@
   height: 100%;
   background-image: none;
   opacity: 1;
-}
-
-/* This skin draws its skyline in slices, below, not as one layer. */
-:root .skylineBackground::before {
-  content: none;
 }
 
 /* Primary action moves from red to blue, per the skin's rule that red is
@@ -853,19 +847,12 @@
   font-weight: 600;
 }
 
-/* The statehouse is scenery rather than a column: it sits on the hero's bottom
-   edge at the left, behind everything, like the skyline. That leaves the grid
-   with the copy and the topic panel to place. */
+/* From 1101px the .heroStatehouse rules further down set all three of these.
+   Below that the grid is one column (the 1100px block), so the gap here is the
+   space between the stacked statehouse and copy. */
 .hero {
-  /* Both columns are sized to their content, not to fractions of the width:
-     the copy is pinned at 29.5rem and the ask panel at 32rem, so neither
-     resizes and the spare width collects in the gap between them. That is what
-     keeps the Digital Democracy hero identical across window sizes, line
-     breaks included. */
   grid-template-columns: max-content max-content;
   justify-content: space-between;
-  /* A minimum gap between the two fixed columns; space-between spreads them
-     further than this whenever there is room. */
   gap: clamp(3rem, 6vw, 12rem);
 }
 
@@ -890,22 +877,18 @@
   flex-direction: column;
 }
 
-/* A slightly wider content column than the default 1120px, so the hero copy and
-   the topic panel are not squeezed against each other. */
+/* A slightly wider content column than the default 1120px. */
 :root .sectionShell,
 .heroSection .sectionShell {
   width: min(1260px, calc(100% - 2rem));
 }
 
 /* Below the hero's single-column breakpoint everything stacks in flow:
-   statehouse, then the copy, then the circles. */
+   statehouse, then the copy. */
 @media (max-width: 1100px) {
-  /* One column: everything stacks in flow as statehouse, copy, then circles.
-     The dd grid template has to be collapsed here too, or its 24rem column
-     minimums keep a two-column grid and overflow the screen. minmax(0, ...)
-     rather than a bare 1fr, which can never be narrower than its content: the
-     ask field's typed prompt does not wrap, so a bare 1fr column widened with
-     each phrase it typed and pushed the panel off the screen. */
+  /* One column: the two-column template above is collapsed here.
+     minmax(0, ...) rather than a bare 1fr, which can never be narrower than
+     its content. */
   .hero {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -969,8 +952,8 @@
     /* Scales gently with the window instead of being a fixed value: a fixed
        gutter is proportionally huge on a narrow window and thin on a wide one,
        which is why the two resolutions looked so different. Held at 3rem
-       (48px) up to 1350px, where the copy and the panel need every pixel, then
-       one straight line up to the 12rem cap at 2000px, so there is no step. */
+       (48px) up to 1350px, then one straight line up to the 12rem cap at
+       2000px, so there is no step. */
     padding-left: clamp(3rem, calc(48px + (100vw - 1350px) * 144 / 650), 12rem);
     padding-right: clamp(
       3rem,
@@ -996,26 +979,6 @@
   .heroCopy {
     max-width: 29.5rem;
     min-width: 29.5rem;
-  }
-}
-
-/* Below 1250px the gap between the copy and the panel, and the paragraph's
-   text size, ease down with the window instead of holding until the layout
-   stacks at 1100px.
-
-   The gap falls fast at first and then slowly: from 75px (6vw at 1250px) to
-   30px by 1176px, then from 30px to 16px by 1101px. The text runs in one
-   straight line from 16px at 1250px to 15px at 1101px. */
-
-@media (min-width: 1176px) and (max-width: 1250px) {
-  .hero {
-    gap: calc(30px + (100vw - 1176px) * 45 / 74);
-  }
-}
-
-@media (min-width: 1101px) and (max-width: 1175px) {
-  .hero {
-    gap: calc(16px + (100vw - 1101px) * 14 / 74);
   }
 }
 
@@ -1089,8 +1052,8 @@
 
   /* Stacked, the buttons stack too, centred under the centred copy, as this
      hero's buttons already do below 900px (the rule in the 900px block above,
-     repeated here for the widths in between). Room below them, as the regular
-     hero leaves under its panel, so they do not sit on the bottom edge. */
+     repeated here for the widths in between). Room below them, so they do not
+     sit on the bottom edge. */
   .heroSection.heroStatehouse .heroContent {
     padding-bottom: 3.5rem;
   }
@@ -1109,17 +1072,6 @@
     min-height: 3.5rem;
     padding: 0.75rem 1.5rem;
   }
-}
-
-/* Temporary: the full-width skyline from the current MAPLE look, in this
-   skin's blue at the same 6% as the slice, in place of the slice. Delete this
-   block to go back. */
-:root .heroSection {
-  --hero-skyline: color-mix(
-    in srgb,
-    var(--maple-brand-primary) 6%,
-    transparent
-  );
 }
 
 /* Shown in this skin, framed by the shared rule, in skyline_blue.svg's

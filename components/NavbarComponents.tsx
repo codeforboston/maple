@@ -180,7 +180,7 @@ export const NavbarLinkConferences: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   const { pathname } = useRouter()
   return (
@@ -432,7 +432,10 @@ export const NavbarLinkSignOut: React.FC<
       <button
         type="button"
         onClick={handleClick}
-        className={`nav-link border-0 bg-transparent p-0 ${
+        // px-0 rather than p-0: no side padding, so it lines up with the
+        // links above it, but their padding above and below, so it is spaced
+        // as they are.
+        className={`nav-link border-0 bg-transparent px-0 ${
           isMobile ? "navLink-primary" : ""
         }`}
         {...other}

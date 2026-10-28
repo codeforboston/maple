@@ -23,8 +23,14 @@ const SurfaceCard = styled(Card)`
   overflow: hidden;
 `
 
+/** The band's title, a heading to assistive technology (so it can be jumped
+ * to) without taking on any heading's styles. */
 export const Header = ({ title }: { title: string }) => {
-  return <HeaderContainer>{title}</HeaderContainer>
+  return (
+    <HeaderContainer role="heading" aria-level={2}>
+      {title}
+    </HeaderContainer>
+  )
 }
 
 type TitledSectionCardProps = {

@@ -39,14 +39,22 @@ function normalizePosition(raw: string): Position {
 interface LobbyingPositionChipProps {
   position: string
   className?: string
+  /** The words exactly as the filing reports them (a dash when there are
+   * none) rather than the translated label; the colours still follow the
+   * position.
+   * The bill page uses it, as it showed the reported words before it used
+   * this chip. */
+  showReported?: boolean
 }
 
 export const LobbyingPositionChip: React.FC<LobbyingPositionChipProps> = ({
   position,
-  className
+  className,
+  showReported = false
 }) => {
   const { t } = useTranslation("lobbying")
   const key = normalizePosition(position)
+  const label = showReported ? position || "—" : t(`position.${key}`)
 
   return (
     <span
@@ -56,7 +64,7 @@ export const LobbyingPositionChip: React.FC<LobbyingPositionChipProps> = ({
         ...CHIP_STYLES[key]
       }}
     >
-      {t(`position.${key}`)}
+      {label}
     </span>
   )
 }

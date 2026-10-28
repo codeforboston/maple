@@ -155,7 +155,6 @@ const GROUPS: TokenGroup[] = [
   },
   {
     label: "Type",
-    note: "Out of scope for the reskin, shown so the system is complete.",
     kind: "value",
     tokens: [
       "--maple-font-heading",

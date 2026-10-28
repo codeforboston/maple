@@ -104,8 +104,8 @@ export const StyledTabContent = styled(TabContent)`
     z-index: auto;
   }
 
-  /* The card headings in every tab (Your Legislators, Published, Bills I
-     Follow and the rest) at the size of the form's subheadings (General info
+  /* The h2 headings left in the tabs (the testimony FAQ's; the cards' titles
+     sit in their bands) at the size of the form's subheadings (General info
      and the others), Bootstrap's h4, so all the headings match. Same font,
      weight and line height already; only the size differs. Below 1200px it
      scales as Bootstrap scales h4. */

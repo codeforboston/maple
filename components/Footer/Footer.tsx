@@ -118,7 +118,7 @@ function MapleContainer({ className }: { className?: string }) {
       <Row style={{ marginTop: 10 }}>
         <Image
           className="bg-transparent"
-          src="/maple-footer-white.png"
+          src="/whitelogo_new.svg"
           alt={t("logo")}
           width={100}
         />

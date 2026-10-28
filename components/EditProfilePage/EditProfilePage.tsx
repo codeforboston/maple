@@ -198,18 +198,17 @@ export function EditProfileForm({
           onSelect={(tabTitle: any) => handleOnClick(tabTitle)}
         >
           {/* The About > Our Team tabs (the our-team-tab class and its row),
-              one column each. */}
+              one column each, in a single tab list so the arrow keys move
+              between them. */}
           <div>
             <TabsRow className="py-2 g-0">
-              {tabs.map(t => (
-                <Col key={t.eventKey} className="text-center">
-                  <Nav className="our-team-tab flex-column">
-                    <Nav.Item>
-                      <Nav.Link eventKey={t.eventKey}>{t.title}</Nav.Link>
-                    </Nav.Item>
-                  </Nav>
-                </Col>
-              ))}
+              <Nav className="our-team-tab">
+                {tabs.map(t => (
+                  <Nav.Item key={t.eventKey} as={Col} className="text-center">
+                    <Nav.Link eventKey={t.eventKey}>{t.title}</Nav.Link>
+                  </Nav.Item>
+                ))}
+              </Nav>
             </TabsRow>
           </div>
           <StyledTabContent>

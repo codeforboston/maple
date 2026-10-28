@@ -103,8 +103,8 @@ export const LearnBreadcrumb = ({
           <ChevronRightIcon fontSize="inherit" />
         </li>
         {/* The parent link is disabled for now -- the hub pages still exist, we
-            just are not surfacing them yet. Restore the <Internal> wrapper (and
-            its import) to re-enable it. */}
+            just are not surfacing them yet. Restore the <Internal> wrapper to
+            re-enable it. */}
         <li>
           <span className="disabled">{eyebrow ?? t("hub.eyebrow")}</span>
         </li>

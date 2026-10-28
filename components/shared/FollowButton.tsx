@@ -146,6 +146,9 @@ export const BaseFollowButton = ({
             className={`btn btn-lg py-1 ${
               isFollowing ? "follow-button-following" : ""
             }`}
+            // A toggle, pressed while following, so a screen reader hears that
+            // pressing it again unfollows as well as reading "Following".
+            aria-pressed={isFollowing}
           >
             {!isFollowing && t("button.follow")}
             {isFollowing && (

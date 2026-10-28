@@ -109,7 +109,9 @@ const Empty = styled.div`
   text-align: center;
   font-size: 0.875rem;
   line-height: 1.7;
-  color: var(--maple-text-muted);
+  /* Body ink rather than muted: on the well's grey (sunken) the muted grey
+     falls short of AA contrast. */
+  color: var(--maple-text-body);
 `
 
 function Sheet({
