@@ -10,7 +10,8 @@ import { Script } from "./types"
  * Brings a fresh local emulator up with the conference data: the real bills and
  * members every conference file names (fetched by the functions emulator's
  * scrapers, as a scrape would), the member search index built from them, the
- * conferences themselves, and some sample testimony on one conference. The
+ * conferences themselves, and some sample testimony on one conference, some of
+ * it cosigned (the functions emulator's trigger keeps the tallies). The
  * verified test@example.com comes from the emulator's auth export. Local only.
  *
  *   yarn emulators:start          # in another terminal, from a clean start
@@ -65,6 +66,27 @@ const sample: [string, string, string, string][] = [
   ]
 ]
 
+/** Cosigns of the sample testimony above, by its index: with a note, and
+ * without one. Each cosigner's districts are what the tally counts. */
+const cosigns: [number, string, string, string, string][] = [
+  [
+    6,
+    "Priya Nair",
+    "I'm a school nurse, and the medical exceptions are what matter most to me.",
+    "First Middlesex",
+    "Fifth Middlesex"
+  ],
+  [6, "Tomás Reyes", "", "Second Suffolk", "Eighth Suffolk"],
+  [
+    6,
+    "Hannah Cole",
+    "My son carries a glucose monitor on his phone.",
+    "First Middlesex",
+    "Fourth Middlesex"
+  ],
+  [5, "Lee Brandt", "", "Third Essex", "Ninth Essex"]
+]
+
 export const script: Script = async ctx => {
   const { env, db } = ctx
   if (env !== "local") throw Error("only local supported")
@@ -114,29 +136,59 @@ export const script: Script = async ctx => {
   const conference = `generalCourts/${COURT}/conferences/${SAMPLE}`
   const { canonicalBillId, title } = (await db.doc(conference).get()).data()!
   const day = 86_400_000
-  let at = Date.now() - sample.length * day
-  for (const [i, [name, role, position, content]] of sample.entries()) {
-    const uid = `seed-conference-${i}`
-    const id = `seed-conference-testimony-${i}`
+  let at = Date.now() - (sample.length + cosigns.length) * day
+  const publish = (
+    uid: string,
+    id: string,
+    fields: Record<string, unknown>
+  ) => {
     at += day
-    await db.doc(`users/${uid}/publishedTestimony/${id}`).set({
+    return db.doc(`users/${uid}/publishedTestimony/${id}`).set({
       id,
       authorUid: uid,
-      authorDisplayName: name,
-      fullName: name,
-      authorRole: role,
       billId: canonicalBillId,
       court: COURT,
       billTitle: title,
-      position,
-      content,
       version: 1,
       public: true,
       conferenceId: SAMPLE,
       ballotQuestionId: null,
+      cosignOfId: null,
+      cosignOfAuthorUid: null,
       publishedAt: Timestamp.fromMillis(at),
-      updatedAt: Timestamp.fromMillis(at)
+      updatedAt: Timestamp.fromMillis(at),
+      firstPublishedAt: Timestamp.fromMillis(at),
+      ...fields
     })
   }
-  console.log(`seeded ${sample.length} sample testimonies on ${SAMPLE}`)
+  // The parents land before their cosigns, whose tally reads them.
+  await Promise.all(
+    sample.map(([name, role, position, content], i) =>
+      publish(`seed-conference-${i}`, `seed-conference-testimony-${i}`, {
+        authorDisplayName: name,
+        fullName: name,
+        authorRole: role,
+        position,
+        content
+      })
+    )
+  )
+  await Promise.all(
+    cosigns.map(([of, name, content, senate, house], i) =>
+      publish(`seed-cosign-${i}`, `seed-cosign-${i}`, {
+        authorDisplayName: name,
+        fullName: name,
+        authorRole: "user",
+        position: sample[of][2],
+        content,
+        cosignOfId: `seed-conference-testimony-${of}`,
+        cosignOfAuthorUid: `seed-conference-${of}`,
+        senatorDistrict: senate,
+        representativeDistrict: house
+      })
+    )
+  )
+  console.log(
+    `seeded ${sample.length} sample testimonies and ${cosigns.length} cosigns on ${SAMPLE}`
+  )
 }
