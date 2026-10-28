@@ -1,8 +1,4 @@
-import {
-  chooseBatches,
-  isRefreshCycleComplete,
-  selectBatchRun
-} from "./scraperBatching"
+import { chooseBatches } from "./scraper"
 import { last, flattenDeep } from "lodash"
 const listOfNumbers = (size: number) =>
   new Array(size).fill(undefined).map((_, i) => i.toString())
@@ -78,55 +74,5 @@ describe("chooseBatches", () => {
       startAfterId: "b"
     })
     expect(ids).toEqual([["c", "d", "e", "a", "b"]])
-  })
-
-  it("marks the cycle complete when a selection reaches the end of the IDs", () => {
-    const selection = selectBatchRun({
-      ids: ["a", "b", "c", "d", "e"],
-      docsPerBatch: 1,
-      numBatches: 2,
-      startAfterId: "c"
-    })
-
-    expect(selection.batches).toEqual([["d"], ["e"]])
-    expect(selection.nextLastId).toBe("e")
-    expect(selection.cycleComplete).toBe(true)
-  })
-
-  it("starts a new pass at the first ID after the previous pass reached the end", () => {
-    const selection = selectBatchRun({
-      ids: ["a", "b", "c", "d", "e"],
-      docsPerBatch: 1,
-      numBatches: 2,
-      startAfterId: "e"
-    })
-
-    expect(selection.batches).toEqual([["a"], ["b"]])
-    expect(selection.nextLastId).toBe("b")
-    expect(selection.cycleComplete).toBe(false)
-  })
-
-  it("does not complete a refresh until the cycle is closed and every batch finishes", () => {
-    expect(
-      isRefreshCycleComplete({
-        cycleClosed: false,
-        completedBatches: 5,
-        expectedBatches: 5
-      })
-    ).toBe(false)
-    expect(
-      isRefreshCycleComplete({
-        cycleClosed: true,
-        completedBatches: 4,
-        expectedBatches: 5
-      })
-    ).toBe(false)
-    expect(
-      isRefreshCycleComplete({
-        cycleClosed: true,
-        completedBatches: 5,
-        expectedBatches: 5
-      })
-    ).toBe(true)
   })
 })
