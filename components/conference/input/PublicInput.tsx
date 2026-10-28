@@ -233,7 +233,7 @@ export function PublicInput({
         band={
           banded && <Band testimony={x} yours={mine?.cosignOfId === x.id} />
         }
-        floor={banded && <Floor testimony={x} />}
+        floor={banded ? wide => <Floor testimony={x} wide={wide} /> : undefined}
         actions={<Kebab testimony={x} onView={() => setOpened(x)} />}
         onOpen={setOpened}
       >

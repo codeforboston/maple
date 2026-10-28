@@ -143,19 +143,28 @@ const Dot = styled.span`
   color: ${ink.faint};
 `
 
-const Latest = styled.span`
+/** In a narrow window, a narrow card's latest date moves to its foot line
+ * (Entry's LatestBeside); a wide card has none, so keeps it here. */
+const Latest = styled.span<{ $wide: boolean }>`
   float: right;
   margin-left: 12px;
   line-height: 24px;
   white-space: nowrap;
   @media ${LATEST_BESIDE} {
-    display: none;
+    display: ${({ $wide }) => ($wide ? "inline" : "none")};
   }
 `
 
 /** The card's floor: how many cosigned, from how many districts, and when
  * the latest did. */
-export function Floor({ testimony }: { testimony: ConferenceTestimony }) {
+export function Floor({
+  testimony,
+  wide
+}: {
+  testimony: ConferenceTestimony
+  /** The card is wide, so it has no foot line to take the latest date. */
+  wide: boolean
+}) {
   const { t, i18n } = useTranslation("conferences")
   const latest = lastCosignedOn(testimony, i18n.language)
   // Only the chambers someone cosigned from; a cosigner with no district on
@@ -185,7 +194,11 @@ export function Floor({ testimony }: { testimony: ConferenceTestimony }) {
           )}
         </Districts>
       </Count>
-      {latest && <Latest>{t("input.last_cosigned", { date: latest })}</Latest>}
+      {latest && (
+        <Latest $wide={wide}>
+          {t("input.last_cosigned", { date: latest })}
+        </Latest>
+      )}
     </Base>
   )
 }
