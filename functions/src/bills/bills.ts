@@ -21,7 +21,6 @@ export const { fetchBatch: fetchBillBatch, startBatches: startBillBatches } =
     startBatchSchedule: "every 3 hours",
     fetchBatchTimeout: 240,
     startBatchTimeout: 240,
-    trackFullRefresh: true,
     fetchResource: async (court: number, id: string, current) => {
       const { content, pdfTextExtraction } =
         await getDocumentWithPdfTextFallback(court, id)
