@@ -158,7 +158,7 @@ function KeyFigures({
           const defId = `key-figure-def-${i}`
           return (
             <div key={f.label} style={figureRowStyle}>
-              <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <div style={figureValueStyle}>{f.value}</div>
                 <div style={figureLabelStyle}>
                   {f.label}
@@ -625,7 +625,7 @@ const figureValueStyle: React.CSSProperties = {
   width: 118,
   fontSize: 26,
   fontWeight: 700,
-  lineHeight: 1.1,
+  lineHeight: 1,
   color: MAPLE_COLORS.primary
 }
 
