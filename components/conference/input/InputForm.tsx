@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { RefObject, useCallback, useEffect, useRef, useState } from "react"
 import { Timestamp } from "firebase/firestore"
 import { Trans, useTranslation } from "next-i18next"
 import styled, { keyframes } from "styled-components"
@@ -8,7 +8,7 @@ import {
   ConferenceTestimony,
   hasDraftChanged,
   Testimony,
-  useEditConferenceTestimony,
+  UseEditConferenceTestimony,
   useProfile,
   WorkingDraft
 } from "components/db"
@@ -16,10 +16,11 @@ import { Internal } from "components/links"
 import { Entry } from "./Entry"
 import { conferencePositions, positionColours } from "./positions"
 import { brand, ink, line, red, wash } from "./tokens"
+import { useAutosave } from "./useAutosave"
 
 export type Step = "compose" | "review"
 
-const Body = styled.div`
+export const Body = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -27,7 +28,7 @@ const Body = styled.div`
   padding: 12px 18px 22px;
 `
 
-const Scroll = styled.div`
+export const Scroll = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -36,7 +37,7 @@ const Scroll = styled.div`
   overscroll-behavior: contain;
 `
 
-const Label = styled.p`
+export const Label = styled.p`
   margin: 0 0 8px;
   font-size: 0.8125rem;
   font-weight: 600;
@@ -74,7 +75,7 @@ const ask = keyframes`
   80% { transform: translateX(3px); }
 `
 
-const Field = styled.textarea<{ $refused: boolean; $asking: boolean }>`
+export const Field = styled.textarea<{ $refused: boolean; $asking: boolean }>`
   flex: 1;
   min-height: 150px;
   max-height: 280px;
@@ -101,7 +102,7 @@ const Field = styled.textarea<{ $refused: boolean; $asking: boolean }>`
   }
 `
 
-const Actions = styled.div`
+export const Actions = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -110,7 +111,7 @@ const Actions = styled.div`
   padding-top: 14px;
 `
 
-const Status = styled.span`
+export const Status = styled.span`
   display: inline-flex;
   align-items: center;
   margin-right: auto;
@@ -119,7 +120,7 @@ const Status = styled.span`
   transition: opacity 500ms;
 `
 
-const Quiet = styled.button`
+export const Quiet = styled.button`
   padding: 8px;
   border: 0;
   background: none;
@@ -132,11 +133,11 @@ const Quiet = styled.button`
 `
 
 /** The way out of the step, a step quieter than the rest. */
-const Muted = styled(Quiet)`
+export const Muted = styled(Quiet)`
   color: ${ink.muted};
 `
 
-const Primary = styled.button`
+export const Primary = styled.button`
   padding: 8px 18px;
   border: 0;
   border-radius: 8px;
@@ -159,7 +160,7 @@ const PreviewBox = styled.div`
   border-radius: 16px;
 `
 
-const Rules = styled.ul`
+export const Rules = styled.ul`
   margin: 0;
   padding-left: 16px;
   font-size: 0.75rem;
@@ -182,7 +183,7 @@ const RuleLabel = styled.p`
   color: ${ink.mid};
 `
 
-const Problem = styled.p`
+export const Problem = styled.p`
   margin: 12px 0 0;
   font-size: 0.75rem;
   color: ${red.refused};
@@ -195,10 +196,62 @@ const Hint = styled.p`
   color: ${ink.mid};
 `
 
-/** Autosave's two timings, as in the mockup: what was just saved shows for a
- * couple of seconds and then goes. */
-const SAVE_AFTER = 1200
-const SAVED_FOR = 2000
+/** A field that asks for what is missing: pressed on without it, the field
+ * goes red, shakes and takes the focus; words in it settle it. */
+export function useAsk(field: RefObject<HTMLElement>) {
+  const [refused, setRefused] = useState(false)
+  const [asking, setAsking] = useState(false)
+  return {
+    refused,
+    asking,
+    ask: () => {
+      setRefused(true)
+      setAsking(false)
+      field.current?.focus()
+      requestAnimationFrame(() => setAsking(true))
+    },
+    settle: () => setRefused(false),
+    asked: () => setAsking(false)
+  }
+}
+
+/** The edit reason a republished filing needs, as it does everywhere else. */
+export function ReasonField({
+  value,
+  onChange
+}: {
+  value: string
+  onChange: (reason: string) => void
+}) {
+  const { t } = useTranslation("testimony")
+  return (
+    <div style={{ marginTop: 20 }}>
+      <Label>{t("publish.reasonLabel")}</Label>
+      <Field
+        rows={3}
+        style={{ minHeight: 0, height: "auto", maxHeight: "none" }}
+        value={value}
+        placeholder={t("publish.reasonPlaceholder")}
+        $refused={false}
+        $asking={false}
+        onChange={e => onChange(e.target.value)}
+      />
+    </div>
+  )
+}
+
+/** The last of the rules before posting, the same wherever input is filed. */
+export function ConductRule() {
+  const { t } = useTranslation("conferences")
+  return (
+    <li>
+      <Trans t={t} i18nKey="input.conduct">
+        All posts are governed by our
+        <Internal href="/policies/code-of-conduct">Code of Conduct</Internal>.
+      </Trans>
+    </li>
+  )
+}
 
 /**
  * Writing, reviewing and posting testimony on a conference, in the panel's
@@ -207,9 +260,7 @@ const SAVED_FOR = 2000
  */
 export function InputForm({
   uid,
-  court,
-  conferenceId,
-  billId,
+  edit,
   subject,
   step,
   onStep,
@@ -217,9 +268,8 @@ export function InputForm({
   onPosted
 }: {
   uid: string
-  court: number
-  conferenceId: string
-  billId: string
+  /** The user's draft and publication on the conference. */
+  edit: UseEditConferenceTestimony
   subject: string
   step: Step
   onStep: (s: Step) => void
@@ -228,10 +278,8 @@ export function InputForm({
   onPosted: () => void
 }) {
   const { t } = useTranslation("conferences")
-  const { t: tt } = useTranslation("testimony")
   const { claims } = useAuth()
   const { profile } = useProfile()
-  const edit = useEditConferenceTestimony(uid, court, billId, conferenceId)
   const { saveDraft, publishTestimony, discardDraft } = edit
 
   const [position, setPosition] = useState<ConferencePosition>(
@@ -239,99 +287,56 @@ export function InputForm({
   )
   const [content, setContent] = useState("")
   const [reason, setReason] = useState("")
-  const [refused, setRefused] = useState(false)
-  const [asking, setAsking] = useState(false)
-  const [save, setSave] = useState<"none" | "saving" | "saved" | "fading">(
-    "none"
-  )
-  const [posting, setPosting] = useState(false)
   const field = useRef<HTMLTextAreaElement>(null)
+  const ask = useAsk(field)
 
   // Start from what the user already has: their draft, else what they posted.
+  // A cosign's words are not this form's, and seeding them would save over
+  // the cosign, since this form sits mounted behind a closed panel.
   const seeded = useRef(false)
   useEffect(() => {
     if (edit.loading || seeded.current) return
     seeded.current = true
     const source = edit.draft ?? edit.publication
+    if (source?.cosignOfId) return
     if (source?.position) setPosition(source.position)
     if (source?.content) setContent(source.content)
     if (edit.draft?.editReason) setReason(edit.draft.editReason)
   }, [edit.loading, edit.draft, edit.publication])
 
-  // Saving what the draft already holds fires no snapshot, which would leave
-  // the hook waiting on one, so only differing words are saved.
-  const held = useRef(edit.draft)
-  held.current = edit.draft
-  const inSync = (c: string, p: ConferencePosition, r: string) =>
-    held.current?.content === c &&
-    held.current?.position === p &&
-    (held.current?.editReason ?? "") === r
-  const write = () =>
-    saveDraft.execute({ position, content, editReason: reason || undefined })
-
-  // Keep the draft as they type. The first render is not a change.
-  const touched = useRef(false)
-  const dirty = useRef(false)
-  useEffect(() => {
-    if (!touched.current) {
-      touched.current = true
-      return
-    }
-    if (!content.trim() || inSync(content, position, reason))
-      return setSave("none")
-    dirty.current = true
-    setSave("saving")
-    const id = setTimeout(async () => {
-      await write()
-      dirty.current = false
-      setSave("saved")
-    }, SAVE_AFTER)
-    return () => clearTimeout(id)
-    // saveDraft is a new object each render; the inputs are what matter.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [position, content, reason])
-
-  useEffect(() => {
-    if (save !== "saved") return
-    const fade = setTimeout(() => setSave("fading"), SAVED_FOR)
-    const gone = setTimeout(() => setSave("none"), SAVED_FOR + 600)
-    return () => {
-      clearTimeout(fade)
-      clearTimeout(gone)
-    }
-  }, [save])
+  // Keep the draft as they type, once there are words to keep.
+  const { save, dirty, posting, post, reset } = useAutosave({
+    edit,
+    fields: { position, content, reason },
+    // A cosign's draft is not this form's, whatever its words.
+    matches: (draft, f) =>
+      !draft?.cosignOfId &&
+      draft?.content === f.content &&
+      draft?.position === f.position &&
+      (draft?.editReason ?? "") === f.reason,
+    write: f =>
+      saveDraft.execute({
+        position: f.position,
+        content: f.content,
+        editReason: f.reason || undefined
+      }),
+    idle: f => !f.content.trim(),
+    onPosted
+  })
 
   const written = content.trim().length > 0
   const review = () => {
     if (written) return onStep("review")
-    setRefused(true)
-    setAsking(false)
-    field.current?.focus()
-    requestAnimationFrame(() => setAsking(true))
+    ask.ask()
   }
-
-  // Publishing reads the draft the hook holds, which follows the save by a
-  // snapshot: wait until it is the words on screen.
-  const post = async () => {
-    setPosting(true)
-    if (!inSync(content, position, reason)) await write()
-  }
-  useEffect(() => {
-    if (!posting || edit.draftLoading) return
-    if (!inSync(content, position, reason)) return
-    setPosting(false)
-    // A failure shows through publishTestimony.error.
-    publishTestimony.execute().then(onPosted, () => {})
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [posting, edit.draft, edit.draftLoading])
 
   const discard = useCallback(async () => {
     await discardDraft.execute()
     setContent("")
     setPosition(conferencePositions[0])
-    setSave("none")
+    reset()
     onCancel()
-  }, [discardDraft, onCancel])
+  }, [discardDraft, onCancel, reset])
 
   const failed =
     edit.error ||
@@ -347,7 +352,7 @@ export function InputForm({
       edit.publication as unknown as Testimony
     )
   const needsReason = editing && changed
-  const showDelete = !!edit.draft && save === "none" && !dirty.current
+  const showDelete = !!edit.draft && save === "none" && !dirty
 
   const name = profile?.fullName || t("input.anonymous")
   const entry = {
@@ -385,11 +390,11 @@ export function InputForm({
             ref={field}
             value={content}
             placeholder={t("input.prompt")}
-            $refused={refused}
-            $asking={asking}
-            onAnimationEnd={() => setAsking(false)}
+            $refused={ask.refused}
+            $asking={ask.asking}
+            onAnimationEnd={ask.asked}
             onChange={e => {
-              if (e.target.value.trim()) setRefused(false)
+              if (e.target.value.trim()) ask.settle()
               setContent(e.target.value)
             }}
           />
@@ -432,31 +437,10 @@ export function InputForm({
           <Rules>
             <li>{t("input.rule_public")}</li>
             <li>{t("input.rule_revise")}</li>
-            <li>
-              <Trans t={t} i18nKey="input.conduct">
-                All posts are governed by our
-                <Internal href="/policies/code-of-conduct">
-                  Code of Conduct
-                </Internal>
-                .
-              </Trans>
-            </li>
+            <ConductRule />
           </Rules>
         </div>
-        {needsReason && (
-          <div style={{ marginTop: 20 }}>
-            <Label>{tt("publish.reasonLabel")}</Label>
-            <Field
-              rows={3}
-              style={{ minHeight: 0, height: "auto", maxHeight: "none" }}
-              value={reason}
-              placeholder={tt("publish.reasonPlaceholder")}
-              $refused={false}
-              $asking={false}
-              onChange={e => setReason(e.target.value)}
-            />
-          </div>
-        )}
+        {needsReason && <ReasonField value={reason} onChange={setReason} />}
         {failed && <Problem role="alert">{t("input.error")}</Problem>}
       </Scroll>
       <div>

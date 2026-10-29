@@ -40,3 +40,34 @@ describe("DraftTestimony target", () => {
     ).toBe(false)
   })
 })
+
+describe("DraftTestimony cosign", () => {
+  const conference = {
+    ...draft,
+    conferenceId: "data-privacy",
+    position: "passNothing"
+  }
+  const parent = { cosignOfId: "parent-1", cosignOfAuthorUid: "author-1" }
+
+  it("lets a cosign have an empty note", () => {
+    expect(
+      DraftTestimony.guard({ ...conference, ...parent, content: "" })
+    ).toBe(true)
+    expect(DraftTestimony.guard({ ...conference, content: "" })).toBe(false)
+  })
+
+  it("names both the parent's id and author", () => {
+    expect(
+      DraftTestimony.guard({ ...conference, cosignOfId: "parent-1" })
+    ).toBe(false)
+    expect(
+      DraftTestimony.guard({ ...conference, cosignOfAuthorUid: "author-1" })
+    ).toBe(false)
+  })
+
+  it("takes no attachment on a cosign", () => {
+    expect(
+      DraftTestimony.guard({ ...conference, ...parent, attachmentId: "a-1" })
+    ).toBe(false)
+  })
+})

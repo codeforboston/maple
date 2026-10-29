@@ -1,3 +1,4 @@
+import { waitFor } from "@testing-library/react"
 import { currentGeneralCourt } from "functions/src/shared"
 import { FieldValue } from "firebase-admin/firestore"
 import { signOut, User } from "firebase/auth"
@@ -8,15 +9,19 @@ import { nanoid } from "nanoid"
 import { auth, firestore, functions, storage } from "../../components/firebase"
 import { terminateFirebase, testDb, testStorage } from "../testUtils"
 import { script as backfillTestimonyScope } from "../../scripts/firebase-admin/backfillTestimonyScope"
+import { resolveReport } from "components/db"
 import {
   createFakeBill,
+  createNewReport,
   expectPermissionDenied,
   expectStorageUnauthorized,
   getBill,
   getProfile,
   signInTestAdmin,
   signInUser1,
-  signInUser2
+  signInUser2,
+  signInUser3,
+  signInUser4
 } from "./common"
 
 type BaseTestimony = {
@@ -35,6 +40,8 @@ type BaseTestimony = {
   editReason?: string
   ballotQuestionId?: string | null
   conferenceId?: string | null
+  cosignOfId?: string | null
+  cosignOfAuthorUid?: string | null
 }
 
 type DraftTestimony = BaseTestimony & {
@@ -46,6 +53,8 @@ type Testimony = BaseTestimony & {
   authorDisplayName: string
   version: number
   publishedAt: Timestamp
+  firstPublishedAt?: Timestamp
+  cosignCount?: number
 }
 
 const refs = {
@@ -284,6 +293,37 @@ describe("publishTestimony", () => {
     )
 
     await getDoc(doc(firestore, `/users/${uid}/archivedTestimony/test-id`))
+  })
+
+  it("Keeps the first publication time through edits", async () => {
+    const { publicationId } = (await publishTestimony({ draftId })).data
+    const first = await getPublication(uid, publicationId)
+    expect(first.firstPublishedAt).toEqual(first.publishedAt)
+
+    await updateDoc(refs.draftTestimony(uid, draftId), {
+      content: "updated content",
+      editReason: "edit reason"
+    })
+    await publishTestimony({ draftId })
+    const edited = await getPublication(uid, publicationId)
+    expect(edited.publishedAt).not.toEqual(first.publishedAt)
+    expect(edited.firstPublishedAt).toEqual(first.firstPublishedAt)
+  })
+
+  it("Leaves the first publication time missing on older testimony", async () => {
+    const { publicationId } = (await publishTestimony({ draftId })).data
+    await testDb
+      .doc(`/users/${uid}/publishedTestimony/${publicationId}`)
+      .update({ firstPublishedAt: FieldValue.delete() })
+
+    await updateDoc(refs.draftTestimony(uid, draftId), {
+      content: "updated content",
+      editReason: "edit reason"
+    })
+    await publishTestimony({ draftId })
+    expect(await getPublication(uid, publicationId)).not.toHaveProperty(
+      "firstPublishedAt"
+    )
   })
 
   describe("attachments", () => {
@@ -729,6 +769,613 @@ describe("publishTestimony", () => {
         publishTestimony({ draftId: conferenceDraftId })
       ).rejects.toThrow(`takes testimony on ${billId}`)
     })
+
+    describe("cosign", () => {
+      let parentId: string, parentDraftId: string, uid2: string
+
+      // User 1 testifies on the conference, then user 2 signs in.
+      beforeEach(async () => {
+        ;({ draftId: parentDraftId } = await createConferenceDraft(
+          uid,
+          billId,
+          conferenceId,
+          "passSenateVersion"
+        ))
+        parentId = (await publishTestimony({ draftId: parentDraftId })).data
+          .publicationId
+        uid2 = (await signInUser2()).uid
+      })
+
+      // Triggers keep the tally and delete cosigns, and the emulator runs
+      // triggers one at a time, so a wait can sit behind every earlier test's
+      // events.
+      const triggerTimeout = 60_000
+      const waitForTrigger = (check: () => Promise<void>) =>
+        waitFor(check, { interval: 100, timeout: 30_000 })
+
+      const cosignOf = () => ({ cosignOfId: parentId, cosignOfAuthorUid: uid })
+      const cosign = async (signIn: () => Promise<User>) => {
+        const cosigner = (await signIn()).uid
+        const { draftId } = await createCosignDraft(
+          cosigner,
+          billId,
+          conferenceId,
+          cosignOf()
+        )
+        const { publicationId } = (await publishTestimony({ draftId })).data
+        return {
+          uid: cosigner,
+          draftId,
+          publicationId,
+          publication: await getPublication(cosigner, publicationId)
+        }
+      }
+
+      it("Files a cosign with no note, at its parent's position", async () => {
+        const { draftId: cosignDraftId } = await createCosignDraft(
+          uid2,
+          billId,
+          conferenceId,
+          cosignOf()
+        )
+        const res = await publishTestimony({ draftId: cosignDraftId })
+
+        const publication = await getPublication(uid2, res.data.publicationId)
+        expect(publication.cosignOfId).toBe(parentId)
+        expect(publication.cosignOfAuthorUid).toBe(uid)
+        expect(publication.content).toBe("")
+        expect(publication.position).toBe("passSenateVersion")
+
+        const conference = await getConference(conferenceId)
+        expect(conference.testimonyCount).toBe(2)
+        expect(conference.passSenateVersionCount).toBe(2)
+        expect(conference.passNothingCount).toBe(0)
+      })
+
+      it("Keeps the copied position through edits to the note and the parent", async () => {
+        const { draftId: cosignDraftId } = await createCosignDraft(
+          uid2,
+          billId,
+          conferenceId,
+          cosignOf()
+        )
+        const res = await publishTestimony({ draftId: cosignDraftId })
+
+        await testDb
+          .doc(`/users/${uid}/publishedTestimony/${parentId}`)
+          .update({ position: "passHouseVersion" })
+        await updateDoc(refs.draftTestimony(uid2, cosignDraftId), {
+          content: "Because it is right",
+          position: "passHouseVersion",
+          editReason: "Say why"
+        })
+        await publishTestimony({ draftId: cosignDraftId })
+
+        const publication = await getPublication(uid2, res.data.publicationId)
+        expect(publication.content).toBe("Because it is right")
+        expect(publication.version).toBe(2)
+        expect(publication.position).toBe("passSenateVersion")
+      })
+
+      it("Records exactly one cosign on a double submit", async () => {
+        const { draftId: cosignDraftId } = await createCosignDraft(
+          uid2,
+          billId,
+          conferenceId,
+          cosignOf()
+        )
+        await Promise.allSettled([
+          publishTestimony({ draftId: cosignDraftId }),
+          publishTestimony({ draftId: cosignDraftId })
+        ])
+
+        const published = await testDb
+          .collection(`/users/${uid2}/publishedTestimony`)
+          .where("conferenceId", "==", conferenceId)
+          .get()
+        expect(published.size).toBe(1)
+        expect((await getConference(conferenceId)).testimonyCount).toBe(2)
+      })
+
+      it("Refuses a cosign of a cosign", async () => {
+        const { draftId: cosignDraftId } = await createCosignDraft(
+          uid2,
+          billId,
+          conferenceId,
+          cosignOf()
+        )
+        const cosignId = (await publishTestimony({ draftId: cosignDraftId }))
+          .data.publicationId
+
+        await signInUser1()
+        const { draftId } = await createCosignDraft(uid, billId, conferenceId, {
+          cosignOfId: cosignId,
+          cosignOfAuthorUid: uid2
+        })
+        await expect(publishTestimony({ draftId })).rejects.toThrow(
+          "A cosign cannot be cosigned"
+        )
+      })
+
+      it("Refuses a cosign of your own testimony", async () => {
+        await signInUser1()
+        const { draftId } = await createCosignDraft(
+          uid,
+          billId,
+          conferenceId,
+          cosignOf()
+        )
+        await expect(publishTestimony({ draftId })).rejects.toThrow(
+          "cannot cosign your own testimony"
+        )
+      })
+
+      it("Refuses a cosign whose parent is gone", async () => {
+        const { draftId } = await createCosignDraft(
+          uid2,
+          billId,
+          conferenceId,
+          cosignOf()
+        )
+        await testDb
+          .doc(`/users/${uid}/publishedTestimony/${parentId}`)
+          .delete()
+        await expect(publishTestimony({ draftId })).rejects.toMatchObject({
+          message: expect.stringContaining("no longer exists"),
+          details: { refusal: "cosignParentGone" }
+        })
+      })
+
+      it("Refuses a cosign of a legislator's testimony", async () => {
+        await testDb
+          .doc(`/users/${uid}/publishedTestimony/${parentId}`)
+          .update({ authorRole: "legislator" })
+        const { draftId } = await createCosignDraft(
+          uid2,
+          billId,
+          conferenceId,
+          cosignOf()
+        )
+        await expect(publishTestimony({ draftId })).rejects.toThrow(
+          "legislator's testimony cannot be cosigned"
+        )
+      })
+
+      it("Refuses a cosign of testimony on another conference", async () => {
+        const otherConferenceId = await createConference(billId)
+        const { draftId } = await createCosignDraft(
+          uid2,
+          billId,
+          otherConferenceId,
+          cosignOf()
+        )
+        await expect(publishTestimony({ draftId })).rejects.toThrow(
+          `is not on conference ${otherConferenceId}`
+        )
+      })
+
+      it("Refuses a cosign of bill testimony", async () => {
+        const { draftId } = await createDraft(uid2, billId)
+        await updateDoc(refs.draftTestimony(uid2, draftId), cosignOf())
+        await expect(publishTestimony({ draftId })).rejects.toThrow(
+          "Only conference testimony can be cosigned"
+        )
+      })
+
+      it("Refuses a cosign on a closed conference", async () => {
+        const { draftId } = await createCosignDraft(
+          uid2,
+          billId,
+          conferenceId,
+          cosignOf()
+        )
+        await testDb
+          .doc(
+            `/generalCourts/${currentGeneralCourt}/conferences/${conferenceId}`
+          )
+          .update({ status: "reportFiled" })
+        await expect(publishTestimony({ draftId })).rejects.toThrow(
+          "not accepting testimony"
+        )
+      })
+
+      it("Refuses turning plain testimony into a cosign", async () => {
+        const { draftId } = await createConferenceDraft(
+          uid2,
+          billId,
+          conferenceId,
+          "passNothing"
+        )
+        await publishTestimony({ draftId })
+        await updateDoc(refs.draftTestimony(uid2, draftId), {
+          ...cosignOf(),
+          editReason: "Cosign instead"
+        })
+        await expect(publishTestimony({ draftId })).rejects.toThrow(
+          "is not a cosign and cannot become one"
+        )
+      })
+
+      it("Refuses turning a cosign into plain testimony", async () => {
+        const { draftId } = await createCosignDraft(
+          uid2,
+          billId,
+          conferenceId,
+          cosignOf()
+        )
+        await publishTestimony({ draftId })
+        await updateDoc(refs.draftTestimony(uid2, draftId), {
+          cosignOfId: null,
+          cosignOfAuthorUid: null,
+          content: "My own words",
+          editReason: "Testify instead"
+        })
+        await expect(publishTestimony({ draftId })).rejects.toThrow(
+          `cosigns ${parentId} and stays a cosign of it`
+        )
+      })
+
+      it("Refuses a cosign moving to another parent", async () => {
+        const { draftId } = await createCosignDraft(
+          uid2,
+          billId,
+          conferenceId,
+          cosignOf()
+        )
+        await publishTestimony({ draftId })
+
+        const uid3 = (await signInUser3()).uid
+        const { draftId: otherDraftId } = await createConferenceDraft(
+          uid3,
+          billId,
+          conferenceId,
+          "passNothing"
+        )
+        const otherParentId = (
+          await publishTestimony({ draftId: otherDraftId })
+        ).data.publicationId
+
+        await signInUser2()
+        await updateDoc(refs.draftTestimony(uid2, draftId), {
+          cosignOfId: otherParentId,
+          cosignOfAuthorUid: uid3,
+          editReason: "Cosign another"
+        })
+        await expect(publishTestimony({ draftId })).rejects.toThrow(
+          `cosigns ${parentId} and stays a cosign of it`
+        )
+      })
+
+      it("Refuses an empty note on plain testimony, half a reference and an attachment", async () => {
+        const drafts = [
+          { content: "" },
+          { cosignOfId: parentId },
+          { ...cosignOf(), attachmentId: "an-attachment" }
+        ]
+        for (const fields of drafts) {
+          const { draftId } = await createConferenceDraft(
+            uid2,
+            billId,
+            conferenceId,
+            "passNothing"
+          )
+          await updateDoc(refs.draftTestimony(uid2, draftId), fields)
+          await expect(publishTestimony({ draftId })).rejects.toThrow(
+            "failed validation"
+          )
+        }
+      })
+
+      describe("tally", () => {
+        // Cosigners' districts, set on their profiles and restored after.
+        let savedProfiles: [ReturnType<typeof testDb.doc>, any][]
+        const setDistricts = async (
+          uid: string,
+          senate?: string,
+          house?: string
+        ) => {
+          const ref = testDb.doc(`/profiles/${uid}`)
+          savedProfiles.push([ref, (await ref.get()).data()])
+          const member = (district: string) => ({
+            id: `member-${district}`,
+            name: "A Member",
+            district
+          })
+          await ref.set(
+            {
+              senator: senate ? member(senate) : FieldValue.delete(),
+              representative: house ? member(house) : FieldValue.delete()
+            },
+            { merge: true }
+          )
+        }
+        beforeEach(() => {
+          savedProfiles = []
+        })
+        afterEach(async () => {
+          for (const [ref, profile] of savedProfiles) {
+            if (profile) await ref.set(profile)
+            else await ref.delete()
+          }
+        })
+
+        const getParent = () => getPublication(uid, parentId)
+        const expectTally = (tally: object) =>
+          waitForTrigger(async () =>
+            expect(await getParent()).toMatchObject(tally)
+          )
+
+        it(
+          "Counts cosigns and their distinct districts on the parent",
+          async () => {
+            await setDistricts(uid2, "First Essex", "3rd Essex")
+            const uid3 = (await signInUser3()).uid
+            const uid4 = (await signInUser4()).uid
+            await setDistricts(uid3, "First Essex", "4th Essex")
+            await setDistricts(uid4)
+
+            await cosign(signInUser2)
+            await cosign(signInUser3)
+            const last = await cosign(signInUser4)
+
+            expect(last.publication.firstPublishedAt).toEqual(
+              last.publication.publishedAt
+            )
+            await expectTally({
+              cosignCount: 3,
+              cosignSenateDistrictCount: 1,
+              cosignHouseDistrictCount: 2,
+              lastCosignedAt: last.publication.firstPublishedAt
+            })
+          },
+          triggerTimeout
+        )
+
+        it(
+          "Doesn't count an edit to a note as a new cosign",
+          async () => {
+            const first = await cosign(signInUser2)
+            await expectTally({ cosignCount: 1 })
+
+            await updateDoc(refs.draftTestimony(uid2, first.draftId), {
+              content: "Because it is right",
+              editReason: "Say why"
+            })
+            await publishTestimony({ draftId: first.draftId })
+
+            const second = await cosign(signInUser3)
+            await expectTally({
+              cosignCount: 2,
+              lastCosignedAt: second.publication.firstPublishedAt
+            })
+          },
+          triggerTimeout
+        )
+
+        it(
+          "Drops a cosign deleted by an admin",
+          async () => {
+            const first = await cosign(signInUser2)
+            const second = await cosign(signInUser3)
+            await expectTally({
+              cosignCount: 2,
+              lastCosignedAt: second.publication.firstPublishedAt
+            })
+
+            await signInTestAdmin()
+            await deleteTestimony({
+              uid: second.uid,
+              publicationId: second.publicationId
+            })
+            await expectTally({
+              cosignCount: 1,
+              lastCosignedAt: first.publication.firstPublishedAt
+            })
+          },
+          triggerTimeout
+        )
+
+        it(
+          "Keeps the tally when the parent's author edits",
+          async () => {
+            await cosign(signInUser2)
+            await expectTally({ cosignCount: 1 })
+
+            await signInUser1()
+            await updateDoc(refs.draftTestimony(uid, parentDraftId), {
+              content: "updated content",
+              editReason: "edit reason"
+            })
+            await publishTestimony({ draftId: parentDraftId })
+
+            const parent = await getParent()
+            expect(parent.version).toBe(2)
+            expect(parent.cosignCount).toBe(1)
+          },
+          triggerTimeout
+        )
+
+        it("Records the author's districts on any testimony", async () => {
+          await setDistricts(uid2, "First Essex", "3rd Essex")
+          const { draftId } = await createConferenceDraft(
+            uid2,
+            billId,
+            conferenceId,
+            "passNothing"
+          )
+          const { publicationId } = (await publishTestimony({ draftId })).data
+          expect(await getPublication(uid2, publicationId)).toMatchObject({
+            senatorDistrict: "First Essex",
+            representativeDistrict: "3rd Essex"
+          })
+        })
+      })
+
+      describe("deleting the parent", () => {
+        // User 2 and user 3 cosign the parent.
+        let cosigns: Awaited<ReturnType<typeof cosign>>[]
+        beforeEach(async () => {
+          cosigns = [await cosign(signInUser2), await cosign(signInUser3)]
+          expect(await getConference(conferenceId)).toMatchObject({
+            testimonyCount: 3,
+            passSenateVersionCount: 3
+          })
+          await signInTestAdmin()
+        })
+
+        // The counts reach zero with the last cosign's delete.
+        const expectCosignsGone = async () => {
+          await waitForTrigger(async () =>
+            expect(await getConference(conferenceId)).toMatchObject({
+              testimonyCount: 0,
+              passSenateVersionCount: 0
+            })
+          )
+          for (const c of cosigns) {
+            expect(await getPublication(c.uid, c.publicationId)).toBeUndefined()
+            const draft = await testDb
+              .doc(paths.draftTestimony(c.uid, c.draftId))
+              .get()
+            expect(draft.data()!.publishedVersion).toBeUndefined()
+          }
+        }
+
+        it(
+          "Deletes its cosigns when an admin deletes it",
+          async () => {
+            await deleteTestimony({ uid, publicationId: parentId })
+
+            expect(await getPublication(uid, parentId)).toBeUndefined()
+            await expectCosignsGone()
+          },
+          triggerTimeout
+        )
+
+        it(
+          "Deletes its cosigns when a moderator removes it",
+          async () => {
+            const { reportId } = await createNewReport(uid, parentId)
+            const result = await resolveReport({
+              reportId,
+              resolution: "remove-testimony",
+              reason: "important reason"
+            })
+
+            expect(result.data.status).toBe("success")
+            expect(await getPublication(uid, parentId)).toBeUndefined()
+            await expectCosignsGone()
+          },
+          triggerTimeout
+        )
+
+        it(
+          "Resolves a removal whose delete went through without its resolution",
+          async () => {
+            const { reportId, reportRef } = await createNewReport(uid, parentId)
+            await deleteTestimony({ uid, publicationId: parentId })
+            await expectCosignsGone()
+
+            const result = await resolveReport({
+              reportId,
+              resolution: "remove-testimony",
+              reason: "important reason"
+            })
+
+            expect(result.data.status).toBe("success")
+            expect((await reportRef.get()).data()!.resolution).toMatchObject({
+              resolution: "remove-testimony",
+              authorUid: uid
+            })
+          },
+          triggerTimeout
+        )
+
+        // The parent is deleted, then the first cosigner cosigns user 4's
+        // testimony on the same conference, from the same draft.
+        const refileFirstCosign = async () => {
+          await deleteTestimony({ uid, publicationId: parentId })
+          await expectCosignsGone()
+
+          const uid4 = (await signInUser4()).uid
+          const { draftId: otherDraftId } = await createConferenceDraft(
+            uid4,
+            billId,
+            conferenceId,
+            "passSenateVersion"
+          )
+          const otherId = (await publishTestimony({ draftId: otherDraftId }))
+            .data.publicationId
+
+          const [first] = cosigns
+          await signInUser2()
+          await updateDoc(refs.draftTestimony(first.uid, first.draftId), {
+            cosignOfId: otherId,
+            cosignOfAuthorUid: uid4
+          })
+          const { publicationId } = (
+            await publishTestimony({ draftId: first.draftId })
+          ).data
+          return { ...first, otherId, publicationId }
+        }
+
+        it(
+          "Files a later cosign on the conference as new, not an edit",
+          async () => {
+            const refiled = await refileFirstCosign()
+
+            const publication = await getPublication(
+              refiled.uid,
+              refiled.publicationId
+            )
+            expect(publication.cosignOfId).toBe(refiled.otherId)
+            expect(publication.version).toBe(2)
+            expect(publication.editReason).toBeUndefined()
+          },
+          triggerTimeout
+        )
+
+        it(
+          "Counts the edit limit on the later cosign alone",
+          async () => {
+            const refiled = await refileFirstCosign()
+            const edit = async (n: number) => {
+              await updateDoc(
+                refs.draftTestimony(refiled.uid, refiled.draftId),
+                {
+                  content: `Edit ${n}`,
+                  editReason: "Say why"
+                }
+              )
+              return publishTestimony({ draftId: refiled.draftId })
+            }
+
+            for (let n = 1; n <= 5; n++) await edit(n)
+            expect(
+              (await getPublication(refiled.uid, refiled.publicationId)).version
+            ).toBe(7)
+            await expect(edit(6)).rejects.toThrow()
+          },
+          triggerTimeout
+        )
+
+        it("Leaves the parent and other cosigns when one cosign is deleted", async () => {
+          const [first, second] = cosigns
+          await deleteTestimony({
+            uid: first.uid,
+            publicationId: first.publicationId
+          })
+
+          expect(await getPublication(uid, parentId)).toBeDefined()
+          expect(
+            await getPublication(second.uid, second.publicationId)
+          ).toBeDefined()
+          expect(await getConference(conferenceId)).toMatchObject({
+            testimonyCount: 2,
+            passSenateVersionCount: 2
+          })
+        })
+      })
+    })
   })
 })
 
@@ -994,6 +1641,27 @@ async function createConferenceDraft(
   await updateDoc(refs.draftTestimony(uid, draftId), {
     conferenceId,
     position
+  })
+  return { draftId }
+}
+
+/** A cosign draft with no note. Its position is the client's guess; the
+ * server copies the parent's. */
+async function createCosignDraft(
+  uid: string,
+  billId: string,
+  conferenceId: string,
+  cosignOf: { cosignOfId: string; cosignOfAuthorUid: string }
+) {
+  const { draftId } = await createConferenceDraft(
+    uid,
+    billId,
+    conferenceId,
+    "passNothing"
+  )
+  await updateDoc(refs.draftTestimony(uid, draftId), {
+    content: "",
+    ...cosignOf
   })
   return { draftId }
 }

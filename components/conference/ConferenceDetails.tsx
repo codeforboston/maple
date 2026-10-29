@@ -20,19 +20,26 @@ import { ConferenceTabs, TABS_H } from "./ConferenceTabs"
 import { ConferenceText } from "./ConferenceText"
 import { useAuth } from "../auth"
 import { authStepChanged } from "../auth/redux"
-import { useConferenceTestimony } from "../db"
+import {
+  ConferenceTestimony,
+  ConferenceWorkingDraft,
+  useConferenceTestimony,
+  useEditConferenceTestimony
+} from "../db"
 import { useAppDispatch } from "../hooks"
 import { useConferenceTop, usePinnedNavbar } from "./hooks"
 import { InputContext } from "./input/context"
+import { CosignForm, CosignStep } from "./input/CosignForm"
+import { CosignLetter } from "./input/CosignLetter"
 import { InputForm, Step } from "./input/InputForm"
 import { Panel, usePanelWidth } from "./input/Panel"
 import { PublicInput } from "./input/PublicInput"
 import { ShareButton } from "./input/ShareButton"
 import { useFollowedAuthors } from "./input/useFollowedAuthors"
 import { YourInput } from "./input/YourInput"
-import { jumpTo } from "./navbar"
+import { jumpToSection } from "./navbar"
 import { PageColumn, Title } from "./styles"
-import { conferenceName, ConferencePageProps } from "./types"
+import { conferenceName, ConferencePageProps, ConferenceSummary } from "./types"
 
 /** The mockup's column, widened to 1320 once the rail sits beside it. */
 const Page = styled(PageColumn)`
@@ -160,8 +167,22 @@ function Details({
     () => (user ? items.find(x => x.authorUid === user.uid) : undefined),
     [items, user]
   )
+  const byId = useMemo(() => new Map(items.map(x => [x.id, x])), [items])
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState<Step>("compose")
+  // The panel files one of two things: the reader's own input, or a cosign of
+  // `cosigning`. Both are the reader's one draft on the conference.
+  const [cosigning, setCosigning] = useState<ConferenceTestimony>()
+  const [cosignStep, setCosignStep] = useState<CosignStep>("confirm")
+  const [full, setFull] = useState(true)
+  // What the reader's draft holds, as far as the page cares: what it
+  // cosigns, if anything, and whether it has words.
+  const [draftOf, setDraftOf] = useState<string | null>(null)
+  const [draftWords, setDraftWords] = useState(false)
+  const onDraft = useCallback((draft?: ConferenceWorkingDraft) => {
+    setDraftOf(draft?.cosignOfId ?? null)
+    setDraftWords(!!draft?.content?.trim())
+  }, [])
   const { width, drag } = usePanelWidth()
   const followed = useFollowedAuthors(user?.uid)
   const subject = conferenceName(conference)
@@ -169,25 +190,59 @@ function Details({
   const decided = differences.length > 0 || similarities.length > 0
 
   const close = useCallback(() => setOpen(false), [])
-  const edit = useCallback(() => {
+  const compose = useCallback(() => {
+    setCosigning(undefined)
     setStep("compose")
     setOpen(true)
   }, [])
-  // The same doors the bill page's testimony button goes through.
+  const resumeCosign = useCallback((parent: ConferenceTestimony) => {
+    setCosigning(parent)
+    setCosignStep("write")
+    setOpen(true)
+  }, [])
+  // A posted cosign is edited as one, its note alone.
+  const edit = useCallback(() => {
+    if (!mine?.cosignOfId) return compose()
+    const parent = byId.get(mine.cosignOfId)
+    if (parent) resumeCosign(parent)
+  }, [mine, byId, resumeCosign, compose])
+  // The same doors the bill page's testimony button goes through; true once
+  // the reader is through them.
+  const signIn = useCallback(() => {
+    if (!authenticated) dispatch(authStepChanged("start"))
+    else if (!user?.emailVerified) dispatch(authStepChanged("verifyEmail"))
+    else return true
+    return false
+  }, [authenticated, user?.emailVerified, dispatch])
+  // A cosign the reader has written words for is what they come back to; one
+  // without words gives way to their own input.
+  const resumed = draftWords && draftOf ? byId.get(draftOf) : undefined
   const share = () => {
-    if (!authenticated) return dispatch(authStepChanged("start"))
-    if (!user?.emailVerified) return dispatch(authStepChanged("verifyEmail"))
-    edit()
+    if (!signIn()) return
+    if (resumed) resumeCosign(resumed)
+    else compose()
   }
+  const startCosign = useCallback(
+    (parent: ConferenceTestimony) => {
+      if (!signIn()) return
+      if (draftWords && draftOf === parent.id) return resumeCosign(parent)
+      setCosigning(parent)
+      setCosignStep("confirm")
+      setFull(true)
+      setOpen(true)
+    },
+    [signIn, draftOf, draftWords, resumeCosign]
+  )
+  // Cosigning is the reader's one input here, so it is offered only while they
+  // have none: nothing posted, and no words of their own waiting in a draft.
+  const offerCosign = taking && !mine && !(draftWords && !draftOf)
   // Posting puts the panel away and takes the reader to what they filed, once
   // it has arrived in the feed.
   const [landing, setLanding] = useState(false)
   useEffect(() => {
     if (!landing || !mine) return
     setLanding(false)
-    const el = document.getElementById("your-input")
-    if (el) jumpTo(el)
-    history.replaceState(null, "", `${location.pathname}#your-input`)
+    jumpToSection("your-input")
   }, [landing, mine])
   const posted = () => {
     setOpen(false)
@@ -214,13 +269,32 @@ function Details({
       subject,
       followed,
       onEdit: taking ? edit : undefined,
-      signedIn: authenticated
+      signedIn: authenticated,
+      onCosign: offerCosign ? startCosign : undefined,
+      byId
     }),
-    [user?.uid, subject, followed, taking, edit, authenticated]
+    [
+      user?.uid,
+      subject,
+      followed,
+      taking,
+      edit,
+      authenticated,
+      offerCosign,
+      startCosign,
+      byId
+    ]
   )
+  // Signing fills the window with what is signed beside the form; once agreed,
+  // the reader may fold it back to the drawer.
+  const filled = !!cosigning && (cosignStep === "confirm" || full)
   return (
     <InputContext.Provider value={input}>
-      <Shift style={{ "--shift": `${open ? width : 0}px` } as CSSProperties}>
+      <Shift
+        style={
+          { "--shift": `${open && !filled ? width : 0}px` } as CSSProperties
+        }
+      >
         <ConferenceHero ref={hero} onSee={toConference} landing={openOnHero} />
         <Page ref={top}>
           <ConferenceRail
@@ -285,29 +359,119 @@ function Details({
         </Page>
       </Shift>
       {authenticated && user && (
-        <Panel
+        <InputPanel
+          uid={user.uid}
+          conference={conference}
+          subject={subject}
           open={open}
-          title={t(
-            step === "compose" ? "input.panel_title" : "input.review_title"
-          )}
-          closeLabel={t("input.close_panel")}
           width={width}
           onDrag={drag}
           onClose={close}
-        >
-          <InputForm
-            uid={user.uid}
-            court={conference.court}
-            conferenceId={conference.id}
-            billId={conference.canonicalBillId}
-            subject={subject}
-            step={step}
-            onStep={setStep}
-            onCancel={close}
-            onPosted={posted}
-          />
-        </Panel>
+          step={step}
+          onStep={setStep}
+          cosigning={cosigning}
+          cosignStep={cosignStep}
+          onCosignStep={setCosignStep}
+          full={filled}
+          onFull={setFull}
+          onDraft={onDraft}
+          onPosted={posted}
+        />
       )}
     </InputContext.Provider>
+  )
+}
+
+/** The panel and the form in it, for a signed-in reader. The reader's draft is
+ * held here for both forms, and handed up so the page knows what it holds. */
+function InputPanel({
+  uid,
+  conference,
+  subject,
+  open,
+  width,
+  onDrag,
+  onClose,
+  step,
+  onStep,
+  cosigning,
+  cosignStep,
+  onCosignStep,
+  full,
+  onFull,
+  onDraft,
+  onPosted
+}: {
+  uid: string
+  conference: ConferenceSummary
+  subject: string
+  open: boolean
+  width: number
+  onDrag: (px: number) => void
+  onClose: () => void
+  step: Step
+  onStep: (s: Step) => void
+  cosigning?: ConferenceTestimony
+  cosignStep: CosignStep
+  onCosignStep: (s: CosignStep) => void
+  full: boolean
+  onFull: (full: boolean) => void
+  onDraft: (draft?: ConferenceWorkingDraft) => void
+  onPosted: () => void
+}) {
+  const { t } = useTranslation("conferences")
+  const edit = useEditConferenceTestimony(
+    uid,
+    conference.court,
+    conference.canonicalBillId,
+    conference.id
+  )
+  // Signing out takes the draft with it.
+  useEffect(() => {
+    onDraft(edit.draft)
+    return () => onDraft(undefined)
+  }, [edit.draft, onDraft])
+
+  const title =
+    cosigning && edit.publication
+      ? "input.cosign_edit_title"
+      : !cosigning && step === "review"
+      ? "input.review_title"
+      : "input.panel_title"
+  return (
+    <Panel
+      open={open}
+      title={t(title)}
+      closeLabel={t("input.close_panel")}
+      width={width}
+      onDrag={onDrag}
+      onClose={onClose}
+      beside={cosigning && <CosignLetter parent={cosigning} />}
+      full={full}
+      onFull={cosigning && cosignStep === "write" ? onFull : undefined}
+    >
+      {cosigning ? (
+        // Keyed so another parent starts from its own draft.
+        <CosignForm
+          key={cosigning.id}
+          edit={edit}
+          parent={cosigning}
+          step={cosignStep}
+          onStep={onCosignStep}
+          onCancel={onClose}
+          onPosted={onPosted}
+        />
+      ) : (
+        <InputForm
+          uid={uid}
+          edit={edit}
+          subject={subject}
+          step={step}
+          onStep={onStep}
+          onCancel={onClose}
+          onPosted={onPosted}
+        />
+      )}
+    </Panel>
   )
 }
