@@ -1082,6 +1082,9 @@ def write_filings(
             "chamber": bill.chamber,
             "billId": bill.bill_id,
             "activityTitle": bill.activity_title,
+            # For an Executive item (no bill number) the portal's identifier
+            # cell names the agency, e.g. "Office of the Governor".
+            "agency": bill.raw_bill_number if bill.chamber == "Executive" else None,
             "position": bill.position,
             "amount": bill.amount,
             # The SoS disclosure page this activity was reported on, and the
