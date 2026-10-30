@@ -365,6 +365,9 @@ def compute_stats(db: firestore.Client) -> None:
     # Entities with disclosures of their own (vs. only a registration, e.g. a
     # lobbyist whose firm files for them).
     filer_norms: set[str] = set()
+    # The sessions in which each entity filed a disclosure of its own, even
+    # one reporting no clients or activity.
+    filer_courts: dict[str, set[int]] = {}
 
     # Per-client and per-firm rollups, computed here (over the full,
     # paginated registrants scan) instead of client-side in the frontend,
@@ -493,6 +496,8 @@ def compute_stats(db: firestore.Client) -> None:
 
         if entity_norm:
             filer_norms.add(entity_norm)
+            if court is not None:
+                filer_courts.setdefault(entity_norm, set()).add(court)
 
     # Registrations list every registered lobbyist and firm, including people
     # who never file a disclosure themselves because their firm files for them.
@@ -813,6 +818,10 @@ def compute_stats(db: firestore.Client) -> None:
                 "lobbyists": fs["lobbyists"],
                 "employers": fs["employers"],
                 "hasFilings": fs["hasFilings"],
+                # Filed a disclosure of its own this session, so the list
+                # shows its counts (0 when it reported nothing) rather than
+                # "—".
+                "filedInSession": gc in filer_courts.get(fs["entityNameNorm"], ()),
             }
 
     # The single-document writes: the stats, the filing counts, the
