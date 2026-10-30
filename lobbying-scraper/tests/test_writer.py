@@ -1184,3 +1184,15 @@ def test_compute_stats_removes_a_stale_session_list():
     _, doc_mocks, _ = _run_stats(filings=filings)
     assert doc_mocks["clientList_194"].delete.called
     assert not doc_mocks["clientList_194"].set.called
+
+
+def test_compute_stats_counts_a_client_with_compensation_but_no_activity():
+    """The overview's client count is the Clients list's, less "No client": a
+    client paid nothing and listed on no activity is in both."""
+    filings = [_filing("FIRM", "CLIENT A", "H100")]
+    registrants = [_registrant("FIRM", 2025, clients=[("CLIENT A", 10.0), ("CLIENT B", 0.0)])]
+    _, doc_mocks, _ = _run_stats(registrants=registrants, filings=filings)
+    stats = _stats_doc(doc_mocks)
+    rows = _captured_data(doc_mocks["clientList_194"])["rows"]
+    assert sorted(rows) == ["CLIENT A", "CLIENT B"]
+    assert (stats["courts"]["194"]["clients"], stats["totalClients"]) == (2, 2)

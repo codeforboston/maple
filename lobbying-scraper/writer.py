@@ -259,8 +259,6 @@ def compute_stats(db: firestore.Client) -> None:
     # it reported then: gc -> bill -> client norm -> [period key, positions].
     # Counted once per organization below, as the Bill page does.
     bill_org_latest: dict[int, dict[str, dict[str, list]]] = {}
-    # Clients with filings per session (the overview's key figures).
-    court_clients: dict[int, set] = {}
     # Filings per year, and how many carry their reporting window; logged so
     # a parser regression shows up in the job log.
     filings_with_period: dict[str, int] = {}
@@ -331,8 +329,6 @@ def compute_stats(db: firestore.Client) -> None:
             if d.get("periodEnd"):
                 filings_with_period[year] = filings_with_period.get(year, 0) + 1
         total_filings += 1
-        if org and gc:
-            court_clients.setdefault(gc, set()).add(cn)
         if client and gc and en:
             client_court_filers.setdefault(cn, {}).setdefault(gc, set()).add(en)
         if en:
@@ -738,6 +734,16 @@ def compute_stats(db: firestore.Client) -> None:
             for p in r["employers"] + r["lobbyists"]:
                 p["hasProfile"] = p["nameNorm"] in firm_summaries
         fs["registrations"] = regs
+
+    # Each session's clients are the ones its client list shows (less "No
+    # client"), so the overview and the Clients tab count from one set. This
+    # includes clients named on a disclosure's compensation but with no
+    # activity rows.
+    court_clients: dict[int, set] = {}
+    for cs in client_summaries.values():
+        if cs["clientNameNorm"] != NO_CLIENT:
+            for gc in cs["courts"]:
+                court_clients.setdefault(int(gc), set()).add(cs["clientNameNorm"])
 
     stats = {
         "totalFilings": total_filings,
