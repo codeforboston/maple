@@ -1,38 +1,34 @@
 import React, { useEffect, useState } from "react"
 import { MemberContent } from "components/db"
-import {
-  collection,
-  query,
-  where,
-  doc,
-  getDoc,
-  getFirestore
-} from "firebase/firestore"
+import { doc, getDoc, getFirestore } from "firebase/firestore"
 import { Bill } from "functions/src/bills/types"
+import {
+  buildMemberBillSummary,
+  MemberBillSummary
+} from "functions/src/members/memberBillSummary"
 import { BillsTabContainer } from "./BillsTab/BillsTabContainer"
 
-type BillGroups = {
-  all: Bill[]
-  sponsored: Bill[]
-  cosponsored: Bill[]
+const emptySummary: MemberBillSummary = {
+  schemaVersion: 2,
+  all: { count: 0, topics: [] },
+  sponsored: { count: 0, topics: [] },
+  cosponsored: { count: 0, topics: [] },
+  recentSponsoredBills: []
 }
 
 export const BillsTab = ({ member }: { member: MemberContent }) => {
-  const [billGroups, setBillGroups] = useState<BillGroups>({
-    all: [],
-    sponsored: [],
-    cosponsored: []
-  })
+  const [billSummary, setBillSummary] =
+    useState<MemberBillSummary>(emptySummary)
   const [loading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<boolean>(false)
 
   useEffect(() => {
     if (!member?.GeneralCourtNumber || !member?.MemberCode) {
-      setBillGroups({ all: [], sponsored: [], cosponsored: [] })
+      setBillSummary(emptySummary)
       return
     }
 
-    const getBills = async () => {
+    const getBillSummary = async () => {
       setIsLoading(true)
       setError(false)
 
@@ -41,32 +37,39 @@ export const BillsTab = ({ member }: { member: MemberContent }) => {
         const courtNumber = member.GeneralCourtNumber
         const memberCode = member.MemberCode
 
-        const memberDocRef = doc(
+        const summaryDocRef = doc(
           firestore,
-          `generalCourts/${courtNumber}/members/${memberCode}`
+          `generalCourts/${courtNumber}/memberBillSummaries/${memberCode}`
         )
-        const memberSnapshot = await getDoc(memberDocRef)
+        const summarySnapshot = await getDoc(summaryDocRef)
 
+        if (
+          summarySnapshot.exists() &&
+          summarySnapshot.get("schemaVersion") === 2
+        ) {
+          setBillSummary(summarySnapshot.data() as MemberBillSummary)
+          return
+        }
+
+        // Keep profiles usable until their summary has been generated.
+        const memberSnapshot = await getDoc(
+          doc(firestore, `generalCourts/${courtNumber}/members/${memberCode}`)
+        )
         if (!memberSnapshot.exists()) {
-          setBillGroups({ all: [], sponsored: [], cosponsored: [] })
+          setBillSummary(emptySummary)
           return
         }
 
         const memberData = memberSnapshot.data()
-        const sponsored = memberData.content.SponsoredBills || []
-        const cosponsored = memberData.content.CoSponsoredBills || []
-        const sponsoredIds = new Set<string>(sponsored)
-        const cosponsoredIds = new Set<string>(cosponsored)
-
+        const sponsoredIds = new Set<string>(
+          memberData.content.SponsoredBills || []
+        )
+        const cosponsoredIds = new Set<string>(
+          memberData.content.CoSponsoredBills || []
+        )
         const allBillIds = Array.from(
           new Set([...sponsoredIds, ...cosponsoredIds])
         )
-
-        if (allBillIds.length === 0) {
-          setBillGroups({ all: [], sponsored: [], cosponsored: [] })
-          return
-        }
-
         const billPromises = allBillIds.map(async billId => {
           const billDocRef = doc(
             firestore,
@@ -83,13 +86,17 @@ export const BillsTab = ({ member }: { member: MemberContent }) => {
         const resolvedBills = await Promise.all(billPromises)
         const all = resolvedBills.filter((bill): bill is Bill => bill !== null)
 
-        setBillGroups({
-          all,
-          sponsored: all.filter(bill => sponsoredIds.has(bill.id)),
-          cosponsored: all.filter(
-            bill => cosponsoredIds.has(bill.id) && !sponsoredIds.has(bill.id)
+        setBillSummary(
+          buildMemberBillSummary(
+            [...sponsoredIds],
+            [...cosponsoredIds],
+            all.map(bill => ({
+              id: bill.id,
+              content: { Title: bill.content.Title },
+              topics: bill.topics
+            }))
           )
-        })
+        )
       } catch (err) {
         console.error("Error retrieving member's bills:", err)
         setError(true)
@@ -98,7 +105,7 @@ export const BillsTab = ({ member }: { member: MemberContent }) => {
       }
     }
 
-    void getBills()
+    void getBillSummary()
   }, [member?.GeneralCourtNumber, member?.MemberCode])
 
   if (loading) {
@@ -112,7 +119,7 @@ export const BillsTab = ({ member }: { member: MemberContent }) => {
   return (
     <BillsTabContainer
       member={member}
-      bills={billGroups}
+      summary={billSummary}
       court={member?.GeneralCourtNumber}
     />
   )
