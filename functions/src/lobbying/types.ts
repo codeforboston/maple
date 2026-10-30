@@ -70,6 +70,10 @@ export const LobbyingFiling = Record({
   // Senate Docket). For Executive and Other, no bill join should be attempted.
   billId: Null.Or(String),
   activityTitle: String,
+  // Executive items only: the agency the portal names, e.g. "Office of the
+  // Governor"; null for bills (absent on filings written before it was
+  // recorded).
+  agency: Optional(Null.Or(String)),
   position: String,
   amount: Null.Or(Number),
   // The SoS disclosure page this activity was reported on (absent on filings

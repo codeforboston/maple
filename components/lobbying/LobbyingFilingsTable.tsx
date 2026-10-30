@@ -84,7 +84,7 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
                       {f.billId}
                     </a>
                   ) : (
-                    <span style={{ color: MAPLE_COLORS.textMuted }}>—</span>
+                    <NonBillActivity filing={f} showTitle={!showActivity} />
                   )}
                 </td>
               )}
@@ -160,6 +160,45 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
       )}
     </div>
   )
+}
+
+/** A row with no bill, such as an Executive item: what it is, the agency
+ * when the portal names one, and its title unless a column already shows it. */
+const NonBillActivity: React.FC<{
+  filing: LobbyingFiling
+  showTitle: boolean
+}> = ({ filing, showTitle }) => {
+  const { t } = useTranslation("lobbying")
+  const chamber =
+    filing.chamber === "Executive"
+      ? t("activity.chamberExecutive")
+      : t("activity.chamberOther")
+  // The portal's identifier cell reads "Other" on some Executive items,
+  // which names no agency.
+  const agency =
+    filing.agency && filing.agency !== "Other" ? filing.agency : null
+  return (
+    <>
+      <span style={{ color: MAPLE_COLORS.textBody, whiteSpace: "nowrap" }}>
+        {agency ? t("activity.chamberAgency", { chamber, agency }) : chamber}
+      </span>
+      {showTitle && filing.activityTitle && (
+        <div style={nonBillTitleStyle} title={filing.activityTitle}>
+          {filing.activityTitle}
+        </div>
+      )}
+    </>
+  )
+}
+
+const nonBillTitleStyle: React.CSSProperties = {
+  color: MAPLE_COLORS.textMuted,
+  fontSize: 12,
+  display: "-webkit-box",
+  WebkitLineClamp: 2,
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+  maxWidth: "28rem"
 }
 
 const tableStyle: React.CSSProperties = {

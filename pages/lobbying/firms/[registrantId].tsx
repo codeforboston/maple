@@ -63,6 +63,8 @@ function FirmDetail() {
       [...(filings ?? [])].sort(
         (a, b) =>
           b.year - a.year ||
+          // Bills first, then items with no bill (e.g. Executive).
+          Number(!a.billId) - Number(!b.billId) ||
           (a.billId ?? "").localeCompare(b.billId ?? "") ||
           a.clientName.localeCompare(b.clientName) ||
           compareFilingPeriodsDesc(a, b)
