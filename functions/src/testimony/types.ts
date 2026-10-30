@@ -34,16 +34,20 @@ const BaseTestimony = R({
   billId: Id,
   court: Number,
   position: Position,
-  content: RtString.withConstraint(
-    s => s.length > 0 && s.length < maxTestimonyLength
-  ),
+  /** Empty only on a cosign, whose note is optional. */
+  content: RtString.withConstraint(s => s.length < maxTestimonyLength),
   attachmentId: Maybe(RtString),
   /** Only present if testimony was edited (has a version greater than 1) */
   editReason: Maybe(RtString),
   ballotQuestionId: Maybe(RtString),
   /** Set when the testimony targets a committee of conference rather than the
    * bill alone. `billId` is then the conference's canonical bill. */
-  conferenceId: Maybe(RtString)
+  conferenceId: Maybe(RtString),
+  /** Set when the testimony cosigns another: the cosigned publication's id
+   * and its author, which together locate it. A cosign takes its parent's
+   * position when first published and keeps it. */
+  cosignOfId: Maybe(RtString),
+  cosignOfAuthorUid: Maybe(RtString)
 })
 
 export type Testimony = Static<typeof Testimony>
@@ -63,7 +67,15 @@ export const Testimony = withDefaults(
     senatorDistrict: Optional(RtString),
     representativeDistrict: Optional(RtString),
     draftAttachmentId: Maybe(RtString),
-    fullName: RtString
+    fullName: RtString,
+    /** When the testimony was first published. Edits keep it, unlike
+     * `publishedAt`. Missing on testimony published before it was recorded. */
+    firstPublishedAt: Optional(InstanceOf(Timestamp)),
+    /** On cosigned testimony, the tally of its cosigns. See cosignTally. */
+    cosignCount: Optional(Number),
+    cosignSenateDistrictCount: Optional(Number),
+    cosignHouseDistrictCount: Optional(Number),
+    lastCosignedAt: Optional(InstanceOf(Timestamp))
   }),
   {
     authorRole: "user",
@@ -107,12 +119,32 @@ export const oneTarget = ({
   !(ballotQuestionId && conferenceId) ||
   "Testimony targets a ballot question or a conference, not both"
 
+/** A cosign names both its parent's id and author, and carries a note at
+ * most: no attachment, and possibly no content. Anything else has content. */
+export const cosignShape = ({
+  content,
+  attachmentId,
+  cosignOfId,
+  cosignOfAuthorUid
+}: {
+  content: string
+  attachmentId?: string | null
+  cosignOfId?: string | null
+  cosignOfAuthorUid?: string | null
+}) => {
+  if (!cosignOfId !== !cosignOfAuthorUid)
+    return "A cosign names its parent's id and author"
+  if (cosignOfId) return !attachmentId || "A cosign takes no attachment"
+  return content.length > 0 || "Content is empty"
+}
+
 export type DraftTestimony = Static<typeof DraftTestimony>
 export const DraftTestimony = BaseTestimony.extend({
   publishedVersion: Optional(Number)
 })
   .withConstraint(positionMatchesTarget)
   .withConstraint(oneTarget)
+  .withConstraint(cosignShape)
 
 export const countsByPositions = {
   endorse: "endorseCount",
