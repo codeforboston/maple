@@ -164,6 +164,7 @@ function LobbyingFirmsTable({
 
       <LobbyingPanel
         title={t("sections.firms")}
+        footer={t("firmList.dashNote")}
         aside={
           !loading && (
             <strong>
@@ -268,9 +269,17 @@ function LobbyingFirmsTable({
                           : `${f.years[f.years.length - 1]}–${f.years[0]}`}
                       </td>
                       <td style={figureTdStyle}>
-                        {f.hasFilings ? f.clientCount : "—"}
+                        {f.hasFilings ? (
+                          f.clientCount
+                        ) : (
+                          <span title={t("firmList.dashTitle")}>—</span>
+                        )}
                       </td>
-                      <td style={figureTdStyle}>{f.filings ?? "—"}</td>
+                      <td style={figureTdStyle}>
+                        {f.filings ?? (
+                          <span title={t("firmList.dashTitle")}>—</span>
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
