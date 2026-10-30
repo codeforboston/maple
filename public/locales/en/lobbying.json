@@ -214,6 +214,7 @@
     "registered": "registered {{from}} – {{to}}",
     "registeredSince": "registered {{from}}",
     "sosRegistration": "SoS registration ↗︎",
+    "sosRegistrationYear": "{{year}} SoS registration ↗︎",
     "summary": "Summary · {{session}}",
     "bills_one": "bill",
     "bills_other": "bills",

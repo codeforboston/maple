@@ -141,7 +141,14 @@ function ClientDetail({ clientNameNorm, summary, current }: ClientDetailProps) {
               </span>
               <SosSourceLink
                 href={summary?.registrationUrl}
-                label={t("client.sosRegistration")}
+                // The link opens one year's registration, not the session's.
+                label={
+                  summary?.lastRegisteredYear
+                    ? t("client.sosRegistrationYear", {
+                        year: summary.lastRegisteredYear
+                      })
+                    : t("client.sosRegistration")
+                }
                 style={{ fontWeight: 700 }}
               />
             </div>
