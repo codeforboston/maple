@@ -156,9 +156,10 @@ interface LobbyingFiling {
   generalCourt: number
   chamber: LobbyingChamber
   // For legislative chambers: the bill number string (e.g. "H1234", "HD56").
-  // For Executive: the agency name. Not a bill reference.
+  // For Executive: null (see `agency`).
   billId: string | null
   activityTitle: string // bill title (legislative) or meeting description (executive)
+  agency: string | null // Executive items only: the agency the portal names, e.g. "Office of the Governor"
   position: string // "Support" | "Oppose" | "Neutral" | etc.; empty for executive
   amount: number | null // compensation allocated to this activity
   disclosureUrl: string // the SoS disclosure page this activity was reported on

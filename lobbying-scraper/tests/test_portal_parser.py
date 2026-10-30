@@ -49,8 +49,8 @@ def _comp_total(detail) -> float:
 # 2005-2008 era has no per-client breakdown; see test_legacy_2007_total_compensation.
 DISCLOSURE_CASES = [
     ("2007e", 2007,         0.0,   0,    2, "legacy 2005-2008: entity total in legacy_total_compensation"),
-    ("2011e", 2011, 641_243.00,  23,    4, "legacy 2009-2013: per-client Compensation received column"),
-    ("2016e", 2016, 990_474.00,  30, 1357, "hybrid 2014-2018: Panel1 div totals"),
+    ("2011e", 2011, 641_243.00,  26,    4, "legacy 2009-2013: per-client Compensation received column"),
+    ("2016e", 2016, 990_474.00,  31, 1357, "hybrid 2014-2018: Panel1 div totals"),
     ("2024e", 2024,  57_500.00,   4,   22, "modern 2019+: grdvClientPaidToEntity"),
     ("2024i", 2024, 547_600.15,  16,  135, "modern 2019+ (a firm disclosure; see FILER_CASES)"),
     ("2011i", 2011,  18_518.00,   1,    0, "legacy 2009-2013 individual"),
@@ -107,7 +107,7 @@ def test_hybrid_2016_has_nonzero_compensation():
     """2014-2018 compensation comes from Panel1 divs; was silently $0 before fix."""
     detail = parse_disclosure_detail(_soup("2016e_disc"), 2016)
     assert _comp_total(detail) == pytest.approx(990_474.00, abs=1.0)
-    assert len(detail.compensation) == 30
+    assert len(detail.compensation) == 31
 
 
 def test_semicolon_bill_separator_parsed():
@@ -352,6 +352,22 @@ def test_modern_compensation_matches_page_total(fix):
     page_total = float(total_row[0][1].replace("$", "").replace(",", ""))
     detail = parse_disclosure_detail(soup, 2024)
     assert _comp_total(detail) == pytest.approx(page_total, abs=0.01)
+
+
+def test_hybrid_client_paid_nothing_is_kept():
+    """A client whose Panel1 total is $0.00 still has a compensation entry, so
+    it counts as a client the lobbyist represented."""
+    html = """
+    <span id="x_rptActivityNew_lblClientName_0">Example Hops Guild</span>
+    <div id="x_rptActivityNew_Panel1_0">Total amount paid by client; lobbyist is
+      unable to report compensation at activity level: $0.00</div>
+    <table id="x_rptActivityNew_grdvActivitiesNew_0">
+      <tr><th>Chamber</th><th>Number</th><th>Title</th><th>Position</th><th>Amount</th></tr>
+      <tr class="GridRow"><td>Executive</td><td>Example Agency</td><td>Chapter 1 of the Acts of 2025</td>
+          <td>Support</td><td>$0.00</td></tr>
+    </table>"""
+    detail = parse_disclosure_detail(BeautifulSoup(html, "html.parser"), 2025)
+    assert [(c.client_name, c.amount) for c in detail.compensation] == [("Example Hops Guild", 0.0)]
 
 
 def test_client_named_like_total_is_kept():

@@ -1184,3 +1184,36 @@ def test_compute_stats_removes_a_stale_session_list():
     _, doc_mocks, _ = _run_stats(filings=filings)
     assert doc_mocks["clientList_194"].delete.called
     assert not doc_mocks["clientList_194"].set.called
+
+
+def test_write_filings_records_the_agency_of_executive_items_only():
+    """An Executive item has no bill number; the portal's identifier cell names
+    the agency. A bill's identifier is its number, so it gets no agency."""
+    meta = DisclosureMeta(entity_name="FIRM", year=2025, reg_type="Employer")
+    detail = DisclosureDetail(
+        compensation=[],
+        bills=[
+            BillActivity("CLIENT A", "Executive", "Example Agency", None,
+                         "Chapter 1 of the Acts of 2025", "Support", 0.0),
+            BillActivity("CLIENT A", "House Bill", "100", "H100", "An Act", "Support", None),
+        ],
+        period_start="2025-07-01",
+        period_end="2025-12-31",
+    )
+    db = MagicMock()
+    assert write_filings(db, meta, detail, "https://example.test/d") == 2
+    docs = {c.args[1]["chamber"]: c.args[1] for c in db.batch.return_value.set.call_args_list}
+    assert docs["Executive"]["agency"] == "Example Agency"
+    assert docs["House Bill"]["agency"] is None
+
+
+def test_compute_stats_counts_a_client_with_compensation_but_no_activity():
+    """The overview's client count is the Clients list's, less "No client": a
+    client paid nothing and listed on no activity is in both."""
+    filings = [_filing("FIRM", "CLIENT A", "H100")]
+    registrants = [_registrant("FIRM", 2025, clients=[("CLIENT A", 10.0), ("CLIENT B", 0.0)])]
+    _, doc_mocks, _ = _run_stats(registrants=registrants, filings=filings)
+    stats = _stats_doc(doc_mocks)
+    rows = _captured_data(doc_mocks["clientList_194"])["rows"]
+    assert sorted(rows) == ["CLIENT A", "CLIENT B"]
+    assert (stats["courts"]["194"]["clients"], stats["totalClients"]) == (2, 2)

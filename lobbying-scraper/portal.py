@@ -655,10 +655,10 @@ def _parse_disclosure_content(soup: BeautifulSoup, year: int) -> DisclosureDetai
                 position=cells[3] if len(cells) > 3 else "",
                 amount=amt,
             ))
-            if amt:
-                activity_by_client[client_name] = (
-                    activity_by_client.get(client_name, 0.0) + amt
-                )
+            # Recorded even at $0, so a client paid nothing still appears.
+            activity_by_client[client_name] = (
+                activity_by_client.get(client_name, 0.0) + (amt or 0.0)
+            )
 
     # Hybrid (2014-2018): no modern comp table — reconstruct per-client amounts
     # from Panel1 "Total amount paid by client" divs indexed by client-name spans.
@@ -679,8 +679,7 @@ def _parse_disclosure_content(soup: BeautifulSoup, year: int) -> DisclosureDetai
             panel_by_client[cn] = float(m.group(1).replace(",", "")) if m else 0.0
         for cn in set(panel_by_client) | set(activity_by_client):
             amt = panel_by_client.get(cn, 0.0) + activity_by_client.get(cn, 0.0)
-            if amt:
-                compensation.append(Compensation(client_name=cn, amount=amt))
+            compensation.append(Compensation(client_name=cn, amount=amt))
 
     if comp_table or bills:
         return DisclosureDetail(
@@ -771,8 +770,7 @@ def _parse_disclosure_content(soup: BeautifulSoup, year: int) -> DisclosureDetai
         for cn, amt in legacy_comp_pairs:
             per_client[cn] = per_client.get(cn, 0.0) + amt
         for cn, amt in per_client.items():
-            if amt:
-                compensation.append(Compensation(client_name=cn, amount=amt))
+            compensation.append(Compensation(client_name=cn, amount=amt))
     else:
         salary_table = soup.find(
             "table", id=lambda x: x and "grdvSalaryPaid" in (x or "")
