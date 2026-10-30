@@ -187,8 +187,8 @@
   "firmList": {
     "count_one": "{{n}} lobbyist",
     "count_other": "{{n}} lobbyists",
-    "dashNote": "— in Clients represented or Activities means registered, but with no disclosures of their own (usually an entity files for them). 0 means they filed disclosures but reported no clients.",
-    "dashTitle": "No disclosures of their own"
+    "dashNote": "— in Clients represented or Activities means registered, but with no disclosures of their own in the sessions shown (usually an entity files for them). 0 means they filed disclosures but reported no clients or activities.",
+    "dashTitle": "No disclosures of their own in the sessions shown"
   },
   "bill": {
     "back": "← Lobbied bills",

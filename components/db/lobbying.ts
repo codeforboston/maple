@@ -665,7 +665,9 @@ export async function fetchFirmList(
       regType: f.regType,
       years: f.years,
       clientCount: f.clientCount,
-      filings: filingCounts[f.entityNameNorm] ?? null,
+      // One that filed but reported no activity shows 0, not "—".
+      filings:
+        filingCounts[f.entityNameNorm] ?? (f.hasFilings === false ? null : 0),
       lobbyists: f.lobbyists ?? [],
       employers: f.employers ?? [],
       hasFilings: f.hasFilings ?? true
@@ -676,9 +678,11 @@ export async function fetchFirmList(
   )
   const entries = (snap.data()?.rows ?? {}) as Record<string, FirmListEntry>
   return Object.entries(entries).map(([entityNameNorm, e]) => {
-    // Active that session: filings, or clients it reported. Registered with
-    // neither, its counts show as "—".
-    const active = e.filings > 0 || e.clientCount > 0
+    // Filed a disclosure of its own that session, even one reporting
+    // nothing (its counts show as 0); registered only, they show as "—".
+    // Docs written before filedInSession fall back to whether it reported
+    // any filings or clients.
+    const active = e.filedInSession ?? (e.filings > 0 || e.clientCount > 0)
     return {
       entityName: e.name,
       entityNameNorm,
@@ -721,6 +725,9 @@ export type FirmListEntry = {
   filings: number
   lobbyists?: string[]
   employers?: string[]
+  // Filed a disclosure of its own in the doc's session (absent on docs
+  // written before it was recorded).
+  filedInSession?: boolean
 }
 
 /** A Clients list row for one session, or for all of them: only what the
