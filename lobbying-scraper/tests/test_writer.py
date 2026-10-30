@@ -1217,3 +1217,19 @@ def test_compute_stats_counts_a_client_with_compensation_but_no_activity():
     rows = _captured_data(doc_mocks["clientList_194"])["rows"]
     assert sorted(rows) == ["CLIENT A", "CLIENT B"]
     assert (stats["courts"]["194"]["clients"], stats["totalClients"]) == (2, 2)
+
+
+def test_compute_stats_marks_who_filed_in_each_session():
+    """A lobbyist who filed a disclosure of their own in a session is marked
+    as filing there, even when it reported no clients or activity; one only
+    registered that session, or filing in another session, is not."""
+    registrants = [_registrant("SOLO", 2019, "Lobbyist", clients=[("CLIENT A", 1.0)]),
+                   _registrant("SOLO", 2025, "Lobbyist")]
+    registrations = [_registration("SOLO", 2023), _registration("AGENT", 2025)]
+    filings = [_filing("SOLO", "CLIENT A", "H1", court=191, year=2019)]
+    _, doc_mocks, _ = _run_stats(registrants=registrants, registrations=registrations, filings=filings)
+    rows = {gc: _captured_data(doc_mocks[f"firmList_{gc}"])["rows"] for gc in (191, 193, 194)}
+    assert rows[194]["SOLO"]["filedInSession"] and rows[191]["SOLO"]["filedInSession"]
+    assert not rows[193]["SOLO"]["filedInSession"]
+    assert not rows[194]["AGENT"]["filedInSession"]
+    assert (rows[194]["SOLO"]["clientCount"], rows[194]["SOLO"]["filings"]) == (0, 0)
