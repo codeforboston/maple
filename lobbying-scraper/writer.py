@@ -259,8 +259,6 @@ def compute_stats(db: firestore.Client) -> None:
     # it reported then: gc -> bill -> client norm -> [period key, positions].
     # Counted once per organization below, as the Bill page does.
     bill_org_latest: dict[int, dict[str, dict[str, list]]] = {}
-    # Clients with filings per session (the overview's key figures).
-    court_clients: dict[int, set] = {}
     # Filings per year, and how many carry their reporting window; logged so
     # a parser regression shows up in the job log.
     filings_with_period: dict[str, int] = {}
@@ -331,8 +329,6 @@ def compute_stats(db: firestore.Client) -> None:
             if d.get("periodEnd"):
                 filings_with_period[year] = filings_with_period.get(year, 0) + 1
         total_filings += 1
-        if org and gc:
-            court_clients.setdefault(gc, set()).add(cn)
         if client and gc and en:
             client_court_filers.setdefault(cn, {}).setdefault(gc, set()).add(en)
         if en:
@@ -369,6 +365,9 @@ def compute_stats(db: firestore.Client) -> None:
     # Entities with disclosures of their own (vs. only a registration, e.g. a
     # lobbyist whose firm files for them).
     filer_norms: set[str] = set()
+    # The sessions in which each entity filed a disclosure of its own, even
+    # one reporting no clients or activity.
+    filer_courts: dict[str, set[int]] = {}
 
     # Per-client and per-firm rollups, computed here (over the full,
     # paginated registrants scan) instead of client-side in the frontend,
@@ -497,6 +496,8 @@ def compute_stats(db: firestore.Client) -> None:
 
         if entity_norm:
             filer_norms.add(entity_norm)
+            if court is not None:
+                filer_courts.setdefault(entity_norm, set()).add(court)
 
     # Registrations list every registered lobbyist and firm, including people
     # who never file a disclosure themselves because their firm files for them.
@@ -739,6 +740,16 @@ def compute_stats(db: firestore.Client) -> None:
                 p["hasProfile"] = p["nameNorm"] in firm_summaries
         fs["registrations"] = regs
 
+    # Each session's clients are the ones its client list shows (less "No
+    # client"), so the overview and the Clients tab count from one set. This
+    # includes clients named on a disclosure's compensation but with no
+    # activity rows.
+    court_clients: dict[int, set] = {}
+    for cs in client_summaries.values():
+        if cs["clientNameNorm"] != NO_CLIENT:
+            for gc in cs["courts"]:
+                court_clients.setdefault(int(gc), set()).add(cs["clientNameNorm"])
+
     stats = {
         "totalFilings": total_filings,
         # Field name kept for compatibility with deployed frontends; it holds
@@ -807,6 +818,10 @@ def compute_stats(db: firestore.Client) -> None:
                 "lobbyists": fs["lobbyists"],
                 "employers": fs["employers"],
                 "hasFilings": fs["hasFilings"],
+                # Filed a disclosure of its own this session, so the list
+                # shows its counts (0 when it reported nothing) rather than
+                # "—".
+                "filedInSession": gc in filer_courts.get(fs["entityNameNorm"], ()),
             }
 
     # The single-document writes: the stats, the filing counts, the
@@ -1076,6 +1091,9 @@ def write_filings(
             "chamber": bill.chamber,
             "billId": bill.bill_id,
             "activityTitle": bill.activity_title,
+            # For an Executive item (no bill number) the portal's identifier
+            # cell names the agency, e.g. "Office of the Governor".
+            "agency": bill.raw_bill_number if bill.chamber == "Executive" else None,
             "position": bill.position,
             "amount": bill.amount,
             # The SoS disclosure page this activity was reported on, and the
