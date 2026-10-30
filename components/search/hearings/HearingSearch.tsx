@@ -3,15 +3,43 @@ import { useInstantSearch } from "react-instantsearch"
 import { SearchPage, SortOptionInput } from "../shared"
 import { HearingHit } from "./HearingHit"
 import {
-  CURRENT_COURT_NUMBER,
-  formatCourtFilterLabel,
-  formatCourtSubtitle
-} from "../courtSessions"
+  currentGeneralCourt,
+  generalCourts,
+  isCurrentCourt
+} from "functions/src/shared"
 import { useMemo, useRef } from "react"
 import type { HearingSearchRecord } from "functions/src/hearings/types"
 import { hearingsRelevanceSort, hearingsSearchParams } from "../searchParams"
 
 export type HearingHitData = Hit<HearingSearchRecord>
+
+const ordinalSuffix = (value: number) => {
+  const mod100 = value % 100
+  if (mod100 >= 11 && mod100 <= 13) return `${value}th`
+  switch (value % 10) {
+    case 1:
+      return `${value}st`
+    case 2:
+      return `${value}nd`
+    case 3:
+      return `${value}rd`
+    default:
+      return `${value}th`
+  }
+}
+
+const formatCourtFilterLabel = (number: number) =>
+  generalCourts[number]?.Name ?? String(number)
+
+const formatCourtSubtitle = (number: number) => {
+  const court = generalCourts[number]
+  if (!court) return `${ordinalSuffix(number)} Session`
+  const range = `${court.FirstYear} - ${court.SecondYear}`
+  if (isCurrentCourt(number)) {
+    return `Current Session: ${range}`
+  }
+  return `${ordinalSuffix(number)} Session: ${range}`
+}
 
 /** Relevance searches every hearing, past and upcoming. Clearing the window
  * explicitly is load-bearing: SortBy calls useConfigure(selected.configure ?? {}),
@@ -80,7 +108,7 @@ export const HearingSearch = () => {
       initialUiState={{
         [sortOptions[0].value]: {
           refinementList: {
-            court: [String(CURRENT_COURT_NUMBER)],
+            court: [String(currentGeneralCourt)],
             hasVideo: ["true"]
           }
         }
@@ -127,7 +155,7 @@ const HearingSearchHeader = () => {
   const subtitle = useMemo(() => {
     const selectedCourt = indexUiState?.refinementList?.court?.[0]
     const parsed = Number.parseInt(selectedCourt ?? "", 10)
-    const courtNumber = Number.isNaN(parsed) ? CURRENT_COURT_NUMBER : parsed
+    const courtNumber = Number.isNaN(parsed) ? currentGeneralCourt : parsed
     return formatCourtSubtitle(courtNumber)
   }, [indexUiState?.refinementList?.court])
 

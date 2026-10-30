@@ -46,6 +46,9 @@ export const LobbyingRegistrant = Record({
   // individual lobbyists). Absent on docs written before firm attribution.
   lobbyists: Optional(Array(String)),
   lobbyistsNorm: Optional(Array(String)),
+  // Agents named on each client's activity blocks, keyed by clientNameNorm
+  // (2014+). Absent on docs written before agents were parsed.
+  clientLobbyists: Optional(Dictionary(Array(String))),
   disclosureUrls: Array(String),
   fetchedAt: InstanceOf(Timestamp)
 })
@@ -69,6 +72,14 @@ export const LobbyingFiling = Record({
   activityTitle: String,
   position: String,
   amount: Null.Or(Number),
+  // The SoS disclosure page this activity was reported on (absent on filings
+  // written before it was recorded).
+  disclosureUrl: Optional(String),
+  // Reporting period of that disclosure, its half-year, as ISO dates, e.g.
+  // "2025-01-01" to "2025-06-30" (absent on filings written before it was
+  // recorded).
+  periodStart: Optional(Null.Or(String)),
+  periodEnd: Optional(Null.Or(String)),
   fetchedAt: InstanceOf(Timestamp)
 })
 
@@ -90,12 +101,32 @@ export const LobbyingPositionCounts = Record({
 export type LobbyingStats = Static<typeof LobbyingStats>
 export const LobbyingStats = Record({
   totalFilings: Number,
+  // Distinct registered individual lobbyists (entities excluded); the field
+  // keeps its old name so deployed frontends keep working.
   totalRegistrants: Number,
   totalClients: Number,
   totalBillsWithFilings: Number,
   courtsWithData: Array(Number),
   spendByYear: Dictionary(Number),
-  filingsByYear: Dictionary(Number)
+  filingsByYear: Dictionary(Number),
+  // Key figures per session (General Court number as a string). lobbyists
+  // and firms count those registered in the session and on a disclosure in
+  // it; paid is registrant compensation, as in spendByYear. Absent on stats
+  // computed before they existed.
+  courts: Optional(
+    Dictionary(
+      Record({
+        bills: Number,
+        clients: Number,
+        lobbyists: Number,
+        firms: Number,
+        paid: Number
+      })
+    )
+  ),
+  // All-time distinct lobbyists and lobbying entities, counted as in courts.
+  totalLobbyists: Optional(Number),
+  totalEntities: Optional(Number)
 })
 
 /**

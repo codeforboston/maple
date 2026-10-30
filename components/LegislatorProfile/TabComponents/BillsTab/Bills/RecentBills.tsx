@@ -11,33 +11,22 @@ import {
   StyledTitleCell,
   StyledTopicLink
 } from "../StyledComponents/BillStyledComponents"
-import { Bill } from "functions/src/bills/types"
+import { RecentSponsoredBill } from "functions/src/members/memberBillSummary"
 import { billSearchByPrimarySponsor } from "components/links"
 import { MemberContent } from "components/db"
 
 export const RecentBills = ({
   bills,
+  billCount,
   court,
   member
 }: {
-  bills: Bill[]
+  bills: RecentSponsoredBill[]
+  billCount: number
   court: number
   member: MemberContent
 }) => {
   const { t } = useTranslation("legislators")
-
-  const lastFiveSponsoredBills = [...bills]
-    .sort((billA, billB) => {
-      const numberA = Number(billA.id.match(/(\d+)$/)?.[1])
-      const numberB = Number(billB.id.match(/(\d+)$/)?.[1])
-
-      if (Number.isFinite(numberA) && Number.isFinite(numberB)) {
-        return numberB - numberA || billB.id.localeCompare(billA.id)
-      }
-
-      return billB.id.localeCompare(billA.id)
-    })
-    .slice(0, 5)
 
   return (
     <div>
@@ -60,18 +49,16 @@ export const RecentBills = ({
             </tr>
           </thead>
           <tbody>
-            {lastFiveSponsoredBills.map(bill => (
+            {bills.map(bill => (
               <tr key={bill.id}>
                 <StyledSubsectionTableColumnData>
                   <StyledBillId>{bill.id}</StyledBillId>
                 </StyledSubsectionTableColumnData>
                 <StyledSubsectionTableColumnData>
-                  <StyledTitleCell>{bill.content.Title}</StyledTitleCell>
+                  <StyledTitleCell>{bill.title}</StyledTitleCell>
                 </StyledSubsectionTableColumnData>
                 <StyledSubsectionTableColumnData>
-                  <StyledSubtopicTag>
-                    {bill.topics ? bill.topics[1].topic : ""}
-                  </StyledSubtopicTag>
+                  <StyledSubtopicTag>{bill.topic}</StyledSubtopicTag>
                 </StyledSubsectionTableColumnData>
               </tr>
             ))}
@@ -80,7 +67,7 @@ export const RecentBills = ({
         <StyledRecentBillsFooter>
           <StyledTopicLink href={billSearchByPrimarySponsor(court, member)}>
             {t("profiles.recentSponsoredBills.viewBills", {
-              number: bills.length ?? 0
+              number: billCount
             })}
           </StyledTopicLink>
         </StyledRecentBillsFooter>

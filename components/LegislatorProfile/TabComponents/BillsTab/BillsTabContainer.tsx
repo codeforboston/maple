@@ -8,29 +8,28 @@ import { MemberContent } from "components/db"
 import { BillsByTopic } from "./Bills/BillsByTopic"
 import { RecentBills } from "./Bills/RecentBills"
 import { CommitteePositions } from "./Committees/CommitteePositions"
-import { Bill } from "functions/src/bills/types"
-
-type BillGroups = {
-  all: Bill[]
-  sponsored: Bill[]
-  cosponsored: Bill[]
-}
+import { MemberBillSummary } from "functions/src/members/memberBillSummary"
 
 export function BillsTabContainer({
   member,
-  bills,
+  summary,
   court
 }: {
   member: MemberContent
-  bills: BillGroups
+  summary: MemberBillSummary
   court: number
 }) {
   const { t } = useTranslation("legislators")
 
   return (
     <StyledBillsTab>
-      <BillsByTopic billGroups={bills} court={member?.GeneralCourtNumber} />
-      <RecentBills bills={bills.sponsored} member={member} court={court} />
+      <BillsByTopic summary={summary} court={member?.GeneralCourtNumber} />
+      <RecentBills
+        bills={summary.recentSponsoredBills}
+        billCount={summary.sponsored.count}
+        member={member}
+        court={court}
+      />
       <CommitteePositions member={member} />
     </StyledBillsTab>
   )

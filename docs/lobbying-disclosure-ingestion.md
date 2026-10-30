@@ -12,7 +12,10 @@ The portal has three levels of pages:
 
 1. **Search page** → one row per registrant per year
 2. **Summary page** → registrant metadata + links to semi-annual disclosure
-   filings
+   filings. Each amendment is a separate page, listed as "Report amendment
+   M/D/YYYY" right above the filing it amends, newest first. Only the newest
+   version of each filing is ingested; earlier versions are skipped, and their
+   filings removed.
 3. **CompleteDisclosure page** → per-client compensation table + per-client bill
    activity tables
 
@@ -26,12 +29,22 @@ and later. All historical filings are ingested regardless.
 
 The portal has two registrant types:
 
-- **Lobbyist** — an individual person who lobbies directly on behalf of clients.
-- **Employer** — a lobbying firm that employs individual lobbyists and is
-  retained by clients. Called "Lobbyist Entity" on the portal.
+- **Lobbyist** — an individual person who lobbies. An individual account may
+  have at most one client per reporting period; anyone serving more than one
+  client should register as a lobbyist entity. That one client may be the
+  lobbyist's employer (in-house staff) or an organization that contracted them.
+  A lobbyist working for a firm registers under the firm and lists no clients.
+- **Employer** — a lobbying firm or other entity that employs individual
+  lobbyists and is retained by clients. Called "Lobbyist Entity" on the portal.
 
-In both cases, the registrant reports compensation received from each **client**
-(the organization that hired them) and which bills they lobbied for that client.
+Each registrant reports compensation received from each **client** and which
+bills they lobbied for that client. The law treats a client employing an agent
+and one retaining an agent alike (M.G.L. c. 3, §§ 39 and 41), and the portal
+records both the same way: every individual's page shows an "Employed" date and
+"Total salaries received", so it never says whether a single-client lobbyist is
+staff or a contractor. Sources: the Secretary's _Online User Guide: Getting
+Started_ (Lobbyist Division, December 2020, "Account types") and
+[M.G.L. c. 3, § 39](https://malegislature.gov/Laws/GeneralLaws/PartI/TitleI/Chapter3/Section39).
 
 ---
 
@@ -42,15 +55,19 @@ record.
 
 ### `/lobbyingRegistrants/{registrantId}`
 
-`registrantId` is a SHA-256 hash (first 40 hex chars) of
-`{entityName}_{year}`. Hashing avoids sanitizing arbitrary Unicode and
+`registrantId` is a SHA-256 hash (first 40 hex chars) of the entity name, year
+and reporting-period start (one doc per entity per half-year). Hashing avoids sanitizing arbitrary Unicode and
 punctuation in entity names to fit Firestore ID constraints while remaining
 stable and dedup-safe across runs.
 
 One model covers both individual lobbyists and lobbying firms. A separate model
-is not needed because the portal search returns both under the same schema, and
-per-filing detail pages do not expose which individual lobbyists within a firm
-worked on which bill.
+is not needed because the portal search returns both under the same schema.
+
+From 2014, a firm's disclosure has one activity block per agent per client,
+headed "Sub-agent: X" (2014–2018) or "Lobbyist: X" (2019+), each repeating that
+client's bills. We store the agents per client (`clientLobbyists`, for "agents
+on this account"), not per bill: that would need a lobbyist field on filings
+and a lobbyist in `filingId`. Before 2014 the pages name no agent per client.
 
 ```typescript
 interface LobbyingRegistrant {
@@ -61,6 +78,14 @@ interface LobbyingRegistrant {
   generalCourt: number // computed from year
   regType: "Lobbyist" | "Employer"
   clients: LobbyingClient[]
+  legacyTotalCompensation: number | null // pre-2009 entity total
+  periodStart: string | null // half-year reporting window
+  periodEnd: string | null
+  lobbyists?: string[] // lobbyists a firm reports paying
+  lobbyistsNorm?: string[]
+  // Agents named on each client's activity blocks, keyed by clientNameNorm
+  // (2014+; filled on older docs by the backfill below).
+  clientLobbyists?: Record<string, string[]>
   disclosureUrls: string[] // source portal URLs, for audit trail
   fetchedAt: Timestamp
 }
@@ -107,8 +132,10 @@ interface LobbyingClient {
 
 ### `/lobbyingFilings/{filingId}`
 
-`filingId` is a SHA-256 hash (first 40 hex chars) of the logical key
-`{entityName}_{clientName}_{chamber}_{activityRef}_{generalCourt}`.
+`filingId` is a SHA-256 hash (first 40 hex chars) of the logical key: entity
+name, client name, chamber, activity reference, general court, position and
+reporting-period start. It has no lobbyist, so a firm's agents reporting the
+same bill for a client in one period share one filing.
 
 ```typescript
 type LobbyingChamber =
@@ -134,6 +161,11 @@ interface LobbyingFiling {
   activityTitle: string // bill title (legislative) or meeting description (executive)
   position: string // "Support" | "Oppose" | "Neutral" | etc.; empty for executive
   amount: number | null // compensation allocated to this activity
+  disclosureUrl: string // the SoS disclosure page this activity was reported on
+  // The disclosure's half-year window, e.g. "2025-01-01" to "2025-06-30"
+  // (absent on docs the backfill below didn't reach)
+  periodStart?: string | null
+  periodEnd?: string | null
   fetchedAt: Timestamp
 }
 ```
@@ -172,6 +204,43 @@ interface LobbyingFiling {
   }
 ]
 ```
+
+### `/lobbyingRegistrations/{registrationId}`
+
+One doc per registration page (`Summary.aspx`): a lobbyist or lobbyist entity
+in one year. It records people who never file a disclosure themselves because
+the entity employing them files on their behalf. `registrationId` is a hash of
+`registration|{regType}|{year}|{name}`; before 2019 the portal served one
+identical page per firm per lobbyist, and those collapse into one doc.
+
+```typescript
+interface RegistrationParty {
+  name: string
+  nameNorm: string
+  sourceUrl: string | null // that party's registration page (lobbyists: 2019+ only)
+  amount: number | null // salary paid / received, or client compensation
+  startDate: string | null // ISO date
+  endDate: string | null
+  purpose: string | null // clients only
+}
+
+interface LobbyingRegistration {
+  registrationId: string
+  name: string
+  nameNorm: string
+  year: number
+  regType: "Lobbyist" | "Employer" // "Employer" = SoS "Lobbyist Entity"
+  lobbyists: RegistrationParty[] // entities: lobbyists they employ
+  employers: RegistrationParty[] // individuals: entities employing them (2019+)
+  clients: RegistrationParty[]
+  disclosureUrls: string[]
+  sourceUrls: string[] // the registration page(s) on the SoS website
+  fetchedAt: Timestamp
+}
+```
+
+The frontend doesn't read this collection directly: `compute_stats` rolls each
+person's or entity's registrations into its `lobbyingMeta/firmSummaries` doc.
 
 ### Constructing `billId` from Raw Portal Data
 
@@ -244,16 +313,23 @@ normalized form.
    `PLLC`.
 6. **Remove "THE"** — whole-word removal anywhere in the string (not just as a
    leading prefix).
-7. **Ampersand → AND** — replace `&` with `AND`.
-8. **Fix known typo** — replace `ASSICIATES` with `ASSOCIATES` (legacy portal
-   data).
-9. **Remove professional suffix phrases** — whole-phrase removal of: `LAW
-OFFICE OF`, `AND ASSOCIATES`, `& ASSOCIATES`, `AND ASSOC`, `ATTORNEY AT
-LAW`, `ATTORNEY@LAW`, `ATTORNET AT LAW`, `AND PARTNERS`, `PUBLIC POLICY
-GROUP`, `LEGISLATIVE SERVICES`, `POLICY GROUP`, `ASSOCIATES`, `COUNSELLORS
-AT LAW`.
-10. **Collapse whitespace** — replace runs of whitespace with a single space and
+7. **Ampersand → AND** — replace `&` with `AND` (spaced, so `A&B` and
+   `A & B` match), and `ATTORNEY@LAW` with `ATTORNEY AT LAW`.
+8. **Split glued suffix** — `XYZASSOCIATES` → `XYZ ASSOCIATES`.
+9. **Fix known portal typos** — `ASSICIATES` → `ASSOCIATES`, `ATTORNET` →
+   `ATTORNEY`.
+10. **Remove descriptive phrases** — whole-word removal of: `LAW OFFICE OF`,
+    `AND ASSOCIATES`, `AND ASSOC`, `ATTORNEY AT LAW`, `AND PARTNERS`, `PUBLIC
+POLICY GROUP`, `LEGISLATIVE SERVICES`, `POLICY GROUP`, `ASSOCIATES`,
+    `COUNSELLORS AT LAW`, so variants of one firm's name group together —
+    **unless that would leave a single word**. A bare surname would merge
+    different firms that share it (e.g. `X Associates`, `X Legislative
+Services` and `X Policy Group`), so in that case the descriptor is kept
+    (with `AND ASSOCIATES` shortened to `ASSOCIATES`).
+11. **Collapse whitespace** — replace runs of whitespace with a single space and
     strip leading/trailing whitespace.
+
+The implementation is `lobbying-scraper/normalize.py`.
 
 ### Usage
 
@@ -344,7 +420,13 @@ in `functions/src/lobbying/types.ts`.
 In steady state (after the initial backfill), each weekly run:
 
 1. One POST to fetch all summary links for current + prior year
-2. For prior-year registrants with all disc URLs in the cursor: zero GETs
+2. For prior-year registrants with all disc URLs in the cursor: zero GETs,
+   once their cached list is trusted. A registrant's list is cached only after
+   all its disclosures were written and its superseded versions' filings
+   removed, and a prior year's cached list counts only if it was cached after
+   Feb 1 of the next year, past the Jan 15 deadline for the Jul–Dec report.
+   Earlier entries are fetched live again. Amendments filed after that to a
+   closed year aren't seen.
 3. For current-year registrants: one GET per summary page to check for new
    disclosure periods
 4. For any new disc URLs: one GET per disclosure page
@@ -377,6 +459,13 @@ For Legacy A filings (2005–2008), `clientName: "_total_salary_"` signals to
 callers that per-client compensation is unavailable. No bill-level compensation
 amount is available for these years.
 
+In the Modern and Hybrid eras each per-client activity block is headed by an
+agent label (`lblLobbyistName_N`: "Lobbyist: X" from 2019, "Sub-agent: X" in
+2014–2018), parsed into `clientLobbyists`. A firm's own block ("Entity: <firm>")
+names no person and is skipped. The Legacy eras' "Lobbyist name" column holds
+the firm (2009–2013) or several names run together (2005–2008), so those years
+have no agents per client.
+
 ---
 
 ## New Files
@@ -384,16 +473,18 @@ amount is available for these years.
 ```
 functions/src/lobbying/
   types.ts     — Runtypes schema definitions for LobbyingRegistrant, LobbyingFiling
-  normalize.ts — Entity name normalization pipeline (also used client-side)
   index.ts     — Re-exports
 
 lobbying-scraper/
-  scrape.py           — Entry point: --mode weekly (incremental) | --mode backfill
+  scrape.py           — Entry point: --mode weekly (incremental) | backfill | stats
   portal.py           — HTTP fetch wrappers + pure HTML parsers for all 4 format eras
-  normalize.py        — Port of normalize.ts
+  normalize.py        — Entity name normalization pipeline
   writer.py           — Firestore document construction + writes
-  archive.py          — GCS raw-HTML archive (write-only; enabled by ARCHIVE_RAW=1)
+  archive.py          — raw-HTML archive: GCS when ARCHIVE_RAW=1, or a local
+                        folder when ARCHIVE_DIR is set (local runs only)
   reparse_archive.py  — Offline driver to re-ingest archived HTML into Firestore
+  migrate_lobbying_data.py — Full rebuild of registrants and filings from the
+                        archive; also the backfill path for newly parsed fields
   requirements.txt    — requests, beautifulsoup4, google-cloud-firestore, google-cloud-storage
   Dockerfile          — Python 3.12-slim image
 ```
@@ -408,42 +499,140 @@ running multiple language runtimes in the same Firebase Functions deployment.
 
 ## Deploying the Cloud Run Container
 
-Follows the same pattern as the MCP server. The Artifact Registry repo
-(`maple-lobbying`) and Cloud Run job (`maple-lobbying-scraper`) are already
-created in `digital-testimony-dev`.
+`lobbying-scraper/deploy.sh` builds and pushes the image, creates or updates
+the `maple-lobbying-scraper` Cloud Run job (with `ARCHIVE_RAW=1`, 2 GiB of
+memory and 1 vCPU: the stats step runs out of memory at the 512 MiB default),
+and creates or updates the `maple-lobbying-weekly` Cloud Scheduler trigger
+(Mondays 06:00 UTC). The trigger runs as a dedicated `lobbying-scheduler`
+service account that can only invoke the job. Run it once per project to set everything up:
 
 ```bash
-cd lobbying-scraper
-IMAGE=us-central1-docker.pkg.dev/digital-testimony-dev/maple-lobbying/scraper:latest
-docker build -t $IMAGE . && docker push $IMAGE
-
-gcloud run jobs update maple-lobbying-scraper \
-  --image=$IMAGE \
-  --project=digital-testimony-dev \
-  --region=us-central1
+gcloud auth configure-docker us-central1-docker.pkg.dev  # once
+lobbying-scraper/deploy.sh <project>
 ```
 
-For a new project (prod), create the job first:
+The project's archive bucket (`<project>-lobbying-archive`) must already exist.
+For a new project, run the historical backfill before the first weekly run.
+
+After that, the [Deploy the lobbying scraper](../.github/workflows/deploy-lobbying-scraper.yml)
+workflow keeps the image current: when a change under `lobbying-scraper/` is
+pushed to `main` (dev) or `prod` (prod), it runs the scraper tests, builds and
+pushes the image, and points the job at it. It doesn't change the job's
+settings or schedule. It can also be run by hand from the Actions tab.
+
+The job must not set `ARCHIVE_DIR`. That variable is for local runs: it keeps
+the archive in a local folder and takes precedence over GCS. On Cloud Run that
+folder is the container's temporary disk, so pages would be lost when the job
+ends and the GCS archive would silently stop receiving them. `deploy.sh` only
+sets `ARCHIVE_RAW=1`. To check a deployed job:
 
 ```bash
-gcloud artifacts repositories create maple-lobbying \
-  --repository-format=docker --location=us-central1 --project=<project>
-
-gcloud run jobs create maple-lobbying-scraper \
-  --image=$IMAGE \
-  --project=<project> \
-  --region=us-central1 \
-  --task-timeout=30m \
-  --max-retries=0
-
-# Schedule weekly (Mondays 6am UTC)
-gcloud scheduler jobs create http maple-lobbying-weekly \
-  --schedule="0 6 * * 1" \
-  --uri="https://us-central1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/<project>/jobs/maple-lobbying-scraper:run" \
-  --http-method=POST \
-  --oauth-service-account-email=<scheduler-sa>@<project>.iam.gserviceaccount.com \
-  --location=us-central1
+gcloud run jobs describe maple-lobbying-scraper --region=us-central1 \
+  --project=<project> --format=yaml | grep -A1 "name: ARCHIVE_"
 ```
+
+The output should show `ARCHIVE_RAW` and no `ARCHIVE_DIR`.
+
+## Recomputing Stats
+
+`lobbyingMeta` (overview stats, the Lobbyists and Clients lists, per-bill
+summaries) is recomputed automatically at the end of any scraper run that
+writes new data. To recompute it by hand from what's already in Firestore:
+
+```bash
+GOOGLE_CLOUD_PROJECT=<project> python3 scrape.py --mode stats
+```
+
+Besides the overview totals and the per-bill, client and firm summaries, it
+writes the figures the Lobbying Explorer shows per session (shapes in
+`functions/src/lobbying/types.ts` and `components/db/lobbying.ts`):
+
+- `stats.courts[gc]`: bills and clients with filings, lobbyists and firms, and
+  reported paid. Lobbyists and firms count those registered in the session and
+  on a disclosure in it (as filer, or named by a firm). Paid is registrant
+  compensation, as in `spendByYear`. `totalLobbyists` and `totalEntities` count
+  the same way across all sessions. A bill is a chamber prefix and a number
+  from 1 up, so H1 (the House budget) counts and H0/S0/HD0 don't: filers enter
+  0 for activity on no bill yet ("N/A", "a bill to be filed next session").
+  The portal's "No client" (a lobbyist's period with no client, "$0.00",
+  activity usually "N/A", though some report bills) isn't an organization:
+  it's left out of every client and organization count (session and total
+  clients, a bill's organizations, a lobbyist's clients), but it has a client
+  summary and list rows, marked `placeholder: true`, so the lobbyists who
+  reported it can be listed. Its filings count toward bills' filings and its
+  compensation toward reported paid. The pre-2009 total-salary row is left
+  out of everything, summaries included.
+- `billSummaries_{gc}/bills/{billId}`: `orgSupport`, `orgOppose`,
+  `orgNeutral`, the distinct organizations per position (one with two
+  positions counts in both); `orgLatestSupport`, `orgLatestOppose`,
+  `orgLatestNeutral`, `orgLatestMultiple`, each organization counted once by
+  the positions it reported in its latest half-year (more than one is
+  "multiple"; one that reported only "none" isn't counted), the same counts as
+  the Bill page, so they add up to the organizations with a position.
+- `clientSummaries/clients/{id}`: per session, `bills`, `inHouseCount`,
+  `individuals` (people lobbying for the client) and `firmAgents` (those who
+  aren't its own staff: a hired firm's agents, or a hired individual
+  lobbyist); `inHouseLobbyists` and `hiredFirms`, every lobbyist or entity
+  on the client's disclosures, filings or agent blocks split into its own
+  staff and those it hired, from one set so the two add up (a hired
+  individual counts as a one-person firm; see Terminology); all-time
+  counterparts of these (all-time `hiredFirms` leaves out anyone in-house in
+  any session); per session, `firmsWithoutAgents` (hired firms that named no
+  agents for the client, so `individuals + firmsWithoutAgents` is the people
+  total) and `inHouseFilers` (the client's entry in `inHouseFilers_{gc}`);
+  `firstRegistered` and `lastRegisteredYear` from
+  registrations; `registrationUrl`, the client's own page on the SoS site from
+  the latest year a registration links it (each registration listing a client
+  links its page, a new one each year), else the latest registration listing
+  the client.
+- `inHouseFilers_{gc}`: `{clientNameNorm: [entityNameNorm]}`, the filers that
+  are each client's own staff that session.
+- `clientList_{gc}`, `clientList_all` and `firmList_{gc}`: one doc per session
+  for the Clients and Lobbyists list pages, `{rows: {normalized name: row}}`,
+  each row holding what the lists show, sort and search on, so their API
+  routes read one document instead of every summary. A lobbyist or entity is
+  in a session's list when it registered in one of the session's years.
+  There's no all-sessions lobbyist doc (about 2 MB, over Firestore's 1 MiB
+  limit), so that view reads `firmSummaries`. `rows` is exempt from indexing
+  (`fieldOverrides` in `firestore.indexes.json`): Firestore indexes every
+  field by default and allows 40,000 index entries per document, which
+  `firmList_192` and `clientList_all` passed with their rows as indexed
+  fields. Nothing queries these docs; each is read whole by id.
+- The run measures every single document it writes (these, `stats`, the
+  filing counts and `inHouseFilers_{gc}`) before writing any of them: its
+  size, and its index entries (2 per scalar, one per distinct array element,
+  none for `rows`). Past 1 MiB or 40,000 entries it stops with nothing
+  written, naming the doc, and past 900 KiB or 36,000 entries it warns; the
+  log lists each doc's figures. `clientList_all` was about 775 KiB in October
+  2026 and grows with every new client. The emulator enforces neither the
+  index entry limit nor index exemptions, so a local run doesn't prove a doc
+  will fit; these figures do.
+
+A filer is in-house for a client when it is the client, or when its
+registration for that session names the client as its employer (from 2019),
+or, for an individual registered with no employing entity, lists the client
+as a client. Lobbyists working for a firm register under it and list no
+clients, and an individual account may have at most one client (see
+Terminology), which is how organizations that don't register as entities
+register their own staff (e.g. the Greater Boston Chamber of Commerce's). This
+last case holds before 2019 too, so older sessions have a split. Its one known
+error: that single client may instead have contracted the lobbyist, and neither
+the portal nor the data says which, so a single-client contractor counts as
+in-house. Independent lobbyists with more than one client register as entities
+and count as hired.
+
+Firms name their agents per client from 2014 (no firm disclosure before 2014
+carries the label), so `individuals` and `firmAgents` include firm agents from
+the 189th session (2015–16) on, and the 188th (2013–14) for 2014 only. Before
+that they count only individual filers. The frontend shows them from the 189th
+on, and before it (and for all sessions) counts lobbyists and firms instead,
+`inHouseLobbyists + hiredFirms`, so no session's count silently misses a year
+of firm agents.
+
+The run ends by logging, per year, how many filings have `periodEnd` and how
+many firm disclosures name agents per client, and each `inHouseFilers_{gc}`
+doc's size. A drop in either coverage count means the parser stopped reading
+that field.
 
 ## Historical Backfill
 
@@ -474,6 +663,177 @@ GOOGLE_CLOUD_PROJECT=digital-testimony-dev \
   ARCHIVE_RAW=1 \
   python3 scrape.py --mode backfill
 ```
+
+## Backfilling Newly Parsed Fields
+
+When the parser learns to read a new field (e.g. filing `periodEnd`, registrant
+`clientLobbyists`, a client's own registration page) or skips something it used
+to keep (superseded versions of amended disclosures), new disclosures get the
+change from the weekly run, but existing docs only get it by reparsing the
+archive. Use `migrate_lobbying_data.py`, in this order:
+
+```bash
+cd lobbying-scraper
+export GOOGLE_APPLICATION_CREDENTIALS=...
+M="python3 migrate_lobbying_data.py --project <project> --out-prefix /tmp/<project>"
+# 1. Re-fetch archived pages that aren't the real page (the portal's error
+#    page, or its Incapsula block page): dry run, then --execute.
+$M --phase refetch-errors
+$M --phase refetch-errors --execute
+# 2. Rewrite every registrant and filing doc from the archived disclosures;
+#    superseded versions are skipped, each mapped to its final version even
+#    when registration pages archived at different times chain amendments
+#    (expect "superseded" > 0 and superseded_without_current 0).
+$M --phase write
+# 3. Rewrite every registration doc from the archived registration pages
+#    (e.g. clients' own pages, for registrationUrl).
+$M --phase registrations
+# 4. Docs the write phase no longer produces: dry runs first; each prints the
+#    exact --execute command (with --expect-ids/--expect-stale) to run after.
+$M --phase cleanup --collection filings
+$M --phase cleanup --collection registrants
+# 5. Check that every filing has its period: filings from disclosures missing
+#    from the archive weren't rewritten. Expect "updated" 0 in the dry run;
+#    otherwise --execute copies each one's period from its registrant doc.
+$M --phase filing-periods
+# 6. Recompute lobbyingMeta.
+GOOGLE_CLOUD_PROJECT=<project> python3 scrape.py --mode stats
+```
+
+Read the cleanup dry runs before running them with `--execute`. Stale filings
+are expected when the write phase skips something it used to keep: the
+filings of superseded versions of amended disclosures (977 for 2008–2026 in
+the October 2026 local rebuild). Anything else stale means doc ids changed:
+stop and find out why. Don't use `reparse_archive.py` for this: it skips pages
+an earlier reparse already marked processed. Docs from disclosures missing from
+the archive keep the field absent.
+
+The `filing-periods` phase copies each disclosure's period from its registrant
+doc onto filings that lack one, without reparsing. After the write phase it
+only reaches filings whose disclosure isn't in the archive, which is why step 5
+runs it as a check.
+
+For a given deploy, the issue that ships it lists the steps and spot checks
+(e.g. hyphacoop/maple#106).
+
+## Running the Scraper Locally
+
+Verify scraper changes with a full local scrape before deploying: the live SoS
+portal into the Firestore emulator, with a local archive of every fetched page.
+Nothing touches GCP (no credentials, no GCS, no dev project).
+
+### 1. A folder that survives reboots
+
+Keep the archive and emulator data outside `/tmp`, e.g.
+`~/.local/share/maple-lobbying`. The emulator also needs the repo's config
+files there:
+
+```bash
+DATA=~/.local/share/maple-lobbying
+mkdir -p $DATA/logs
+cp firebase.json firestore.rules firestore.indexes.json $DATA/
+```
+
+### 2. The Firestore emulator
+
+`firebase-tools` needs Java 21 or later. Without a local JDK, run it in Docker
+from an image with Node 22 and a Java 21 runtime:
+
+```bash
+docker build -t maple-firestore-emulator - <<'EOF'
+FROM node:22-bookworm-slim
+COPY --from=eclipse-temurin:21-jre /opt/java/openjdk /opt/java/openjdk
+ENV JAVA_HOME=/opt/java/openjdk PATH=/opt/java/openjdk/bin:$PATH
+RUN npm install -g firebase-tools@15.32.0
+WORKDIR /repo
+EOF
+
+docker run -d --name maple-emulator --network host \
+  --user $(id -u):$(id -g) -e HOME=/tmp -v $DATA:/repo \
+  maple-firestore-emulator firebase --project demo-dtp \
+  emulators:start --only firestore --export-on-exit /repo/emulator-data
+```
+
+Add `--import /repo/emulator-data` once that folder exists (the first start
+has nothing to import). The emulator keeps everything in memory: it exports on
+a clean stop (`docker stop maple-emulator`), but a crash or reboot loses
+everything since the last export. During a long run, export now and then:
+
+```bash
+docker exec maple-emulator firebase emulators:export /repo/emulator-data \
+  --project demo-dtp --force
+```
+
+Keep the machine from sleeping during a run: a suspend drops the network, and
+the run stalls until it wakes.
+
+### 3. The scrape
+
+```bash
+cd lobbying-scraper
+python -m venv .venv && . .venv/bin/activate
+pip install -r requirements.txt
+# DATA must be set in this shell (step 1): an empty ARCHIVE_DIR silently turns
+# the local archive off. This stops here if it isn't.
+: "${DATA:?set DATA to the data folder first}"
+export FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 GOOGLE_CLOUD_PROJECT=demo-dtp \
+  ARCHIVE_DIR=$DATA PYTHONUNBUFFERED=1
+# ARCHIVE_DIR takes precedence, so ARCHIVE_RAW does nothing while it's set.
+# Unset anyway: if ARCHIVE_DIR ended up empty, a leftover ARCHIVE_RAW=1 (e.g.
+# from the Historical Backfill commands) would switch on GCS archiving instead.
+unset GOOGLE_APPLICATION_CREDENTIALS ARCHIVE_RAW
+
+# Smoke test: a few registrants, then stats (a --limit run skips stats).
+python scrape.py --mode backfill --year 2016 --limit 5 --use-archive
+python scrape.py --mode stats
+
+# Full history, all years.
+python scrape.py --mode backfill --use-archive --workers 8 >> $DATA/logs/scrape.log 2>&1
+```
+
+`ARCHIVE_DIR` saves every fetched page to `$DATA/raw_html/` (the page as
+`<sha1 of url>.html`, its URL in a matching `.url` file), and `--use-archive`
+reads pages from there before going to the portal. The backfill records each
+processed disclosure in the emulator, so a stopped run resumes where it left
+off.
+
+What a full run took in October 2026, with 8 workers: about 47,000
+disclosures and 593,000 filings in roughly 6 hours of fetching, then about 20
+minutes for stats, with the emulator using about 11 GB of memory. The archive
+was 12 GB and the emulator export 640 MB. Speed depends on the portal: an
+earlier attempt during the day ran about 20 times slower, with read timeouts.
+Progress lines carry UTC timestamps, so the log shows when a run slowed down.
+
+### 4. Rebuilding from the archive
+
+After a parser change, rebuild without the portal: start a second, empty
+emulator (or stop this one and start it without `--import`), then rerun the
+backfill with `ARCHIVE_DIR` and `--use-archive`. Pages come from disk; only the
+search that lists each year's registrants, and any page missing from the
+archive, are fetched live. Pages are missing when their disclosure was
+processed before archiving was turned on, since the backfill skips processed
+disclosures and never fetches them again.
+
+To rebuild in place, export first and keep a copy outside `emulator-data`
+(e.g. `emulator-data.pre-rebuild`), since `--export-on-exit` and any snapshot
+job overwrite `emulator-data`. Pages fetched live may hit the portal's bot
+protection: the scraper retries a block page with backoff, never archives or
+parses it, and leaves the disclosure unprocessed if the block outlasts the
+retries, so rerunning the backfill for that year picks it up.
+
+### 5. Looking at the data
+
+The emulator UI is at `http://127.0.0.1:3010/firestore` (with this repo's
+`firebase.json`). It can't open documents whose ID contains `%`, which
+includes every client and firm summary (their IDs are `encodeURIComponent` of
+the name). Read those through the emulator's REST API instead, with each `%`
+encoded again as `%25`, e.g.:
+
+```
+http://127.0.0.1:8080/v1/projects/demo-dtp/databases/(default)/documents/lobbyingMeta/clientSummaries/clients/GREATER%2520BOSTON%2520CHAMBER%2520OF%2520COMMERCE
+```
+
+To see a page as the portal served it, open its file in `$DATA/raw_html/`.
 
 ---
 
@@ -510,11 +870,10 @@ Note: bill-join queries should always filter on `chamber` (or check
 | File                                  | Status     | Notes                                                            |
 | ------------------------------------- | ---------- | ---------------------------------------------------------------- |
 | `functions/src/lobbying/types.ts`     | ✅ Done    | Firestore schema types; imported by future frontend code         |
-| `functions/src/lobbying/normalize.ts` | ✅ Done    | Normalization pipeline; also ported to `normalize.py`            |
-| `functions/src/lobbying/index.ts`     | ✅ Done    | Re-exports types and normalize                                   |
+| `functions/src/lobbying/index.ts`     | ✅ Done    | Re-exports types                                                 |
 | `firestore.rules`                     | ✅ Done    |                                                                  |
 | `firestore.indexes.json`              | ✅ Done    |                                                                  |
-| `lobbying-scraper/normalize.py`       | ✅ Done    | Port of normalize.ts                                             |
+| `lobbying-scraper/normalize.py`       | ✅ Done    | Entity name normalization pipeline                               |
 | `lobbying-scraper/portal.py`          | ✅ Done    | All 4 format eras; pure parsers separated from fetch wrappers    |
 | `lobbying-scraper/writer.py`          | ✅ Done    | Firestore document construction                                  |
 | `lobbying-scraper/scrape.py`          | ✅ Done    | Entry point; `--mode weekly` and `--mode backfill`               |
@@ -591,7 +950,7 @@ cd lobbying-scraper
 python -m pytest tests/ -v
 ```
 
-Expected: 26 tests pass. Covers compensation totals and client/bill counts for
+CI runs this suite on every push. Covers compensation totals and client/bill counts for
 all eras (2007, 2011, 2016, 2024 — employer and individual), normalization edge
 cases, bill ID construction, and specific bug regressions (semicolon bill
 separator, "Total amount" artifact row, null billId for executive rows).
@@ -707,17 +1066,11 @@ resumption.
 
 ### Step 8 — Deploy and verify Cloud Run scraper
 
-Build and push the container image, then update the Cloud Run job:
+Build, push and schedule the job (see
+[Deploying the Cloud Run Container](#deploying-the-cloud-run-container)):
 
 ```bash
-cd lobbying-scraper
-IMAGE=us-central1-docker.pkg.dev/digital-testimony-dev/maple-lobbying/scraper:latest
-docker build -t $IMAGE . && docker push $IMAGE
-
-gcloud run jobs update maple-lobbying-scraper \
-  --image=$IMAGE \
-  --project=digital-testimony-dev \
-  --region=us-central1
+lobbying-scraper/deploy.sh digital-testimony-dev
 ```
 
 Trigger a manual run via the Cloud Run console or:
@@ -738,7 +1091,7 @@ backfill already completed, confirming the weekly fast-path works correctly.
 | Decision                    | Choice                                                                       | Rationale                                                                                                                                                                |
 | --------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Collection placement        | Top-level `/lobbyingRegistrants`, `/lobbyingFilings`                         | Lobbying data spans multiple General Courts and is not scoped to a single court like bills/members                                                                       |
-| Single registrant model     | One type, `regType: "Lobbyist" \| "Employer"`                                | Individual lobbyists and firms share the same portal schema; per-bill individual attribution is not available                                                            |
+| Single registrant model     | One type, `regType: "Lobbyist" \| "Employer"`                                | Individual lobbyists and firms share the same portal schema; agents are stored per client (`clientLobbyists`, 2014+), not per bill                                       |
 | `billId` construction       | `{chamberPrefix}{billNumber}` at ingest time                                 | Raw portal data stores chamber and integer separately; the composite is what matches MAPLE's `Bill.id`                                                                   |
 | `billId` null for Executive | `null` instead of agency name                                                | Prevents accidental bill lookups; makes join guard explicit at the type level                                                                                            |
 | Normalized name fields      | Store both raw and `*Norm` fields                                            | Raw names preserved for provenance; normalized names used for grouping and matching                                                                                      |
@@ -1011,8 +1364,10 @@ python3 reparse_archive.py [--limit N] [--dry-run]
 
 Lists `raw_html/*.html` objects from GCS, downloads them, resolves each
 `sha1.html` back to its original URL (stored as object metadata at write time),
-and runs the pure parser functions against the archived soup. Tracks completed
-objects via a `processed_archive.txt` marker so reparse is resumable.
+and runs the pure parser functions against the archived soup. Marks each
+completed object with GCS metadata (`reparse-processed=true`) so reparse is
+resumable; it never revisits a marked object, so use
+`migrate_lobbying_data.py` to backfill a newly parsed field.
 
 #### Cursor interaction
 

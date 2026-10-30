@@ -44,6 +44,10 @@ export class BillPage {
     await activeQueryFilter.waitFor({ state: "visible", timeout: 50000 })
   }
 
+  selectedSort(label: string) {
+    return this.page.getByText(label, { exact: true })
+  }
+
   async sort(option: string) {
     // Interact with the sorting dropdown
     await this.page.getByText("Sort by Most Recent Testimony").click()

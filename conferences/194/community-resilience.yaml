@@ -1,0 +1,27 @@
+id: community-resilience
+name: Mass Ready Act
+court: 194
+title: An Act to build resilience for Massachusetts communities
+senateBillId: S3064
+houseBillId: H5518
+canonicalBillId: S3064
+status: appointed
+conferees:
+  - memberCode: JAC0
+    branch: Senate
+    chair: true
+  - memberCode: RLR0
+    branch: Senate
+  - memberCode: PJD0
+    branch: Senate
+  - memberCode: MJF1
+    branch: House
+    chair: true
+  - memberCode: CPB2
+    branch: House
+  - memberCode: KPS1
+    branch: House
+hearingIds:
+  - hearing-5740
+differences: []
+similarities: []

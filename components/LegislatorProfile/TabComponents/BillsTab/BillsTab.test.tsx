@@ -1,7 +1,8 @@
 import React from "react"
 import { render, screen, waitFor } from "@testing-library/react"
 import { doc, getDoc, getFirestore } from "firebase/firestore"
-import { MemberContent } from "functions/src/members/types"
+import { MemberContent } from "components/db"
+import { MemberBillSummary } from "functions/src/members/memberBillSummary"
 import { BillsTab } from "../BillsTab"
 
 jest.mock("firebase/firestore", () => ({
@@ -11,108 +12,95 @@ jest.mock("firebase/firestore", () => ({
 }))
 
 jest.mock("./BillsTabContainer", () => ({
-  BillsTabContainer: ({ bills }: { bills: Record<string, { id: string }[]> }) =>
+  BillsTabContainer: ({ summary }: { summary: MemberBillSummary }) =>
     React.createElement(
       "div",
-      { "data-testid": "bill-groups" },
-      JSON.stringify({
-        all: bills.all.map(bill => bill.id),
-        sponsored: bills.sponsored.map(bill => bill.id),
-        cosponsored: bills.cosponsored.map(bill => bill.id)
-      })
+      { "data-testid": "bill-summary" },
+      JSON.stringify(summary)
     )
 }))
 
 const makeSnapshot = (id: string, data: Record<string, unknown>) => ({
   id,
   exists: () => true,
-  data: () => data
+  data: () => data,
+  get: (field: string) => data[field]
 })
 
-const makeBillData = (title: string) => ({
-  content: { Title: title }
-})
+const summary: MemberBillSummary = {
+  schemaVersion: 2,
+  all: { count: 3, topics: [] },
+  sponsored: { count: 2, topics: [] },
+  cosponsored: { count: 1, topics: [] },
+  recentSponsoredBills: [{ id: "sponsored-1", title: "Sponsored", topic: "" }]
+}
 
 describe("BillsTab", () => {
   const member = {
     GeneralCourtNumber: 194,
     MemberCode: "ABC123"
-  } as MemberContent
+  } as unknown as MemberContent
 
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
-  it("loads unique member bills and groups them as all, sponsored, and cosponsored", async () => {
-    const billDataByPath: Record<string, Record<string, unknown>> = {
-      "generalCourts/194/bills/sponsored-1": makeBillData("Sponsored bill"),
-      "generalCourts/194/bills/cosponsored-1": makeBillData("Cosponsored bill"),
-      "generalCourts/194/bills/shared-1": makeBillData("Shared bill")
-    }
-
-    ;(getDoc as jest.Mock).mockImplementation(
-      async (reference: { path: string }) => {
-        if (reference.path === "generalCourts/194/members/ABC123") {
-          return makeSnapshot("ABC123", {
-            content: {
-              SponsoredBills: ["sponsored-1", "shared-1"],
-              CoSponsoredBills: ["cosponsored-1", "shared-1"]
-            }
-          })
-        }
-
-        const data = billDataByPath[reference.path]
-        return data
-          ? makeSnapshot(
-              reference.path.split("/")[reference.path.split("/").length - 1],
-              data
-            )
-          : { exists: () => false }
-      }
-    )
+  it("loads the precomputed summary with a single Firestore read", async () => {
+    ;(getDoc as jest.Mock).mockResolvedValue(makeSnapshot("ABC123", summary))
 
     render(<BillsTab member={member} />)
 
     await waitFor(() => {
-      expect(screen.getByTestId("bill-groups").textContent).toBe(
-        JSON.stringify({
-          all: ["sponsored-1", "shared-1", "cosponsored-1"],
-          sponsored: ["sponsored-1", "shared-1"],
-          cosponsored: ["cosponsored-1"]
-        })
+      expect(screen.getByTestId("bill-summary").textContent).toBe(
+        JSON.stringify(summary)
       )
     })
-
-    const groups = JSON.parse(
-      screen.getByTestId("bill-groups").textContent || "{}"
-    )
-    expect(groups.sponsored).toContain("shared-1")
-    expect(groups.cosponsored).not.toContain("shared-1")
 
     expect(getFirestore).toHaveBeenCalledTimes(1)
     expect(doc).toHaveBeenCalledWith(
       { type: "db" },
-      "generalCourts/194/members/ABC123"
+      "generalCourts/194/memberBillSummaries/ABC123"
     )
-    expect(
-      (getDoc as jest.Mock).mock.calls.filter(([reference]) =>
-        reference.path.includes("/bills/")
-      )
-    ).toHaveLength(3)
+    expect(getDoc).toHaveBeenCalledTimes(1)
   })
 
-  it("renders empty bill groups when the member document does not exist", async () => {
-    ;(getDoc as jest.Mock).mockResolvedValue({ exists: () => false })
+  it("falls back to member and bill reads for an older summary schema", async () => {
+    ;(getDoc as jest.Mock)
+      .mockResolvedValueOnce(
+        makeSnapshot("ABC123", {
+          all: { count: 0, topics: [] },
+          sponsored: { count: 0, topics: [] },
+          cosponsored: { count: 0, topics: [] },
+          recentSponsoredBills: []
+        })
+      )
+      .mockResolvedValueOnce(
+        makeSnapshot("ABC123", {
+          content: {
+            SponsoredBills: ["sponsored-1", "shared-1"],
+            CoSponsoredBills: ["cosponsored-1", "shared-1"]
+          }
+        })
+      )
+      .mockImplementation(async (reference: { path: string }) =>
+        makeSnapshot(reference.path.split("/").pop() ?? "", {
+          content: { Title: "Bill title" },
+          topics: [{ category: "Education", topic: "K-12" }]
+        })
+      )
 
     render(<BillsTab member={member} />)
 
     await waitFor(() => {
-      expect(screen.getByTestId("bill-groups").textContent).toBe(
-        JSON.stringify({ all: [], sponsored: [], cosponsored: [] })
+      const actual = JSON.parse(
+        screen.getByTestId("bill-summary").textContent || "{}"
       )
+      expect(actual.all.count).toBe(3)
+      expect(actual.sponsored.count).toBe(2)
+      expect(actual.cosponsored.count).toBe(1)
     })
 
-    expect(getDoc).toHaveBeenCalledTimes(1)
+    expect(getDoc).toHaveBeenCalledTimes(5)
   })
 
   it("shows an error when a Firestore read fails", async () => {
@@ -126,7 +114,7 @@ describe("BillsTab", () => {
   })
 
   it("does not read Firestore when member identifiers are missing", () => {
-    render(<BillsTab member={{} as MemberContent} />)
+    render(<BillsTab member={{} as unknown as MemberContent} />)
 
     expect(getFirestore).not.toHaveBeenCalled()
     expect(getDoc).not.toHaveBeenCalled()

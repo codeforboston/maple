@@ -1,0 +1,26 @@
+id: higher-ed-infrastructure
+name: BRIGHT Act
+court: 194
+title: An Act to build resilient infrastructure to generate higher-ed transformation
+senateBillId: S2993
+houseBillId: H4769
+canonicalBillId: H4769
+status: appointed
+conferees:
+  - memberCode: DMR1
+    branch: House
+    chair: true
+  - memberCode: MJF1
+    branch: House
+  - memberCode: KWP1
+    branch: House
+  - memberCode: JMC0
+    branch: Senate
+    chair: true
+  - memberCode: MFR0
+    branch: Senate
+  - memberCode: KAD0
+    branch: Senate
+hearingIds: []
+differences: []
+similarities: []

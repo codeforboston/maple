@@ -28,20 +28,19 @@ yarn firebase-admin console --env local
 
 ### Scripts
 
-#### `backfillTestimonyBallotQuestionId`
+#### `backfillTestimonyScope`
 
-Stamps `ballotQuestionId: null` onto every `publishedTestimony` and `archivedTestimony` document that is missing the field.
+Stamps `ballotQuestionId: null` and `conferenceId: null` (replacing `backfillTestimonyBallotQuestionId`, which skipped drafts) onto every `publishedTestimony`, `archivedTestimony` and `draftTestimony` document missing either field.
 
-**Why it exists:** The composite Firestore index used by `resolvePublication()` (which queries by `billId + court + ballotQuestionId`) excludes documents where an indexed field is absent. Without this backfill, re-publishing legacy testimony creates a duplicate record instead of updating the existing one.
+**Why it exists:** Bill testimony is read by querying both fields `== null`, and Firestore cannot select on a missing field. Without this backfill, legacy testimony drops out of its bill's listing, and re-publishing it creates a duplicate instead of updating it.
 
-**Idempotent:** Documents that already have the field set (to any value) are skipped, so it is safe to re-run.
+**Idempotent:** Fields already set (to any value) are left alone. `--dry-run` prints the counts and writes nothing. Each write to a published testimony runs its triggers once (notification events, search sync, embeddings); the version and text are unchanged, so none of them notify or re-embed.
 
-**When to run:** Once against each environment after deploying the ballot-questions feature. Can be deleted from the codebase once confirmed executed everywhere.
+**When to run:** Per environment, dev then prod: after the indexes are built and before the functions and hosting deploy, then once more right after it, to catch what the old code wrote in between. Can be deleted once run everywhere.
 
 ```sh
-yarn firebase-admin run-script backfillTestimonyBallotQuestionId --env local
-yarn firebase-admin run-script backfillTestimonyBallotQuestionId --env dev
-yarn firebase-admin run-script backfillTestimonyBallotQuestionId --env prod
+yarn firebase-admin run-script backfillTestimonyScope --env dev --dry-run
+yarn firebase-admin run-script backfillTestimonyScope --env dev
 ```
 
 ---
@@ -246,6 +245,18 @@ summary/topic follow-up.
 
 <!-- TODO: document -->
 
+#### `fetchBills`
+
+Pulls named real bills into the local emulator by running the regular scraper on them. See [Updating conference committees](../docs/updating-conferences.md#local-data).
+
+#### `findConferences`
+
+Read-only. Writes a draft YAML for each committee of conference it finds in the bill histories. See [Updating conference committees](../docs/updating-conferences.md#adding-a-conference).
+
+#### `syncConferences`
+
+Updates the conferences collection to match `conferences/`, deleting any document whose file is gone. See [Updating conference committees](../docs/updating-conferences.md#syncing).
+
 #### `generateBill`
 
 <!-- TODO: document -->
@@ -334,4 +345,4 @@ yarn setRole --env <local|dev|prod> [args]
 
 ## CI test
 
-The `integration_tests` job in `.github/workflows/repo-checks.yml` runs `backfillTestimonyBallotQuestionId` end-to-end via `yarn firebase-admin run-script` against the Firebase emulator to verify the CLI runner is working. This covers the full path: ts-node compilation, `run-script` dispatch, dynamic script loading, and Firestore writes.
+The `integration_tests` job in `.github/workflows/repo-checks.yml` runs `backfillTestimonyScope` end-to-end via `yarn firebase-admin run-script` against the Firebase emulator to verify the CLI runner is working. This covers the full path: ts-node compilation, `run-script` dispatch, dynamic script loading, and Firestore writes.

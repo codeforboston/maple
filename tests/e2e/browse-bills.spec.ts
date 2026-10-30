@@ -65,8 +65,8 @@ test.describe("Search result test", () => {
 })
 
 // Array of sorting test configurations
-// Need to add test for sort by relevant
 const sortingTests: string[] = [
+  "Sort by Relevance",
   "Sort by Testimony Count",
   "Sort by Cosponsor Count",
   "Sort by Next Hearing Date",
@@ -85,6 +85,26 @@ test.describe("Sort Bills test", () => {
       await expect(sortValue).toBeVisible()
     })
   }
+
+  test("should follow the search box until a sort is picked", async ({
+    page
+  }) => {
+    const billpage = new BillPage(page)
+
+    await expect(
+      billpage.selectedSort("Sort by Most Recent Testimony")
+    ).toBeVisible()
+    await billpage.search(billpage.searchWord)
+    await expect(billpage.selectedSort("Sort by Relevance")).toBeVisible()
+    await billpage.searchBar.fill("")
+    await expect(
+      billpage.selectedSort("Sort by Most Recent Testimony")
+    ).toBeVisible()
+
+    await billpage.sort("Sort by Testimony Count")
+    await billpage.search(billpage.searchWord)
+    await expect(billpage.selectedSort("Sort by Testimony Count")).toBeVisible()
+  })
 
   // Test sorting with an empty list
   test("should handle sorting with an empty list", async ({ page }) => {

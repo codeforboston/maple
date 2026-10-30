@@ -13,6 +13,10 @@ import { useAsyncCallback, UseAsyncReturn } from "react-async-hook"
 import { firestore } from "../../firebase"
 import { resolveBillTestimony } from "./resolveTestimony"
 import {
+  ConferenceDraftTestimony,
+  ConferencePosition,
+  ConferenceTestimony,
+  ConferenceWorkingDraft,
   deleteTestimony,
   DraftTestimony,
   hasDraftChanged,
@@ -77,6 +81,17 @@ export interface UseEditTestimony {
   deleteTestimony: UseAsyncReturn<void, []>
 }
 
+/** `UseEditTestimony` for testimony on a committee of conference, which takes
+ * a `ConferencePosition`. */
+export type UseEditConferenceTestimony = Omit<
+  UseEditTestimony,
+  "draft" | "publication" | "saveDraft"
+> & {
+  draft?: ConferenceWorkingDraft
+  publication?: ConferenceTestimony
+  saveDraft: UseAsyncReturn<void, [SaveConferenceDraftRequest]>
+}
+
 /**
  * Load, save, and publish testimony for a particular user and bill.
  *
@@ -88,13 +103,39 @@ export function useEditTestimony(
   billId: string,
   ballotQuestionId?: string
 ): UseEditTestimony {
+  return useEdit(uid, court, billId, { ballotQuestionId })
+}
+
+/** Load, save, and publish a user's testimony on a committee of conference.
+ * It is filed against the conference's canonical bill, apart from the user's
+ * testimony on that bill. */
+export function useEditConferenceTestimony(
+  uid: string,
+  court: number,
+  billId: string,
+  conferenceId: string
+): UseEditConferenceTestimony {
+  // The scope is what makes the draft and publication carry a conference
+  // position, so the cast is the one place the narrower types are asserted.
+  return useEdit(uid, court, billId, {
+    conferenceId
+  }) as unknown as UseEditConferenceTestimony
+}
+
+function useEdit(
+  uid: string,
+  court: number,
+  billId: string,
+  { ballotQuestionId, conferenceId }: TestimonyScope
+): UseEditTestimony {
   const [state, dispatch] = useReducer(reducer, {
     draftLoading: true,
     publicationLoading: true,
     uid,
     court,
     billId,
-    ballotQuestionId
+    ballotQuestionId,
+    conferenceId
   })
 
   useTestimony(state, dispatch)
@@ -132,17 +173,25 @@ export function useEditTestimony(
 }
 
 function useTestimony(
-  { uid, billId, draftRef, publicationRef, court, ballotQuestionId }: State,
+  {
+    uid,
+    billId,
+    draftRef,
+    publicationRef,
+    court,
+    ballotQuestionId,
+    conferenceId
+  }: State,
   dispatch: Dispatch<Action>
 ) {
   useEffect(() => {
-    resolveBillTestimony(uid, court, billId, ballotQuestionId)
+    resolveBillTestimony(uid, court, billId, ballotQuestionId, conferenceId)
       .then(({ draft, publication }) => {
         dispatch({ type: "resolveDraft", id: draft?.id })
         dispatch({ type: "resolvePublication", id: publication?.id })
       })
       .catch(error => dispatch({ type: "error", error }))
-  }, [ballotQuestionId, billId, court, dispatch, uid])
+  }, [ballotQuestionId, billId, conferenceId, court, dispatch, uid])
 
   useEffect(() => {
     if (draftRef)
@@ -169,18 +218,19 @@ function useTestimony(
 }
 
 function usePublishTestimony(
-  { draft: workingDraft, draftRef }: State,
+  { draft: workingDraft, draftRef, conferenceId }: State,
   dispatch: Dispatch<Action>
 ) {
   return useAsyncCallback(
     useCallback(async () => {
-      DraftTestimony.check(workingDraft)
+      if (conferenceId) ConferenceDraftTestimony.check(workingDraft)
+      else DraftTestimony.check(workingDraft)
       // TODO: don't publish again if draft.publishedVersion is defined
       if (draftRef) {
         const result = await publishTestimony({ draftId: draftRef.id })
         dispatch({ type: "resolvePublication", id: result.data.publicationId })
       }
-    }, [dispatch, draftRef, workingDraft]),
+    }, [conferenceId, dispatch, draftRef, workingDraft]),
     { onError: error => dispatch({ type: "error", error }) }
   )
 }
@@ -222,12 +272,16 @@ type SaveDraftRequest = Pick<
   | "recipientMemberCodes"
   | "editReason"
 > & { ballotQuestionId?: string | null }
+type SaveConferenceDraftRequest = Omit<SaveDraftRequest, "position"> & {
+  position: ConferencePosition
+}
 function useSaveDraft(
   {
     draftRef,
     draftLoading,
     billId,
     ballotQuestionId,
+    conferenceId,
     uid,
     court,
     publication,
@@ -257,7 +311,8 @@ function useSaveDraft(
             recipientMemberCodes: recipientMemberCodes ?? null,
             attachmentId: attachmentId ?? null,
             ballotQuestionId:
-              requestBallotQuestionId ?? ballotQuestionId ?? null
+              requestBallotQuestionId ?? ballotQuestionId ?? null,
+            conferenceId: conferenceId ?? null
           }
           const result = await addDoc(
             collection(firestore, `/users/${uid}/draftTestimony`),
@@ -282,6 +337,7 @@ function useSaveDraft(
       [
         ballotQuestionId,
         billId,
+        conferenceId,
         dispatch,
         draftLoading,
         draftRef,
@@ -295,11 +351,14 @@ function useSaveDraft(
   )
 }
 
+type TestimonyScope = { ballotQuestionId?: string; conferenceId?: string }
+
 type State = {
   court: number
   uid: string
   billId: string
   ballotQuestionId?: string
+  conferenceId?: string
   error?: Error
 
   draft?: WorkingDraft

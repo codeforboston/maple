@@ -14,28 +14,19 @@ import {
   StyledTopicNameBox,
   StyledTopicLink
 } from "../StyledComponents/BillStyledComponents"
-import { Bill } from "functions/src/bills/types"
+import {
+  BillGroupSummary,
+  MemberBillSummary
+} from "functions/src/members/memberBillSummary"
 import { BillFilter, BillFilterButtons } from "./BillFilterButtons"
 import { billSearchByTopicLink } from "components/links"
 
-type BillGroups = {
-  all: Bill[]
-  sponsored: Bill[]
-  cosponsored: Bill[]
-}
-
-type TopicGroupAccumulator = {
-  category: string
-  count: number
-  subtopics: Record<string, number>
-}
-
 const BillsByTopicContainer = ({
-  bills,
+  billGroup,
   selectedFilter,
   court
 }: {
-  bills: Bill[]
+  billGroup: BillGroupSummary
   selectedFilter: BillFilter
   court: number
 }) => {
@@ -47,42 +38,7 @@ const BillsByTopicContainer = ({
       ? t("profiles.primarySponsor")
       : t("profiles.coSponsor")
 
-  const topicGroups = Object.values(
-    bills.reduce<Record<string, TopicGroupAccumulator>>((groups, bill) => {
-      const categoriesSeen = new Set<string>()
-      const topicsSeen = new Set<string>()
-
-      for (const { category, topic } of bill.topics ?? []) {
-        const group = groups[category] ?? {
-          category,
-          count: 0,
-          subtopics: {}
-        }
-
-        if (!categoriesSeen.has(category)) {
-          group.count += 1
-          categoriesSeen.add(category)
-        }
-
-        if (!topicsSeen.has(`${category}\u0000${topic}`)) {
-          group.subtopics[topic] = (group.subtopics[topic] ?? 0) + 1
-          topicsSeen.add(`${category}\u0000${topic}`)
-        }
-        groups[category] = group
-      }
-
-      return groups
-    }, {})
-  )
-    .sort((groupA, groupB) => groupB.count - groupA.count)
-    .slice(0, 5)
-    .map(group => ({
-      ...group,
-      subtopics: Object.entries(group.subtopics)
-        .map(([topic, count]) => ({ topic, count }))
-        .sort((topicA, topicB) => topicB.count - topicA.count)
-        .slice(0, 4)
-    }))
+  const topicGroups = billGroup.topics
 
   return (
     <StyledBillsByTopic>
@@ -91,15 +47,15 @@ const BillsByTopicContainer = ({
           {t("profiles.billsByTopic")}
         </StyledBillsByTopicHeaderTitle>
         <StyledBillsByTopicHeaderSubtitle>
-          {bills.length} {t("profiles.bills")} • {filterLabel}
+          {billGroup.count} {t("profiles.bills")} • {filterLabel}
         </StyledBillsByTopicHeaderSubtitle>
       </StyledBillsByTopicHeader>
       <div>
         {topicGroups.map(group => (
-          <StyledTopicRow key={group.category}>
+          <StyledTopicRow key={group.topic}>
             <StyledTopicMeta>
               <StyledTopicNameBox>
-                <StyledTopicName>{group.category}</StyledTopicName>
+                <StyledTopicName>{group.topic}</StyledTopicName>
               </StyledTopicNameBox>
               <StyledCountLabel>{group.count} bills</StyledCountLabel>
             </StyledTopicMeta>
@@ -108,7 +64,7 @@ const BillsByTopicContainer = ({
                 <StyledTopicLink
                   key={topic}
                   href={billSearchByTopicLink(court, {
-                    category: group.category,
+                    category: group.topic,
                     topic
                   })}
                   aria-label={`${topic} (${count} bills)`}
@@ -125,24 +81,24 @@ const BillsByTopicContainer = ({
 }
 
 export const BillsByTopic = ({
-  billGroups,
+  summary,
   court
 }: {
-  billGroups: BillGroups
+  summary: MemberBillSummary
   court: number
 }) => {
   const [selectedFilter, setSelectedFilter] = useState<BillFilter>("all")
-  const selectedBills = billGroups[selectedFilter]
+  const selectedGroup = summary[selectedFilter]
 
   return (
     <>
       <BillFilterButtons
-        bills={billGroups}
+        summary={summary}
         selectedFilter={selectedFilter}
         onSelectFilter={setSelectedFilter}
       />
       <BillsByTopicContainer
-        bills={selectedBills}
+        billGroup={selectedGroup}
         selectedFilter={selectedFilter}
         court={court}
       />

@@ -20,6 +20,8 @@ CLI flags (for local / backfill use):
                      delay) entirely on a cache hit. Never used by weekly
                      mode — see run_weekly()'s docstring for why.
   --workers N       Backfill only: concurrent worker threads (default 20)
+  --mode stats      Only recompute lobbyingMeta (stats and list summaries)
+                     from what's already in Firestore; fetches nothing.
 """
 
 from __future__ import annotations
@@ -38,6 +40,7 @@ from portal import (
     FIRST_YEAR,
     fetch_disclosure_detail,
     fetch_disclosure_meta,
+    fetch_summary,
     fetch_summary_links,
     make_session,
 )
@@ -48,11 +51,18 @@ from writer import (
     SCRAPER_DOC,
     SUMMARY_CACHE_COLLECTION,
     compute_stats,
+    remove_superseded_filings,
     write_filings,
     write_registrant,
+    write_registration,
 )
 
 _DEFAULT_BACKFILL_WORKERS = 20
+
+
+def _ts() -> str:
+    """UTC time for progress lines, so a slow run shows when it slowed down."""
+    return datetime.now(tz=timezone.utc).strftime("%H:%M:%SZ")
 
 
 # ── Cursor helpers ────────────────────────────────────────────────────────────
@@ -87,27 +97,44 @@ def _mark_processed(db: firestore.Client, disc_url: str) -> None:
     )
 
 
-def _get_cached_disc_urls(db: firestore.Client, summary_url: str) -> list[str] | None:
-    """Cached disclosure URLs for a registrant's summary page, or None if unseen.
+# A year's last disclosures (Jul–Dec) are due on Jan 15 of the next year, so
+# a registrant's list cached before this (month, day) of the next year may
+# still be missing them.
+_CACHE_TRUSTED_FROM = (2, 1)
 
-    Only consulted for prior years — the current year is always refetched live
-    since its disclosures can still change.
+
+def _get_cached_disc_urls(
+    db: firestore.Client, summary_url: str, year: int
+) -> list[str] | None:
+    """Cached disclosure URLs for a registrant's summary page in a prior year,
+    or None to fetch it live.
+
+    The current year is always refetched live since its disclosures can still
+    change. An entry counts only if it was cached after the year's last
+    reports were due, and lists current versions only (entries written before
+    amendments were tracked list every version and have no supersededUrls).
     """
     h = _url_hash(summary_url)
     doc = db.document(SCRAPER_DOC).collection(SUMMARY_CACHE_COLLECTION).document(h).get()
     if not doc.exists:
         return None
-    return doc.to_dict().get("discUrls", [])
+    data = doc.to_dict()
+    month, day = _CACHE_TRUSTED_FROM
+    trusted_from = f"{year + 1}-{month:02d}-{day:02d}"
+    if "supersededUrls" not in data or data.get("cachedAt", "") < trusted_from:
+        return None
+    return data.get("discUrls", [])
 
 
 def _cache_disc_urls(
-    db: firestore.Client, summary_url: str, disc_urls: list[str]
+    db: firestore.Client, summary_url: str, disc_urls: list[str], superseded: list[str]
 ) -> None:
     h = _url_hash(summary_url)
     db.document(SCRAPER_DOC).collection(SUMMARY_CACHE_COLLECTION).document(h).set(
         {
             "summaryUrl": summary_url,
             "discUrls": disc_urls,
+            "supersededUrls": superseded,
             "cachedAt": datetime.now(tz=timezone.utc).isoformat(),
         }
     )
@@ -148,8 +175,19 @@ def process_disclosure(
         return len(detail.compensation), len(detail.bills)
 
     write_registrant(db, meta, detail, disc_url)
-    n_filings = write_filings(db, meta, detail)
+    n_filings = write_filings(db, meta, detail, disc_url)
     return len(detail.compensation), n_filings
+
+
+def _superseded_still_current(summary_url: str, disc_urls: list[str], superseded: list[str]) -> str | None:
+    """An error when a registration page lists a version as both superseded
+    and current (a misread page): removing its filings would delete the
+    current ones, so they're kept and the page is reported instead."""
+    clash = set(superseded) & set(disc_urls)
+    if clash:
+        return (f"{len(clash)} superseded versions are also current on {summary_url}; "
+                f"their filings were kept: {sorted(clash)}")
+    return None
 
 
 # ── Weekly incremental run ────────────────────────────────────────────────────
@@ -176,7 +214,7 @@ def run_weekly(
     new_count = 0
 
     for year in years:
-        print(f"\n── {year} ──")
+        print(f"\n── {year} ── {_ts()}")
         try:
             summary_urls = fetch_summary_links(session, year)
         except Exception as e:
@@ -186,25 +224,35 @@ def run_weekly(
         if limit:
             summary_urls = summary_urls[:limit]
 
-        print(f"  {len(summary_urls)} registrants on portal")
+        print(f"  {_ts()} {len(summary_urls)} registrants on portal")
 
         for summary_url in summary_urls:
-            # Prior years: trust the cache if we have one. Current year:
-            # always refetch live, since its disclosures can still change.
+            # Prior years: trust the cache if it was written after the year's
+            # last reports were due (see _get_cached_disc_urls); amendments
+            # filed after that aren't seen. Current year: always refetch live,
+            # since its disclosures can still change. A list is cached only
+            # once all its disclosures were written and its superseded
+            # versions' filings removed, so a cache hit has nothing left to do
+            # but skip what's processed.
             disc_urls = None
+            superseded: list[str] = []
+            fetched_live = False
             if year != current_year and use_cursor:
-                disc_urls = _get_cached_disc_urls(db, summary_url)
+                disc_urls = _get_cached_disc_urls(db, summary_url, year)
 
             if disc_urls is None:
                 try:
-                    meta = fetch_disclosure_meta(session, summary_url)
+                    meta, registration = fetch_summary(session, summary_url)
                     disc_urls = meta.disclosure_urls
-                    if use_cursor:
-                        _cache_disc_urls(db, summary_url, disc_urls)
+                    superseded = list(meta.superseded_urls)
+                    fetched_live = True
+                    if use_cursor and registration is not None:
+                        write_registration(db, registration)
                 except Exception as e:
                     print(f"  failed to fetch summary {summary_url}: {e}", file=sys.stderr)
                     continue
 
+            failed = False
             for disc_url in disc_urls:
                 if use_cursor and _is_processed(db, disc_url):
                     continue
@@ -213,11 +261,22 @@ def run_weekly(
                         db, session, summary_url, disc_url, year, dry_run=dry_run
                     )
                     new_count += 1
-                    print(f"  processed: {comp_n} clients, {filing_n} filings")
+                    print(f"  {_ts()} processed: {comp_n} clients, {filing_n} filings")
                     if use_cursor:
                         _mark_processed(db, disc_url)
                 except Exception as e:
+                    failed = True
                     print(f"  failed to process {disc_url}: {e}", file=sys.stderr)
+            clash = _superseded_still_current(summary_url, disc_urls, superseded)
+            if clash:
+                failed = True
+                print(f"  {clash}", file=sys.stderr)
+            if use_cursor and superseded and not failed:
+                removed = remove_superseded_filings(db, superseded)
+                if removed:
+                    print(f"  {_ts()} removed {removed} filings of superseded versions")
+            if use_cursor and fetched_live and not failed:
+                _cache_disc_urls(db, summary_url, disc_urls, superseded)
 
     return new_count
 
@@ -257,9 +316,11 @@ def _backfill_one_summary_url(
     """
     session = make_session()
     try:
-        meta = fetch_disclosure_meta(session, summary_url, use_archive=use_archive)
+        meta, registration = fetch_summary(session, summary_url, use_archive=use_archive)
     except Exception as e:
         return 0, [f"failed to fetch summary {summary_url}: {e}"]
+    if db is not None and not dry_run and registration is not None:
+        write_registration(db, registration)
 
     processed = 0
     errors: list[str] = []
@@ -281,6 +342,11 @@ def _backfill_one_summary_url(
             processed += 1
         except Exception as e:
             errors.append(f"failed to process {disc_url}: {e}")
+    clash = _superseded_still_current(summary_url, meta.disclosure_urls, list(meta.superseded_urls))
+    if clash:
+        errors.append(clash)
+    if db is not None and not dry_run and meta.superseded_urls and not errors:
+        remove_superseded_filings(db, list(meta.superseded_urls))
     return processed, errors
 
 
@@ -314,7 +380,7 @@ def run_backfill(
     total_new = 0
 
     for year in years:
-        print(f"\n── {year} ──")
+        print(f"\n── {year} ── {_ts()}")
         try:
             summary_urls = fetch_summary_links(session, year)
         except Exception as e:
@@ -324,7 +390,7 @@ def run_backfill(
         if limit:
             summary_urls = summary_urls[:limit]
 
-        print(f"  {len(summary_urls)} registrants on portal")
+        print(f"  {_ts()} {len(summary_urls)} registrants on portal")
         year_new = 0
         done = 0
 
@@ -343,9 +409,9 @@ def run_backfill(
                     print(f"  {msg}", file=sys.stderr)
                 done += 1
                 if done % 50 == 0 or done == len(summary_urls):
-                    print(f"  [{done}/{len(summary_urls)}] {year_new} new disclosures so far")
+                    print(f"  {_ts()} [{done}/{len(summary_urls)}] {year_new} new disclosures so far")
 
-        print(f"  {year} complete: {year_new} new disclosures")
+        print(f"  {_ts()} {year} complete: {year_new} new disclosures")
 
     return total_new
 
@@ -360,9 +426,10 @@ def main() -> None:
     p.add_argument("--dry-run", action="store_true")
     p.add_argument(
         "--mode",
-        choices=["weekly", "backfill"],
+        choices=["weekly", "backfill", "stats"],
         default="weekly",
-        help="weekly: incremental check; backfill: full history with subcollection cursor",
+        help="weekly: incremental check; backfill: full history with subcollection cursor; "
+        "stats: only recompute lobbyingMeta from existing data",
     )
     p.add_argument(
         "--use-archive",
@@ -388,6 +455,12 @@ def main() -> None:
 
     project = os.environ.get("GOOGLE_CLOUD_PROJECT")
     db = firestore.Client(project=project) if not args.dry_run else None
+
+    if args.mode == "stats":
+        if db is None:
+            p.error("--mode stats writes lobbyingMeta; it can't be a dry run")
+        compute_stats(db)
+        return
 
     if args.mode == "weekly":
         n = run_weekly(db, years, limit=args.limit, dry_run=args.dry_run)

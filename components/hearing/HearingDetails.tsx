@@ -21,6 +21,8 @@ import {
   toVTT
 } from "./hearing"
 import { Transcriptions } from "./Transcriptions"
+import { HearingConferenceLink } from "components/conference/HearingConferenceLink"
+import { ConferenceSummary } from "components/conference/types"
 
 const LegalContainer = styled(Container)`
   background-color: white;
@@ -81,9 +83,11 @@ export const HearingDetails = ({
     hearingDate,
     hearingId,
     videos
-  }
+  },
+  conference
 }: {
   hearingData: HearingData
+  conference?: ConferenceSummary | null
 }) => {
   const { t } = useTranslation(["common", "hearing"])
   const router = useRouter()
@@ -225,6 +229,8 @@ export const HearingDetails = ({
       )}
 
       <h5 className={`mb-3`}>{description}</h5>
+
+      <HearingConferenceLink conference={conference} />
 
       <Row>
         <Col className={`col-md-8 mt-4`}>

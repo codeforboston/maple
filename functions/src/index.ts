@@ -31,7 +31,8 @@ export {
 export {
   createMemberSearchIndex,
   fetchMemberBatch,
-  startMemberBatches
+  startMemberBatches,
+  buildMemberBillSummaries
 } from "./members"
 export { completePhoneVerificationV2, finishSignupV2 } from "./profile"
 export { checkSearchIndexVersion, searchHealthCheck } from "./search"
@@ -63,9 +64,13 @@ export {
 export { scrapeElections } from "./legislators"
 
 export { transcriptionV2 } from "./webhooks"
+export { scrapeHouseRollCalls, scrapeSenateRollCalls } from "./votes"
 
-export { matchOcpfMembersV2 } from "./ocpf/matchOcpfMembers"
-export { scrapeOcpfFinanceV2 } from "./ocpf/scrapeOcpfFinance"
+export { matchOcpfMembers } from "./ocpf/matchOcpfMembers"
+export {
+  scrapeOcpfFinanceNightly,
+  scrapeOcpfFinanceManual
+} from "./ocpf/scrapeOcpfFinance"
 
 export * from "./triggerPubsubFunction"
 
