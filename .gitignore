@@ -36,7 +36,6 @@ yarn-debug.log*
 yarn-error.log*
 
 label-predictions-funnel.ipynb
-BillsTab.explanation.md
 CommitteeIssues.explanation.md
 
 #amplify
