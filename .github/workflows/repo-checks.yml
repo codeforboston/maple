@@ -40,7 +40,7 @@ jobs:
         if: always()
         run: yarn test
 
-      # TODO: Add the other website tests to test:website once they pass
+      # Emulator-backed tests under components/ are excluded; see the script
       - name: Website Tests
         if: always()
         run: yarn test:website
@@ -96,3 +96,5 @@ jobs:
           tests/integration/ballotQuestions.test.ts
           tests/integration/backfillTestimonyScope.test.ts
           tests/integration/conferences.test.ts
+          components/db/useUpcoming.test.ts
+          components/db/testimony

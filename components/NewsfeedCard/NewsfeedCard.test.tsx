@@ -8,6 +8,10 @@ jest.mock("next-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key })
 }))
 
+jest.mock("../featureFlags", () => ({
+  flags: () => ({ ballotQuestions: true })
+}))
+
 jest.mock("components/links", () => ({
   maple: jest.requireActual("components/links").maple,
   Internal: ({
@@ -53,7 +57,7 @@ describe("NewsfeedCard", () => {
       screen.getAllByText("Question 1: Should we do the thing?")
     ).toHaveLength(2)
     expect(screen.getByText(/Status updated to:/)).toBeInTheDocument()
-    expect(screen.getByText("certified")).toBeInTheDocument()
+    expect(screen.getByText("expectedOnBallot")).toBeInTheDocument()
     expect(
       screen.getByRole("link", { name: "View ballot question" })
     ).toHaveAttribute("href", "/ballotQuestions/25-14")
