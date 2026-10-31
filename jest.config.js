@@ -15,9 +15,9 @@ const config = {
   },
   moduleNameMapper: {
     "^components/(.*)$": "<rootDir>/components/$1"
-  }
-  // Add more setup options before each test is run
-  // setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  },
+  // Blocks real network access; see the file for details
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"]
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
