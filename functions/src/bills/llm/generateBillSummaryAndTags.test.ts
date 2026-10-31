@@ -1,16 +1,14 @@
-import {
-  BillLlmFunctions,
-  BillSnapshot,
-  processNewBill
-} from "./generateBillSummaryAndTags"
+import { getSummaryApiFunction, getTopicsForSummary } from "./api"
+import { BillSnapshot, processNewBill } from "./generateBillSummaryAndTags"
 
-jest.mock("./api", () => ({
-  getSummaryApiFunction: jest.fn(async () => ({
-    status: 1,
-    summary: "lazy summary"
-  })),
-  getTopicsForSummary: jest.fn(async () => ({ status: 1, topics: [] }))
-}))
+jest.mock("./api")
+
+const getSummary = getSummaryApiFunction as jest.MockedFunction<
+  typeof getSummaryApiFunction
+>
+const getTopics = getTopicsForSummary as jest.MockedFunction<
+  typeof getTopicsForSummary
+>
 
 const topic = {
   topic: "Budget process",
@@ -23,26 +21,27 @@ const setup = (
 ) => {
   const update = jest.fn(async (_data: Record<string, unknown>) => undefined)
   const snapshot: BillSnapshot = { data: () => bill, ref: { update } }
-  const getSummary = jest.fn(async () => ({
+  getSummary.mockResolvedValue({
     status: overrides.summaryStatus ?? 1,
     summary: "new summary"
-  }))
-  const getTopics = jest.fn(async () => ({
+  })
+  getTopics.mockResolvedValue({
     status: overrides.topicStatus ?? 1,
     topics: [topic]
-  }))
-  const fns = { getSummary, getTopics } as unknown as BillLlmFunctions
-  return { snapshot, update, getSummary, getTopics, fns }
+  })
+  return { snapshot, update, getSummary, getTopics }
 }
+
+beforeEach(() => jest.resetAllMocks())
 
 const content = { Title: "An Act", DocumentText: "text" }
 
 describe("processNewBill", () => {
   it("does nothing without event data or content", async () => {
     const a = setup({})
-    await processNewBill("H1", undefined, a.fns)
+    await processNewBill("H1", undefined)
     const b = setup(undefined)
-    await processNewBill("H1", b.snapshot, b.fns)
+    await processNewBill("H1", b.snapshot)
     expect(a.getSummary).not.toHaveBeenCalled()
     expect(b.getSummary).not.toHaveBeenCalled()
     expect(b.update).not.toHaveBeenCalled()
@@ -51,7 +50,7 @@ describe("processNewBill", () => {
   it("stops when the title or text is missing", async () => {
     for (const c of [{ Title: "t" }, { DocumentText: "d" }, undefined]) {
       const t = setup({ content: c })
-      await processNewBill("H1", t.snapshot, t.fns)
+      await processNewBill("H1", t.snapshot)
       expect(t.getSummary).not.toHaveBeenCalled()
       expect(t.update).not.toHaveBeenCalled()
     }
@@ -59,7 +58,7 @@ describe("processNewBill", () => {
 
   it("writes the summary, then topics, for a new bill", async () => {
     const t = setup({ content })
-    await processNewBill("H1", t.snapshot, t.fns)
+    await processNewBill("H1", t.snapshot)
 
     expect(t.getSummary).toHaveBeenCalledWith("H1", "An Act", "text")
     expect(t.getTopics).toHaveBeenCalledWith("H1", "An Act", "new summary")
@@ -71,14 +70,14 @@ describe("processNewBill", () => {
 
   it("stops without writing when the summary fails", async () => {
     const t = setup({ content }, { summaryStatus: -1 })
-    await processNewBill("H1", t.snapshot, t.fns)
+    await processNewBill("H1", t.snapshot)
     expect(t.update).not.toHaveBeenCalled()
     expect(t.getTopics).not.toHaveBeenCalled()
   })
 
   it("only generates topics when the summary already exists", async () => {
     const t = setup({ summary: "existing", content })
-    await processNewBill("H1", t.snapshot, t.fns)
+    await processNewBill("H1", t.snapshot)
 
     expect(t.getSummary).not.toHaveBeenCalled()
     expect(t.getTopics).toHaveBeenCalledWith("H1", "An Act", "existing")
@@ -87,7 +86,7 @@ describe("processNewBill", () => {
 
   it("stops after the summary when topics already exist", async () => {
     const t = setup({ content, topics: [] })
-    await processNewBill("H1", t.snapshot, t.fns)
+    await processNewBill("H1", t.snapshot)
 
     expect(t.update.mock.calls).toEqual([[{ summary: "new summary" }]])
     expect(t.getTopics).not.toHaveBeenCalled()
@@ -95,7 +94,7 @@ describe("processNewBill", () => {
 
   it("leaves a fully populated bill alone", async () => {
     const t = setup({ summary: "s", topics: [topic], content })
-    await processNewBill("H1", t.snapshot, t.fns)
+    await processNewBill("H1", t.snapshot)
     expect(t.getSummary).not.toHaveBeenCalled()
     expect(t.getTopics).not.toHaveBeenCalled()
     expect(t.update).not.toHaveBeenCalled()
@@ -103,16 +102,7 @@ describe("processNewBill", () => {
 
   it("does not write topics when tagging fails", async () => {
     const t = setup({ summary: "s", content }, { topicStatus: -2 })
-    await processNewBill("H1", t.snapshot, t.fns)
-    expect(t.update).not.toHaveBeenCalled()
-  })
-
-  it("loads the LLM API on demand when no functions are injected", async () => {
-    const t = setup({ content })
     await processNewBill("H1", t.snapshot)
-    expect(t.update.mock.calls).toEqual([
-      [{ summary: "lazy summary" }],
-      [{ topics: [] }]
-    ])
+    expect(t.update).not.toHaveBeenCalled()
   })
 })
