@@ -25,4 +25,29 @@ describe("assignCategoriesToTopics", () => {
       { category: "Commerce", topic: "Consumer protection" }
     ])
   })
+
+  it("returns nothing for an empty list", () => {
+    expect(assignCategoriesToTopics([])).toEqual([])
+  })
+
+  it("ignores a topic that is not in the taxonomy", () => {
+    expect(assignCategoriesToTopics(["This shouldn't be a category"])).toEqual(
+      []
+    )
+  })
+
+  it("assigns categories across categories, in order", () => {
+    expect(
+      assignCategoriesToTopics([
+        "Banking and financial institutions regulation",
+        "Soil pollution"
+      ])
+    ).toEqual([
+      {
+        topic: "Banking and financial institutions regulation",
+        category: "Commerce"
+      },
+      { topic: "Soil pollution", category: "Environmental Protection" }
+    ])
+  })
 })

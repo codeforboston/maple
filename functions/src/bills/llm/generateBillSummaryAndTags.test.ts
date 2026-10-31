@@ -1,5 +1,9 @@
 import { getSummaryApiFunction, getTopicsForSummary } from "./api"
-import { BillSnapshot, processNewBill } from "./generateBillSummaryAndTags"
+import {
+  BillSnapshot,
+  generateBillSummaryAndTags,
+  processNewBill
+} from "./generateBillSummaryAndTags"
 
 jest.mock("./api")
 
@@ -104,5 +108,19 @@ describe("processNewBill", () => {
     const t = setup({ summary: "s", content }, { topicStatus: -2 })
     await processNewBill("H1", t.snapshot)
     expect(t.update).not.toHaveBeenCalled()
+  })
+})
+
+describe("generateBillSummaryAndTags", () => {
+  it("processes the bill named in the event", async () => {
+    const t = setup({ content })
+
+    await generateBillSummaryAndTags.run({
+      params: { courtId: "194", billId: "H1" },
+      data: t.snapshot
+    } as any)
+
+    expect(getSummary).toHaveBeenCalledWith("H1", "An Act", "text")
+    expect(t.update).toHaveBeenCalledTimes(2)
   })
 })

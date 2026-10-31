@@ -87,12 +87,12 @@ export const processNewBill = async (
  */
 export const generateBillSummaryAndTags = onDocumentCreated(
   {
-    document: "generalCourts/{session_id}/bills/{bill_id}",
+    document: "generalCourts/{courtId}/bills/{billId}",
     secrets: ["OPENAI_API_KEY"],
     timeoutSeconds: 300,
     memory: "1GiB"
   },
   async event => {
-    await processNewBill(event.params.bill_id, event.data)
+    await processNewBill(event.params.billId, event.data)
   }
 )
