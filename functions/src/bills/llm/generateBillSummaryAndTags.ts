@@ -1,6 +1,6 @@
 import { logger } from "firebase-functions"
 import { onDocumentCreated } from "firebase-functions/v2/firestore"
-import { getSummaryApiFunction, getTopicsForSummary } from "./api"
+import type { getSummaryApiFunction, getTopicsForSummary } from "./api"
 
 /** The part of a Firestore snapshot the trigger needs. */
 export type BillSnapshot = {
@@ -13,9 +13,14 @@ export type BillLlmFunctions = {
   getTopics: typeof getTopicsForSummary
 }
 
-const defaultFunctions: BillLlmFunctions = {
-  getSummary: getSummaryApiFunction,
-  getTopics: getTopicsForSummary
+/**
+ * The LLM code (OpenAI client, tokenizer, MGL names table) is large, and every
+ * function in this codebase shares one entry point. Loading it on first use
+ * keeps it out of the cold start and memory of all the other functions.
+ */
+const loadDefaultFunctions = async (): Promise<BillLlmFunctions> => {
+  const { getSummaryApiFunction, getTopicsForSummary } = await import("./api")
+  return { getSummary: getSummaryApiFunction, getTopics: getTopicsForSummary }
 }
 
 /**
@@ -26,7 +31,7 @@ const defaultFunctions: BillLlmFunctions = {
 export const processNewBill = async (
   billId: string,
   snapshot: BillSnapshot | undefined,
-  { getSummary, getTopics }: BillLlmFunctions = defaultFunctions
+  functions?: BillLlmFunctions
 ): Promise<void> => {
   if (!snapshot) {
     logger.info(`bill with id \`${billId}\` has no event data`)
@@ -50,6 +55,7 @@ export const processNewBill = async (
       return
     }
 
+    const { getSummary } = (functions ??= await loadDefaultFunctions())
     const result = await getSummary(billId, title, text)
     if (result.status !== 1) {
       logger.info(
@@ -68,6 +74,7 @@ export const processNewBill = async (
     return
   }
 
+  const { getTopics } = (functions ??= await loadDefaultFunctions())
   const { status, topics } = await getTopics(billId, title ?? "", summary)
   if (status !== 1) {
     logger.info(

@@ -4,6 +4,14 @@ import {
   processNewBill
 } from "./generateBillSummaryAndTags"
 
+jest.mock("./api", () => ({
+  getSummaryApiFunction: jest.fn(async () => ({
+    status: 1,
+    summary: "lazy summary"
+  })),
+  getTopicsForSummary: jest.fn(async () => ({ status: 1, topics: [] }))
+}))
+
 const topic = {
   topic: "Budget process",
   category: "Economics and Public Finance"
@@ -97,5 +105,14 @@ describe("processNewBill", () => {
     const t = setup({ summary: "s", content }, { topicStatus: -2 })
     await processNewBill("H1", t.snapshot, t.fns)
     expect(t.update).not.toHaveBeenCalled()
+  })
+
+  it("loads the LLM API on demand when no functions are injected", async () => {
+    const t = setup({ content })
+    await processNewBill("H1", t.snapshot)
+    expect(t.update.mock.calls).toEqual([
+      [{ summary: "lazy summary" }],
+      [{ topics: [] }]
+    ])
   })
 })
