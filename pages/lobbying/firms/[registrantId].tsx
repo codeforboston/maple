@@ -11,10 +11,8 @@ import {
   useLobbyingFilingsForEntityName
 } from "components/db/lobbying"
 import { LobbyingFilingsTable } from "components/lobbying/LobbyingFilingsTable"
-import {
-  LobbyingPositionChip,
-  normalizePosition
-} from "components/lobbying/LobbyingPositionChip"
+import { isNoClient, normalizePosition } from "components/lobbying/activity"
+import { LobbyingPositionChip } from "components/lobbying/LobbyingPositionChip"
 import { MAPLE_COLORS } from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
@@ -22,12 +20,19 @@ import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
 import { SosSourceLink } from "components/lobbying/SosSourceLink"
 import { regTypeLabel } from "components/lobbying/regTypeLabel"
-import { compareFilingPeriodsDesc } from "components/lobbying/filingPeriod"
+import {
+  LobbyingLoadError,
+  subTextStyle
+} from "components/lobbying/LobbyingPanel"
+import {
+  compareFilingPeriodsDesc,
+  filingPeriodLabel
+} from "components/lobbying/filingPeriod"
 
 const PAGE_SIZE = 25
 
 function FirmDetail() {
-  const { t } = useTranslation("lobbying")
+  const { t, i18n } = useTranslation("lobbying")
   const { query } = useRouter()
 
   // URL param is the URL-encoded entityNameNorm
@@ -58,6 +63,8 @@ function FirmDetail() {
       [...(filings ?? [])].sort(
         (a, b) =>
           b.year - a.year ||
+          // Bills first, then items with no bill (e.g. Executive).
+          Number(!a.billId) - Number(!b.billId) ||
           (a.billId ?? "").localeCompare(b.billId ?? "") ||
           a.clientName.localeCompare(b.clientName) ||
           compareFilingPeriodsDesc(a, b)
@@ -225,11 +232,7 @@ function FirmDetail() {
         {loading && (
           <p style={{ color: MAPLE_COLORS.textMuted }}>{t("loading")}</p>
         )}
-        {filStatus === "error" && (
-          <p style={{ color: MAPLE_COLORS.danger }}>
-            Error: {filError?.message}
-          </p>
-        )}
+        {filStatus === "error" && <LobbyingLoadError error={filError} />}
 
         {!loading && (
           <Row className="mt-2">
@@ -289,6 +292,11 @@ function FirmDetail() {
                       >
                         {c.clientName}
                       </a>
+                      {isNoClient(c.clientNameNorm) && (
+                        <div style={subTextStyle}>
+                          {t("activity.notOrganization")}
+                        </div>
+                      )}
                       {c.periods.map((p, i) => (
                         <div
                           key={i}
@@ -297,7 +305,7 @@ function FirmDetail() {
                             fontSize: 12
                           }}
                         >
-                          {formatDisclosureLabel(p, t, i)}:{" "}
+                          {formatDisclosureLabel(p, t, i, i18n.language)}:{" "}
                           {p.compensation.toLocaleString("en-US", {
                             style: "currency",
                             currency: "USD",
@@ -372,7 +380,7 @@ function FirmDetail() {
                           rel="noreferrer"
                           style={{ color: MAPLE_COLORS.primary }}
                         >
-                          {formatDisclosureLabel(d, t, i)}
+                          {formatDisclosureLabel(d, t, i, i18n.language)}
                         </a>
                       </li>
                     ))}
@@ -484,18 +492,14 @@ function PartyList({ parties }: { parties: Party[] }) {
 function formatDisclosureLabel(
   d: { periodStart?: string | null; periodEnd?: string | null; year: number },
   t: (key: string, opts?: Record<string, unknown>) => string,
-  index: number
+  index: number,
+  locale: string
 ): string {
-  if (d.periodStart && d.periodEnd) {
-    return `${formatIsoDate(d.periodStart)} – ${formatIsoDate(d.periodEnd)}`
-  }
-  if (d.year) return `${t("fields.year")} ${d.year}`
-  return t("misc.disclosureLink", { number: index + 1 })
-}
-
-function formatIsoDate(iso: string): string {
-  const [y, m, day] = iso.split("-").map(Number)
-  return `${m}/${day}/${y}`
+  // The reporting period, as the filings table labels it; a disclosure with
+  // no period or year gets its number.
+  return d.year
+    ? filingPeriodLabel(d, locale)
+    : t("misc.disclosureLink", { number: index + 1 })
 }
 
 export default createPage({
