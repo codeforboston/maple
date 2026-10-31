@@ -25,6 +25,7 @@
     "search-eval:corpus": "firebase --project demo-dtp emulators:exec --only firestore --import tests/integration/exportedTestData \"yarn firebase-admin run-script exportSearchCorpus --env local bills\"",
     "firebase-admin": "ts-node --swc -P tsconfig.script.json scripts/firebase-admin",
     "generate-stories": "ts-node -P tsconfig.script.json scripts/generate-stories",
+    "create-prod-release-pr": "node scripts/create-prod-release-pr.js",
     "compose": "docker compose -f infra/docker-compose.yml",
     "dev:functions": "yarn --cwd functions dev",
     "export-test-data": "firebase --project demo-dtp emulators:export --only firestore,storage tests/integration/exportedTestData",
