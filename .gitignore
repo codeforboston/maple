@@ -36,6 +36,7 @@ yarn-debug.log*
 yarn-error.log*
 
 label-predictions-funnel.ipynb
+CommitteeIssues.explanation.md
 
 #amplify
 amplify/\#current-cloud-backend
