@@ -18,3 +18,5 @@ playwright-report
 CLAUDE.md
 .cursor/
 tests/fixtures
+
+functions/src/bills/llm/chapterSectionNames.json
