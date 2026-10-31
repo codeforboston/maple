@@ -343,6 +343,22 @@ yarn setRole --env <local|dev|prod> [args]
 
 ---
 
+## `create-prod-release-pr`
+
+Drafts the "Deploy to PROD" pull request from `main` into `prod` on `codeforboston/maple`. The PR body has two sections:
+
+- **Changelog:** one bullet per PR merged to `main` since the last release to `prod`.
+- **Extra Deploy Steps:** the items from each of those PRs' "Extra Deploy Steps" section, each tagged with its PR number. Template placeholder text and "None" entries are skipped.
+
+```sh
+yarn create-prod-release-pr            # dry run: prints the title and body
+yarn create-prod-release-pr --create   # opens the PR
+```
+
+Requires the GitHub CLI (`gh`), authenticated with permission to open PRs on the repo. The script only reads PRs and commits and, with `--create`, opens one PR; it refuses if a `main` → `prod` PR is already open. It never approves or merges.
+
+---
+
 ## CI test
 
 The `integration_tests` job in `.github/workflows/repo-checks.yml` runs `backfillTestimonyScope` end-to-end via `yarn firebase-admin run-script` against the Firebase emulator to verify the CLI runner is working. This covers the full path: ts-node compilation, `run-script` dispatch, dynamic script loading, and Firestore writes.
