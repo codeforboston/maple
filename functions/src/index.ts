@@ -1,5 +1,6 @@
 export { modifyAccountV2, createFakeOrgV2, createFakeTestimonyV2 } from "./auth"
 export {
+  generateBillSummaryAndTags,
   backfillTestimonyCounts,
   fetchBillBatch,
   startBillBatches,

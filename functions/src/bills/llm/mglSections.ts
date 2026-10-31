@@ -70,7 +70,9 @@ export const querySectionText = async ([
 ]: ChapterSection): Promise<string | undefined> => {
   try {
     const response = await axios.get(
-      `/Chapters/${encodeURIComponent(chapter)}/Sections/${encodeURIComponent(section)}`
+      `/Chapters/${encodeURIComponent(chapter)}/Sections/${encodeURIComponent(
+        section
+      )}`
     )
     const text: unknown = response.data?.Text
     return typeof text === "string" && text !== "" && text !== "nan"

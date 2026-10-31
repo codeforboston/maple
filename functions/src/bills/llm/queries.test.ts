@@ -71,7 +71,9 @@ describe("getQueryForSummarization", () => {
 
 describe("getQueryForTagging", () => {
   it("fills the summary-based template with the allowed tags", () => {
-    expect(getQueryForTagging(bill, ["Consumer protection", "Data privacy"])).toBe(
+    expect(
+      getQueryForTagging(bill, ["Consumer protection", "Data privacy"])
+    ).toBe(
       formatPrompt(TAGGING_PROMPT_USING_SUMMARIES, {
         bill_title: bill.billTitle,
         context: "```Cats would be allowed.```",

@@ -22,22 +22,15 @@ describe("prompts", () => {
     )
   })
 
-  it.each(templateNames)(
-    "%s renders the same as the Python source",
-    name => {
-      const template = fixture.templates[name]
-      expect(formatPrompt(template, fixture.values)).toBe(
-        fixture.rendered[name]
-      )
-    }
-  )
+  it.each(templateNames)("%s renders the same as the Python source", name => {
+    const template = fixture.templates[name]
+    expect(formatPrompt(template, fixture.values)).toBe(fixture.rendered[name])
+  })
 })
 
 describe("formatPrompt", () => {
   it("does not reinterpret placeholders inside substituted values", () => {
-    expect(formatPrompt("a {x} b {y}", { x: "{y}", y: "z" })).toBe(
-      "a {y} b z"
-    )
+    expect(formatPrompt("a {x} b {y}", { x: "{y}", y: "z" })).toBe("a {y} b z")
   })
 
   it("throws on a missing value", () => {
