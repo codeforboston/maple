@@ -21,7 +21,7 @@ import {
   TabType
 } from "components/EditProfilePage/StyledEditProfileComponents"
 import { MembersFinance } from "components/db/membersFinance"
-import { MemberContent } from "functions/src/members/types"
+import { MemberContent } from "components/db"
 
 const tabCategories = {
   priorities: "priorities",

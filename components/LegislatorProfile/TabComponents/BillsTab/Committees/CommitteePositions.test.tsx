@@ -1,7 +1,7 @@
 import React from "react"
 import { render, screen, waitFor } from "@testing-library/react"
 import { doc, getDoc, getFirestore } from "firebase/firestore"
-import { MemberContent } from "functions/src/members/types"
+import { MemberContent } from "components/db"
 import { CommitteePositions } from "./CommitteePositions"
 
 jest.mock("next-i18next", () => ({

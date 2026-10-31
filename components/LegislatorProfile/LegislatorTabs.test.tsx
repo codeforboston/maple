@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom"
 import { fireEvent, render, screen } from "@testing-library/react"
-import { MemberContent } from "functions/src/members/types"
+import { MemberContent } from "components/db"
 
 import { LegislatorTabs } from "./LegislatorTabs"
 
@@ -62,8 +62,11 @@ jest.mock("./TabComponents/VotesTab", () => ({
 const renderTabs = () =>
   render(
     <LegislatorTabs
+      court={194}
+      legislatorData={[]}
       legislatorId="legislator-id"
       member={mockMember}
+      memberCode="ABC123"
       name="Test Legislator"
     />
   )
@@ -94,8 +97,11 @@ describe("LegislatorTabs", () => {
     mockRouter = { ...mockRouter, isReady: true }
     rerender(
       <LegislatorTabs
+        court={194}
+        legislatorData={[]}
         legislatorId="legislator-id"
         member={mockMember}
+        memberCode="ABC123"
         name="Test Legislator"
       />
     )
@@ -149,8 +155,11 @@ describe("LegislatorTabs", () => {
     mockRouter = { ...mockRouter, asPath: "/legislators/194/ABC1#bills" }
     rerender(
       <LegislatorTabs
+        court={194}
+        legislatorData={[]}
         legislatorId="legislator-id"
         member={mockMember}
+        memberCode="ABC123"
         name="Test Legislator"
       />
     )
