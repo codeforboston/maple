@@ -15,9 +15,7 @@ const Template = (args: PriorityBillsCardProps) => (
   <PriorityBillsCard {...args} />
 )
 
-export const Primary: StoryFn<typeof PriorityBillsCard> = Template.bind(
-  {}
-)
+export const Primary: StoryFn<typeof PriorityBillsCard> = Template.bind({})
 
 Primary.args = {
   bills: [

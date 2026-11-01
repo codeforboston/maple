@@ -23,9 +23,7 @@ export default createMeta({
   ]
 })
 
-const Template: StoryFn<typeof GoalsAndMission> = () => (
-  <GoalsAndMission />
-)
+const Template: StoryFn<typeof GoalsAndMission> = () => <GoalsAndMission />
 
 export const Primary = Template.bind({})
 

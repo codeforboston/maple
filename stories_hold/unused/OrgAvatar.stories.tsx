@@ -7,9 +7,7 @@ export default createMeta({
   component: OrgAvatar
 })
 
-const Template: StoryFn<typeof OrgAvatar> = args => (
-  <OrgAvatar {...args} />
-)
+const Template: StoryFn<typeof OrgAvatar> = args => <OrgAvatar {...args} />
 
 export const AvatarWithTitle = Template.bind({})
 AvatarWithTitle.args = {

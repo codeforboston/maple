@@ -11,9 +11,7 @@ export default createMeta({
   component: BillDetails
 })
 
-const Template: StoryFn<typeof BillDetails> = args => (
-  <BillDetails {...args} />
-)
+const Template: StoryFn<typeof BillDetails> = args => <BillDetails {...args} />
 
 export const Primary = Template.bind({})
 

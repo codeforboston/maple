@@ -23,9 +23,7 @@ export default createMeta({
   ]
 })
 
-const Template: StoryFn<typeof ProfilePage> = args => (
-  <ProfilePage {...args} />
-)
+const Template: StoryFn<typeof ProfilePage> = args => <ProfilePage {...args} />
 
 export const Primary = Template.bind({})
 

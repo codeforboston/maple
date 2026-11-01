@@ -10,9 +10,7 @@ export default createMeta({
   component: SignInModal
 })
 
-const Template: StoryFn<typeof SignInModal> = args => (
-  <SignInModal {...args} />
-)
+const Template: StoryFn<typeof SignInModal> = args => <SignInModal {...args} />
 
 export const Primary = Template.bind({})
 
