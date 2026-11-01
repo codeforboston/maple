@@ -6,13 +6,13 @@ import { useCreateUserWithEmailAndPassword } from "./hooks"
 
 afterAll(terminateFirebase)
 
-describe.skip("useCreateUserWithEmailAndPassword", () => {
+describe("useCreateUserWithEmailAndPassword", () => {
   it("creates user and profile", async () => {
     const { result } = renderHook(() =>
       useCreateUserWithEmailAndPassword(false)
     )
     const info = {
-      email: `${nanoid()}@example.com`,
+      email: `${nanoid().toLowerCase()}@example.com`,
       password: "password",
       confirmedPassword: "password",
       fullName: "Test Test"
@@ -25,7 +25,7 @@ describe.skip("useCreateUserWithEmailAndPassword", () => {
     expect(profile.data()).toMatchObject({
       fullName: info.fullName,
       role: "user",
-      public: false,
+      public: true,
       notificationFrequency: "Weekly",
       email: info.email
     })

@@ -122,7 +122,7 @@ export function hasDraftChanged(
 export type WithId<T> = { id: string; value: T }
 
 export const deleteTestimony = httpsCallable<
-  { publicationId: string },
+  { uid: string; publicationId: string },
   { deleted: boolean }
 >(functions, "deleteTestimonyV2")
 

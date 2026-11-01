@@ -7,6 +7,7 @@ jest.mock("next-i18next", () => ({
     t: (key: string) =>
       ((
         {
+          "viewTestimony.allTestimonies": "All Testimonies",
           "ballotQuestion.viewTestimony.allPerspectives": "All Perspectives",
           "ballotQuestion.viewTestimony.browsePerspectives":
             "Browse Perspectives",

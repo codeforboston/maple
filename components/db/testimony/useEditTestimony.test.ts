@@ -5,6 +5,7 @@ import { nanoid } from "nanoid"
 import { DraftTestimony, Testimony, useEditTestimony } from "."
 import {
   createFakeBill,
+  signInTestAdmin,
   signInUser1,
   signInUser3
 } from "../../../tests/integration/common"
@@ -40,24 +41,30 @@ beforeEach(() => {
   }
   testimony = {
     authorUid: uid,
-    authorDisplayName: user.displayName!,
+    authorDisplayName: "private",
     authorRole: "user",
-    billTitle: "fake bill",
+    billTitle: "fake",
     billId,
     content: draft.content,
     fullName: "Anonymous",
     court: court,
     position: draft.position,
-    public: true,
+    public: false,
     version: 1,
     ballotQuestionId: null,
     conferenceId: null
   }
-  updatedDraft = { ...draft, content: "update", position: "oppose" }
+  updatedDraft = {
+    ...draft,
+    content: "update",
+    position: "oppose",
+    editReason: "fix a typo"
+  }
   updatedTestimony = {
     ...testimony,
     content: updatedDraft.content,
     position: updatedDraft.position,
+    editReason: updatedDraft.editReason,
     version: 2
   }
 })
@@ -255,15 +262,14 @@ describe("useEditTestimony", () => {
     return result
   }
 
-  // new name/fullname/authorname pattern has been implemented
-  it.skip("Publishes testimony", async () => {
+  it("Publishes testimony", async () => {
     const result = await renderAndPublish()
 
     expect(result.current.publication).toMatchObject(testimony)
     expect(result.current.draft?.publishedVersion).toBe(testimony.version)
   })
 
-  it.skip("Does nothing on publish if draft is up to date", async () => {
+  it("Does nothing on publish if draft is up to date", async () => {
     const result = await renderAndPublish()
 
     await act(() => result.current.publishTestimony.execute())
@@ -272,11 +278,13 @@ describe("useEditTestimony", () => {
     expect(result.current.draft?.publishedVersion).toBe(testimony.version)
   })
 
-  // updating testimony now requires an edit reason
-  it.skip("Updates testimony", async () => {
+  it("Updates testimony", async () => {
     const result = await renderAndPublish()
 
     await act(() => result.current.saveDraft.execute(updatedDraft))
+    await waitFor(() =>
+      expect(result.current.draft?.publishedVersion).toBeUndefined()
+    )
 
     await act(() => result.current.publishTestimony.execute())
     await expectFinishLoading(result)
@@ -287,7 +295,7 @@ describe("useEditTestimony", () => {
     )
   })
 
-  it.skip("Clears published version on drafts", async () => {
+  it("Clears published version on drafts", async () => {
     const result = await renderAndPublish()
 
     expect(result.current.draft?.publishedVersion).toBeDefined()
@@ -298,10 +306,11 @@ describe("useEditTestimony", () => {
     )
   })
 
-  // users can no longer delete their own testimony. only admins can delete testomony.
-  it.skip("Deletes testimony", async () => {
+  // only admins can delete testimony
+  it("Deletes testimony", async () => {
     const result = await renderAndPublish()
 
+    await signInTestAdmin()
     await act(() => result.current.deleteTestimony.execute())
     expect(result.current.publication).toBeUndefined()
   })

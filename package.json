@@ -41,7 +41,7 @@
     "test:integration": "jest -c tests/jest.integration.config.ts -w 1",
     "test:integration-ci": "node scripts/test-integration-ci.js",
     "test:system": "jest -c tests/jest.system.config.ts",
-    "test:website": "jest components/conference",
+    "test:website": "jest components --testPathIgnorePatterns components/auth/hooks.test.ts components/db/useUpcoming.test.ts components/db/testimony",
     "seed": "jest -c tests/jest.seed.config.ts",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",

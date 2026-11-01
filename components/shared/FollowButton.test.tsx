@@ -12,6 +12,11 @@ jest.mock("next/router", () => ({
   useRouter: () => ({ push, asPath: "/testimony/abc/1" })
 }))
 
+// Keeps the logged-in case off the real Firestore
+jest.mock("./FollowingQueries", () => ({
+  followsTopic: jest.fn().mockResolvedValue(false)
+}))
+
 let uid: string | undefined
 jest.mock("../auth", () => ({
   useAuth: () => ({ user: uid ? { uid } : null })
