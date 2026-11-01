@@ -2,7 +2,7 @@ import { RefObject, useEffect, useState } from "react"
 
 /** Whether the element is at least `min` px wide. The mockup asks the card
  * this with a container query; styled-components 5 does not parse those. */
-export function useWide(ref: RefObject<HTMLElement>, min: number) {
+export function useWide(ref: RefObject<HTMLElement | null>, min: number) {
   const [wide, setWide] = useState(false)
   useEffect(() => {
     const el = ref.current

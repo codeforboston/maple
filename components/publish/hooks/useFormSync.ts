@@ -22,7 +22,7 @@ export function useFormSync(edit: Service) {
     dispatch = useAppDispatch(),
     form = useFormDraft(),
     persisted = usePersistedDraft(draft),
-    lastSubmittedForm = useRef<DraftContent>(),
+    lastSubmittedForm = useRef<DraftContent>(undefined),
     hasError = Boolean(saveDraft.error || loadingError)
 
   const saveDraftDebounced = useMemo(

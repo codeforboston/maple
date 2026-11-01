@@ -29,14 +29,16 @@ export const TabSliderContainer = (props: { children?: JSX.Element[] }) => {
   return <TabSliderContainerStyle>{children}</TabSliderContainerStyle>
 }
 
-export const Tab = (props: {
+type TabProps = {
   label: string
   value: number
   active: boolean
   action?: () => void
   onClick?: MouseEventHandler
   variant?: "default" | "ballotQuestion"
-}) => {
+}
+
+export const Tab = (props: TabProps) => {
   const { label, onClick, active, variant = "default" } = props
   return (
     <TabStyle onClick={onClick} active={active} variant={variant}>
@@ -46,7 +48,7 @@ export const Tab = (props: {
 }
 
 export const Tabs = (props: {
-  childTabs: ReactElement[]
+  childTabs: ReactElement<TabProps>[]
   onChange: onClickEventFunction
   selectedTab: number
   variant?: "default" | "ballotQuestion"
@@ -89,14 +91,19 @@ export const Tabs = (props: {
     const handleClick = (e: Event) => {
       if (child.props.value !== selectedTab) {
         onChange(e, child.props.value)
-        child.props.action()
+        child.props.action?.()
       }
     }
     return (
-      <div ref={el => (tabRefs.current[index] = el)} key={child.props.label}>
+      <div
+        ref={el => {
+          tabRefs.current[index] = el
+        }}
+        key={child.props.label}
+      >
         {React.cloneElement(child, {
           active: child.props.value === selectedTab,
-          onClick: handleClick,
+          onClick: handleClick as unknown as MouseEventHandler,
           variant
         })}
       </div>
