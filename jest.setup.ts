@@ -7,6 +7,9 @@
  * SDK that made it swallows the error.
  */
 import net from "net"
+import { TextDecoder, TextEncoder } from "util"
+
+Object.assign(global, { TextDecoder, TextEncoder })
 
 // Anything that slips past the guard still can't touch the dev project's data.
 process.env.NEXT_PUBLIC_PROJECT_ID_FOR_TEST = "demo-jest-no-network"
