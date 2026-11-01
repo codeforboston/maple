@@ -34,10 +34,6 @@ export function ListReports() {
         <Datagrid rowClick={"edit"} bulkActionButtons={false}>
           <TextField source="id" label={t("reportId")} />
           <TextField source="testimonyId" />
-          <TextField
-            source="resolution.archiveTestimonyId"
-            label={t("archivedId")}
-          />
           <TextField source="reason" />
           <StatusField label={t("status")} />
           <TextField source="resolution.resolution" label={t("resolution")} />
