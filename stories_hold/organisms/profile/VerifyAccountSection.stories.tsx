@@ -1,4 +1,4 @@
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 import { VerifyAccountSection } from "components/shared"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
@@ -35,7 +35,7 @@ export default createMeta({
   }
 })
 
-const Template: ComponentStory<typeof VerifyAccountSection> = args => (
+const Template: StoryFn<typeof VerifyAccountSection> = args => (
   <VerifyAccountSection {...args} />
 )
 

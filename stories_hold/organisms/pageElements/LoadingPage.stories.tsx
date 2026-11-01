@@ -1,4 +1,4 @@
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 import { Loading } from "components/LoadingPage"
 import { createMeta } from "stories/utils"
 
@@ -7,7 +7,7 @@ export default createMeta({
   component: Loading
 })
 
-const Template: ComponentStory<typeof Loading> = () => <Loading />
+const Template: StoryFn<typeof Loading> = () => <Loading />
 
 export const Primary = Template.bind({})
 Primary.storyName = "LoadingPage"

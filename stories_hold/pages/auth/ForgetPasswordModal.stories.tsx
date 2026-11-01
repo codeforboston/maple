@@ -1,4 +1,4 @@
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 import { createMeta } from "stories/utils"
 import ForgotPasswordModal from "components/auth/ForgotPasswordModal"
 import { Providers } from "components/providers"
@@ -10,7 +10,7 @@ export default createMeta({
   component: ForgotPasswordModal
 })
 
-const Template: ComponentStory<typeof ForgotPasswordModal> = args => (
+const Template: StoryFn<typeof ForgotPasswordModal> = args => (
   <ForgotPasswordModal {...args} />
 )
 

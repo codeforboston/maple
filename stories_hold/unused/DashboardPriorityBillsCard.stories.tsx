@@ -1,6 +1,6 @@
 import { createMeta } from "stories/utils"
 import { PriorityBillsCard } from "components/PriorityBillsCard/PriorityBillsCard"
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 // TODO: move into components directory
 const DashboardPriorityBillsCard = () => <div>TODO</div>
 
@@ -15,7 +15,7 @@ const Template = (args: PriorityBillsCardProps) => (
   <PriorityBillsCard {...args} />
 )
 
-export const Primary: ComponentStory<typeof PriorityBillsCard> = Template.bind(
+export const Primary: StoryFn<typeof PriorityBillsCard> = Template.bind(
   {}
 )
 

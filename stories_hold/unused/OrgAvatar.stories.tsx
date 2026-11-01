@@ -1,13 +1,13 @@
 import { createMeta } from "stories/utils"
 import { OrgAvatar } from "./OrgAvatar"
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 
 export default createMeta({
   title: "Components/Avatar",
   component: OrgAvatar
 })
 
-const Template: ComponentStory<typeof OrgAvatar> = args => (
+const Template: StoryFn<typeof OrgAvatar> = args => (
   <OrgAvatar {...args} />
 )
 

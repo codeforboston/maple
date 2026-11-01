@@ -1,4 +1,4 @@
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 import { ProfileAboutSection } from "components/ProfilePage/ProfileAboutSection"
 import { Profile } from "components/db"
 import { Providers } from "components/providers"
@@ -27,7 +27,7 @@ export default createMeta({
   }
 })
 
-const Template: ComponentStory<typeof ProfileAboutSection> = args => (
+const Template: StoryFn<typeof ProfileAboutSection> = args => (
   <ProfileAboutSection {...args} />
 )
 

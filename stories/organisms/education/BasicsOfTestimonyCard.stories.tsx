@@ -1,4 +1,4 @@
-import { ComponentStory, Meta, StoryObj } from "@storybook/react"
+import { StoryFn, Meta, StoryObj } from "@storybook/react"
 import BasicsOfTestimonyCard from "components/LearnTestimonyComponents/BasicsOfTestimony/BasicsOfTestimonyCard"
 import React from "react"
 import { createMeta } from "stories/utils"

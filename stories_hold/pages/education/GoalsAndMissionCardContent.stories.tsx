@@ -1,4 +1,4 @@
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
@@ -23,7 +23,7 @@ export default createMeta({
   ]
 })
 
-const Template: ComponentStory<typeof GoalsAndMission> = () => (
+const Template: StoryFn<typeof GoalsAndMission> = () => (
   <GoalsAndMission />
 )
 
