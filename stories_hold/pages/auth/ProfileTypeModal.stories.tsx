@@ -1,4 +1,4 @@
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 import { createMeta } from "stories/utils"
 import ProfileTypeModal from "components/auth/ProfileTypeModal"
 import { Providers } from "components/providers"
@@ -10,7 +10,7 @@ export default createMeta({
   component: ProfileTypeModal
 })
 
-const Template: ComponentStory<typeof ProfileTypeModal> = args => (
+const Template: StoryFn<typeof ProfileTypeModal> = args => (
   <ProfileTypeModal {...args} />
 )
 

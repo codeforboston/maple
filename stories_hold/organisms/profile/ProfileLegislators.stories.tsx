@@ -1,4 +1,4 @@
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 import { ProfileLegislators } from "components/ProfilePage/ProfileLegislators"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
@@ -24,7 +24,7 @@ export default createMeta({
   ]
 })
 
-const Template: ComponentStory<typeof ProfileLegislators> = args => (
+const Template: StoryFn<typeof ProfileLegislators> = args => (
   <ProfileLegislators {...args} />
 )
 

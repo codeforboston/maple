@@ -1,4 +1,4 @@
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 import { createMeta } from "stories/utils"
 import SignInModal from "components/auth/SignInModal"
 import { Providers } from "components/providers"
@@ -10,9 +10,7 @@ export default createMeta({
   component: SignInModal
 })
 
-const Template: ComponentStory<typeof SignInModal> = args => (
-  <SignInModal {...args} />
-)
+const Template: StoryFn<typeof SignInModal> = args => <SignInModal {...args} />
 
 export const Primary = Template.bind({})
 

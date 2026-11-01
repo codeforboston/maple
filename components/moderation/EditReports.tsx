@@ -12,11 +12,11 @@ import { RemoveTestimonyForm } from "./RemoveTestimony"
 import { Report } from "./types"
 
 export function EditReports() {
-  const { record, data } = useEditController<Report>()
+  const { record } = useEditController<Report>()
   const refresh = useRefresh()
 
   const { data: testimony, isLoading } = useGetOne("publishedTestimony", {
-    id: data?.testimonyId || record?.testimonyId || "12345678"
+    id: record?.testimonyId || "12345678"
   })
 
   if (isLoading) return <div>loading...</div>

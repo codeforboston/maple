@@ -1,4 +1,4 @@
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 import React, { useState } from "react"
 import { createMeta } from "stories/utils"
 import { NewsfeedCard } from "components/NewsfeedCard/NewsfeedCard"
@@ -9,7 +9,7 @@ export default createMeta({
   component: NewsfeedCard
 })
 
-const Template: ComponentStory<typeof NewsfeedCard> = props => {
+const Template: StoryFn<typeof NewsfeedCard> = props => {
   return <NewsfeedCard {...props} />
 }
 

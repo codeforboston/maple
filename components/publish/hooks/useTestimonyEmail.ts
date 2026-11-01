@@ -1,4 +1,7 @@
-import { formatTestimony, formatTestimonyPlaintext } from "components/testimony"
+import {
+  formatTestimony,
+  formatTestimonyPlaintext
+} from "components/testimony/formatting"
 import { useProfile } from "../../db"
 import { formatBillId } from "../../formatting"
 import { maple, siteUrl } from "../../links"

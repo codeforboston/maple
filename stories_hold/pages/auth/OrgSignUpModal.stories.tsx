@@ -1,4 +1,4 @@
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 import { createMeta } from "stories/utils"
 import OrgSignUpModal from "components/auth/OrgSignUpModal"
 import { Providers } from "components/providers"
@@ -10,7 +10,7 @@ export default createMeta({
   component: OrgSignUpModal
 })
 
-const Template: ComponentStory<typeof OrgSignUpModal> = args => (
+const Template: StoryFn<typeof OrgSignUpModal> = args => (
   <OrgSignUpModal {...args} />
 )
 

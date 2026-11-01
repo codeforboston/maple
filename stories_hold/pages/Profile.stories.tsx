@@ -1,4 +1,4 @@
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 import { ProfilePage } from "components/ProfilePage"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
@@ -23,9 +23,7 @@ export default createMeta({
   ]
 })
 
-const Template: ComponentStory<typeof ProfilePage> = args => (
-  <ProfilePage {...args} />
-)
+const Template: StoryFn<typeof ProfilePage> = args => <ProfilePage {...args} />
 
 export const Primary = Template.bind({})
 
