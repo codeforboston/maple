@@ -60,9 +60,9 @@ sequenceDiagram
 
 - **Vector indexes**: All required composite indexes in `firestore.indexes.json` — deployed to dev and prod.
 - **Embedding model**: `text-embedding-005` (768 dimensions) via Vertex AI Predict API.
-- **Backfill**: `scripts/firebase-admin/backfill-embeddings-parallel.ts` — parallel (concurrency=8) with exponential backoff. Run against both dev and prod.
+- **Backfill**: `scripts/firebase-admin/backfill-embeddings-parallel.ts` — pages through each collection and embeds only documents missing an embedding (concurrency=8, exponential backoff on quota errors). Writes the same hash as the triggers.
 - **Migration**: `scripts/firebase-admin/migrate-embeddings-to-vector.ts` — one-time migration of plain-array embeddings to Firestore `VectorValue` format (required for `findNearest`).
-- **Continuous sync**: `functions/src/search/createVectorIndexer.ts` triggers on document write to keep embeddings current.
+- **Continuous sync**: `functions/src/search/createVectorIndexer.ts` triggers on document write to keep embeddings current. The Vertex AI client is loaded lazily: every function shares one bundle, and importing it at load time pushes them all past their default 256 MiB memory limit.
 
 ### MCP server (`mcp-server/`)
 
