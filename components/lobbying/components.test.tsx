@@ -13,7 +13,7 @@ jest.mock("next-i18next", () => ({
 }))
 
 describe("PositionBar", () => {
-  it("labels the bar with every count and titles each segment", () => {
+  it("labels the bar with every count and draws each segment", () => {
     render(<PositionBar counts={{ support: 2, oppose: 1, neutral: 0 }} />)
     const bar = screen.getByRole("img")
     expect(bar.getAttribute("aria-label")).toContain("position.support|2")

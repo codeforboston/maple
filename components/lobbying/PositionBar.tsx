@@ -1,5 +1,6 @@
-import React from "react"
+import React, { useId } from "react"
 import { useTranslation } from "next-i18next"
+import { OverlayTrigger, Tooltip } from "components/bootstrap"
 import type { BillRow } from "components/db/lobbying"
 import type { PositionCategory } from "./activity"
 import { MAPLE_COLORS, POSITION_COLORS } from "./chartTheme"
@@ -15,8 +16,9 @@ export type PositionBarCounts = Omit<Record<Segment, number>, "multiple"> & {
 
 /**
  * A stacked bar of organizations per position. Hovering a segment shows its
- * count; screen readers get every count from the bar's label. The legend, when
- * shown, repeats the counts as text, which keyboard users can read too.
+ * count at once; screen readers get every count from the bar's label. The
+ * legend, when shown, repeats the counts as text, which keyboard users can
+ * read too.
  */
 export function PositionBar({
   counts,
@@ -30,6 +32,7 @@ export function PositionBar({
   legend?: boolean
 }) {
   const { t } = useTranslation("lobbying")
+  const id = useId()
   const present = SEGMENTS.filter(s => (counts[s] ?? 0) > 0)
   const total = present.reduce((sum, s) => sum + (counts[s] ?? 0), 0)
   if (total === 0)
@@ -57,14 +60,17 @@ export function PositionBar({
         }}
       >
         {present.map(s => (
-          <div
+          <OverlayTrigger
             key={s}
-            title={segmentText(s)}
-            style={{
-              width: `${((counts[s] ?? 0) / total) * 100}%`,
-              background: POSITION_COLORS[s]
-            }}
-          />
+            overlay={<Tooltip id={`${id}-${s}`}>{segmentText(s)}</Tooltip>}
+          >
+            <div
+              style={{
+                width: `${((counts[s] ?? 0) / total) * 100}%`,
+                background: POSITION_COLORS[s]
+              }}
+            />
+          </OverlayTrigger>
         ))}
       </div>
       {legend && (
