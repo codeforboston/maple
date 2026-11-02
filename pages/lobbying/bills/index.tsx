@@ -133,15 +133,12 @@ function LobbyingBillsTable({ initialCourt, initialRows }: BillsPageProps) {
         title={t("billList.panelTitle", { session: sessionLabel })}
         aside={
           !loadingOther && (
-            <>
-              <strong>
-                {t("billList.count", {
-                  count: totalItems,
-                  n: formatCount(totalItems)
-                })}
-              </strong>{" "}
-              · {t("billList.sortHint")}
-            </>
+            <strong>
+              {t("billList.count", {
+                count: totalItems,
+                n: formatCount(totalItems)
+              })}
+            </strong>
           )
         }
         footer={<PositionLegend multiple note={t("bill.orgCountNote")} />}
