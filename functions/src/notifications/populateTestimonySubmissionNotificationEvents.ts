@@ -10,7 +10,9 @@ import {
   FirestoreEvent,
   onDocumentWritten
 } from "firebase-functions/v2/firestore"
+import * as logger from "firebase-functions/logger"
 import { db, Timestamp } from "../firebase"
+import { Testimony } from "../testimony/types"
 import { TestimonySubmissionNotification } from "./types"
 
 export const populateTestimonySubmissionNotificationEventsHandler = async (
@@ -34,45 +36,40 @@ export const populateTestimonySubmissionNotificationEventsHandler = async (
   if (documentCreated) {
     console.log("New document created")
 
-    const bqId: string | null = newData?.ballotQuestionId ?? null
-    const bqCourt: number | null = bqId
-      ? (newData?.court as number) ?? null
-      : null
+    // Publishing always writes a whole Testimony, so anything else was
+    // written by hand. Without a notification event nobody hears of it, and
+    // add() would reject the undefined fields.
+    const checked = Testimony.validateWithDefaults(newData)
+    if (!checked.success) {
+      logger.error(
+        `Testimony ${event.params.testimonyId} is not a valid publication, skipping notification event: ${checked.message}`
+      )
+      return
+    }
+    const testimony = checked.value
+
+    const bqId = testimony.ballotQuestionId ?? null
 
     const newNotificationEvent: TestimonySubmissionNotification = {
       type: "testimony",
 
-      billCourt: newData?.court?.toString(),
-      billId: newData?.billId,
-      billName: newData?.billTitle,
+      billCourt: testimony.court.toString(),
+      billId: testimony.billId,
+      billName: testimony.billTitle,
 
-      userId: newData?.authorUid,
-      userRole: newData?.authorRole,
+      userId: testimony.authorUid,
+      userRole: testimony.authorRole,
       testimonyId: event.params.testimonyId,
-      testimonyUser: newData?.fullName,
-      testimonyPosition: newData?.position,
-      testimonyContent: newData?.content,
-      testimonyVersion: newData?.version,
+      testimonyUser: testimony.fullName,
+      testimonyPosition: testimony.position,
+      testimonyContent: testimony.content,
+      testimonyVersion: testimony.version,
 
       ballotQuestionId: bqId,
-      ballotQuestionCourt: bqCourt,
-      conferenceId: newData?.conferenceId ?? null,
+      ballotQuestionCourt: bqId ? testimony.court : null,
+      conferenceId: testimony.conferenceId ?? null,
 
       updateTime: Timestamp.now()
-    }
-
-    // A publication missing what a notification needs (older documents,
-    // test fixtures) would make add() reject undefined fields.
-    const missing = Object.entries(newNotificationEvent)
-      .filter(([, value]) => value === undefined)
-      .map(([key]) => key)
-    if (missing.length > 0) {
-      console.warn(
-        `Testimony ${event.params.testimonyId} lacks ${missing.join(
-          ", "
-        )}, skipping notification event`
-      )
-      return
     }
 
     await db.collection("/notificationEvents").add(newNotificationEvent)

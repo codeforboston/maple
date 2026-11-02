@@ -4,16 +4,20 @@ jest.mock("firebase-functions/v2/firestore", () => ({
   onDocumentWritten: jest.fn()
 }))
 
+jest.mock("firebase-functions/logger", () => ({
+  error: jest.fn()
+}))
+
+// The Testimony type needs the admin package's own Timestamp class.
 jest.mock("../firebase", () => ({
   db: {
     collection: jest.fn()
   },
-  Timestamp: {
-    now: jest.fn(() => ({ seconds: 1000 }))
-  }
+  Timestamp: jest.requireActual("firebase-admin/firestore").Timestamp
 }))
 
 const mockDb = require("../firebase").db
+const mockLogger = require("firebase-functions/logger")
 
 const mockAdd = jest.fn().mockResolvedValue({})
 const mockUpdate = jest.fn().mockResolvedValue({})
@@ -77,8 +81,8 @@ describe("populateTestimonySubmissionNotificationEventsHandler", () => {
     )
   })
 
-  it.each(["billTitle", "court", "authorUid"])(
-    "skips new testimony missing %s",
+  it.each(["court", "authorUid", "billId", "position", "content", "version"])(
+    "logs an error and skips new testimony missing %s",
     async field => {
       setupCollection(true)
 
@@ -86,8 +90,35 @@ describe("populateTestimonySubmissionNotificationEventsHandler", () => {
       await populateTestimonySubmissionNotificationEventsHandler(event as any)
 
       expect(mockAdd).not.toHaveBeenCalled()
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        expect.stringContaining("testimony-id")
+      )
     }
   )
+
+  it("logs an error and skips an empty document", async () => {
+    setupCollection(true)
+
+    const event = makeEvent(null, {})
+    await populateTestimonySubmissionNotificationEventsHandler(event as any)
+
+    expect(mockAdd).not.toHaveBeenCalled()
+    expect(mockLogger.error).toHaveBeenCalledTimes(1)
+  })
+
+  it("fills in a missing billTitle, as the Testimony type does", async () => {
+    setupCollection(true)
+
+    // Firestore omits a missing field rather than returning undefined.
+    const { billTitle, ...withoutTitle } = makeTestimony()
+    const event = makeEvent(null, withoutTitle)
+    await populateTestimonySubmissionNotificationEventsHandler(event as any)
+
+    expect(mockLogger.error).not.toHaveBeenCalled()
+    expect(mockAdd).toHaveBeenCalledWith(
+      expect.objectContaining({ billName: "" })
+    )
+  })
 
   it("does nothing when the version is unchanged", async () => {
     const event = makeEvent(makeTestimony(), makeTestimony({ cosignCount: 1 }))

@@ -274,8 +274,13 @@ describe("publishTestimony", () => {
     ).toBeTruthy()
 
     // TODO: verify whether users can write to their published collection, right now this is the case
+    const { publicationId } = (await publishTestimony({ draftId })).data
+    const publishedRef = doc(
+      firestore,
+      `/users/${uid}/publishedTestimony/${publicationId}`
+    )
     expect(
-      setDoc(doc(firestore, `/users/${uid}/publishedTestimony/test-id`), {})
+      setDoc(publishedRef, (await getDoc(publishedRef)).data()!)
     ).toBeTruthy()
     expect(
       setDoc(doc(firestore, `/users/${uid}/archivedTestimony/test-id`), {})
