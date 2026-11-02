@@ -975,13 +975,13 @@ describe("publishTestimony", () => {
           conferenceId,
           "passNothing"
         )
-        await publishTestimony({ draftId })
+        const published = await publishTestimony({ draftId })
         await updateDoc(refs.draftTestimony(uid2, draftId), {
           ...cosignOf(),
           editReason: "Cosign instead"
         })
         await expect(publishTestimony({ draftId })).rejects.toThrow(
-          "is not a cosign and cannot become one"
+          `You already gave your own testimony on this conference (${published.data.publicationId}), so you cannot also cosign ${parentId}.`
         )
       })
 
@@ -992,7 +992,7 @@ describe("publishTestimony", () => {
           conferenceId,
           cosignOf()
         )
-        await publishTestimony({ draftId })
+        const published = await publishTestimony({ draftId })
         await updateDoc(refs.draftTestimony(uid2, draftId), {
           cosignOfId: null,
           cosignOfAuthorUid: null,
@@ -1000,7 +1000,7 @@ describe("publishTestimony", () => {
           editReason: "Testify instead"
         })
         await expect(publishTestimony({ draftId })).rejects.toThrow(
-          `cosigns ${parentId} and stays a cosign of it`
+          `You already cosigned ${parentId} on this conference (${published.data.publicationId}), so you cannot replace it with your own testimony.`
         )
       })
 
@@ -1011,7 +1011,7 @@ describe("publishTestimony", () => {
           conferenceId,
           cosignOf()
         )
-        await publishTestimony({ draftId })
+        const published = await publishTestimony({ draftId })
 
         const uid3 = (await signInUser3()).uid
         const { draftId: otherDraftId } = await createConferenceDraft(
@@ -1031,7 +1031,7 @@ describe("publishTestimony", () => {
           editReason: "Cosign another"
         })
         await expect(publishTestimony({ draftId })).rejects.toThrow(
-          `cosigns ${parentId} and stays a cosign of it`
+          `You already cosigned ${parentId} on this conference (${published.data.publicationId}), so you cannot also cosign ${otherParentId}.`
         )
       })
 

@@ -266,11 +266,15 @@ class PublishTestimonyTransaction {
     const current = this.currentPublication
 
     if (current && (current.cosignOfId ?? null) !== (cosignOfId ?? null)) {
+      const had = current.cosignOfId
+        ? `You already cosigned ${current.cosignOfId} on this conference (${current.id})`
+        : `You already gave your own testimony on this conference (${current.id})`
+      const tried = cosignOfId
+        ? `cannot also cosign ${cosignOfId}`
+        : "cannot replace it with your own testimony"
       throw fail(
         "failed-precondition",
-        current.cosignOfId
-          ? `Testimony ${current.id} cosigns ${current.cosignOfId} and stays a cosign of it`
-          : `Testimony ${current.id} is not a cosign and cannot become one`
+        `${had}, so you ${tried}. Each person has one input per conference.`
       )
     }
 
