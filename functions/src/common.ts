@@ -72,9 +72,13 @@ export function checkAdmin(context: CallableRequest) {
   }
 }
 
-/** Constructs a new HTTPS error */
-export function fail(code: https.FunctionsErrorCode, message: string) {
-  return new https.HttpsError(code, message)
+/** Constructs a new HTTPS error. `details` reach the client as they are. */
+export function fail(
+  code: https.FunctionsErrorCode,
+  message: string,
+  details?: unknown
+) {
+  return new https.HttpsError(code, message, details)
 }
 
 /** Catch handler to log axios errors and return undefined. */
