@@ -4,100 +4,111 @@
 // Creates a notification document in the user's notification feed for each active subscription.
 
 // Import necessary Firebase modules
-import { onDocumentWritten } from "firebase-functions/v2/firestore"
-import { getFirestore } from "firebase-admin/firestore"
-import { Timestamp } from "../firebase"
+import {
+  Change,
+  DocumentSnapshot,
+  FirestoreEvent,
+  onDocumentWritten
+} from "firebase-functions/v2/firestore"
+import * as logger from "firebase-functions/logger"
+import { db, Timestamp } from "../firebase"
+import { Testimony } from "../testimony/types"
 import { TestimonySubmissionNotification } from "./types"
 
-// Get a reference to the Firestore database
-const db = getFirestore()
+export const populateTestimonySubmissionNotificationEventsHandler = async (
+  event: FirestoreEvent<
+    Change<DocumentSnapshot> | undefined,
+    { userId: string; testimonyId: string }
+  >
+) => {
+  const snapshot = event.data
+  if (!snapshot || !snapshot.after.exists) {
+    console.error("New snapshot does not exist")
+    return
+  }
 
-// Define the populateOrgNotificationEvents function
+  const documentCreated = !snapshot.before.exists
+
+  const oldData = snapshot.before.data()
+  const newData = snapshot.after.data()
+
+  // New testimony added
+  if (documentCreated) {
+    console.log("New document created")
+
+    // Publishing always writes a whole Testimony, so anything else was
+    // written by hand. Without a notification event nobody hears of it, and
+    // add() would reject the undefined fields.
+    const checked = Testimony.validateWithDefaults(newData)
+    if (!checked.success) {
+      logger.error(
+        `Testimony ${event.params.testimonyId} is not a valid publication, skipping notification event: ${checked.message}`
+      )
+      return
+    }
+    const testimony = checked.value
+
+    const bqId = testimony.ballotQuestionId ?? null
+
+    const newNotificationEvent: TestimonySubmissionNotification = {
+      type: "testimony",
+
+      billCourt: testimony.court.toString(),
+      billId: testimony.billId,
+      billName: testimony.billTitle,
+
+      userId: testimony.authorUid,
+      userRole: testimony.authorRole,
+      testimonyId: event.params.testimonyId,
+      testimonyUser: testimony.fullName,
+      testimonyPosition: testimony.position,
+      testimonyContent: testimony.content,
+      testimonyVersion: testimony.version,
+
+      ballotQuestionId: bqId,
+      ballotQuestionCourt: bqId ? testimony.court : null,
+      conferenceId: testimony.conferenceId ?? null,
+
+      updateTime: Timestamp.now()
+    }
+
+    await db.collection("/notificationEvents").add(newNotificationEvent)
+
+    return
+  }
+
+  const oldVersion = oldData?.version
+  const newVersion = newData?.version
+
+  console.log(`oldVersion: ${oldVersion}, newVersion: ${newVersion}`)
+  if (oldVersion === newVersion) return
+
+  const notificationEventSnapshot = await db
+    .collection("/notificationEvents")
+    .where("type", "==", "org")
+    .where("billCourt", "==", newData?.court.toString())
+    .where("billId", "==", newData?.billId)
+    .where("authorUid", "==", newData?.authorUid)
+    .get()
+
+  console.log(
+    `${notificationEventSnapshot.docs} ${notificationEventSnapshot.docs.length}`
+  )
+
+  if (!notificationEventSnapshot.empty) {
+    const notificationEventId = notificationEventSnapshot.docs[0].id
+
+    // Update the existing notification event
+    await db.collection("/notificationEvents").doc(notificationEventId).update({
+      testimonyPosition: newData?.position,
+      testimonyContent: newData?.content,
+      testimonyVersion: newData?.version,
+      updateTime: Timestamp.now()
+    })
+  }
+}
+
 export const populateTestimonySubmissionNotificationEvents = onDocumentWritten(
   "/users/{userId}/publishedTestimony/{testimonyId}",
-  async event => {
-    const snapshot = event.data
-    if (!snapshot || !snapshot.after.exists) {
-      console.error("New snapshot does not exist")
-      return
-    }
-
-    const documentCreated = !snapshot.before.exists
-
-    const oldData = snapshot.before.data()
-    const newData = snapshot.after.data()
-
-    // New testimony added
-    if (documentCreated) {
-      console.log("New document created")
-
-      const bqId: string | null = newData?.ballotQuestionId ?? null
-      const bqCourt: number | null = bqId
-        ? (newData?.court as number) ?? null
-        : null
-
-      const newNotificationEvent: TestimonySubmissionNotification = {
-        type: "testimony",
-
-        billCourt: newData?.court.toString(),
-        billId: newData?.billId,
-        billName: newData?.billTitle,
-
-        userId: newData?.authorUid,
-        userRole: newData?.authorRole,
-        testimonyId: event.params.testimonyId,
-        testimonyUser: newData?.fullName,
-        testimonyPosition: newData?.position,
-        testimonyContent: newData?.content,
-        testimonyVersion: newData?.version,
-
-        ballotQuestionId: bqId,
-        ballotQuestionCourt: bqCourt,
-        conferenceId: newData?.conferenceId ?? null,
-
-        updateTime: Timestamp.now()
-      }
-
-      await db.collection("/notificationEvents").add(newNotificationEvent)
-
-      return
-    }
-
-    const oldVersion = oldData?.version
-    const newVersion = newData?.version
-
-    const testimonyChanged = oldVersion !== newVersion
-    console.log(`oldVersion: ${oldVersion}, newVersion: ${newVersion}`)
-
-    const notificationEventSnapshot = await db
-      .collection("/notificationEvents")
-      .where("type", "==", "org")
-      .where("billCourt", "==", newData?.court.toString())
-      .where("billId", "==", newData?.billId)
-      .where("authorUid", "==", newData?.authorUid)
-      .get()
-
-    console.log(
-      `${notificationEventSnapshot.docs} ${notificationEventSnapshot.docs.length}`
-    )
-
-    if (!notificationEventSnapshot.empty) {
-      const notificationEventId = notificationEventSnapshot.docs[0].id
-
-      if (testimonyChanged) {
-        console.log("Testimony changed")
-
-        // Update the existing notification event
-        await db
-          .collection("/notificationEvents")
-          .doc(notificationEventId)
-          .update({
-            testimonyPosition: newData?.position,
-            testimonyContent: newData?.content,
-            testimonyVersion: newData?.version,
-            updateTime: Timestamp.now()
-          })
-      }
-    }
-  }
+  populateTestimonySubmissionNotificationEventsHandler
 )

@@ -81,8 +81,6 @@ export const ReportContent = ({
     <Card>
       <CardHeader title="User Report Content" />
       <CardContent>
-        <TextField label="archive id" source="resolution.archiveTestimonyId" />
-
         <label>Reason:</label>
         <Typography>{report.reason}</Typography>
         <br />
