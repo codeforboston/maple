@@ -132,6 +132,7 @@
   },
   "overview": {
     "keyFigures": "Key figures · {{session}}",
+    "courtName": "{{court}} General Court",
     "figBills": "Bills with reported lobbying",
     "figClients": "Clients",
     "figLobbyists": "Registered lobbyists",

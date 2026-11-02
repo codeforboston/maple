@@ -124,6 +124,24 @@ function useFigures(
   ]
 }
 
+/** "2025–2026" for a session; the span of sessions with data for "all". */
+function keyFiguresYears(stats: OverviewStats, session: SessionFilter): string {
+  const courts = session === "all" ? stats.courtsWithData : [session]
+  if (!courts.length) return ""
+  const start = courtStartYear(Math.min(...courts))
+  const end = courtStartYear(Math.max(...courts)) + 1
+  return `${start}–${end}`
+}
+
+const keyFiguresYearsStyle: React.CSSProperties = {
+  display: "block",
+  marginTop: 2,
+  fontWeight: 400,
+  letterSpacing: "normal",
+  textTransform: "none",
+  color: MAPLE_COLORS.graySubtleText
+}
+
 function KeyFigures({
   stats,
   session,
@@ -146,10 +164,19 @@ function KeyFigures({
 
   return (
     <LobbyingPanel
-      title={t("overview.keyFigures", {
-        session:
-          session === "all" ? t("filters.allSessionsSince") : courtName(session)
-      })}
+      title={
+        <>
+          {t("overview.keyFigures", {
+            session:
+              session === "all"
+                ? t("filters.allSessions")
+                : t("overview.courtName", { court: courtOrdinal(session) })
+          })}
+          <span style={keyFiguresYearsStyle}>
+            {keyFiguresYears(stats, session)}
+          </span>
+        </>
+      }
       style={{ height: "100%", gap: 0 }}
     >
       <div>
