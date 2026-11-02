@@ -21,6 +21,11 @@ describe("filingPeriodLabel", () => {
     ).toBe("Dec 2025–Jan 2026")
   })
 
+  it("shortens the year for tight spaces", () => {
+    const f = { year: 2026, periodStart: "2026-01-01", periodEnd: "2026-06-30" }
+    expect(filingPeriodLabel(f, "en-US", true)).toBe("Jan–Jun 26")
+  })
+
   it("falls back to the year when the period is unknown", () => {
     expect(filingPeriodLabel({ year: 2019 })).toBe("2019")
     expect(
