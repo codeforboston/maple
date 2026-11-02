@@ -58,7 +58,8 @@ import {
   courtName,
   courtOrdinal,
   courtShortLabel,
-  courtStartYear
+  courtStartYear,
+  courtYears
 } from "components/lobbying/sessions"
 import { thStyle } from "components/lobbying/SortTh"
 
@@ -308,7 +309,7 @@ function PaymentsChart({
             <XAxis
               dataKey="court"
               {...X_AXIS_PROPS}
-              tickFormatter={c => courtOrdinal(Number(c))}
+              tickFormatter={c => courtYears(Number(c))}
             />
             <YAxis {...Y_AXIS_PROPS} tickFormatter={formatCurrencyCompact} />
             <Tooltip
