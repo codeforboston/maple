@@ -535,7 +535,7 @@ function LobbyingOverview({ stats, topBills }: OverviewProps) {
 
         {stats && session !== undefined && current !== undefined && (
           <>
-            <LobbyingFilterBar boxed>
+            <LobbyingFilterBar boxed="fit">
               <FilterLabel htmlFor="overview-session">
                 {t("filters.session")}
               </FilterLabel>

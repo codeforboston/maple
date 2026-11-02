@@ -32,16 +32,19 @@ export function LobbyingPanel({
   )
 }
 
-/** The bar of filters above a list: a session select, a search box, etc. */
+/** The bar of filters above a list: a session select, a search box, etc.
+ * A boxed bar spans the list below it, and a search box styled with
+ * listSearchStyle takes the extra room; boxed="fit" fits its filters. */
 export function LobbyingFilterBar({
   children,
   boxed = false
-}: React.PropsWithChildren<{ boxed?: boolean }>) {
-  return (
-    <div style={boxed ? { ...filterBarStyle, ...boxedStyle } : filterBarStyle}>
-      {children}
-    </div>
-  )
+}: React.PropsWithChildren<{ boxed?: boolean | "fit" }>) {
+  const style = !boxed
+    ? filterBarStyle
+    : boxed === "fit"
+    ? { ...filterBarStyle, ...boxedStyle, ...fitStyle }
+    : { ...filterBarStyle, ...boxedStyle }
+  return <div style={style}>{children}</div>
 }
 
 /** A visible label for a filter control. */
@@ -102,6 +105,12 @@ export const searchStyle: React.CSSProperties = {
   cursor: "text"
 }
 
+/** A search box that grows to fill a boxed filter bar. */
+export const listSearchStyle: React.CSSProperties = {
+  ...searchStyle,
+  flex: 1
+}
+
 const panelStyle: React.CSSProperties = {
   background: MAPLE_COLORS.surfaceBase,
   border: `1px solid ${MAPLE_COLORS.borderSubtle}`,
@@ -153,14 +162,17 @@ const filterBarStyle: React.CSSProperties = {
 }
 
 const boxedStyle: React.CSSProperties = {
-  alignSelf: "flex-start",
-  width: "fit-content",
-  maxWidth: "100%",
   background: MAPLE_COLORS.surfaceBase,
   border: `1px solid ${MAPLE_COLORS.borderSubtle}`,
   borderRadius: 10,
   padding: "0.625rem 1rem",
   marginBottom: "1.5rem"
+}
+
+const fitStyle: React.CSSProperties = {
+  alignSelf: "flex-start",
+  width: "fit-content",
+  maxWidth: "100%"
 }
 
 const filterLabelStyle: React.CSSProperties = {

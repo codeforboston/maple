@@ -20,7 +20,7 @@ import {
   LobbyingPanel,
   listTableStyle,
   listTdStyle,
-  searchStyle,
+  listSearchStyle,
   selectStyle,
   sessionSelectStyle,
   subTextStyle
@@ -157,7 +157,7 @@ function LobbyingFirmsTable({
           placeholder={t("filters.search")}
           value={search}
           onChange={e => setSearch(e.target.value)}
-          style={searchStyle}
+          style={listSearchStyle}
           aria-label={t("filters.search")}
         />
       </LobbyingFilterBar>

@@ -19,7 +19,7 @@ import {
   LobbyingPanel,
   listTableStyle,
   listTdStyle,
-  searchStyle,
+  listSearchStyle,
   sessionSelectStyle,
   subTextStyle
 } from "components/lobbying/LobbyingPanel"
@@ -125,7 +125,7 @@ function LobbyingBillsTable({ initialCourt, initialRows }: BillsPageProps) {
           aria-label={t("activity.billSearch")}
           value={search}
           onChange={e => setSearch(e.target.value)}
-          style={searchStyle}
+          style={listSearchStyle}
         />
       </LobbyingFilterBar>
 
