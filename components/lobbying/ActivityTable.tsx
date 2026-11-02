@@ -10,7 +10,7 @@ import {
   sessionPeriodsWith
 } from "./activity"
 import { MAPLE_COLORS, POSITION_TONES } from "./chartTheme"
-import { subTextStyle } from "./LobbyingPanel"
+import { subTextStyle, toggleButtonStyle } from "./LobbyingPanel"
 import { LobbyingPaginationBar } from "./LobbyingPaginationBar"
 import { LobbyingPositionChip } from "./LobbyingPositionChip"
 import { SortTh, thStyle, type SortDir } from "./SortTh"
@@ -199,7 +199,7 @@ export function ActivityTable({
                             { name: row.label }
                           )}
                           onClick={() => toggle(row.key)}
-                          style={toggleStyle}
+                          style={toggleButtonStyle}
                         >
                           {isOpen ? "▾" : "▸"}
                         </button>
@@ -455,18 +455,6 @@ const cellStyle: React.CSSProperties = {
   verticalAlign: "top",
   borderTop: `1px solid ${MAPLE_COLORS.borderSubtle}`,
   color: MAPLE_COLORS.textBody,
-  fontSize: 14
-}
-
-const toggleStyle: React.CSSProperties = {
-  flex: "none",
-  width: 24,
-  height: 24,
-  padding: 0,
-  border: 0,
-  background: "none",
-  cursor: "pointer",
-  color: MAPLE_COLORS.primary,
   fontSize: 14
 }
 

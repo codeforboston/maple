@@ -98,14 +98,7 @@ export const LobbyingBillCard: React.FC<LobbyingBillCardProps> = ({
         />
       </div>
 
-      <LobbyingFilingsTable
-        filings={pageItems}
-        showBill={false}
-        showClient
-        showFirm
-        showAmount={false}
-        bordered
-      />
+      <LobbyingFilingsTable filings={pageItems} showClient showFirm bordered />
       <LobbyingPaginationBar
         page={page}
         totalPages={totalPages}

@@ -204,6 +204,19 @@ export const listTdStyle: React.CSSProperties = {
   borderTop: `1px solid ${MAPLE_COLORS.borderSubtle}`
 }
 
+/** The ▸/▾ button that shows or hides a row's details. */
+export const toggleButtonStyle: React.CSSProperties = {
+  flex: "none",
+  width: 24,
+  height: 24,
+  padding: 0,
+  border: 0,
+  background: "none",
+  cursor: "pointer",
+  color: MAPLE_COLORS.primary,
+  fontSize: 14
+}
+
 /** A smaller line under a cell's main text. */
 export const subTextStyle: React.CSSProperties = {
   fontSize: 13,

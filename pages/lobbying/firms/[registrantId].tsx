@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useId, useMemo, useState } from "react"
 import { useTranslation } from "next-i18next"
 import { useRouter } from "next/router"
 import { Col, Container, Row } from "components/bootstrap"
@@ -10,10 +10,15 @@ import {
   useLobbyingRegistrantsByEntityName,
   useLobbyingFilingsForEntityName
 } from "components/db/lobbying"
-import { LobbyingFilingsTable } from "components/lobbying/LobbyingFilingsTable"
+import type { LobbyingFiling } from "functions/src/lobbying/types"
+import { NonBillActivity } from "components/lobbying/NonBillActivity"
 import { isNoClient, normalizePosition } from "components/lobbying/activity"
 import { LobbyingPositionChip } from "components/lobbying/LobbyingPositionChip"
-import { MAPLE_COLORS } from "components/lobbying/chartTheme"
+import {
+  formatCount,
+  formatCurrency,
+  MAPLE_COLORS
+} from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 import { usePagination } from "components/lobbying/usePagination"
@@ -22,8 +27,13 @@ import { SosSourceLink } from "components/lobbying/SosSourceLink"
 import { regTypeLabel } from "components/lobbying/regTypeLabel"
 import {
   LobbyingLoadError,
-  subTextStyle
+  LobbyingPanel,
+  listTableStyle,
+  listTdStyle,
+  subTextStyle,
+  toggleButtonStyle
 } from "components/lobbying/LobbyingPanel"
+import { thStyle } from "components/lobbying/SortTh"
 import {
   compareFilingPeriodsDesc,
   filingPeriodLabel
@@ -105,6 +115,7 @@ function FirmDetail() {
     ])
   ].sort((a, b) => b - a)
   const registrations = summary?.registrations ?? []
+  const sourcedRegistrations = registrations.filter(r => r.sourceUrl)
   const employers = partiesByName(registrations, "employers")
   const registeredLobbyists = partiesByName(registrations, "lobbyists")
   const filesThroughEmployer =
@@ -112,19 +123,7 @@ function FirmDetail() {
   // One entry per client, with the compensation reported in each period
   // (most recent first), since a client may appear on several periods'
   // registrant docs.
-  const clientMap = new Map<
-    string,
-    {
-      clientName: string
-      clientNameNorm: string
-      periods: {
-        periodStart?: string | null
-        periodEnd?: string | null
-        year: number
-        compensation: number
-      }[]
-    }
-  >()
+  const clientMap = new Map<string, Omit<FirmClient, "total">>()
   for (const r of registrants ?? []) {
     for (const c of r.clients) {
       const entry = clientMap.get(c.clientNameNorm) ?? {
@@ -143,9 +142,10 @@ function FirmDetail() {
       clientMap.set(c.clientNameNorm, entry)
     }
   }
-  const allClients = [...clientMap.values()]
+  const allClients: FirmClient[] = [...clientMap.values()]
     .map(c => ({
       ...c,
+      total: c.periods.reduce((sum, p) => sum + p.compensation, 0),
       periods: c.periods.sort(
         (a, b) =>
           b.year - a.year ||
@@ -211,12 +211,7 @@ function FirmDetail() {
               )}
               {totalCompensation > 0 && (
                 <>
-                  &nbsp;·&nbsp;{" "}
-                  {totalCompensation.toLocaleString("en-US", {
-                    style: "currency",
-                    currency: "USD",
-                    maximumFractionDigits: 0
-                  })}{" "}
+                  &nbsp;·&nbsp; {formatCurrency(totalCompensation)}{" "}
                   {t("misc.total")}
                 </>
               )}
@@ -238,30 +233,36 @@ function FirmDetail() {
           <Row className="mt-2">
             {/* Left: filings */}
             <Col md={8}>
-              <h5 style={sectionHeadStyle}>{t("sections.bills")}</h5>
-              {filesThroughEmployer && (
-                <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 14 }}>
-                  {t("misc.filesThroughFirm", { name })}
-                </p>
-              )}
-              {!filesThroughEmployer && (
-                <>
-                  <LobbyingFilingsTable
-                    filings={pageItems}
-                    showBill
-                    showClient
-                    showFirm={false}
-                    showAmount={false}
-                  />
-                  <LobbyingPaginationBar
-                    page={page}
-                    totalPages={totalPages}
-                    totalItems={totalItems}
-                    pageSize={PAGE_SIZE}
-                    onPage={setPage}
-                  />
-                </>
-              )}
+              <LobbyingPanel
+                title={t("titles.bills")}
+                aside={
+                  !filesThroughEmployer && (
+                    <strong>
+                      {t("firm.activities", {
+                        count: totalItems,
+                        n: formatCount(totalItems)
+                      })}
+                    </strong>
+                  )
+                }
+              >
+                {filesThroughEmployer ? (
+                  <p style={noteStyle}>
+                    {t("misc.filesThroughFirm", { name })}
+                  </p>
+                ) : (
+                  <div>
+                    <FirmBillsTable filings={pageItems} />
+                    <LobbyingPaginationBar
+                      page={page}
+                      totalPages={totalPages}
+                      totalItems={totalItems}
+                      pageSize={PAGE_SIZE}
+                      onPage={setPage}
+                    />
+                  </div>
+                )}
+              </LobbyingPanel>
             </Col>
 
             {/* Right: clients + disclosure links */}
@@ -269,136 +270,88 @@ function FirmDetail() {
               {/* A lobbyist whose employer files has no clients of their own;
                   the note on the left explains where to look instead. */}
               {(allClients.length > 0 || !filesThroughEmployer) && (
-                <h5 style={sectionHeadStyle}>{t("sections.clients")}</h5>
-              )}
-              {allClients.length === 0 ? (
-                !filesThroughEmployer && (
-                  <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 13 }}>
-                    —
-                  </p>
-                )
-              ) : (
-                <ul style={{ paddingLeft: "1.25rem", fontSize: 13 }}>
-                  {allClients.map(c => (
-                    <li
-                      key={c.clientNameNorm}
-                      style={{ marginBottom: "0.35rem" }}
-                    >
-                      <a
-                        href={`/lobbying/clients/${encodeURIComponent(
-                          c.clientNameNorm
-                        )}`}
-                        style={{ color: MAPLE_COLORS.primary }}
-                      >
-                        {c.clientName}
-                      </a>
-                      {isNoClient(c.clientNameNorm) && (
-                        <div style={subTextStyle}>
-                          {t("activity.notOrganization")}
-                        </div>
-                      )}
-                      {c.periods.map((p, i) => (
-                        <div
-                          key={i}
-                          style={{
-                            color: MAPLE_COLORS.textMuted,
-                            fontSize: 12
-                          }}
-                        >
-                          {formatDisclosureLabel(p, t, i, i18n.language)}:{" "}
-                          {p.compensation.toLocaleString("en-US", {
-                            style: "currency",
-                            currency: "USD",
-                            maximumFractionDigits: 0
-                          })}
-                        </div>
-                      ))}
-                    </li>
-                  ))}
-                </ul>
+                <LobbyingPanel
+                  title={t("sections.clients")}
+                  aside={
+                    allClients.length > 0 && formatCount(allClients.length)
+                  }
+                >
+                  {allClients.length === 0 ? (
+                    <p style={noteStyle}>—</p>
+                  ) : (
+                    <ClientList clients={allClients} />
+                  )}
+                </LobbyingPanel>
               )}
 
               {employers.length > 0 && (
-                <>
-                  <h5 style={{ ...sectionHeadStyle, marginTop: "1.5rem" }}>
-                    {t("sections.employers")}
-                  </h5>
+                <LobbyingPanel title={t("sections.employers")}>
                   <PartyList parties={employers} />
-                </>
+                </LobbyingPanel>
               )}
 
               {(registeredLobbyists.length > 0 || lobbyists.length > 0) && (
-                <>
-                  <h5 style={{ ...sectionHeadStyle, marginTop: "1.5rem" }}>
-                    {t("sections.firmLobbyists")}
-                  </h5>
+                <LobbyingPanel title={t("sections.firmLobbyists")}>
                   {registeredLobbyists.length > 0 ? (
                     <PartyList parties={registeredLobbyists} />
                   ) : (
-                    <ul style={{ paddingLeft: "1.25rem", fontSize: 13 }}>
+                    <ul style={listStyle}>
                       {lobbyists.map(lobbyist => (
-                        <li key={lobbyist} style={{ marginBottom: "0.35rem" }}>
+                        <li key={lobbyist} style={listItemStyle}>
                           {lobbyist}
                         </li>
                       ))}
                     </ul>
                   )}
-                </>
+                </LobbyingPanel>
               )}
 
-              {registrations.some(r => r.sourceUrl) && (
-                <>
-                  <h5 style={{ ...sectionHeadStyle, marginTop: "1.5rem" }}>
-                    {t("sections.registrations")}
-                  </h5>
-                  <ul style={{ paddingLeft: "1.25rem", fontSize: 12 }}>
-                    {registrations
-                      .filter(r => r.sourceUrl)
-                      .map(r => (
-                        <li key={r.year} style={{ marginBottom: "0.35rem" }}>
-                          <SosSourceLink
-                            href={r.sourceUrl}
-                            label={t("misc.registrationYear", { year: r.year })}
-                          />
-                        </li>
-                      ))}
-                  </ul>
-                </>
+              {sourcedRegistrations.length > 0 && (
+                <LobbyingPanel
+                  title={t("sections.registrations")}
+                  aside={formatCount(sourcedRegistrations.length)}
+                >
+                  <ShowMoreList
+                    items={sourcedRegistrations}
+                    render={r => (
+                      <SosSourceLink
+                        href={r.sourceUrl}
+                        label={t("misc.registrationYear", { year: r.year })}
+                      />
+                    )}
+                  />
+                </LobbyingPanel>
               )}
 
               {allDisclosures.length > 0 && (
-                <>
-                  <h5 style={{ ...sectionHeadStyle, marginTop: "1.5rem" }}>
-                    {t("misc.disclosures")}
-                  </h5>
-                  <ul style={{ paddingLeft: "1.25rem", fontSize: 12 }}>
-                    {allDisclosures.map((d, i) => (
-                      <li key={d.url} style={{ marginBottom: "0.35rem" }}>
-                        <a
-                          href={d.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          style={{ color: MAPLE_COLORS.primary }}
-                        >
-                          {formatDisclosureLabel(d, t, i, i18n.language)}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </>
+                <LobbyingPanel
+                  title={t("misc.disclosures")}
+                  aside={formatCount(allDisclosures.length)}
+                >
+                  <ShowMoreList
+                    items={allDisclosures}
+                    render={(d, i) => (
+                      <a
+                        href={d.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={linkStyle}
+                      >
+                        {formatDisclosureLabel(d, t, i, i18n.language)}
+                      </a>
+                    )}
+                  />
+                </LobbyingPanel>
               )}
 
               {(filings?.length ?? 0) > 0 && (
-                <>
-                  <h5 style={{ ...sectionHeadStyle, marginTop: "1.5rem" }}>
-                    {t("filters.position")}
-                  </h5>
+                <LobbyingPanel title={t("filters.position")}>
                   <div
                     style={{
+                      ...bodyStyle,
                       display: "flex",
                       flexDirection: "column",
-                      gap: "0.4rem",
-                      fontSize: 13
+                      gap: "0.4rem"
                     }}
                   >
                     {(["support", "oppose", "neutral"] as const).map(
@@ -413,14 +366,12 @@ function FirmDetail() {
                             }}
                           >
                             <LobbyingPositionChip position={pos} />
-                            <span style={{ color: MAPLE_COLORS.textMuted }}>
-                              {positionCounts[pos]}
-                            </span>
+                            <span>{positionCounts[pos]}</span>
                           </div>
                         )
                     )}
                   </div>
-                </>
+                </LobbyingPanel>
               )}
             </Col>
           </Row>
@@ -461,20 +412,20 @@ function partiesByName(
 
 function PartyList({ parties }: { parties: Party[] }) {
   return (
-    <ul style={{ paddingLeft: "1.25rem", fontSize: 13 }}>
+    <ul style={listStyle}>
       {parties.map(p => (
-        <li key={p.nameNorm || p.name} style={{ marginBottom: "0.35rem" }}>
+        <li key={p.nameNorm || p.name} style={listItemStyle}>
           {p.hasProfile && p.nameNorm ? (
             <a
               href={`/lobbying/firms/${encodeURIComponent(p.nameNorm)}`}
-              style={{ color: MAPLE_COLORS.primary }}
+              style={linkStyle}
             >
               {p.name}
             </a>
           ) : (
             p.name
           )}{" "}
-          <span style={{ color: MAPLE_COLORS.textMuted, fontSize: 12 }}>
+          <span style={subTextStyle}>
             (
             {p.years.length === 1
               ? p.years[0]
@@ -484,6 +435,208 @@ function PartyList({ parties }: { parties: Party[] }) {
         </li>
       ))}
     </ul>
+  )
+}
+
+/** The filings, styled like the Lobbyists list: a bill (or a non-bill item
+ * such as an Executive one), its client, position and period. */
+function FirmBillsTable({ filings }: { filings: LobbyingFiling[] }) {
+  const { t, i18n } = useTranslation("lobbying")
+  const showSource = filings.some(f => f.disclosureUrl)
+  return (
+    <div style={{ overflowX: "auto" }}>
+      <table style={listTableStyle(640)}>
+        {/* The client, whose names run longest, takes what the fixed
+            columns leave. */}
+        <colgroup>
+          <col style={{ width: 200 }} />
+          <col />
+          <col style={{ width: 104 }} />
+          <col style={{ width: 112 }} />
+          {showSource && <col style={{ width: 64 }} />}
+        </colgroup>
+        <thead>
+          <tr>
+            <th style={thStyle}>{t("fields.bill")}</th>
+            <th style={thStyle}>{t("fields.clientName")}</th>
+            <th style={thStyle}>{t("filters.position")}</th>
+            <th style={thStyle}>{t("fields.period")}</th>
+            {showSource && <th style={thStyle}>{t("fields.source")}</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {filings.map(f => (
+            <tr key={f.filingId}>
+              <td style={listTdStyle}>
+                {f.billId ? (
+                  <a
+                    href={`/lobbying/bills/${f.generalCourt}/${f.billId}`}
+                    style={{ ...linkStyle, fontWeight: 700 }}
+                  >
+                    {f.billId}
+                  </a>
+                ) : (
+                  <NonBillActivity filing={f} showTitle />
+                )}
+              </td>
+              <td style={listTdStyle}>
+                <a
+                  href={`/lobbying/clients/${encodeURIComponent(
+                    f.clientNameNorm
+                  )}`}
+                  style={linkStyle}
+                >
+                  {f.clientName}
+                </a>
+              </td>
+              <td style={listTdStyle}>
+                <LobbyingPositionChip
+                  position={normalizePosition(f.position)}
+                />
+              </td>
+              <td style={{ ...listTdStyle, whiteSpace: "nowrap" }}>
+                {filingPeriodLabel(f, i18n.language)}
+              </td>
+              {showSource && (
+                <td style={listTdStyle}>
+                  <SosSourceLink href={f.disclosureUrl} />
+                </td>
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+type FirmClient = {
+  clientName: string
+  clientNameNorm: string
+  // The sum of its periods' compensation.
+  total: number
+  periods: {
+    periodStart?: string | null
+    periodEnd?: string | null
+    year: number
+    compensation: number
+  }[]
+}
+
+/** Each client with its total; expanding one lists what it paid by period. */
+function ClientList({ clients }: { clients: FirmClient[] }) {
+  const { t, i18n } = useTranslation("lobbying")
+  const idPrefix = useId()
+  const [open, setOpen] = useState<Set<string>>(new Set())
+  const toggle = (key: string) =>
+    setOpen(prev => {
+      const next = new Set(prev)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
+
+  return (
+    <ul style={clientListStyle}>
+      {clients.map((c, i) => {
+        const isOpen = open.has(c.clientNameNorm)
+        const periodsId = `${idPrefix}-${i}`
+        return (
+          <li key={c.clientNameNorm} style={listItemStyle}>
+            <div style={{ display: "flex", gap: 6, alignItems: "baseline" }}>
+              {c.periods.length > 0 ? (
+                <button
+                  type="button"
+                  aria-expanded={isOpen}
+                  aria-controls={periodsId}
+                  aria-label={t(
+                    isOpen ? "firm.hidePayments" : "firm.showPayments",
+                    { name: c.clientName }
+                  )}
+                  onClick={() => toggle(c.clientNameNorm)}
+                  style={toggleButtonStyle}
+                >
+                  {isOpen ? "▾" : "▸"}
+                </button>
+              ) : (
+                <span style={{ ...toggleButtonStyle, cursor: "default" }} />
+              )}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <a
+                  href={`/lobbying/clients/${encodeURIComponent(
+                    c.clientNameNorm
+                  )}`}
+                  style={linkStyle}
+                >
+                  {c.clientName}
+                </a>
+                {isNoClient(c.clientNameNorm) && (
+                  <div style={subTextStyle}>
+                    {t("activity.notOrganization")}
+                  </div>
+                )}
+              </div>
+              {c.periods.length > 0 && (
+                <span style={{ fontWeight: 700, whiteSpace: "nowrap" }}>
+                  {formatCurrency(c.total)}
+                </span>
+              )}
+            </div>
+            {isOpen && (
+              <div id={periodsId} style={{ paddingLeft: 30 }}>
+                {c.periods.map((p, j) => (
+                  <div key={j} style={periodRowStyle}>
+                    <span>{formatDisclosureLabel(p, t, j, i18n.language)}</span>
+                    <span>{formatCurrency(p.compensation)}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </li>
+        )
+      })}
+    </ul>
+  )
+}
+
+/** The first few items, then a button that shows the rest. */
+function ShowMoreList<T>({
+  items,
+  render,
+  initial = 3
+}: {
+  items: T[]
+  render: (item: T, index: number) => React.ReactNode
+  initial?: number
+}) {
+  const { t } = useTranslation("lobbying")
+  const restId = useId()
+  const [all, setAll] = useState(false)
+  const rest = items.length - initial
+  const shown = all ? items : items.slice(0, initial)
+  return (
+    <>
+      <ul id={restId} style={listStyle}>
+        {shown.map((item, i) => (
+          <li key={i} style={listItemStyle}>
+            {render(item, i)}
+          </li>
+        ))}
+      </ul>
+      {rest > 0 && (
+        <button
+          type="button"
+          aria-expanded={all}
+          aria-controls={restId}
+          onClick={() => setAll(v => !v)}
+          style={showMoreStyle}
+        >
+          {all
+            ? `▾ ${t("misc.showFewer")}`
+            : `▸ ${t("misc.showAll", { count: items.length })}`}
+        </button>
+      )}
+    </>
   )
 }
 
@@ -518,11 +671,42 @@ export async function getStaticPaths() {
   return { paths: [], fallback: "blocking" }
 }
 
-const sectionHeadStyle: React.CSSProperties = {
-  fontSize: 12,
-  fontWeight: 700,
-  textTransform: "uppercase",
-  letterSpacing: "0.06em",
-  color: MAPLE_COLORS.textMuted,
-  marginBottom: "0.6rem"
+const bodyStyle: React.CSSProperties = {
+  fontSize: 14,
+  color: MAPLE_COLORS.textBody
+}
+
+const linkStyle: React.CSSProperties = { color: MAPLE_COLORS.primary }
+
+const listStyle: React.CSSProperties = {
+  ...bodyStyle,
+  paddingLeft: "1.25rem",
+  margin: 0
+}
+
+const listItemStyle: React.CSSProperties = { marginBottom: "0.4rem" }
+
+const clientListStyle: React.CSSProperties = {
+  ...bodyStyle,
+  margin: 0,
+  padding: 0,
+  listStyle: "none"
+}
+
+const noteStyle: React.CSSProperties = { ...bodyStyle, margin: 0 }
+
+const periodRowStyle: React.CSSProperties = {
+  ...subTextStyle,
+  display: "flex",
+  justifyContent: "space-between",
+  gap: "0.75rem"
+}
+
+const showMoreStyle: React.CSSProperties = {
+  ...toggleButtonStyle,
+  width: "auto",
+  height: "auto",
+  alignSelf: "flex-start",
+  marginTop: "0.25rem",
+  fontWeight: 600
 }

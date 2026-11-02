@@ -17,6 +17,8 @@
   "misc": {
     "disclosures": "Disclosures",
     "disclosureLink": "Disclosure {{number}}",
+    "showAll": "Show all {{count}}",
+    "showFewer": "Show fewer",
     "viewOnMaple": "View bill on MAPLE →",
     "total": "total",
     "matchedLobbyists": "Lobbyist: {{names}}",
@@ -63,7 +65,6 @@
     "amount": "Compensation",
     "period": "Period",
     "filings": "Activities",
-    "bills": "Bills lobbied",
     "clients": "Clients represented",
     "bill": "Bill",
     "activity": "Activity",
@@ -184,6 +185,12 @@
     "allInHouse": "all in-house",
     "paidNote": "Reported paid is what the client reported paying its lobbyists and firms across the session, for all bills. For in-house staff it is the share of salary allocated to lobbying.",
     "items": "clients"
+  },
+  "firm": {
+    "activities_one": "{{n}} activity",
+    "activities_other": "{{n}} activities",
+    "showPayments": "Show {{name}}'s payments by period",
+    "hidePayments": "Hide {{name}}'s payments by period"
   },
   "firmList": {
     "count_one": "{{n}} lobbyist",
