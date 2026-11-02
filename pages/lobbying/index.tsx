@@ -136,11 +136,7 @@ function keyFiguresYears(stats: OverviewStats, session: SessionFilter): string {
 
 const keyFiguresYearsStyle: React.CSSProperties = {
   display: "block",
-  marginTop: 2,
-  fontWeight: 400,
-  letterSpacing: "normal",
-  textTransform: "none",
-  color: MAPLE_COLORS.graySubtleText
+  marginTop: 2
 }
 
 function KeyFigures({
