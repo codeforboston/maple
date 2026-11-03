@@ -1,6 +1,7 @@
 import "@testing-library/jest-dom"
 import { fireEvent, render, screen, within } from "@testing-library/react"
 import type { ConferenceTestimony } from "components/db"
+import { InputContext } from "./context"
 import { PublicInput } from "./PublicInput"
 
 jest.mock("next-i18next", () => ({
@@ -102,5 +103,55 @@ describe("PublicInput", () => {
       )
     )
     expect(screen.getAllByRole("article")).toHaveLength(2)
+  })
+
+  describe("the reader's own input", () => {
+    const asReader = (items: ConferenceTestimony[], uid = "u6") =>
+      render(
+        <InputContext.Provider
+          value={{ uid, subject: "", followed: new Set(), signedIn: true }}
+        >
+          <PublicInput items={items} loading={false} />
+        </InputContext.Provider>
+      )
+
+    it("stands first, once, and marked as theirs", () => {
+      asReader(many(7))
+      const cards = screen.getAllByRole("article")
+      expect(cards).toHaveLength(6)
+      expect(cards[0]).toHaveTextContent("Words 6")
+      expect(within(cards[0]).getByText("input.you")).toBeInTheDocument()
+      // The clamp keeps a hidden copy of the words to measure, so count cards.
+      expect(cards.filter(c => /Words 6/.test(c.textContent!))).toHaveLength(1)
+    })
+
+    it("stays first on every page, outside the five", () => {
+      asReader(many(12))
+      fireEvent.click(screen.getByRole("button", { name: "3" }))
+      const cards = screen.getAllByRole("article")
+      expect(cards[0]).toHaveTextContent("Words 6")
+      // Eleven others, five a page: the third page has one.
+      expect(cards).toHaveLength(2)
+    })
+
+    it("stays when a filter would leave it out", async () => {
+      asReader(many(6).map(x => ({ ...x, position: "passSomething" as const })))
+      fireEvent.click(screen.getByLabelText("input.filter_by_position"))
+      fireEvent.click(
+        within(await screen.findByRole("menu")).getByText(
+          "input.position.passNothing.long"
+        )
+      )
+      const cards = screen.getAllByRole("article")
+      expect(cards).toHaveLength(1)
+      expect(cards[0]).toHaveTextContent("Words 6")
+      expect(screen.getByText("input.no_match_title")).toBeInTheDocument()
+    })
+
+    it("has no empty state when it is the only input", () => {
+      asReader([entry(6)])
+      expect(screen.getAllByRole("article")).toHaveLength(1)
+      expect(screen.queryByText("input.empty_title")).not.toBeInTheDocument()
+    })
   })
 })

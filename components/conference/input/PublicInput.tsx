@@ -52,7 +52,15 @@ const Feed = styled.div`
   gap: 20px;
 `
 
-const Empty = styled.div`
+/** What a card in the reader's own place, at the top of the feed, scrolls to. */
+const Own = styled.div`
+  scroll-margin-top: calc(
+    var(--maple-navbar-height) + var(--title-h, 5rem) + ${TABS_H} + 1.5rem
+  );
+`
+
+const Empty = styled.div<{ $after: boolean }>`
+  margin-top: ${({ $after }) => ($after ? "20px" : "0")};
   padding: 22px;
   text-align: center;
   background: var(--maple-surface-base);
@@ -110,21 +118,32 @@ export function PublicInput({
   const [page, setPage] = useState(0)
   const [pickedAuthors, setPickedAuthors] = useState<string[]>([])
   const [opened, setOpened] = useState<ConferenceTestimony>()
-  const { followed } = useInputContext()
+  const { followed, uid } = useInputContext()
+
+  // The reader's own filing stands first whatever the controls say, so it is
+  // set apart from what they narrow.
+  const mine = useMemo(
+    () => (uid ? items.find(x => x.authorUid === uid) : undefined),
+    [items, uid]
+  )
+  const others = useMemo(
+    () => (mine ? items.filter(x => x !== mine) : items),
+    [items, mine]
+  )
 
   const showFilters = items.length === 0 || items.length >= FEED_CONTROLS_MIN
   const shown = useMemo(
     () =>
       showFilters
-        ? items.filter(
+        ? others.filter(
             (x: ConferenceTestimony) =>
               (position === "all" || x.position === position) &&
               (type === "all" || accountTypeOf(x.authorRole) === type) &&
               (pickedAuthors.length === 0 ||
                 pickedAuthors.includes(x.authorUid))
           )
-        : items,
-    [items, position, type, pickedAuthors, showFilters]
+        : others,
+    [others, position, type, pickedAuthors, showFilters]
   )
   useEffect(() => setPage(0), [position, type, pickedAuthors])
 
@@ -159,44 +178,69 @@ export function PublicInput({
           )}
         </Controls>
       )}
-      {loading ? null : paged.length > 0 ? (
+      {loading ? null : (
         <>
-          <Feed>
-            {paged.map(x => (
-              <Entry
-                key={`${x.authorUid}-${x.id}`}
-                testimony={x}
-                actions={<Kebab testimony={x} onView={() => setOpened(x)} />}
+          {(mine || paged.length > 0) && (
+            <Feed>
+              {mine && (
+                <Own id="your-input">
+                  <Entry
+                    testimony={mine}
+                    own
+                    actions={
+                      <Kebab testimony={mine} onView={() => setOpened(mine)} />
+                    }
+                  />
+                </Own>
+              )}
+              {paged.map(x => (
+                <Entry
+                  key={`${x.authorUid}-${x.id}`}
+                  testimony={x}
+                  actions={<Kebab testimony={x} onView={() => setOpened(x)} />}
+                />
+              ))}
+            </Feed>
+          )}
+          {paged.length > 0 ? (
+            pageCount > 1 && (
+              <Pagination
+                page={current}
+                pageCount={pageCount}
+                onPage={setPage}
               />
-            ))}
-          </Feed>
-          {pageCount > 1 && (
-            <Pagination page={current} pageCount={pageCount} onPage={setPage} />
-          )}
+            )
+          ) : others.length > 0 || !mine ? (
+            <Empty $after={Boolean(mine)}>
+              <EmptyTitle>
+                {t(
+                  items.length === 0
+                    ? "input.empty_title"
+                    : "input.no_match_title"
+                )}
+              </EmptyTitle>
+              <EmptyBody>
+                {t(
+                  items.length === 0
+                    ? "input.empty_body"
+                    : "input.no_match_body"
+                )}
+              </EmptyBody>
+              {items.length > 0 && (
+                <ClearFilters
+                  type="button"
+                  onClick={() => {
+                    setType("all")
+                    setPosition("all")
+                    setPickedAuthors([])
+                  }}
+                >
+                  {t("input.clear_filters")}
+                </ClearFilters>
+              )}
+            </Empty>
+          ) : null}
         </>
-      ) : (
-        <Empty>
-          <EmptyTitle>
-            {t(
-              items.length === 0 ? "input.empty_title" : "input.no_match_title"
-            )}
-          </EmptyTitle>
-          <EmptyBody>
-            {t(items.length === 0 ? "input.empty_body" : "input.no_match_body")}
-          </EmptyBody>
-          {items.length > 0 && (
-            <ClearFilters
-              type="button"
-              onClick={() => {
-                setType("all")
-                setPosition("all")
-                setPickedAuthors([])
-              }}
-            >
-              {t("input.clear_filters")}
-            </ClearFilters>
-          )}
-        </Empty>
       )}
       {opened && (
         <EntryModal testimony={opened} onClose={() => setOpened(undefined)} />
