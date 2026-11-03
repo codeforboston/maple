@@ -5,8 +5,10 @@ import {
   type Activity,
   type ActivityFiler,
   type ActivityRow,
+  type Period,
   type Position,
   courtOfPeriod,
+  halfOfPeriod,
   sessionPeriodsWith
 } from "./activity"
 import { MAPLE_COLORS, POSITION_TONES } from "./chartTheme"
@@ -304,7 +306,7 @@ export function ActivityTable({
 
 function FilerList({ row, data }: { row: ActivityRow; data: Activity }) {
   const { t } = useTranslation("lobbying")
-  // Every report period of the row's session so far, newest first, so each
+  // Every report period of the row's session so far, oldest first, so each
   // filer's history lines up and a period without a filing shows as an empty
   // square. A bill's page has one session; a client's rows each carry theirs.
   const court = row.court ?? (data.periods[0] && courtOfPeriod(data.periods[0]))
@@ -315,6 +317,15 @@ function FilerList({ row, data }: { row: ActivityRow; data: Activity }) {
         : sessionPeriodsWith(court, data.periods, new Date()),
     [court, data.periods]
   )
+  // "26-Spring" or "26-Fall"; a year-only period keeps its year.
+  const caption = (p: Period) => {
+    const h = halfOfPeriod(p)
+    return h
+      ? t(`activity.periodHalf.${h.half === 1 ? "spring" : "fall"}`, {
+          year: String(h.year).slice(2)
+        })
+      : p.label
+  }
   return (
     <div
       style={{
@@ -354,7 +365,7 @@ function FilerList({ row, data }: { row: ActivityRow; data: Activity }) {
                     gap: 4
                   }}
                 >
-                  <span style={periodCaptionStyle}>{p.short}</span>
+                  <span style={periodCaptionStyle}>{caption(p)}</span>
                   <div style={squareRowStyle}>
                     {/* An empty square for a period with no filing. */}
                     {(filer.byPeriod[p.key]?.positions ?? [undefined]).map(
@@ -396,7 +407,7 @@ function FilerList({ row, data }: { row: ActivityRow; data: Activity }) {
                     <SosSourceLink
                       key={url}
                       href={url}
-                      label={t("activity.filingLink", { period: p.label })}
+                      label={t("activity.filingLink", { period: caption(p) })}
                       style={{ fontSize: 12, fontWeight: 700 }}
                     />
                   ))

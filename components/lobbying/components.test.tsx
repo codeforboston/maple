@@ -61,7 +61,7 @@ describe("ActivityTable", () => {
     expect(toggle).toHaveAttribute("aria-expanded", "true")
     const panel = document.getElementById(toggle.getAttribute("aria-controls")!)
     expect(panel).toHaveTextContent("Acme Lobbying")
-    expect(panel).toHaveTextContent("Jan–Jun 2025")
+    expect(panel).toHaveTextContent("activity.periodHalf.spring(25)")
     expect(
       screen.getByRole("link", { name: /viewOnSosLabel/ })
     ).toHaveAttribute("href", "https://sos.example/d1")
@@ -166,15 +166,25 @@ describe("ActivityTable", () => {
     } finally {
       jest.useRealTimers()
     }
-    // Each filer gets every period, newest first, empty where they didn't
+    // Each filer gets every period, oldest first, empty where they didn't
     // file (no one filed in Jan–Jun 2026; Staffer not in Jul–Dec 2025).
     expect(squares).toEqual([
-      "activity.periodPosition(Jan–Jun 2026|activity.noFiling)",
-      "activity.periodPosition(Jul–Dec 2025|position.support)",
       "activity.periodPosition(Jan–Jun 2025|position.support)",
+      "activity.periodPosition(Jul–Dec 2025|position.support)",
       "activity.periodPosition(Jan–Jun 2026|activity.noFiling)",
+      "activity.periodPosition(Jan–Jun 2025|position.oppose)",
       "activity.periodPosition(Jul–Dec 2025|activity.noFiling)",
-      "activity.periodPosition(Jan–Jun 2025|position.oppose)"
+      "activity.periodPosition(Jan–Jun 2026|activity.noFiling)"
     ])
+    // Captioned by season, the year's last two digits first.
+    expect(
+      screen.getAllByText(/^activity\.periodHalf/).map(el => el.textContent)
+    ).toEqual(
+      [1, 2].flatMap(() => [
+        "activity.periodHalf.spring(25)",
+        "activity.periodHalf.fall(25)",
+        "activity.periodHalf.spring(26)"
+      ])
+    )
   })
 })

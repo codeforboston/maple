@@ -2,6 +2,7 @@ import {
   ActivityFiling,
   filterActivity,
   groupActivity,
+  halfOfPeriod,
   isLegacyTotalClient,
   normalizePosition,
   orgPositionBreakdown,
@@ -60,16 +61,14 @@ describe("periodOf", () => {
   it("labels the first half of the year from the filing's period", () => {
     expect(periodOf(filing({ periodEnd: "2026-06-30" }), {})).toEqual({
       key: "2026-06-30",
-      label: "Jan–Jun 2026",
-      short: "Jan–Jun 26"
+      label: "Jan–Jun 2026"
     })
   })
 
   it("labels the second half of the year", () => {
     expect(periodOf(filing({ periodEnd: "2025-12-31" }), {})).toEqual({
       key: "2025-12-31",
-      label: "Jul–Dec 2025",
-      short: "Jul–Dec 25"
+      label: "Jul–Dec 2025"
     })
   })
 
@@ -84,9 +83,25 @@ describe("periodOf", () => {
     const regs = { r1: registrant() }
     expect(periodOf(f, regs)).toEqual({
       key: "2012",
-      label: "2012",
-      short: "2012"
+      label: "2012"
     })
+  })
+})
+
+describe("halfOfPeriod", () => {
+  it("gives a half-year period's year and half", () => {
+    expect(
+      halfOfPeriod(periodOf(filing({ periodEnd: "2026-06-30" }), {}))
+    ).toEqual({ year: 2026, half: 1 })
+    expect(
+      halfOfPeriod(periodOf(filing({ periodEnd: "2025-12-31" }), {}))
+    ).toEqual({ year: 2025, half: 2 })
+  })
+
+  it("gives null for a year-only period", () => {
+    expect(
+      halfOfPeriod(periodOf(filing({ periodEnd: null, year: 2012 }), {}))
+    ).toBeNull()
   })
 })
 
@@ -110,7 +125,7 @@ describe("groupActivity", () => {
     expect(rows).toHaveLength(1)
     expect(rows[0].filings).toBe(3)
     expect(rows[0].latest).toEqual({
-      period: { key: "2026-06-30", label: "Jan–Jun 2026", short: "Jan–Jun 26" },
+      period: { key: "2026-06-30", label: "Jan–Jun 2026" },
       positions: ["neutral"]
     })
     expect(rows[0].filers[0].byPeriod).toEqual({
@@ -152,7 +167,7 @@ describe("groupActivity", () => {
       { old: registrant() },
       {}
     )
-    expect(periods).toEqual([{ key: "2012", label: "2012", short: "2012" }])
+    expect(periods).toEqual([{ key: "2012", label: "2012" }])
     expect(rows[0].latest.period.label).toBe("2012")
     expect(Object.keys(rows[0].filers[0].byPeriod)).toEqual(["2012"])
   })
@@ -307,21 +322,21 @@ describe("filterActivity", () => {
 })
 
 describe("sessionPeriods", () => {
-  it("lists a session's ended half-years, newest first", () => {
+  it("lists a session's ended half-years, oldest first", () => {
     expect(
       sessionPeriods(194, new Date("2026-10-23")).map(p => p.label)
-    ).toEqual(["Jan–Jun 2026", "Jul–Dec 2025", "Jan–Jun 2025"])
+    ).toEqual(["Jan–Jun 2025", "Jul–Dec 2025", "Jan–Jun 2026"])
   })
 
   it("lists all four for a past session, keyed like periodOf", () => {
     const periods = sessionPeriods(193, new Date("2026-10-23"))
     expect(periods.map(p => p.key)).toEqual([
-      "2024-12-31",
-      "2024-06-30",
+      "2023-06-30",
       "2023-12-31",
-      "2023-06-30"
+      "2024-06-30",
+      "2024-12-31"
     ])
-    expect(periods[3]).toEqual(
+    expect(periods[0]).toEqual(
       periodOf(filing({ periodEnd: "2023-06-30" }), {})
     )
   })
@@ -335,7 +350,7 @@ describe("sessionPeriodsWith", () => {
     ]
     expect(
       sessionPeriodsWith(194, known, new Date("2026-10-23")).map(p => p.key)
-    ).toEqual(["2026-06-30", "2025-12-31", "2025-06-30", "2025"])
+    ).toEqual(["2025", "2025-06-30", "2025-12-31", "2026-06-30"])
   })
 })
 

@@ -115,6 +115,10 @@
     "noClientNote": "Not an organization: lobbyists who reported no client",
     "noFiling": "No filing that period",
     "filingLink": "{{period}} SoS filing ↗︎",
+    "periodHalf": {
+      "spring": "{{year}}-Spring",
+      "fall": "{{year}}-Fall"
+    },
     "positionsNote": "Positions are each lobbyist's own statement on their filing.",
     "filings_one": "{{count}} activity",
     "filings_other": "{{count}} activities",
