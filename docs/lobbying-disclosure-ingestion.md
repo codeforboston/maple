@@ -486,6 +486,8 @@ lobbying-scraper/
   reparse_archive.py  — Offline driver to re-ingest archived HTML into Firestore
   migrate_lobbying_data.py — Full rebuild of registrants and filings from the
                         archive; also the backfill path for newly parsed fields
+  export.py           — CSV export of registrants, filings and registrations
+                        for download, with a README and manifest
   requirements.txt    — requests, beautifulsoup4, google-cloud-firestore, google-cloud-storage
   Dockerfile          — Python 3.12-slim image
 ```
@@ -634,6 +636,28 @@ The run ends by logging, per year, how many filings have `periodEnd` and how
 many firm disclosures name agents per client, and each `inHouseFilers_{gc}`
 doc's size. A drop in either coverage count means the parser stopped reading
 that field.
+
+## Exporting the Data
+
+`export.py` writes the registrant, filing and registration docs to CSV files
+for download, one file per kind of record, with each list (a report's clients,
+lobbyists and pages; a registration's parties and pages) flattened into a file
+of its own. It writes the fields as stored, adding no IDs or links. Every name
+comes with its normalized form; where none is stored (the agents in
+`clientLobbyists`, and older docs), it's computed with `normalize_entity_name`,
+as `compute_stats` does. Alongside go a README that describes every column and
+a manifest of row counts and checksums, and it zips the folder. It only reads.
+
+```bash
+cd lobbying-scraper
+GOOGLE_APPLICATION_CREDENTIALS=... python3 export.py --project <project> --out <dir>
+```
+
+Export a project only after its data has been rebuilt with the current parser
+(see [Backfilling Newly Parsed Fields](#backfilling-newly-parsed-fields)): the
+export warns if filings have no period. It also warns about, and lists in the
+manifest, any stored field it has no column for; add one to its tables so that
+no field is dropped.
 
 ## Historical Backfill
 
