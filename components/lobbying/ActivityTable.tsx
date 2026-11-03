@@ -25,9 +25,16 @@ type SortKey = "label" | "filings"
 // this many.
 const MAX_NAMED_IN_HOUSE = 3
 
-// The "Most recent position" column: wide enough for a session's period
-// squares in its expanded rows, which line up under it.
-const POSITION_COL_WIDTH = 300
+// Each period in an expanded row's history: as wide as its widest caption
+// ("26-SPRING") or two squares, so the periods line up. Three squares widen it.
+const PERIOD_WIDTH = 64
+const PERIOD_GAP = 12
+const PERIODS_PADDING = 12
+
+// The "Most recent position" column: wide enough for a session's four period
+// squares in its expanded rows, which line up under it, plus the box's border.
+const POSITION_COL_WIDTH =
+  4 * PERIOD_WIDTH + 3 * PERIOD_GAP + 2 * PERIODS_PADDING + 1
 
 /**
  * One row per organization (on a bill's page) or per bill (on a client's
@@ -351,8 +358,8 @@ function FilerList({ row, data }: { row: ActivityRow; data: Activity }) {
               style={{
                 display: "flex",
                 flexWrap: "wrap",
-                gap: "0.5rem 1rem",
-                padding: "0.75rem"
+                gap: `0.5rem ${PERIOD_GAP}px`,
+                padding: PERIODS_PADDING
               }}
             >
               {periods.map(p => (
@@ -362,7 +369,8 @@ function FilerList({ row, data }: { row: ActivityRow; data: Activity }) {
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "flex-start",
-                    gap: 4
+                    gap: 4,
+                    minWidth: PERIOD_WIDTH
                   }}
                 >
                   <span style={periodCaptionStyle}>{caption(p)}</span>
@@ -399,8 +407,13 @@ function FilerList({ row, data }: { row: ActivityRow; data: Activity }) {
                   {filerKind(filer, t)}
                 </div>
               )}
+              {/* Two links a line: a year's Spring and Fall side by side. */}
               <div
-                style={{ display: "flex", flexWrap: "wrap", gap: "2px 14px" }}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(2, max-content)",
+                  gap: "2px 14px"
+                }}
               >
                 {periods.flatMap(p =>
                   (filer.byPeriod[p.key]?.disclosureUrls ?? []).map(url => (
