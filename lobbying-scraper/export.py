@@ -3,7 +3,9 @@
 Writes one CSV per kind of record, a README describing every column and a
 manifest with row counts and checksums, and zips them. It exports the fields
 the scraper stores, with each list flattened into a file of its own, and adds
-no identifiers or links. It only reads from Firestore.
+no identifiers or links. Every name comes with MAPLE's normalized form: where
+none is stored (agents per client, and older docs), it's computed with the
+scraper's normalization, as compute_stats does. It only reads from Firestore.
 
     GOOGLE_APPLICATION_CREDENTIALS=... python3 export.py \\
       --project <project> --out <dir>
@@ -26,12 +28,14 @@ from pathlib import Path
 from typing import Callable
 
 from google.cloud import firestore
+from normalize import normalize_entity_name
 from portal import FIRST_GC, FIRST_GC_START_YEAR, year_to_general_court
 from writer import (
     FILINGS_COLLECTION,
     REGISTRANTS_COLLECTION,
     REGISTRATIONS_COLLECTION,
     _iter_collection,
+    _party_norm,
 )
 
 
@@ -109,6 +113,7 @@ REGISTRANT_CLIENT_LOBBYISTS = Table(
         ("clientNameNorm", "The client, as clientNameNorm in "
          "registrant_clients.csv."),
         ("lobbyist", "The lobbyist's name, as on the report."),
+        ("lobbyistNorm", _NORM),
     ],
 )
 
@@ -251,11 +256,11 @@ def registrant_rows(doc: dict) -> tuple[Rows, set[str]]:
             for c in doc.get("clients") or []
         ],
         REGISTRANT_LOBBYISTS.file: [
-            [rid, name, norms[i] if i < len(norms) else ""]
+            [rid, name, norms[i] if i < len(norms) else normalize_entity_name(name)]
             for i, name in enumerate(lobbyists)
         ],
         REGISTRANT_CLIENT_LOBBYISTS.file: [
-            [rid, client, name]
+            [rid, client, name, normalize_entity_name(name)]
             for client, names in sorted((doc.get("clientLobbyists") or {}).items())
             for name in names
         ],
@@ -278,7 +283,8 @@ def registration_rows(doc: dict) -> tuple[Rows, set[str]]:
     rows = {
         REGISTRATIONS.file: [_row(REGISTRATIONS, doc)],
         REGISTRATION_PARTIES.file: [
-            _row(REGISTRATION_PARTIES, p, registrationId=rid, role=role)
+            _row(REGISTRATION_PARTIES, p, registrationId=rid, role=role,
+                 nameNorm=_party_norm(p))
             for field, role in _PARTY_ROLES.items()
             for p in doc.get(field) or []
         ],

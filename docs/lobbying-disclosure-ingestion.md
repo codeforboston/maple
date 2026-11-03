@@ -642,9 +642,11 @@ that field.
 `export.py` writes the registrant, filing and registration docs to CSV files
 for download, one file per kind of record, with each list (a report's clients,
 lobbyists and pages; a registration's parties and pages) flattened into a file
-of its own. It writes the fields as stored, adding no IDs or links, alongside a
-README that describes every column and a manifest of row counts and checksums,
-and zips the folder. It only reads.
+of its own. It writes the fields as stored, adding no IDs or links. Every name
+comes with its normalized form; where none is stored (the agents in
+`clientLobbyists`, and older docs), it's computed with `normalize_entity_name`,
+as `compute_stats` does. Alongside go a README that describes every column and
+a manifest of row counts and checksums, and it zips the folder. It only reads.
 
 ```bash
 cd lobbying-scraper

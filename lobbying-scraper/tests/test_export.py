@@ -124,9 +124,9 @@ def test_registrant_rows_flatten_each_list():
         ["r1", "Sam Roe", "SAM ROE"],
     ]
     assert rows[REGISTRANT_CLIENT_LOBBYISTS.file] == [
-        ["r1", "EXAMPLE SOCIETY", "Alex Doe"],
-        ["r1", "EXAMPLE SOCIETY", "Sam Roe"],
-        ["r1", "SAMPLE FUND", "Sam Roe"],
+        ["r1", "EXAMPLE SOCIETY", "Alex Doe", "ALEX DOE"],
+        ["r1", "EXAMPLE SOCIETY", "Sam Roe", "SAM ROE"],
+        ["r1", "SAMPLE FUND", "Sam Roe", "SAM ROE"],
     ]
     assert rows[REGISTRANT_DISCLOSURES.file] == [["r1", URL]]
 
@@ -139,6 +139,20 @@ def test_registrant_rows_without_optional_fields():
     assert unexported == set()
     assert rows[REGISTRANT_LOBBYISTS.file] == []
     assert rows[REGISTRANT_CLIENT_LOBBYISTS.file] == []
+
+
+def test_names_without_a_stored_normal_form_get_one():
+    # Older docs may lack lobbyistsNorm and parties' nameNorm.
+    doc = {k: v for k, v in REGISTRANT.items() if k != "lobbyistsNorm"}
+    rows, _ = registrant_rows(doc)
+    assert rows[REGISTRANT_LOBBYISTS.file] == [
+        ["r1", "Alex Doe", "ALEX DOE"],
+        ["r1", "Sam Roe", "SAM ROE"],
+    ]
+    party = {k: v for k, v in REGISTRATION["clients"][0].items() if k != "nameNorm"}
+    rows, _ = registration_rows({**REGISTRATION, "lobbyists": [], "clients": [party]})
+    [row] = rows[REGISTRATION_PARTIES.file]
+    assert _by_column(REGISTRATION_PARTIES, row)["nameNorm"] == "SAMPLE FUND"
 
 
 def test_filing_rows_keep_every_field():
