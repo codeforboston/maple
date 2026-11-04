@@ -88,9 +88,7 @@
     "match": "Where bill texts match",
     "not_in_bill": "Not in the bill",
     "yours_one": "{{who}} is on this committee, <0>{{name}}</0>.",
-    "yours_both": "Both of your legislators are on this committee, <0>{{a}}</0> and <1>{{b}}</1>.",
-    "sources": "Sources",
-    "available": "[Online]. Available:"
+    "yours_both": "Both of your legislators are on this committee, <0>{{a}}</0> and <1>{{b}}</1>."
   },
   "input": {
     "share": "Share your input",

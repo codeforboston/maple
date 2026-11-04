@@ -38,13 +38,6 @@ export const personKey = (c: ConfereeView) => c.seat ?? c.memberCode
 /** A linked hearing, without its videos. */
 export type HearingView = Pick<EventSummary, "id" | "eventId" | "startsAt">
 
-/** Where an authored point came from. */
-export type SourceView = {
-  organisation: string
-  url: string
-  publishedAt: string | null
-}
-
 /** One point the chambers disagree on; a chamber's text is null where its
  * bill has nothing on it. */
 export type DifferenceView = {
@@ -52,14 +45,12 @@ export type DifferenceView = {
   senate: string | null
   house: string | null
   notes: Record<string, string[]>
-  source: SourceView | null
 }
 
 /** One point where the two texts match. */
 export type SimilarityView = {
   heading: string
   body: string
-  source: SourceView | null
 }
 
 export type ConferencePageProps = {
