@@ -155,15 +155,19 @@ export const twitterShareLink = (publication: Testimony, t: TFunction) => {
   return tweetUrl
 }
 
+const billRefinementKey = (attribute: string) =>
+  `${billsDefaultIndex}[refinementList][${attribute}][0]`
+
 export const billSearchByPrimarySponsor = (
   court: number,
   member: MemberContent
 ) => {
   const params = {
-    "bills/sort/latestTestimonyAt:desc[refinementList][primarySponsor][0]": `${member.Name}`,
-    "bills/sort/latestTestimonyAt:desc[refinementList][court][0]": `${court}`
+    [billRefinementKey("primarySponsor")]: member.Name,
+    [billRefinementKey("court")]: String(court)
   }
-  return `/bills?${new URLSearchParams(params).toString()}`
+
+  return `${maple.billSearch()}?${new URLSearchParams(params).toString()}`
 }
 
 export const billSearchByTopicLink = (court: number, topic: BillTopic) => {
@@ -172,5 +176,19 @@ export const billSearchByTopicLink = (court: number, topic: BillTopic) => {
     [`${billsDefaultIndex}[multiselectHierarchicalMenu][topics.lvl1][0]`]: `${topic.category} > ${topic.topic}`,
     [`${billsDefaultIndex}[refinementList][court][0]`]: `${court}`
   }
+  return `${maple.billSearch()}?${new URLSearchParams(params).toString()}`
+}
+
+export const billSearchByTopicLinkAndPrimarySponsor = (
+  court: number,
+  topic: BillTopic,
+  member: MemberContent
+) => {
+  const params = {
+    [billRefinementKey("primarySponsor")]: member.Name,
+    [billRefinementKey("court")]: String(court),
+    [`${billsDefaultIndex}[multiselectHierarchicalMenu][topics.lvl1][0]`]: `${topic.category} > ${topic.topic}`
+  }
+
   return `${maple.billSearch()}?${new URLSearchParams(params).toString()}`
 }

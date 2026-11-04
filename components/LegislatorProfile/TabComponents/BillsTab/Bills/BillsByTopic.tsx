@@ -19,16 +19,19 @@ import {
   MemberBillSummary
 } from "functions/src/members/memberBillSummary"
 import { BillFilter, BillFilterButtons } from "./BillFilterButtons"
-import { billSearchByTopicLink } from "components/links"
+import { billSearchByTopicLinkAndPrimarySponsor } from "components/links"
+import { MemberContent } from "components/db"
 
 const BillsByTopicContainer = ({
   billGroup,
   selectedFilter,
-  court
+  court,
+  member
 }: {
   billGroup: BillGroupSummary
   selectedFilter: BillFilter
   court: number
+  member: MemberContent
 }) => {
   const { t } = useTranslation("legislators")
   const filterLabel =
@@ -63,10 +66,14 @@ const BillsByTopicContainer = ({
               {group.subtopics.map(({ topic, count }) => (
                 <StyledTopicLink
                   key={topic}
-                  href={billSearchByTopicLink(court, {
-                    category: group.topic,
-                    topic
-                  })}
+                  href={billSearchByTopicLinkAndPrimarySponsor(
+                    court,
+                    {
+                      category: group.topic,
+                      topic
+                    },
+                    member
+                  )}
                   aria-label={`${topic} (${count} bills)`}
                 >
                   <StyledSubtopicTag>{topic}</StyledSubtopicTag>
@@ -82,10 +89,12 @@ const BillsByTopicContainer = ({
 
 export const BillsByTopic = ({
   summary,
-  court
+  court,
+  member
 }: {
   summary: MemberBillSummary
   court: number
+  member: MemberContent
 }) => {
   const [selectedFilter, setSelectedFilter] = useState<BillFilter>("all")
   const selectedGroup = summary[selectedFilter]
@@ -101,6 +110,7 @@ export const BillsByTopic = ({
         billGroup={selectedGroup}
         selectedFilter={selectedFilter}
         court={court}
+        member={member}
       />
     </>
   )

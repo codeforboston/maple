@@ -23,7 +23,11 @@ export function BillsTabContainer({
 
   return (
     <StyledBillsTab>
-      <BillsByTopic summary={summary} court={member?.GeneralCourtNumber} />
+      <BillsByTopic
+        summary={summary}
+        court={member?.GeneralCourtNumber}
+        member={member}
+      />
       <RecentBills
         bills={summary.recentSponsoredBills}
         billCount={summary.sponsored.count}
