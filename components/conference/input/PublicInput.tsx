@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "next-i18next"
-import styled from "styled-components"
+import styled, { css } from "styled-components"
 import { TABS_H } from "../ConferenceTabs"
 import { ConferenceTestimony } from "components/db"
 import { useInputContext } from "./context"
@@ -23,10 +23,15 @@ import { brand, ink, line } from "./tokens"
 const FEED_CONTROLS_MIN = 4
 const PAGE_SIZE = 5
 
-const Section = styled.section`
+/** Where a jump to a block of this section parks it: under the bars. */
+const parked = css`
   scroll-margin-top: calc(
     var(--maple-navbar-height) + var(--title-h, 5rem) + ${TABS_H} + 1.5rem
   );
+`
+
+const Section = styled.section`
+  ${parked}
 `
 
 const Heading = styled.h2`
@@ -54,9 +59,7 @@ const Feed = styled.div`
 
 /** What a card in the reader's own place, at the top of the feed, scrolls to. */
 const Own = styled.div`
-  scroll-margin-top: calc(
-    var(--maple-navbar-height) + var(--title-h, 5rem) + ${TABS_H} + 1.5rem
-  );
+  ${parked}
 `
 
 const Empty = styled.div<{ $after: boolean }>`

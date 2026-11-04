@@ -22,8 +22,8 @@ describe("ConferenceTabs", () => {
   })
 
   it("lights the tab below a block with no tab once the one above has gone", () => {
-    // Committee has scrolled away; a block with no tab, is
-    // under the bar and Public Input is still below it.
+    // Committee has scrolled away; a block with no tab is under the bar and
+    // Public Input is still below it.
     const box = (top: number, bottom: number) => () =>
       ({ top, bottom } as DOMRect)
     const page = document.createElement("main")
