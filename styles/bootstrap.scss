@@ -340,6 +340,15 @@ $utilities: (
   --maple-transition-fast: #{$maple-transition-fast};
   --maple-transition-base: #{$maple-transition-base};
 
+  // Ask MAPLE chat
+  --maple-chat-avatar-alt: #2b6f17;
+  --maple-chat-focus: #1a3185;
+  --maple-chat-tint: #eef0f8;
+  --maple-chat-tint-strong: #dfe4f3;
+  --maple-testimony-support: #3d9922;
+  --maple-testimony-oppose: #c71e32;
+  --maple-testimony-neutral: #94a3b8;
+
   --maple-status-expectedonballot-bg: #{$maple-status-expectedonballot-bg};
   --maple-status-expectedonballot-text: #{$maple-status-expectedonballot-text};
   --maple-status-expectedonballot-border: #{$maple-status-expectedonballot-border};

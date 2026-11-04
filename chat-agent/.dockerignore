@@ -1,0 +1,9 @@
+# Secrets come in at runtime (Secret Manager or --env-file); never bake them into the image.
+.env
+.env.*
+node_modules
+dist
+test
+evals
+scripts
+jest.config.js
