@@ -66,13 +66,25 @@ const Body = styled.div`
   }
 `
 
-const Gist = styled.p`
+/** A short paragraph on what the bills are, with the invitation to send
+ * feedback under it. */
+const Gist = styled.div`
   margin: 0 0 2px;
   padding-left: 16px;
   border-left: 2px solid ${line.strong};
-  font-size: 0.8125rem;
-  line-height: 1.65;
-  color: ${ink.mid};
+  max-width: 65ch;
+
+  p {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.65;
+    color: ${ink.mid};
+  }
+  p + p {
+    margin-top: 8px;
+    font-size: 0.8125rem;
+    color: ${ink.faint};
+  }
 `
 
 const DottedLink = styled.a`
@@ -366,19 +378,21 @@ export function ConferenceDifferences({
       <Body ref={body}>
         {gist && (
           <Gist>
-            {gist}{" "}
-            <Trans
-              t={t}
-              i18nKey="decided.gist"
-              components={[
-                <DottedLink
-                  key="feedback"
-                  href={FEEDBACK_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                />
-              ]}
-            />
+            <p>{gist}</p>
+            <p>
+              <Trans
+                t={t}
+                i18nKey="decided.gist"
+                components={[
+                  <DottedLink
+                    key="feedback"
+                    href={FEEDBACK_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  />
+                ]}
+              />
+            </p>
           </Gist>
         )}
         <Grid $wide={wide}>
