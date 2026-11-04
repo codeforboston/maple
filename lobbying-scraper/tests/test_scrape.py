@@ -600,3 +600,104 @@ def test_stats_mode_only_recomputes_stats(monkeypatch):
     weekly.assert_not_called()
     backfill.assert_not_called()
     links.assert_not_called()
+
+
+# ── Summary pages are fetched once per registrant ────────────────────────────
+
+
+def _run_counting_summary_fetches(runner, summary_url, disc_urls, meta=None, meta_error=None):
+    """Run runner() with the page fetches mocked; return (summary fetch count,
+    meta objects passed to write_registrant). meta_error makes every summary
+    fetch raise it."""
+    meta = meta or _meta(summary_url, disc_urls)
+
+    def fetch_meta(session, url, use_archive=False):
+        if meta_error:
+            raise meta_error
+        return meta
+
+    written = []
+    with patch("scrape.make_session", return_value=None), patch(
+        "scrape.fetch_summary_links", side_effect=lambda session, y, *a: [summary_url]
+    ), patch(
+        "scrape.fetch_disclosure_meta", side_effect=fetch_meta
+    ) as fetch_meta_mock, patch(
+        "scrape.fetch_disclosure_detail", return_value=DisclosureDetail()
+    ), patch(
+        "scrape.write_registrant", side_effect=lambda db, m, d, u: written.append(m)
+    ), patch("scrape.write_filings", return_value=0):
+        runner()
+    return fetch_meta_mock.call_count, written
+
+
+def test_backfill_fetches_each_summary_page_once():
+    db = FakeFirestore()
+    url = "https://x/summary/a"
+    discs = [f"https://x/disc/{i}" for i in range(4)]
+    meta = _meta(url, discs)
+    fetches, written = _run_counting_summary_fetches(
+        lambda: scrape.run_backfill(db, years=[2020], use_archive=True), url, discs, meta
+    )
+    assert fetches == 1
+    assert written == [meta] * 4
+
+
+def test_weekly_live_summary_is_fetched_once_for_all_new_disclosures():
+    db = FakeFirestore()
+    url = "https://x/summary/a"
+    discs = [f"https://x/disc/{i}" for i in range(3)]
+    fetches, written = _run_counting_summary_fetches(
+        lambda: scrape.run_weekly(db, years=[2020]), url, discs
+    )
+    assert fetches == 1
+    assert len(written) == 3
+
+
+def test_weekly_cache_hit_fetches_summary_once_when_disclosures_are_new():
+    db = FakeFirestore()
+    url = "https://x/summary/a"
+    discs = [f"https://x/disc/{i}" for i in range(3)]
+    _cache_entry(
+        db, url, discUrls=discs, supersededUrls=[], cachedAt="2025-03-10T00:00:00+00:00"
+    )
+    fetches, written = _run_counting_summary_fetches(
+        lambda: scrape.run_weekly(db, years=[2020]), url, discs
+    )
+    assert fetches == 1
+    assert len(written) == 3
+
+
+def test_weekly_cache_hit_with_nothing_new_fetches_no_summary():
+    db = FakeFirestore()
+    url = "https://x/summary/a"
+    discs = ["https://x/disc/1", "https://x/disc/2"]
+    _cache_entry(
+        db, url, discUrls=discs, supersededUrls=[], cachedAt="2025-03-10T00:00:00+00:00"
+    )
+    for d in discs:
+        scrape._mark_processed(db, d)
+    fetches, written = _run_counting_summary_fetches(
+        lambda: scrape.run_weekly(db, years=[2020]), url, discs
+    )
+    assert fetches == 0
+    assert written == []
+
+
+def test_weekly_cache_hit_summary_fetch_failure_processes_nothing():
+    db = FakeFirestore()
+    url = "https://x/summary/a"
+    discs = ["https://x/disc/1", "https://x/disc/2"]
+    _cache_entry(
+        db, url, discUrls=discs, supersededUrls=[], cachedAt="2025-03-10T00:00:00+00:00"
+    )
+    fetches, written = _run_counting_summary_fetches(
+        lambda: scrape.run_weekly(db, years=[2020]),
+        url,
+        discs,
+        meta_error=RuntimeError("portal down"),
+    )
+    assert written == []
+    entry = db.store[
+        f"{scrape.SCRAPER_DOC}/{scrape.SUMMARY_CACHE_COLLECTION}/{scrape._url_hash(url)}"
+    ]
+    assert entry["cachedAt"] == "2025-03-10T00:00:00+00:00"

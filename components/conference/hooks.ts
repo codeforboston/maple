@@ -169,7 +169,7 @@ export function useConferenceTop(openOnHero: boolean) {
  * is shorter or taller with the window and lets go a window down, nor the
  * phone bar, which is not sticky. The learn page's rail tracks the same edge.
  */
-export function usePinnedNavbar(scope: RefObject<HTMLElement>) {
+export function usePinnedNavbar(scope: RefObject<HTMLElement | null>) {
   useLayoutEffect(() => {
     const el = scope.current
     if (!el) return

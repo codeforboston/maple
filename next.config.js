@@ -18,7 +18,18 @@ const config = {
   },
   i18n: i18Config.i18n,
 
-  webpack(config) {
+  webpack(config, { isServer }) {
+    if (isServer) {
+      // recharts 3 require()s @reduxjs/toolkit, whose ESM build Next would
+      // bundle as an async module, so require() would return a Promise.
+      // Loading the CommonJS build in Node avoids that.
+      config.externals.push(({ request, context }, callback) =>
+        request === "@reduxjs/toolkit" && /[\\/]recharts[\\/]/.test(context)
+          ? callback(null, "commonjs " + request)
+          : callback()
+      )
+    }
+
     // Grab rules matching SVG files and transform them into React Components using SVGR
     config.module.rules.push({
       test: /\.svg\$/i,

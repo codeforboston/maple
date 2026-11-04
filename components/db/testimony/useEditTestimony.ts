@@ -225,7 +225,7 @@ function usePublishTestimony(
     useCallback(async () => {
       if (conferenceId) ConferenceDraftTestimony.check(workingDraft)
       else DraftTestimony.check(workingDraft)
-      // TODO: don't publish again if draft.publishedVersion is defined
+      if (workingDraft?.publishedVersion !== undefined) return
       if (draftRef) {
         const result = await publishTestimony({ draftId: draftRef.id })
         dispatch({ type: "resolvePublication", id: result.data.publicationId })
@@ -236,18 +236,19 @@ function usePublishTestimony(
 }
 
 function useDeleteTestimony(
-  { publicationRef }: State,
+  { publicationRef, uid }: State,
   dispatch: Dispatch<Action>
 ) {
   return useAsyncCallback(
     useCallback(async () => {
       if (publicationRef) {
         const result = await deleteTestimony({
+          uid,
           publicationId: publicationRef.id
         })
         if (result.data.deleted) dispatch({ type: "deletePublication" })
       }
-    }, [dispatch, publicationRef]),
+    }, [dispatch, publicationRef, uid]),
     { onError: error => dispatch({ type: "error", error }) }
   )
 }
@@ -321,7 +322,10 @@ function useSaveDraft(
           dispatch({ type: "resolveDraft", id: result.id })
         } else if (draftRef) {
           dispatch({ type: "loadingDraft" })
-          const hasChanges = hasDraftChanged(draft, publication)
+          const hasChanges = hasDraftChanged(
+            draft && { ...draft, position, content, attachmentId },
+            publication
+          )
           await updateDoc(draftRef, {
             position,
             content,

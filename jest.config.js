@@ -15,10 +15,22 @@ const config = {
   },
   moduleNameMapper: {
     "^components/(.*)$": "<rootDir>/components/$1"
-  }
-  // Add more setup options before each test is run
-  // setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  },
+  // Blocks real network access; see the file for details
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"]
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
-module.exports = createJestConfig(config)
+module.exports = async () => {
+  const nextConfig = await createJestConfig(config)()
+  return {
+    ...nextConfig,
+    // react-hotkeys-hook (used by react-admin) ships ESM only, so it must be transformed
+    transformIgnorePatterns: nextConfig.transformIgnorePatterns.map(pattern =>
+      pattern.replace(
+        "(typesense-instantsearch-adapter|",
+        "(react-hotkeys-hook|typesense-instantsearch-adapter|"
+      )
+    )
+  }
+}

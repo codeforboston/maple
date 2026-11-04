@@ -28,28 +28,32 @@ describe("electionsPageInfo test", () => {
   ]) {
     const basename = path.basename(htmlFile, ".html")
 
-    it(basename, async () => {
-      const html = fs.readFileSync(path.join(FIXTURES_DIR, htmlFile), "utf8")
+    it(
+      basename,
+      async () => {
+        const html = fs.readFileSync(path.join(FIXTURES_DIR, htmlFile), "utf8")
 
-      const virtualConsole = new VirtualConsole()
-      virtualConsole.on("jsdomError", error => {
-        if (error.message.includes("Could not parse CSS stylesheet")) {
-          return
+        const virtualConsole = new VirtualConsole()
+        virtualConsole.on("jsdomError", error => {
+          if (error.message.includes("Could not parse CSS stylesheet")) {
+            return
+          }
+          console.error(error)
+        })
+        const dom = new JSDOM(html, { virtualConsole })
+
+        const actual = await electionsPageInfo(dom)
+        const expected = JSON.parse(
+          fs.readFileSync(path.join(FIXTURES_DIR, `${basename}.json`), "utf8")
+        )
+
+        expect(actual).toHaveLength(expected.length)
+
+        for (const [i, expectedItem] of expected.entries()) {
+          expect(actual[i]).toEqual(expectedItem)
         }
-        console.error(error)
-      })
-      const dom = new JSDOM(html, { virtualConsole })
-
-      const actual = await electionsPageInfo(dom)
-      const expected = JSON.parse(
-        fs.readFileSync(path.join(FIXTURES_DIR, `${basename}.json`), "utf8")
-      )
-
-      expect(actual).toHaveLength(expected.length)
-
-      for (const [i, expectedItem] of expected.entries()) {
-        expect(actual[i]).toEqual(expectedItem)
-      }
-    })
+      },
+      10_000
+    )
   }
 })

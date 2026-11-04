@@ -1,4 +1,4 @@
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
@@ -12,7 +12,7 @@ export default createMeta({
   component: PageFooter
 })
 
-const Template: ComponentStory<typeof PageFooter> = args => {
+const Template: StoryFn<typeof PageFooter> = args => {
   return <PageFooter {...args} />
 }
 

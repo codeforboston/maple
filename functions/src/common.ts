@@ -1,6 +1,7 @@
 import { FieldValue } from "@google-cloud/firestore"
 import axios from "axios"
-import { https, logger } from "firebase-functions"
+import { logger } from "firebase-functions"
+import { https } from "firebase-functions/v2"
 import { CallableRequest } from "firebase-functions/v2/https"
 import {
   Literal,
@@ -41,7 +42,7 @@ export function checkRequestZod<T extends ZodTypeAny>(
 
 /** Return the authenticated user's id or fail if they are not authenticated. */
 export function checkAuth(
-  context: https.CallableContext | CallableRequest,
+  context: CallableRequest,
   checkEmailVerification = false
 ) {
   const uid = context.auth?.uid
@@ -64,7 +65,7 @@ export function checkAuth(
 /**
  * Checks that the caller is an admin.
  */
-export function checkAdmin(context: https.CallableContext | CallableRequest) {
+export function checkAdmin(context: CallableRequest) {
   const callerRole = context.auth?.token.role
   if (callerRole !== "admin") {
     throw fail("permission-denied", "You must be an admin")

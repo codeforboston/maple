@@ -1,4 +1,4 @@
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 import React, { useState } from "react"
 import { createMeta } from "stories/utils"
 import { PriorityBillsCard } from "../../components/PriorityBillsCard/PriorityBillsCard"
@@ -8,7 +8,7 @@ export default createMeta({
   component: PriorityBillsCard
 })
 
-const Template: ComponentStory<typeof PriorityBillsCard> = props => {
+const Template: StoryFn<typeof PriorityBillsCard> = props => {
   const [selectedBillId, setSelectedBillId] = useState("")
 
   const onBillSelected = (billNumber: string) => {

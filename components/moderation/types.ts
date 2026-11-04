@@ -25,7 +25,6 @@ export type ReportResolution = {
   moderatorUid: string
   resolvedAt: Timestamp
   authorUid?: string
-  archivedTestimonyId: string
 }
 
 export const modifyAccount = httpsCallable<{ uid: string; role: Role }, void>(

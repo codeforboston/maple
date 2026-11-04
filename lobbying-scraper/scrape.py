@@ -38,6 +38,7 @@ from google.cloud import firestore
 
 from portal import (
     FIRST_YEAR,
+    DisclosureMeta,
     fetch_disclosure_detail,
     fetch_disclosure_meta,
     fetch_summary,
@@ -158,7 +159,7 @@ def _mark_backfill_processed(db: firestore.Client, disc_url: str) -> None:
 def process_disclosure(
     db: firestore.Client | None,
     session,
-    summary_url: str,
+    meta: DisclosureMeta,
     disc_url: str,
     year: int,
     dry_run: bool = False,
@@ -166,9 +167,11 @@ def process_disclosure(
 ) -> tuple[int, int]:
     """Fetch one disclosure page and write registrant + filing documents.
 
+    meta is the parsed summary page of the registrant the disclosure was
+    listed under, fetched once by the caller.
+
     Returns (compensation_rows, filing_rows).
     """
-    meta = fetch_disclosure_meta(session, summary_url, use_archive=use_archive)
     detail = fetch_disclosure_detail(session, disc_url, year, use_archive=use_archive)
 
     if dry_run or db is None:
@@ -234,6 +237,7 @@ def run_weekly(
             # once all its disclosures were written and its superseded
             # versions' filings removed, so a cache hit has nothing left to do
             # but skip what's processed.
+            meta = None
             disc_urls = None
             superseded: list[str] = []
             fetched_live = False
@@ -257,8 +261,12 @@ def run_weekly(
                 if use_cursor and _is_processed(db, disc_url):
                     continue
                 try:
+                    if meta is None:
+                        # Cache hit: the summary page was never fetched, so
+                        # fetch it now, once, for this registrant's new disclosures.
+                        meta = fetch_disclosure_meta(session, summary_url)
                     comp_n, filing_n = process_disclosure(
-                        db, session, summary_url, disc_url, year, dry_run=dry_run
+                        db, session, meta, disc_url, year, dry_run=dry_run
                     )
                     new_count += 1
                     print(f"  {_ts()} processed: {comp_n} clients, {filing_n} filings")
@@ -331,7 +339,7 @@ def _backfill_one_summary_url(
             process_disclosure(
                 db,
                 session,
-                summary_url,
+                meta,
                 disc_url,
                 year,
                 dry_run=dry_run,

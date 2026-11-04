@@ -85,6 +85,10 @@ Opt-out options:
 - Per story: set `parameters.firebaseGuard.allow = true`.
 - Globally: run Storybook with `STORYBOOK_ALLOW_FIREBASE_CALLS=1`.
 
+### Jest Network Guard
+
+`yarn test:website` refuses all outbound network connections (anything but localhost), so a test can never read or write real Firebase data. The test that tries fails with the host it contacted; mock the module that makes the call (for example `jest.mock("./FollowingQueries", ...)`). The setup lives in [jest.setup.ts](jest.setup.ts). Emulator-backed tests (`yarn test:integration`) don't use it.
+
 Install the [Redux DevTools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd) and [React DevTools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi) browser extensions if you're developing frontend
 
 ## Contributing Backend Features to Dev/Prod:

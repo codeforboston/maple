@@ -1,4 +1,4 @@
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 import { createMeta } from "stories/utils"
 import { ContactInfo } from "../../components/ContactInfo/ContactInfo"
 import { SocialIconLink } from "../../components/SocialIconLink/SocialIconLink"
@@ -8,7 +8,7 @@ export default createMeta({
   component: ContactInfo
 })
 
-const Template: ComponentStory<typeof ContactInfo> = args => (
+const Template: StoryFn<typeof ContactInfo> = args => (
   <div style={{ width: "400px" }}>
     <ContactInfo {...args} />
   </div>
