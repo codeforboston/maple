@@ -1,18 +1,11 @@
-import { Fragment, KeyboardEvent, ReactNode, useRef, useState } from "react"
-import { DateTime } from "luxon"
+import { Fragment, KeyboardEvent, useRef, useState } from "react"
 import { Trans, useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { FEEDBACK_URL } from "../common"
 import { shortName } from "../formatting"
 import { yoursKey } from "./Conferees"
 import { useMyLegislators } from "./hooks"
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Check,
-  ChevronRight,
-  Star
-} from "./input/icons"
+import { ArrowRight, Check, ChevronRight, Star } from "./input/icons"
 import {
   brand,
   caution,
@@ -20,20 +13,13 @@ import {
   ink,
   line,
   positive,
-  red,
   shadow,
   yea
 } from "./input/tokens"
 import { useWide } from "./input/useWide"
 import { TABS_H } from "./ConferenceTabs"
 import { Card } from "./styles"
-import {
-  CHAMBERS,
-  ConfereeView,
-  DifferenceView,
-  SimilarityView,
-  SourceView
-} from "./types"
+import { CHAMBERS, ConfereeView, DifferenceView, SimilarityView } from "./types"
 
 /** The mockup's card, which keeps its gutters at every width. */
 const Frame = styled(Card)`
@@ -116,7 +102,7 @@ const List = styled.ul<{ $gap: number }>`
   list-style: none;
 `
 
-/** The SENATE and HOUSE labels' small caps, for a column or the sources. */
+/** The SENATE and HOUSE labels' small caps, for a column. */
 const Label = styled.p`
   display: flex;
   align-items: baseline;
@@ -345,45 +331,6 @@ const RowBody = styled.p`
   color: ${ink.mid};
 `
 
-/** The mockup's citation mark. */
-const Mark = styled.sup`
-  margin-left: 1px;
-  font-size: 0.55em;
-  font-weight: 600;
-  color: ${ink.faint};
-`
-
-/** The ballot page's bibliography, as the mockup parks it: one sentence per
- * source, the host as the link. */
-const Sources = styled.ol`
-  margin: 12px 0 0;
-  padding-left: 20px;
-  font-size: 0.8125rem;
-  line-height: 1.6;
-  color: ${ink.strong};
-
-  li + li {
-    margin-top: 8px;
-  }
-  li::marker {
-    color: ${ink.faint};
-  }
-  a {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 3px;
-    color: ${brand.fill};
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    &:hover {
-      color: ${red.hover};
-    }
-  }
-  svg {
-    align-self: center;
-  }
-`
-
 /**
  * What the two chambers still disagree on, with the points where their texts
  * already match beside it: written by people, set out as the mockup's "What
@@ -410,11 +357,6 @@ export function ConferenceDifferences({
   const body = useRef<HTMLDivElement>(null)
   // The mockup's container query: below 720px the matches are left out.
   const wide = useWide(body, 720)
-  const cited = sourcesOf([...differences, ...(wide ? similarities : [])])
-  const markFor = (s: SourceView | null) => {
-    const n = s ? cited.findIndex(c => c.url === s.url) + 1 : 0
-    return n ? <Mark>{n}</Mark> : null
-  }
 
   return (
     <Frame aria-labelledby="decided-q">
@@ -443,12 +385,7 @@ export function ConferenceDifferences({
           <div>
             <List $gap={26} aria-label={t("decided.differ")}>
               {differences.map((d, i) => (
-                <Difference
-                  key={d.heading}
-                  d={d}
-                  mark={markFor(d.source)}
-                  defaultOpen={i === 0}
-                />
+                <Difference key={d.heading} d={d} defaultOpen={i === 0} />
               ))}
             </List>
             <YourLegislators
@@ -465,41 +402,22 @@ export function ConferenceDifferences({
               </Label>
               <List $gap={2}>
                 {similarities.map(s => (
-                  <Similarity key={s.heading} s={s} mark={markFor(s.source)} />
+                  <Similarity key={s.heading} s={s} />
                 ))}
               </List>
             </div>
           )}
         </Grid>
-        {cited.length > 0 && (
-          <div>
-            <Label>{t("decided.sources")}</Label>
-            <Sources>
-              {cited.map(s => (
-                <Source key={s.url} source={s} />
-              ))}
-            </Sources>
-          </div>
-        )}
       </Body>
     </Frame>
   )
 }
 
-/** Each source once, in the order the points first cite it. */
-const sourcesOf = (points: { source: SourceView | null }[]) => [
-  ...new Map(
-    points.flatMap(p => (p.source ? [[p.source.url, p.source] as const] : []))
-  ).values()
-]
-
 function Difference({
   d,
-  mark,
   defaultOpen
 }: {
   d: DifferenceView
-  mark: ReactNode
   defaultOpen: boolean
 }) {
   const { t } = useTranslation("conferences")
@@ -510,10 +428,7 @@ function Difference({
         <Chevron>
           <ChevronRight size={19} />
         </Chevron>
-        <span>
-          {d.heading}
-          {mark}
-        </span>
+        <span>{d.heading}</span>
       </Toggle>
       {open && (
         <Answers>
@@ -671,7 +586,7 @@ function YourLegislators({
   )
 }
 
-function Similarity({ s, mark }: { s: SimilarityView; mark: ReactNode }) {
+function Similarity({ s }: { s: SimilarityView }) {
   const [open, setOpen] = useState(false)
   return (
     <li>
@@ -684,31 +599,9 @@ function Similarity({ s, mark }: { s: SimilarityView; mark: ReactNode }) {
             <Check size={15} strokeWidth={2.5} />
           </Tick>
         </Marks>
-        <RowTitle>
-          {s.heading}
-          {mark}
-        </RowTitle>
+        <RowTitle>{s.heading}</RowTitle>
       </RowToggle>
       {open && <RowBody>{s.body}</RowBody>}
     </li>
   )
 }
-
-function Source({ source }: { source: SourceView }) {
-  const { t } = useTranslation("conferences")
-  return (
-    <li>
-      <em>{source.organisation}</em>
-      {source.publishedAt && `, ${published(source.publishedAt)}`}.{" "}
-      {t("decided.available")}{" "}
-      <a href={source.url} target="_blank" rel="noopener noreferrer">
-        {new URL(source.url).hostname.replace(/^www\./, "")}
-        <ArrowUpRight size={12} />
-      </a>
-    </li>
-  )
-}
-
-/** An ISO date as the citation prints it: "Sep 1, 2026". */
-const published = (iso: string) =>
-  DateTime.fromISO(iso, { zone: "utc" }).toLocaleString(DateTime.DATE_MED)

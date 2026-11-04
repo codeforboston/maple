@@ -214,34 +214,19 @@ const props: ConferencePageProps = {
       heading: "Social media ban",
       senate: null,
       house: "Regulates social media companies under Chapter 93M.",
-      notes: { "Chapter 93M": ["Platforms must bar users under 14."] },
-      source: {
-        organisation: "Example Gazette",
-        url: "https://www.example.com/explainer",
-        publishedAt: "2026-09-01"
-      }
+      notes: { "Chapter 93M": ["Platforms must bar users under 14."] }
     },
     {
       heading: "Use or possession",
       senate: "Bans use and possession.",
       house: "Bans use.",
-      notes: {},
-      source: {
-        organisation: "Other Radio",
-        url: "https://example.org/report",
-        publishedAt: null
-      }
+      notes: {}
     }
   ],
   similarities: [
     {
       heading: "Phones barred during the school day",
-      body: "Every district must have a policy.",
-      source: {
-        organisation: "Example Gazette",
-        url: "https://www.example.com/explainer",
-        publishedAt: "2026-09-01"
-      }
+      body: "Every district must have a policy."
     }
   ]
 }
@@ -560,22 +545,14 @@ describe("ConferenceDetails", () => {
       ).toBeInTheDocument()
     })
 
-    it("numbers each source once and lists it with its host", () => {
+    it("lists no sources and marks no point with a citation", () => {
       widen(800)
-      render(<ConferenceDetails {...props} />)
-      const items = within(
-        screen.getByText("decided.sources").nextElementSibling as HTMLElement
-      ).getAllByRole("listitem")
-      expect(items).toHaveLength(2)
-      expect(items[0]).toHaveTextContent("Example Gazette, Sep 1, 2026.")
-      expect(within(items[0]).getByRole("link")).toHaveTextContent(
-        "example.com"
-      )
-      expect(items[1]).toHaveTextContent("Other Radio.")
-      // The match cites the first source again rather than a third.
+      const { container } = render(<ConferenceDetails {...props} />)
+      expect(screen.queryByText("decided.sources")).not.toBeInTheDocument()
+      expect(container.querySelector("sup")).toBeNull()
       expect(
         screen.getByRole("button", { name: /Phones barred/ })
-      ).toHaveTextContent("1")
+      ).toHaveTextContent(/^Phones barred during the school day$/)
     })
 
     it("says the reader's own legislator is deciding", () => {
