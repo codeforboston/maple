@@ -125,6 +125,14 @@ export async function matchMembersForCourt(
     )
     const candidates =
       firstNameMatches.length > 0 ? firstNameMatches : lastNameAndBranchMatches
+    // Logged with ambiguous matches; includes cpfId for fixing the mapping by hand
+    const candidateDetails = candidates.map(c => ({
+      cpfId: c.cpfId,
+      firstName: c.firstName,
+      lastName: c.lastName,
+      district: c.district,
+      officeSought: c.officeSought
+    }))
 
     // Fixed by hand (manual: true). Always wins over automatic matching.
     if (existingMapping[member.MemberCode]?.manual) {
@@ -154,10 +162,7 @@ export async function matchMembersForCourt(
           name: member.Name,
           district: member.District,
           branch,
-          ocpfFirstName: candidates[0].firstName,
-          ocpfLastName: candidates[0].lastName,
-          ocpfDistrict: candidates[0].district,
-          ocpfOfficeSought: candidates[0].officeSought
+          candidates: candidateDetails
         }
       )
     } else if (candidates.length === 0) {
@@ -177,13 +182,7 @@ export async function matchMembersForCourt(
         name: member.Name,
         district: member.District,
         branch,
-        candidates: candidates.map(c => ({
-          cpfId: c.cpfId,
-          firstName: c.firstName,
-          lastName: c.lastName,
-          district: c.district,
-          officeSought: c.officeSought
-        }))
+        candidates: candidateDetails
       })
     }
   }
