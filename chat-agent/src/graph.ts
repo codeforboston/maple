@@ -307,7 +307,10 @@ export function buildGraph(deps: GraphDeps) {
       }),
       toolRetryMiddleware({ maxRetries: 1, onFailure: "error" })
     ]
-  })
+    // Each search round is several graph steps (model, tools and the middleware hooks), so
+    // LangGraph's default limit of 25 ends a turn after about 3 searches. MAX_TOOL_CALLS_PER_TURN is
+    // the real bound; this only stops a runaway loop.
+  }).withConfig({ recursionLimit: 100 })
 }
 
 const required = (name: string) => {

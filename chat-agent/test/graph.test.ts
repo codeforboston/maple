@@ -124,6 +124,20 @@ test("limit: a batch that passes 6 runs only what fits; asking for more ends the
   expect(model.calls).toHaveLength(3)
 })
 
+test("six searches one after another, then an answer, fit in one run", async () => {
+  let model = fakeModel()
+  for (let i = 0; i < 6; i++) model = model.respondWithTools(search(1))
+  model = model.respond(new AIMessage("Done: [H.1440](/bills/192/H1440)."))
+
+  const out = await graphWith(model).invoke(
+    { messages: [new HumanMessage("keep looking")] },
+    config("t-sequential")
+  )
+
+  expect(String(out.messages.at(-1)?.content)).toMatch(/^Done/)
+  expect(out.messages.filter(m => m.type === "tool")).toHaveLength(6)
+})
+
 test("limit: one batch of 8 parallel calls runs 6, then the model answers (E8b)", async () => {
   const model = fakeModel()
     .respondWithTools(search(8))
