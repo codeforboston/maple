@@ -538,64 +538,64 @@ function VotesModal({
           {votes[selectedVote]?.Vote![0].Favorable?.length ?? 0})
         </div>
         {generalCourtNumber &&
-          (votes[selectedVote]?.Vote![0].Favorable ?? []).map(
-            (element: any, index: number) => (
+          (votes[selectedVote]?.Vote![0].Favorable ?? [])
+            .filter(x => x.MemberCode)
+            .map((element: LegislativeMemberSummary, index: number) => (
               <Vote
                 key={index}
-                element={element}
+                memberCode={element.MemberCode!}
                 generalCourtNumber={generalCourtNumber}
                 value={`yes`}
               />
-            )
-          )}
+            ))}
 
         <div className={`fw-bold`}>
           {t("no", { ns: "hearing" })} (
           {votes[selectedVote].Vote![0].Adverse?.length ?? 0})
         </div>
         {generalCourtNumber &&
-          (votes[selectedVote]?.Vote![0].Adverse ?? []).map(
-            (element: any, index: number) => (
+          (votes[selectedVote]?.Vote![0].Adverse ?? [])
+            .filter(x => x.MemberCode)
+            .map((element: LegislativeMemberSummary, index: number) => (
               <Vote
                 key={index}
-                element={element}
+                memberCode={element.MemberCode!}
                 generalCourtNumber={generalCourtNumber}
                 value={`no`}
               />
-            )
-          )}
+            ))}
 
         <div className={`fw-bold`}>
           {t("no_vote", { ns: "hearing" })} (
           {votes[selectedVote]?.Vote![0].NoVoteRecorded?.length ?? 0})
         </div>
         {generalCourtNumber &&
-          (votes[selectedVote]?.Vote![0].NoVoteRecorded ?? []).map(
-            (element: any, index: number) => (
+          (votes[selectedVote]?.Vote![0].NoVoteRecorded ?? [])
+            .filter(x => x.MemberCode)
+            .map((element: LegislativeMemberSummary, index: number) => (
               <Vote
                 key={index}
-                element={element}
+                memberCode={element.MemberCode!}
                 generalCourtNumber={generalCourtNumber}
                 value={`no_record`}
               />
-            )
-          )}
+            ))}
 
         <div className={`fw-bold`}>
           {t("reserve_right", { ns: "hearing" })} (
           {votes[selectedVote]?.Vote![0].ReserveRight?.length ?? 0})
         </div>
         {generalCourtNumber &&
-          (votes[selectedVote]?.Vote![0].ReserveRight ?? []).map(
-            (element: any, index: number) => (
+          (votes[selectedVote]?.Vote![0].ReserveRight ?? [])
+            .filter(x => x.MemberCode)
+            .map((element: LegislativeMemberSummary, index: number) => (
               <Vote
                 key={index}
-                element={element}
+                memberCode={element.MemberCode!}
                 generalCourtNumber={generalCourtNumber}
                 value={`reserve`}
               />
-            )
-          )}
+            ))}
 
         <ModalLine />
         <div className={`d-flex fs-6 justify-content-end`}>
@@ -624,11 +624,11 @@ const VoteValue = styled.div`
 `
 
 function Vote({
-  element,
+  memberCode,
   generalCourtNumber,
   value
 }: {
-  element: any
+  memberCode: string
   generalCourtNumber: string
   value: string
 }) {
@@ -641,7 +641,7 @@ function Vote({
     const memberList = await getDoc(
       doc(
         firestore,
-        `generalCourts/${generalCourtNumber}/members/${element.MemberCode}`
+        `generalCourts/${generalCourtNumber}/members/${memberCode}`
       )
     )
     const docData = memberList.data()
@@ -649,11 +649,11 @@ function Vote({
     setBranch(docData?.content.Branch)
     setMemberName(docData?.content.Name)
     setParty(docData?.content.Party)
-  }, [])
+  }, [memberCode])
 
   useEffect(() => {
     memberData()
-  }, [])
+  }, [memberCode])
 
   return (
     <VoteRow className={`d-flex justify-content-between`}>
@@ -661,7 +661,7 @@ function Vote({
       <Col className={`d-block justify-content-start `} xs={5}>
         <Row>
           <links.External
-            href={`https://malegislature.gov/Legislators/Profile/${element.MemberCode}`}
+            href={`https://malegislature.gov/Legislators/Profile/${memberCode}`}
           >
             {memberName}
           </links.External>
