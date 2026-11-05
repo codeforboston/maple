@@ -741,6 +741,23 @@ describe("publishTestimony", () => {
       }
     )
 
+    it("Refuses testimony on a conference we don't cover", async () => {
+      const uncoveredId = await createConference(billId)
+      await testDb
+        .doc(`/generalCourts/${currentGeneralCourt}/conferences/${uncoveredId}`)
+        .update({ covered: false })
+      const { draftId: conferenceDraftId } = await createConferenceDraft(
+        uid,
+        billId,
+        uncoveredId,
+        "passNothing"
+      )
+      await expect(
+        publishTestimony({ draftId: conferenceDraftId })
+      ).rejects.toThrow("not accepting testimony")
+      expect((await getConference(uncoveredId)).testimonyCount).toBe(0)
+    })
+
     it("Refuses to republish once the conference has closed", async () => {
       const { draftId: conferenceDraftId } = await createConferenceDraft(
         uid,

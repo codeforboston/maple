@@ -6,6 +6,11 @@
     "enacted": "Enacted",
     "dissolved": "Dissolved"
   },
+  "not_covered": "Not covered",
+  "notice": {
+    "resolved": "Resolved by <1>{{report}}</1>.",
+    "not_covered": "We’re trialling these pages with a limited set of conference committees, and this isn’t one of them yet. You can’t add your input here."
+  },
   "who": "Who’s in the committee?",
   "senate": "Senate",
   "house": "House",
@@ -88,9 +93,7 @@
     "match": "Where bill texts match",
     "not_in_bill": "Not in the bill",
     "yours_one": "{{who}} is on this committee, <0>{{name}}</0>.",
-    "yours_both": "Both of your legislators are on this committee, <0>{{a}}</0> and <1>{{b}}</1>.",
-    "sources": "Sources",
-    "available": "[Online]. Available:"
+    "yours_both": "Both of your legislators are on this committee, <0>{{a}}</0> and <1>{{b}}</1>."
   },
   "input": {
     "share": "Share your input",

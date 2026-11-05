@@ -240,10 +240,10 @@ class PublishTestimonyTransaction {
           `Conference ${conferenceId} takes testimony on ${conference.canonicalBillId}, not ${draft.billId}`
         )
       }
-      if (!takesTestimony(conference.status)) {
+      if (!takesTestimony(conference)) {
         throw fail(
           "failed-precondition",
-          `Conference ${conferenceId} is not accepting testimony (status ${conference.status})`
+          `Conference ${conferenceId} is not accepting testimony (status ${conference.status}, covered ${conference.covered})`
         )
       }
     }

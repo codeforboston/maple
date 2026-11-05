@@ -127,7 +127,9 @@ const conference: ConferencePageProps["conference"] = {
   senateBillId: "S2581",
   houseBillId: "H5366",
   canonicalBillId: "S2581",
-  status: "appointed"
+  status: "appointed",
+  covered: true,
+  reportBillId: null
 }
 
 const props: ConferencePageProps = {
@@ -142,7 +144,9 @@ const props: ConferencePageProps = {
       senateBillId: "S2619",
       houseBillId: "H5479",
       canonicalBillId: "S2619",
-      status: "appointed"
+      status: "appointed",
+      covered: true,
+      reportBillId: null
     }
   ],
   conferees: [
@@ -214,36 +218,28 @@ const props: ConferencePageProps = {
       heading: "Social media ban",
       senate: null,
       house: "Regulates social media companies under Chapter 93M.",
-      notes: { "Chapter 93M": ["Platforms must bar users under 14."] },
-      source: {
-        organisation: "Example Gazette",
-        url: "https://www.example.com/explainer",
-        publishedAt: "2026-09-01"
-      }
+      notes: { "Chapter 93M": ["Platforms must bar users under 14."] }
     },
     {
       heading: "Use or possession",
       senate: "Bans use and possession.",
       house: "Bans use.",
-      notes: {},
-      source: {
-        organisation: "Other Radio",
-        url: "https://example.org/report",
-        publishedAt: null
-      }
+      notes: {}
     }
   ],
   similarities: [
     {
       heading: "Phones barred during the school day",
-      body: "Every district must have a policy.",
-      source: {
-        organisation: "Example Gazette",
-        url: "https://www.example.com/explainer",
-        publishedAt: "2026-09-01"
-      }
+      body: "Every district must have a policy."
     }
-  ]
+  ],
+  testimonyCount: 0
+}
+
+/** Neither the Public Input section nor its tab. */
+const expectNoPublicInput = () => {
+  expect(screen.queryByText("input.empty_title")).not.toBeInTheDocument()
+  expect(screen.queryByRole("link", { name: "tab_input" })).toBeNull()
 }
 
 /** What useWide reads: jsdom lays nothing out, so every element is 0 wide. */
@@ -435,11 +431,13 @@ describe("ConferenceDetails", () => {
     )
     unmount()
     const reported = { ...conference, status: "reportFiled" as const }
-    render(<ConferenceDetails {...props} conference={reported} />)
+    render(
+      <ConferenceDetails {...props} conference={reported} testimonyCount={3} />
+    )
     expect(
       screen.queryByRole("button", { name: "input.share" })
     ).not.toBeInTheDocument()
-    // Public Input stays.
+    // Public Input stays for the input it was given.
     expect(screen.getByText("input.empty_title")).toBeInTheDocument()
   })
 
@@ -461,6 +459,36 @@ describe("ConferenceDetails", () => {
     const [title] = screen.getAllByRole("button", { name: "input.share" })
     expect(title).toBeDisabled()
     expect(title).toHaveAttribute("title", "input.shared")
+  })
+
+  it("drops Public Input and its tab from a closed conference nobody gave input on", () => {
+    const enacted = { ...conference, status: "enacted" as const }
+    render(<ConferenceDetails {...props} conference={enacted} />)
+    expectNoPublicInput()
+  })
+
+  it("takes no input on a conference we don't cover, and says why", () => {
+    const uncovered = { ...conference, covered: false }
+    render(<ConferenceDetails {...props} conference={uncovered} />)
+    expect(screen.getByText("notice.not_covered")).toBeInTheDocument()
+    expect(
+      screen.queryByRole("button", { name: "input.share" })
+    ).not.toBeInTheDocument()
+    expectNoPublicInput()
+  })
+
+  it("names the report that resolved it, where there is one", () => {
+    const { unmount } = render(<ConferenceDetails {...props} />)
+    expect(screen.queryByTestId("notice.resolved")).toBeNull()
+    expect(screen.queryByText("notice.not_covered")).not.toBeInTheDocument()
+    unmount()
+    const enacted = {
+      ...conference,
+      status: "enacted" as const,
+      reportBillId: "H5350"
+    }
+    render(<ConferenceDetails {...props} conference={enacted} />)
+    expect(screen.getByTestId("notice.resolved")).toHaveTextContent("H.5350")
   })
 
   it("leads from its tabs to its sections", () => {
@@ -560,22 +588,14 @@ describe("ConferenceDetails", () => {
       ).toBeInTheDocument()
     })
 
-    it("numbers each source once and lists it with its host", () => {
+    it("lists no sources and marks no point with a citation", () => {
       widen(800)
-      render(<ConferenceDetails {...props} />)
-      const items = within(
-        screen.getByText("decided.sources").nextElementSibling as HTMLElement
-      ).getAllByRole("listitem")
-      expect(items).toHaveLength(2)
-      expect(items[0]).toHaveTextContent("Example Gazette, Sep 1, 2026.")
-      expect(within(items[0]).getByRole("link")).toHaveTextContent(
-        "example.com"
-      )
-      expect(items[1]).toHaveTextContent("Other Radio.")
-      // The match cites the first source again rather than a third.
+      const { container } = render(<ConferenceDetails {...props} />)
+      expect(screen.queryByText("decided.sources")).not.toBeInTheDocument()
+      expect(container.querySelector("sup")).toBeNull()
       expect(
         screen.getByRole("button", { name: /Phones barred/ })
-      ).toHaveTextContent("1")
+      ).toHaveTextContent(/^Phones barred during the school day$/)
     })
 
     it("says the reader's own legislator is deciding", () => {

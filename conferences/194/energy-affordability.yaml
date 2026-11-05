@@ -2,6 +2,7 @@ id: energy-affordability
 name: Energy Affordability
 court: 194
 title: An Act relative to energy affordability, clean power and economic competitiveness
+gist: Both bills create a new office at the state Department of Energy Resources to sign long-term clean energy contracts (at least 10 GW of offshore wind and about 10 GW of solar by 2040), a new solar incentive, discount rates for low- and moderate-income customers, and new rules for competitive electricity suppliers. They split most sharply on Mass Save (a House-ordered $1 billion cut vs. a Senate restructuring from 2028), on nuclear power, on gas-system spending and planning, and on a set of Senate-only limits on what utilities may charge customers for.
 senateBillId: S3166
 houseBillId: H5175
 canonicalBillId: H5175
@@ -23,5 +24,105 @@ conferees:
     branch: Senate
 hearingIds:
   - hearing-5758
-differences: []
-similarities: []
+differences:
+  - heading: Should Mass Save, the state's energy efficiency program paid for through utility bills, be ordered to cut at least $1 billion from its current 2025–2027 plan?
+    senate: No cut is ordered. Under the Senate's rewrite of the program, starting Jan. 1, 2028, planning and administration costs are capped at 5% of efficiency spending. (§16; §115)
+    house: Yes. The utilities and towns that run the program were to file changes saving ratepayers at least $1,000,000,000, cutting marketing, advertising and administration first, by July 1, 2026. That date has passed. The Department of Public Utilities (DPU) would approve the changes within 60 days. (§69)
+  - heading: Should Mass Save focus on cutting building emissions and be run only by electric utilities and city and town electricity programs?
+    senate: "Yes, starting Jan. 1, 2028: one statewide plan, gas companies no longer run programs, no incentives for new fossil-fuel equipment (with some exceptions), and at least 20% of funds for low-income programs. (§§9–17, 115, 117)"
+  - heading: Who should independently review Mass Save's spending?
+    senate: A new 5-member board, housed at DPU but not under its control. The board ends Dec. 31, 2030. (§§95, 96, 116)
+    house: The state Inspector General, who holds at least 4 public hearings and reports by July 1, 2027. (§67)
+  - heading: Should new nuclear plants still need approval from voters statewide, and should nuclear power count as "clean energy"?
+    senate: The Senate bill does not repeal the 1982 law. It adds "nuclear fission" and "fusion energy" to the Massachusetts Clean Energy Center's definition of clean energy. (§4)
+    house: Repeals chapter 503 of the Acts of 1982 (§55), the voter-approved law that requires a statewide ballot vote and findings by the Legislature before a new nuclear plant is built (as described in news coverage; the bill text cites only the chapter number). The House bill does not otherwise mention nuclear power.
+  - heading: Should the extra yearly charges gas utilities collect to replace aging pipes (known as GSEP) phase down to zero?
+    senate: Yes. The cap on yearly increases drops from 1.5% of revenues starting in November 2027 to zero from Nov. 1, 2030. Utilities must meet leak-reduction targets or face penalties. (§83, c.164 §145)
+  - heading: Should the state forecast demand for natural gas and adopt a yearly gas supply plan?
+    senate: Yes. Rolling 3-year forecasts, and a yearly plan from the Secretary of Energy and Environmental Affairs that "ensures pipeline capacity and system reliability measures" consistent with climate goals, after at least 3 public hearings. (§64)
+  - heading: Should regulators plan gas and electric systems together and weigh alternatives to new gas pipe?
+    senate: Yes. DPU coordinates joint planning and may require utilities to consider alternatives to new or replacement pipe, such as electrification, networked geothermal and efficiency. (§88, new c.164 §159)
+  - heading: Should gas companies be allowed to end gas service to customers who have adequate other ways to heat their homes and water?
+    senate: Yes, under DPU rules, if the customer keeps safe, reliable and affordable heat and hot water. (§83, c.164 §145(h))
+  - heading: Should utilities be barred from charging customers for advertising, lobbying, trade group dues, charitable donations and executive perks?
+    senate: Yes. A utility that breaks the rule pays a penalty at least equal to the improper costs, which it cannot pass on to customers, and refunds customers with interest. (§56, c.164 §33A)
+  - heading: Should utilities be able to pay for grid upgrades, gas transition costs and storm costs with bonds repaid through a charge on customers' bills (known as securitization)?
+    senate: Yes, if DPU finds it cost-effective and that it lowers costs for customers. Bonds may run up to 30 years, and none may be issued after 2036 without new legislation. (§52, c.164 §1H)
+  - heading: Should regulators limit how much utility charges can change from one month to the next?
+    senate: Yes. DPU opens proceedings by Jan. 1, 2027 and sets limits by July 1, 2027. (§107)
+    house: The bill sets no limits. A rates task force reports on rate relief by Sept. 30, 2027. (§66)
+  - heading: Should the yearly increases in the share of electricity suppliers must buy from renewable sources (the Renewable Portfolio Standard) be reset?
+    senate: "Yes: an increase of 3% a year through 2026, 1% through 2030, 3% a year through 2033, 2% a year through 2036, then 1% a year. (§27)"
+    house: The bill does not change the schedule. The state's energy and environmental protection departments review it and report within 12 months. (§68D)
+  - heading: Should payments that suppliers make when they fall short of clean energy requirements be returned to customers as bill credits?
+    senate: Not in the Senate bill. Instead, those payments cover any shortfall in funding for electric vehicle rebates. (§34)
+    house: Yes, at least 70% returned within 90 days after each compliance year. From July 1, 2029, only in years when the funds exceed predicted levels. (§§7, 8, 82)
+  - heading: When should prices in signed clean energy contracts be adjustable?
+    senate: Any new contract may be adjusted before the project starts operating for "substantial and unforeseeable" changes, with DPU approval. Contracts from the 2023 offshore wind solicitation may be adjusted under the same standard. (§36; §98)
+    house: Only contracts from the 2023 offshore wind solicitation, for changes in law or costs outside the developer's control. Developers could also delay or cancel without penalty because of grid connection and permitting delays. (§68A)
+  - heading: Should companies bidding on state clean energy contracts have to submit plans for project labor agreements and consult tribes and fishing interests?
+    senate: Not required. Bidders submit a plan for benefits to low- and moderate-income customers. (§36, c.25A §22(g)–(h))
+    house: Yes, along with plans for benefits to low-income customers and environmental justice communities. (§13)
+  - heading: Should permits for large clean energy transmission and offshore wind projects be extended by 4 years?
+    senate: Yes, for approvals in effect between Jan. 1, 2025 and Jan. 1, 2029. (§97)
+  - heading: Should the Alternative Portfolio Standard, a state credit program for technologies such as combined heat and power, stop accepting new applicants after 2027?
+    senate: Only for biomass and combined heat and power. (§28)
+    house: Yes, for all new applicants after Jan. 1, 2028. Projects already approved, or with complete applications before then, stay eligible. (§9)
+  - heading: Should utilities be barred from shutting off service to customers in financial hardship during winter and summer heat waves?
+    senate: Yes. No heat-related gas or electric shutoffs for financial hardship from Nov. 15 to Mar. 15, and no electric shutoffs from May 15 to Sept. 15 during forecast heat of 85°F or more for 3 days in a row. (§71, c.164 §124F)
+  - heading: Should competitive electricity suppliers be barred from serving low-income customers, or allowed to at a capped price?
+    senate: Allowed, at a price no higher than the utility's average standard rate over the past 12 months. (§53, c.164 §1L(a))
+    house: Barred for customers on the discounted low-income rate, except through city and town electricity programs. (§26, c.164 §1L(b))
+  - heading: Should companies selling home and community solar be licensed, with registered salespeople and a right to cancel?
+    senate: Not required. A working group led by the Attorney General and DPU recommends changes by Jan. 31, 2028. (§113)
+    house: Yes. DPU licenses sellers, salespeople register every year, standard disclosures are required, buyers may cancel within 5 business days, community solar contracts may not carry early termination fees, and penalties run up to $2,500 a day. (§§26, 73–75)
+  - heading: What energy rules should apply to large data centers?
+    senate: Conditions on the data center sales tax exemption, set by the state economic development office, covering clean energy, efficiency, water, labor and community benefits. (§§3, 109)
+    house: Data centers of 20 megawatts or more that need a DPU or Energy Facilities Siting Board permit must buy at least 80% renewable energy and show batteries are not feasible before using fossil-fuel backup. Utilities must file data center rates that protect other customers from higher costs. (§§54, 68E)
+  - heading: Should utilities have to file new rates at least every 5 years?
+    senate: Not required. DPU sets a planning and cost-recovery framework for rate cases filed from July 1, 2028. (§70)
+    house: Yes. (§§40, 77)
+  - heading: How often should regulators audit how utilities are managed?
+    senate: DPU "shall provide for" audits no more than once every 3 years, plus targeted audits. (§68)
+    house: DPU "may provide for" audits no more than once every 5 years. (§37)
+  - heading: What consent should be needed to automatically renew an electricity supply contract, and may suppliers pay sales commissions?
+    senate: Written consent within 45 days before the contract ends, 3 advance notices and third-party verification. Commissions for signing up customers are banned. (§53, §1L(b))
+    house: Consent at sign-up or later, 3 advance notices, and verification for in-person and phone sales. Commissions are not banned. (§26, §1L(c))
+  - heading: Should each supplier's average rates be made public?
+    senate: Yes, by type of customer, and supplier rate reports are public. (§§25, 53)
+    house: Only combined or anonymous data is published. (§§6, 26)
+  - heading: Must utilities accept bonds or letters of credit instead of cash up front for grid connection upgrades?
+    senate: DPU must decide within 9 months whether to require this. (§104)
+    house: Yes. (§39)
+  - heading: What limits should apply to small plug-in solar panels that skip the utility connection process?
+    senate: Certified systems need no utility approval. Systems up to 391 watts must be reported to the utility within 30 days. (§§82, 112)
+    house: Devices up to 1,200 watts that plug into a standard outlet, with no notice to the utility required. (§§19, 53)
+similarities:
+  - heading: Do the bills change the state's 2030 and 2050 emissions limits?
+    body: No. Neither changes the limits in the state climate law (G.L. c.21N §3).
+  - heading: Should a new state office sign long-term clean energy contracts?
+    body: Yes. A new clean energy procurement division at the Department of Energy Resources (DOER) would sign contracts of up to 30 years, including at least 10 gigawatts of offshore wind and 10 gigawatts (Senate) or about 10 gigawatts (House) of solar by Dec. 31, 2040.
+  - heading: Should the state invest in early development work for offshore wind?
+    body: Yes, with the state's investment repaid once projects start operating.
+  - heading: Should DOER create new solar and energy storage incentive programs?
+    body: Yes.
+  - heading: Should utilities offer discounted rates to low- and moderate-income customers?
+    body: Yes, paid for through a fixed monthly charge on all customers' bills. Customers qualify through means-tested benefits or fuel assistance, up to 200% of the federal poverty level. The House delays this by 1 year.
+  - heading: Should cities and towns be able to bar competitive electricity suppliers from signing up individual residents?
+    body: Yes, if a city or town votes to accept the law. City and town electricity buying programs are not affected, and the Attorney General enforces it.
+  - heading: Should competitive suppliers, brokers and marketers face licensing, bonds and sales rules?
+    body: "Yes: licenses, a $5,000,000 bond for suppliers serving residents, fines up to $100,000 per violation (capped at $10,000,000), no early termination fees, and a state website for comparing offers."
+  - heading: Should DPU publish an online dashboard explaining utility bill charges?
+    body: Yes.
+  - heading: Should large transmission rebuilds get state siting review?
+    body: Yes, for projects of $25,000,000 or more on existing routes.
+  - heading: Should utility grid plans include virtual power plants, peak-demand targets and flexible connections for new projects?
+    body: Yes.
+  - heading: Should net metering credits (credits for power sent back to the grid) change?
+    body: "Yes, in largely identical text: market net metering credits are set at 60%, and newer facilities earn credits at the supply rate."
+  - heading: Should utilities offer on-bill financing for heat pumps, solar and efficiency upgrades?
+    body: Yes, with no up-front cost and repayment through an optional charge on the electric bill. Deadlines differ.
+  - heading: Should gas companies be allowed to provide networked geothermal and other clean heat?
+    body: Yes, with safety oversight, prevailing wages and plans for their workforce's transition.
+  - heading: Should Mass Save verify household income for moderate-income incentives in designated communities?
+    body: Yes.

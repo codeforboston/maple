@@ -36,6 +36,7 @@ const REPRINT = /(?:\bsee|published as) ([HS]\d+)\b/i
 const TEXT_OF = /text of ([HS]\d+)\b/i
 const REPORT = /reported(?:, in part,)? by ([HS]\d+)/i
 const ENACTED = /\b(enacted|signed by the governor|chapter \d+ of the acts)\b/i
+const CHAPTER = /chapter \d+ of the acts of \d+/i
 const DISSOLVED = /conference committee (discharged|dissolved)/i
 
 type Member = { code: string; branch: string; first: string }
@@ -124,10 +125,16 @@ export const script: Script = async ({ db, args }) => {
         if (billId) authored.set(billId, f)
     }
 
+  // A conference report is a bill of its own, and its enactment is recorded
+  // on its history, not on the bills it reconciles.
+  const rows = bills.docs.map(d => d.data())
+  const historyOf = new Map<string, BillHistoryAction[]>(
+    rows.map(b => [b.id, b.history ?? []])
+  )
+
   const slugs = new Set<string>()
-  for (const d of bills.docs) {
-    const { id, content } = d.data()
-    const history: BillHistoryAction[] = d.data().history ?? []
+  for (const { id, content } of rows) {
+    const history = historyOf.get(id)!
     const appointments = history.filter(a => APPOINTED.test(a.Action))
     if (!appointments.length) continue
     const first = history.indexOf(appointments[0])
@@ -146,8 +153,10 @@ export const script: Script = async ({ db, args }) => {
 
     let status: ConferenceStatus = "appointed"
     const report = after.map(a => a.Action.match(REPORT)?.[1]).find(Boolean)
+    const trail = [...after, ...(report ? historyOf.get(report) ?? [] : [])]
+    const chapter = trail.map(a => a.Action.match(CHAPTER)?.[0]).find(Boolean)
     if (after.some(a => DISSOLVED.test(a.Action))) status = "dissolved"
-    else if (after.some(a => ENACTED.test(a.Action))) status = "enacted"
+    else if (trail.some(a => ENACTED.test(a.Action))) status = "enacted"
     else if (report) status = "reportFiled"
 
     const conferees = appointments.flatMap(a =>
@@ -166,6 +175,7 @@ export const script: Script = async ({ db, args }) => {
       houseBillId: own === "House" ? id : partner ?? "TODO",
       canonicalBillId: id,
       status,
+      ...(report && { reportBillId: report }),
       conferees,
       hearingIds: [],
       differences: [],
@@ -173,7 +183,13 @@ export const script: Script = async ({ db, args }) => {
     }
 
     console.log(`\n# ${id}: ${title}`)
-    console.log(`#   status ${status}${report ? `, report ${report}` : ""}`)
+    console.log(
+      `#   status ${status}${report ? `, report ${report}` : ""}${
+        chapter ? `, ${chapter}` : ""
+      }`
+    )
+    if (report && !historyOf.has(report))
+      console.log(`#   report ${report} not fetched, so enactment is unknown`)
     for (const a of appointments) console.log(`#   ${a.Date}  ${a.Action}`)
     if (!partner)
       console.log(`#   no partner reprint found before the appointment`)

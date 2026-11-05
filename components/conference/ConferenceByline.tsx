@@ -28,10 +28,22 @@ const Status = styled.span`
   font-weight: 600;
 `
 
+const Notice = styled.p`
+  margin: 1rem 0 0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--maple-radius-md);
+  background: var(--maple-color-gray-subtle-bg);
+  border: 1px solid var(--maple-color-gray-subtle-border);
+  color: var(--maple-text-strong);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+`
+
 /**
  * What the committee is, in the legislature's own construction: the act it
  * exists to pass, and the two texts it reconciles to pass it. Each number goes
- * to its own bill page.
+ * to its own bill page. Under it, the report that resolved it, and a notice
+ * where we haven't covered it.
  */
 export function ConferenceByline({
   conference
@@ -63,6 +75,17 @@ export function ConferenceByline({
       {conference.status !== "appointed" && (
         <Status>{t(`status.${conference.status}`)}</Status>
       )}
+      {conference.reportBillId && (
+        <Notice>
+          <Trans
+            t={t}
+            i18nKey="notice.resolved"
+            values={{ report: formatBillId(conference.reportBillId) }}
+            components={{ 1: bill(conference.reportBillId) }}
+          />
+        </Notice>
+      )}
+      {!conference.covered && <Notice>{t("notice.not_covered")}</Notice>}
     </div>
   )
 }

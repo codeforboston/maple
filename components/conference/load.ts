@@ -1,7 +1,6 @@
 import { districtId } from "functions/src/districts/normalize"
 import { currentGeneralCourt } from "functions/src/shared"
 import type { Branch } from "../../functions/src/common"
-import type { ConferenceSource } from "../../functions/src/conferences/types"
 import {
   Conference,
   getConferenceForBill,
@@ -22,8 +21,7 @@ import {
   ConferenceIndexProps,
   ConferencePageProps,
   ConferenceSummary,
-  HearingView,
-  SourceView
+  HearingView
 } from "./types"
 
 const summarize = (c: Conference): ConferenceSummary => ({
@@ -34,12 +32,12 @@ const summarize = (c: Conference): ConferenceSummary => ({
   senateBillId: c.senateBillId,
   houseBillId: c.houseBillId,
   canonicalBillId: c.canonicalBillId,
-  status: c.status
+  status: c.status,
+  // Read without validation: a document synced before these fields existed
+  // has neither.
+  covered: c.covered !== false,
+  reportBillId: c.reportBillId ?? null
 })
-
-/** As props: Next refuses undefined, so what is left out arrives as null. */
-const sourceView = (s?: ConferenceSource): SourceView | null =>
-  s ? { ...s, publishedAt: s.publishedAt ?? null } : null
 
 /** The member's cell on the map: their district id, or null where the map has
  * no such seat. */
@@ -118,8 +116,8 @@ export async function loadConferencePage(
   return pageFor(court, await listConferences(court), id)
 }
 
-/** The page for the first conference in the rail's order, which the landing
- * opens on; null where the court has none. */
+/** The page for the first covered conference in the rail's order, which the
+ * landing opens on; null where the court has none. */
 export async function loadLandingPage(
   court: number
 ): Promise<ConferencePageProps | null> {
@@ -134,7 +132,9 @@ async function pageFor(
   id?: string
 ): Promise<ConferencePageProps | null> {
   const rail = all.map(summarize).sort(byActivity)
-  const summary = rail.find(c => c.id === (id ?? rail[0]?.id))
+  const summary = id
+    ? rail.find(c => c.id === id)
+    : rail.find(c => c.covered) ?? rail[0]
   const conference = all.find(c => c.id === summary?.id)
   if (!summary || !conference) return null
   const [members, hearings] = await Promise.all([
@@ -159,14 +159,13 @@ async function pageFor(
       heading: d.heading,
       senate: d.senate ?? null,
       house: d.house ?? null,
-      notes: d.notes ?? {},
-      source: sourceView(d.source)
+      notes: d.notes ?? {}
     })),
     similarities: conference.similarities.map(d => ({
       heading: d.heading,
-      body: d.body,
-      source: sourceView(d.source)
-    }))
+      body: d.body
+    })),
+    testimonyCount: conference.testimonyCount ?? 0
   }
 }
 

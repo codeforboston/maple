@@ -1,7 +1,11 @@
 import { currentGeneralCourt } from "functions/src/shared"
 import { Conference, listConferences } from "../db/conferences"
 import { getMember, getMemberSearchIndex } from "../db/members"
-import { loadConferenceIndex, loadConferencePage } from "./load"
+import {
+  loadConferenceIndex,
+  loadConferencePage,
+  loadLandingPage
+} from "./load"
 
 jest.mock("../db/conferences")
 jest.mock("../db/events", () => ({ getEventSummary: jest.fn() }))
@@ -15,6 +19,7 @@ const conference = (id: string, memberCodes: string[]): Conference => ({
   houseBillId: "H1",
   canonicalBillId: "S1",
   status: "appointed",
+  covered: true,
   hearingIds: [],
   differences: [],
   similarities: [],
@@ -114,5 +119,44 @@ describe("loadConferencePage", () => {
 
     expect(page?.conferees.map(c => c.name)).toEqual(["Xena"])
     expect(getMemberSearchIndex).not.toHaveBeenCalled()
+  })
+})
+
+describe("coverage", () => {
+  it("reads a document synced before coverage existed as covered", async () => {
+    const { covered, ...legacy } = conference("a", [])
+    jest.mocked(listConferences).mockResolvedValue([legacy as Conference])
+
+    const page = await loadConferencePage(currentGeneralCourt, "a")
+
+    expect(page?.conference.covered).toBe(true)
+    expect(page?.conference.reportBillId).toBeNull()
+  })
+
+  it("opens the landing on the first covered conference", async () => {
+    jest
+      .mocked(listConferences)
+      .mockResolvedValue([
+        { ...conference("a", []), covered: false },
+        conference("b", [])
+      ])
+
+    const page = await loadLandingPage(currentGeneralCourt)
+
+    expect(page?.conference.id).toBe("b")
+    expect(page?.conferences.map(c => [c.id, c.covered])).toEqual([
+      ["a", false],
+      ["b", true]
+    ])
+  })
+
+  it("still opens an uncovered conference by its address", async () => {
+    jest
+      .mocked(listConferences)
+      .mockResolvedValue([{ ...conference("a", []), covered: false }])
+
+    const page = await loadConferencePage(currentGeneralCourt, "a")
+
+    expect(page?.conference.covered).toBe(false)
   })
 })
