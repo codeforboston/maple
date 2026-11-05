@@ -29,7 +29,6 @@ import { Panel, usePanelWidth } from "./input/Panel"
 import { PublicInput } from "./input/PublicInput"
 import { ShareButton } from "./input/ShareButton"
 import { useFollowedAuthors } from "./input/useFollowedAuthors"
-import { YourInput } from "./input/YourInput"
 import { jumpTo } from "./navbar"
 import { PageColumn, Title } from "./styles"
 import { conferenceName, ConferencePageProps } from "./types"
@@ -269,11 +268,6 @@ function Details({
                   onShare={taking ? share : undefined}
                   posted={Boolean(mine)}
                 />
-              </Section>
-            )}
-            {mine && (
-              <Section>
-                <YourInput testimony={mine} />
               </Section>
             )}
             <Section>

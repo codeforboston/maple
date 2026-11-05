@@ -505,8 +505,7 @@ describe("ConferenceDetails", () => {
     tops.text = 0
     fireEvent.scroll(document)
     expect(lit()).toEqual(["tab_text"])
-    // A section can move with no scroll, when one above it grows: posting
-    // puts Your Input above Public Input.
+    // A section can move with no scroll, when one above it grows.
     tops.decided = 900
     tops.input = 1800
     tops.text = 2700

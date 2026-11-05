@@ -9,14 +9,14 @@ import { positionColours } from "./positions"
 import { brand, ink, line, shadow } from "./tokens"
 import { useWide } from "./useWide"
 
-const Card = styled.article<{ $bare: boolean }>`
+const Card = styled.article<{ $bare: boolean; $own: boolean }>`
   position: relative;
   padding: 20px;
-  ${({ $bare }) =>
+  ${({ $bare, $own }) =>
     $bare
       ? ""
-      : `background: var(--maple-surface-base);
-  border: 1px solid ${line.default};
+      : `background: ${$own ? brand.soft : "var(--maple-surface-base)"};
+  border: 1px solid ${$own ? brand.edge : line.default};
   border-radius: 8px;
   box-shadow: ${shadow.raised};`}
 
@@ -107,6 +107,8 @@ export function PositionChip({
   )
 }
 
+const OwnChip = styled(Chip).attrs({ $bg: brand.fill, $ink: "#fff" })``
+
 const Descriptor = styled.p`
   margin: 8px 0 0;
   font-size: 0.75rem;
@@ -162,6 +164,7 @@ export function Entry({
   testimony,
   actions,
   bare = false,
+  own = false,
   fullBody = false
 }: {
   testimony: ConferenceTestimony
@@ -169,6 +172,8 @@ export function Entry({
   actions?: React.ReactNode
   /** Without the card's own edge, for a caller that draws one around it. */
   bare?: boolean
+  /** The reader's own filing, marked as theirs. */
+  own?: boolean
   /** The words whole, with no clamp: for where the entry is the point. */
   fullBody?: boolean
 }) {
@@ -186,7 +191,7 @@ export function Entry({
   const name = nameOf(testimony)
 
   return (
-    <Card ref={ref} $bare={bare}>
+    <Card ref={ref} $bare={bare} $own={own}>
       <Head $wide={wide}>
         <Disc>{initialsOf(name)}</Disc>
         <Who>
@@ -194,6 +199,7 @@ export function Entry({
             <Name title={name}>{name}</Name>
             <AccountTypeIcon type={type} />
             <PositionChip position={testimony.position} />
+            {own && <OwnChip>{t("input.you")}</OwnChip>}
           </NameRow>
           <Descriptor>{t(`input.descriptor_${type}`)}</Descriptor>
         </Who>
