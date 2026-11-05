@@ -149,7 +149,7 @@ const Primary = styled.button`
   }
   &:disabled,
   &[aria-disabled="true"] {
-    background: rgba(31, 59, 97, 0.35);
+    background: ${brand.fillDisabled};
   }
 `
 

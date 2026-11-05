@@ -70,14 +70,26 @@ class Observer {
 Object.assign(global, { ResizeObserver: Observer })
 
 const profile = { representative: { id: "AHP1" } }
+let mockItems: object[] = []
 jest.mock("../db", () => ({
   useProfile: () => ({ profile }),
-  useConferenceTestimony: () => ({ items: [], loading: false })
+  useConferenceTestimony: () => ({ items: mockItems, loading: false })
 }))
 
-// Signed out, so the panel is not mounted and the page needs no store.
+// Signed out unless a test says otherwise, so the panel is not mounted and
+// the page needs no store.
+let mockUser: { uid: string; emailVerified: boolean } | undefined
 jest.mock("../auth", () => ({
-  useAuth: () => ({ user: undefined, authenticated: false })
+  useAuth: () => ({ user: mockUser, authenticated: Boolean(mockUser) })
+}))
+jest.mock("components/api/report", () => ({
+  useReportTestimony: () => ({ isError: false, isSuccess: false })
+}))
+jest.mock("components/TestimonyCard/ReportModal", () => ({}))
+jest.mock("components/TestimonyCard/ReportToast", () => () => null)
+jest.mock("./input/Panel", () => ({
+  Panel: () => null,
+  usePanelWidth: () => ({ width: 480, drag: jest.fn() })
 }))
 jest.mock("../hooks", () => ({ useAppDispatch: () => jest.fn() }))
 jest.mock("./input/useFollowedAuthors", () => ({
@@ -253,6 +265,8 @@ describe("ConferenceDetails", () => {
   })
 
   afterEach(() => {
+    mockUser = undefined
+    mockItems = []
     window.scrollTo = scrollTo
     Object.defineProperty(window, "scrollY", { value: 0, configurable: true })
   })
@@ -427,6 +441,26 @@ describe("ConferenceDetails", () => {
     ).not.toBeInTheDocument()
     // Public Input stays.
     expect(screen.getByText("input.empty_title")).toBeInTheDocument()
+  })
+
+  it("greys the title's button once the reader has filed", () => {
+    mockUser = { uid: "reader", emailVerified: true }
+    mockItems = [
+      {
+        id: "t1",
+        authorUid: "reader",
+        authorDisplayName: "Reader",
+        fullName: "Reader",
+        authorRole: "user",
+        position: "passSomething",
+        content: "Words",
+        publishedAt: { toDate: () => new Date(2026, 9, 1) }
+      }
+    ]
+    render(<ConferenceDetails {...props} />)
+    const [title] = screen.getAllByRole("button", { name: "input.share" })
+    expect(title).toBeDisabled()
+    expect(title).toHaveAttribute("title", "input.shared")
   })
 
   it("leads from its tabs to its sections", () => {
