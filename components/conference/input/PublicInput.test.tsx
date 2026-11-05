@@ -286,8 +286,6 @@ describe("PublicInput", () => {
       const onCosign = jest.fn()
       const card = entry(1, {
         cosignCount: 2,
-        cosignSenateDistrictCount: 1,
-        cosignHouseDistrictCount: 2,
         lastCosignedAt: at(4)
       } as any)
       mount([card, cosignOf(2, 1), cosignOf(3, 1, { authorUid: "me" })], {
@@ -296,22 +294,21 @@ describe("PublicInput", () => {
       })
       expect(band("2 input.cosign_count 2")).toBeInTheDocument()
       expect(screen.getByText("input.cosign_view_yours")).toBeInTheDocument()
-      expect(screen.getByText("input.cosign_senate")).toBeInTheDocument()
       expect(
         screen.getAllByRole("button", { name: "input.cosign" })
       ).toHaveLength(1)
     })
 
-    it("names only the chambers someone cosigned from", () => {
+    it("shows no district counts on the floor, even when the card carries them", () => {
       mount([
         entry(1, {
           cosignCount: 1,
-          cosignSenateDistrictCount: 0,
+          cosignSenateDistrictCount: 1,
           cosignHouseDistrictCount: 1
         } as any)
       ])
-      expect(screen.queryByText("input.cosign_senate")).not.toBeInTheDocument()
-      expect(screen.getByText("input.cosign_house")).toBeInTheDocument()
+      expect(band("1 input.cosign_count 1")).toBeInTheDocument()
+      expect(screen.queryByText(/cosign_senate|cosign_house/)).toBeNull()
     })
 
     it("leaves a cosign without words out until asked, and counts it anyway", async () => {

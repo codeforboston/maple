@@ -199,8 +199,6 @@
     "cosigned": "cosigned",
     "cosign_including_you": ", including you! ",
     "cosign_view_yours": "View input",
-    "cosign_senate": "Senate",
-    "cosign_house": "House",
     "last_cosigned": "Last cosigned: {{date}}",
     "last_cosigned_short": "Last cosigned {{date}}",
     "cosign_more_one": "Show {{count}} more cosign",

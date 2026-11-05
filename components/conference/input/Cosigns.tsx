@@ -129,20 +129,6 @@ const Count = styled.span`
   }
 `
 
-const Districts = styled.span`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  @media (max-width: 480px) {
-    display: none;
-  }
-`
-
-const Dot = styled.span`
-  margin: 0 2px;
-  color: ${ink.faint};
-`
-
 /** In a narrow window, a narrow card's latest date moves to its foot line
  * (Entry's LatestBeside); a wide card has none, so keeps it here. */
 const Latest = styled.span<{ $wide: boolean }>`
@@ -155,8 +141,7 @@ const Latest = styled.span<{ $wide: boolean }>`
   }
 `
 
-/** The card's floor: how many cosigned, from how many districts, and when
- * the latest did. */
+/** The card's floor: how many cosigned, and when the latest did. */
 export function Floor({
   testimony,
   wide
@@ -167,32 +152,12 @@ export function Floor({
 }) {
   const { t, i18n } = useTranslation("conferences")
   const latest = lastCosignedOn(testimony, i18n.language)
-  // Only the chambers someone cosigned from; a cosigner with no district on
-  // file counts toward the total alone.
-  const senate = testimony.cosignSenateDistrictCount ?? 0
-  const house = testimony.cosignHouseDistrictCount ?? 0
   return (
     <Base>
       <Count>
         <BadgeCheck size={16} />
         <b>{testimony.cosignCount}</b>
         <span>{t("input.cosigned")}</span>
-        <Districts>
-          {senate > 0 && (
-            <>
-              <Dot aria-hidden>·</Dot>
-              <b>{senate}</b>
-              <span>{t("input.cosign_senate")}</span>
-            </>
-          )}
-          {house > 0 && (
-            <>
-              <Dot aria-hidden>·</Dot>
-              <b>{house}</b>
-              <span>{t("input.cosign_house")}</span>
-            </>
-          )}
-        </Districts>
       </Count>
       {latest && (
         <Latest $wide={wide}>
