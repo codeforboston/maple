@@ -62,7 +62,7 @@ export type ConferencePageProps = {
   conferences: ConferenceSummary[]
   conferees: ConfereeView[]
   hearings: HearingView[]
-  /** What the bill is, in one sentence; null where none is written. */
+  /** What the bill is, in markdown; null where none is written. */
   gist: string | null
   differences: DifferenceView[]
   similarities: SimilarityView[]

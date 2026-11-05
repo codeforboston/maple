@@ -2,7 +2,10 @@ id: public-records
 name: Public Records
 court: 194
 title: An Act promoting transparency and public access in state government
-gist: Both bills would let the public request a set list of the Legislature's records through a separate process run by a records officer in each chamber, and both would bring the Governor's office under the public records law. They differ most on how courts review denials, whether the State Auditor may audit the Legislature (House only), which exemptions apply, and a journalist shield law (Senate only). Both bills were written before voters approved Question 1 (https://www.sec.state.ma.us/divisions/elections/research-and-statistics/2026-Information-for-voters/2026-ballot-question1.htm) on Nov. 3, 2026. Starting Jan. 1, 2027, that law puts the Legislature and the Governor's office under the general public records law, with new exemptions for constituent casework and for documents about developing policy. A final bill based on either version would replace that approach for the Legislature's records.
+gist: |-
+  Both bills would let the public request a set list of the Legislature's records through a separate process run by a records officer in each chamber, and both would bring the Governor's office under the public records law. They differ most on how courts review denials, whether the State Auditor may audit the Legislature (House only), which exemptions apply, and a journalist shield law (Senate only).
+
+  Both bills were written before voters approved [Question 1](https://www.sec.state.ma.us/divisions/elections/research-and-statistics/2026-Information-for-voters/2026-ballot-question1.htm) on Nov. 3, 2026. Starting Jan. 1, 2027, that law puts the Legislature and the Governor's office under the general public records law, with new exemptions for constituent casework and for documents about developing policy. A final bill based on either version would replace that approach for the Legislature's records.
 senateBillId: S3244
 houseBillId: H5469
 canonicalBillId: H5469
