@@ -17,6 +17,10 @@ export type ConferenceSummary = {
   /** The bill testimony on the conference is filed against. */
   canonicalBillId: string
   status: ConferenceStatus
+  /** False where we haven't written the conference up yet. */
+  covered: boolean
+  /** The conference report's bill, once one is filed. */
+  reportBillId: string | null
 }
 
 /** A conferee with the member document resolved and their seat on the map
@@ -62,6 +66,8 @@ export type ConferencePageProps = {
   gist: string | null
   differences: DifferenceView[]
   similarities: SimilarityView[]
+  /** Published input on the conference, as the testimony triggers count it. */
+  testimonyCount: number
 }
 
 /** The index: every conference, active first, with its conferees by

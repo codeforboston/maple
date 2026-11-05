@@ -79,6 +79,12 @@ export const Conference = withDefaults(
     /** The bill whose history carries the appointment actions, one of the
      * pair. Testimony on the conference is filed against this bill. */
     canonicalBillId: Id,
+    /** False while we haven't written up this conference: its page carries a
+     * notice and takes no testimony. */
+    covered: Boolean,
+    /** The conference report, which the legislature files as a bill of its
+     * own once the committee agrees. */
+    reportBillId: Optional(Id),
     conferees: Array(Conferee),
     status: ConferenceStatus,
     /** Linked by hand: conference hearings arrive with an empty agenda and no
@@ -93,6 +99,7 @@ export const Conference = withDefaults(
     passHouseVersionCount: Number
   }),
   {
+    covered: true,
     hearingIds: [],
     differences: [],
     similarities: [],

@@ -5,7 +5,8 @@ title: An Act to improve Massachusetts home care
 senateBillId: S3183
 houseBillId: H4706
 canonicalBillId: H4706
-status: reportFiled
+status: enacted
+reportBillId: H5627
 conferees:
   - memberCode: TMS1
     branch: House

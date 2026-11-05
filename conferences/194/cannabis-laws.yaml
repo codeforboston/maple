@@ -5,7 +5,8 @@ title: An Act modernizing the commonwealth’s cannabis laws
 senateBillId: S2749
 houseBillId: H4206
 canonicalBillId: H4206
-status: reportFiled
+status: enacted
+reportBillId: H5350
 conferees:
   - memberCode: DMD1
     branch: House

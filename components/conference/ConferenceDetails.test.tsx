@@ -127,7 +127,9 @@ const conference: ConferencePageProps["conference"] = {
   senateBillId: "S2581",
   houseBillId: "H5366",
   canonicalBillId: "S2581",
-  status: "appointed"
+  status: "appointed",
+  covered: true,
+  reportBillId: null
 }
 
 const props: ConferencePageProps = {
@@ -142,7 +144,9 @@ const props: ConferencePageProps = {
       senateBillId: "S2619",
       houseBillId: "H5479",
       canonicalBillId: "S2619",
-      status: "appointed"
+      status: "appointed",
+      covered: true,
+      reportBillId: null
     }
   ],
   conferees: [
@@ -228,7 +232,14 @@ const props: ConferencePageProps = {
       heading: "Phones barred during the school day",
       body: "Every district must have a policy."
     }
-  ]
+  ],
+  testimonyCount: 0
+}
+
+/** Neither the Public Input section nor its tab. */
+const expectNoPublicInput = () => {
+  expect(screen.queryByText("input.empty_title")).not.toBeInTheDocument()
+  expect(screen.queryByRole("link", { name: "tab_input" })).toBeNull()
 }
 
 /** What useWide reads: jsdom lays nothing out, so every element is 0 wide. */
@@ -420,11 +431,13 @@ describe("ConferenceDetails", () => {
     )
     unmount()
     const reported = { ...conference, status: "reportFiled" as const }
-    render(<ConferenceDetails {...props} conference={reported} />)
+    render(
+      <ConferenceDetails {...props} conference={reported} testimonyCount={3} />
+    )
     expect(
       screen.queryByRole("button", { name: "input.share" })
     ).not.toBeInTheDocument()
-    // Public Input stays.
+    // Public Input stays for the input it was given.
     expect(screen.getByText("input.empty_title")).toBeInTheDocument()
   })
 
@@ -446,6 +459,36 @@ describe("ConferenceDetails", () => {
     const [title] = screen.getAllByRole("button", { name: "input.share" })
     expect(title).toBeDisabled()
     expect(title).toHaveAttribute("title", "input.shared")
+  })
+
+  it("drops Public Input and its tab from a closed conference nobody gave input on", () => {
+    const enacted = { ...conference, status: "enacted" as const }
+    render(<ConferenceDetails {...props} conference={enacted} />)
+    expectNoPublicInput()
+  })
+
+  it("takes no input on a conference we don't cover, and says why", () => {
+    const uncovered = { ...conference, covered: false }
+    render(<ConferenceDetails {...props} conference={uncovered} />)
+    expect(screen.getByText("notice.not_covered")).toBeInTheDocument()
+    expect(
+      screen.queryByRole("button", { name: "input.share" })
+    ).not.toBeInTheDocument()
+    expectNoPublicInput()
+  })
+
+  it("names the report that resolved it, where there is one", () => {
+    const { unmount } = render(<ConferenceDetails {...props} />)
+    expect(screen.queryByTestId("notice.resolved")).toBeNull()
+    expect(screen.queryByText("notice.not_covered")).not.toBeInTheDocument()
+    unmount()
+    const enacted = {
+      ...conference,
+      status: "enacted" as const,
+      reportBillId: "H5350"
+    }
+    render(<ConferenceDetails {...props} conference={enacted} />)
+    expect(screen.getByTestId("notice.resolved")).toHaveTextContent("H.5350")
   })
 
   it("leads from its tabs to its sections", () => {

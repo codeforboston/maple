@@ -120,7 +120,6 @@ const Section = styled.div`
 /** In the mockup's order, which goes on to the sections still to come. A
  * conference with nothing written on what is unresolved has no such section. */
 const SECTIONS = ["committee", "decided", "input", "text"] as const
-const UNDECIDED = SECTIONS.filter(s => s !== "decided")
 
 /**
  * One conference: who is deciding, and the two texts they are deciding
@@ -145,6 +144,7 @@ function Details({
   gist,
   differences,
   similarities,
+  testimonyCount,
   openOnHero = false
 }: ConferencePageProps & { openOnHero?: boolean }) {
   const { top, hero, toConference } = useConferenceTop(openOnHero)
@@ -164,8 +164,18 @@ function Details({
   const { width, drag } = usePanelWidth()
   const followed = useFollowedAuthors(user?.uid)
   const subject = conferenceName(conference)
-  const taking = takesTestimony(conference.status)
+  const taking = takesTestimony(conference)
   const decided = differences.length > 0 || similarities.length > 0
+  // Input belongs to the conferences we cover, and once one has closed, only
+  // where someone gave it.
+  const heard = taking || (conference.covered && testimonyCount > 0)
+  const sections = useMemo(
+    () =>
+      SECTIONS.filter(
+        s => (s !== "decided" || decided) && (s !== "input" || heard)
+      ),
+    [decided, heard]
+  )
 
   const close = useCallback(() => setOpen(false), [])
   const edit = useCallback(() => {
@@ -247,7 +257,7 @@ function Details({
               $top="calc(var(--maple-navbar-height) + var(--title-h, 5rem))"
               $z={13}
             >
-              <ConferenceTabs sections={decided ? SECTIONS : UNDECIDED} />
+              <ConferenceTabs sections={sections} />
             </Band>
             <Section id="committee">
               {/* Keyed so a pinned seat does not outlive its conference. */}
@@ -270,9 +280,11 @@ function Details({
                 />
               </Section>
             )}
-            <Section>
-              <PublicInput items={items} loading={loading} />
-            </Section>
+            {heard && (
+              <Section>
+                <PublicInput items={items} loading={loading} />
+              </Section>
+            )}
             <Section id="text">
               {/* Keyed so a picked version does not outlive its conference. */}
               <ConferenceText key={conference.id} conference={conference} />

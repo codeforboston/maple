@@ -6,6 +6,11 @@
     "enacted": "Enacted",
     "dissolved": "Dissolved"
   },
+  "not_covered": "Not covered",
+  "notice": {
+    "resolved": "Resolved by <1>{{report}}</1>.",
+    "not_covered": "We’re trialling these pages with a limited set of conference committees, and this isn’t one of them yet. You can’t add your input here."
+  },
   "who": "Who’s in the committee?",
   "senate": "Senate",
   "house": "House",
