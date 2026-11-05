@@ -2,7 +2,7 @@ id: public-records
 name: Public Records
 court: 194
 title: An Act promoting transparency and public access in state government
-gist: Both bills would let the public request listed categories of the Legislature's records through a separate process run by a records officer in each chamber, and both bring the Governor's office under the public records law for records from January 2027 on. They split on how courts review denials, whether the State Auditor may audit the Legislature (House only), which exemptions apply, and a journalist shield law (Senate only).
+gist: Both bills would let the public request a set list of the Legislature's records through a separate process run by a records officer in each chamber, and both would bring the Governor's office under the public records law. They differ most on how courts review denials, whether the State Auditor may audit the Legislature (House only), which exemptions apply, and a journalist shield law (Senate only). Both bills were written before voters approved Question 1 (https://www.sec.state.ma.us/divisions/elections/research-and-statistics/2026-Information-for-voters/2026-ballot-question1.htm) on Nov. 3, 2026. Starting Jan. 1, 2027, that law puts the Legislature and the Governor's office under the general public records law, with new exemptions for constituent casework and for documents about developing policy. A final bill based on either version would replace that approach for the Legislature's records.
 senateBillId: S3244
 houseBillId: H5469
 canonicalBillId: H5469
@@ -50,8 +50,8 @@ differences:
   - heading: Should the bill include money to carry out the new rules?
     house: "Yes, $1,000,000 for fiscal year 2026: $250,000 each for the Governor's office, the Senate, the House and joint legislative operations. That fiscal year has ended. (§§1–2)"
 similarities:
-  - heading: Would the Legislature have to answer public records requests?
-    body: Yes, but only for a set list of final legislative records, through its own process. That process is the only way to get them; the general public records law would not apply to the Legislature.
+  - heading: How would requests for the Legislature's records work?
+    body: Only a set list of final legislative records would be available, through the Legislature's own process. That process would be the only way to get them; the general public records law would not apply to the Legislature.
   - heading: Which Legislature records would be covered?
     body: Bills, amendments, summaries and fiscal notes, with their sponsors; hearing notices, attendance and recordings or transcripts; written testimony (subject to committee rules on sensitive information); committee votes and reports; rules, calendars, journals and roll calls; leadership, committee and office assignments; employee manuals and policies; appointment notices; reports required by law; spending records sent to the Comptroller, including salaries and payments to vendors; final internal audits; ethics disclosures; the State House press list; and approved district maps.
   - heading: Who would handle requests?
