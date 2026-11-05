@@ -3,6 +3,9 @@ import * as yaml from "js-yaml"
 import * as path from "path"
 import { Timestamp } from "../../functions/src/firebase"
 import { createMemberSearchIndex } from "../../functions/src/members/createMemberSearchIndex"
+import { conferenceCountFields } from "../../functions/src/conferences/types"
+import type { Testimony } from "../../functions/src/testimony/types"
+import { updateTestimonyCounts } from "../../functions/src/testimony/updateTestimonyCounts"
 import { script as syncConferences } from "./syncConferences"
 import { Script } from "./types"
 
@@ -20,7 +23,7 @@ const COURT = 194
 const SAMPLE = "student-learning-and-mental-health"
 const WAIT_MS = 180_000
 
-const sample: [string, string, string, string][] = [
+const sample: [string, string, Testimony["position"], string][] = [
   [
     "Sam Okafor",
     "user",
@@ -76,6 +79,7 @@ export const script: Script = async ctx => {
   for (const f of files) {
     const c: any = yaml.load(fs.readFileSync(path.join(dir, f), "utf8"))
     bills.add(c.senateBillId).add(c.houseBillId)
+    if (c.reportBillId) bills.add(c.reportBillId)
     c.conferees.forEach((m: any) => members.add(m.memberCode))
   }
 
@@ -138,5 +142,16 @@ export const script: Script = async ctx => {
       updatedAt: Timestamp.fromMillis(at)
     })
   }
+  // Publishing keeps the conference's counts; these were written directly, so
+  // set them to match.
+  await db.doc(conference).update(
+    sample.reduce(
+      (counts, [, , position]) =>
+        updateTestimonyCounts(conferenceCountFields, counts, undefined, {
+          position
+        }),
+      {}
+    )
+  )
   console.log(`seeded ${sample.length} sample testimonies on ${SAMPLE}`)
 }
