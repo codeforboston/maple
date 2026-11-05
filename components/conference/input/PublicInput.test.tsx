@@ -42,6 +42,17 @@ const entry = (
     ...overrides
   } as unknown as ConferenceTestimony)
 
+const cosignOf = (
+  n: number,
+  of: number,
+  overrides: Partial<ConferenceTestimony> = {}
+) =>
+  entry(n, {
+    cosignOfId: `t${of}`,
+    cosignOfAuthorUid: `u${of}`,
+    ...overrides
+  })
+
 const many = (count: number) =>
   Array.from({ length: count }, (_, i) =>
     entry(i + 1, {
@@ -240,17 +251,6 @@ describe("PublicInput", () => {
 
   describe("cosigns under their card", () => {
     const at = (n: number) => ({ toDate: () => new Date(2026, 9, n) })
-    const cosignOf = (
-      n: number,
-      of: number,
-      overrides: Partial<ConferenceTestimony> = {}
-    ) =>
-      entry(n, {
-        cosignOfId: `t${of}`,
-        cosignOfAuthorUid: `u${of}`,
-        ...overrides
-      })
-
     const band = (text: string) =>
       screen.getByText(
         (_, el) => el?.tagName === "SPAN" && !!el.textContent?.startsWith(text)
@@ -357,6 +357,66 @@ describe("PublicInput", () => {
       fireEvent.click(screen.getByText("input.cosign_more 1"))
       expect(rows("Author 1")).toHaveLength(5)
       expect(screen.getByText("input.cosign_fewer")).toBeInTheDocument()
+    })
+  })
+
+  describe("the reader's own cosign", () => {
+    // Oldest of the cosigns on Author 1, so only the rule puts it first.
+    const mine = cosignOf(20, 1, {
+      authorUid: "me",
+      publishedAt: { toDate: () => new Date(2026, 8, 1) }
+    } as any)
+    const others = [2, 3, 4, 5].map(n => cosignOf(n + 10, 1))
+    const feed = [...many(12), ...others, mine]
+
+    const asReader = (items: ConferenceTestimony[]) =>
+      mount(items, { uid: "me" })
+    const rowsOf = () => within(cardOf("Author 1")).queryAllByRole("listitem")
+
+    it("stands its card first on every page, and its own first under it", () => {
+      asReader(feed)
+      expect(screen.getAllByRole("article")[0]).toBe(cardOf("Author 1"))
+      expect(rowsOf()[0]).toHaveTextContent("Author 20")
+      fireEvent.click(screen.getByRole("button", { name: "3" }))
+      expect(screen.getAllByRole("article")[0]).toBe(cardOf("Author 1"))
+    })
+
+    it("shows once, marked as theirs on its row and not on the card", () => {
+      asReader(feed)
+      expect(screen.getAllByText("Author 20")).toHaveLength(1)
+      expect(screen.getAllByText("input.you")).toHaveLength(1)
+      expect(within(rowsOf()[0]).getByText("input.you")).toBeInTheDocument()
+      expect(rowsOf()[0]).toHaveAttribute("id", "your-input")
+      expect(cardOf("Author 1").closest("#your-input")).toBeNull()
+    })
+
+    it("stays when a filter would leave its card out", async () => {
+      asReader(feed.map(x => ({ ...x, position: "passSomething" as const })))
+      fireEvent.click(screen.getByLabelText("input.filter_by_position"))
+      fireEvent.click(
+        within(await screen.findByRole("menu")).getByText(
+          "input.position.passNothing.long"
+        )
+      )
+      expect(screen.getAllByRole("article")).toHaveLength(1)
+      expect(rowsOf()[0]).toHaveTextContent("Author 20")
+    })
+
+    it("shows without words while others without words wait", () => {
+      asReader([
+        ...feed.filter(x => x !== mine),
+        { ...mine, content: "" },
+        cosignOf(30, 1, { content: "" })
+      ])
+      expect(rowsOf()[0]).toHaveTextContent("input.cosign_no_words")
+      expect(screen.getAllByText("input.cosign_no_words")).toHaveLength(1)
+    })
+
+    it("stands alone, marked, where its card is not here", () => {
+      asReader([entry(2), cosignOf(3, 9, { authorUid: "me" })])
+      const cards = screen.getAllByRole("article")
+      expect(cards[0]).toHaveTextContent("Author 3")
+      expect(within(cards[0]).getByText("input.you")).toBeInTheDocument()
     })
   })
 })

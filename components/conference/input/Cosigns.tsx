@@ -1,6 +1,7 @@
 import { ReactNode, useState } from "react"
 import { useTranslation } from "next-i18next"
-import styled from "styled-components"
+import styled, { css } from "styled-components"
+import { TABS_H } from "../ConferenceTabs"
 import { ConferenceTestimony } from "components/db"
 import { jumpToSection } from "../navbar"
 import { Pill, useCosign } from "./CosignButton"
@@ -13,6 +14,7 @@ import {
   Disc,
   LATEST_BESIDE,
   NoWords,
+  OwnChip,
   When,
   Who,
   filedOn,
@@ -22,6 +24,13 @@ import { AccountTypeIcon } from "./Pickers"
 import { accountTypeOf, initialsOf, nameOf } from "./accounts"
 import { BadgeCheck, UsersRound } from "./icons"
 import { brand, ink, line, wash } from "./tokens"
+
+/** Where a jump to a block of Public Input parks it: under the bars. */
+export const parked = css`
+  scroll-margin-top: calc(
+    var(--maple-navbar-height) + var(--title-h, 5rem) + ${TABS_H} + 1.5rem
+  );
+`
 
 /** Cosigns shown under a card before the rest wait behind a control. */
 const COSIGNS_SHOWN = 3
@@ -186,9 +195,20 @@ const List = styled.ul<{ $wide: boolean }>`
   }
 `
 
-const Row = styled.li`
+/** The reader's own row is tinted as their card is, set in a little so its
+ * words keep the other rows' line. */
+const Row = styled.li<{ $own: boolean }>`
   display: flex;
   gap: 12px;
+  ${({ $own }) =>
+    $own
+      ? `margin: 0 -12px;
+  padding: 10px 12px;
+  background: ${brand.soft};
+  border: 1px solid ${brand.edge};
+  border-radius: 8px;`
+      : ""}
+  ${parked}
 `
 
 const Small = styled(Disc)`
@@ -258,10 +278,13 @@ const More = styled(Link)`
  * few shown and the rest a press away. */
 export function CosignList({
   cosigns,
+  mine,
   wide,
   actions
 }: {
   cosigns: ConferenceTestimony[]
+  /** The reader's own filing: if it is one of these, its row is theirs. */
+  mine?: ConferenceTestimony
   /** The card is wide enough to hang the list under its words. */
   wide: boolean
   /** The kebab on each cosign. */
@@ -279,7 +302,11 @@ export function CosignList({
         const type = accountTypeOf(c.authorRole)
         const date = filedOn(c, i18n.language)
         return (
-          <Row key={`${c.authorUid}-${c.id}`}>
+          <Row
+            key={`${c.authorUid}-${c.id}`}
+            id={c === mine ? "your-input" : undefined}
+            $own={c === mine}
+          >
             <Small>{initialsOf(name)}</Small>
             <Who>
               <Head>
@@ -288,6 +315,7 @@ export function CosignList({
                     <Name title={name}>{name}</Name>
                     <AccountTypeIcon type={type} />
                     <Cosigned>{t("input.cosigned")}</Cosigned>
+                    {c === mine && <OwnChip>{t("input.you")}</OwnChip>}
                   </NameRow>
                   <RowDescriptor>{t(`input.descriptor_${type}`)}</RowDescriptor>
                 </Who>

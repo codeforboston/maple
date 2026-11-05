@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "next-i18next"
-import styled, { css } from "styled-components"
-import { TABS_H } from "../ConferenceTabs"
+import styled from "styled-components"
 import { ConferenceTestimony } from "components/db"
 import { useInputContext } from "./context"
 import { CosignButton } from "./CosignButton"
-import { Band, CosignList, Floor } from "./Cosigns"
+import { Band, CosignList, Floor, parked } from "./Cosigns"
 import { Entry } from "./Entry"
 import { EntryModal } from "./EntryModal"
 import { Kebab } from "./Kebab"
@@ -29,9 +28,16 @@ const PAGE_SIZE = 5
  * card is not here stands as a unit of its own. */
 type Unit = { lead: ConferenceTestimony; cosigns: ConferenceTestimony[] }
 
-/** The unit with only the cosigns that have words, unless all are asked for. */
-const withWords = (u: Unit, wordless: boolean): Unit =>
-  wordless ? u : { ...u, cosigns: u.cosigns.filter(c => c.content) }
+/** The unit with only the cosigns that have words, unless all are asked for.
+ * The reader's own stays whatever it says. */
+const withWords = (
+  u: Unit,
+  wordless: boolean,
+  mine?: ConferenceTestimony
+): Unit =>
+  wordless
+    ? u
+    : { ...u, cosigns: u.cosigns.filter(c => c.content || c === mine) }
 
 const millis = (t?: { toDate: () => Date }) => (t ? t.toDate().getTime() : 0)
 
@@ -61,13 +67,6 @@ function unitsOf(items: ConferenceTestimony[]): Unit[] {
     )
   return units.sort((a, b) => rank(b) - rank(a))
 }
-
-/** Where a jump to a block of this section parks it: under the bars. */
-const parked = css`
-  scroll-margin-top: calc(
-    var(--maple-navbar-height) + var(--title-h, 5rem) + ${TABS_H} + 1.5rem
-  );
-`
 
 const Section = styled.section`
   ${parked}
@@ -175,20 +174,23 @@ export function PublicInput({
   const showFilters = items.length === 0 || items.length >= FEED_CONTROLS_MIN
   // Ranked with every cosign, so one without words still brings its card up.
   const ranked = useMemo(() => unitsOf(items), [items])
-  // The reader's own card keeps the cosigns under it, if it has any. If it is
-  // itself a cosign it stands alone here, and is left out of the list under
-  // the card it cosigns, whose tally still counts it.
+  // The reader's own card stands first with the cosigns under it, if it has
+  // any. If theirs is a cosign, the card it cosigns stands first, with theirs
+  // first under it; a cosign whose card is not here stands alone.
   const { ownUnit, others } = useMemo(() => {
     if (!mine) return { ownUnit: undefined, others: ranked }
-    const ownUnit = ranked.find(u => u.lead === mine) ?? {
-      lead: mine,
-      cosigns: []
-    }
+    const ownUnit = ranked.find(
+      u => u.lead === mine || u.cosigns.includes(mine)
+    ) ?? { lead: mine, cosigns: [] }
     return {
-      ownUnit,
-      others: ranked
-        .filter(u => u !== ownUnit)
-        .map(u => ({ ...u, cosigns: u.cosigns.filter(c => c !== mine) }))
+      ownUnit: {
+        ...ownUnit,
+        cosigns: [
+          ...ownUnit.cosigns.filter(c => c === mine),
+          ...ownUnit.cosigns.filter(c => c !== mine)
+        ]
+      },
+      others: ranked.filter(u => u.lead !== ownUnit.lead)
     }
   }, [ranked, mine])
   const units = useMemo(
@@ -222,13 +224,13 @@ export function PublicInput({
   const current = Math.min(page, pageCount - 1)
   const paged = shown.slice(current * PAGE_SIZE, (current + 1) * PAGE_SIZE)
 
-  const card = ({ lead: x, cosigns }: Unit, own = false) => {
+  const card = ({ lead: x, cosigns }: Unit) => {
     const banded = !!x.cosignCount && !x.cosignOfId
     return (
       <Entry
         key={`${x.authorUid}-${x.id}`}
         testimony={x}
-        own={own}
+        own={x === mine}
         lead={!banded && <CosignButton testimony={x} />}
         band={
           banded && <Band testimony={x} yours={mine?.cosignOfId === x.id} />
@@ -240,6 +242,7 @@ export function PublicInput({
         {wide => (
           <CosignList
             cosigns={cosigns}
+            mine={mine}
             wide={wide}
             actions={c => <Kebab testimony={c} onView={() => setOpened(c)} />}
           />
@@ -272,8 +275,10 @@ export function PublicInput({
           {(ownUnit || paged.length > 0) && (
             <Feed>
               {ownUnit && (
-                <Own id="your-input">
-                  {card(withWords(ownUnit, wordless), true)}
+                // The jump lands on the reader's own: their card, or their
+                // cosign in the group under the card it cosigns.
+                <Own id={ownUnit.lead === mine ? "your-input" : undefined}>
+                  {card(withWords(ownUnit, wordless, mine))}
                 </Own>
               )}
               {paged.map(u => card(u))}

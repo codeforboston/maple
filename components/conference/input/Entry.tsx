@@ -172,7 +172,7 @@ export function PositionChip({
   )
 }
 
-const OwnChip = styled(Chip).attrs({ $bg: brand.fill, $ink: "#fff" })``
+export const OwnChip = styled(Chip).attrs({ $bg: brand.fill, $ink: "#fff" })``
 
 export const Descriptor = styled.p`
   margin: 8px 0 0;
