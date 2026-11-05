@@ -198,7 +198,7 @@ const Hint = styled.p`
 
 /** A field that asks for what is missing: pressed on without it, the field
  * goes red, shakes and takes the focus; words in it settle it. */
-export function useAsk(field: RefObject<HTMLElement>) {
+export function useAsk(field: RefObject<HTMLElement | null>) {
   const [refused, setRefused] = useState(false)
   const [asking, setAsking] = useState(false)
   return {

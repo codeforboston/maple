@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react"
 import { FunctionsError } from "firebase/functions"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
@@ -422,7 +422,7 @@ export function CosignForm({
           $refused={ask.refused}
           $asking={ask.asking}
           onAnimationEnd={ask.asked}
-          onChange={e => {
+          onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
             if (e.target.value.trim()) ask.settle()
             setNote(e.target.value)
           }}

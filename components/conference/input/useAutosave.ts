@@ -49,7 +49,7 @@ export function useAutosave<F>({
   const shown = useRef(fields)
   shown.current = fields
   const inSync = () => matches(held.current, shown.current)
-  const timer = useRef<ReturnType<typeof setTimeout>>()
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const touched = useRef(false)
   const dirty = useRef(false)
   // A write in flight, for a handler called before saveDraft.loading has
