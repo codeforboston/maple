@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react"
+import { ConferenceTestimony } from "components/db"
 
 /** What a card needs from the page around it: who is looking, and what the
  * actions on an entry do. */
@@ -14,12 +15,18 @@ type InputContextValue = {
   onEdit?: () => void
   /** Whether an entry can be followed or reported by this viewer. */
   signedIn: boolean
+  /** Open the panel to cosign an entry; absent while the viewer cannot cosign
+   * anything here. A signed-out viewer can, which takes them to sign in. */
+  onCosign?: (testimony: ConferenceTestimony) => void
+  /** The conference's entries by id, which is how a cosign names its parent. */
+  byId: Map<string, ConferenceTestimony>
 }
 
 export const InputContext = createContext<InputContextValue>({
   subject: "",
   followed: new Set(),
-  signedIn: false
+  signedIn: false,
+  byId: new Map()
 })
 
 export const useInputContext = () => useContext(InputContext)

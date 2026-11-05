@@ -196,9 +196,14 @@ function useTestimony(
   useEffect(() => {
     if (draftRef)
       return onSnapshot(draftRef, {
+        // Gone on the server is deleted elsewhere, as by another tab.
         next: snap =>
-          snap.exists() &&
-          dispatch({ type: "loadDraft", value: snap.data() as WorkingDraft }),
+          snap.exists()
+            ? dispatch({
+                type: "loadDraft",
+                value: snap.data() as WorkingDraft
+              })
+            : !snap.metadata.fromCache && dispatch({ type: "discardDraft" }),
         error: error => dispatch({ type: "error", error })
       })
   }, [dispatch, draftRef])
@@ -206,12 +211,16 @@ function useTestimony(
   useEffect(() => {
     if (publicationRef)
       return onSnapshot(publicationRef, {
+        // Gone on the server is deleted elsewhere, as a cosign is with the
+        // testimony it cosigns.
         next: snap =>
-          snap.exists() &&
-          dispatch({
-            type: "loadPublication",
-            value: snap.data() as Testimony
-          }),
+          snap.exists()
+            ? dispatch({
+                type: "loadPublication",
+                value: snap.data() as Testimony
+              })
+            : !snap.metadata.fromCache &&
+              dispatch({ type: "deletePublication" }),
         error: error => dispatch({ type: "error", error })
       })
   }, [dispatch, publicationRef])
@@ -272,6 +281,8 @@ type SaveDraftRequest = Pick<
   | "attachmentId"
   | "recipientMemberCodes"
   | "editReason"
+  | "cosignOfId"
+  | "cosignOfAuthorUid"
 > & { ballotQuestionId?: string | null }
 type SaveConferenceDraftRequest = Omit<SaveDraftRequest, "position"> & {
   position: ConferencePosition
@@ -298,6 +309,8 @@ function useSaveDraft(
         attachmentId,
         recipientMemberCodes,
         editReason,
+        cosignOfId,
+        cosignOfAuthorUid,
         ballotQuestionId: requestBallotQuestionId
       }: SaveDraftRequest) => {
         if (draftLoading) {
@@ -313,7 +326,9 @@ function useSaveDraft(
             attachmentId: attachmentId ?? null,
             ballotQuestionId:
               requestBallotQuestionId ?? ballotQuestionId ?? null,
-            conferenceId: conferenceId ?? null
+            conferenceId: conferenceId ?? null,
+            cosignOfId: cosignOfId ?? null,
+            cosignOfAuthorUid: cosignOfAuthorUid ?? null
           }
           const result = await addDoc(
             collection(firestore, `/users/${uid}/draftTestimony`),
@@ -334,6 +349,8 @@ function useSaveDraft(
             editReason: editReason ?? null,
             ballotQuestionId:
               requestBallotQuestionId ?? ballotQuestionId ?? null,
+            cosignOfId: cosignOfId ?? null,
+            cosignOfAuthorUid: cosignOfAuthorUid ?? null,
             publishedVersion: hasChanges ? deleteField() : undefined
           })
         }

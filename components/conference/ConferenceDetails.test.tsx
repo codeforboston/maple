@@ -73,7 +73,18 @@ const profile = { representative: { id: "AHP1" } }
 let mockItems: object[] = []
 jest.mock("../db", () => ({
   useProfile: () => ({ profile }),
-  useConferenceTestimony: () => ({ items: mockItems, loading: false })
+  useConferenceTestimony: () => ({ items: mockItems, loading: false }),
+  hasDraftChanged: () => false,
+  useEditConferenceTestimony: () => {
+    const noop = { execute: async () => {}, error: undefined, loading: false }
+    return {
+      loading: false,
+      draftLoading: false,
+      saveDraft: noop,
+      publishTestimony: noop,
+      discardDraft: noop
+    }
+  }
 }))
 
 // Signed out unless a test says otherwise, so the panel is not mounted and
@@ -91,7 +102,11 @@ jest.mock("./input/Panel", () => ({
   Panel: () => null,
   usePanelWidth: () => ({ width: 480, drag: jest.fn() })
 }))
-jest.mock("../hooks", () => ({ useAppDispatch: () => jest.fn() }))
+const mockDispatch = jest.fn()
+jest.mock("../hooks", () => ({ useAppDispatch: () => mockDispatch }))
+// A card's actions reach for the report API; the page's own tests do not.
+jest.mock("./input/Kebab", () => ({ Kebab: () => null }))
+jest.mock("./input/EntryModal", () => ({ EntryModal: () => null }))
 jest.mock("./input/useFollowedAuthors", () => ({
   useFollowedAuthors: () => new Set()
 }))
@@ -489,6 +504,36 @@ describe("ConferenceDetails", () => {
     }
     render(<ConferenceDetails {...props} conference={enacted} />)
     expect(screen.getByTestId("notice.resolved")).toHaveTextContent("H.5350")
+  })
+
+  it("sends a signed-out reader who cosigns to sign in, and offers it only while appointed", () => {
+    mockItems = [
+      {
+        id: "t1",
+        authorUid: "org",
+        authorDisplayName: "Example Coalition",
+        fullName: "Example Coalition",
+        authorRole: "organization",
+        position: "passSomething",
+        content: "The letter.",
+        publishedAt: { toDate: () => new Date(2026, 9, 1) }
+      }
+    ]
+    try {
+      const { unmount } = render(<ConferenceDetails {...props} />)
+      fireEvent.click(screen.getByRole("button", { name: "input.cosign" }))
+      expect(mockDispatch).toHaveBeenCalledWith(
+        expect.objectContaining({ payload: "start" })
+      )
+      unmount()
+      const reported = { ...conference, status: "reportFiled" as const }
+      render(<ConferenceDetails {...props} conference={reported} />)
+      expect(
+        screen.queryByRole("button", { name: "input.cosign" })
+      ).not.toBeInTheDocument()
+    } finally {
+      mockItems = []
+    }
   })
 
   it("leads from its tabs to its sections", () => {
