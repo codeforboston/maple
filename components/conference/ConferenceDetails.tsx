@@ -238,7 +238,9 @@ function Details({
               </div>
               <TitleRow>
                 <PageTitle as={openOnHero ? "h2" : "h1"}>{subject}</PageTitle>
-                {taking && !mine && <ShareButton onClick={share} />}
+                {taking && (
+                  <ShareButton onClick={share} disabled={Boolean(mine)} />
+                )}
               </TitleRow>
             </TitleBand>
             <ConferenceByline conference={conference} />

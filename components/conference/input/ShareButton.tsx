@@ -17,17 +17,33 @@ const Button = styled.button`
   font-size: 0.8125rem;
   font-weight: 600;
   white-space: nowrap;
-  &:hover {
+  &:hover:not(:disabled) {
     background: ${brand.hover};
     border-color: ${brand.hover};
   }
+  &:disabled {
+    border-color: transparent;
+    background: ${brand.fillDisabled};
+    cursor: not-allowed;
+  }
 `
 
-/** The way in, beside the title. */
-export function ShareButton({ onClick }: { onClick: () => void }) {
+/** The way in, beside the title. Drawn disabled once the reader has filed. */
+export function ShareButton({
+  onClick,
+  disabled
+}: {
+  onClick: () => void
+  disabled?: boolean
+}) {
   const { t } = useTranslation("conferences")
   return (
-    <Button type="button" onClick={onClick}>
+    <Button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      title={disabled ? t("input.shared") : undefined}
+    >
       <Plus size={16} />
       {t("input.share")}
     </Button>

@@ -94,6 +94,7 @@
   },
   "input": {
     "share": "Share your input",
+    "shared": "You've already shared input on this conference",
     "title": "Public Input",
     "all_users": "All users",
     "all_accounts": "All Accounts",
