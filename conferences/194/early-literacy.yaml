@@ -25,5 +25,158 @@ conferees:
 hearingIds:
   - hearing-5587
   - hearing-5725
-differences: []
-similarities: []
+differences:
+  - heading: What counts as evidence-based literacy instruction, and what must comprehension cover?
+    senate: Methods backed by scientific research with a record of raising reading, vocabulary, oral language and comprehension, with measurable, positive effects. Comprehension includes oral reading and oral communication, and curricula must include oral language development. (§3, §1E½(a))
+    house: Instruction grounded in scientific research methods and shown in well-designed studies to have significant, positive effects. The five reading areas are listed, but comprehension is not defined. (§2, G.L. c. 69 §1E½(a))
+    outcome: senate
+    addressedBy: both
+    resolution: The law uses the Senate's definitions, word for word.
+    law: The Senate definitions, word for word. (§3, §1E½(a))
+    why: The standard of proof moved from “significant” effects to “measurable” ones.
+  - heading: Should DESE set the K–3 reading screening rules as guidance or as binding regulation?
+    senate: DESE issues regulations with the same threshold, and screening must account for the needs of English language learners. (§11, §57B(b))
+    house: DESE issues guidelines that require screening procedures and set a “significantly below” benchmark threshold. (§10, G.L. c. 71 §57B(b))
+    outcome: senate
+    edited: Issuer changed
+    addressedBy: both
+    resolution: Binding regulations that account for English learners, as the Senate wrote.
+    law: The Senate text. The issuer changes from “the department” to “the commissioner.” (§11, §57B(b))
+  - heading: Should the existing dyslexia screening section (§57A) be rewritten?
+    senate: Rewrites §57A. Districts must follow DESE's dyslexia guidelines and report their screening protocols every year. The commissioner publishes which tools each district uses. (§10, §57A)
+    house: "Leaves §57A in place and adds one sentence: the commissioner publishes which screening tools each district uses. (§9, G.L. c. 71 §57A)"
+    outcome: senate
+    addressedBy: both
+    resolution: The Senate's rewrite, word for word.
+    law: The Senate rewrite, word for word. (§10, §57A)
+  - heading: Beyond aligning programs with evidence-based literacy, should the state rate and report on educator preparation programs?
+    senate: "No. Adds one proviso: program policies must align with evidence-based literacy instruction. (§9, §38G)"
+    house: Yes. Program policies must align with evidence-based literacy. The commissioner evaluates and “meaningfully” differentiates programs on teaching the five reading areas and on new teachers' effect on achievement gaps, and publishes program data every year. (§8, G.L. c. 71 §38G)
+    outcome: house
+    edited: One word cut
+    addressedBy: both
+    resolution: The House's evaluation and reporting requirements, minus one word.
+    law: The House version, except the commissioner must “differentiate” programs, no longer “meaningfully.” (§9, §38G)
+  - heading: When can a district keep a curriculum that is not on DESE's approved list, and on what terms?
+    senate: One route, for curricula neither on the list nor already reviewed by DESE, if evidence-based and meeting DESE quality standards. Up to 5 years, renewable. Posting, audits and rescission, with DESE help to switch after a rescission. Denials in writing, with an appeal. (§3, §1E½(c))
+    house: Two routes. Any unlisted curriculum can get a waiver if DESE finds it evidence-based. A separate pilot route covers curricula DESE has not reviewed, with a report (research basis, methodology, population, duration), public posting, audits and rescission. Approved pilots continue unless rescinded. (§2, §1E½(d)–(e))
+    outcome: combined
+    addressedBy: both
+    resolution: One route, built from both bills. No end date and no appeal.
+    law: "The Senate's eligibility sentence, word for word, plus the House pilot route's application report, approval test, continue-until-rescinded rule and audit wording. Gone: the House's simple route, and the Senate's 5-year term, renewal, help after rescission, and written denial with appeal. The report drops “methodology” and asks for the curriculum's “demographic results,” wording neither bill used. (§3, §1E½(c))"
+    why: "Harder to get than under either bill: the Senate's eligibility test plus the House's application report. Once granted, a waiver has no end date, and a denied district has no stated appeal. As in the Senate bill, a curriculum DESE has already reviewed cannot get a waiver."
+  - heading: In which school year do districts first report curriculum-use data?
+    senate: The 2027–28 school year. (§14)
+    house: The 2026–27 school year. (§13)
+    outcome: senate
+    addressedBy: both
+    resolution: 2027–28, the Senate's year.
+    law: The 2027–28 school year. (§14)
+  - heading: Which educators should DESE's professional-development tools serve, and must DESE keep its lists current?
+    senate: Adds special education teachers and a list of approved curricula, and requires DESE to update its lists and modules as practice develops. (§3, §1E¾)
+    house: K–3 literacy teachers, paraprofessionals and reading specialists. DESE keeps a vendor list and free online training modules. (§2, §1E¾)
+    outcome: senate
+    edited: Update rule cut
+    addressedBy: both
+    resolution: Special education teachers added, as the Senate wrote. The duty to keep lists current is gone.
+    law: The Senate's staff list and curricula list. The sentence requiring updates was cut. (§3, §1E¾)
+  - heading: Is DESE required to write regulations for the act, or only allowed to?
+    senate: DESE writes regulations “as it deems necessary,” including to make sure curricula meet the needs of students with disabilities and English learners. (§13)
+    house: DESE updates or writes rules “as it deems necessary.” (§12)
+    outcome: modified
+    addressedBy: both
+    resolution: Required. Both bills said “as it deems necessary”; the law does not.
+    law: The Senate text without “as it deems necessary,” so regulations are required. A new line in the curriculum section requires them too. (§13, §1E½(e))
+    why: Cutting four words turns permission into a mandate.
+  - heading: Should approved K–3 curricula be barred from teaching students to guess words from context and pictures?
+    senate: No provision. The Senate removed the House's ban.
+    house: Yes. A flat ban on implicit and incidental word-reading instruction, whole-word memorization, and guessing from context and picture cues. Pictures are allowed as a supplement. (§2, §1E½(b))
+    outcome: modified
+    addressedBy: house
+    resolution: Ban kept, limited to use “as a substitute for identifying a word.”
+    law: The ban stays, but only for these practices used “as a substitute for identifying a word,” which neither bill said. “Implicit and incidental” becomes “implicit or incidental.” The picture clause is gone. (§3, §1E½(b))
+    why: The new qualifier most naturally applies to all three practices, which narrows the House ban. Switching “and” to “or” reaches instruction that is either implicit or incidental, which widens the first item. The MTA had asked the conference to reject this language.
+  - heading: Should districts report how many reading specialists, librarians and other literacy staff they employ?
+    house: Yes, every October 31, starting October 31, 2026. (§2, §1E½(f); §12A)
+    outcome: dropped
+    addressedBy: house
+    resolution: Dropped.
+    law: Not in the law.
+  - heading: Should an existing 2025 literacy line item be opened to school libraries and district-employed literacy staff?
+    house: Yes. Rewrites the purposes of item 1596-2437 to include school libraries and hiring reading specialists, librarians and similar staff, who must be district employees. (§11A, item 1596-2437, c. 9 of the acts of 2025)
+    outcome: dropped
+    addressedBy: house
+    resolution: Dropped.
+    law: Not in the law.
+  - heading: Should DESE study literacy staffing and library access and recommend staffing levels?
+    house: Yes. DESE works with the MTA, AFT Massachusetts, school committees and superintendents, recommends staffing levels by student need, estimates the cost, and reports by December 31, 2026. (§11B)
+    outcome: dropped
+    addressedBy: house
+    resolution: Dropped.
+    law: Not in the law.
+  - heading: Should the state pilot paid teaching apprenticeships in high-needs districts?
+    house: Yes, subject to appropriation. Paid apprenticeships with highly proficient mentor teachers, support for childcare, transportation and textbooks, and reports after one and three years. (§11, c. 238 of the acts of 2024, §290)
+    outcome: house
+    edited: Drafting cleanup
+    addressedBy: house
+    resolution: Kept from the House, subject to appropriation.
+    law: The House pilot. “For school years” is removed and “MTEL” is spelled out. (§12)
+  - heading: Should the state create a dedicated fund for curriculum, implementation and district grants?
+    senate: Yes. A fund run by the secretary of education pays for a free K–3 curriculum, implementation and district grants. Grants favor districts not yet in compliance and geographic and funding equity, after at least one hearing in western Massachusetts. DESE reports on the fund every year. (§2, G.L. c. 29 §2OOOOOO)
+    outcome: senate
+    addressedBy: senate
+    resolution: Created, word for word as the Senate wrote it.
+    law: The Senate fund, word for word. (§2)
+  - heading: Should the new fund get money now?
+    senate: Yes. $25 million moved in fiscal 2026 from the Education and Transportation Innovation and Capital Fund. (§12)
+    outcome: dropped
+    addressedBy: senate
+    resolution: Dropped. The fund exists with no money in the act.
+    law: Not in the law. Sen. DiDomenico said funding would come later through a supplemental budget or another bill.
+    why: "Listed separately from the fund itself on purpose. As one question, “Early Literacy Fund” would read as Senate text and hide the split: the Senate's structure with the House's funding level."
+  - heading: Should DESE provide a complete K–3 curriculum free to districts?
+    senate: Yes. DESE maintains a free, complete K–3 curriculum that meets the state frameworks. (§3, §1E½(d))
+    outcome: senate
+    addressedBy: senate
+    resolution: Yes, as the Senate wrote it.
+    law: The Senate text, word for word. Rep. Gordon's office described it as extending DESE's existing free K–2 curriculum to grade 3. (§3, §1E½(d))
+  - heading: Should districts face a deadline to adopt an approved curriculum or get a waiver?
+    senate: Yes, before the 2027–28 school year. (§16)
+    house: No deadline.
+    outcome: senate
+    addressedBy: senate
+    resolution: Before the 2027–28 school year, as the Senate wrote.
+    law: The Senate deadline. (§16)
+  - heading: Should DESE have a deadline to publish its list of approved curricula?
+    senate: Yes, within six months of passage, with notice to districts that the free curriculum will be ready before 2027–28. (§17)
+    house: No deadline.
+    outcome: senate
+    edited: “will” to “shall”
+    addressedBy: senate
+    resolution: Six months after passage, around December 2026.
+    law: The Senate deadline, with “will be available” changed to “shall be available.” (§17)
+  - heading: Do the new requirements reach charter, virtual, vocational and agricultural schools?
+    senate: No definition of “district.”
+    house: No definition of “district.”
+    outcome: new
+    addressedBy: neither
+    resolution: A new definition names them all.
+    law: A definition that appears in neither bill. It names charter schools, Commonwealth virtual schools, regional districts, and vocational and county agricultural schools. (§3, §1E½(a))
+    why: No one testified on this text. Whether charters were already covered through other law is a separate question this page does not answer.
+similarities:
+  - heading: District reviews check literacy curricula
+    body: Reviews under G.L. c. 15 §55A add alignment with evidence-based instruction. Same substance in both bills.
+  - heading: Districts pick an approved K–3 curriculum covering the five reading areas
+    body: Both required it. The definitions behind it differed and are listed above.
+  - heading: District improvement plans address the new curriculum rules
+    body: G.L. c. 69 §1S. Same substance in both bills.
+  - heading: Annual curriculum-use reporting
+    body: DESE sets requirements by August 15, districts report by October 31, DESE publishes by December 31, first report by December 31, 2027. The Senate also sent the report to Ways and Means; the law follows the House's shorter list.
+  - heading: Twice-yearly K–3 screening, parents told within 30 days
+    body: Both required a DESE-approved tool and notice when a child is significantly below benchmark. The law keeps the Senate's rule that DESE keep its approved tools current and drops “at such intervals as determined by the commissioner.” DESE has required twice-yearly screening by regulation since July 2023.
+  - heading: DESE vendor list and free online training modules
+    body: G.L. c. 69 §1E¾(b). Same substance in both bills.
+  - heading: Public data on which screening tools each district uses
+    body: Both bills required the commissioner to publish it.
+  - heading: Chapter 70 cross-references to the new definitions
+    body: Identical in both bills.
