@@ -23,5 +23,228 @@ conferees:
   - memberCode: PMO
     branch: Senate
 hearingIds: []
-differences: []
-similarities: []
+differences:
+  - heading: Should state law set up a network of family resource centers that families and schools must try before going to juvenile court on a CRA petition?
+    senate: Rewrites G.L. c. 6A §16U. The health and human services secretary runs a network of family resource centers that screen families, assign case managers to high-needs families and may convene multidisciplinary teams. A case manager may not send a family to court for a CRA petition until community services are exhausted. Schools must refer caregivers to a center before filing and must first try to address the causes of chronic absenteeism. The secretary reports every year, with data broken down by race, disability, language and other traits. (§2, G.L. c. 6A §16U)
+    outcome: senate
+    edited: Part of section replaced
+    addressedBy: senate
+    resolution: Yes. The law uses the Senate's text, and most of it waits a year.
+    law: The Senate text. The law rewrites subsections (a) to (e) and the second paragraph of (f) instead of replacing the whole section, so it does not include the Senate's first paragraph of (f), on students facing expulsion, or its (g), on special education rights. Whatever the existing section says there stays in place. Subsections (a) to (e) take effect one year after the act; the school-referral paragraph does not wait. (§§2–3, 62, G.L. c. 6A §16U)
+    why: The network is set up “subject to appropriation or third party reimbursement,” and case managers “subject to appropriation,” so their reach depends on funding.
+  - heading: How should the law define a child requiring assistance (CRA) and habitual absence from school?
+    senate: "A CRA is a child aged 12 to 18, not in DCF or DYS custody, who repeatedly runs away, repeatedly disobeys parents or school rules, is habitually absent without permission, or is sexually exploited. “Habitually truant” is replaced by “habitually absent without permission”: willfully missing more than 8 school days in a quarter. (§§43–44, G.L. c. 119 §21)"
+    outcome: senate
+    addressedBy: senate
+    resolution: As the Senate wrote, starting one year after the act takes effect.
+    law: The Senate definitions, word for word. Both take effect one year after the act. (§§43–44, G.L. c. 119 §21)
+  - heading: Before a parent's CRA application gets a hearing, must the family first go to a family resource center?
+    senate: The application must say whether the family used a family resource center in the past 180 days. If not, the clerk refers the family to a center before scheduling a hearing. The clerk also gives the parent court materials and materials from the child advocate, who may prepare online videos and overviews on CRA petitions. (§50, G.L. c. 119 §39E(b); §37, c. 18C §15)
+    outcome: modified
+    addressedBy: senate
+    resolution: Yes, unless the family used a center in the last 180 days. The law adds a written waiver neither chamber passed.
+    law: "The Senate process, plus a route neither chamber passed: a parent may waive the referral in writing and go to a hearing, and the court may not encourage a waiver. The child advocate's online materials are kept. (§52, G.L. c. 119 §39E(b); §39, c. 18C §16)"
+    why: The law tells clerks to hand out the child advocate's materials “under section 15 of chapter 18C.” In the enacted text, section 15 is the court-data research section; the CRA materials are in section 16.
+  - heading: When a school files a CRA application, what must the family resource center report, and when must the court dismiss the case?
+    senate: Schools must show they referred the family to a center and what steps they took, and may not file over IEP, special education placement or 504 plan matters. Before a hearing, probation consults the center. If services are not exhausted, the family has engaged, and the center can supply the supports sought, the application is dismissed. (§50, G.L. c. 119 §39E(c))
+    outcome: modified
+    addressedBy: senate
+    resolution: The Senate's dismissal rule, with new deadlines and a new exception the conference wrote.
+    law: The Senate rule with additions neither chamber passed. The center must answer probation within 5 business days, but probation may not ask until 10 business days after the school's referral. Dismissal is not required if the school seeks court help “materially different” from what the center offers, though probation supervision counts as the same as center case management. If the center does not respond and the school proceeds, the hearing is set within 15 days of the center receiving the request. (§52, G.L. c. 119 §39E(c))
+    why: A school that asks only for probation supervision cannot use the new exception, because the law treats that as the same as center case management.
+  - heading: Should the rules for CRA hearings, case conferences and court orders be rewritten?
+    senate: Rewrites §39G. After a CRA finding, the court convenes a conference with probation, the family, the school, the family resource center and DCF if involved. DCF gets notice before the court recommends DCF custody and may not refuse an out-of-home placement the court recommends. No shackles or locked facilities. Orders last up to 120 days, with up to three 90-day extensions. (§51, G.L. c. 119 §39G)
+    outcome: senate
+    edited: Paragraphs numbered
+    addressedBy: senate
+    resolution: Yes, as the Senate wrote, starting one year after the act takes effect.
+    law: The Senate text, word for word, split into numbered paragraphs. (§53, G.L. c. 119 §39G)
+  - heading: Must DCF create an education unit, an education director and education specialists outright, or only subject to appropriation?
+    senate: The same unit, director and specialists with no appropriation condition. Specialists may attend school meetings only “to the extent permitted by federal law.” (§4, §6B)
+    house: DCF sets up an education unit, appoints an education director and hires full-time education specialists, each “subject to appropriation.” Specialists may go with social workers to IEP and 504 meetings. (§3, G.L. c. 18B §6B)
+    outcome: house
+    addressedBy: both
+    resolution: Subject to appropriation, as the House wrote.
+    law: The House text. (§5, §6B)
+    why: Under the House wording the unit, director and specialists depend on money in a future budget.
+  - heading: Must DCF refer a child still in a psychiatric hospital to the interagency review team within 30 days of learning the child no longer needs hospital care?
+    senate: The same steps and the same 30-day referral, set out as a numbered list. (§8, §23)
+    house: DCF contacts the family within 3 business days of the hospitalization, picks a placement type within 5 business days of being told the stay is no longer clinically appropriate, and refers the child to the interagency review team within 30 days. (§7, G.L. c. 18B §23)
+    outcome: dropped
+    addressedBy: both
+    resolution: Both chambers said yes. The law drops the 30-day referral.
+    law: Not in the law. The rest of the section, including the 3-day and 5-day steps, is kept.
+    why: Both bills had this sentence word for word, so its removal was a conference change.
+  - heading: What must DCF's new annual performance report include, and may data dashboards stand in for the required reports?
+    senate: Same structure, minus behavioral health and the over-reporting cost. Adds abuse and neglect in foster care by placement type, complaints under the new foster children's bill of rights, and a section on support and stabilization services. DCF may replace the reports with accessible data dashboards. (§10, §26)
+    house: An October 31 report on counts, outcomes and operations. It covers the delivery of medical and behavioral health services and the cost to the system of over-reporting under §51A. (§9, G.L. c. 18B §26)
+    outcome: combined
+    addressedBy: both
+    resolution: The House's list, plus the Senate's support-services data and dashboard option. Two Senate data items are cut.
+    law: The House list, including behavioral health and over-reporting costs, plus the Senate's support-and-stabilization section and dashboard option. The Senate's foster-care maltreatment data and bill-of-rights complaint counts are cut. (§11, §26)
+    why: The law enacts the Senate's bill of rights (§23E) but not the Senate's requirement to count complaints made under it in this report.
+  - heading: Must DCF tell the Legislature when a child in its custody sleeps overnight in an area office?
+    senate: No provision. The Senate's §27 starts with the notice on draft regulations.
+    house: The commissioner notifies the children and families committee within a week, with the region, length of stay, age, prior placements and placement challenges. (§9, G.L. c. 18B §27(a))
+    outcome: house
+    addressedBy: house
+    resolution: Yes, within one week, as the House wrote.
+    law: The House text. (§11, §27(a))
+  - heading: How fast must DCF tell a child's lawyer about placement changes, hospitalizations and abuse or neglect reports?
+    senate: DCF notifies the lawyer within 5 business days of any placement change or hospitalization, emergency or not, and within 3 days of a §51A report. No separate notice for reports questioning a placement. The portal sends “timely” notices. The whole section waits until one year after the act takes effect. (§§49, 59, §29E)
+    house: DCF's counsel notifies the child's lawyer within 3 business days of a non-emergency placement change or hospitalization, 1 business day for an emergency, 3 days for a §51A report about the child, and 1 day for a §51A report that questions the placement's suitability. The attorney portal sends automatic notices within 1 business day, covering more events from September 1, 2026. (§§39–40, 48, G.L. c. 119 §29E)
+    outcome: house
+    edited: Senate's sender wording
+    addressedBy: both
+    resolution: "The House's deadlines: 3 business days, or 1 for emergencies and reports questioning a placement."
+    law: The House deadlines, including the 1-day notice for reports questioning a placement. The duty sits with “the department,” as the Senate wrote, where the House named the department's counsel. Portal notices for all events start one year after the act takes effect. (§§49–50, 62, §29E)
+  - heading: Should state law list enforceable rights for every child in DCF care?
+    senate: "Creates G.L. c. 119 §23E: rights to safety, identity, family and sibling contact, health care, education, a lawyer, records, benefits held for the child, and transition planning, with no retaliation and complaints to the ombudsperson or child advocate. The rights are DCF obligations. A child's lawyer must be present when the child signs documents, or get them in advance. Each child gets a “timely” transition plan before turning 18. (§48, G.L. c. 119 §23E)"
+    outcome: modified
+    addressedBy: senate
+    resolution: Yes. The Senate's list is enacted with two changes neither chamber passed.
+    law: The Senate list, word for word, except two changes. The lawyer-present rule gets an exception for emergencies needing immediate action. Transition planning must begin at least one year before the child turns 18. (§48, G.L. c. 119 §23E)
+    why: In emergencies needing immediate action, a child may be asked to sign without a lawyer present and without the lawyer seeing the document first.
+  - heading: How should the law speed school enrollment and records transfer when a child in DCF custody changes schools?
+    senate: DCF tells schools about placement changes. The new district enrolls the child immediately, even without the usual records, and the old district sends records right away without parent consent, consistent with FERPA. The state education board sets record-transfer timelines by regulation and considers electronic repositories. (§§40, 47, G.L. c. 71 §34I; c. 119 §23(k))
+    house: DESE and DCF jointly set clear timelines for enrolling a child in DCF custody in a new district, including for transferring records. (§36, G.L. c. 71 §102)
+    outcome: senate
+    addressedBy: both
+    resolution: The Senate's immediate-enrollment and records rules. The House's joint-timelines section is dropped.
+    law: The Senate text, word for word. The House's §102 is not in the law. (§§42, 47, G.L. c. 71 §34I; c. 119 §23(k))
+  - heading: Should a commission study a digital education records system for foster children, and by when must it report?
+    house: A commission of state officials, legislators and appointees, including a current or former foster youth and a foster parent, studies a secure digital education portfolio for foster youth and reports by November 30, 2026. (§47A)
+    outcome: modified
+    addressedBy: house
+    resolution: Yes. The report deadline moves to one year after the act takes effect.
+    law: The House commission, with the same members and charge. The report is due one year after the act's effective date. (§61)
+  - heading: Should the reporting requirements attached to DCF's line item in the state budget be struck?
+    house: Strikes the reporting provisos from item 4800-0015 of the fiscal 2026 budget, including fair hearing data, staffing counts and quarterly caseload reports, effective July 1, 2025. (§§47, 49)
+    outcome: modified
+    addressedBy: house
+    resolution: Struck, from the fiscal 2027 budget instead of fiscal 2026.
+    law: The same strike, applied to the same line item in the fiscal 2027 budget (chapter 137 of the acts of 2026), with dates updated, effective July 1, 2026. (§§60, 63)
+    why: July 1, 2026 is before the August 6 signing, so the strike applies from the start of fiscal 2027.
+  - heading: How broadly should the law define the agencies the child advocate oversees?
+    senate: Rewrites “executive agency” as an agency in the governor's office that serves children through direct services, guidance, oversight, contracts or licensing, and names the same seven departments as its constituent agencies. The office oversees “executive agencies or constituent agencies.” (§§14, 16, §§1–2)
+    house: "Keeps “executive agency” and adds a defined “state agency”: any department or agency in the commonwealth that serves children, including seven named departments. The office oversees both. (§§15–16, G.L. c. 18C §§1–2)"
+    outcome: senate
+    edited: Redundant term cut
+    addressedBy: both
+    resolution: The Senate's executive-agency definition. The House's broader “state agency” term is gone.
+    law: The Senate definition. Throughout chapter 18C the law then says only “executive agencies,” which under that definition include their constituent agencies. (§§15, 19, §§1–2)
+    why: The House term reached any department or agency in the commonwealth that serves children. The enacted definition covers agencies within the governor's office.
+  - heading: Which harms to a child must be reported to the child advocate as critical incidents?
+    senate: Adds kidnapping and enticement of a child. Emotional injury also covers witnessing an accident or attempted suicide. Near fatality covers abuse “or” neglect. (§§12–15, §1)
+    house: Deaths, near deaths, serious bodily or emotional injury, indecent assault and rape of a child. Emotional injury means witnessing a death or life-threatening incident related to a medical event, overdose, violent act or suicide. Near fatality covers abuse “and” neglect. (§§10–14, G.L. c. 18C §1)
+    outcome: senate
+    edited: One House phrase kept
+    addressedBy: both
+    resolution: The Senate's broader list, including kidnapping and a witnessed accident or attempted suicide.
+    law: The Senate's lists, including kidnapping, accidents, attempted suicide, and abuse “or” neglect. The emotional-injury definition keeps the House's “related to” where the Senate said “as a result of.” Serious bodily injury is set by the House's method of striking “or emotional” from the old definition. (§§13–17, §1)
+  - heading: Who should the child advocate's training website serve, and what must it cover?
+    senate: Adds child-serving individuals and volunteers (newly defined terms), online certificates of completion, and eight required topics, including child sexual abuse, problematic sexual behavior between minors, bias, and concerns that fall short of maltreatment. (§§11, 17, §§1, 2(h))
+    house: A public website with trainings, guidance and resources for mandated reporters. (§18, G.L. c. 18C §2(h))
+    outcome: senate
+    edited: One word cut
+    addressedBy: both
+    resolution: "The Senate's version: child-serving workers and volunteers too, with required topics and online certificates."
+    law: The Senate text and definitions, with “said” cut. (§§12, 21, §§1, 2(h))
+  - heading: When the child advocate finds an agency failed a child, must that agency wait to see the report until state leaders have it?
+    senate: The same five officials get a copy before public release. No rule on when the agency gets it. (§26, §5(i))
+    house: Before public release, the child advocate gives the final report to the governor, attorney general, auditor, Speaker and Senate President. The agency under investigation may not receive it before they do. (§24, G.L. c. 18C §5(i))
+    outcome: house
+    edited: “Final” added
+    addressedBy: both
+    resolution: Yes, as the House wrote.
+    law: The House rule, as its own paragraph. (§28, §5(i))
+  - heading: When the child advocate issues a public report, what identifying information must be left out?
+    senate: The child advocate may issue a public report when necessary. No privacy rule is stated. (§34, §12(e))
+    house: Any public report must be deidentified, with all personally identifiable information removed. (§32, G.L. c. 18C §12(e))
+    outcome: modified
+    addressedBy: both
+    resolution: Names, birth dates and other identifiers stay out unless already public or the child advocate deems them necessary. Neither chamber passed this wording.
+    law: Starts from the House's privacy proviso and rewrites it. Reports may not include names, birth dates or other unique identifiers, unless the information is already public or the child advocate deems it necessary for the report's purpose and the office's mission. (§36, §12(e))
+    why: The House rule had no exceptions. The law lets the child advocate decide when identifiers are necessary.
+  - heading: If the child advocate withholds a report, must the office explain why in writing?
+    senate: Written reasons to anyone who asks, recorded and open to public inspection, unless that would compromise an investigation or protective measures by the office or DCF. (§35, G.L. c. 18C §12(f))
+    outcome: senate
+    edited: Names shortened
+    addressedBy: senate
+    resolution: Yes, as the Senate wrote.
+    law: The Senate text, with agency names shortened to “the office” and “the department.” (§37, §12(f))
+  - heading: Should the child advocate's salary be fixed in statute?
+    senate: Sets the salary at 90 per cent of the Supreme Judicial Court chief justice's salary. A separate section strikes the last paragraph of §4 of chapter 18C. (§§18–19, G.L. c. 18C §§3–4)
+    outcome: dropped
+    addressedBy: senate
+    resolution: Dropped.
+    law: Not in the law. Neither the salary rule nor the §4 strike appears.
+  - heading: Should the state give families resources after the sudden, unexplained death of a young child?
+    senate: Defines a sudden unexplained pediatric death as one of a child under 3. The child advocate keeps a list of resources, including genetic testing and grief support. The chief medical examiner's office gives caregivers that list within 3 days of receiving the child's body. (§§15, 17, 25, 39, G.L. c. 18C §§1, 2, 5; c. 38 §17)
+    outcome: senate
+    edited: Typo fixed
+    addressedBy: senate
+    resolution: Yes, as the Senate wrote.
+    law: The Senate text, with “an child” corrected to “a child.” (§§18, 21, 27, 41, G.L. c. 18C §§1, 2, 5; c. 38 §17)
+    why: The defined term in chapter 18C is “sudden unexplained pediatric death,” while the medical examiner section in chapter 38 says “sudden unexpected pediatric death.”
+  - heading: Should the child advocate run a program to hear from youth in congregate care and other out-of-home placements?
+    senate: A youth engagement program in the child advocate's office holds at least 4 listening sessions a year in group homes, residential schools and similar settings, and publishes an annual report. (§37, G.L. c. 18C §18)
+    outcome: senate
+    edited: Hyphens dropped
+    addressedBy: senate
+    resolution: Yes, with at least 4 listening sessions a year, as the Senate wrote.
+    law: The Senate text, renumbered as §19. (§39, G.L. c. 18C §19)
+  - heading: How may the child advocate get juvenile court data for research?
+    senate: No provision. The Senate's §15 of chapter 18C held the CRA online materials instead.
+    house: The office submits a research proposal, and the trial court approves it if it serves a valid public purpose and follows court rules. Everyone with access signs a nondisclosure agreement. The court may audit the project and validate the analysis before publication. The office destroys the data when done. (§34, G.L. c. 18C §15)
+    outcome: house
+    addressedBy: house
+    resolution: Through a research-proposal process with the trial court, as the House wrote.
+    law: The House text, word for word. (§39, G.L. c. 18C §15)
+  - heading: Should the DCF social workers' union have a seat on the state and local child fatality review teams?
+    senate: The same state and local teams in the child advocate's office, with no union seat. (§37, §16)
+    house: The state team and each local team include the DCF chapter president, or a designee, of the bargaining unit 8 union. (§34, G.L. c. 18C §16)
+    outcome: house
+    edited: Local seat reworded
+    addressedBy: both
+    resolution: Yes, on both, as the House wrote.
+    law: The union seat on both teams. The local-team clause drops the words “representative of bargaining.” The teams are numbered §17 of chapter 18C. (§39, G.L. c. 18C §17)
+  - heading: Should the Department of Public Health build a registry of children's vision screenings and eye care?
+    senate: DPH creates a confidential computerized registry of children's vision screenings, referrals and eye exams. Providers report to it, the school health screening law (c. 71 §57) is amended to refer to it, and families can object to sharing identifiable information. (§§41–42, G.L. c. 111 §250; c. 71 §57)
+    outcome: dropped
+    addressedBy: senate
+    resolution: Dropped.
+    law: Not in the law.
+  - heading: Which procedural rules govern proceedings under §25 of chapter 209C, depending on the court?
+    senate: Probate and family court cases follow the Rules of Domestic Relations Procedure. Juvenile court cases follow the juvenile court's care and protection rules. (§56, G.L. c. 209C §25(d))
+    outcome: senate
+    addressedBy: senate
+    resolution: Domestic relations rules in probate court and care and protection rules in juvenile court, as the Senate wrote.
+    law: The Senate text, word for word. (§57, G.L. c. 209C §25(d))
+  - heading: Which parts of the act should take effect later than the rest?
+    senate: The family resource center rewrite, the CRA definitions, the CRA court process and the whole lawyer-notice section take effect one year after the act. (§59)
+    house: Only the expanded attorney-portal notices wait, until September 1, 2026. (§48)
+    outcome: combined
+    addressedBy: both
+    resolution: The Senate's one-year delay for the CRA and family resource center changes, without its delay of lawyer notices.
+    law: The Senate's one-year delay for the family resource center, CRA definition and CRA court sections. Lawyer notices start when the act takes effect. Only the House's expanded portal notices wait, now for a year. (§62)
+    why: Section 3, which requires schools to refer caregivers to a family resource center before filing a CRA petition, is not on the delayed list, so it starts a year before the rewritten network rules in section 2.
+similarities:
+  - heading: DCF social workers must be licensed within 9 months and get 30 hours of paid training a year
+    body: G.L. c. 18B §7(o), with a one-time 6-month hardship waiver. Same in both bills.
+  - heading: Quarterly DCF data profiles posted within 45 days
+    body: G.L. c. 18B §26(b), with regional and area office data on 51A reports, placements and demographics. Same substance in both bills; the law uses the House wording.
+  - heading: Annual reports on young adults, fair hearings and foster care reviews, due October 31
+    body: §26(c)–(e). The Senate counted continuances requested by DCF and by hearing officers separately; the law keeps the House's combined count with the requesting party named.
+  - heading: Five-year DCF performance plan with numeric targets by region
+    body: §28, updated and measured every year and posted online. Same substance; the law uses the House wording.
+  - heading: Child fatality review teams placed in the child advocate's office
+    body: Both bills repeal c. 38 §2A and create a state team co-chaired by the child advocate and the public health commissioner, plus local teams chaired by district attorneys. Both bills numbered it §16; the law numbers it §17 and fixes the cross-reference in c. 6 §172. The union seat is listed above.
+  - heading: The child advocate's office becomes an independent state agency
+    body: c. 18C §2. Both bills used the same independence language; which agencies it oversees is listed above.
+  - heading: Child advocate may study systemwide problems, partner on pilots and train agencies
+    body: c. 18C §§2, 11. The law uses the House wording for the disproportionality clause; the Senate limited it to disproportionalities “in the provision of services.”
+  - heading: Critical incident notices include the child's demographics, and foster care review safety alerts go to the child advocate
+    body: c. 18C §5(a), (j). Same substance in both bills.
+  - heading: Protective orders for minors can continue past age 18
+    body: c. 209A §9A and c. 258E §11A. The former minor may ask the court to extend the order or make it permanent. Same substance; the law uses the House wording for c. 258E.
