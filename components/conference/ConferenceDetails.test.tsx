@@ -47,6 +47,29 @@ const routeChangeStart = (url: string) =>
   jest.mocked(Router.events.on).mock.calls[0][1](url)
 
 jest.mock("usehooks-ts", () => ({ useMediaQuery: () => false }))
+// react-markdown ships ESM only. This reads one link, as the gist writes it.
+jest.mock("react-markdown", () => ({
+  __esModule: true,
+  default: ({
+    children,
+    components
+  }: {
+    children: string
+    components?: { a?: React.ComponentType<any> }
+  }) => {
+    const match = children.match(/\[([^\]]+)\]\(([^)]+)\)/)
+    const Link = components?.a ?? "a"
+    return match ? (
+      <p>
+        {children.slice(0, match.index)}
+        <Link href={match[2]}>{match[1]}</Link>
+        {children.slice((match.index ?? 0) + match[0].length)}
+      </p>
+    ) : (
+      <p>{children}</p>
+    )
+  }
+}))
 
 let mockLegislators = false
 jest.mock("../featureFlags", () => ({
@@ -605,6 +628,19 @@ describe("ConferenceDetails", () => {
       expect(screen.queryByText("Bans use.")).not.toBeInTheDocument()
       fireEvent.click(second)
       expect(screen.getByText("Bans use.")).toBeInTheDocument()
+    })
+
+    it("links a markdown link in the gist, out to a new tab", () => {
+      render(
+        <ConferenceDetails
+          {...props}
+          gist="Voters passed [Question 1](https://example.org/q1) in November."
+        />
+      )
+      const link = screen.getByRole("link", { name: "Question 1" })
+      expect(link).toHaveAttribute("href", "https://example.org/q1")
+      expect(link).toHaveAttribute("target", "_blank")
+      expect(link).toHaveAttribute("rel", "noopener noreferrer")
     })
 
     it("opens a term's note on hover", () => {
