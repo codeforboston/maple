@@ -4,6 +4,7 @@ import styled from "styled-components"
 import { ConferenceTestimony } from "components/db"
 import { useInputContext } from "./context"
 import { CosignButton } from "./CosignButton"
+import { jumpTo } from "../navbar"
 import { Band, CosignList, Floor, parked } from "./Cosigns"
 import { Entry } from "./Entry"
 import { EntryModal } from "./EntryModal"
@@ -100,6 +101,11 @@ const Own = styled.div`
   ${parked}
 `
 
+/** What a link to one card scrolls to. */
+const Spot = styled.div`
+  ${parked}
+`
+
 const Empty = styled.div<{ $after: boolean }>`
   margin-top: ${({ $after }) => ($after ? "20px" : "0")};
   padding: 22px;
@@ -148,10 +154,13 @@ const ClearFilters = styled.button`
  */
 export function PublicInput({
   items,
-  loading
+  loading,
+  focus
 }: {
   items: ConferenceTestimony[]
   loading: boolean
+  /** A card to bring into view, as a link to it asks. */
+  focus?: string
 }) {
   const { t } = useTranslation("conferences")
   const [type, setType] = useState<AccountTypeFilter>("all")
@@ -206,7 +215,6 @@ export function PublicInput({
       (pickedAuthors.length === 0 || pickedAuthors.includes(x.authorUid))
     return units.filter(u => matches(u.lead) || u.cosigns.some(matches))
   }, [units, position, type, pickedAuthors, showFilters])
-  useEffect(() => setPage(0), [position, type, pickedAuthors, wordless])
   const cosigned = useMemo(() => items.some(x => x.cosignOfId), [items])
 
   // The accounts being followed that have filed here, which is what the
@@ -224,30 +232,62 @@ export function PublicInput({
   const current = Math.min(page, pageCount - 1)
   const paged = shown.slice(current * PAGE_SIZE, (current + 1) * PAGE_SIZE)
 
+  // Narrowing the feed starts it from its first page.
+  const narrowing =
+    <T,>(set: (value: T) => void) =>
+    (value: T) => {
+      set(value)
+      setPage(0)
+    }
+
+  // Landing on a card: the filters let go of it, the feed turns to its page,
+  // and once that page is drawn the window scrolls to it.
+  const [sought, setSought] = useState<string>()
+  useEffect(() => {
+    if (!focus || loading) return
+    setType("all")
+    setPosition("all")
+    setPickedAuthors([])
+    const i = units.findIndex(u => u.lead.id === focus)
+    setPage(ownUnit?.lead.id === focus || i < 0 ? 0 : Math.floor(i / PAGE_SIZE))
+    setSought(focus)
+    // Once per link; the feed changing under it is no reason to land again.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focus, loading])
+  useEffect(() => {
+    if (!sought) return
+    const el = document.querySelector<HTMLElement>(`[data-input="${sought}"]`)
+    if (el) jumpTo(el)
+    setSought(undefined)
+  }, [sought])
+
   const card = ({ lead: x, cosigns }: Unit) => {
     const banded = !!x.cosignCount && !x.cosignOfId
     return (
-      <Entry
-        key={`${x.authorUid}-${x.id}`}
-        testimony={x}
-        own={x === mine}
-        lead={!banded && <CosignButton testimony={x} />}
-        band={
-          banded && <Band testimony={x} yours={mine?.cosignOfId === x.id} />
-        }
-        floor={banded ? wide => <Floor testimony={x} wide={wide} /> : undefined}
-        actions={<Kebab testimony={x} onView={() => setOpened(x)} />}
-        onOpen={setOpened}
-      >
-        {wide => (
-          <CosignList
-            cosigns={cosigns}
-            mine={mine}
-            wide={wide}
-            actions={c => <Kebab testimony={c} onView={() => setOpened(c)} />}
-          />
-        )}
-      </Entry>
+      <Spot key={`${x.authorUid}-${x.id}`} data-input={x.id}>
+        <Entry
+          testimony={x}
+          own={x === mine}
+          lead={!banded && <CosignButton testimony={x} />}
+          band={
+            banded && <Band testimony={x} yours={mine?.cosignOfId === x.id} />
+          }
+          floor={
+            banded ? wide => <Floor testimony={x} wide={wide} /> : undefined
+          }
+          actions={<Kebab testimony={x} onView={() => setOpened(x)} />}
+          onOpen={setOpened}
+        >
+          {wide => (
+            <CosignList
+              cosigns={cosigns}
+              mine={mine}
+              wide={wide}
+              actions={c => <Kebab testimony={c} onView={() => setOpened(c)} />}
+            />
+          )}
+        </Entry>
+      </Spot>
     )
   }
 
@@ -256,16 +296,16 @@ export function PublicInput({
       <Heading>{t("input.title")}</Heading>
       {showFilters && (
         <Controls>
-          <AccountTypePicker value={type} onChange={setType} />
-          <PositionPicker value={position} onChange={setPosition} />
+          <AccountTypePicker value={type} onChange={narrowing(setType)} />
+          <PositionPicker value={position} onChange={narrowing(setPosition)} />
           {(followable.length > 0 || cosigned) && (
             <MoreFilters
               followable={followable}
               picked={pickedAuthors}
-              onPick={setPickedAuthors}
+              onPick={narrowing(setPickedAuthors)}
               cosigns={cosigned}
               wordless={wordless}
-              onWordless={setWordless}
+              onWordless={narrowing(setWordless)}
             />
           )}
         </Controls>
@@ -315,6 +355,7 @@ export function PublicInput({
                     setType("all")
                     setPosition("all")
                     setPickedAuthors([])
+                    setPage(0)
                   }}
                 >
                   {t("input.clear_filters")}

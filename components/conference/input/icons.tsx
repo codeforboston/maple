@@ -123,6 +123,13 @@ export const Check = (p: Props) => (
     <path d="M20 6 9 17l-5-5" />
   </Icon>
 )
+export const Link2 = (p: Props) => (
+  <Icon {...p}>
+    <path d="M9 17H7A5 5 0 0 1 7 7h2" />
+    <path d="M15 7h2a5 5 0 1 1 0 10h-2" />
+    <line x1="8" x2="16" y1="12" y2="12" />
+  </Icon>
+)
 export const SquarePen = (p: Props) => (
   <Icon {...p}>
     <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />

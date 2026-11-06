@@ -8,7 +8,9 @@ import {
   useState
 } from "react"
 import { useTranslation } from "next-i18next"
+import { useRouter } from "next/router"
 import { hasReport, takesTestimony } from "../../functions/src/shared"
+import { uncosignable } from "../../functions/src/testimony/cosign"
 import styled from "styled-components"
 import { ConferenceByline } from "./ConferenceByline"
 import { ConferenceCommittee } from "./ConferenceCommittee"
@@ -28,6 +30,7 @@ import {
   useEditConferenceTestimony
 } from "../db"
 import { useAppDispatch } from "../hooks"
+import { maple, siteUrl } from "../links"
 import { useConferenceTop, usePinnedNavbar } from "./hooks"
 import { InputContext } from "./input/context"
 import { CosignForm, CosignStep } from "./input/CosignForm"
@@ -37,8 +40,10 @@ import { Panel, usePanelWidth } from "./input/Panel"
 import { PublicInput } from "./input/PublicInput"
 import { ShareButton } from "./input/ShareButton"
 import { useFollowedAuthors } from "./input/useFollowedAuthors"
+import { Close } from "./input/Close"
+import { X } from "./input/icons"
 import { jumpToSection } from "./navbar"
-import { PageColumn, Title } from "./styles"
+import { Notice, PageColumn, Title } from "./styles"
 import { conferenceName, ConferencePageProps, ConferenceSummary } from "./types"
 
 /** The mockup's column, widened to 1320 once the rail sits beside it. */
@@ -94,6 +99,24 @@ const PageTitle = styled(Title)`
     white-space: nowrap;
   }
 `
+
+/** Why a link to cosign an input did not open the panel, with a way to put
+ * it away. */
+const LinkNotice = styled(Notice)`
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 0.625rem;
+`
+
+/** Why a link to cosign could not open the panel. */
+type LinkRefusal =
+  | "removed"
+  | "not_cosignable"
+  | "closed"
+  | "filed"
+  | "drafting"
 
 /** A band that holds at the top while the sections scroll under it, run out
  * to the page's gutters so what passes behind it is covered. */
@@ -160,12 +183,14 @@ function Details({
 }: ConferencePageProps & { openOnHero?: boolean }) {
   const { top, hero, toConference } = useConferenceTop(openOnHero)
   const { t } = useTranslation("conferences")
-  const { user, authenticated } = useAuth()
+  const { user, authenticated, loading: authLoading } = useAuth()
   const dispatch = useAppDispatch()
-  const { items, loading } = useConferenceTestimony(
-    conference.court,
-    conference.id
-  )
+  const router = useRouter()
+  const {
+    items,
+    loading,
+    error: feedError
+  } = useConferenceTestimony(conference.court, conference.id)
   const mine = useMemo(
     () => (user ? items.find(x => x.authorUid === user.uid) : undefined),
     [items, user]
@@ -182,10 +207,16 @@ function Details({
   // cosigns, if anything, and whether it has words.
   const [draftOf, setDraftOf] = useState<string | null>(null)
   const [draftWords, setDraftWords] = useState(false)
-  const onDraft = useCallback((draft?: ConferenceWorkingDraft) => {
-    setDraftOf(draft?.cosignOfId ?? null)
-    setDraftWords(!!draft?.content?.trim())
-  }, [])
+  // Whether the reader's draft has been read, so the page decides on it.
+  const [draftRead, setDraftRead] = useState(false)
+  const onDraft = useCallback(
+    (draft?: ConferenceWorkingDraft, read = false) => {
+      setDraftOf(draft?.cosignOfId ?? null)
+      setDraftWords(!!draft?.content?.trim())
+      setDraftRead(read)
+    },
+    []
+  )
   const { width, drag } = usePanelWidth()
   const followed = useFollowedAuthors(user?.uid)
   const subject = conferenceName(conference)
@@ -271,6 +302,74 @@ function Details({
     setLanding(true)
   }
 
+  // A link to cosign one input (`?cosign=<id>`) does what its card's Cosign
+  // does once the feed and the reader are known, or says why it can't. A
+  // reader who must sign in first keeps the link in the address, so it picks
+  // up again once they are through, here or after a reload.
+  const linked =
+    typeof router.query.cosign === "string" ? router.query.cosign : undefined
+  const [refusal, setRefusal] = useState<LinkRefusal>()
+  const [focus, setFocus] = useState<string>()
+  const prompted = useRef(false)
+  // Once acted on, until the address lets go of it.
+  const acted = useRef<string>(undefined)
+  useEffect(() => {
+    if (!linked || authLoading || loading || feedError) return
+    if (acted.current === linked) return
+    const done = () => {
+      acted.current = linked
+      return router.replace(maple.conference(conference), undefined, {
+        shallow: true,
+        scroll: false
+      })
+    }
+    const parent = byId.get(linked)
+    // A cosign's card is the one it cosigns.
+    const card =
+      parent?.cosignOfId && byId.has(parent.cosignOfId)
+        ? parent.cosignOfId
+        : parent?.id
+    const refuse = (why: LinkRefusal) => {
+      setRefusal(why)
+      setFocus(card)
+      done()
+    }
+    if (!parent) return refuse("removed")
+    if (uncosignable(parent)) return refuse("not_cosignable")
+    if (!taking) return refuse("closed")
+    if (!authenticated || !user?.emailVerified) {
+      if (!prompted.current) signIn()
+      prompted.current = true
+      return
+    }
+    if (!draftRead) return
+    if (mine) {
+      setRefusal("filed")
+      done().then(() => jumpToSection("your-input"))
+      return
+    }
+    // What is left of the rule that offers Cosign: no words of their own.
+    if (!offerCosign) return refuse("drafting")
+    startCosign(parent)
+    done()
+  }, [
+    linked,
+    authLoading,
+    loading,
+    feedError,
+    router,
+    conference,
+    byId,
+    taking,
+    authenticated,
+    user?.emailVerified,
+    signIn,
+    draftRead,
+    mine,
+    offerCosign,
+    startCosign
+  ])
+
   // The tabs hold under the title, so they need its height.
   const main = useRef<HTMLDivElement>(null)
   const band = useRef<HTMLDivElement>(null)
@@ -293,6 +392,10 @@ function Details({
       onEdit: taking ? edit : undefined,
       signedIn: authenticated,
       onCosign: offerCosign ? startCosign : undefined,
+      cosignLink: taking
+        ? (x: ConferenceTestimony) =>
+            siteUrl(maple.conference({ ...conference, cosign: x.id }))
+        : undefined,
       byId
     }),
     [
@@ -304,6 +407,7 @@ function Details({
       authenticated,
       offerCosign,
       startCosign,
+      conference,
       byId
     ]
   )
@@ -338,6 +442,18 @@ function Details({
                   <ShareButton onClick={share} disabled={Boolean(mine)} />
                 )}
               </TitleRow>
+              {refusal && (
+                <LinkNotice role="status">
+                  {t(`input.cosign_link_${refusal}`)}
+                  <Close
+                    type="button"
+                    aria-label={t("input.close")}
+                    onClick={() => setRefusal(undefined)}
+                  >
+                    <X size={16} />
+                  </Close>
+                </LinkNotice>
+              )}
             </TitleBand>
             <ConferenceByline conference={conference} />
             <Band
@@ -385,7 +501,7 @@ function Details({
             )}
             {heard && (
               <Section>
-                <PublicInput items={items} loading={loading} />
+                <PublicInput items={items} loading={loading} focus={focus} />
               </Section>
             )}
             <Section id="text">
@@ -453,7 +569,7 @@ function InputPanel({
   onCosignStep: (s: CosignStep) => void
   full: boolean
   onFull: (full: boolean) => void
-  onDraft: (draft?: ConferenceWorkingDraft) => void
+  onDraft: (draft?: ConferenceWorkingDraft, read?: boolean) => void
   onPosted: () => void
 }) {
   const { t } = useTranslation("conferences")
@@ -465,9 +581,9 @@ function InputPanel({
   )
   // Signing out takes the draft with it.
   useEffect(() => {
-    onDraft(edit.draft)
+    onDraft(edit.draft, !edit.loading)
     return () => onDraft(undefined)
-  }, [edit.draft, onDraft])
+  }, [edit.draft, edit.loading, onDraft])
 
   const title =
     cosigning && edit.publication
