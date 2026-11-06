@@ -2,7 +2,7 @@ import { Trans, useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { formatBillId } from "../formatting"
 import { maple } from "../links"
-import { DottedInternal } from "./styles"
+import { DottedInternal, Notice } from "./styles"
 import { ConferenceSummary } from "./types"
 
 const Line = styled.p`
@@ -26,17 +26,6 @@ const Status = styled.span`
   color: var(--maple-color-gray-subtle-text);
   font-size: 0.75rem;
   font-weight: 600;
-`
-
-const Notice = styled.p`
-  margin: 1rem 0 0;
-  padding: 0.75rem 1rem;
-  border-radius: var(--maple-radius-md);
-  background: var(--maple-color-gray-subtle-bg);
-  border: 1px solid var(--maple-color-gray-subtle-border);
-  color: var(--maple-text-strong);
-  font-size: 0.9375rem;
-  line-height: 1.45;
 `
 
 /**

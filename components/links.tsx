@@ -85,8 +85,19 @@ export const maple = {
     `/legislators/${court}/${memberCode}`,
   conferences: () => `/conferences`,
   conferenceExplorer: () => `/conferences/explorer`,
-  conference: ({ court, id }: { court: number; id: string }) =>
-    `/conferences/${court}/${id}`,
+  /** With `cosign`, the page opens that input's cosign panel. */
+  conference: ({
+    court,
+    id,
+    cosign
+  }: {
+    court: number
+    id: string
+    cosign?: string
+  }) =>
+    `/conferences/${court}/${id}${
+      cosign ? `?${new URLSearchParams({ cosign }).toString()}` : ""
+    }`,
   hearing: ({ eventId }: { eventId: number }) => `/hearing/${eventId}`,
   testimony: ({ publishedId }: { publishedId: string }) =>
     `/testimony/${publishedId}`,

@@ -8,6 +8,7 @@ import { useCosign } from "./CosignButton"
 import { useReport } from "./Kebab"
 import { useLockedScroll } from "./useLockedScroll"
 import { useToggleFollow } from "./useToggleFollow"
+import { Close } from "./Close"
 import { Entry } from "./Entry"
 import { X } from "./icons"
 import { brand, ink, wash } from "./tokens"
@@ -65,17 +66,6 @@ const Title = styled.p`
   margin: 0;
   font-size: 1.25rem;
   color: ${ink.strong};
-`
-
-const Close = styled.button`
-  display: flex;
-  border: 0;
-  padding: 0;
-  background: none;
-  color: ${ink.mid};
-  &:hover {
-    color: ${ink.strong};
-  }
 `
 
 const Columns = styled.div`

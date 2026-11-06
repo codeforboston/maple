@@ -1,7 +1,7 @@
 import { ReactNode, useState } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
-import { ToastContainer } from "react-bootstrap"
+import { Toast, ToastContainer } from "react-bootstrap"
 import { Dropdown } from "components/bootstrap"
 import { ConferenceTestimony, Testimony } from "components/db"
 import { useReportTestimony } from "components/api/report"
@@ -12,7 +12,15 @@ import {
 import ReportToast from "components/TestimonyCard/ReportToast"
 import { useInputContext } from "./context"
 import { useToggleFollow } from "./useToggleFollow"
-import { BellPlus, EllipsisVertical, FileText, Flag, SquarePen } from "./icons"
+import { uncosignable } from "functions/src/testimony/cosign"
+import {
+  BellPlus,
+  EllipsisVertical,
+  FileText,
+  Flag,
+  Link2,
+  SquarePen
+} from "./icons"
 import { ink, wash } from "./tokens"
 import { Anchor, Menu, Toggle } from "./menu"
 import { authStepChanged } from "components/auth/redux"
@@ -55,6 +63,13 @@ const Item = styled.button`
     color: ${ink.mid};
   }
 `
+
+/** Where an entry's toasts appear, over the panel and any opened entry. */
+const TopToasts = ({ children }: { children: ReactNode }) => (
+  <ToastContainer position="top-center" style={{ zIndex: 1100 }}>
+    {children}
+  </ToastContainer>
+)
 
 /** Reporting an entry, or asking for one's own to be deleted: the modal the
  * bill page's testimony uses, worded for input, and its toast. `start` sends a signed-out reader
@@ -105,9 +120,9 @@ export function useReport(testimony: ConferenceTestimony) {
           />
         ))}
       {didReport && (
-        <ToastContainer position="top-center" style={{ zIndex: 1100 }}>
+        <TopToasts>
           <ReportToast isSuccessful={report.isSuccess} />
-        </ToastContainer>
+        </TopToasts>
       )}
     </>
   )
@@ -126,18 +141,38 @@ export function Kebab({
   onView?: () => void
 }) {
   const { t } = useTranslation("conferences")
-  const { onEdit } = useInputContext()
+  const { onEdit, cosignLink } = useInputContext()
   const { following, toggle: toggleFollow } = useToggleFollow(
     testimony.authorUid
   )
 
   const report = useReport(testimony)
+  // Anyone may pass round the way to cosign, the author above all. The
+  // address is made only when it is copied; a failed copy shows it instead.
+  const linkable = !!cosignLink && !uncosignable(testimony)
+  const [copied, setCopied] = useState<{ ok: boolean; link: string }>()
+  const copy = () => {
+    const link = cosignLink!(testimony)
+    navigator.clipboard.writeText(link).then(
+      () => setCopied({ ok: true, link }),
+      () => setCopied({ ok: false, link })
+    )
+  }
   const items: { label: string; icon: ReactNode; act: () => void }[] = [
     ...(onView
       ? [{ label: t("input.view"), icon: <FileText size={15} />, act: onView }]
       : []),
     ...(report.own && onEdit
       ? [{ label: t("input.edit"), icon: <SquarePen size={15} />, act: onEdit }]
+      : []),
+    ...(linkable
+      ? [
+          {
+            label: t("input.copy_cosign_link"),
+            icon: <Link2 size={15} />,
+            act: copy
+          }
+        ]
       : []),
     ...(report.own
       ? []
@@ -183,6 +218,22 @@ export function Kebab({
         </KebabMenu>
       </Anchor>
       {report.node}
+      {copied && (
+        <TopToasts>
+          <Toast
+            bg={copied.ok ? "success" : "danger"}
+            onClose={() => setCopied(undefined)}
+            delay={3000}
+            autohide
+          >
+            <Toast.Body className="text-white">
+              {copied.ok
+                ? t("input.cosign_link_copied")
+                : t("input.cosign_link_not_copied", { link: copied.link })}
+            </Toast.Body>
+          </Toast>
+        </TopToasts>
+      )}
     </>
   )
 }
