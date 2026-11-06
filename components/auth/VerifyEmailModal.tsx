@@ -1,5 +1,5 @@
 import type { ModalProps } from "react-bootstrap"
-import { Button, Image, Col, Modal, Row, Stack } from "../bootstrap"
+import { Alert, Button, Image, Col, Modal, Row, Stack } from "../bootstrap"
 import { Internal } from "components/links"
 import { useTranslation } from "next-i18next"
 import { useRecheckEmailVerified } from "./hooks"
@@ -11,11 +11,14 @@ export default function VerifyEmailModal({
   const { t } = useTranslation("auth")
   // For an email verified in another tab, which this one can't see by itself.
   const recheck = useRecheckEmailVerified()
-  const check = async () => {
-    if (await recheck.execute()) onHide?.()
-  }
+  // A failed check shows its error below; the button is there to try again.
+  const check = () =>
+    recheck.execute().then(
+      verified => verified && onHide?.(),
+      () => {}
+    )
   return (
-    <Modal show={show} onHide={onHide} centered>
+    <Modal show={show} onHide={onHide} onExited={recheck.reset} centered>
       <Modal.Header closeButton>
         <Modal.Title id="tos-modal">{t("signUp")}</Modal.Title>
       </Modal.Header>
@@ -35,6 +38,11 @@ export default function VerifyEmailModal({
             </Button>
             {recheck.status === "success" && !recheck.result && (
               <p className="mb-0">{t("verifiedNotYet")}</p>
+            )}
+            {recheck.error && (
+              <Alert variant="danger" className="mb-0">
+                {recheck.error.message}
+              </Alert>
             )}
             <Internal href="/edit-profile" className="view-edit-profile">
               <Button onClick={onHide}>{t("setUpProfile")}</Button>

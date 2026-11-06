@@ -153,10 +153,13 @@ export function Kebab({
   const [copied, setCopied] = useState<{ ok: boolean; link: string }>()
   const copy = () => {
     const link = cosignLink!(testimony)
-    navigator.clipboard.writeText(link).then(
-      () => setCopied({ ok: true, link }),
-      () => setCopied({ ok: false, link })
-    )
+    // No clipboard at all off https, as on a phone trying a LAN address.
+    Promise.resolve()
+      .then(() => navigator.clipboard.writeText(link))
+      .then(
+        () => setCopied({ ok: true, link }),
+        () => setCopied({ ok: false, link })
+      )
   }
   const items: { label: string; icon: ReactNode; act: () => void }[] = [
     ...(onView

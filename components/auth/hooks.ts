@@ -140,7 +140,7 @@ export function useSendEmailVerification() {
  * whether it is now verified. */
 export function useRecheckEmailVerified() {
   const dispatch = useAppDispatch()
-  return useAsyncCallback(async () => {
+  return useFirebaseFunction<void, boolean>(async () => {
     const user = auth.currentUser
     if (!user) return false
     await user.reload()

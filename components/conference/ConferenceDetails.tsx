@@ -183,7 +183,7 @@ function Details({
 }: ConferencePageProps & { openOnHero?: boolean }) {
   const { top, hero, toConference } = useConferenceTop(openOnHero)
   const { t } = useTranslation("conferences")
-  const { user, authenticated, loading: authLoading } = useAuth()
+  const { user, authenticated, loading: authLoading, authFlowStep } = useAuth()
   const dispatch = useAppDispatch()
   const router = useRouter()
   const {
@@ -310,11 +310,18 @@ function Details({
     typeof router.query.cosign === "string" ? router.query.cosign : undefined
   const [refusal, setRefusal] = useState<LinkRefusal>()
   const [focus, setFocus] = useState<string>()
-  const prompted = useRef(false)
+  // The door last opened for the link: signing in, then verifying the email,
+  // which signing in to an unverified account does not ask for by itself.
+  const prompted = useRef<"start" | "verifyEmail">(undefined)
   // Once acted on, until the address lets go of it.
   const acted = useRef<string>(undefined)
   useEffect(() => {
-    if (!linked || authLoading || loading || feedError) return
+    if (!linked) {
+      acted.current = undefined
+      prompted.current = undefined
+      return
+    }
+    if (authLoading || loading || feedError) return
     if (acted.current === linked) return
     const done = () => {
       acted.current = linked
@@ -338,8 +345,12 @@ function Details({
     if (uncosignable(parent)) return refuse("not_cosignable")
     if (!taking) return refuse("closed")
     if (!authenticated || !user?.emailVerified) {
-      if (!prompted.current) signIn()
-      prompted.current = true
+      // Signing up ends on verifying by itself; signing in does not.
+      if (authFlowStep === "verifyEmail") prompted.current = "verifyEmail"
+      if (authFlowStep) return
+      const door = authenticated ? "verifyEmail" : "start"
+      if (prompted.current !== door) signIn()
+      prompted.current = door
       return
     }
     if (!draftRead) return
@@ -363,6 +374,7 @@ function Details({
     taking,
     authenticated,
     user?.emailVerified,
+    authFlowStep,
     signIn,
     draftRead,
     mine,

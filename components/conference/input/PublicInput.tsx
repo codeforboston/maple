@@ -96,12 +96,8 @@ const Feed = styled.div`
   gap: 20px;
 `
 
-/** What a card in the reader's own place, at the top of the feed, scrolls to. */
-const Own = styled.div`
-  ${parked}
-`
-
-/** What a link to one card scrolls to. */
+/** What a jump scrolls to: the reader's own place at the top of the feed, or
+ * the card a link is for. */
 const Spot = styled.div`
   ${parked}
 `
@@ -232,6 +228,13 @@ export function PublicInput({
   const current = Math.min(page, pageCount - 1)
   const paged = shown.slice(current * PAGE_SIZE, (current + 1) * PAGE_SIZE)
 
+  const clearFilters = () => {
+    setType("all")
+    setPosition("all")
+    setPickedAuthors([])
+    setPage(0)
+  }
+
   // Narrowing the feed starts it from its first page.
   const narrowing =
     <T,>(set: (value: T) => void) =>
@@ -245,9 +248,7 @@ export function PublicInput({
   const [sought, setSought] = useState<string>()
   useEffect(() => {
     if (!focus || loading) return
-    setType("all")
-    setPosition("all")
-    setPickedAuthors([])
+    clearFilters()
     const i = units.findIndex(u => u.lead.id === focus)
     setPage(ownUnit?.lead.id === focus || i < 0 ? 0 : Math.floor(i / PAGE_SIZE))
     setSought(focus)
@@ -261,10 +262,10 @@ export function PublicInput({
     setSought(undefined)
   }, [sought])
 
-  const card = ({ lead: x, cosigns }: Unit) => {
+  const card = ({ lead: x, cosigns }: Unit, id?: string) => {
     const banded = !!x.cosignCount && !x.cosignOfId
     return (
-      <Spot key={`${x.authorUid}-${x.id}`} data-input={x.id}>
+      <Spot key={`${x.authorUid}-${x.id}`} id={id} data-input={x.id}>
         <Entry
           testimony={x}
           own={x === mine}
@@ -314,13 +315,13 @@ export function PublicInput({
         <>
           {(ownUnit || paged.length > 0) && (
             <Feed>
-              {ownUnit && (
-                // The jump lands on the reader's own: their card, or their
-                // cosign in the group under the card it cosigns.
-                <Own id={ownUnit.lead === mine ? "your-input" : undefined}>
-                  {card(withWords(ownUnit, wordless, mine))}
-                </Own>
-              )}
+              {/* The jump lands on the reader's own: their card, or their
+                  cosign in the group under the card it cosigns. */}
+              {ownUnit &&
+                card(
+                  withWords(ownUnit, wordless, mine),
+                  ownUnit.lead === mine ? "your-input" : undefined
+                )}
               {paged.map(u => card(u))}
             </Feed>
           )}
@@ -349,15 +350,7 @@ export function PublicInput({
                 )}
               </EmptyBody>
               {items.length > 0 && (
-                <ClearFilters
-                  type="button"
-                  onClick={() => {
-                    setType("all")
-                    setPosition("all")
-                    setPickedAuthors([])
-                    setPage(0)
-                  }}
-                >
+                <ClearFilters type="button" onClick={clearFilters}>
                   {t("input.clear_filters")}
                 </ClearFilters>
               )}
