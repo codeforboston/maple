@@ -27,6 +27,29 @@ const editFixture = (from: string, to: string) => {
   fs.writeFileSync(file, fs.readFileSync(file, "utf8").replace(from, to))
 }
 
+/** Edits the fixture and hands back the edit that undoes it. */
+const changeFixture = (from: string, to: string) => {
+  editFixture(from, to)
+  return () => editFixture(to, from)
+}
+
+/** The fixture's two questions, each given the lines under its heading. */
+const DIFFERENCES = [
+  "  - heading: Social media ban",
+  "  - heading: Device lockout pilot"
+]
+const resolveFixture = (...lines: string[][]) => {
+  const undo = lines.map((l, i) =>
+    changeFixture(
+      DIFFERENCES[i],
+      [DIFFERENCES[i], ...l.map(x => `    ${x}`)].join("\n")
+    )
+  )
+  return () => undo.forEach(u => u())
+}
+const enactFixture = () =>
+  changeFixture("status: appointed", "status: enacted\nreportBillId: H9902")
+
 beforeAll(async () => {
   dir = fs.mkdtempSync(path.join(os.tmpdir(), "conferences-"))
   fs.cpSync(FIXTURES_DIR, dir, { recursive: true })
@@ -190,12 +213,87 @@ it("refuses a report bill on an appointed conference", async () => {
 })
 
 it("takes a report bill once the report is filed, and warns if it is missing", async () => {
-  editFixture("status: appointed", "status: enacted\nreportBillId: H9902")
+  const resolved = [
+    ["outcome: house", "addressedBy: house", "edited: One word cut"],
+    ["outcome: dropped", "addressedBy: house", "law: Not in the law."]
+  ]
+  const reopen = enactFixture()
+  const unresolve = resolveFixture(...resolved)
   const plan = await run({ dryRun: true })
   expect(plan.warnings).toEqual(
     expect.arrayContaining([expect.stringContaining("bills/H9902 not found")])
   )
-  editFixture("status: enacted\nreportBillId: H9902", "status: appointed")
+  unresolve()
+  reopen()
+})
+
+it("asks how each question was resolved once the report is filed", async () => {
+  const errors = jest.spyOn(console, "error").mockImplementation(() => {})
+  const reopen = enactFixture()
+  await expect(run({ dryRun: true })).rejects.toThrow(/nothing written/)
+  expect(errors.mock.calls.flat()).toEqual([
+    expect.stringContaining(
+      "differences[0]: outcome and addressedBy once a report is filed"
+    ),
+    expect.stringContaining(
+      "differences[1]: outcome and addressedBy once a report is filed"
+    )
+  ])
+  errors.mockRestore()
+  reopen()
+})
+
+it("refuses an outcome before the report is filed", async () => {
+  const errors = jest.spyOn(console, "error").mockImplementation(() => {})
+  const unresolve = resolveFixture(["outcome: house", "addressedBy: house"])
+  await expect(run({ dryRun: true })).rejects.toThrow(/nothing written/)
+  expect(errors.mock.calls.flat()).toEqual([
+    expect.stringContaining(
+      "differences[0]: outcome, addressedBy before a report is filed"
+    )
+  ])
+  errors.mockRestore()
+  unresolve()
+})
+
+it("refuses an outcome at odds with which bills took the question up", async () => {
+  const errors = jest.spyOn(console, "error").mockImplementation(() => {})
+  const resolved = [
+    ["outcome: modified", "addressedBy: house", "edited: One word cut"],
+    ["outcome: new", "addressedBy: house"]
+  ]
+  const reopen = enactFixture()
+  const unresolve = resolveFixture(...resolved)
+  await expect(run({ dryRun: true })).rejects.toThrow(/nothing written/)
+  expect(errors.mock.calls.flat()).toEqual([
+    expect.stringContaining(
+      "differences[0]: edited goes only with senate, house or combined"
+    ),
+    expect.stringContaining(
+      "differences[1]: outcome new goes with addressedBy neither"
+    )
+  ])
+  errors.mockRestore()
+  unresolve()
+  reopen()
+})
+
+it("refuses a key the schema does not have at any depth", async () => {
+  const errors = jest.spyOn(console, "error").mockImplementation(() => {})
+  const unresolve = resolveFixture(["outcom: house"])
+  const unsource = changeFixture(
+    'publishedAt: "2026-09-01"',
+    'publishedAt: "2026-09-01"\n      publisher: Example Gazette'
+  )
+  await expect(run({ dryRun: true })).rejects.toThrow(/nothing written/)
+  expect(errors.mock.calls.flat()).toEqual([
+    expect.stringContaining(
+      "unknown field(s) differences[0].outcom, differences[0].source.publisher"
+    )
+  ])
+  errors.mockRestore()
+  unsource()
+  unresolve()
 })
 
 it("refuses Senate and House bill ids that are swapped", async () => {

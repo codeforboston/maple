@@ -21,9 +21,32 @@ export const ConferenceSource = Record({
   publishedAt: Optional(String)
 })
 
+/** How the law settled a question: in one chamber's text, assembled from
+ * both, one chamber's provision changed in substance, text neither passed, or
+ * left out. */
+export type ConferenceOutcome = Static<typeof ConferenceOutcome>
+export const ConferenceOutcome = Union(
+  L("senate"),
+  L("house"),
+  L("combined"),
+  L("modified"),
+  L("new"),
+  L("dropped")
+)
+
+/** Which chambers' bills took up a question. */
+export type ConferenceAddressedBy = Static<typeof ConferenceAddressedBy>
+export const ConferenceAddressedBy = Union(
+  L("both"),
+  L("house"),
+  L("senate"),
+  L("neither")
+)
+
 /** One point the chambers disagree on, with a short blob per chamber. Written
  * by journalists, never computed from the texts. A chamber left out has
- * nothing on it in its bill. */
+ * nothing on it in its bill. Once a report is filed, each says how the law
+ * resolved it. */
 export type ConferenceDifference = Static<typeof ConferenceDifference>
 export const ConferenceDifference = Record({
   heading: String,
@@ -31,7 +54,19 @@ export const ConferenceDifference = Record({
   house: Optional(String),
   /** Phrases in either blob that open a note, each with its points. */
   notes: Optional(Dictionary(Array(String), String)),
-  source: Optional(ConferenceSource)
+  source: Optional(ConferenceSource),
+  outcome: Optional(ConferenceOutcome),
+  /** Small wording changes made in conference that leave the outcome
+   * standing, in a few words. */
+  edited: Optional(String),
+  /** Which bills took it up. A silent chamber's blob may still say what it
+   * lacked. */
+  addressedBy: Optional(ConferenceAddressedBy),
+  /** How it was resolved, in a line. */
+  resolution: Optional(String),
+  /** What the law says on it. */
+  law: Optional(String),
+  why: Optional(String)
 })
 
 /** One point where the two texts match, with a short explanation. */

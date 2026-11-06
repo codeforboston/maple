@@ -42,8 +42,15 @@ const Tab = styled.a`
 
 /** The page's sections, as the mockup's tab row: each tab scrolls to its
  * section, and the one being read is underlined. A row of one has nothing to
- * choose between, so it is left out. */
-export function ConferenceTabs({ sections }: { sections: readonly string[] }) {
+ * choose between, so it is left out. A section's label is its `tab_` string
+ * unless `labels` names another. */
+export function ConferenceTabs({
+  sections,
+  labels = {}
+}: {
+  sections: readonly string[]
+  labels?: Partial<Record<string, string>>
+}) {
   const { t } = useTranslation("conferences")
   const [current, setCurrent] = useState(sections[0])
 
@@ -114,7 +121,7 @@ export function ConferenceTabs({ sections }: { sections: readonly string[] }) {
             history.replaceState(as ? { ...state, as } : state, "", `#${s}`)
           }}
         >
-          {t(`tab_${s}`)}
+          {t(labels[s] ?? `tab_${s}`)}
         </Tab>
       ))}
     </Row>
