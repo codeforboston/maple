@@ -69,6 +69,17 @@ export const ConferenceDifference = Record({
   why: Optional(String)
 })
 
+/** The fields that say how the law resolved a question, which only a
+ * conference with a report may set. */
+export const conferenceResolutionFields = [
+  "outcome",
+  "addressedBy",
+  "edited",
+  "resolution",
+  "law",
+  "why"
+] as const
+
 /** One point where the two texts match, with a short explanation. */
 export type ConferenceSimilarity = Static<typeof ConferenceSimilarity>
 export const ConferenceSimilarity = Record({

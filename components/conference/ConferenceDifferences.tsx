@@ -456,7 +456,7 @@ const FiltersLabel = styled.span`
   color: ${ink.mid};
 `
 
-const Group = styled.div`
+const Group = styled.section`
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -643,20 +643,17 @@ function Difference({
 
 /** Each chamber's text in its own card. A chamber whose bill was silent is
  * drawn as an absence, even where its text says what it lacked. */
-function ChamberAnswers({
-  d,
-  silent = () => false
-}: {
-  d: DifferenceView
-  silent?: (chamber: "senate" | "house") => boolean
-}) {
+function ChamberAnswers({ d }: { d: DifferenceView }) {
   const { t } = useTranslation("conferences")
+  const { addressedBy } = d
   return (
     <Answers>
       {CHAMBERS.map(chamber => {
         const key = chamber === "Senate" ? "senate" : "house"
         const text = d[key]
-        const absent = silent(key)
+        // Before a report nothing says which bills took a question up.
+        const absent =
+          !!addressedBy && addressedBy !== "both" && addressedBy !== key
         return (
           <Answer key={chamber} $ink={chamberInk[chamber]} $silent={absent}>
             <Chamber $ink={absent ? ink.mid : chamberInk[chamber]}>
@@ -681,7 +678,7 @@ function ChamberAnswers({
 function ResolvedDifference({ d }: { d: DifferenceView }) {
   const { t } = useTranslation("conferences")
   const [open, setOpen] = useState(false)
-  const { outcome, addressedBy } = d
+  const { outcome } = d
   if (!outcome) return null
   return (
     <li>
@@ -706,10 +703,7 @@ function ResolvedDifference({ d }: { d: DifferenceView }) {
       </Toggle>
       {open && (
         <Opened>
-          <ChamberAnswers
-            d={d}
-            silent={key => addressedBy !== "both" && addressedBy !== key}
-          />
+          <ChamberAnswers d={d} />
           {d.law && (
             <Law $ink={lawInk.fill}>
               <LawLabel>

@@ -4,7 +4,8 @@ import * as path from "path"
 import { Boolean, Optional, Record, Runtype, String } from "runtypes"
 import {
   Conference,
-  conferenceCountFields
+  conferenceCountFields,
+  conferenceResolutionFields
 } from "../../functions/src/conferences/types"
 import { hasReport } from "../../functions/src/shared/conferences"
 import { Script } from "./types"
@@ -163,14 +164,14 @@ export const script: Script = async ({ db, args }) => {
  * records let extra keys through. */
 function unknownKeys(type: Runtype, value: unknown, at = ""): string[] {
   const r = type.reflect
-  const path = (k: string | number) =>
+  const under = (k: string | number) =>
     typeof k === "number" ? `${at}[${k}]` : at ? `${at}.${k}` : k
   if (r.tag === "optional") return unknownKeys(r.underlying, value, at)
   if (r.tag === "array" && Array.isArray(value))
-    return value.flatMap((v, i) => unknownKeys(r.element, v, path(i)))
+    return value.flatMap((v, i) => unknownKeys(r.element, v, under(i)))
   if (r.tag === "record" && value && typeof value === "object")
     return Object.entries(value).flatMap(([k, v]) =>
-      k in r.fields ? unknownKeys(r.fields[k], v, path(k)) : [path(k)]
+      k in r.fields ? unknownKeys(r.fields[k], v, under(k)) : [under(k)]
     )
   return []
 }
@@ -182,9 +183,7 @@ function resolutionErrors(conf: Conference) {
   conf.differences.forEach((d, i) => {
     const at = `differences[${i}]`
     if (!hasReport(conf)) {
-      const set = (
-        ["outcome", "addressedBy", "edited", "resolution", "law"] as const
-      ).filter(k => d[k] !== undefined)
+      const set = conferenceResolutionFields.filter(k => d[k] !== undefined)
       if (set.length)
         errors.push(`${at}: ${set.join(", ")} before a report is filed`)
       return
