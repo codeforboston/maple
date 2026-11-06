@@ -48,3 +48,11 @@ export function jumpTo(el: HTMLElement) {
       : "smooth"
   })
 }
+
+/** Jumps to the section with this id and puts it in the address, as a link
+ * to it would. */
+export function jumpToSection(id: string) {
+  const el = document.getElementById(id)
+  if (el) jumpTo(el)
+  history.replaceState(null, "", `${location.pathname}#${id}`)
+}

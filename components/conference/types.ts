@@ -17,6 +17,10 @@ export type ConferenceSummary = {
   /** The bill testimony on the conference is filed against. */
   canonicalBillId: string
   status: ConferenceStatus
+  /** False where we haven't written the conference up yet. */
+  covered: boolean
+  /** The conference report's bill, once one is filed. */
+  reportBillId: string | null
 }
 
 /** A conferee with the member document resolved and their seat on the map
@@ -38,13 +42,6 @@ export const personKey = (c: ConfereeView) => c.seat ?? c.memberCode
 /** A linked hearing, without its videos. */
 export type HearingView = Pick<EventSummary, "id" | "eventId" | "startsAt">
 
-/** Where an authored point came from. */
-export type SourceView = {
-  organisation: string
-  url: string
-  publishedAt: string | null
-}
-
 /** One point the chambers disagree on; a chamber's text is null where its
  * bill has nothing on it. */
 export type DifferenceView = {
@@ -52,14 +49,12 @@ export type DifferenceView = {
   senate: string | null
   house: string | null
   notes: Record<string, string[]>
-  source: SourceView | null
 }
 
 /** One point where the two texts match. */
 export type SimilarityView = {
   heading: string
   body: string
-  source: SourceView | null
 }
 
 export type ConferencePageProps = {
@@ -71,6 +66,8 @@ export type ConferencePageProps = {
   gist: string | null
   differences: DifferenceView[]
   similarities: SimilarityView[]
+  /** Published input on the conference, as the testimony triggers count it. */
+  testimonyCount: number
 }
 
 /** The index: every conference, active first, with its conferees by

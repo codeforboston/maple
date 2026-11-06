@@ -3,6 +3,7 @@
  * ../styles.ts. */
 export const ink = {
   strong: "#141413",
+  midheavy: "#40403d",
   mid: "#73726c",
   muted: "#94938d",
   faint: "#b5b4ae"
@@ -20,6 +21,7 @@ export const wash = {
 
 export const brand = {
   fill: "#1f3b61",
+  fillDisabled: "rgba(31, 59, 97, 0.35)",
   hover: "#152842",
   soft: "#eaeff5",
   edge: "#c4cfde",

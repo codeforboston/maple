@@ -72,13 +72,19 @@ export const Conference = withDefaults(
     /** A short name for headings and lists ("Phone-Free Schools"), as the
      * press refers to it. Pages fall back to the title. */
     name: Optional(String),
-    /** What the bill is, in one sentence, above what is unresolved. */
+    /** What the bills are, in a short paragraph, above what is unresolved. */
     gist: Optional(String),
     senateBillId: Id,
     houseBillId: Id,
     /** The bill whose history carries the appointment actions, one of the
      * pair. Testimony on the conference is filed against this bill. */
     canonicalBillId: Id,
+    /** False while we haven't written up this conference: its page carries a
+     * notice and takes no testimony. */
+    covered: Boolean,
+    /** The conference report, which the legislature files as a bill of its
+     * own once the committee agrees. */
+    reportBillId: Optional(Id),
     conferees: Array(Conferee),
     status: ConferenceStatus,
     /** Linked by hand: conference hearings arrive with an empty agenda and no
@@ -93,6 +99,7 @@ export const Conference = withDefaults(
     passHouseVersionCount: Number
   }),
   {
+    covered: true,
     hearingIds: [],
     differences: [],
     similarities: [],

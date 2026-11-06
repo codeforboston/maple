@@ -33,7 +33,8 @@ const mount = (onEdit?: () => void) =>
         subject: "Data Privacy",
         followed: new Set(),
         onEdit,
-        signedIn: true
+        signedIn: true,
+        byId: new Map()
       }}
     >
       <Kebab testimony={mine} />

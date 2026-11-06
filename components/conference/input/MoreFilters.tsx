@@ -144,6 +144,20 @@ const Box = styled.span`
   }
 `
 
+/** The panel's sections, each a label over its rows. */
+const Section = styled.div`
+  & + & {
+    margin-top: 20px;
+  }
+`
+
+const Note = styled.p`
+  margin: 7px 0 0;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: ${ink.faint};
+`
+
 const Name = styled.span`
   min-width: 0;
   overflow: hidden;
@@ -152,56 +166,89 @@ const Name = styled.span`
 `
 
 /** The filters that do not earn a pill of their own, behind one mark that
- * carries a count once something inside is set. Here that is the accounts the
- * reader follows: none picked means everyone. */
+ * carries a count once something inside is set: the accounts the reader
+ * follows (none picked means everyone), and whether cosigns without words of
+ * their own are listed. */
 export function MoreFilters({
   followable,
   picked,
-  onPick
+  onPick,
+  cosigns,
+  wordless,
+  onWordless
 }: {
   followable: Followable[]
   picked: string[]
   onPick: (ids: string[]) => void
+  /** The feed holds cosigns, so the setting for them applies. */
+  cosigns: boolean
+  wordless: boolean
+  onWordless: (on: boolean) => void
 }) {
   const { t } = useTranslation("conferences")
   const all = picked.length === followable.length
+  const set = (picked.length > 0 ? 1 : 0) + (wordless ? 1 : 0)
 
   return (
     <Anchor align="end" autoClose="outside">
       <Toggle as={Mark} type="button" aria-label={t("input.filters")}>
         <ListFilter size={17} />
-        {picked.length > 0 && <Badge>1</Badge>}
+        {set > 0 && <Badge>{set}</Badge>}
       </Toggle>
       <FollowMenu role="menu">
-        <Head>
-          <Label>{t("input.following")}</Label>
-          <Dropdown.Item
-            as={Switch}
-            type="button"
-            role="switch"
-            aria-checked={all}
-            aria-label={t("input.follow_all")}
-            onClick={() => onPick(all ? [] : followable.map(u => u.id))}
-          />
-        </Head>
-        {followable.map(u => {
-          const on = picked.includes(u.id)
-          return (
+        {followable.length > 0 && (
+          <Section>
+            <Head>
+              <Label>{t("input.following")}</Label>
+              <Dropdown.Item
+                as={Switch}
+                type="button"
+                role="switch"
+                aria-checked={all}
+                aria-label={t("input.follow_all")}
+                onClick={() => onPick(all ? [] : followable.map(u => u.id))}
+              />
+            </Head>
+            {followable.map(u => {
+              const on = picked.includes(u.id)
+              return (
+                <Dropdown.Item
+                  key={u.id}
+                  as={Row}
+                  type="button"
+                  role="menuitemcheckbox"
+                  aria-checked={on}
+                  onClick={() =>
+                    onPick(
+                      on ? picked.filter(x => x !== u.id) : [...picked, u.id]
+                    )
+                  }
+                >
+                  <Box aria-hidden>{on && <Check size={11} />}</Box>
+                  <Name>{u.name}</Name>
+                </Dropdown.Item>
+              )
+            })}
+          </Section>
+        )}
+        {cosigns && (
+          <Section>
+            <Head>
+              <Label>{t("input.cosigns")}</Label>
+            </Head>
             <Dropdown.Item
-              key={u.id}
               as={Row}
               type="button"
               role="menuitemcheckbox"
-              aria-checked={on}
-              onClick={() =>
-                onPick(on ? picked.filter(x => x !== u.id) : [...picked, u.id])
-              }
+              aria-checked={wordless}
+              onClick={() => onWordless(!wordless)}
             >
-              <Box aria-hidden>{on && <Check size={11} />}</Box>
-              <Name>{u.name}</Name>
+              <Box aria-hidden>{wordless && <Check size={11} />}</Box>
+              <span>{t("input.cosign_wordless")}</span>
             </Dropdown.Item>
-          )
-        })}
+            <Note>{t("input.cosign_wordless_note")}</Note>
+          </Section>
+        )}
       </FollowMenu>
     </Anchor>
   )

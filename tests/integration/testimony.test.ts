@@ -741,6 +741,23 @@ describe("publishTestimony", () => {
       }
     )
 
+    it("Refuses testimony on a conference we don't cover", async () => {
+      const uncoveredId = await createConference(billId)
+      await testDb
+        .doc(`/generalCourts/${currentGeneralCourt}/conferences/${uncoveredId}`)
+        .update({ covered: false })
+      const { draftId: conferenceDraftId } = await createConferenceDraft(
+        uid,
+        billId,
+        uncoveredId,
+        "passNothing"
+      )
+      await expect(
+        publishTestimony({ draftId: conferenceDraftId })
+      ).rejects.toThrow("not accepting testimony")
+      expect((await getConference(uncoveredId)).testimonyCount).toBe(0)
+    })
+
     it("Refuses to republish once the conference has closed", async () => {
       const { draftId: conferenceDraftId } = await createConferenceDraft(
         uid,
@@ -925,8 +942,24 @@ describe("publishTestimony", () => {
         await testDb
           .doc(`/users/${uid}/publishedTestimony/${parentId}`)
           .delete()
+        await expect(publishTestimony({ draftId })).rejects.toMatchObject({
+          message: expect.stringContaining("no longer exists"),
+          details: { refusal: "cosignParentGone" }
+        })
+      })
+
+      it("Refuses a cosign of a legislator's testimony", async () => {
+        await testDb
+          .doc(`/users/${uid}/publishedTestimony/${parentId}`)
+          .update({ authorRole: "legislator" })
+        const { draftId } = await createCosignDraft(
+          uid2,
+          billId,
+          conferenceId,
+          cosignOf()
+        )
         await expect(publishTestimony({ draftId })).rejects.toThrow(
-          "no longer exists"
+          "legislator's testimony cannot be cosigned"
         )
       })
 

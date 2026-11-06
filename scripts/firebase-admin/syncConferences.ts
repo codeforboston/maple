@@ -29,6 +29,7 @@ export const script: Script = async ({ db, args }) => {
   const warnings: string[] = []
   const desired = new Map<string, { file: string; conf: Conference }>()
   const billOf = new Map<string, string>()
+  const reports = new Map<string, string>()
   for (const file of files) {
     const raw: any = yaml.load(fs.readFileSync(path.join(dir, file), "utf8"))
     const checked = Conference.validateWithDefaults(raw)
@@ -62,6 +63,18 @@ export const script: Script = async ({ db, args }) => {
       continue
     }
     desired.set(docPath, { file, conf })
+    // The report is filed once the committee agrees, so an appointed
+    // conference can't have one, and it's never one of the pair.
+    if (conf.reportBillId) {
+      if (conf.status === "appointed")
+        errors.push(`${file}: reportBillId on an appointed conference`)
+      if ([conf.senateBillId, conf.houseBillId].includes(conf.reportBillId))
+        errors.push(`${file}: reportBillId must be the report, not the pair`)
+      reports.set(
+        `generalCourts/${conf.court}/bills/${conf.reportBillId}`,
+        file
+      )
+    }
     for (const billId of [conf.senateBillId, conf.houseBillId]) {
       const billPath = `generalCourts/${conf.court}/bills/${billId}`
       const other = billOf.get(billPath)
@@ -82,8 +95,8 @@ export const script: Script = async ({ db, args }) => {
     const snaps = refs.length ? await db.getAll(...refs, { fieldMask }) : []
     return new Map(snaps.map(s => [s.ref.path, s.exists ? s.data() : null]))
   }
-  const bills = await exists([...billOf.keys()], [])
-  for (const [billPath, file] of billOf) {
+  const bills = await exists([...billOf.keys(), ...reports.keys()], [])
+  for (const [billPath, file] of [...billOf, ...reports]) {
     if (!bills.get(billPath)) warnings.push(`${file}: ${billPath} not found`)
   }
   const memberPath = (court: number, code: string) =>

@@ -53,8 +53,7 @@ export function ConferenceTabs({ sections }: { sections: readonly string[] }) {
     // on every scroll rather than observed: an observer picks a band of the
     // window, and the last section on the page may never reach it.
     // A section is read from where the one above it ends, so a block between
-    // them with no tab of its own, such as the reader's input above the
-    // public's, lights the tab below it.
+    // them with no tab of its own lights the tab below it.
     const read = () => {
       let last = sections[0]
       let above: Element | undefined

@@ -82,7 +82,9 @@ const summary = (id: string, senate: string, house: string) => ({
   senateBillId: senate,
   houseBillId: house,
   canonicalBillId: senate,
-  status: "appointed" as const
+  status: "appointed" as const,
+  covered: true,
+  reportBillId: null
 })
 const phoneFree = summary(
   "student-learning-and-mental-health",
@@ -98,7 +100,8 @@ const page = (conference: ConferencePageProps["conference"]) => ({
   hearings: [],
   gist: null,
   differences: [],
-  similarities: []
+  similarities: [],
+  testimonyCount: 0
 })
 
 describe("moving between conferences", () => {
