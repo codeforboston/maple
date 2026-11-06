@@ -2,6 +2,7 @@ import React from "react"
 import { Table } from "react-bootstrap"
 import { useTranslation } from "next-i18next"
 import type { LobbyingFiling } from "functions/src/lobbying/types"
+import { normalizePosition } from "./activity"
 import { LobbyingPositionChip } from "./LobbyingPositionChip"
 import { MAPLE_COLORS } from "./chartTheme"
 import { SosSourceLink } from "./SosSourceLink"
@@ -9,10 +10,8 @@ import { filingPeriodLabel } from "./filingPeriod"
 
 interface LobbyingFilingsTableProps {
   filings: LobbyingFiling[]
-  showBill?: boolean
   showClient?: boolean
   showFirm?: boolean
-  showAmount?: boolean
   showActivity?: boolean
   maxRows?: number
   onViewAll?: () => void
@@ -21,10 +20,8 @@ interface LobbyingFilingsTableProps {
 
 export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
   filings,
-  showBill = false,
   showClient = true,
   showFirm = true,
-  showAmount = true,
   showActivity = false,
   maxRows,
   onViewAll,
@@ -58,14 +55,10 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
       <Table hover responsive size="sm" style={tableStyle}>
         <thead>
           <tr style={theadRowStyle}>
-            {showBill && <th>{t("fields.bills")}</th>}
             {showClient && <th>{t("fields.clientName")}</th>}
             {showFirm && <th>{t("fields.firmName")}</th>}
             {showActivity && <th>{t("fields.activity")}</th>}
             <th>{t("filters.position")}</th>
-            {showAmount && (
-              <th style={{ textAlign: "right" }}>{t("fields.amount")}</th>
-            )}
             <th>{t("fields.period")}</th>
             {showSource && <th>{t("fields.source")}</th>}
           </tr>
@@ -73,20 +66,6 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
         <tbody>
           {rows.map(f => (
             <tr key={f.filingId}>
-              {showBill && (
-                <td style={cellStyle}>
-                  {f.billId ? (
-                    <a
-                      href={`/lobbying/bills/${f.generalCourt}/${f.billId}`}
-                      style={{ color: MAPLE_COLORS.primary }}
-                    >
-                      {f.billId}
-                    </a>
-                  ) : (
-                    <span style={{ color: MAPLE_COLORS.textMuted }}>—</span>
-                  )}
-                </td>
-              )}
               {showClient && (
                 <td style={cellStyle}>
                   <a
@@ -117,19 +96,10 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
                 </td>
               )}
               <td style={cellStyle}>
-                <LobbyingPositionChip position={f.position} />
+                <LobbyingPositionChip
+                  position={normalizePosition(f.position)}
+                />
               </td>
-              {showAmount && (
-                <td style={{ ...cellStyle, textAlign: "right" }}>
-                  {f.amount != null
-                    ? f.amount.toLocaleString("en-US", {
-                        style: "currency",
-                        currency: "USD",
-                        maximumFractionDigits: 0
-                      })
-                    : "—"}
-                </td>
-              )}
               <td style={{ ...cellStyle, whiteSpace: "nowrap" }}>
                 {filingPeriodLabel(f, i18n.language)}
               </td>
