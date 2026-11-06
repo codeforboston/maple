@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
-import { jumpTo } from "./navbar"
+import { jumpTo, putHash } from "./navbar"
 
 /** The mockup's theme.css values, for the colours the site has no token for. */
 const ink = { strong: "#141413", mid: "#73726c" }
@@ -113,12 +113,7 @@ export function ConferenceTabs({
             if (!el) return
             e.preventDefault()
             jumpTo(el)
-            // Next's state kept: on Back to a null-state entry Next only
-            // rewrites the URL, leaving the page it came from on screen.
-            // Its as path takes the hash, since Back restores that path.
-            const state = history.state
-            const as = state?.as && `${state.as.split("#")[0]}#${s}`
-            history.replaceState(as ? { ...state, as } : state, "", `#${s}`)
+            putHash(s)
           }}
         >
           {t(labels[s] ?? `tab_${s}`)}

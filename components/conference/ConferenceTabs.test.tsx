@@ -5,7 +5,10 @@ import { ConferenceTabs } from "./ConferenceTabs"
 jest.mock("next-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key })
 }))
-jest.mock("./navbar", () => ({ jumpTo: jest.fn() }))
+jest.mock("./navbar", () => ({
+  ...jest.requireActual("./navbar"),
+  jumpTo: jest.fn()
+}))
 
 // jsdom has none; the row watches the column its sections sit in.
 class Observer {
