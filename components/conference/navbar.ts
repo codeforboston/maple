@@ -23,18 +23,18 @@ const bottomAt = (y: number, { height, letsGo }: ReturnType<typeof navbar>) =>
  * holds, less as it goes, none once it has gone. */
 export const navbarBottom = () => bottomAt(window.scrollY, navbar())
 
-/**
- * Scrolls `el` to its scroll margin under the navbar, where the navbar will be
- * on arrival. The browser's own jump takes the margin as it is before the
- * scroll, so a section far enough down that the navbar lets go on the way
- * would land a navbar's height too low.
- */
 /** Ends the jump under way, if one is. */
 let endJump: (() => void) | undefined
 
 /** Whether a jump is on its way, which the hero's snap waits out. */
 export const jumping = () => endJump !== undefined
 
+/**
+ * Scrolls `el` to its scroll margin under the navbar, where the navbar will be
+ * on arrival. The browser's own jump takes the margin as it is before the
+ * scroll, so a section far enough down that the navbar lets go on the way
+ * would land a navbar's height too low.
+ */
 export function jumpTo(el: HTMLElement) {
   const bar = navbar()
   const below =

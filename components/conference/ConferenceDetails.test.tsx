@@ -603,6 +603,16 @@ describe("ConferenceDetails", () => {
       expect(mockReplace).not.toHaveBeenCalled()
     })
 
+    it("asks a reader who signs in to an unverified account to verify", () => {
+      const { rerender } = render(<ConferenceDetails {...props} />)
+      mockUser = { uid: "reader", emailVerified: false }
+      rerender(<ConferenceDetails {...props} />)
+      expect(mockDispatch).toHaveBeenCalledTimes(2)
+      expect(mockDispatch).toHaveBeenLastCalledWith(
+        expect.objectContaining({ payload: "verifyEmail" })
+      )
+    })
+
     const says = (why: string) => {
       expect(screen.getByRole("status")).toHaveTextContent(
         `input.cosign_link_${why}`

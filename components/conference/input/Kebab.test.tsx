@@ -105,9 +105,18 @@ describe("Kebab", () => {
       Object.assign(navigator, { clipboard: { writeText } })
       await open({ ...mine, authorRole: "organization" } as ConferenceTestimony)
       fireEvent.click(item()!)
-      expect(writeText).toHaveBeenCalledWith("https://maple.test/c?cosign=t1")
       expect(
         await screen.findByText("input.cosign_link_copied")
+      ).toBeInTheDocument()
+      expect(writeText).toHaveBeenCalledWith("https://maple.test/c?cosign=t1")
+    })
+
+    it("shows the link where there is no clipboard", async () => {
+      Object.assign(navigator, { clipboard: undefined })
+      await open({ ...mine, authorRole: "organization" } as ConferenceTestimony)
+      fireEvent.click(item()!)
+      expect(
+        await screen.findByText("input.cosign_link_not_copied")
       ).toBeInTheDocument()
     })
 
