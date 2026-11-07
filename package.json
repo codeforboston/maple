@@ -72,6 +72,9 @@
     ]
   },
   "dependencies": {
+    "@ag-ui/client": "1.0.2",
+    "@copilotkit/react-core": "1.80.0",
+    "@copilotkit/runtime": "1.80.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@emotion/weak-memoize": "^0.3.1",
@@ -144,7 +147,7 @@
     "typesense-instantsearch-adapter": "^3.0.2",
     "usehooks-ts": "^2.5.3",
     "web-vitals": "^0.2.4",
-    "zod": "^3.20.2"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@babel/core": "^7.18.13",

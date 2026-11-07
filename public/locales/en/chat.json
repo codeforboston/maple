@@ -1,0 +1,90 @@
+{
+  "product": "Ask MAPLE",
+  "chamber": {
+    "house": "House",
+    "senate": "Senate"
+  },
+  "split": {
+    "label": "Testimony: {{support}} support, {{oppose}} oppose, {{neutral}} neutral",
+    "support": "{{count}} support",
+    "oppose": "{{count}} oppose",
+    "neutral": "{{count}} neutral",
+    "none": "No testimony yet"
+  },
+  "record": {
+    "sponsor": "Sponsor: {{name}}",
+    "open": "Read {{bill}} and its testimony on MAPLE",
+    "sourcesHeading": "Bills in this answer"
+  },
+  "disclosure": {
+    "searchedPrefix": "Searched bills and testimony · "
+  },
+  "working": {
+    "label": "Working…",
+    "slow": "Still working…"
+  },
+  "answer": {
+    "incomplete": "(incomplete)",
+    "failed": "Couldn't get an answer just now.",
+    "retry": "Retry",
+    "noResults": "No bills on MAPLE matched that question.",
+    "searchAll": "Try MAPLE's bill search"
+  },
+  "budget": {
+    "reached": "You've reached this month's question limit.",
+    "browseBills": "Browse bills on MAPLE",
+    "composerDisabled": "You've reached this month's question limit."
+  },
+  "empty": {
+    "heading": "What do you want to know about Massachusetts bills?",
+    "scope": "Answers come from bills and testimony on MAPLE.",
+    "startersLabel": "Try a question",
+    "resume": "Pick up where you left off",
+    "starters": [
+      "My rent keeps going up. Are there bills about that?",
+      "Is there a bill for free school meals for every kid?",
+      "What do people say about protecting wildlife management areas?"
+    ]
+  },
+  "rail": {
+    "label": "Your conversations",
+    "new": "New conversation",
+    "heading": "Your conversations",
+    "empty": "Your conversations will appear here.",
+    "failed": "Couldn't load your conversations.",
+    "retry": "Retry",
+    "today": "Today"
+  },
+  "title": "Ask MAPLE",
+  "bar": {
+    "menu": "Your conversations"
+  },
+  "composer": {
+    "label": "Ask about a bill, an issue, or what people are saying",
+    "placeholder": "Ask about a bill, an issue, or what people are saying…",
+    "send": "Send",
+    "stop": "Stop",
+    "stopLabel": "Stop answering",
+    "hint": "Answers use only MAPLE's bills and testimony. Open the linked pages before you rely on them.",
+    "busy": "This chat is already answering in another tab.",
+    "stopped": "Stopped. You can ask again or continue."
+  },
+  "steps": {
+    "thinking": "Thinking…",
+    "searchingBills": "Searching bills for “{{query}}”…",
+    "searchedBills": "Searched bills for “{{query}}” · {{count}} found",
+    "readingTestimony": "Reading testimony…",
+    "readingTestimonyOn": "Reading testimony on {{bill}}…",
+    "readTestimony": "Read testimony · {{count}} found",
+    "readTestimonyOn": "Read testimony on {{bill}} · {{count}} found",
+    "sponsors": "Looking up sponsors…",
+    "sponsorsDone": "Looked up sponsors",
+    "pastChats": "Checking your past chats…",
+    "pastChatsDone": "Checked your past chats"
+  },
+  "summary": {
+    "bills_one": "{{count}} bill found",
+    "bills_other": "{{count}} bills found",
+    "testimony": "testimony on {{count}}"
+  }
+}
