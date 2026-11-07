@@ -1,104 +1,61 @@
-import { Record, Number, Optional, String } from "runtypes"
+import { Literal, Number, Optional, Record, Union } from "runtypes"
 import { Script } from "./types"
 import {
   HouseRollCallScraper,
   SenateRollCallScraper
 } from "functions/src/votes"
+import { describeSummary } from "functions/src/votes/scrapeLoop"
 
+/**
+ * Backfills roll call votes into `votes`, using the same code as the daily
+ * scrapers.
+ *
+ * Without --number, fills in every roll call not yet stored (Senate: every
+ * number the API lists; House: from #0 until the PDFs run out):
+ *
+ *   yarn firebase-admin run-script backfillRollCalls --env dev --court 192 --endCourt 194
+ *
+ * With --number (and optionally --endNumber), re-scrapes exactly that range,
+ * replacing stored copies. Use it to repair a roll call with missing votes:
+ *
+ *   yarn firebase-admin run-script backfillRollCalls --env dev --court 194 --branch Senate --number 238
+ *
+ * A missing or failed roll call is reported and skipped; it never stops the run.
+ */
 const Args = Record({
   court: Number,
   endCourt: Optional(Number),
   number: Optional(Number),
   endNumber: Optional(Number),
-  branch: Optional(String)
+  branch: Optional(Union(Literal("House"), Literal("Senate")))
 })
 
-export const script: Script = async ({ db, args }) => {
-  let { court, endCourt, number, endNumber, branch } = Args.check(args)
+export const script: Script = async ({ args }) => {
+  const { court, endCourt, number, endNumber, branch } = Args.check(args)
+  const branches = branch ? [branch] : (["Senate", "House"] as const)
+  const scrapers = {
+    Senate: new SenateRollCallScraper(),
+    House: new HouseRollCallScraper()
+  }
 
-  endCourt = endCourt ?? court
-  if (number && !endNumber) {
-    endNumber = number
-  }
-  if (!number) {
-    number = 1
-  }
-  const writer = db.bulkWriter()
-  const houseScraper = new HouseRollCallScraper()
-  const senateScraper = new SenateRollCallScraper()
-  for (; court <= endCourt; court++) {
-    if (!branch) {
-      for (
-        let rollCallNumber = number;
-        !endNumber || rollCallNumber <= endNumber;
-        rollCallNumber++
-      ) {
-        const result = await senateScraper.addRollCall(
-          writer,
-          court,
-          rollCallNumber
+  let failures = 0
+  for (let c = court; c <= (endCourt ?? court); c++) {
+    for (const b of branches) {
+      const scraper = scrapers[b]
+      let summary
+      if (number === undefined) {
+        summary = await scraper.scrapeNew(c)
+      } else {
+        const last = endNumber ?? number
+        const numbers = Array.from(
+          { length: last - number + 1 },
+          (_, i) => number + i
         )
-        if (result !== "success") {
-          console.log(
-            `Error fetching senate rollcall ${rollCallNumber} for court ${court}: ${result}`
-          )
-          return
-        }
+        summary = await scraper.scrapeNumbers(c, numbers)
       }
-      for (
-        let rollCallNumber = number;
-        !endNumber || rollCallNumber <= endNumber;
-        rollCallNumber++
-      ) {
-        const result = await houseScraper.addRollCall(
-          writer,
-          court,
-          rollCallNumber
-        )
-        if (result !== "success") {
-          console.log(
-            `Error fetching house rollcall ${rollCallNumber} for court ${court}: ${result}`
-          )
-          return
-        }
-      }
-    } else if (branch === "Senate") {
-      for (
-        let rollCallNumber = number;
-        !endNumber || rollCallNumber <= endNumber;
-        rollCallNumber++
-      ) {
-        const result = await senateScraper.addRollCall(
-          writer,
-          court,
-          rollCallNumber
-        )
-        if (result !== "success") {
-          console.log(
-            `Error fetching senate rollcall ${rollCallNumber} for court ${court}: ${result}`
-          )
-          return
-        }
-      }
-    } else if (branch === "House") {
-      for (
-        let rollCallNumber = number;
-        !endNumber || rollCallNumber <= endNumber;
-        rollCallNumber++
-      ) {
-        const result = await houseScraper.addRollCall(
-          writer,
-          court,
-          rollCallNumber
-        )
-        if (result !== "success") {
-          console.log(
-            `Error fetching house rollcall ${rollCallNumber} for court ${court}: ${result}`
-          )
-          return
-        }
-      }
+      console.log(describeSummary(`${b} ${c}`, summary))
+      failures += summary.failed.length + (summary.fatal ? 1 : 0)
     }
   }
-  await writer.close()
+  if (failures) process.exitCode = 1
 }

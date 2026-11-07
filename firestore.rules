@@ -99,6 +99,18 @@ service cloud.firestore {
         allow read, write: if request.auth.token.get("role", "user") == "admin"
       }
     }
+    // Roll call votes, written only by the scrapeHouseRollCalls /
+    // scrapeSenateRollCalls functions (Admin SDK). Public, read-only.
+    match /votes/{rollCallId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    // Per-member votes; recursive match so collection-group queries
+    // (e.g. all votes for one memberCode) are allowed from the client.
+    match /{path=**}/vote/{memberCode} {
+      allow read: if true;
+      allow write: if false;
+    }
     match /ballotQuestions/{id} {
       allow read: if true;
       allow write: if false;
