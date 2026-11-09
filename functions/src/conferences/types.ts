@@ -72,7 +72,8 @@ export const Conference = withDefaults(
     /** A short name for headings and lists ("Phone-Free Schools"), as the
      * press refers to it. Pages fall back to the title. */
     name: Optional(String),
-    /** What the bills are, in a short paragraph, above what is unresolved. */
+    /** What the bills are, in a short paragraph of markdown, above what is
+     * unresolved. */
     gist: Optional(String),
     senateBillId: Id,
     houseBillId: Id,

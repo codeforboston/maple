@@ -1,5 +1,6 @@
 import { Fragment, KeyboardEvent, useRef, useState } from "react"
 import { Trans, useTranslation } from "next-i18next"
+import ReactMarkdown from "react-markdown"
 import styled from "styled-components"
 import { FEEDBACK_URL } from "../common"
 import { shortName } from "../formatting"
@@ -80,10 +81,19 @@ const Gist = styled.div`
     line-height: 1.65;
     color: ${ink.mid};
   }
-  p + p {
+  /* The feedback line beneath the gist. */
+  > div + p {
     margin-top: 8px;
     font-size: 0.8125rem;
     color: ${ink.faint};
+  }
+`
+
+/** The gist's own text, written as markdown, so its paragraphs are told
+ * apart from the feedback line. */
+const GistText = styled.div`
+  p + p {
+    margin-top: 8px;
   }
 `
 
@@ -378,7 +388,21 @@ export function ConferenceDifferences({
       <Body ref={body}>
         {gist && (
           <Gist>
-            <p>{gist}</p>
+            <GistText>
+              <ReactMarkdown
+                components={{
+                  a: ({ node: _node, ...props }) => (
+                    <DottedLink
+                      {...props}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    />
+                  )
+                }}
+              >
+                {gist}
+              </ReactMarkdown>
+            </GistText>
             <p>
               <Trans
                 t={t}

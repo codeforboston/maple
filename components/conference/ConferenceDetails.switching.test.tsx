@@ -19,6 +19,8 @@ jest.mock("next/router", () => ({
   useRouter: () => ({ asPath: "/conferences/194/a" })
 }))
 jest.mock("usehooks-ts", () => ({ useMediaQuery: () => false }))
+// react-markdown ships ESM only, and the gist here is empty.
+jest.mock("react-markdown", () => ({ __esModule: true, default: () => null }))
 jest.mock("../featureFlags", () => ({
   useFlags: () => ({ legislators: false, hearingsAndTranscriptions: true })
 }))
