@@ -8,7 +8,7 @@ import {
   useState
 } from "react"
 import { useTranslation } from "next-i18next"
-import { takesTestimony } from "../../functions/src/shared"
+import { hasReport, takesTestimony } from "../../functions/src/shared"
 import styled from "styled-components"
 import { ConferenceByline } from "./ConferenceByline"
 import { ConferenceCommittee } from "./ConferenceCommittee"
@@ -16,6 +16,7 @@ import { ConferenceDifferences } from "./ConferenceDifferences"
 import { ConferenceHero } from "./ConferenceHero"
 import { ConferencePicker } from "./ConferencePicker"
 import { ConferenceRail } from "./ConferenceRail"
+import { ConferenceResolution, OutcomeFilter } from "./ConferenceResolution"
 import { ConferenceTabs, TABS_H } from "./ConferenceTabs"
 import { ConferenceText } from "./ConferenceText"
 import { useAuth } from "../auth"
@@ -128,6 +129,9 @@ const Section = styled.div`
  * conference with nothing written on what is unresolved has no such section. */
 const SECTIONS = ["committee", "decided", "input", "text"] as const
 
+/** Once resolved, the questions are the resolved text. */
+const RESOLVED_LABELS = { decided: "tab_resolved" }
+
 /**
  * One conference: who is deciding, and the two texts they are deciding
  * between, under a hero on what a conference committee is. The list of every
@@ -187,6 +191,15 @@ function Details({
   const subject = conferenceName(conference)
   const taking = takesTestimony(conference)
   const decided = differences.length > 0 || similarities.length > 0
+  // Once the report is filed, each question says how the law resolved it.
+  const resolved = hasReport(conference) && differences.length > 0
+  // Shared by the resolution's bar and the questions' filter row.
+  const [filter, setFilter] = useState<OutcomeFilter>("all")
+  // A segment of the bar takes the reader to the questions it picks.
+  const pick = (f: OutcomeFilter) => {
+    setFilter(f)
+    jumpToSection("decided")
+  }
   // Input belongs to the conferences we cover, and once one has closed, only
   // where someone gave it.
   const heard = taking || (conference.covered && testimonyCount > 0)
@@ -331,8 +344,21 @@ function Details({
               $top="calc(var(--maple-navbar-height) + var(--title-h, 5rem))"
               $z={13}
             >
-              <ConferenceTabs sections={sections} />
+              <ConferenceTabs
+                sections={sections}
+                labels={resolved ? RESOLVED_LABELS : undefined}
+              />
             </Band>
+            {resolved && (
+              <Section>
+                <ConferenceResolution
+                  differences={differences}
+                  settled={similarities.length}
+                  filter={filter}
+                  onFilter={pick}
+                />
+              </Section>
+            )}
             <Section id="committee">
               {/* Keyed so a pinned seat does not outlive its conference. */}
               <ConferenceCommittee
@@ -351,6 +377,9 @@ function Details({
                   conferees={conferees}
                   onShare={taking ? share : undefined}
                   posted={Boolean(mine)}
+                  resolved={resolved}
+                  filter={filter}
+                  onFilter={setFilter}
                 />
               </Section>
             )}

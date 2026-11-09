@@ -46,6 +46,22 @@ export const chamberInk = {
   House: "#8a5a00"
 }
 
+/** The resolved-conference mockup's outcome inks: a fill for the bar and the
+ * chip's words, and a tint behind the chip. Senate and House are the chamber
+ * inks. */
+export const outcomeInk = {
+  senate: { fill: chamberInk.Senate, tint: "#eaf1fb" },
+  house: { fill: chamberInk.House, tint: "#fbf3e3" },
+  combined: { fill: "#6b3fa0", tint: "#f2ecf9" },
+  modified: { fill: "#a8324a", tint: "#fbecef" },
+  new: { fill: "#0b6e69", tint: "#e2f3f1" },
+  dropped: { fill: "#6b6a64", tint: "#ececea" }
+}
+
+/** The law's card, and what both chambers passed and the law kept. */
+export const lawInk = { fill: "#0f2275", tint: "#eef0fa" }
+export const keptTint = "#e7f2e8"
+
 export const yea = "#2f6b46"
 export const caution = "#ecb72e"
 export const positive = "#2e7d32"

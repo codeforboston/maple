@@ -1,5 +1,9 @@
 import type { Branch } from "../../functions/src/common"
-import type { ConferenceStatus } from "../../functions/src/conferences/types"
+import type {
+  ConferenceAddressedBy,
+  ConferenceOutcome,
+  ConferenceStatus
+} from "../../functions/src/conferences/types"
 import type { EventSummary } from "../db/events"
 
 /** The chambers in the order every view shows them: Senate first. */
@@ -43,12 +47,18 @@ export const personKey = (c: ConfereeView) => c.seat ?? c.memberCode
 export type HearingView = Pick<EventSummary, "id" | "eventId" | "startsAt">
 
 /** One point the chambers disagree on; a chamber's text is null where its
- * bill has nothing on it. */
+ * bill has nothing on it. Once a report is filed, how the law resolved it. */
 export type DifferenceView = {
   heading: string
   senate: string | null
   house: string | null
   notes: Record<string, string[]>
+  outcome: ConferenceOutcome | null
+  edited: string | null
+  addressedBy: ConferenceAddressedBy | null
+  resolution: string | null
+  law: string | null
+  why: string | null
 }
 
 /** One point where the two texts match. */

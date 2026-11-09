@@ -159,7 +159,13 @@ async function pageFor(
       heading: d.heading,
       senate: d.senate ?? null,
       house: d.house ?? null,
-      notes: d.notes ?? {}
+      notes: d.notes ?? {},
+      outcome: d.outcome ?? null,
+      edited: d.edited ?? null,
+      addressedBy: d.addressedBy ?? null,
+      resolution: d.resolution ?? null,
+      law: d.law ?? null,
+      why: d.why ?? null
     })),
     similarities: conference.similarities.map(d => ({
       heading: d.heading,

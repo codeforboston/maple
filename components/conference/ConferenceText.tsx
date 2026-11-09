@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { memo, useState } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
@@ -153,9 +153,10 @@ function Sheet({
  * The two texts the conference is reconciling, side by side, or one chamber's
  * at a time. Fetched in the browser rather than with the page: an omnibus
  * pair is half a megabyte. Both are fetched here, once, so switching version
- * does not fetch a text again.
+ * does not fetch a text again. Memoised: the page around it re-renders as
+ * the reader filters and composes, and a text is long to lay out again.
  */
-export function ConferenceText({
+export const ConferenceText = memo(function ConferenceText({
   conference
 }: {
   conference: ConferenceSummary
@@ -201,4 +202,4 @@ export function ConferenceText({
       </Well>
     </Card>
   )
-}
+})

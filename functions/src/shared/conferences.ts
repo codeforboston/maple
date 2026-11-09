@@ -1,5 +1,10 @@
 import type { Conference } from "../conferences/types"
 
+/** Once the report is filed, the committee has decided: each question says
+ * how the law resolved it. */
+export const hasReport = (c: Pick<Conference, "status">) =>
+  c.status === "reportFiled" || c.status === "enacted"
+
 /** Testimony is taken while the committee is still deciding which version to
  * report, on the conferences we cover. A document synced before `covered`
  * existed counts as covered. */

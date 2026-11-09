@@ -120,6 +120,56 @@ describe("loadConferencePage", () => {
     expect(page?.conferees.map(c => c.name)).toEqual(["Xena"])
     expect(getMemberSearchIndex).not.toHaveBeenCalled()
   })
+
+  it("carries how each question was resolved, null before a report", async () => {
+    const enacted: Conference = {
+      ...conference("a", []),
+      status: "enacted",
+      differences: [
+        { heading: "Open?", senate: "Yes." },
+        {
+          heading: "Closed?",
+          house: "No.",
+          outcome: "house",
+          edited: "One word cut",
+          addressedBy: "both",
+          resolution: "As the House wrote.",
+          law: "The House's text.",
+          why: "It matters."
+        }
+      ]
+    }
+    jest.mocked(listConferences).mockResolvedValue([enacted])
+
+    const page = await loadConferencePage(currentGeneralCourt, "a")
+
+    expect(page?.differences).toEqual([
+      {
+        heading: "Open?",
+        senate: "Yes.",
+        house: null,
+        notes: {},
+        outcome: null,
+        edited: null,
+        addressedBy: null,
+        resolution: null,
+        law: null,
+        why: null
+      },
+      {
+        heading: "Closed?",
+        senate: null,
+        house: "No.",
+        notes: {},
+        outcome: "house",
+        edited: "One word cut",
+        addressedBy: "both",
+        resolution: "As the House wrote.",
+        law: "The House's text.",
+        why: "It matters."
+      }
+    ])
+  })
 })
 
 describe("coverage", () => {

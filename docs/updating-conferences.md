@@ -37,6 +37,7 @@ If any file is invalid, the sync writes nothing. Missing bills and members only 
 - `chair`: set it on the member named first for their chamber in the appointment.
 - `covered`: `false` for a conference we haven't written up. Its page says so and takes no testimony.
 - `reportBillId`: the conference report's own bill (`Reported by H5350` in the history). Only once the report is filed.
+- `outcome` and `addressedBy` on each difference: required once the report is filed, refused before. `addressedBy` says which bills took the question up (`both`, `house`, `senate`, `neither`), even where a silent chamber's text says what it lacked. `new` goes with `neither` alone, and `edited` only with `senate`, `house` or `combined`. Add `resolution` (one line), `law` and optionally `why`. The page counts the outcomes.
 
 Everything else is in the `Conference` runtype in `functions/src/conferences/types.ts`.
 

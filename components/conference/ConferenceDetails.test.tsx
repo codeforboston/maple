@@ -170,6 +170,16 @@ const conference: ConferencePageProps["conference"] = {
   reportBillId: null
 }
 
+/** A question before any report: nothing on how it was resolved. */
+const unresolved = {
+  outcome: null,
+  edited: null,
+  addressedBy: null,
+  resolution: null,
+  law: null,
+  why: null
+}
+
 const props: ConferencePageProps = {
   conference,
   conferences: [
@@ -256,13 +266,15 @@ const props: ConferencePageProps = {
       heading: "Social media ban",
       senate: null,
       house: "Regulates social media companies under Chapter 93M.",
-      notes: { "Chapter 93M": ["Platforms must bar users under 14."] }
+      notes: { "Chapter 93M": ["Platforms must bar users under 14."] },
+      ...unresolved
     },
     {
       heading: "Use or possession",
       senate: "Bans use and possession.",
       house: "Bans use.",
-      notes: {}
+      notes: {},
+      ...unresolved
     }
   ],
   similarities: [
@@ -686,12 +698,173 @@ describe("ConferenceDetails", () => {
       )
     })
 
+    it("says nothing of how it was resolved before a report", () => {
+      render(<ConferenceDetails {...props} />)
+      expect(screen.queryByText("resolved.title")).not.toBeInTheDocument()
+      expect(screen.getByText("decided.title")).toBeInTheDocument()
+      expect(
+        screen.getByRole("link", { name: "tab_decided" })
+      ).toBeInTheDocument()
+    })
+
     it("leaves the section and its tab out where nothing is written", () => {
       render(
         <ConferenceDetails {...props} differences={[]} similarities={[]} />
       )
       expect(screen.queryByText("decided.title")).not.toBeInTheDocument()
       expect(screen.queryByText("tab_decided")).not.toBeInTheDocument()
+    })
+  })
+
+  describe("how the conference resolved it", () => {
+    afterEach(() => {
+      delete (window as Partial<Window>).matchMedia
+    })
+    const question = {
+      senate: "The Senate's text.",
+      house: "The House's text.",
+      notes: {},
+      ...unresolved
+    }
+    const resolved: ConferencePageProps = {
+      ...props,
+      conference: { ...conference, status: "enacted", reportBillId: "H5350" },
+      differences: [
+        {
+          ...question,
+          heading: "Who appoints the commissioners?",
+          outcome: "combined",
+          addressedBy: "both",
+          resolution: "The governor appoints all three.",
+          law: "The House structure, with a new proviso.",
+          why: "One official chooses every commissioner."
+        },
+        {
+          ...question,
+          heading: "Are commissioners full time?",
+          outcome: "senate",
+          addressedBy: "both",
+          edited: "One word cut",
+          resolution: "All three, as the Senate wrote.",
+          law: "The Senate's rule."
+        },
+        {
+          ...question,
+          heading: "How are hemp drinks regulated?",
+          senate: "No study.",
+          outcome: "dropped",
+          addressedBy: "house",
+          resolution: "Left out.",
+          law: "Not in the law."
+        },
+        {
+          ...question,
+          heading: "When does it take effect?",
+          senate: null,
+          house: null,
+          outcome: "new",
+          addressedBy: "neither",
+          resolution: "On signing.",
+          law: "An emergency preamble."
+        }
+      ]
+    }
+    const shownQuestions = () =>
+      screen
+        .getAllByRole("button", { expanded: false })
+        .map(b => b.textContent!)
+        .filter(text => text.includes("?"))
+
+    it("counts the outcomes over a bar, and keys the labels", () => {
+      render(<ConferenceDetails {...resolved} />)
+      const card = screen.getByRole("region", { name: "resolved.title" })
+      // Senate 1, House 0, dropped 1, and 2 in words neither passed.
+      expect(card).toHaveTextContent(
+        "resolved.summary 4 1 0 1 2resolved.settled_count 1"
+      )
+      const bar = screen.getByRole("group", { name: "resolved.bar" })
+      expect(
+        Array.from(bar.querySelectorAll("button")).map(b =>
+          b.getAttribute("aria-label")
+        )
+      ).toEqual([
+        "resolved.segment resolved.outcome.senate 1 4",
+        "resolved.segment resolved.outcome.combined 1 4",
+        "resolved.segment resolved.outcome.new 1 4",
+        "resolved.segment resolved.outcome.dropped 1 4"
+      ])
+      expect(card).toHaveTextContent("resolved.meaning.modified")
+    })
+
+    it("groups the questions by which bills took them up", () => {
+      render(<ConferenceDetails {...resolved} />)
+      expect(screen.getByText("resolved.list_title")).toBeInTheDocument()
+      expect(
+        screen.getByRole("link", { name: "tab_resolved" })
+      ).toBeInTheDocument()
+      expect(
+        screen
+          .getAllByRole("heading", { level: 3 })
+          .map(h => h.textContent)
+          .filter(h => h?.startsWith("resolved."))
+      ).toEqual([
+        "resolved.group.both.title (2)",
+        "resolved.group.house.title (1)",
+        "resolved.group.neither.title (1)",
+        "resolved.settled"
+      ])
+      expect(screen.getByText("resolved.kept")).toBeInTheDocument()
+    })
+
+    it("filters from the bar or the row, and the bar's segment again clears it", () => {
+      // The bar's segment jumps to the questions, which asks after motion.
+      window.matchMedia = jest.fn(() => ({ matches: true })) as any
+      render(<ConferenceDetails {...resolved} />)
+      const segment = screen.getByRole("button", {
+        name: "resolved.segment resolved.outcome.dropped 1 4"
+      })
+      fireEvent.click(segment)
+      expect(window.scrollTo).toHaveBeenCalled()
+      expect(shownQuestions()).toEqual([
+        expect.stringContaining("How are hemp drinks regulated?")
+      ])
+      expect(segment).toHaveAttribute("aria-pressed", "true")
+      const row = screen.getByRole("group", { name: "resolved.filters" })
+      expect(
+        within(row).getByRole("button", { pressed: true })
+      ).toHaveTextContent("resolved.outcome.dropped 1")
+      fireEvent.click(segment)
+      expect(shownQuestions()).toHaveLength(4)
+      fireEvent.click(
+        within(row).getByRole("button", { name: "resolved.outcome.new 1" })
+      )
+      expect(shownQuestions()).toEqual([
+        expect.stringContaining("When does it take effect?")
+      ])
+    })
+
+    it("marks the outcome and any edit, and opens to the bills and the law", () => {
+      render(<ConferenceDetails {...resolved} />)
+      const fullTime = screen.getByRole("button", {
+        name: /Are commissioners full time\?/
+      })
+      expect(fullTime).toHaveTextContent("All three, as the Senate wrote.")
+      expect(fullTime).toHaveTextContent("resolved.outcome.senate")
+      expect(fullTime).toHaveTextContent("resolved.edited_note One word cut")
+      fireEvent.click(
+        screen.getByRole("button", { name: /Who appoints the commissioners/ })
+      )
+      expect(
+        screen.getByText("The House structure, with a new proviso.")
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText("One official chooses every commissioner.")
+      ).toBeInTheDocument()
+      // A silent chamber's card still says what its bill lacked.
+      fireEvent.click(
+        screen.getByRole("button", { name: /How are hemp drinks regulated/ })
+      )
+      expect(screen.getByText("No study.")).toBeInTheDocument()
     })
   })
 
