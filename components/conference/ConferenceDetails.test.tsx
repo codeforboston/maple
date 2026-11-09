@@ -37,10 +37,12 @@ jest.mock("next-i18next", () => ({
 }))
 
 let asPath = "/conferences/194/data-privacy"
+let mockQuery: Record<string, string> = {}
+const mockReplace = jest.fn(async () => true)
 jest.mock("next/router", () => ({
   __esModule: true,
   default: { events: { on: jest.fn() } },
-  useRouter: () => ({ asPath })
+  useRouter: () => ({ asPath, query: mockQuery, replace: mockReplace })
 }))
 /** Next starting a change of address, as the hooks hear it. */
 const routeChangeStart = (url: string) =>
@@ -121,8 +123,10 @@ jest.mock("components/api/report", () => ({
 }))
 jest.mock("components/TestimonyCard/ReportModal", () => ({}))
 jest.mock("components/TestimonyCard/ReportToast", () => () => null)
+// The panel stands for itself by its title, open or not.
 jest.mock("./input/Panel", () => ({
-  Panel: () => null,
+  Panel: ({ open, title }: { open: boolean; title: string }) =>
+    open ? <div role="dialog" aria-label={title} /> : null,
   usePanelWidth: () => ({ width: 480, drag: jest.fn() })
 }))
 const mockDispatch = jest.fn()
@@ -313,6 +317,9 @@ describe("ConferenceDetails", () => {
   afterEach(() => {
     mockUser = undefined
     mockItems = []
+    mockQuery = {}
+    mockReplace.mockClear()
+    mockDispatch.mockClear()
     window.scrollTo = scrollTo
     Object.defineProperty(window, "scrollY", { value: 0, configurable: true })
   })
@@ -569,6 +576,117 @@ describe("ConferenceDetails", () => {
     } finally {
       mockItems = []
     }
+  })
+
+  describe("a link to cosign an input", () => {
+    const letter = {
+      id: "t1",
+      authorUid: "org",
+      authorDisplayName: "Example Coalition",
+      fullName: "Example Coalition",
+      authorRole: "organization",
+      position: "passSomething",
+      content: "The letter.",
+      publishedAt: { toDate: () => new Date(2026, 9, 1) }
+    }
+    const address = "/conferences/194/student-learning-and-mental-health"
+    // The page drops ?cosign from its address without moving the reader.
+    const letGo = () =>
+      expect(mockReplace).toHaveBeenCalledWith(address, undefined, {
+        shallow: true,
+        scroll: false
+      })
+    beforeEach(() => {
+      mockItems = [letter]
+      mockQuery = { cosign: "t1" }
+      // Landing on Your Input asks whether to move smoothly.
+      window.matchMedia = jest.fn(() => ({ matches: true })) as never
+    })
+
+    it("opens the cosign panel for a signed-in reader, and lets go of the link", () => {
+      mockUser = { uid: "reader", emailVerified: true }
+      render(<ConferenceDetails {...props} />)
+      expect(
+        screen.getByRole("dialog", { name: "input.panel_title" })
+      ).toBeInTheDocument()
+      letGo()
+    })
+
+    it("sends a signed-out reader to sign in once, keeping the link, and picks up after", () => {
+      const { rerender } = render(<ConferenceDetails {...props} />)
+      expect(mockDispatch).toHaveBeenCalledTimes(1)
+      expect(mockDispatch).toHaveBeenCalledWith(
+        expect.objectContaining({ payload: "start" })
+      )
+      expect(mockReplace).not.toHaveBeenCalled()
+
+      mockUser = { uid: "reader", emailVerified: true }
+      rerender(<ConferenceDetails {...props} />)
+      expect(
+        screen.getByRole("dialog", { name: "input.panel_title" })
+      ).toBeInTheDocument()
+      expect(mockDispatch).toHaveBeenCalledTimes(1)
+    })
+
+    it("waits for a new account's email to be verified", () => {
+      mockUser = { uid: "reader", emailVerified: false }
+      render(<ConferenceDetails {...props} />)
+      expect(mockDispatch).toHaveBeenCalledWith(
+        expect.objectContaining({ payload: "verifyEmail" })
+      )
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+      expect(mockReplace).not.toHaveBeenCalled()
+    })
+
+    it("asks a reader who signs in to an unverified account to verify", () => {
+      const { rerender } = render(<ConferenceDetails {...props} />)
+      mockUser = { uid: "reader", emailVerified: false }
+      rerender(<ConferenceDetails {...props} />)
+      expect(mockDispatch).toHaveBeenCalledTimes(2)
+      expect(mockDispatch).toHaveBeenLastCalledWith(
+        expect.objectContaining({ payload: "verifyEmail" })
+      )
+    })
+
+    const says = (why: string) => {
+      expect(screen.getByRole("status")).toHaveTextContent(
+        `input.cosign_link_${why}`
+      )
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+      letGo()
+    }
+
+    it("says the input has been removed", () => {
+      mockQuery = { cosign: "gone" }
+      render(<ConferenceDetails {...props} />)
+      says("removed")
+    })
+
+    it("says the conference has closed, without asking a reader to sign in", () => {
+      const reported = { ...conference, status: "reportFiled" as const }
+      render(<ConferenceDetails {...props} conference={reported} />)
+      says("closed")
+      expect(mockDispatch).not.toHaveBeenCalled()
+    })
+
+    it("says a legislator's input or a cosign can't be cosigned", () => {
+      mockItems = [{ ...letter, authorRole: "legislator" }]
+      render(<ConferenceDetails {...props} />)
+      says("not_cosignable")
+    })
+
+    it("says a reader who has filed here can't cosign, the author included", () => {
+      mockUser = { uid: "org", emailVerified: true }
+      render(<ConferenceDetails {...props} />)
+      says("filed")
+    })
+
+    it("can be dismissed", () => {
+      mockQuery = { cosign: "gone" }
+      render(<ConferenceDetails {...props} />)
+      fireEvent.click(screen.getByRole("button", { name: "input.close" }))
+      expect(screen.queryByRole("status")).not.toBeInTheDocument()
+    })
   })
 
   it("leads from its tabs to its sections", () => {

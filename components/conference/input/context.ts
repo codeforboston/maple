@@ -18,6 +18,9 @@ type InputContextValue = {
   /** Open the panel to cosign an entry; absent while the viewer cannot cosign
    * anything here. A signed-out viewer can, which takes them to sign in. */
   onCosign?: (testimony: ConferenceTestimony) => void
+  /** The address that opens an entry's cosign panel, for passing round;
+   * absent once the conference stops taking testimony. */
+  cosignLink?: (testimony: ConferenceTestimony) => string
   /** The conference's entries by id, which is how a cosign names its parent. */
   byId: Map<string, ConferenceTestimony>
 }

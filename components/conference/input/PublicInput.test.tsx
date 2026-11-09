@@ -115,6 +115,39 @@ describe("PublicInput", () => {
     expect(screen.getAllByRole("article")).toHaveLength(2)
   })
 
+  describe("landing on a card a link names", () => {
+    const { scrollTo, matchMedia } = window
+    beforeEach(() => {
+      window.scrollTo = jest.fn()
+      window.matchMedia = jest.fn(() => ({ matches: true })) as never
+    })
+    afterEach(() => {
+      window.scrollTo = scrollTo
+      window.matchMedia = matchMedia
+    })
+
+    it("turns to its page and scrolls to it", () => {
+      // Newest first: the first is on the second page.
+      render(<PublicInput items={many(7)} loading={false} focus="t1" />)
+      expect(screen.getByText("Author 1")).toBeInTheDocument()
+      expect(screen.getAllByRole("article")).toHaveLength(2)
+      expect(window.scrollTo).toHaveBeenCalled()
+    })
+
+    it("lets go of a filter that would leave it out", async () => {
+      const { rerender } = render(
+        <PublicInput items={many(6)} loading={false} />
+      )
+      fireEvent.click(screen.getByLabelText("input.filter_by_position"))
+      const menu = await screen.findByRole("menu")
+      // many(): the odd-numbered entries pass nothing.
+      fireEvent.click(within(menu).getByText("input.position.passNothing.long"))
+      expect(screen.queryByText("Author 1")).not.toBeInTheDocument()
+      rerender(<PublicInput items={many(6)} loading={false} focus="t1" />)
+      expect(screen.getByText("Author 1")).toBeInTheDocument()
+    })
+  })
+
   it("narrows by position and offers a way back from an empty result", async () => {
     const items = [
       ...many(4).map(x => ({ ...x, position: "passSomething" as const }))

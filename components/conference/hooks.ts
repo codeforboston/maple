@@ -9,7 +9,7 @@ import {
 } from "react"
 import { useMediaQuery } from "usehooks-ts"
 import { useProfile } from "../db"
-import { navbarBottom } from "./navbar"
+import { jumping, navbarBottom } from "./navbar"
 
 /** Whether the page arriving is one Back or Forward reached within the app,
  * where the browser puts the reader back. Those have moved the address by the
@@ -71,7 +71,9 @@ const topOf = (el: HTMLElement | null) =>
  * down too.
  */
 export function useConferenceTop(openOnHero: boolean) {
-  const { asPath } = useRouter()
+  // A change to the query alone, such as the page letting go of a link's
+  // `?cosign`, leaves the reader where they are.
+  const path = useRouter().asPath.split(/[?#]/)[0]
   const top = useRef<HTMLDivElement>(null)
   const mounted = useRef(false)
   const hero = useRef<HTMLElement>(null)
@@ -99,6 +101,8 @@ export function useConferenceTop(openOnHero: boolean) {
     let offset = -1
     let reach = 0
     const sync = () => {
+      // A jump from near the top is on its way further down.
+      if (jumping()) return
       const want = window.scrollY <= reach ? "y mandatory" : ""
       if (root.style.scrollSnapType !== want) root.style.scrollSnapType = want
     }
@@ -151,13 +155,14 @@ export function useConferenceTop(openOnHero: boolean) {
     // back unless they have scrolled since.
     let stale = false
     document.fonts?.ready.then(() => {
-      if (stale || Math.abs(window.scrollY - start) > 1) return
+      // A jump begun meanwhile, to a linked card, has not moved them yet.
+      if (stale || jumping() || Math.abs(window.scrollY - start) > 1) return
       window.scrollTo({ top: topOf(top.current), behavior: "auto" })
     })
     return () => {
       stale = true
     }
-  }, [asPath, openOnHero])
+  }, [path, openOnHero])
 
   return { top, hero, toConference }
 }
