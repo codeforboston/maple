@@ -323,6 +323,13 @@ describe("ConferenceDetails", () => {
     ).not.toBeInTheDocument()
   })
 
+  it("leads back to what a conference committee is", () => {
+    render(<ConferenceDetails {...props} />)
+    expect(
+      screen.getByRole("link", { name: "what_is_conference_committee" })
+    ).toHaveAttribute("href", "/conferences")
+  })
+
   it("names the six, the chairs, the bills and the hearing", () => {
     const { container } = render(<ConferenceDetails {...props} />)
 

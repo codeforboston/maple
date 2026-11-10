@@ -39,27 +39,25 @@ const shownLinks = () =>
   screen.getAllByRole("link").map(a => [a.textContent, a.getAttribute("href")])
 
 describe("NavbarConferenceItems", () => {
-  it("leads with what a conference committee is and the explorer, then the conferences taking input", async () => {
+  it("leads with the explorer, then the conferences taking input", async () => {
     await renderMenu()
     expect(shownLinks()).toEqual([
-      ["navigation.conferencesOverview", "/conferences"],
       ["navigation.conferenceExplorer", "/conferences/explorer"],
       ["Data Privacy", "/conferences/194/data-privacy"],
       ["An Act relative to hemp", "/conferences/194/hemp"]
     ])
-    // The overview set apart from the list, and the list named.
+    // The explorer set apart from the list, and the list named.
     expect(screen.getByRole("separator")).toBeInTheDocument()
     expect(
       screen.getByText("navigation.conferencesTakingInput")
     ).toBeInTheDocument()
   })
 
-  it("still leads to the overview and the explorer where none is taking input", async () => {
+  it("still leads to the explorer where none is taking input", async () => {
     const all = mockConferences
     mockConferences = []
     await renderMenu()
     expect(shownLinks()).toEqual([
-      ["navigation.conferencesOverview", "/conferences"],
       ["navigation.conferenceExplorer", "/conferences/explorer"]
     ])
     expect(screen.queryByRole("separator")).not.toBeInTheDocument()

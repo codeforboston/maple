@@ -190,8 +190,8 @@ export const NavbarLinkBallotQuestions: React.FC<
 
 /**
  * The Conference Committees menu's items, which the navbar puts in a menu as
- * it does About's and Learn's: what a conference committee is and the
- * explorer, then the conferences taking input.
+ * it does About's and Learn's: the explorer, then the conferences taking
+ * input.
  */
 export const NavbarConferenceItems: React.FC<{ handleClick?: any }> = ({
   handleClick
@@ -211,11 +211,10 @@ export const NavbarConferenceItems: React.FC<{ handleClick?: any }> = ({
   )
   return (
     <>
-      {link(maple.conferences(), t("navigation.conferencesOverview"))}
       {link(maple.conferenceExplorer(), t("navigation.conferenceExplorer"))}
       {conferences.length > 0 && (
         <>
-          {/* The overview set apart, and the list said for what it is. */}
+          {/* The explorer set apart, and the list said for what it is. */}
           <Dropdown.Divider />
           <Dropdown.Header>
             {t("navigation.conferencesTakingInput")}

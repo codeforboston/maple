@@ -42,6 +42,7 @@ import { useFollowedAuthors } from "./input/useFollowedAuthors"
 import { Close } from "./input/Close"
 import { X } from "./input/icons"
 import { jumpToSection } from "./navbar"
+import { OverviewLink } from "./OverviewLink"
 import { Notice, PageColumn, Title } from "./styles"
 import { conferenceName, ConferencePageProps, ConferenceSummary } from "./types"
 
@@ -69,12 +70,36 @@ const Shift = styled.div`
   }
 `
 
-/** The title, with the way to share input at its end. */
-const TitleRow = styled.div`
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 24px;
+/** The title level with the share button, and the overview link over the
+ * button; level with the title itself where there is no button. Below md the
+ * picker stands for the title, with the link over it and the button under it
+ * at the left. */
+const TitleRow = styled.div<{ $taking: boolean }>`
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: ${({ $taking }) =>
+    $taking ? `". link" "title share"` : `"title link"`};
+  align-items: center;
+  gap: 0.5rem 24px;
+
+  @media (max-width: 767.98px) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: ${({ $taking }) =>
+      $taking ? `"link" "picker" "share"` : `"link" "picker"`};
+  }
+`
+
+const Picker = styled.div`
+  grid-area: picker;
+`
+
+const Share = styled.div`
+  grid-area: share;
+  justify-self: end;
+
+  @media (max-width: 767.98px) {
+    justify-self: start;
+  }
 `
 
 /** The header and the sections under it. */
@@ -86,6 +111,8 @@ const Main = styled.div`
 /** Below md the picker shows the name, so the heading is there for screen
  * readers alone. */
 const PageTitle = styled(Title)`
+  grid-area: title;
+
   @media (max-width: 767.98px) {
     position: absolute;
     width: 1px;
@@ -433,16 +460,19 @@ function Details({
           />
           <Main ref={main}>
             <TitleBand ref={band} $top="var(--maple-navbar-height)" $z={14}>
-              <div className="d-md-none">
-                <ConferencePicker
-                  conferences={conferences}
-                  current={conference}
-                />
-              </div>
-              <TitleRow>
+              <TitleRow $taking={taking}>
+                <Picker className="d-md-none">
+                  <ConferencePicker
+                    conferences={conferences}
+                    current={conference}
+                  />
+                </Picker>
                 <PageTitle>{subject}</PageTitle>
+                <OverviewLink />
                 {taking && (
-                  <ShareButton onClick={share} disabled={Boolean(mine)} />
+                  <Share>
+                    <ShareButton onClick={share} disabled={Boolean(mine)} />
+                  </Share>
                 )}
               </TitleRow>
               {refusal && (
