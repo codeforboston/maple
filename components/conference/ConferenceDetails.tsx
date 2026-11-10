@@ -15,7 +15,6 @@ import styled from "styled-components"
 import { ConferenceByline } from "./ConferenceByline"
 import { ConferenceCommittee } from "./ConferenceCommittee"
 import { ConferenceDifferences } from "./ConferenceDifferences"
-import { ConferenceHero } from "./ConferenceHero"
 import { ConferencePicker } from "./ConferencePicker"
 import { ConferenceRail } from "./ConferenceRail"
 import { ConferenceResolution, OutcomeFilter } from "./ConferenceResolution"
@@ -31,7 +30,7 @@ import {
 } from "../db"
 import { useAppDispatch } from "../hooks"
 import { maple, siteUrl } from "../links"
-import { useConferenceTop, usePinnedNavbar } from "./hooks"
+import { usePinnedNavbar } from "./hooks"
 import { InputContext } from "./input/context"
 import { CosignForm, CosignStep } from "./input/CosignForm"
 import { CosignLetter } from "./input/CosignLetter"
@@ -50,8 +49,6 @@ import { conferenceName, ConferencePageProps, ConferenceSummary } from "./types"
 const Page = styled(PageColumn)`
   display: flex;
   gap: 1.5rem;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
 
   @media (min-width: 992px) {
     max-width: 1320px;
@@ -157,13 +154,10 @@ const RESOLVED_LABELS = { decided: "tab_resolved" }
 
 /**
  * One conference: who is deciding, and the two texts they are deciding
- * between, under a hero on what a conference committee is. The list of every
- * conference runs down the left from md up; below that the title opens it.
- * The landing alone opens on the hero (`openOnHero`).
+ * between. The list of every conference runs down the left from md up; below
+ * that the title opens it.
  */
-export function ConferenceDetails(
-  props: ConferencePageProps & { openOnHero?: boolean }
-) {
+export function ConferenceDetails(props: ConferencePageProps) {
   // Keyed so moving to another conference starts clean: the panel's draft hook
   // is fixed to the conference it first mounted on, and would keep filing on
   // the old one.
@@ -178,10 +172,8 @@ function Details({
   gist,
   differences,
   similarities,
-  testimonyCount,
-  openOnHero = false
-}: ConferencePageProps & { openOnHero?: boolean }) {
-  const { top, hero, toConference } = useConferenceTop(openOnHero)
+  testimonyCount
+}: ConferencePageProps) {
   const { t } = useTranslation("conferences")
   const { user, authenticated, loading: authLoading, authFlowStep } = useAuth()
   const dispatch = useAppDispatch()
@@ -433,8 +425,7 @@ function Details({
           { "--shift": `${open && !filled ? width : 0}px` } as CSSProperties
         }
       >
-        <ConferenceHero ref={hero} onSee={toConference} landing={openOnHero} />
-        <Page ref={top}>
+        <Page>
           <ConferenceRail
             className="d-none d-md-block"
             conferences={conferences}
@@ -449,7 +440,7 @@ function Details({
                 />
               </div>
               <TitleRow>
-                <PageTitle as={openOnHero ? "h2" : "h1"}>{subject}</PageTitle>
+                <PageTitle>{subject}</PageTitle>
                 {taking && (
                   <ShareButton onClick={share} disabled={Boolean(mine)} />
                 )}

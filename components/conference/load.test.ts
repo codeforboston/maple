@@ -1,11 +1,7 @@
 import { currentGeneralCourt } from "functions/src/shared"
 import { Conference, listConferences } from "../db/conferences"
 import { getMember, getMemberSearchIndex } from "../db/members"
-import {
-  loadConferenceIndex,
-  loadConferencePage,
-  loadLandingPage
-} from "./load"
+import { loadConferenceIndex, loadConferencePage, loadLanding } from "./load"
 
 jest.mock("../db/conferences")
 jest.mock("../db/events", () => ({ getEventSummary: jest.fn() }))
@@ -183,7 +179,7 @@ describe("coverage", () => {
     expect(page?.conference.reportBillId).toBeNull()
   })
 
-  it("opens the landing on the first covered conference", async () => {
+  it("points the landing at the first covered conference", async () => {
     jest
       .mocked(listConferences)
       .mockResolvedValue([
@@ -191,13 +187,16 @@ describe("coverage", () => {
         conference("b", [])
       ])
 
-    const page = await loadLandingPage(currentGeneralCourt)
+    expect(await loadLanding(currentGeneralCourt)).toEqual({
+      court: currentGeneralCourt,
+      id: "b"
+    })
+  })
 
-    expect(page?.conference.id).toBe("b")
-    expect(page?.conferences.map(c => [c.id, c.covered])).toEqual([
-      ["a", false],
-      ["b", true]
-    ])
+  it("points the landing nowhere in a court with no conferences", async () => {
+    jest.mocked(listConferences).mockResolvedValue([])
+
+    expect(await loadLanding(currentGeneralCourt)).toBeNull()
   })
 
   it("still opens an uncovered conference by its address", async () => {

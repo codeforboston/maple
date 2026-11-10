@@ -3,8 +3,10 @@ import { useRouter } from "next/router"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "./auth"
-import { Nav, NavDropdown } from "./bootstrap"
+import { Dropdown, Nav, NavDropdown } from "./bootstrap"
+import { conferenceName } from "./conference/types"
 import { useProfile } from "./db"
+import { useAppointedConferences } from "./conference/hooks"
 import { NavLink } from "./Navlink"
 import { maple, Wrap } from "./links"
 import { BetaTag } from "./shared/CommonComponents"
@@ -186,29 +188,42 @@ export const NavbarLinkBallotQuestions: React.FC<
   )
 }
 
-export const NavbarLinkConferences: React.FC<
-  React.PropsWithChildren<{
-    handleClick?: any
-    other?: any
-  }>
-> = ({ handleClick, other }) => {
+/**
+ * The Conference Committees menu's items, which the navbar puts in a menu as
+ * it does About's and Learn's: what a conference committee is and the
+ * explorer, then the conferences taking input.
+ */
+export const NavbarConferenceItems: React.FC<{ handleClick?: any }> = ({
+  handleClick
+}) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const { t } = useTranslation(["common", "auth"])
-  const { pathname } = useRouter()
+  const conferences = useAppointedConferences()
+  const link = (href: string, label: string) => (
+    <NavbarDropdownLink
+      key={href}
+      className={isMobile ? "navLink-primary" : ""}
+      href={href}
+      handleClick={handleClick}
+    >
+      {label}
+    </NavbarDropdownLink>
+  )
   return (
-    <Nav.Item onClick={handleClick}>
-      <NavLink
-        className={isMobile ? "navLink-primary" : DESKTOP_NAV_ITEM_CLASS}
-        href={maple.conferences()}
-        // The landing, the explorer and every conference are this section.
-        other={{
-          active: pathname.startsWith(maple.conferences()),
-          ...other
-        }}
-      >
-        {t("navigation.conferences")}
-      </NavLink>
-    </Nav.Item>
+    <>
+      {link(maple.conferences(), t("navigation.conferencesOverview"))}
+      {link(maple.conferenceExplorer(), t("navigation.conferenceExplorer"))}
+      {conferences.length > 0 && (
+        <>
+          {/* The overview set apart, and the list said for what it is. */}
+          <Dropdown.Divider />
+          <Dropdown.Header>
+            {t("navigation.conferencesTakingInput")}
+          </Dropdown.Header>
+          {conferences.map(c => link(maple.conference(c), conferenceName(c)))}
+        </>
+      )}
+    </>
   )
 }
 
