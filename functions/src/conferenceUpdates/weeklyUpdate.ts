@@ -171,6 +171,12 @@ export function buildConferenceUpdateEmail({
   }
 }
 
+export const conferenceUpdateSubject = ({
+  title,
+  weekLabel
+}: Pick<ConferenceUpdateEmail, "title" | "weekLabel">) =>
+  `Public input on ${title}: ${weekLabel}`
+
 let template: HandlebarsTemplateDelegate<ConferenceUpdateEmail> | undefined
 
 export const renderConferenceUpdate = (data: ConferenceUpdateEmail) =>
