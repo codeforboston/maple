@@ -9,14 +9,18 @@ import {
 } from "react"
 import { useTranslation } from "next-i18next"
 import { useRouter } from "next/router"
-import { hasReport, takesTestimony } from "../../functions/src/shared"
+import {
+  hasReport,
+  isSitting,
+  takesTestimony
+} from "../../functions/src/shared"
 import { uncosignable } from "../../functions/src/testimony/cosign"
 import styled from "styled-components"
 import { ConferenceByline } from "./ConferenceByline"
 import { ConferenceCommittee } from "./ConferenceCommittee"
 import { ConferenceDifferences } from "./ConferenceDifferences"
 import { ConferencePicker } from "./ConferencePicker"
-import { ConferenceRail } from "./ConferenceRail"
+import { ClosedFold, ConferenceRail } from "./ConferenceRail"
 import { ConferenceResolution, OutcomeFilter } from "./ConferenceResolution"
 import { ConferenceTabs, TABS_H } from "./ConferenceTabs"
 import { ConferenceText } from "./ConferenceText"
@@ -185,10 +189,29 @@ const RESOLVED_LABELS = { decided: "tab_resolved" }
  * that the title opens it.
  */
 export function ConferenceDetails(props: ConferencePageProps) {
+  const fold = useClosedFold(props.conference)
   // Keyed so moving to another conference starts clean: the panel's draft hook
   // is fixed to the conference it first mounted on, and would keep filing on
   // the old one.
-  return <Details key={props.conference.id} {...props} />
+  return <Details key={props.conference.id} {...props} fold={fold} />
+}
+
+/**
+ * Whether the rail's group of conferences no longer taking input is open,
+ * held above the keyed page so it lasts from one conference to the next. It
+ * starts open only on a conference in the group, and opens on arriving at
+ * one, so the conference being read is never folded away; otherwise it stays
+ * as the reader left it.
+ */
+function useClosedFold(conference: ConferenceSummary): ClosedFold {
+  const closed = !isSitting(conference)
+  const [open, setOpen] = useState(closed)
+  const [at, setAt] = useState(conference.id)
+  if (at !== conference.id) {
+    setAt(conference.id)
+    if (closed) setOpen(true)
+  }
+  return { open, onToggle: setOpen }
 }
 
 function Details({
@@ -199,8 +222,9 @@ function Details({
   gist,
   differences,
   similarities,
-  testimonyCount
-}: ConferencePageProps) {
+  testimonyCount,
+  fold
+}: ConferencePageProps & { fold: ClosedFold }) {
   const { t } = useTranslation("conferences")
   const { user, authenticated, loading: authLoading, authFlowStep } = useAuth()
   const dispatch = useAppDispatch()
@@ -457,6 +481,7 @@ function Details({
             className="d-none d-md-block"
             conferences={conferences}
             current={conference.id}
+            fold={fold}
           />
           <Main ref={main}>
             <TitleBand ref={band} $top="var(--maple-navbar-height)" $z={14}>
@@ -465,6 +490,7 @@ function Details({
                   <ConferencePicker
                     conferences={conferences}
                     current={conference}
+                    fold={fold}
                   />
                 </Picker>
                 <PageTitle>{subject}</PageTitle>

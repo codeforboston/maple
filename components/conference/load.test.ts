@@ -1,11 +1,24 @@
 import { currentGeneralCourt } from "functions/src/shared"
-import { Conference, listConferences } from "../db/conferences"
+import {
+  Conference,
+  getConferenceForBill,
+  getConferenceForHearing,
+  listConferences
+} from "../db/conferences"
 import { getMember, getMemberSearchIndex } from "../db/members"
-import { loadConferenceIndex, loadConferencePage, loadLanding } from "./load"
+import {
+  loadConferenceForBill,
+  loadConferenceForHearing,
+  loadConferenceIndex,
+  loadConferencePage,
+  loadLanding
+} from "./load"
 
 jest.mock("../db/conferences")
 jest.mock("../db/events", () => ({ getEventSummary: jest.fn() }))
 jest.mock("../db/members")
+const mockFlags = { closedConferences: true }
+jest.mock("../featureFlags", () => ({ flags: () => mockFlags }))
 
 const conference = (id: string, memberCodes: string[]): Conference => ({
   id,
@@ -52,6 +65,7 @@ const names = (props: Awaited<ReturnType<typeof loadConferenceIndex>>) =>
 
 beforeEach(() => {
   jest.resetAllMocks()
+  mockFlags.closedConferences = true
   jest
     .mocked(listConferences)
     .mockResolvedValue([conference("a", ["X", "Y"]), conference("b", ["X"])])
@@ -207,5 +221,91 @@ describe("coverage", () => {
     const page = await loadConferencePage(currentGeneralCourt, "a")
 
     expect(page?.conference.covered).toBe(false)
+  })
+})
+
+describe("closed conferences", () => {
+  const closed = (id: string, status: Conference["status"]): Conference => ({
+    ...conference(id, ["X"]),
+    status
+  })
+
+  beforeEach(() => {
+    jest
+      .mocked(listConferences)
+      .mockResolvedValue([
+        closed("a-enacted", "enacted"),
+        conference("b", ["X"]),
+        closed("c-filed", "reportFiled"),
+        closed("d-dissolved", "dissolved")
+      ])
+    jest
+      .mocked(getMemberSearchIndex)
+      .mockResolvedValue(index(facts("X", "Xena")))
+    jest.mocked(getMember).mockResolvedValue(facts("X", "Xena") as any)
+  })
+
+  const ids = (cs: { id: string }[]) => cs.map(c => c.id)
+
+  it("lists them after the conferences still sitting, behind the flag", async () => {
+    const props = await loadConferenceIndex(currentGeneralCourt)
+
+    expect(ids(props.conferences)).toEqual([
+      "b",
+      "a-enacted",
+      "c-filed",
+      "d-dissolved"
+    ])
+  })
+
+  describe("with the flag off", () => {
+    beforeEach(() => {
+      mockFlags.closedConferences = false
+    })
+
+    it("leaves them out of the index and its conferees", async () => {
+      const props = await loadConferenceIndex(currentGeneralCourt)
+
+      expect(ids(props.conferences)).toEqual(["b"])
+      expect(Object.keys(props.conferees)).toEqual(["b"])
+    })
+
+    it("leaves them out of the rail and finds no page for them", async () => {
+      const page = await loadConferencePage(currentGeneralCourt, "b")
+
+      expect(ids(page!.conferences)).toEqual(["b"])
+      expect(
+        await loadConferencePage(currentGeneralCourt, "a-enacted")
+      ).toBeNull()
+    })
+
+    it("points the landing past them", async () => {
+      expect(await loadLanding(currentGeneralCourt)).toEqual({
+        court: currentGeneralCourt,
+        id: "b"
+      })
+    })
+
+    it("names none on the bill and hearing pages", async () => {
+      jest
+        .mocked(getConferenceForBill)
+        .mockResolvedValue(closed("a-enacted", "enacted"))
+      jest
+        .mocked(getConferenceForHearing)
+        .mockResolvedValue(closed("d-dissolved", "dissolved"))
+
+      expect(await loadConferenceForBill(currentGeneralCourt, "S1")).toBeNull()
+      expect(
+        await loadConferenceForHearing(String(currentGeneralCourt), "1")
+      ).toBeNull()
+    })
+
+    it("still names one still sitting", async () => {
+      jest.mocked(getConferenceForBill).mockResolvedValue(conference("b", []))
+
+      expect((await loadConferenceForBill(currentGeneralCourt, "S1"))?.id).toBe(
+        "b"
+      )
+    })
   })
 })

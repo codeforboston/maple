@@ -1,5 +1,8 @@
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons"
+import { isSitting } from "../../functions/src/shared"
 import { formatBillId } from "../formatting"
 import { Internal, maple } from "../links"
 import { conferenceName, ConferenceSummary } from "./types"
@@ -67,6 +70,46 @@ const RailRow = styled(Internal)<{ $on: boolean; $covered: boolean }>`
   }
 `
 
+/** The conferences no longer taking input, folded under the ones that are. */
+const Closed = styled.details`
+  margin-top: 0.75rem;
+
+  > summary {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.4375rem 0.5rem 0.4375rem calc(0.6875rem + 3px);
+    border-radius: 0 var(--maple-radius-md) var(--maple-radius-md) 0;
+    font-size: 0.75rem;
+    line-height: 1.35;
+    color: var(--maple-text-muted);
+    cursor: pointer;
+    list-style: none;
+    transition: background-color 120ms ease;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+    &:focus-visible {
+      outline: 3px solid var(--maple-focus-ring);
+      outline-offset: -3px;
+    }
+    .chevron {
+      font-size: 0.625rem;
+      transition: transform 150ms ease;
+    }
+  }
+  &[open] > summary .chevron {
+    transform: rotate(180deg);
+  }
+  > ul {
+    margin-top: 2px;
+  }
+`
+
 /** "S.1234 · H.5678", the status once the conference has finished, and a
  * label where we haven't covered it. The caller styles `.status`. */
 export function BillLine({ c }: { c: ConferenceSummary }) {
@@ -90,46 +133,88 @@ export function BillLine({ c }: { c: ConferenceSummary }) {
 export function ConferenceRail({
   conferences,
   current,
+  fold,
   className
 }: {
   conferences: ConferenceSummary[]
   current: string
+  fold: ClosedFold
   className?: string
 }) {
   const { t } = useTranslation("conferences")
   return (
     <Nav aria-label={t("in_conference")} className={className}>
-      <RailList conferences={conferences} current={current} />
+      <RailList conferences={conferences} current={current} fold={fold} />
     </Nav>
   )
 }
 
-/** The rows, shared by the rail and the picker that stands in for it. */
+/** Whether the group of conferences no longer taking input is open, and how
+ * the reader opens or folds it. The page holds it, so the rail and the picker
+ * share it and it lasts between conferences. */
+export type ClosedFold = {
+  open: boolean
+  onToggle: (open: boolean) => void
+}
+
+/**
+ * The rows, shared by the rail and the picker that stands in for it: the
+ * conferences still sitting, then the rest in a group below them that the
+ * reader opens and folds.
+ */
 export function RailList({
   conferences,
-  current
+  current,
+  fold
 }: {
   conferences: ConferenceSummary[]
   current: string
+  fold: ClosedFold
 }) {
-  return (
+  const { t } = useTranslation("conferences")
+  const sitting = conferences.filter(isSitting)
+  const closed = conferences.filter(c => !isSitting(c))
+  const rows = (cs: ConferenceSummary[]) => (
     <List>
-      {conferences.map(c => (
+      {cs.map(c => (
         <li key={c.id}>
-          <RailRow
-            href={maple.conference(c)}
-            scroll={false}
-            aria-current={c.id === current ? "page" : undefined}
-            $on={c.id === current}
-            $covered={c.covered}
-          >
-            <span className="name">{conferenceName(c)}</span>
-            <span className="bills">
-              <BillLine c={c} />
-            </span>
-          </RailRow>
+          <Row c={c} on={c.id === current} />
         </li>
       ))}
     </List>
+  )
+  return (
+    <>
+      {rows(sitting)}
+      {closed.length > 0 && (
+        <Closed
+          open={fold.open}
+          onToggle={e => fold.onToggle(e.currentTarget.open)}
+        >
+          <summary>
+            {t("rail_closed", { count: closed.length })}
+            <FontAwesomeIcon className="chevron" icon={faChevronDown} />
+          </summary>
+          {rows(closed)}
+        </Closed>
+      )}
+    </>
+  )
+}
+
+function Row({ c, on }: { c: ConferenceSummary; on: boolean }) {
+  return (
+    <RailRow
+      href={maple.conference(c)}
+      scroll={false}
+      aria-current={on ? "page" : undefined}
+      $on={on}
+      $covered={c.covered}
+    >
+      <span className="name">{conferenceName(c)}</span>
+      <span className="bills">
+        <BillLine c={c} />
+      </span>
+    </RailRow>
   )
 }
