@@ -6,9 +6,9 @@ import { z } from "zod"
 // Lazily initialize db so we don't call admin.firestore() before initializeApp() runs in index.ts
 const getDb = () => admin.firestore()
 
-// The current court and the list tools' results change at most daily, so
-// they're cached for an hour.
-const CACHE_TTL_MS = 60 * 60 * 1000
+// The bill scraper updates each bill about once a day, and the current court
+// changes every two years, so they're cached for 12 hours.
+const CACHE_TTL_MS = 12 * 60 * 60 * 1000
 const cache = new Map<string, { value: Promise<any>; at: number }>()
 
 function cached<T>(key: string, load: () => Promise<T>): Promise<T> {

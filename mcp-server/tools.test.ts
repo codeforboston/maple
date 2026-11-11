@@ -387,11 +387,17 @@ describe("list tools", () => {
     expect(await loadTool("list_sponsors")()).toEqual(["Old"])
   })
 
-  it("reads a session's list once an hour", async () => {
+  it("reads a session's list once every 12 hours", async () => {
     mockBills = { 194: [bill("Current")] }
+    const now = jest.spyOn(Date, "now").mockReturnValue(0)
     const listSponsors = loadTool("list_sponsors")
     await listSponsors({ court: 194 })
+    now.mockReturnValue(12 * 60 * 60 * 1000 - 1)
     await listSponsors({ court: 194 })
     expect(mockSelects).toHaveLength(1)
+    now.mockReturnValue(12 * 60 * 60 * 1000)
+    await listSponsors({ court: 194 })
+    expect(mockSelects).toHaveLength(2)
+    now.mockRestore()
   })
 })
