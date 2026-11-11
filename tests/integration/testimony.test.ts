@@ -10,6 +10,8 @@ import { auth, firestore, functions, storage } from "../../components/firebase"
 import { terminateFirebase, testDb, testStorage } from "../testUtils"
 import { script as backfillTestimonyScope } from "../../scripts/firebase-admin/backfillTestimonyScope"
 import { resolveReport } from "components/db"
+import { compileWeeklyUpdates } from "functions/src/conferenceUpdates/compileWeeklyUpdates"
+import { weekWindow } from "functions/src/conferenceUpdates/weeklyUpdate"
 import {
   createFakeBill,
   createNewReport,
@@ -1398,6 +1400,110 @@ describe("publishTestimony", () => {
         })
       })
     })
+  })
+})
+
+describe("conference weekly update", () => {
+  const eventsOf = (conferenceId: string) =>
+    testDb
+      .collection("/conferenceInputEvents")
+      .where("conferenceId", "==", conferenceId)
+      .get()
+
+  /** The conference's input from `author`, in `position`. */
+  const fileInput = async (
+    author: () => Promise<User>,
+    billId: string,
+    conferenceId: string,
+    position: BaseTestimony["position"]
+  ) => {
+    const { uid } = await author()
+    const { draftId } = await createConferenceDraft(
+      uid,
+      billId,
+      conferenceId,
+      position
+    )
+    const res = await publishTestimony({ draftId })
+    return { uid, draftId, publicationId: res.data.publicationId }
+  }
+
+  it("compiles one update from a week of changes", async () => {
+    const conferenceId = await createConference(billId)
+    const first = await fileInput(
+      signInUser1,
+      billId,
+      conferenceId,
+      "passSenateVersion"
+    )
+    const second = await fileInput(
+      signInUser2,
+      billId,
+      conferenceId,
+      "passHouseVersion"
+    )
+    await signInUser1()
+    await updateDoc(refs.draftTestimony(first.uid, first.draftId), {
+      position: "passNothing",
+      editReason: "Changed my mind"
+    })
+    await publishTestimony({ draftId: first.draftId })
+    await signInTestAdmin()
+    await deleteTestimony({
+      uid: second.uid,
+      publicationId: second.publicationId
+    })
+
+    await waitFor(
+      async () => expect((await eventsOf(conferenceId)).size).toBe(4),
+      { timeout: 20000 }
+    )
+
+    // The week these events fall in is the one before next Monday.
+    const now = weekWindow(new Date()).end.plus({ weeks: 1, hours: 1 })
+    const weekStart = weekWindow(now.toJSDate()).start.toISODate()
+    const path = `/conferenceUpdates/${currentGeneralCourt}_${conferenceId}_${weekStart}`
+    await compileWeeklyUpdates(now.toJSDate())
+
+    const update = (await testDb.doc(path).get()).data() as any
+    expect(update.standing.total).toBe(1)
+    expect(update.standing.byPosition.passNothing).toBe(1)
+    expect(update.changes).toMatchObject({
+      added: 2,
+      edited: 1,
+      withdrawn: 1
+    })
+    expect(update.changes.net.total).toBe(1)
+    expect(update.html).toContain(
+      `https://mapletestimony.org/conferences/${currentGeneralCourt}/${conferenceId}`
+    )
+
+    // A second run in the same week leaves the update as it was.
+    await compileWeeklyUpdates(now.toJSDate())
+    expect((await testDb.doc(path).get()).data()!.createdAt).toEqual(
+      update.createdAt
+    )
+  }, 60000)
+
+  it("compiles nothing for a week without a change", async () => {
+    const conferenceId = await createConference(billId)
+    await fileInput(signInUser1, billId, conferenceId, "passNothing")
+
+    // Two weeks on, the week before it is empty.
+    const now = weekWindow(new Date()).end.plus({ weeks: 2, hours: 1 })
+    const weekStart = weekWindow(now.toJSDate()).start.toISODate()
+    await compileWeeklyUpdates(now.toJSDate())
+
+    expect(
+      (
+        await testDb
+          .doc(
+            `/conferenceUpdates/${currentGeneralCourt}_${conferenceId}_${weekStart}`
+          )
+          .get()
+      ).exists
+    ).toBe(false)
+    expect((await eventsOf(conferenceId)).size).toBe(0)
   })
 })
 
