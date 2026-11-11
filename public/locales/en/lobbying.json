@@ -83,7 +83,7 @@
   "loading": "Loading lobbying data…",
   "titles": {
     "overview": "Lobbying Explorer",
-    "bills": "Lobbied bills",
+    "bills": "Lobbied Bills",
     "clients": "Clients",
     "firms": "Lobbyists",
     "client": "Client Profile",
