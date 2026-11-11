@@ -96,6 +96,7 @@ jobs:
           tests/integration/ballotQuestions.test.ts
           tests/integration/backfillTestimonyScope.test.ts
           tests/integration/conferences.test.ts
+          tests/integration/conferenceLetters.test.ts
           components/auth/hooks.test.ts
           components/db/useUpcoming.test.ts
           components/db/testimony
