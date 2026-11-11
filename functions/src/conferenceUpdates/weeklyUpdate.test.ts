@@ -1,5 +1,6 @@
 import {
   buildConferenceUpdateEmail,
+  conferenceUpdateSubject,
   renderConferenceUpdate,
   summarize,
   tally,
@@ -129,6 +130,12 @@ describe("the update email", () => {
     changes,
     start: weekWindow(new Date("2026-09-28T12:00:00Z")).start,
     now: new Date("2026-09-28T12:00:00Z")
+  })
+
+  it("names the conference and the week in its subject", () => {
+    expect(conferenceUpdateSubject(data)).toBe(
+      `Public input on Phone-Free Schools: ${data.weekLabel}`
+    )
   })
 
   it("states the week, the bills and the figures", () => {
