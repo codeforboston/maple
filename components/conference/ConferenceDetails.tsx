@@ -37,6 +37,7 @@ import { useAppDispatch } from "../hooks"
 import { maple, siteUrl } from "../links"
 import { usePinnedNavbar } from "./hooks"
 import { InputContext } from "./input/context"
+import { initialsOf } from "./input/accounts"
 import { CosignForm, CosignStep } from "./input/CosignForm"
 import { CosignLetter } from "./input/CosignLetter"
 import { InputForm, Step } from "./input/InputForm"
@@ -49,7 +50,12 @@ import { X } from "./input/icons"
 import { jumpToSection } from "./navbar"
 import { OverviewLink } from "./OverviewLink"
 import { Notice, PageColumn, Title } from "./styles"
-import { conferenceName, ConferencePageProps, ConferenceSummary } from "./types"
+import {
+  conferenceName,
+  ConferencePageProps,
+  ConferenceSummary,
+  ConfereeView
+} from "./types"
 
 /** The mockup's column, widened to 1320 once the rail sits beside it. */
 const Page = styled(PageColumn)`
@@ -588,6 +594,7 @@ function Details({
         <InputPanel
           uid={user.uid}
           conference={conference}
+          conferees={conferees}
           subject={subject}
           open={open}
           width={width}
@@ -613,6 +620,7 @@ function Details({
 function InputPanel({
   uid,
   conference,
+  conferees,
   subject,
   open,
   width,
@@ -630,6 +638,7 @@ function InputPanel({
 }: {
   uid: string
   conference: ConferenceSummary
+  conferees: ConfereeView[]
   subject: string
   open: boolean
   width: number
@@ -646,6 +655,10 @@ function InputPanel({
   onPosted: () => void
 }) {
   const { t } = useTranslation("conferences")
+  const initials = useMemo(
+    () => conferees.map(c => initialsOf(c.name)),
+    [conferees]
+  )
   const edit = useEditConferenceTestimony(
     uid,
     conference.court,
@@ -661,7 +674,7 @@ function InputPanel({
   const title =
     cosigning && edit.publication
       ? "input.cosign_edit_title"
-      : !cosigning && step === "review"
+      : (cosigning ? cosignStep : step) === "review"
       ? "input.review_title"
       : "input.panel_title"
   return (
@@ -682,6 +695,9 @@ function InputPanel({
           key={cosigning.id}
           edit={edit}
           parent={cosigning}
+          court={conference.court}
+          subject={subject}
+          conferees={initials}
           step={cosignStep}
           onStep={onCosignStep}
           onCancel={onClose}
@@ -689,7 +705,8 @@ function InputPanel({
         />
       ) : (
         <InputForm
-          uid={uid}
+          court={conference.court}
+          conferees={initials}
           edit={edit}
           subject={subject}
           step={step}
