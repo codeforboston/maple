@@ -1,0 +1,289 @@
+id: cannabis-laws
+name: Cannabis Laws
+court: 194
+title: An Act modernizing the commonwealth’s cannabis laws
+senateBillId: S2749
+houseBillId: H4206
+canonicalBillId: H4206
+status: enacted
+reportBillId: H5350
+conferees:
+  - memberCode: DMD1
+    branch: House
+    chair: true
+  - memberCode: C_G1
+    branch: House
+  - memberCode: MJS3
+    branch: House
+  - memberCode: A_G0
+    branch: Senate
+    chair: true
+  - memberCode: JMC0
+    branch: Senate
+  - memberCode: PJD0
+    branch: Senate
+hearingIds:
+  - hearing-5530
+differences:
+  - heading: Should the governor appoint all three commissioners, or should the attorney general appoint one, and must one commissioner have a social justice background?
+    senate: The governor appoints two, including the chair. The attorney general appoints the third, who must have a background in social justice issues related to the cannabis industry. The attorney general's first appointee serves a 2-year term. (§§1, 58, G.L. c. 6 §223(a))
+    house: The governor appoints all three and names the chair. Social justice is one of several fields commissioners may come from, with no seat reserved for it. (§1, G.L. c. 6 §223(a))
+    outcome: combined
+    addressedBy: both
+    resolution: The governor appoints all three, as the House wrote. At least one must have a social justice background, the qualification the Senate attached to its attorney general seat.
+    law: "The House structure: the governor appoints all three and names the chair. A new proviso, in words neither bill used, requires at least one commissioner to have a background in social justice. The Senate's link to the cannabis industry is gone. (§1, G.L. c. 6 §223(a))"
+    why: One official, the governor, now chooses every commissioner. The social justice requirement that came with the Senate's attorney general seat now applies to the governor's picks.
+  - heading: Should all three commissioners work full time on a salary, or only the chair?
+    senate: All three are full time. The chair earns the secretary's salary, and the other two earn 75% of it. (§1, G.L. c. 6 §223(a), (f))
+    house: Only the chair is full time and earns the salary of the secretary of administration and finance. The other two are part time and receive a stipend of no more than 10% of that salary. (§1, G.L. c. 6 §223(a), (f))
+    outcome: senate
+    addressedBy: both
+    resolution: All three full time, with the Senate's pay scale.
+    law: The Senate's full-time rule and pay scale. (§1, G.L. c. 6 §223(a), (f))
+  - heading: Can commissioners be removed at will, or only for cause after a hearing?
+    senate: Each commissioner serves at the pleasure of the official who appointed them, the governor or the attorney general. No cause or hearing is required. (§1, G.L. c. 6 §223(d))
+    house: The governor may remove a commissioner for neglect of duty, misconduct or malfeasance in office, after a written statement of reasons and a chance to be heard. (§1, G.L. c. 6 §223(d))
+    outcome: modified
+    addressedBy: both
+    resolution: Only for cause, with notice and a hearing, as the House wrote. The law adds three grounds for removal.
+    law: The House's for-cause process with a longer list of grounds. Inefficiency, inability to do the job and a felony conviction in office are added; neither bill listed them. (§1, G.L. c. 6 §223(d))
+    why: Under the Senate bill, an appointing official could remove a commissioner without giving a reason. Under the law, the governor must cite a listed ground and offer a hearing.
+  - heading: Should the chair or the executive director direct the commission's operations, personnel and policy implementation?
+    senate: The executive director directs policy implementation and has final say on personnel, along with independent authority over enforcement and operations. The commissioners as a group set personnel and budget policy, and the chair or the executive director can approve spending. The chair presides and assigns duties among commissioners. The executive director also investigates applicants for jobs and licenses. (§§1, 25, G.L. c. 6 §223(g), (i); c. 94G §4(m))
+    house: The chair supervises and controls all of the commission's affairs, directs policy implementation, has final say on personnel and may delegate to the executive director. The chair sets personnel and budget policy and must approve spending. The House also gave the executive director independent authority over enforcement (see the next question). (§1, G.L. c. 6 §223(g)(1), (i))
+    outcome: house
+    edited: Consultation step added
+    addressedBy: both
+    resolution: The chair, as the House wrote. The chair now consults the other commissioners before hiring the executive director.
+    law: The House text. The chair controls the agency, directs policy, has final say on personnel, sets personnel and budget policy and approves spending. The chair appoints the executive director after consulting the other commissioners and may delegate to that officer. The Senate's shift of applicant investigations to the executive director is not in the law. (§1, G.L. c. 6 §223(g), (i))
+  - heading: Should commissioners, who decide contested cases, be kept out of investigations and enforcement, with the executive director running enforcement on their own authority?
+    senate: Yes. The bar on investigations covers the chair and every other commissioner. The executive director's independent authority is the same as the House's. The communications ban reaches what a commissioner knowingly receives, and still allows general reports and complaints about how the commission's programs run. (§1, G.L. c. 6 §223(g)(2), (i)(2), (k))
+    house: Yes. The chair may not take part in or supervise investigations, inspections, audits or enforcement that could come before the commission. The executive director has independent authority over enforcement and operations. No commissioner may start, join or receive off-the-record communications about the substance of an investigation, enforcement matter or adjudicatory proceeding, and a violator is disqualified from related proceedings. (§1, G.L. c. 6 §223(g)(2), (i)(2), (k))
+    outcome: dropped
+    addressedBy: both
+    resolution: Dropped. Both bills had this separation in nearly the same words. The law keeps only a rule on how commissioners conduct hearings.
+    law: "None of the three pieces is in the law: no bar on commissioners' role in investigations, no independent enforcement authority for the executive director, and no ban on off-the-record communications. The bills' statement that commissioners must act impartially in adjudications is also gone. One related rule remains. Both bills applied chapter 30A's duties for presiding officers to the chair; the law applies them to every commissioner. (§1, G.L. c. 6 §223(h)(2))"
+    why: Under the law the chair supervises all of the commission's affairs, including operations and personnel, and the act contains no bar on the chair directing an investigation that later comes before the commission for decision.
+  - heading: Must at least two commissioners hear substantive matters, and what powers does a staff hearing officer have?
+    senate: No minimum number of commissioners. A staff member may hear a matter and report in writing. The bill does not give that staff member a commissioner's powers. (§1, G.L. c. 6 §223(h))
+    house: At least 2 commissioners must take part in hearing and deciding any matter that is not formal or administrative. A matter may also go to a staff member, who has all of a commissioner's powers for that matter and reports to the commission for its decision. (§1, G.L. c. 6 §223(h))
+    outcome: combined
+    addressedBy: both
+    resolution: No two-commissioner minimum, as in the Senate. Staff hearing officers get a commissioner's powers, as in the House.
+    law: The House text without its two-commissioner minimum. A staff hearing officer still has all of a commissioner's powers for the assigned matter. (§1, G.L. c. 6 §223(h)(1))
+  - heading: Should the commission's own ethics code be stricter than state ethics law, and how broad should recusal be?
+    senate: The code must be consistent with chapters 268A and 268B. Recusal covers licensing decisions and any matter where a commissioner acts as an adjudicator. Background checks on candidates also look at potential conflicts of interest. (§1, G.L. c. 6 §223(a), (j))
+    house: The code must be more restrictive than the state ethics laws in chapters 268A and 268B. Commissioners recuse from licensing decisions when there is a potential conflict of interest. (§1, G.L. c. 6 §223(j))
+    outcome: house
+    edited: One word changed
+    addressedBy: both
+    resolution: Stricter than state law, with recusal for licensing decisions, as the House wrote.
+    law: The House text, with “members” changed to “commissioners.” The code must be stricter than state ethics law, and recusal covers licensing decisions. The Senate's wider recusal rule and its conflict-of-interest background check are not in the law. (§1, G.L. c. 6 §223(j))
+  - heading: How many retail stores and medical licenses may a single licensee hold?
+    senate: Up to 4 retail licenses and 3 medical licenses of any kind, plus 3 manufacturing and 3 cultivation licenses. (§35, G.L. c. 94G §16(a))
+    house: Up to 6 retail licenses, 3 fully integrated medical marijuana treatment centers, 3 product manufacturing licenses and 3 cultivation licenses. An owner with 3 fully integrated medical centers may not hold any other medical licenses. (§39, G.L. c. 94G §16(a))
+    outcome: house
+    addressedBy: both
+    resolution: Six retail stores and three fully integrated medical centers, as the House wrote. The six-store cap phases in (see the House questions).
+    law: The House caps, word for word. (§36, G.L. c. 94G §16(a))
+  - heading: Below what ownership share does an investor's stake not count toward the license caps?
+    senate: Equity stakes under 12% are exempt from the caps. (§35, G.L. c. 94G §16(b))
+    house: Equity stakes under 35% are exempt from the caps. (§39, G.L. c. 94G §16(b))
+    outcome: combined
+    addressedBy: both
+    resolution: Under 20%, a figure between the two bills, and only if the investor has no control over operations.
+    law: Stakes under 20% are exempt when the investor has no direct or indirect control over the license's operations. The commission must write criteria for judging control. Neither the 20% figure nor the control test appears in either bill. (§§24, 36, G.L. c. 94G §§4(a½)(xl), 16(b))
+    why: Under the control test, an investor with less than 20% who directs a business's operations counts toward the caps.
+  - heading: Should applications from social equity businesses and from minority-, women- and veteran-owned businesses get priority?
+    senate: Yes, written into the ownership-cap section itself, with no certification requirement. (§35, G.L. c. 94G §16(a))
+    house: Yes, for applications under the new ownership caps. Minority-, women- and veteran-owned businesses must hold state supplier diversity certification. (§64)
+    outcome: dropped
+    addressedBy: both
+    resolution: Dropped. Both bills had a priority rule; the law has none.
+    law: Not in the law. Social equity businesses are instead exempt from the 12-month interim limit on retail stores (see the phase-in question).
+  - heading: How should the law define medical marijuana businesses, and must each one grow, process and sell?
+    senate: "Defines a medical marijuana establishment as any holder of a medical license, with no separate integrated class. Adds to the chapter's list of things it does not require: license holders need not cultivate, process and dispense as a condition of licensure. (§§41, 53, G.L. c. 94I §§1, 6)"
+    house: Creates a named class, the fully integrated medical marijuana treatment center, which grows, makes and sells. Any other licensed medical business is also a medical marijuana establishment. Says nothing on whether every license must be fully integrated. (§§44, 46, G.L. c. 94I §1)
+    outcome: combined
+    addressedBy: both
+    resolution: The House's new class of fully integrated treatment centers, plus the Senate's clause that medical businesses need not do all three.
+    law: The House definitions, word for word, plus the Senate's no-integration clause in shorter words. The law also lets the commission set different fee amounts for different classes of medical license, wording neither bill used. (§§41, 43, 51, 52, G.L. c. 94I §§1, 6, 7)
+    why: The law's 24-month social equity window applies to medical licenses that are not fully integrated, the class these definitions make room for.
+  - heading: How should the 60-day limit on credit between licensees be enforced?
+    senate: The same 60-day limit and list. The commission removes a name within 3 business days. Fine of up to $5,000 per violation. (§36, G.L. c. 94G §23)
+    house: Licensees may extend credit for marijuana for no more than 60 days. Unpaid debts put the buyer on a delinquent list, and listed buyers must pay up front. The commission strikes a name within 1 business day of being told the debt is paid. Fine of up to $5,000. (§40, G.L. c. 94G §23)
+    outcome: combined
+    addressedBy: both
+    resolution: Both bills' 60-day limit and delinquent list, with the Senate's per-violation fine and a 2-day removal window that sits between the two bills.
+    law: Mostly the House text. Removal from the list takes up to 2 business days, a figure in neither bill, and the fine is up to $5,000 per violation, as the Senate wrote. The section starts January 1, 2028 (see the last question). (§37, G.L. c. 94G §23)
+  - heading: How often should the commission review its testing rules against current industry standards, and with whom?
+    senate: An annual review and update of testing rules and protocols, done with testing labs and marijuana businesses. (§34, G.L. c. 94G §15(a))
+    house: A one-time review of the testing rules against the most recent standards, done with the cannabis advisory board and reported by July 1, 2027. (§61)
+    outcome: combined
+    addressedBy: both
+    resolution: At least every 2 years, with a public hearing and a published report. Neither bill had this schedule.
+    law: A standing review, as the Senate proposed, held every 2 years. Each review requires a public hearing and a report with findings and a summary of testimony, posted online in machine-readable form. No named partners and no one-time report. (§35, G.L. c. 94G §15(d))
+  - heading: Should the commission's health study focus on patterns of use and impaired driving, or on mental health outcomes?
+    senate: Mental health outcomes, including cannabis-induced psychosis, and hospitalizations. Reports on evidence linking use to adverse mental health, how common cannabis use disorder is, protocols to keep people diagnosed with it from getting medical cards, and the effects of warning labels and education campaigns. Due January 1, 2027. (§57)
+    house: Patterns of use among minors, students and adults, impaired driving and hospitalizations. Reports on measuring driving impairment, hospital costs and how common cannabis use disorder is. Due January 1, 2027. (§59)
+    outcome: combined
+    addressedBy: both
+    resolution: The House's patterns-of-use study plus one Senate topic, due January 1, 2028, a year later than either bill.
+    law: The House study with the Senate's item on public health interventions, such as warning labels, added. The Senate's mental health and psychosis topics and its medical-card protocol are not in the law. Due January 1, 2028. (§55)
+  - heading: What should the commission's market study cover, and when is it due?
+    senate: "A supply-and-demand study covering the legal and illegal markets: supplier trends, projected consumption, price sensitivity, access to capital and cultivation tier rules, with a recommended number of new licenses each year. Due January 1, 2027, with draft legislation. (§59)"
+    house: "A study of licensed businesses: the right number of licenses, whether supply is adequate, whether oversupply harms the market, and how well the commission enforces its cultivation tiers. Due July 1, 2027. (§60)"
+    outcome: combined
+    addressedBy: both
+    resolution: The House's licensing questions plus the Senate's supply-and-demand topics, due July 1, 2028.
+    law: The House study with the Senate's five topics added to its list. The Senate's illegal-market scope and yearly license recommendation are not included. Due July 1, 2028, a year after the House date. (§56)
+  - heading: Should commissioners be barred from serving more than 8 years in total?
+    senate: No limit. Commissioners may be reappointed.
+    house: Yes. Commissioners may be reappointed, but no one may serve more than 8 years. (§1, G.L. c. 6 §223(c))
+    outcome: dropped
+    addressedBy: house
+    resolution: Dropped. Commissioners may be reappointed with no cap.
+    law: Not in the law. Each commissioner is eligible for reappointment, with no cap on total service.
+  - heading: Should the cannabis advisory board be re-created under the new commission?
+    house: "Yes. A 25-member board chaired by the commission chair: six state officials or designees including that chair, representatives of cities and towns, patients and civil liberties, and 15 governor appointees with expertise ranging from cultivation and lab science to criminal justice reform and substance use treatment. It recommends rules and advises on regulations. Current members stay until their terms end. The House's two rule reviews were to be done with the board. (§§1, 68, G.L. c. 6 §224)"
+    outcome: dropped
+    addressedBy: house
+    resolution: Dropped. The law repeals the board's current statute and creates no replacement.
+    law: Not in the law. Like both bills, the law repeals sections 76 and 77 of chapter 10.
+    why: Section 77 of chapter 10 is the current advisory board's statute. With it repealed and no new section, the law ends the board.
+  - heading: Should the commission register, license and tax hemp-derived drinks and CBD products, with the drinks sold through the alcohol system?
+    senate: No provision. The Senate called for a study of the hemp market (see the Senate questions).
+    house: Yes. Every hemp drink and consumable CBD product must be registered with the commission, with lab results. Hemp drinks are made by licensed alcohol or marijuana-product makers, move through alcohol wholesalers, and are sold to people 21 and older only by stores with an off-premises all-alcohol license. THC per container is capped at 5 mg or the marijuana-beverage limit, whichever is greater, and drinks carry a $4.05-per-gallon excise. CBD products need commission endorsements to make, wholesale or sell, and carry a 5.35% tax. Neither may be sold by mail, phone or other electronic means. (§§8, 40, 58, G.L. c. 94G §§24–33; c. 64O; c. 138 §80)
+    outcome: dropped
+    addressedBy: house
+    resolution: Dropped. The law orders a study instead.
+    law: Not in the law. The law keeps the Senate's hemp study, due December 15, 2026.
+    why: With this system gone, the act creates no new taxes.
+  - heading: Should the state ban the sale of cannabinoid products outside a list of allowed categories, with local boards of health enforcing it?
+    house: Yes. No product containing a cannabinoid may be sold unless it is a prescription drug, an ingredient the FDA recognizes as safe, licensed marijuana, a registered hemp drink or CBD product, industrial hemp, seed, or a topical hemp product. Topical products may not be marketed as intoxicating or packaged like candy. Local boards of health investigate, seize and destroy violating products, and state rules set fines. The bill also rewrites the agriculture law's definition of hemp, adding a measure that combines delta-9 THC and THCA. (§§9, 56, 66, G.L. c. 94 §§330–333; c. 128 §116)
+    outcome: dropped
+    addressedBy: house
+    resolution: Dropped.
+    law: Not in the law.
+  - heading: Should the definitions of marijuana in the drug law and the adult-use law be rewritten, and should they exclude hemp-derived products by name?
+    senate: No change to either definition.
+    house: Rewrites both definitions, in different words. Each excludes hemp, topical hemp products, consumable CBD products and hemp drinks. (§§10, 17, G.L. c. 94C §1; c. 94G §1)
+    outcome: modified
+    addressedBy: house
+    resolution: Both definitions rewritten to match each other. The House's carve-outs for CBD, hemp drinks and topicals are gone.
+    law: Both definitions rewritten in the same words, apart from one cross-reference. Marijuana covers the plant, its resin and preparations including THC. It excludes mature stalks and their products, seeds, hemp and the weight of other ingredients. There is no carve-out for CBD products, hemp drinks or topical hemp products. (§§6, 12, G.L. c. 94C §1; c. 94G §1)
+    why: The drug law (chapter 94C) and the adult-use law (chapter 94G) now define marijuana the same way.
+  - heading: How soon should the commission take applications under the new caps, and should the six-store limit phase in?
+    senate: No phase-in. The Senate's cap was 4 stores from the start.
+    house: Applications open within 12 months. No owner may hold more than 4 stores until 24 months after the act takes effect, or more than 5 until 36 months. (§64)
+    outcome: modified
+    addressedBy: house
+    resolution: Applications within 2 months. For 12 months after that, owners other than social equity businesses stop at 5 stores.
+    law: Applications open within 2 months. For the first 12 months after they open, an owner that is not a social equity business may hold no more than 5 stores. Social equity businesses are not subject to that interim limit. The 4-store step is gone. (§60)
+    why: If the commission opened applications on time, an owner that is not a social equity business could reach 6 stores about 14 months after the act took effect. Under the House bill that took 36 months.
+  - heading: Should medical licenses that are not fully integrated be reserved for social equity businesses at first, and for how long?
+    house: Yes, for 36 months from the first notice to commence operations. The commission may extend the window if its goals are unmet, or open it to craft cooperatives and certified minority-, women- and veteran-owned businesses if data show progress toward its goals and patient demand is likely to outrun supply. (§65)
+    outcome: modified
+    addressedBy: house
+    resolution: Yes, for 24 months, down from the House's 36.
+    law: The House provision with a 24-month window. The extension and early-opening rules are the same. (§61)
+  - heading: Should the commission run an online portal for anonymous complaints, and are those complaints public?
+    house: Yes. An online portal for anonymous complaints about violations, including lab misconduct and breaches of ownership limits. The commission must log and review every complaint and may act on anonymous tips. Its annual report includes data on the complaints. (§§30, 32, G.L. c. 94G §4(m))
+    outcome: modified
+    addressedBy: house
+    resolution: Created as the House wrote, with a new rule that complaint contents are not public records.
+    law: "The House portal, word for word, plus a sentence neither bill had: complaint contents are not public records. The annual report gives the number of complaints by type. (§§26, 28, G.L. c. 94G §4(m))"
+  - heading: Should the commission audit licensees' compliance with ownership and control limits?
+    house: A targeted audit of marijuana businesses and medical treatment centers within 12 months, prioritized by license type, risk and compliance history. Report within 18 months. (§63)
+    outcome: house
+    edited: Medical term updated
+    addressedBy: house
+    resolution: Yes, within 12 months, with a report at 18 months, as the House wrote.
+    law: The House text, with “medical marijuana treatment centers” changed to “medical marijuana establishments.” (§59)
+  - heading: When must the commission review its workplace safety and enforcement rules, and report?
+    house: Review rules on workplace safety, including air quality and first responder access, and on enforcement and investigation protocols by July 1, 2026, with the advisory board. Report by July 1, 2027. (§62)
+    outcome: modified
+    addressedBy: house
+    resolution: Kept, with each deadline a year later and no advisory board role.
+    law: Review by July 1, 2027 and report by July 1, 2028, without the advisory board. (§58)
+    why: The House's first deadline, July 1, 2026, fell about 10 weeks after the act was signed.
+  - heading: Should the commission have a deadline to bring its regulations in line with the act?
+    senate: No general deadline.
+    house: Yes, within 1 year. The alcoholic beverages control commission and the department of revenue get the same deadline for the House's hemp rules. (§§69–71)
+    outcome: house
+    addressedBy: house
+    resolution: One year, as the House wrote.
+    law: The House deadline for the cannabis control commission. The other two agencies' deadlines went with the hemp system. (§65)
+  - heading: Should marijuana delivery be allowed in every municipality, and can towns without retail stores opt out?
+    senate: Limited delivery to consumers is allowed in every municipality. A municipality that does not allow retail stores may request a waiver, which the commission must grant, and may then ban delivery. Waivers last up to 2 years and may be extended in 2-year steps at the commission's discretion. (§23, G.L. c. 94G §4(b)(1))
+    outcome: senate
+    edited: Moved to own clause
+    addressedBy: senate
+    resolution: Yes, as the Senate wrote. Towns that do not allow retail stores can get renewable 2-year waivers.
+    law: The Senate rule and waiver, moved into a new clause on delivery licenses. The law adds “notwithstanding section 3,” the local control section of chapter 94G. (§25, G.L. c. 94G §4(b)(2))
+    why: The waiver is open only to municipalities that do not allow retail stores. A town that allows stores has no waiver option.
+  - heading: May the commission let businesses advertise sales, discounts and loyalty programs?
+    senate: The commission may permit advertising, marketing and branding of sales, discounts and customer loyalty programs inside a marijuana business or through an opt-in email list. (§20, G.L. c. 94G §4)
+    outcome: senate
+    edited: Comma added
+    addressedBy: senate
+    resolution: Yes, inside a store or by opt-in email, as the Senate wrote.
+    law: The Senate text, with a comma added. (§21, G.L. c. 94G §4)
+  - heading: Should patients registered for medical marijuana in another state be able to buy from Massachusetts medical businesses?
+    senate: Yes. Anyone with a valid medical marijuana registration from another U.S. jurisdiction counts as a card holder, and medical businesses may sell to card holders. Three passages in G.L. c. 94I §2 switch from “qualifying patient” and “personal caregiver” to “card holder.” (§§37, 45–47, G.L. c. 94I §§1, 2)
+    house: No provision. The House's card holder definition covers only people with a registration card from the commission.
+    outcome: dropped
+    addressedBy: senate
+    resolution: Dropped. Card holders are only those with a registration card from the commission.
+    law: Not in the law. The law uses the House's card holder definition, which covers only holders of a commission-issued registration card.
+  - heading: Should the medical marijuana law state that the commission may suspend or revoke the license of a medical business that sells illegally?
+    senate: Yes. The commission may revoke or suspend the medical license of a licensee who sells medical marijuana illegally. (§49, G.L. c. 94I §2(f))
+    outcome: dropped
+    addressedBy: senate
+    resolution: Dropped.
+    law: Not in the law.
+  - heading: Should the commission study how to regulate hemp-derived cannabinoid products, and by when?
+    senate: "The commission consults medical experts and state agencies and recommends how to regulate the hemp-derived cannabinoid market: federal changes, licensing, testing, age limits, retail sales and taxes, and other states' approaches. Due September 15, 2026. (§62)"
+    house: No study. The House wrote rules for hemp drinks, CBD products and other cannabinoid products directly (see the House questions).
+    outcome: modified
+    addressedBy: senate
+    resolution: Yes, by December 15, 2026, three months after the Senate's date.
+    law: The Senate study with the same topics. Local boards of public health join the consultation list and medical experts leave it. Due December 15, 2026. (§64)
+  - heading: Should the commission study how current excise tax rates affect the industry, and by when?
+    senate: A study of how the excise tax affects legal demand, the illicit market, business closures and businesses eligible for the Cannabis Social Equity Trust Fund, compared with other states. Due January 1, 2027. (§60)
+    outcome: modified
+    addressedBy: senate
+    resolution: "Yes, in the Senate's words, due a year later: January 1, 2028."
+    law: The Senate text, word for word, except the due date moves to January 1, 2028. (§57)
+  - heading: What happens to the old commission's property, contracts, staff and pending matters?
+    senate: Property, contracts, leases and obligations stay with the commission. Obligations under collective bargaining agreements expire on the agreements' stated end dates. (§61)
+    house: No transfer provision. The House ended sitting commissioners' terms but said nothing about property, contracts or staff.
+    outcome: modified
+    addressedBy: senate
+    resolution: The Senate's property and contract rules, plus new protections for staff, pending cases and union contracts.
+    law: The Senate's property and contract language, recast as a transfer from the old commission to the new one. New text, subject to appropriation, keeps all employees on staff without loss of pay, seniority, civil service status or union representation, and says collective bargaining agreements continue in effect. Pending proceedings and existing approvals stay in force. The executive director stays on until the chair changes the delegated authority. Management positions may still be abolished. The Senate's clause on agreements expiring is gone. (§63)
+  - heading: When does the act take effect, and does any part wait?
+    senate: No emergency preamble and no delayed start for any section.
+    house: No emergency preamble and no delayed start for any section.
+    outcome: new
+    addressedBy: neither
+    resolution: On signing, as an emergency law, except the credit rules, which start January 1, 2028.
+    law: An emergency preamble makes the act take effect on signing, April 19, 2026. The credit and delinquent-list rules in section 37 wait until January 1, 2028. Neither bill contained either provision. (preamble, §66)
+    why: Every deadline the law counts from its effective date, such as the 30 days to appoint commissioners and the 2 months to open applications, ran from the day of signing. Licensees have more than 20 months before the credit rules apply.
+similarities:
+  - heading: Commission rebuilt as a three-member body in chapter 6
+    body: "Both bills repealed sections 76 and 77 of chapter 10 and set up the commission in G.L. c. 6 §223: a chair whose term runs with the governor's, 4-year terms for the other two, a 2-member quorum, residency and party limits, and state finance and payroll rules. Same substance in both, apart from the House's 8-year limit. Appointments, pay and the enforcement wall differed and are listed above."
+  - heading: Sitting commissioners' terms end; new appointments within 30 days
+    body: The House limited this to commissioners serving as of May 28, 2025. The law, like the Senate, covers all sitting commissioners. The Senate's 2-year first term for the attorney general's appointee fell with that seat.
+  - heading: Possession and gifting limit rises to 2 ounces
+    body: The commission sets equivalent amounts for other products, considering potency and form. Both bills measured the limit by the dry weight of flower; the law says “2 ounces or less of marijuana or the equivalent amount of marijuana products” and lists the conversion standards among the commission's rule-making duties. Matching changes to penalty thresholds in G.L. c. 94C §§32L, 32M and 34 and c. 94G §13 were the same in both bills.
+  - heading: “Medical marijuana treatment center” renamed “medical marijuana establishment”
+    body: Conforming changes across G.L. chapters 62, 63, 64N, 94G and 94I. Same in both bills.
+  - heading: Host community agreements and equity rules for social equity businesses
+    body: The commission sets procedures, a model agreement and best practices for municipalities negotiating with social equity businesses, and may limit the total number of licenses (G.L. c. 94G §4(a)). Parallel rules for medical businesses, including required regulations to bring people from communities harmed by prohibition into the medical industry, go in c. 94I §7. Same in both bills; the House's extra clauses on testing hemp products went with its hemp system.
+  - heading: Selling a business to its employees
+    body: The commission writes procedures for selling a marijuana or medical business to its employees through an employee stock ownership plan, and the plan's trustee is exempt from the ownership caps. Same in both bills; the law uses the Senate's federal citation in §16(b).
+  - heading: Social equity business definition covers medical businesses
+    body: A marijuana establishment or medical marijuana establishment with at least 51% ownership by people eligible for the social equity program, or that qualifies as an economic empowerment priority applicant. Same in both bills.
+  - heading: Medical program registration rules
+    body: Definitions of registration card, 14-day temporary registration, cultivation registration and locked area, and the basic terms of the medical program in G.L. c. 94I §2(a). Same substance in both bills; the law uses the House's wording.

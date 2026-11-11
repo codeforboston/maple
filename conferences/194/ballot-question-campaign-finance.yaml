@@ -1,0 +1,55 @@
+id: ballot-question-campaign-finance
+name: Ballot Question Finance
+court: 194
+title: "An Act improving campaign finance reporting for statewide ballot questions "
+gist: "Both bills set new reporting rules for statewide ballot question campaigns: monthly, then twice-monthly, filings, 72-hour reports of late contributions of $500 or more, itemized in-kind contributions and debts, and a ban on paying petition circulators by the signature. They differ on whether money spent to get a question onto the ballot counts as campaign activity (Senate only), and on post-election compliance reports, voter notices and a commission on the initiative process (House only)."
+senateBillId: S2916
+houseBillId: H5558
+canonicalBillId: S2916
+status: appointed
+conferees:
+  - memberCode: SND0
+    branch: Senate
+    chair: true
+  - memberCode: JRO0
+    branch: Senate
+  - memberCode: RCF0
+    branch: Senate
+  - memberCode: djh1
+    branch: House
+    chair: true
+  - memberCode: AHP1
+    branch: House
+  - memberCode: PKF1
+    branch: House
+hearingIds:
+  - hearing-5765
+differences:
+  - heading: Should money spent to get a question onto the ballot, or to keep it off, count as campaign spending that must be reported?
+    senate: Yes. Supporting or opposing a ballot question includes "actions to place or oppose placing a question on a statewide election ballot," but not lobbying the Legislature. The state campaign finance office (OCPF) decides by regulation what counts, including polling, research, legal and consulting work. This spending does not have to be reported until the Secretary of the Commonwealth releases the petition forms. (§3, c.55 §1)
+  - heading: Should a special commission study the ballot question process and recommend changes, including to the state constitution?
+    house: Yes. A 13-member commission, led by the chairs of the Legislature's election laws committee, would include the Secretary of the Commonwealth, the Attorney General, a retired Supreme Judicial Court justice, a Common Cause Massachusetts representative and a city or town clerk. It would study the Attorney General's review of proposed questions, petition summaries, signature requirements (including paid signature gathering) and deadlines. Its report and draft legislation are due Dec. 31, 2027. (§§14, 16)
+  - heading: After each election, should state officials certify whether ballot campaigns followed the rules?
+    house: Yes. Within 60 days after the state election, the Secretary of the Commonwealth certifies whether each petition campaign followed the ban on paying by the signature, and OCPF certifies whether each ballot question committee followed the finance rules. OCPF files an update within 30 days of referring any case to the Attorney General. The reports go to the Legislature and are public. (§2, new c.53 §22A½(c); §5, c.55 §3)
+  - heading: Should OCPF have a deadline to send evidence of ballot question violations to the Attorney General?
+    house: 'Yes: "not later than 30 days before or 3 years after the relevant election," or within 3 years of the violation if it isn''t tied to an election. (§4, c.55 §3)'
+  - heading: Should petition forms and voter materials tell people where to find the campaigns' finance reports?
+    house: Yes. Petition forms must direct signers to OCPF's website for the reports of committees for and against the petition, and a similar notice for voters is added under G.L. c.54 §53. (§1, c.53 §22A; §2A, c.54 §53)
+  - heading: Should the law define "statewide ballot question" and "statewide ballot question committee"?
+    senate: No. The Senate bill uses both terms without defining them.
+    house: Yes. A statewide ballot question is an initiative, referendum or constitutional amendment put to voters at a state election. A statewide ballot question committee is a political committee that raises or spends money for or against one. (§3, c.55 §1)
+similarities:
+  - heading: Must petition forms say when the person collecting signatures is paid?
+    body: Yes, with a clear notice in a form the Secretary of the Commonwealth sets.
+  - heading: Can people collecting signatures be paid per signature?
+    body: No. Nothing of value, including bonuses, may be tied to the number of signatures. Fines run from $100 to $10,000, and each signature collected this way is a separate violation.
+  - heading: How often must ballot question campaigns report to OCPF?
+    body: Monthly by the 5th until 60 days before the election, then on the 5th and 20th of each month; a report by Nov. 20 after the election; then every Jan. 20 until debts are paid.
+  - heading: Must large contributions received just before the election be reported quickly?
+    body: Yes. Contributions of $500 or more received between 18 days and 72 hours before the election must be reported within 72 hours of being deposited.
+  - heading: Must donated goods and services and new debts be listed?
+    body: Yes. In-kind contributions over $50 and new debts must be itemized, with names, addresses and purpose.
+  - heading: What must a campaign's first report under the new rules cover?
+    body: Everything since its last report, or since Jan. 1, 2026 for a committee that has never filed.
+  - heading: When would the new rules start?
+    body: 30 days after the law takes effect.

@@ -1,0 +1,256 @@
+id: protect-act
+name: PROTECT Act
+court: 194
+title: An Act promoting rule of law, oversight, trust and equal constitutional treatment
+senateBillId: S3086
+houseBillId: H5316
+canonicalBillId: H5316
+status: enacted
+reportBillId: H5620
+conferees:
+  - memberCode: DFC1
+    branch: House
+    chair: true
+  - memberCode: AXV1
+    branch: House
+  - memberCode: MSV1
+    branch: House
+  - memberCode: CFF0
+    branch: Senate
+    chair: true
+  - memberCode: PMP0
+    branch: Senate
+  - memberCode: RCF0
+    branch: Senate
+hearingIds:
+  - hearing-5702
+  - hearing-5711
+differences:
+  - heading: Do the new limits on immigration questions and cooperation bind court employees as well as police?
+    senate: Yes. The limits also bind employees of the trial court, the appeals court and the Supreme Judicial Court while they act under color of law. (§7, §64(b))
+    house: No. The limits bind law enforcement officers and employees of law enforcement agencies. (§3, G.L. c. 147 §64(b)(2))
+    outcome: senate
+    addressedBy: both
+    resolution: Yes. The law adds trial court, appeals court and Supreme Judicial Court employees, as the Senate wrote.
+    law: The Senate's coverage, word for word. (§7, §64(b)(2))
+  - heading: When may police ask about a person's immigration or citizenship status, and may they record it?
+    senate: The main rule bars asking about status and bars recording or maintaining it, with the same exceptions for law, warrants, court orders and treaties. A separate savings clause lets officers request status information when they have a case-specific reason to believe it is directly material to a human trafficking offense (G.L. c. 265 §§50–52) or needed to prove an element of a state felony. (§7, §64(b), (d)(i)(F))
+    house: Officers may not ask unless law, a judicial warrant, court order or treaty requires it, or the officer has a case-specific reason, written into the incident report or case file, to believe status is directly material to an element of a specific state crime under investigation. Status does not count as directly material for judging credibility or cooperation. Officers may not record or maintain status information except as required or documented that way. (§3, G.L. c. 147 §64(b)(1)–(2))
+    outcome: combined
+    addressedBy: both
+    resolution: "The House's rule and documentation duty, limited to the Senate's offenses: human trafficking or a state felony."
+    law: "The House's structure: officers may ask only with a case-specific reason written into the file, and the House's definition of “directly material” stays. The offenses that can justify a question come from the Senate: human trafficking offenses or a state felony under investigation. The bar on recording status no longer says “or maintain,” words both bills used. (§7, §64(b)(2)(i)–(ii))"
+    why: Under the House bill, any state crime under investigation could justify a question. Under the law, only trafficking offenses and felonies can.
+  - heading: Which forms of participation in federal civil immigration enforcement are barred?
+    senate: "Five bars: using or allowing use of state or local resources for, or conducting or joining, federal civil immigration enforcement; stops, arrests or searches based on actual or perceived status; questioning someone for civil immigration enforcement; holding someone solely on an immigration detainer past the time they would be released; and moving someone into immigration custody without a judicial warrant or court order. The resource and transfer bars except the permitted 287(g) agreements and other valid intergovernmental service agreements. “Immigration detainer” includes federal form I-247A. (§7, §64(b)(iii)–(vii))"
+    house: "One bar on this point: using state or local resources for a federal civil immigration enforcement action, unless law, a judicial warrant, court order or treaty requires it. (§3, G.L. c. 147 §64(b)(2)(iii))"
+    outcome: senate
+    edited: Cross-reference reworded
+    addressedBy: both
+    resolution: The Senate's longer list, including the bar on holding people solely on an immigration detainer.
+    law: The Senate's five bars and its detainer definition. The 287(g) exception cites the federal statute where the Senate cited subsection (c). (§7, §64(b)(2)(iii), (v))
+    why: The House bill did not mention immigration detainers. The law bars holding a person on a detainer alone once they would otherwise be released, unless law, a judicial warrant, court order or treaty requires it.
+  - heading: When may police and court staff give federal immigration authorities personal information or notice of a person's release?
+    senate: Officers may not knowingly give federal immigration authorities nonpublic personal information or advance notice of a person's release, custody status or upcoming court appearance. They may answer a written request received in the last 30 days that names a specific person, with written approval from an on-duty officer in charge, or written documentation when that approval is impracticable. Nonpublic personal information means data held by police or courts. (§7, §64(b)(viii))
+    house: Officers may not initiate contact with federal authorities to give nonpublic personal information or advance notice of a person's release date. A proviso allows the release date of a person's completed sentence to be provided; the clause refers to convictions under chapter 265 and excepts a list of its sections. Nonpublic personal information means data held by police or a political subdivision. (§3, G.L. c. 147 §64(b)(2)(iv))
+    outcome: combined
+    addressedBy: both
+    resolution: The Senate's framework, plus release notice for a list of offenses that neither bill contained.
+    law: "The Senate's structure: the “knowingly provide” bar, custody status and court dates, the 30-day written request and officer-in-charge approval. Two additions appear in neither bill. Notice of release at the end of a sentence may be given for a listed set of offenses: violent felonies causing serious bodily injury, sex offenses, serious drug offenses involving class A or B drugs, firearms offenses for which a person may be held or released on conditions as dangerous before trial, and abuse offenses under G.L. c. 209A. The other: agreements under 287(g) or other valid intergovernmental service agreements are an exception. The House's general allowance for completed-sentence release dates is gone. Nonpublic personal information covers data held by police, courts or political subdivisions. (§7, §64(b)(2)(iv))"
+    why: The House let the release date of any completed sentence be shared. The law allows release notice at the end of a sentence only for the listed offenses, unless another exception applies.
+  - heading: Who approves changes to the Department of Correction's existing 287(g) agreement, and where do federal reimbursements under it go?
+    senate: The same approval by the executive office of public safety and security. Federal payments reimbursing the department's costs under the agreement go to the office for refugees and immigrants, which distributes them to designated nonprofits to increase access to legal representation for immigrants and refugees. (§7, §64(c))
+    house: No law enforcement agency or political subdivision may sign, renew or expand a 287(g) agreement, except that the Department of Correction may keep the one in effect on June 8, 2020. To renew or expand it, or sign a new one, the department applies to the executive office of public safety and security. No provision on reimbursements. (§3, G.L. c. 147 §64(c)(1))
+    outcome: modified
+    addressedBy: both
+    resolution: The governor approves, and reimbursements go to the General Fund. Neither bill named the governor or the General Fund.
+    law: The department applies to the governor. Federal reimbursements go to the General Fund. (§7, §64(c)(1))
+  - heading: Which activities do the limits expressly leave untouched, and how are they enforced?
+    senate: "A longer list. Officers may still investigate and enforce criminal law when not acting for civil immigration enforcement, including booking information, fingerprints, joint investigations, criminal transfers and requests to return someone for prosecution. Also listed: de-escalation, U and T visa certification, consular notice, firearm licensing, §§1373 and 1644, and agreements to provide detention services for people in federal custody. The attorney general must also set up a complaint process. The section does not require or permit an agency to give information or help to federal immigration authorities contrary to local law or the agency's written policy. (§7, §64(d)–(e))"
+    house: "Two items: sharing citizenship or immigration status as described in 8 U.S.C. §§1373 and 1644, and cooperating with federal authorities on criminal investigations and prosecutions, including judicial warrants, subpoenas and court orders. The attorney general may sue to enforce. No private right of action. (§3, G.L. c. 147 §64(d)–(e))"
+    outcome: senate
+    edited: Two list items removed
+    addressedBy: both
+    resolution: The Senate's longer list, its complaint process and its rule that stricter local policies stand.
+    law: The Senate's list and enforcement terms. The status-question item moved into the main rule (see above). The separate item for complying with a judicial warrant or court order was cut; each bar in the main rule already excepts warrants and court orders. (§7, §64(d)–(e))
+  - heading: How long after the act takes effect do the limits in G.L. c. 147 §64 apply?
+    senate: 30 days. (§21)
+    house: 180 days. (§11)
+    outcome: senate
+    addressedBy: both
+    resolution: "30 days, as the Senate wrote: Sept. 4, 2026."
+    law: 30 days. The law took effect on signing, Aug. 5, 2026, so the limits applied from Sept. 4, 2026. (§24)
+  - heading: Does the limit on civil arrests at courthouses cover only the building, or the grounds around it too?
+    senate: The interior plus its curtilage, as the court determines, which may include walkways, driveways, alleys or sidewalks on the grounds of, next to or directly abutting the courthouse, or connecting a garage or parking lot to it. (§12, §1)
+    house: The interior of any facility or property where a state court conducts business. (§5, G.L. c. 221D §1)
+    outcome: modified
+    addressedBy: both
+    resolution: The building and its curtilage, defined by a list neither bill used.
+    law: The interior plus curtilage, which includes lawns, plazas, courtyards, steps, ramps, sidewalks and walkways, any garage, driveway or parking lot owned or leased by the judicial branch next to a courthouse, and walkways linking the courthouse to such a garage or lot. The list is not exhaustive. The court no longer determines the curtilage, and alleys are not listed. (§12, §1)
+  - heading: Should a civil arrest inside a courtroom ever be allowed?
+    senate: Never. A flat ban. (§12, §2(b))
+    house: Only in extraordinary circumstances, as the designated judicial official determines. (§5, G.L. c. 221D §2(b))
+    outcome: senate
+    addressedBy: both
+    resolution: Never, as the Senate wrote.
+    law: The Senate's flat ban. (§12, §2(b))
+  - heading: Which agencies may sign certifications for crime and trafficking victims seeking U or T visas?
+    senate: Any law enforcement agency, prosecutor or other state or local entity with authority to detect, investigate or prosecute trafficking or other qualifying crimes, plus any state or local agency the secretary of public safety designates by regulation. (§15, §1)
+    house: Any law enforcement agency, any district attorney and the attorney general. (§6, G.L. c. 258F §1)
+    outcome: modified
+    addressedBy: both
+    resolution: The Senate's functional definition, without its route for adding agencies by regulation.
+    law: The Senate's definition, minus the secretary's power to designate more agencies. (§13, §1)
+  - heading: When can wage theft, unsafe work, housing violations or labor exploitation paired with threats count as qualifying criminal activity?
+    senate: The same sentence as the House. (§15, §2)
+    house: When accompanied by threats of deportation, intimidation or retaliation, and the alleged conduct is “reasonably consistent with” extortion, coercion, involuntary servitude, peonage, obstruction of justice, witness intimidation or substantially similar state or federal offenses. (§6, G.L. c. 258F §2)
+    outcome: modified
+    addressedBy: both
+    resolution: "A new test in words neither bill used: the offenses' nature and elements must be substantially similar."
+    law: The “nature and elements” of the offenses must be “substantially similar to” the listed crimes or other criminal activity described in the federal U visa provision. Coercion is no longer named. The definition of qualifying criminal activity is also reordered so that “substantially similar” state offenses attach to the U visa list. (§13, §§1–2)
+    why: Both chambers passed the same sentence, which asked whether the conduct was consistent with the listed crimes. The law instead compares the elements of the offenses.
+  - heading: How long does a certifying agency have to respond to a U or T visa certification request?
+    senate: 60 days. (§15, §4(a))
+    house: 45 days. Both bills require a response within 14 business days for applicants in removal proceedings, with an immigration court hearing within 45 days, or with a derivative beneficiary who will age out within 45 days. (§6, G.L. c. 258F §4(a))
+    outcome: house
+    addressedBy: both
+    resolution: 45 days, as the House wrote.
+    law: 45 days. (§13, §4(a))
+  - heading: Who is barred from reporting a person to immigration authorities in retaliation for seeking certification or reporting a crime?
+    senate: The same sentence as the House. (§15, §5(b))
+    house: No state or local employee may report, or threaten to report, a person to federal immigration authorities in retaliation for seeking certification, reporting a crime, joining an investigation, filing a labor or civil rights complaint or cooperating with a proceeding. (§6, G.L. c. 258F §5(b))
+    outcome: modified
+    addressedBy: both
+    resolution: The law names “state or local employer” where both bills said “employee.”
+    law: The same bar, applied to a “state or local employer.” Neither chamber passed that word. (§13, §5(b))
+    why: The conference report, H.5620, also says “employer,” so the word is in the enacted text and not a slip on the session law page. As written, the bar names employers rather than the state and local employees both chambers named.
+  - heading: Should the governor be able to limit civil immigration enforcement in nonpublic areas of state property and publish guidelines, and how broadly is that enforcement defined?
+    senate: No provision. The Senate's child care, school and health care sections define “civil law enforcement” in the words the law uses here.
+    house: Yes. Unless law or a state or federally funded program requires otherwise, the governor may prohibit or limit civil immigration enforcement in nonpublic areas of state property, excluding courthouses. Administration and finance writes rules within 190 days, with temporary guidelines within 30. The governor, consulting the attorney general, publishes multilingual guidelines for state agencies, private entities, police and school districts. The term covers efforts to enforce federal civil immigration law. (§§1, 8–9, G.L. c. 6 §§223–225)
+    outcome: modified
+    addressedBy: house
+    resolution: Kept from the House. The defined term now covers enforcement of any civil law.
+    law: "The House sections, renumbered, with the same deadlines. The definition changes: “civil immigration enforcement” now means efforts to enforce civil law, including federal civil immigration law. That matches, word for word, the Senate's definition of “civil law enforcement” for child care sites. (§§1, 17–18, G.L. c. 6 §§224–226)"
+    why: The governor's power over nonpublic areas of state property, and the subject of the guidelines, now extend to civil enforcement of any kind, including immigration.
+  - heading: What must state and county correctional facilities, houses of correction and prerelease centers provide so detained people can reach lawyers and communicate?
+    house: Facilities give intake notices in the person's language and ensure confidential attorney calls. A phone line lets the lawyer of record make at least one confidential call a day, or get a callback within 24 hours. Facilities keep a record of each detained person, updated within 6 hours of intake or transfer, for the lawyer of record and a designated contact. They provide competent interpreter services for intake, medical, mental health, disciplinary, legal and grievance matters. The attorney general enforces. (§2, G.L. c. 127 §87B)
+    outcome: modified
+    addressedBy: house
+    resolution: Kept and expanded, with lawyer access tied to a new definition of “verified legal counsel.”
+    law: The House section with changes neither bill made. The phone line and the record go to “verified legal counsel,” defined as any attorney licensed and in good standing in the United States; the House named the lawyer of record. Facilities must also provide free, regular and reasonable video conferencing for legal meetings. The record must be electronic and cover legal mail and documents. Interpreter services become “meaningful language access,” a phrase the law does not define. (§6, G.L. c. 127 §87B)
+    why: The law still defines “competent interpreter services.” The section no longer uses the term.
+  - heading: Must facilities get detained people to court hearings and government appointments?
+    house: Yes. Each facility provides transportation or working remote access to mandatory government appointments and any other court proceedings. (§2, G.L. c. 127 §87B(h)(2))
+    outcome: modified
+    addressedBy: house
+    resolution: A new, conditional duty for court-ordered hearings when ICE authorizes the transport.
+    law: "In words neither bill used, facilities provide transportation within Massachusetts or remote access for court-ordered hearings and proceedings when ICE has authorized the facility and the ICE transportation team to provide it. The paragraph does not alter existing duties for hearings, government appointments or proceedings unrelated to immigration enforcement. New: facilities document compliance and promptly tell the lawyer of record about appointments rescheduled or missed for facility reasons. (§6, §87B(h)(2)–(3))"
+    why: Under the House bill the duty did not depend on federal authorization. Under the law, the new duty applies when ICE has given it.
+  - heading: Should other law enforcement agencies be able to seek short-term 287(g) agreements limited to criminal matters?
+    senate: No provision. Only the Department of Correction's existing agreement was allowed.
+    house: Yes. An agency may apply to the secretary of public safety and security for an agreement of up to 12 months, limited to executing criminal warrants or criminal process, restricted to criminal public safety purposes and barred from authorizing civil immigration enforcement. It requires an imminent public safety interest, public notice and comment, a published legal analysis by the attorney general, no automatic renewal and quarterly public reports. (§3, G.L. c. 147 §64(c)(2))
+    outcome: modified
+    addressedBy: house
+    resolution: Kept from the House. The governor decides, and agreements may not authorize enforcement of Title 8.
+    law: Kept with two changes in words neither bill used. The governor decides in place of the secretary. The agreement is restricted to violations of criminal law and may not authorize enforcement of Title 8 of the U.S. Code; the House barred civil immigration enforcement. (§7, §64(c)(2))
+    why: Title 8, the federal immigration title of the U.S. Code, contains criminal provisions as well as civil ones. The law's bar names the whole title.
+  - heading: Should a person's immigration situation be a factor in bail decisions?
+    house: Yes. Adds “the likelihood of imminent deportation” to the factors in the bail statute. (§7, G.L. c. 276 §58)
+    outcome: modified
+    addressedBy: house
+    resolution: Yes. A final removal order counts, under conditions neither bill set.
+    law: "A different factor, placed elsewhere in the statute: whether a final order of removal has been entered. It applies only if the charge is a state felony, all appeals are exhausted or waived, no stay or other action affecting removal has been sought or entered, and the federal government has begun active execution of the order. (§14, G.L. c. 276 §58)"
+  - heading: Should state law let people sue anyone who, acting under color of law, deprives them of federal constitutional rights?
+    senate: Yes. Anyone acting under color of the law of any state, territory, the District of Columbia or the United States who deprives a person of rights secured by the U.S. Constitution is liable to the injured party. Defenses available under 42 U.S.C. §1983, including qualified immunity, apply to the same extent. Winning plaintiffs recover costs and reasonable attorneys' fees. Plaintiffs must notify the attorney general when they file. (§1, G.L. c. 12 §11I 5/6)
+    outcome: senate
+    edited: Grammar fixes
+    addressedBy: senate
+    resolution: Yes, as the Senate wrote, with grammar fixes.
+    law: The Senate text. “Must” becomes “shall,” with two other grammar fixes. (§2, G.L. c. 12 §11I 5/6)
+    why: The text covers people acting under color of federal law as well as state law.
+  - heading: Should acts barred by the federal laws on troops at the polls and armed interference in elections also be civil violations of state law?
+    senate: Yes. Acts barred by 18 U.S.C. §§592 and 593 by a federal, state or local officer are civil violations of state law. Only the attorney general may enforce, by suing for declaratory, injunctive or other equitable relief. Placed in the elections chapter. (§4, G.L. c. 54 §65A)
+    outcome: modified
+    addressedBy: senate
+    resolution: Yes, unless otherwise authorized by law, with the governor able to refer cases.
+    law: Kept with changes in words the Senate did not use. Such acts are civil violations “unless otherwise authorized by law.” The governor may refer them to the attorney general, who keeps exclusive authority and may sue with or without a referral. Moved to chapter 6, beside the act's other new sections on the governor's powers. (§1, G.L. c. 6 §227)
+  - heading: Should arrests for civil law enforcement at child care programs require a judicial warrant, and must programs adopt policies?
+    senate: Yes. Unless law or a state or federally funded program requires otherwise, no arrests for civil law enforcement on the premises of licensed or state-funded child care centers, family child care homes, school-age programs or group care facilities without a judicial warrant or order. Each must adopt a policy naming a contact person and setting procedures for documenting interactions and instructing staff. The early education department publishes model policies and a model training. A person may seek habeas corpus, and the attorney general may sue. Centers, family homes and school-age programs must have policies in effect by Sept. 1, 2026, or the first day of the 2026–27 school year if earlier. (§§2, 17, G.L. c. 15D §23)
+    outcome: modified
+    addressedBy: senate
+    resolution: Yes, as the Senate wrote. Group care facilities are added to the policy deadline.
+    law: The Senate rules with minor wording edits. The policy deadline also names group care facilities, which the policy requirement already covered. (§§3, 19, G.L. c. 15D §23)
+  - heading: Should arrests for civil law enforcement on school grounds require a judicial warrant, and what must schools plan?
+    senate: Yes, with the same exceptions. DESE, consulting the attorney general and named school groups, publishes guidance and model policies covering designated contacts, documenting interactions, notifying parents (or students 18 or older or emancipated) when agents seek a student or student records, notifying the school community when agents are confirmed on site, and updating emergency contacts. DESE also develops a model training. Every school must have a written emergency response plan. Districts, charter schools and collaborative schools must have policies in effect by Sept. 1, 2026, or the first day of the 2026–27 school year if earlier. (§§5, 18, G.L. c. 71 §102)
+    house: No limit on arrests at schools. The House's multilingual guidelines for school districts are covered under state buildings and guidelines.
+    outcome: senate
+    edited: Wording cleanup
+    addressedBy: senate
+    resolution: Yes, as the Senate wrote.
+    law: The Senate text with small wording edits. (§§4, 20, G.L. c. 71 §102)
+  - heading: Should arrests for civil law enforcement in nonpublic areas of health care settings require a judicial warrant?
+    senate: Yes. No arrests for civil law enforcement without a judicial warrant in areas a covered care provider designates as nonpublic, with the same exceptions. Covered providers include hospitals, health centers, clinics, nursing homes, physician and certain nurse practices, and disability service providers. Licensed or state-funded providers, and physician practices with at least $500 million in annual patient service revenue, must adopt policies that designate nonpublic areas; others may. A model policy is due in 30 days and provider policies in 60. Staff acting in good faith are protected from discipline, retaliation and liability. (§§6, 19–20, G.L. c. 111 §250)
+    outcome: senate
+    edited: Defined term corrected
+    addressedBy: senate
+    resolution: Yes, as the Senate wrote, renumbered as §251.
+    law: The Senate text. In the definition, the exception for giving medical care to people in custody now refers to “civil law enforcement,” the term the section uses; the Senate's version said “civil immigration enforcement.” (§§5, 21–22, G.L. c. 111 §251)
+  - heading: Should an adverse immigration action against a parent count, alongside death, in the law on a parent's appointment of a guardian for a minor?
+    senate: Yes. Adds “an adverse immigration action against the parent or guardian” after “death” in §5-202(d). The term “shall mean” detention or custody by Homeland Security, departure under a removal or similar order or voluntary departure, or denial of admission. If both parents are dead, incapacitated or subject to such an action, the last parent's appointment has priority. (§§9–11, G.L. c. 190B §5-202)
+    outcome: modified
+    addressedBy: senate
+    resolution: Yes. The law makes the definition of “adverse immigration action” open-ended.
+    law: The Senate's change, with the definition made open-ended (“shall include, but not be limited to”) and “custody” changed to “confinement.” The law also rewrites all of subsection (f), which now begins by stating that a parent's appointment of a guardian does not supersede either parent's parental rights. (§§9–11, G.L. c. 190B §5-202)
+  - heading: How are the U and T visa certification rules enforced?
+    senate: The attorney general issues guidance on submitting complaints and may file a complaint against a certifying entity for declaratory, injunctive or other equitable relief. There is no private right of action. Other remedies remain, including under chapter 249. (§15, G.L. c. 258F §7)
+    house: No enforcement provision.
+    outcome: senate
+    addressedBy: senate
+    resolution: The attorney general runs a complaint process and may sue, as the Senate wrote.
+    law: The Senate text, word for word. (§13, G.L. c. 258F §7)
+  - heading: Should the state create a commission to study immigration matters, and who appoints its members?
+    senate: Yes. A 21-member commission for 3 years, extendable by 3 more. It studies state laws, legal defense funding, data sharing, use of state facilities including airports, the 2030 census and safe spaces. It meets at least 4 times a year, holds an annual public hearing and reports annually. Appointing bodies include the office for refugees and immigrants and Neighbor to Neighbor Massachusetts Education Fund. (§16)
+    outcome: modified
+    addressedBy: senate
+    resolution: Created. Two appointing organizations changed.
+    law: The Senate commission and duties. La Colaborativa and the New American Association of Massachusetts appoint members in place of the office for refugees and immigrants and Neighbor to Neighbor Massachusetts Education Fund. Membership still totals 21. (§15)
+  - heading: Should people be shielded from civil arrest in a place of worship during a religious service?
+    senate: Yes. A person is privileged from civil arrest in any place of worship during a religious service. Civil arrest means an arrest not made solely or mainly to prepare a criminal prosecution. A person may seek habeas corpus, and the attorney general may sue. (§13, G.L. c. 233 §20B1/2)
+    outcome: dropped
+    addressedBy: senate
+    resolution: Dropped.
+    law: Not in the law.
+  - heading: Should military forces from other states need the governor's permission to enter Massachusetts for military duty?
+    senate: Yes, unless the force has been called into active federal service and is acting under the lawful authority of the president. The National Guard, with the governor's approval, issues guidance. (§3, G.L. c. 33 §140)
+    outcome: dropped
+    addressedBy: senate
+    resolution: Dropped.
+    law: Not in the law.
+  - heading: Should public employers be able to cover employees' losses from civil rights claims and federal investigations, including above $1 million?
+    senate: Yes. Rewrites the first paragraph of G.L. c. 258 §9. Public employers may indemnify employees, and the state must indemnify constitutional officers, up to $1 million for intentional torts or civil rights violations within the scope of their duties. Coverage above $1 million is allowed only for costs arising directly from a federal investigation, inquiry or claim, with approval from the employer, the attorney general and the secretary of administration and finance. Employees other than constitutional officers who acted with gross negligence or willfully or maliciously are excluded. (§14, G.L. c. 258 §9)
+    outcome: dropped
+    addressedBy: senate
+    resolution: Dropped. The act does not amend G.L. c. 258 §9.
+    law: Not in the law.
+  - heading: May the state auditor audit sheriffs' agreements with ICE and privately run immigration detention facilities?
+    outcome: new
+    addressedBy: neither
+    resolution: Yes. A new section neither bill contained.
+    law: The auditor may audit sheriffs' accounts and activities under intergovernmental service agreements with ICE. The auditor may also audit privately run immigration detention facilities operating under a municipal special permit and an ICE contract, to the extent they use or affect public property, infrastructure, services or assistance. Audits cover compliance with permits and laws, health and safety, conditions of confinement, staffing, procurement and use of public resources. The attorney general may enforce the section in court. A public report is due by Jan. 1, 2027. The section does not let the auditor regulate or interfere with federal immigration enforcement. (§16)
+similarities:
+  - heading: No new 287(g) agreements; Correction keeps its 2020 agreement
+    body: G.L. c. 147 §64(c)(1). Both bills barred law enforcement agencies and political subdivisions from signing, renewing or expanding 287(g) agreements and let the Department of Correction keep the agreement in effect on June 8, 2020. Who approves changes, and where reimbursements go, are listed above.
+  - heading: Civil arrests at courthouses need a judicial warrant shown to a designated judge
+    body: G.L. c. 221D §2(a). The law uses the House's definition of a judicial warrant (issued by a local, state or federal judge or magistrate, authorizing an arrest) and the Senate's “designated judge, justice or judicial magistrate.”
+  - heading: An unlawful courthouse arrest is false imprisonment, with habeas corpus and attorney general enforcement
+    body: G.L. c. 221D §§4–5. The law adds the Senate's cross-reference to G.L. c. 263 §3 and its wording that other remedies under state or federal law remain.
+  - heading: Trial court reports each year on warrants presented at courthouses
+    body: G.L. c. 221D §3. Due July 1 each year. The law sends the report to the two joint committees; both bills named their chairs.
+  - heading: Employers notify workers within 48 hours of an ICE I-9 inspection notice
+    body: G.L. c. 149 §19C. The law uses the House's “each employer” and drops the Senate's “for the production of.”
+  - heading: U and T visa certification policies, with no charges, conviction or fee required
+    body: G.L. c. 258F §§2–3, 5(a). Same in both bills, including a 14-business-day response in the cases the bills list and a rebuttable presumption that the victim is helpful.
+  - heading: Police may ask victims and witnesses about status for certification
+    body: G.L. c. 258F §8. Same in both bills; it applies notwithstanding the limits in G.L. c. 147 §64(b).
+  - heading: Attorney general enforces the police limits, with no private right of action
+    body: G.L. c. 147 §64(e)(1)–(3). Same court orders available in both bills. The Senate's added complaint process is listed above.

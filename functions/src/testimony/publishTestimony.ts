@@ -1,25 +1,31 @@
-import { DocumentReference, DocumentSnapshot } from "@google-cloud/firestore"
+import {
+  DocumentData,
+  DocumentReference,
+  DocumentSnapshot
+} from "@google-cloud/firestore"
 import { onCall } from "firebase-functions/v2/https"
 import type { CallableRequest } from "firebase-functions/v2/https"
 import * as logger from "firebase-functions/logger"
+import { pick } from "lodash"
 import { nanoid } from "nanoid"
 import { Record } from "runtypes"
-import { BallotQuestion } from "../ballotQuestions/types"
 import { Bill } from "../bills/types"
+import { Conference } from "../conferences/types"
 import { checkAuth, checkRequest, DocUpdate, fail, Id } from "../common"
 import { db, FieldValue, Timestamp } from "../firebase"
-import { supportedGeneralCourts } from "../shared"
+import { supportedGeneralCourts, takesTestimony } from "../shared"
 import { Attachments, PublishedAttachmentState } from "./attachments"
-import { DraftTestimony, Testimony } from "./types"
-import { updateTestimonyCounts } from "./updateTestimonyCounts"
+import { cosignRefusal } from "./cosign"
+import { cosignTallyFields } from "./cosignTally"
+import { targetCountsUpdate, targetOf, TestimonyTarget } from "./target"
+import { DraftTestimony, RefusalDetails, Testimony } from "./types"
 
 const PublishTestimonyRequest = Record({
   draftId: Id
 })
 
 const INITIAL_VERSION = 1,
-  MAX_EDITS = 5,
-  MAX_VERSION = INITIAL_VERSION + MAX_EDITS
+  MAX_EDITS = 5
 
 export const publishTestimonyV2 = onCall(async (request: CallableRequest) => {
   const checkEmailVerification = true
@@ -62,11 +68,13 @@ class PublishTestimonyTransaction {
   private draftSnap!: DocumentSnapshot
   private draft!: DraftTestimony
   private bqId!: string | null
-  private billSnap!: DocumentSnapshot
   private bill!: Bill
-  private ballotQuestion?: BallotQuestion
+  private conferenceId!: string | null
+  private target!: TestimonyTarget
+  private targetData?: DocumentData
   private publicationRef!: DocumentReference
   private currentPublication?: Testimony
+  private position!: Testimony["position"]
   private profile?: any
   private attachments!: PublishedAttachmentState
 
@@ -79,6 +87,7 @@ class PublishTestimonyTransaction {
   async run() {
     await this.resolveDraft()
     await this.resolvePublication()
+    await this.resolveCosign()
     await this.resolveProfile()
     await this.resolveAttachments()
 
@@ -93,24 +102,33 @@ class PublishTestimonyTransaction {
       billTitle: this.bill.content.Title,
       content: this.draft.content,
       court: this.draft.court,
-      position: this.draft.position,
+      position: this.position,
       ...publishInfo,
       attachmentId: this.attachments.id,
       draftAttachmentId: this.attachments.draftId,
       fullName: this.profile?.fullName ?? "Anonymous",
       public: this.profile?.public ?? true,
-      ballotQuestionId: this.bqId
+      ballotQuestionId: this.bqId,
+      conferenceId: this.conferenceId,
+      cosignOfId: this.draft.cosignOfId ?? null,
+      cosignOfAuthorUid: this.draft.cosignOfAuthorUid ?? null
     }
+    // Only a first publication knows when that was, so an edit of older
+    // testimony that lacks it leaves it missing.
+    const firstPublishedAt = this.currentPublication
+      ? this.currentPublication.firstPublishedAt
+      : publishInfo.publishedAt
+    if (firstPublishedAt) newPublication.firstPublishedAt = firstPublishedAt
     if (this.profile?.representative?.id) {
       newPublication.representativeId = this.profile.representative.id
     }
     if (this.profile?.senator?.id) {
       newPublication.senatorId = this.profile.senator.id
     }
-    if (this.profile?.senatorDistrict) {
+    if (this.profile?.senator?.district) {
       newPublication.senatorDistrict = this.profile.senator.district
     }
-    if (this.profile?.representativeDistrict) {
+    if (this.profile?.representative?.district) {
       newPublication.representativeDistrict =
         this.profile.representative.district
     }
@@ -118,8 +136,7 @@ class PublishTestimonyTransaction {
     this.setPublication(newPublication)
     this.createArchive(newPublication)
     this.updateDraft(newPublication)
-    this.updateBill(newPublication)
-    this.updateBallotQuestion(newPublication)
+    this.updateTarget(newPublication)
 
     return {
       publicationId: this.publicationRef.id,
@@ -127,8 +144,13 @@ class PublishTestimonyTransaction {
     }
   }
 
+  /** The tally of cosigns belongs to the cosigns' trigger, so a new version
+   * keeps it. The archive records what the author wrote, without it. */
   private setPublication(newPublication: Testimony) {
-    this.t.set(this.publicationRef, newPublication)
+    this.t.set(this.publicationRef, {
+      ...newPublication,
+      ...pick(this.currentPublication, cosignTallyFields)
+    })
   }
 
   private createArchive(newPublication: Testimony) {
@@ -147,32 +169,23 @@ class PublishTestimonyTransaction {
     this.t.update(this.draftSnap.ref, update)
   }
 
-  private updateBill(newPublication: Testimony) {
-    if (this.bqId) return
-
-    const billTestimonyFields: DocUpdate<Bill> = {
-      latestTestimonyAt: newPublication.publishedAt,
-      latestTestimonyId: this.publicationRef.id,
-      ...updateTestimonyCounts(
-        this.bill,
+  private updateTarget(newPublication: Testimony) {
+    const latest: DocUpdate<Bill> =
+      this.target.kind === "bill"
+        ? {
+            latestTestimonyAt: newPublication.publishedAt,
+            latestTestimonyId: this.publicationRef.id
+          }
+        : {}
+    this.t.update(this.target.ref, {
+      ...latest,
+      ...targetCountsUpdate(
+        this.target,
+        this.targetData,
         this.currentPublication,
         newPublication
       )
-    }
-    this.t.update(this.billSnap.ref, billTestimonyFields)
-  }
-
-  private updateBallotQuestion(newPublication: Testimony) {
-    if (!this.bqId || !this.ballotQuestion) return
-
-    const ballotQuestionFields: DocUpdate<BallotQuestion> =
-      updateTestimonyCounts(
-        this.ballotQuestion,
-        this.currentPublication,
-        newPublication
-      )
-
-    this.t.update(db.doc(`/ballotQuestions/${this.bqId}`), ballotQuestionFields)
+    })
   }
 
   private async resolveDraft() {
@@ -195,13 +208,14 @@ class PublishTestimonyTransaction {
     await this.checkValidCourt(draft.court)
 
     const bqId = draft.ballotQuestionId ?? null
+    const conferenceId = draft.conferenceId ?? null
+    const target = targetOf(draft)
     const billRef = db.doc(
       `/generalCourts/${draft.court}/bills/${draft.billId}`
     )
-    const bqRef = bqId !== null ? db.doc(`/ballotQuestions/${bqId}`) : null
-    const [billSnap, bqSnap] = await Promise.all([
+    const [billSnap, targetSnap] = await Promise.all([
       this.t.get(billRef),
-      bqRef ? this.t.get(bqRef) : Promise.resolve(null)
+      target.kind === "bill" ? null : this.t.get(target.ref)
     ])
 
     if (!billSnap.exists) {
@@ -210,22 +224,98 @@ class PublishTestimonyTransaction {
         `Draft testimony has invalid bill ID ${draft.billId}`
       )
     }
-    if (bqSnap !== null && !bqSnap.exists) {
+    if (targetSnap && !targetSnap.exists) {
       throw fail(
         "failed-precondition",
-        `Draft testimony has invalid ballotQuestionId ${bqId}`
+        target.kind === "ballotQuestion"
+          ? `Draft testimony has invalid ballotQuestionId ${bqId}`
+          : `Draft testimony has invalid conferenceId ${conferenceId}`
       )
+    }
+
+    if (target.kind === "conference") {
+      const conference = Conference.checkWithDefaults(targetSnap!.data())
+      if (conference.canonicalBillId !== draft.billId) {
+        throw fail(
+          "failed-precondition",
+          `Conference ${conferenceId} takes testimony on ${conference.canonicalBillId}, not ${draft.billId}`
+        )
+      }
+      if (!takesTestimony(conference)) {
+        throw fail(
+          "failed-precondition",
+          `Conference ${conferenceId} is not accepting testimony (status ${conference.status}, covered ${conference.covered})`,
+          { refusal: "conferenceClosed" } satisfies RefusalDetails
+        )
+      }
     }
 
     this.draft = draft
     this.bqId = bqId
+    this.conferenceId = conferenceId
+    this.target = target
+    this.targetData = (targetSnap ?? billSnap).data()
     this.draftSnap = draftSnap
-    this.billSnap = billSnap
     this.bill = Bill.checkWithDefaults(billSnap.data())
-    this.ballotQuestion =
-      bqSnap && bqSnap.exists
-        ? BallotQuestion.checkWithDefaults(bqSnap.data())
-        : undefined
+  }
+
+  /** A cosign seconds someone else's testimony on the same conference, and
+   * takes its position when first published. It stays a cosign of that
+   * testimony, and plain testimony stays plain. */
+  private async resolveCosign() {
+    const { cosignOfId } = this.draft
+    const parent = cosignOfId ? await this.resolveParent() : undefined
+    const current = this.currentPublication
+
+    if (current && (current.cosignOfId ?? null) !== (cosignOfId ?? null)) {
+      const had = current.cosignOfId
+        ? `You already cosigned ${current.cosignOfId} on this conference (${current.id})`
+        : `You already gave your own testimony on this conference (${current.id})`
+      const tried = cosignOfId
+        ? `cannot also cosign ${cosignOfId}`
+        : "cannot replace it with your own testimony"
+      throw fail(
+        "failed-precondition",
+        `${had}, so you ${tried}. Each person has one input per conference.`
+      )
+    }
+
+    this.position = parent
+      ? current?.position ?? parent.position
+      : this.draft.position
+  }
+
+  private async resolveParent() {
+    const { cosignOfId, cosignOfAuthorUid } = this.draft
+
+    if (!this.conferenceId) {
+      throw fail(
+        "failed-precondition",
+        "Only conference testimony can be cosigned"
+      )
+    }
+
+    const parentSnap = await this.t.get(
+      db.doc(`/users/${cosignOfAuthorUid}/publishedTestimony/${cosignOfId}`)
+    )
+    if (!parentSnap.exists) {
+      throw fail(
+        "failed-precondition",
+        `Cosigned testimony ${cosignOfId} no longer exists`,
+        { refusal: "cosignParentGone" } satisfies RefusalDetails
+      )
+    }
+    const parent = Testimony.checkWithDefaults(parentSnap.data())
+
+    const refusal = cosignRefusal(this.uid, parent)
+    if (refusal) throw fail("failed-precondition", refusal)
+    if (targetOf(parent).ref.path !== this.target.ref.path) {
+      throw fail(
+        "failed-precondition",
+        `Cosigned testimony ${cosignOfId} is not on conference ${this.conferenceId}`
+      )
+    }
+    return parent
   }
 
   private async resolveProfile() {
@@ -266,8 +356,11 @@ class PublishTestimonyTransaction {
       updatedAt: Timestamp.now()
     }
 
-    if (version > 1) {
+    // Versions number every publication on the scope, so one that replaces a
+    // deleted publication starts past 1 without being an edit.
+    if (this.currentPublication) {
       if (!reason) throw fail("invalid-argument", "Edit reason is required.")
+      await this.checkEditsLeft()
       info.editReason = reason
     }
 
@@ -281,21 +374,29 @@ class PublishTestimonyTransaction {
         .where("billId", "==", this.draft.billId)
         .where("court", "==", this.draft.court)
         .where("ballotQuestionId", "==", this.bqId)
+        .where("conferenceId", "==", this.conferenceId)
         .orderBy("version", "desc")
         .limit(1)
     )
+    const latest = archived.docs[0]
 
-    if (archived.size === 0) return INITIAL_VERSION
+    if (!latest) return INITIAL_VERSION
 
-    const data = archived.docs[0].data(),
-      nextVersion = Testimony.checkWithDefaults(data).version + 1
+    return Testimony.checkWithDefaults(latest.data()).version + 1
+  }
 
-    if (nextVersion > MAX_VERSION)
+  /** Counts the edits of this publication, from its archived versions. */
+  private async checkEditsLeft() {
+    const versions = await this.t.get(
+      db
+        .collection(`/users/${this.uid}/archivedTestimony`)
+        .where("id", "==", this.publicationRef.id)
+        .select()
+    )
+    if (versions.size > MAX_EDITS)
       throw new Error(
         "Cannot update testimony. Max number of edits reached: " + MAX_EDITS
       )
-
-    return nextVersion
   }
 
   private async resolvePublication() {
@@ -305,17 +406,18 @@ class PublishTestimonyTransaction {
         .where("billId", "==", this.draft.billId)
         .where("court", "==", this.draft.court)
         .where("ballotQuestionId", "==", this.bqId)
+        .where("conferenceId", "==", this.conferenceId)
         .limit(1)
     )
+    const publication = publications.docs[0]
 
-    if (publications.size === 0) {
+    if (!publication) {
       this.publicationRef = db.doc(
         `/users/${this.uid}/publishedTestimony/${nanoid()}`
       )
     } else {
-      const data = publications.docs[0].data()
-      this.currentPublication = Testimony.checkWithDefaults(data)
-      this.publicationRef = publications.docs[0].ref
+      this.currentPublication = Testimony.checkWithDefaults(publication.data())
+      this.publicationRef = publication.ref
     }
   }
 

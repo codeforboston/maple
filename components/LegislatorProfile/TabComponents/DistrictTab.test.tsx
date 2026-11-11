@@ -3,6 +3,13 @@ import { render, screen } from "@testing-library/react"
 import { DistrictTab } from "./DistrictTab"
 import type { District } from "components/db"
 
+jest.mock("next-i18next", () => ({
+  useTranslation: () => {
+    const legislators = require("../../../public/locales/en/legislators.json")
+    return { t: (key: string) => legislators[key] ?? key }
+  }
+}))
+
 const baseDistrict: District = {
   id: "house-9-hampden",
   branch: "House",

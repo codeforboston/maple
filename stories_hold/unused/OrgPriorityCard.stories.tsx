@@ -1,4 +1,4 @@
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 import { createMeta } from "stories/utils"
 import { OrgItem, OrgPriorityCard } from "./OrgPriorityCard"
 
@@ -7,7 +7,7 @@ export default createMeta({
   component: OrgPriorityCard
 })
 
-const Template: ComponentStory<typeof OrgPriorityCard> = args => (
+const Template: StoryFn<typeof OrgPriorityCard> = args => (
   <OrgPriorityCard {...args} />
 )
 

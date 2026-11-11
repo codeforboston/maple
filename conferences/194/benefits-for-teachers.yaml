@@ -1,0 +1,55 @@
+id: benefits-for-teachers
+name: Teacher Benefits
+court: 194
+title: An Act relative to benefits for teachers
+gist: Both bills give certain teachers who joined the teachers' or Boston retirement system before July 1, 2001 a new one-time chance to opt into the enhanced "alternative superannuation" benefit (often called RetirementPlus) at an 11 percent contribution rate. They differ on who qualifies, what make-up payments cost, the deadline and whether the choice is final. Only the House lets vested teachers who take jobs at the Executive Office of Education or the Department of Elementary and Secondary Education keep their teacher retirement status.
+senateBillId: S3109
+houseBillId: H4361
+canonicalBillId: H4361
+status: appointed
+conferees:
+  - memberCode: djr1
+    branch: House
+    chair: true
+  - memberCode: C_G1
+    branch: House
+  - memberCode: KNF1
+    branch: House
+  - memberCode: MJR0
+    branch: Senate
+    chair: true
+  - memberCode: JBL0
+    branch: Senate
+  - memberCode: PMO
+    branch: Senate
+hearingIds:
+  - hearing-5766
+differences:
+  - heading: Who would get the second chance to join the enhanced retirement benefit?
+    senate: Teachers, as defined in state retirement law, in the teachers' or Boston retirement system who joined and began paying in before July 1, 2001, were eligible for the program, and did not join it before July 1, 2001. (S.3109 (a))
+    house: Teachers or school nurses who joined and began paying into the teachers' retirement system before July 1, 2001, and did not join the program before July 1, 2001 "or at any other time prior to September 1, 2025." (§4(a))
+  - heading: What would teachers who join have to pay for past years, and would they owe interest?
+    senate: The difference between 11% of their pay and what was actually taken out, going back to July 1, 2001, plus interest at the system's assumed rate, compounded yearly. They may pay all at once or in installments. (S.3109 (c))
+    house: Teachers "may be required" to make up contributions at 11% from the date they joined their retirement system, on terms the system sets. The bill does not mention interest. (§4(b))
+  - heading: How long would teachers have to decide, and could they change their minds?
+    senate: From the day the law takes effect through June 30, 2027. The choice is final, and anyone who doesn't sign up in time is treated as having declined. (S.3109 (b), (d))
+    house: 180 days from the day the law takes effect. The bill does not say whether the choice can be reversed. (§4(a))
+  - heading: Should teachers who join but never meet the program's service requirements get their extra payments back?
+    senate: Yes, with regular interest, when they leave or retire. (S.3109 (e))
+  - heading: Should teachers who take jobs at the state Executive Office of Education or Department of Elementary and Secondary Education keep their teacher retirement status?
+    house: Yes, for teachers already vested. They keep teacher status and stay in their retirement system. Those moved back from the state employees' system have no break in service but must pay any difference in contributions. (§§1–3, c.32 §§1, 3(8))
+  - heading: Should the law take effect as soon as it is signed?
+    senate: Yes. The Senate added an emergency clause, which makes a law take effect immediately, when it passed its version (bill history, June 4, 2026).
+    house: No emergency clause.
+  - heading: Should the retirement systems have a deadline to tell teachers and school districts about the opportunity?
+    senate: No deadline is set. (S.3109 (f))
+    house: Within 90 days after the law takes effect. (§4(c))
+similarities:
+  - heading: Should some teachers who joined before 2001 get a new one-time chance to join the enhanced retirement benefit?
+    body: Yes, for qualifying active or inactive members of the teachers' or Boston retirement system who did not join it earlier.
+  - heading: What would teachers who join pay going forward?
+    body: 11% of their pay.
+  - heading: Who would set the terms for paying for past years?
+    body: The teacher's retirement system (all at once or in installments). Whether the payments are required and how they are calculated differ (see above).
+  - heading: Must the retirement systems notify eligible teachers and school districts?
+    body: Yes.

@@ -12,8 +12,12 @@ export type Position = "endorse" | "neutral" | "oppose"
 export type BillResult = {
   billId: string
   court: string
-  position: Position
-}
+} & (
+  | { position: Position }
+  // Testimony on a committee of conference links the conference and says its
+  // stance in words, since the position images are bill stances.
+  | { conferenceId: string; stance: string }
+)
 export type UserDigest = {
   userId: string
   userName: string

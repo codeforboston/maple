@@ -2,6 +2,7 @@ import { ReactNode } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import AboutPagesCard from "../../AboutPagesCard/AboutPagesCard"
+import { FEEDBACK_URL } from "../../common"
 import { ArrowRightIcon } from "../../learn/icons"
 import { Internal } from "../../links"
 import LearnBreadcrumb from "../../learn/LearnBreadcrumb"
@@ -10,8 +11,6 @@ import LearnLayout from "../../learn/LearnLayout"
 
 const DONATE_URL = "https://partnersindemocracy.us/?form=FUNMSSLLQEC"
 const GITHUB_URL = "https://github.com/codeforboston/maple/graphs/contributors"
-const FEEDBACK_URL =
-  "https://docs.google.com/forms/d/e/1FAIpQLScU0l0bs-QLdVqIlh6iwi-Y2kOrSv7eqH5h4klhhtNGqsxCSw/viewform?usp=sharing"
 const BUG_URL =
   "https://docs.google.com/forms/d/e/1FAIpQLSebZTHz0XGR4WgPf10yTPXSOuZK2P41HxK0AFGXM57KbFWuDg/viewform?usp=share_link"
 

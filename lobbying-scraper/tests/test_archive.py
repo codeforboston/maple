@@ -59,3 +59,27 @@ class TestLoadPageEnabled:
             # Must degrade to "not cached", never propagate the error —
             # matches save_page's "archive failures never interrupt the scrape".
             assert archive.load_page("https://example.com/x") is None
+
+
+class TestLocalArchive:
+    """ARCHIVE_DIR keeps the archive in a local folder and never touches GCS."""
+
+    def test_saves_and_loads_a_page(self, tmp_path):
+        url = "https://example.com/CompleteDisclosure.aspx?x=1"
+        with patch("archive._LOCAL_DIR", str(tmp_path)), patch("archive._gcs") as mock_gcs:
+            archive.save_page(url, "<html>page</html>")
+            assert archive.load_page(url) == "<html>page</html>"
+            mock_gcs.assert_not_called()
+        path = tmp_path / archive.blob_name(url)
+        assert path.with_suffix(".url").read_text() == url
+        assert not list(tmp_path.rglob("*.tmp"))
+
+    def test_missing_page_is_none(self, tmp_path):
+        with patch("archive._LOCAL_DIR", str(tmp_path)):
+            assert archive.load_page("https://example.com/missing") is None
+
+    def test_takes_precedence_over_gcs(self, tmp_path):
+        with patch("archive._LOCAL_DIR", str(tmp_path)), patch("archive._ENABLED", True), \
+                patch("archive._gcs") as mock_gcs:
+            archive.save_page("https://example.com/x", "<html></html>")
+            mock_gcs.assert_not_called()

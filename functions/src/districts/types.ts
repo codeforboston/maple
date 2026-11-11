@@ -1,16 +1,6 @@
-import {
-  Array as RtArray,
-  InstanceOf,
-  Literal,
-  Record,
-  Static,
-  String,
-  Union
-} from "runtypes"
+import { Array as RtArray, InstanceOf, Record, Static, String } from "runtypes"
+import { Branch } from "../common"
 import { Timestamp } from "../firebase"
-
-export const DistrictBranch = Union(Literal("House"), Literal("Senate"))
-export type DistrictBranch = Static<typeof DistrictBranch>
 
 export const DistrictMunicipality = Record({
   name: String,
@@ -20,7 +10,7 @@ export type DistrictMunicipality = Static<typeof DistrictMunicipality>
 
 export const District = Record({
   id: String,
-  branch: DistrictBranch,
+  branch: Branch,
   district: String,
   sourceDistrict: String,
   sourceUrl: String,

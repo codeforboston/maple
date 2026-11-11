@@ -15,12 +15,17 @@ import { Back } from "components/shared/CommonComponents"
 import { useFlags } from "components/featureFlags"
 import { FollowBillButton } from "components/shared/FollowButton"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
+import { ConferenceBanner } from "components/conference/ConferenceBanner"
+import { ConferenceSummary } from "components/conference/types"
 import {
   currentBallotInitiativeCommittee,
   isCurrentCourt
 } from "functions/src/shared"
 
-export const BillDetails = ({ bill }: BillProps) => {
+export const BillDetails = ({
+  bill,
+  conference
+}: BillProps & { conference?: ConferenceSummary | null }) => {
   const { t } = useTranslation("common")
 
   const isPendingUpgrade = useAuth().claims?.role === "pendingUpgrade"
@@ -41,6 +46,7 @@ export const BillDetails = ({ bill }: BillProps) => {
         <Banner>{t("bill.old_session", { billCourt: bill.court })}</Banner>
       )}
       {isBallotMeasure && <Banner>{t("bill.ballot_initiative")}</Banner>}
+      <ConferenceBanner conference={conference} />
 
       <Container className="mt-3 mb-3">
         <Row>

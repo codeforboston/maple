@@ -1,0 +1,71 @@
+id: health-care-workplace-violence
+name: Health Worker Safety
+court: 194
+title: An Act requiring health care employers to develop and implement programs to prevent workplace violence
+gist: "Both bills require hospitals and state-overseen health facilities to assess workplace-violence risks every year, adopt prevention plans, report incidents, and give paid leave to employees injured in on-the-job assaults. The biggest split is criminal law: the House creates new felonies for assaults that injure covered workers, while the Senate instead lets police arrest without a warrant for misdemeanor assaults. They also differ on who enforces the prevention rules."
+senateBillId: S3184
+houseBillId: H4767
+canonicalBillId: H4767
+status: appointed
+conferees:
+  - memberCode: MSD1
+    branch: House
+    chair: true
+  - memberCode: BFR1
+    branch: House
+  - memberCode: HEK1
+    branch: House
+  - memberCode: CFF0
+    branch: Senate
+    chair: true
+  - memberCode: JBL0
+    branch: Senate
+  - memberCode: KAD0
+    branch: Senate
+hearingIds:
+  - hearing-5774
+  - hearing-5780
+differences:
+  - heading: Should assaulting a health care worker and causing injury become a new crime, with a possible state prison sentence?
+    house: "Yes. Knowingly assaulting a covered worker on the job and causing bodily injury: up to 5 years in state prison, or up to 2½ years in a house of correction, and/or a fine of $500 to $5,000. Causing serious bodily injury: up to 10 years in state prison, with the same alternatives. (§5, new c.265 §13I½)"
+  - heading: Should police be able to arrest someone without a warrant for a misdemeanor assault on a health care worker, and where?
+    senate: Yes, when police have probable cause, for misdemeanor assaults on covered workers at licensed hospitals and the UMass teaching hospital. Police must use de-escalation, diversion and, where available, community behavioral health crisis services. One year after the law takes effect, this extends to all covered facilities, including facilities and group homes overseen by the Departments of Public Health, Mental Health and Developmental Services. (§§6, 7, 10; c.276 §28)
+  - heading: Which workers would the law protect, and are community health centers left out?
+    senate: Employees of a covered employer, contractors working at a facility, and anyone volunteering or taking a course there, as separate groups. None has to be providing health care. Community health centers (federally qualified health centers) are added to the facilities left out of the law. (§1, new c.111 §250(a))
+    house: 'As amended on the House floor: employees and contractors "who [are] providing health care services at, volunteering at or participating in an educational course" at a facility. The House bill does not leave out community health centers. (§1, new c.111 §250(a))'
+  - heading: Who can take an employer to court for not following the prevention rules, and what are the penalties?
+    senate: Only the Attorney General, in superior court, seeking court orders and a civil penalty of up to $5,000 per violation. (§1, new c.111 §250(f))
+    house: Fines of up to $2,000 per violation. The Department of Public Health, any affected employee, any interested party or a union officer may file a complaint in district court, with notice to the Attorney General, who may order a facility closed after finding a violation. (§1, new c.111 §250(f))
+  - heading: What could an injured worker use the paid leave for?
+    senate: Leave applies after an assault and battery that causes bodily injury. It may be used for emergency treatment; appointments for the injury, including related mental health care; victim services or legal help; protective orders; and court or law enforcement meetings. (§2, new c.149 §52F(b), (g))
+    house: Leave applies after an assault, or assault and battery, that causes bodily injury. It may be used for medical treatment, victim services or legal help, protective orders, and court, grand jury, prosecutor or police meetings. Employers may not make leave depend on whether the worker stays in contact with the alleged abuser. (§2, new c.149 §52F(b), (g))
+  - heading: Which safety complaints would be protected from retaliation?
+    senate: Complaints or warnings to the employer or to the Department of Public Health. (§1, new c.111 §250(g))
+    house: Complaints or warnings to the Department of Public Health. The bill does not mention complaints to the employer. (§1, new c.111 §250(g))
+  - heading: Should state rules account for a facility's size and resources, may crisis teams be outside contractors, and when are rules due?
+    senate: Rules must take into account each facility's size, services and resources. The crisis response team may be in-house or contracted. No deadline for rules. (§1, §250(e), (i); §2, §52F(k))
+    house: No language on size or resources. The crisis response team must be in-house. Rules are due within 180 days after the law takes effect. (§1, §250(e); §§6–7)
+  - heading: What should the state's report on patients involved with the criminal justice system cover, and who should get it?
+    senate: Covers patients with a mental or behavioral health diagnosis, or an intellectual or developmental disability including autism. Adds ways to reduce police involvement in group homes overseen by the Department of Developmental Services. Goes to the Legislature's clerks and two legislative committees. (§9)
+    house: Covers patients with a mental or behavioral health diagnosis. Adds giving facilities access to agency reports on patients through health records, and expanding state-run alternatives for patients in crisis. Goes to the Legislature's health care financing committee and the heads of the Massachusetts Health and Hospital Association, the Massachusetts Nurses Association and 1199 SEIU. (§8)
+similarities:
+  - heading: Which facilities must run violence prevention programs?
+    body: Licensed hospitals, the UMass teaching hospital, Bridgewater State Hospital, and facilities and group homes run, funded or overseen by the Departments of Public Health, Mental Health or Developmental Services. Both leave out nursing and rest homes, licensed clinics, home health agencies, adult day health programs, hospices, surgical centers, dialysis centers and some outpatient settings.
+  - heading: Must facilities assess the risk of violence every year?
+    body: Yes. Each facility assesses its own risks every year with its employees and their unions, using state standards and ten listed risk factors, such as late-night work, working alone and short staffing.
+  - heading: What must prevention programs and plans include?
+    body: Training, a system for reporting and tracking incidents, and a written plan that employees can see (and unions can get on request) covering the risks, the steps to reduce them and a debriefing process after incidents.
+  - heading: Must employers support staff who are assaulted?
+    body: Yes. A senior manager oversees a crisis response team that offers counseling, support groups and other help to assaulted staff.
+  - heading: Must incidents be reported and made public?
+    body: Yes. Facilities report incidents every year to the Department of Public Health and the district attorney, and the department publishes combined data by county and statewide within 90 days.
+  - heading: Would injured workers get paid leave without using up other leave first?
+    body: Yes, for the employer's own employees (not contractors), running at the same time as state paid family and medical leave. Neither bill sets a number of days.
+  - heading: What job protections come with the leave?
+    body: Workers may be asked for documentation within 5 business days. Leave records are confidential. Employers may not interfere, retaliate or fire a worker for taking leave, and must restore the worker's job and post notice of these rights in several languages.
+  - heading: Could assaulted workers list a work or union address instead of their home address on complaint papers?
+    body: Yes, for facility employees and for EMTs and ambulance staff employed by a facility.
+  - heading: Should the existing law on assaulting EMTs drop the words "treating or transporting a person"?
+    body: Yes. Both strike those words from G.L. c.265 §13I.
+  - heading: Must state agencies study how to share information about, and find placements for, patients involved with the criminal justice system?
+    body: Yes. The state's health and human services office, working with the public safety office, reports within 1 year, including ways into Department of Mental Health care that don't require an arrest, with privacy protections.

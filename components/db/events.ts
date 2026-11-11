@@ -7,7 +7,7 @@ import {
 } from "firebase/firestore"
 import { useAsync } from "react-async-hook"
 import { firestore } from "../firebase"
-import { midnight, nullableQuery } from "./common"
+import { loadDoc, midnight, nullableQuery } from "./common"
 import { DateTime } from "luxon"
 
 /** The timezone used for datetime strings returned by the API. */
@@ -103,6 +103,32 @@ export async function listUpcomingEvents(types?: Event["type"][]) {
   )
 
   return result.docs.map(d => d.data() as Event)
+}
+
+/** An event as a page can carry it through getServerSideProps: no
+ * Timestamps, just what the pages that link to hearings show. */
+export type EventSummary = {
+  /** The event document id, `hearing-{EventId}` for a hearing. */
+  id: string
+  eventId: number
+  /** Epoch milliseconds, or 0 when the document has no start. */
+  startsAt: number
+  videoURLs: string[]
+}
+
+export async function getEventSummary(
+  id: string
+): Promise<EventSummary | null> {
+  const data = await loadDoc(`events/${id}`)
+  if (!data) return null
+  return {
+    id,
+    eventId: data.content?.EventId ?? Number(id.replace(/^hearing-/, "")),
+    startsAt: data.startsAt?.toMillis() ?? 0,
+    videoURLs: data.videos
+      ? data.videos.map((item: { url: string }) => item.url)
+      : []
+  }
 }
 
 /** returns true if input is a timestamp and false if not */

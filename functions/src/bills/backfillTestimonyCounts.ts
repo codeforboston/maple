@@ -25,6 +25,7 @@ class BackfillTestimonyCounts extends BillProcessor {
       .collectionGroup("publishedTestimony")
       .where("court", "==", currentGeneralCourt)
       .where("ballotQuestionId", "==", null)
+      .where("conferenceId", "==", null)
       .select("court", "billId", "position")
       .get()
       .then(t => t.docs.map(d => d.data() as PartialTestimony))

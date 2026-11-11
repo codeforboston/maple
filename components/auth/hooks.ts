@@ -12,6 +12,9 @@ import {
 import { useAsyncCallback } from "react-async-hook"
 import { setProfile } from "../db"
 import { auth } from "../firebase"
+import { useAppDispatch } from "../hooks"
+import { authChanged } from "./redux"
+import { claimsOf } from "./service"
 import { completePhoneVerification, finishSignup, OrgCategory } from "./types"
 
 const errorMessages: Record<string, string | undefined> = {
@@ -98,7 +101,7 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
           public: true
         })
       }
-      await sendEmailVerification(credentials.user)
+      await sendVerification(credentials.user)
 
       return credentials
     }
@@ -114,8 +117,39 @@ export function useSignInWithEmailAndPassword() {
   )
 }
 
+/** Sends the verification email, whose page leads back to where the reader
+ * asked for it, so what they were doing when they signed up picks up there.
+ * Firebase takes a continue address only on an authorized domain, which a
+ * preview deploy's is not; there the email goes without one. */
+async function sendVerification(user: User) {
+  try {
+    await sendEmailVerification(user, { url: location.href })
+  } catch (err) {
+    if ((err as { code?: string })?.code !== "auth/unauthorized-continue-uri")
+      throw err
+    await sendEmailVerification(user)
+  }
+}
+
 export function useSendEmailVerification() {
-  return useFirebaseFunction((user: User) => sendEmailVerification(user))
+  return useFirebaseFunction((user: User) => sendVerification(user))
+}
+
+/** Reads the signed-in reader's account again, for an email verified in
+ * another tab, which this one would not see before a reload. Resolves to
+ * whether it is now verified. */
+export function useRecheckEmailVerified() {
+  const dispatch = useAppDispatch()
+  return useFirebaseFunction<void, boolean>(async () => {
+    const user = auth.currentUser
+    if (!user) return false
+    await user.reload()
+    if (!user.emailVerified) return false
+    // The token carries the verification to the server's rules.
+    const claims = claimsOf(await user.getIdTokenResult(true))
+    dispatch(authChanged({ user, claims }))
+    return true
+  })
 }
 
 /** Call after the user has linked a phone number via linkWithPhoneNumber + confirm. */

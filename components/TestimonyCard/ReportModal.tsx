@@ -10,6 +10,7 @@ type Props = {
 
   additionalInformationLabel: string
   requireAdditionalInformation?: boolean
+  title?: string
   children?: string | React.ReactNode
 }
 
@@ -22,6 +23,7 @@ export function ReportModal({
   isLoading,
   additionalInformationLabel,
   requireAdditionalInformation = false,
+  title,
   children
 }: Props) {
   const [selectedReason, setSelectedReason] = useState<string | null>(null)
@@ -46,7 +48,7 @@ export function ReportModal({
   return (
     <Modal show onHide={onClose}>
       <Form validated={false} onSubmit={handleReport}>
-        <Modal.Header closeButton>{t("reportTestimony")}</Modal.Header>
+        <Modal.Header closeButton>{title ?? t("reportTestimony")}</Modal.Header>
         <Modal.Body>
           {children}
           <Form.Group as="fieldset">
@@ -117,8 +119,13 @@ export function ReportModal({
 export function RequestDeleteOwnTestimonyModal({
   onClose,
   onReport,
-  isLoading
-}: Pick<Props, "onClose" | "onReport" | "isLoading">) {
+  isLoading,
+  title,
+  wrongTarget,
+  children
+}: Pick<Props, "onClose" | "onReport" | "isLoading" | "title" | "children"> & {
+  wrongTarget?: string
+}) {
   const { t } = useTranslation("testimony", {
     keyPrefix: "reportModal"
   })
@@ -127,8 +134,9 @@ export function RequestDeleteOwnTestimonyModal({
       onClose={onClose}
       onReport={onReport}
       isLoading={isLoading}
+      title={title}
       reasons={[
-        t("wrongBill"),
+        wrongTarget ?? t("wrongBill"),
         t("sensitiveInformation"),
         t("userBelow18YearsOld"),
         t("other")
@@ -136,7 +144,7 @@ export function RequestDeleteOwnTestimonyModal({
       additionalInformationLabel={t("reason")}
       requireAdditionalInformation
     >
-      {t("rescind")}
+      {children ?? t("rescind")}
     </ReportModal>
   )
 }

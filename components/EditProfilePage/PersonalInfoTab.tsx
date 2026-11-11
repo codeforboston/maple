@@ -63,6 +63,7 @@ export async function updateProfile(
   await updateAbout(data.aboutYou)
   await updateFullName(data.fullName)
 }
+
 export function PersonalInfoTab({
   profile,
   actions,

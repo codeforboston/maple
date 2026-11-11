@@ -108,3 +108,4 @@ CLAUDE.md
 # come from prod outright. See tests/search-eval/README.md. Labeling sheets are
 # authoring scratch.
 tests/search-eval/labeling-sheet-*.md
+/components/LegislatorProfile/TabComponents/billsTab/BillsTab.explanation.md

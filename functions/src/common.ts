@@ -1,8 +1,10 @@
 import { FieldValue } from "@google-cloud/firestore"
 import axios from "axios"
-import { https, logger } from "firebase-functions"
+import { logger } from "firebase-functions"
+import { https } from "firebase-functions/v2"
 import { CallableRequest } from "firebase-functions/v2/https"
 import {
+  Literal,
   Null,
   Nullish,
   Optional,
@@ -10,7 +12,8 @@ import {
   Result,
   Runtype,
   Static,
-  String
+  String,
+  Union
 } from "runtypes"
 import { ZodTypeAny, z } from "zod"
 /** Parse the request and return the result or fail. */
@@ -39,7 +42,7 @@ export function checkRequestZod<T extends ZodTypeAny>(
 
 /** Return the authenticated user's id or fail if they are not authenticated. */
 export function checkAuth(
-  context: https.CallableContext | CallableRequest,
+  context: CallableRequest,
   checkEmailVerification = false
 ) {
   const uid = context.auth?.uid
@@ -62,16 +65,20 @@ export function checkAuth(
 /**
  * Checks that the caller is an admin.
  */
-export function checkAdmin(context: https.CallableContext | CallableRequest) {
+export function checkAdmin(context: CallableRequest) {
   const callerRole = context.auth?.token.role
   if (callerRole !== "admin") {
     throw fail("permission-denied", "You must be an admin")
   }
 }
 
-/** Constructs a new HTTPS error */
-export function fail(code: https.FunctionsErrorCode, message: string) {
-  return new https.HttpsError(code, message)
+/** Constructs a new HTTPS error. `details` reach the client as they are. */
+export function fail(
+  code: https.FunctionsErrorCode,
+  message: string,
+  details?: unknown
+) {
+  return new https.HttpsError(code, message, details)
 }
 
 /** Catch handler to log axios errors and return undefined. */
@@ -130,3 +137,7 @@ type RecordType<T extends RecordSpec> = Static<Record<T, false>>
 export type DocUpdate<T> = {
   [Prop in keyof T]?: T[Prop] | FieldValue
 }
+
+/** A legislative chamber. */
+export type Branch = Static<typeof Branch>
+export const Branch = Union(Literal("House"), Literal("Senate"))

@@ -16,14 +16,14 @@ export interface MembersFinanceBreakdown {
   unitemized: { amount: number }
   // Subset of `individual` — itemized (type 201) contributions under $200.
   // Combined with `unitemized` on the frontend for the "Small Donors" stat.
-  smallDonors?: {
+  smallDonors: {
     itemized: FinanceBreakdownEntry
   }
   // type 319 — payment-processor fees deducted between the gross Deposit
   // Report amount (reflected in individual/committee/union above) and the
   // net Bank Report amount (reflected in totalRaised). Not a contribution
   // category; used only to explain the gap between the two on the frontend.
-  processingFees?: FinanceBreakdownEntry
+  processingFees: FinanceBreakdownEntry
 }
 
 export interface MembersFinanceCandidateFunds {
@@ -51,12 +51,16 @@ export interface MembersFinance {
   totalSpent: number
   cashOnHand: number
   contributionsCount: number
+  uniqueContributorsCount: number
   lastUpdated: Timestamp
-  // End_Date of the most recent Bank Report (type 70) — the basis for totalRaised/cashOnHand.
+  // End_Date of the most recent Bank Report (type 70), across all depository
+  // accounts — the basis for totalRaised/cashOnHand. Missing if the member
+  // has no Bank Report.
   bankDataAsOf?: Timestamp
   // End_Date of the most recent Deposit Report (type 60) — the basis for the
   // breakdown categories. Normally later than bankDataAsOf, since Deposit
-  // Reports are filed more frequently than Bank Reports.
+  // Reports are filed more frequently than Bank Reports. Missing if the
+  // member has no Deposit Report.
   depositDataAsOf?: Timestamp
   breakdown: MembersFinanceBreakdown
   candidateFunds: MembersFinanceCandidateFunds

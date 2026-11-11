@@ -65,6 +65,12 @@ locals {
     "32856346 CNAME" = { ttl = 14400, rrdatas = ["sendgrid.net."] }
     "em4225 CNAME"   = { ttl = 14400, rrdatas = ["u32856346.wl097.sendgrid.net."] }
     "url4917 CNAME"  = { ttl = 14400, rrdatas = ["sendgrid.net."] }
+
+    # Additional SendGrid click-tracking records. CNAME targets are written
+    # with trailing dots because Cloud DNS requires absolute DNS names.
+    "url5056 CNAME"                   = { ttl = 14400, rrdatas = ["click.sendgrid.net."] }
+    "_acme-challenge.url5056 CNAME"   = { ttl = 14400, rrdatas = ["url5056.mapletestimony.org.4a767ed83ff78982.dcv.cloudflare.com."] }
+    "_cf-custom-hostname.url5056 TXT" = { ttl = 14400, rrdatas = ["\"715d15a7-7689-42e2-9876-c76c2298d9ec\""] }
   }
 }
 

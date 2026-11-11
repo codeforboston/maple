@@ -1,4 +1,4 @@
-import { runWith } from "firebase-functions"
+import { onMessagePublished } from "firebase-functions/v2/pubsub"
 import { createClient } from "./client"
 import { getRegisteredConfigs } from "./config"
 import { SearchIndexer } from "./SearchIndexer"
@@ -6,11 +6,15 @@ import { upsertLegislativeSynonyms } from "./synonyms"
 
 /** Schedules index upgrades for each config/alias(bills/hearing/testimony) if necessary. Requires a message
  * wtih content `{ "check": true}` */
-export const checkSearchIndexVersion = runWith({
-  secrets: ["TYPESENSE_API_KEY"]
-})
-  .pubsub.topic("checkSearchIndexVersion")
-  .onPublish(async message => {
+export const checkSearchIndexVersion = onMessagePublished(
+  {
+    topic: "checkSearchIndexVersion",
+    secrets: ["TYPESENSE_API_KEY"],
+    // v2 pubsub triggers default to us-east1; pin to match the rest of the deployment
+    region: "us-central1"
+  },
+  async event => {
+    const message = event.data.message
     if (message.json.check !== true)
       throw Error('Expected { "check": true } message')
     for (const config of getRegisteredConfigs()) {
@@ -22,4 +26,5 @@ export const checkSearchIndexVersion = runWith({
     console.log(
       `Upserted synonym set "${synonyms.name}" with ${synonyms.items} items`
     )
-  })
+  }
+)

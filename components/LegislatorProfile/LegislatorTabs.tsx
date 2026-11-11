@@ -75,17 +75,23 @@ const TabNavItem = ({
 }
 
 export function LegislatorTabs({
+  court,
   district,
   districtLoading,
+  legislatorData,
   legislatorId,
   name,
-  finance
+  finance,
+  memberCode
 }: {
+  court: number
   district?: District | undefined
   districtLoading?: boolean
+  legislatorData: any[]
   legislatorId: string
   name: string
   finance?: MembersFinance
+  memberCode: string
 }) {
   const router = useRouter()
   const { t } = useTranslation("legislators")
@@ -115,7 +121,14 @@ export function LegislatorTabs({
     {
       title: t("tabs.priorities"),
       eventKey: tabCategories.priorities,
-      content: <PrioritiesTab />
+      content: (
+        <PrioritiesTab
+          court={court}
+          legislatorData={legislatorData}
+          legislatorId={legislatorId}
+          memberCode={memberCode}
+        />
+      )
     },
     {
       title: t("tabs.bills"),

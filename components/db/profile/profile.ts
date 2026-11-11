@@ -14,6 +14,7 @@ import { useProfileState } from "./redux"
 import { Profile, ProfileMember, SocialLinks, ContactInfo } from "./types"
 import { cleanSocialLinks, cleanOrgURL } from "./urlCleanup"
 import { updateUserDisplayNameTestimonies } from "../testimony/updateUserTestimonies"
+import { IconType } from "components/LegislatorProfile/TabComponents/PrioritiesTab"
 
 export type ProfileHook = ReturnType<typeof useProfile>
 
@@ -31,6 +32,13 @@ type ProfileState = {
   updatingProfileImage: boolean
   updatingSocial: Record<keyof SocialLinks, boolean>
   updatingBillsFollowing: boolean
+  updatingInTheirOwnWords: boolean
+  updatingPriorityOneIcon: boolean
+  updatingPriorityOneText: boolean
+  updatingPriorityTwoIcon: boolean
+  updatingPriorityTwoText: boolean
+  updatingPriorityThreeIcon: boolean
+  updatingPriorityThreeText: boolean
   profile: Profile | undefined
 }
 
@@ -70,6 +78,13 @@ export function useProfile() {
           mastodon: false
         },
         updatingBillsFollowing: false,
+        updatingInTheirOwnWords: false,
+        updatingPriorityOneIcon: false,
+        updatingPriorityOneText: false,
+        updatingPriorityTwoIcon: false,
+        updatingPriorityTwoText: false,
+        updatingPriorityThreeIcon: false,
+        updatingPriorityThreeText: false,
         profile
       }
     )
@@ -201,6 +216,55 @@ export function useProfile() {
           await updateBillsFollowing(uid, billsFollowing)
           dispatch({ updatingBillsFollowing: false })
         }
+      },
+      updateInTheirOwnWords: async (inTheirOwnWords: string) => {
+        if (uid) {
+          dispatch({ updatingInTheirOwnWords: true })
+          await updateInTheirOwnWords(uid, inTheirOwnWords)
+          dispatch({ updatingInTheirOwnWords: false })
+        }
+      },
+      updatePriorityOneIcon: async (priorityOneIcon: IconType) => {
+        if (uid) {
+          dispatch({ updatingPriorityOneIcon: true })
+          await updatePriorityOneIcon(uid, priorityOneIcon)
+          dispatch({ updatingPriorityOneIcon: false })
+        }
+      },
+      updatePriorityOneText: async (priorityOneText: string) => {
+        if (uid) {
+          dispatch({ updatingPriorityOneText: true })
+          await updatePriorityOneText(uid, priorityOneText)
+          dispatch({ updatingPriorityOneText: false })
+        }
+      },
+      updatePriorityTwoIcon: async (priorityTwoIcon: IconType) => {
+        if (uid) {
+          dispatch({ updatingPriorityTwoIcon: true })
+          await updatePriorityTwoIcon(uid, priorityTwoIcon)
+          dispatch({ updatingPriorityTwoIcon: false })
+        }
+      },
+      updatePriorityTwoText: async (priorityTwoText: string) => {
+        if (uid) {
+          dispatch({ updatingPriorityTwoText: true })
+          await updatePriorityTwoText(uid, priorityTwoText)
+          dispatch({ updatingPriorityTwoText: false })
+        }
+      },
+      updatePriorityThreeIcon: async (priorityThreeIcon: IconType) => {
+        if (uid) {
+          dispatch({ updatingPriorityThreeIcon: true })
+          await updatePriorityThreeIcon(uid, priorityThreeIcon)
+          dispatch({ updatingPriorityTwoIcon: false })
+        }
+      },
+      updatePriorityThreeText: async (priorityThreeText: string) => {
+        if (uid) {
+          dispatch({ updatingPriorityThreeText: true })
+          await updatePriorityThreeText(uid, priorityThreeText)
+          dispatch({ updatingPriorityThreeText: false })
+        }
       }
     }),
     [uid, state.updatingSocial, state.updatingContactInfo, profile]
@@ -327,6 +391,62 @@ function updateBillsFollowing(uid: string, billsFollowing: string[]) {
   return setDoc(
     profileRef(uid),
     { billsFollowing: billsFollowing ?? deleteField() },
+    { merge: true }
+  )
+}
+
+function updateInTheirOwnWords(uid: string, inTheirOwnWords: string) {
+  return setDoc(
+    profileRef(uid),
+    { inTheirOwnWords: inTheirOwnWords ?? deleteField() },
+    { merge: true }
+  )
+}
+
+function updatePriorityOneIcon(uid: string, priorityOneIcon: IconType) {
+  return setDoc(
+    profileRef(uid),
+    { priorityOneIcon: priorityOneIcon ?? deleteField() },
+    { merge: true }
+  )
+}
+
+function updatePriorityOneText(uid: string, priorityOneText: string) {
+  return setDoc(
+    profileRef(uid),
+    { priorityOneText: priorityOneText ?? deleteField() },
+    { merge: true }
+  )
+}
+
+function updatePriorityTwoIcon(uid: string, priorityTwoIcon: IconType) {
+  return setDoc(
+    profileRef(uid),
+    { priorityTwoIcon: priorityTwoIcon ?? deleteField() },
+    { merge: true }
+  )
+}
+
+function updatePriorityTwoText(uid: string, priorityTwoText: string) {
+  return setDoc(
+    profileRef(uid),
+    { priorityTwoText: priorityTwoText ?? deleteField() },
+    { merge: true }
+  )
+}
+
+function updatePriorityThreeIcon(uid: string, priorityThreeIcon: IconType) {
+  return setDoc(
+    profileRef(uid),
+    { priorityThreeIcon: priorityThreeIcon ?? deleteField() },
+    { merge: true }
+  )
+}
+
+function updatePriorityThreeText(uid: string, priorityThreeText: string) {
+  return setDoc(
+    profileRef(uid),
+    { priorityThreeText: priorityThreeText ?? deleteField() },
     { merge: true }
   )
 }

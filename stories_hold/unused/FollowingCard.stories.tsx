@@ -1,4 +1,4 @@
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 import { createMeta } from "stories/utils"
 import { FollowingCard } from "components/FollowingCard/FollowingCard"
 
@@ -7,7 +7,7 @@ export default createMeta({
   component: FollowingCard
 })
 
-const Template: ComponentStory<typeof FollowingCard> = args => (
+const Template: StoryFn<typeof FollowingCard> = args => (
   <FollowingCard {...args} />
 )
 

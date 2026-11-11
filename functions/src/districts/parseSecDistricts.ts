@@ -1,10 +1,11 @@
 import { JSDOM } from "jsdom"
 import { compact } from "lodash"
 import { districtId, displayDistrictName } from "./normalize"
-import type { DistrictBranch, ParsedDistrict } from "./types"
+import type { Branch } from "../common"
+import type { ParsedDistrict } from "./types"
 
 type ParseOptions = {
-  branch: DistrictBranch
+  branch: Branch
   sourceUrl: string
 }
 
@@ -27,7 +28,7 @@ function isHouseCountyHeading(element: Element) {
   )
 }
 
-function isDistrictHeading(element: Element, branch: DistrictBranch) {
+function isDistrictHeading(element: Element, branch: Branch) {
   const tagName = element.tagName.toLowerCase()
   if (branch === "Senate") return tagName === "h2"
   return (
@@ -35,7 +36,7 @@ function isDistrictHeading(element: Element, branch: DistrictBranch) {
   )
 }
 
-function followingDistrictItems(heading: Element, branch: DistrictBranch) {
+function followingDistrictItems(heading: Element, branch: Branch) {
   const items: HTMLLIElement[] = []
   let element = heading.nextElementSibling
 

@@ -1,0 +1,94 @@
+id: primary-care
+name: Primary Care
+court: 194
+title: An Act relative to primary care for you
+gist: Both bills set a statewide goal of raising primary care to 15 percent of total health care spending, require insurers to pay community health centers at least MassHealth rates, and create an "advanced primary care" payment model that pays practices a fixed monthly amount per patient. They differ on how fast the target phases in, whether individual providers and insurers face their own targets and fines, and whether the payment model is mandatory. The House version is twice as long and adds many provisions the Senate lacks, from drug-rebate pass-through to limits on AI in coverage reviews to time limits for child sexual abuse lawsuits.
+senateBillId: S3141
+houseBillId: H5630
+canonicalBillId: S3141
+status: appointed
+conferees:
+  - memberCode: CFF0
+    branch: Senate
+    chair: true
+  - memberCode: JJC0
+    branch: Senate
+  - memberCode: BET0
+    branch: Senate
+  - memberCode: AMM1
+    branch: House
+    chair: true
+  - memberCode: M_K1
+    branch: House
+  - memberCode: HEK1
+    branch: House
+hearingIds:
+  - hearing-5781
+differences:
+  - heading: By when should primary care make up 9%, 12% and 15% of the state's total health care spending?
+    senate: 9% in 2028, 12% in 2029 and 15% in 2030. From 2031, the Health Policy Commission may recommend changes after a hearing and a two-thirds vote, but never below 15%. (§8, new c.6D §9A)
+    house: 9% in 2030, 12% in 2033 and 15% from 2036 on. The state health data agency (CHIA) reports on progress every year starting in 2028. (§6, new c.6D §9A)
+  - heading: Should each health care provider group and insurer have its own primary care spending target, with improvement plans and fines?
+    senate: Yes. Each flagged provider group or insurer gets the same 9%, 12% and 15% targets. The Health Policy Commission may require an improvement plan and, as a last resort, impose penalties up to $500,000 for a first violation, $750,000 for a second, and up to the amount of the shortfall after that. (§§8–9, 15–16)
+    house: No individual targets. Starting in 2028, the Health Policy Commission may require organizations whose costs grew faster than the state benchmark to file either a primary care commitment they design or an improvement plan. Groups with 15,000 or fewer patients, or under $25,000,000 a year from insurers, are exempt. (§§7, 10, 17–18)
+  - heading: Should large provider organizations be required to use a new payment model that pays primary care practices a fixed monthly amount per patient?
+    senate: Required for provider organizations that must register with the Health Policy Commission and provide primary care, with every insurer and the state employee health plan (GIC). Others may join. Final guidance by Dec. 31, 2027. (§5, new c.6D §3B(b); §30)
+    house: Optional for providers. Each insurer must offer at least one approved model to every primary care provider it contracts with by Jan. 1, 2028, and the GIC must offer one. (§35, new c.176O §31; §23)
+  - heading: Who should design the payment model?
+    senate: A new Office of Primary Care Policy and Payment at the Health Policy Commission designs one model used the same way by all insurers, advised by a council led by the MassHealth director and the insurance commissioner. (§5, new c.6D §3B)
+    house: The state insurance commissioner approves standard models and insurer-designed alternatives, advised by a primary care payment collaborative. Payment amounts do not have to be the same across insurers. (§35, new c.176O §31)
+  - heading: Should most of the monthly payments have to stay with the primary care practice?
+    senate: Yes, at least 90%, with no more than 10% used by the wider health system. (§5, §3B(e)(6))
+    house: The bill sets no share. CHIA develops a way to track how much stays with the practice. (§§15, 18)
+  - heading: Should insurers be barred from requiring prior approval for primary care at practices in the payment model?
+    senate: Yes, including the state employee health plan. (§5, §3B(e)(8))
+    house: The bill has no ban. Insurers may choose to reduce prior approval requirements as part of their primary care commitments. (§§10, 18)
+  - heading: Should the law itself define what counts as primary care spending, or leave it to CHIA?
+    senate: CHIA defines it by June 30, 2027 and reviews the definition every year. Prescription drug spending is excluded. (§§1, 11, 14, 29)
+    house: The law lists seven categories, such as office, telehealth and home visits; preventive care; behavioral health care in primary care; and preventive OB/GYN care. CHIA sets billing codes by Jan. 1, 2027 and may not add or drop categories. (§§2, 14–15, 41)
+  - heading: Should there be no time limit, and no cap on damages, for civil lawsuits over sexual abuse of a minor?
+    house: Yes. Lawsuits could be filed at any time, claims whose deadlines have already passed could be filed within 2 years, and damage caps for charities and public employers would not apply. (§§50–60)
+  - heading: Should insurers and pharmacy benefit managers pass most drug rebates on to patients at the pharmacy counter?
+    house: Yes. At least 80% of expected rebates must go toward lowering what patients pay at the pharmacy, including in the state employee health plan. Fines up to $5,000 a day. Applies to plans issued or renewed from Jan. 1, 2029. (§35, new c.176O §32; §§23, 36–38, 48)
+  - heading: Should payments made on a patient's behalf, such as copay assistance programs, count toward the patient's deductible?
+    house: Yes, except in high-deductible plans linked to health savings accounts. Starts Jan. 1, 2028. (§39, new c.176Y §5; §46)
+  - heading: Should pharmacies have to give 60 days' notice before closing, with a review of whether the closure would leave an area without a pharmacy?
+    house: Yes, with a public hearing if the area is likely to become a "pharmacy desert," starting Oct. 1, 2027. The Health Policy Commission assesses pharmacy deserts at least every 5 years. (§§11A, 26A, 40A–40B)
+  - heading: Should insurers' use of artificial intelligence and other automated tools to review coverage be limited?
+    senate: Not in the Senate bill. The Senate bill only requires insurers to report what their coverage reviews cost.
+    house: Yes. An automated tool may not be the only basis for denying coverage, and only a licensed clinician may deny. Insurers must disclose their use of these tools and report every year, with fines up to $5,000 a day. Starts Jan. 1, 2027. (§34, new c.176O §12C; §49)
+  - heading: Should insurers be barred from requiring prior approval for medications that treat serious mental illness in adults?
+    senate: Yes, for FDA-approved medications for serious mental illness, in the state employee health plan and private plans. (§§18, 20–22, 24)
+  - heading: Should insurers and MassHealth cover biomarker tests that help guide treatment, with deadlines for approval decisions?
+    house: Yes. Insurers must decide on approval within 5 business days, or 48 hours if delay could harm the patient, or the request is treated as approved. (§§22, 27, 29–31, 33)
+  - heading: Should care from approved mobile integrated health programs be covered the same as care in a facility?
+    house: Yes, with no higher patient costs, starting Jan. 1, 2027. (§§22, 26–27, 29–31, 33, 45)
+  - heading: Should $25 million go into the Health Care Workforce Transformation Fund, with most of the fund used for primary care?
+    house: Yes. Through fiscal year 2036, at least 80% of available money goes to recruiting, training and keeping primary care providers, including loan repayment and residency grants. (§§20, 40)
+  - heading: Should the state pay for medical residencies in community settings, mostly at community health centers?
+    senate: Yes. A new payment for community-based residencies in primary care, behavioral health and shortage specialties, with rules due within 180 days. (§19, new c.118E §88; §32)
+  - heading: Should a state reserve fund (the Commonwealth Federal Matching and Debt Reduction Fund) be usable to make up for federal cuts and support hospitals and health centers serving low-income patients?
+    house: Yes, including transfers to the Health Safety Net Trust Fund and the workforce fund. (§21)
+  - heading: Should large health care construction projects pay into a fund for community hospitals that rely on public insurance?
+    house: Yes. At least 2% of a project's cost goes into a new Community Hospital Capital Access Fund, with total contributions capped at 5%. Qualifying community hospitals' own projects get a decision within 60 days. (§§19, 24–25)
+  - heading: Should the state's vaccine programs change, including letting providers choose any recommended vaccine brand?
+    house: Yes. Rewrites the vaccine advisory council and the childhood vaccine surcharge, and lets providers choose any FDA-licensed brand recommended by the CDC's vaccine advisory committee (ACIP) or national medical societies. (§§23A, 25A)
+  - heading: Should supplemental insurance, such as hospital indemnity policies, be allowed to pay a fixed amount for health screenings?
+    house: Yes, for tests done at a routine or preventive visit. (§§33A–33F)
+similarities:
+  - heading: Should the state set a target for primary care's share of health spending, rising to 15%?
+    body: Yes, in steps of 9%, 12% and 15% of total health care spending, with 15% as the long-term level. The target years differ (see above).
+  - heading: Should increases in primary care spending be watched so they don't raise overall costs or premiums?
+    body: Yes, in nearly identical wording, by the Health Policy Commission working with CHIA, the state employee health plan and the Division of Insurance. The Senate adds that the commission holds insurers and providers accountable for any increases under its new §10A.
+  - heading: Should the Health Policy Commission's yearly cost hearings compare primary care spending to the target?
+    body: Yes.
+  - heading: Should CHIA measure and publish primary care spending?
+    body: Yes, including spending on children's care and breakdowns by city or town and rural area.
+  - heading: Should provider organizations disclose their owners and primary care staffing when registering with the state?
+    body: Yes, including parent companies, significant investors, health care real estate trusts and management companies.
+  - heading: Should private insurers, the state employee health plan and dental plans pay community health centers at least what MassHealth pays?
+    body: Yes.
+  - heading: Should there be a payment model that pays primary care practices a fixed monthly amount per patient?
+    body: Yes. Patients are assigned based on their existing primary care relationships, payments are adjusted for patients' medical and social needs, behavioral health care is built in, insurers share data with practices on time, and the state employee health plan takes part. Whether providers must use it differs (see above).
+  - heading: Must practices in the model receive at least what they would have under regular per-visit payment?
+    body: Yes.

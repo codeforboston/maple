@@ -1,0 +1,79 @@
+id: pet-equity
+name: PETS Act
+court: 194
+title: An Act promoting pet equity, treatment and safety
+gist: Both bills create a pet ownership program in public housing, require research labs to try to place dogs and cats for adoption, limit animal testing where a valid alternative exists, and route certain fines to the Homeless Animal Prevention and Care Fund. Beyond that they diverge. Only the Senate bans dog and cat sales in pet shops, adds "cruel conditions" fines and bars home insurers from using dog breed. Only the House licenses veterinary technicians, regulates pet insurance, lets courts act on neglected animals and revises kennel and licensing rules.
+senateBillId: S3028
+houseBillId: H5589
+canonicalBillId: S3028
+status: appointed
+conferees:
+  - memberCode: PRF0
+    branch: Senate
+    chair: true
+  - memberCode: jml0
+    branch: Senate
+  - memberCode: BET0
+    branch: Senate
+  - memberCode: JJO1
+    branch: House
+    chair: true
+  - memberCode: JPL1
+    branch: House
+  - memberCode: SSH1
+    branch: House
+hearingIds:
+  - hearing-5762
+differences:
+  - heading: Should pet shops be barred from selling dogs and cats, and allowed only to host adoptions from rescues and shelters?
+    senate: Yes. Licensed pet shops may not sell dogs or cats but may host adoptions by rescues and shelters. Fines up to $1,000 for a first violation, $2,500 for a second and $5,000 after that, with each sale or ad counted separately, plus possible loss of the shop's license. Takes effect 180 days after the law passes. (§§4–6, c.129 §39A; §18)
+  - heading: Should the law define "cruel conditions" for pets, with warnings and rising fines?
+    senate: Yes. Cruel conditions include excessive waste, unsafe water, no shelter from bad weather, no chance to go outdoors, and inhumane chaining or tethering of dogs. Penalties are a written warning or fines up to $50, $200 and $500. On a third offense the animal may be impounded or the owner may lose ownership. (§§10–13, c.140 §174E)
+  - heading: Should police and animal control officers be able to ask a court to order care for, or removal of, a neglected animal?
+    house: Yes. A district court holds a hearing within 10 days, with at least 3 days' notice to the owner. If it finds neglect, the court may order the animal given up, humanely euthanized or given specific care, and may bar the person from having custody of animals. (§25, new c.140 §151D)
+  - heading: Should animal cruelty violations be handled with warnings and fines, like a ticket, in addition to criminal charges?
+    senate: Yes. A written warning or fines up to $50, $200 and $500 (with possible impoundment on a third offense), enforced by animal control or special state police officers through the non-criminal ticket process. Criminal charges remain available. (§16, c.272 §77)
+  - heading: Should home and renters insurers be barred from considering a dog's breed?
+    senate: Yes. Insurers may not ask about breed or use it to decide whether to issue, renew, cancel or price a policy. They may consider whether a dog has been declared dangerous or has a bite history. (§15, new c.175 §4C½)
+  - heading: Should the state set consumer protection rules for pet insurance?
+    house: Yes. Insurers must disclose exclusions, waiting periods and limits. Buyers get a full refund if they cancel within 30 days, insurers must prove a preexisting-condition exclusion applies, waiting periods for illness are capped at 30 days with none for accidents, and wellness plans must be kept separate from insurance. Takes effect 180 days after the law passes. (§32, new c.175 §162AA; §43)
+  - heading: Should the state license veterinary technicians?
+    house: Yes. Licenses for graduates of accredited programs who pass an exam, a path for people without the degree until Nov. 1, 2031, temporary licenses for currently certified technicians, and a license required for all by July 1, 2031. Research institutions, zoos, aquariums and wildlife rehabilitators are exempt. The state veterinary board adds 3 technician members. (§§3, 5–9, 34, 36–39, 41)
+  - heading: Which public housing residents should the pet ownership program cover?
+    senate: Residents of state-aided public housing who are "(i) the elderly; and (ii) residents who are able to reasonably care for a pet." (§2, new c.23B §37(b))
+    house: '"Older adults" (60 or older) in public housing who can reasonably care for a pet. (§4, new c.23B §5C(a)–(b))'
+  - heading: Which dogs may public housing refuse?
+    senate: Dogs a city or town has declared a nuisance or dangerous, and dogs with a known history of biting or injuring a person or animal. (§2, §37(d))
+    house: Only dogs a city or town has declared dangerous. (§4, §5C(d))
+  - heading: What must the housing pet rules include, and should an advisory group weigh in?
+    senate: The state housing office writes the rules after consulting housing authorities and tenant groups. The bill lists no required contents and creates no advisory group. (§2, §37(e))
+    house: The rules must cover applications and appeals, pet policies by type of housing, care standards and a pet grievance panel. A 9-member advisory group reports by July 1, 2027. (§4, §5C(e); §35)
+  - heading: Should the state study pet fees charged by public and private landlords?
+    senate: Yes. The state housing office studies pet fees and their effect on housing stability and on animals given up to shelters, and reports by Dec. 31, 2027. (§17)
+  - heading: Should the ban on animal testing (where alternatives exist) cover all products, or only cosmetics and household products?
+    senate: It applies "when testing a cosmetic or household product, product formulation, chemical or ingredient." Rules are due within 180 days of the law passing. (§14, new c.140 §174I; §19)
+    house: It applies "when testing a product, product formulation, chemical or ingredient," with valid alternatives "as determined by the commissioner" of public health. Rules are due Dec. 24, 2026, and the ban takes effect 180 days after the law does. (§29; §§40, 42)
+  - heading: Which agency should receive labs' yearly reports on dogs and cats, and what can be published?
+    senate: The Department of Agricultural Resources, which publishes the data every year. (§9, c.140 §174D½(e))
+    house: The Department of Public Health, which may publish only statewide totals without naming institutions. The House also defines the lab's required "reasonable effort" as notifying at least 1 partner rescue. (§§27–28)
+  - heading: Should dog licensing and kennel rules change?
+    house: Yes. Kennels may not accept unlicensed dogs, must keep transfer records for 36 months, and lose their licenses for unsanitary conditions. Public kennel lists show inspection results. New fines up to $100 for removing a dog's tag, keeping someone else's animal without permission, or holding a stray more than 48 hours without reporting it. (§§13–24)
+  - heading: Should ride-hailing apps let riders say they will bring a service animal, with fines for violations?
+    house: Yes. Apps must let riders tell drivers about a service animal, with fines up to $500, $750 and $1,000 for violations. (§§30–31, c.159A½)
+  - heading: Should the Homeless Animal Prevention and Care Fund be usable for other animal welfare measures?
+    house: Yes, for other measures the agriculture commissioner considers necessary, with majority support from the fund's advisory committee. (§1, c.10 §35WW)
+similarities:
+  - heading: Should certain animal-related fines (under G.L. c.129 §37) go to the Homeless Animal Prevention and Care Fund?
+    body: Yes.
+  - heading: Should public housing have a pet ownership program?
+    body: Yes. The state housing office (EOHLC) runs it for residents who can reasonably care for a pet, following health, animal control and cruelty laws. Who is eligible differs (see above).
+  - heading: What conditions may public housing set?
+    body: A pet deposit of no more than $160 or one month's rent, whichever is less; limits on the number of pets by unit size and building type; spaying or neutering; a care plan; and registration.
+  - heading: What may public housing not do?
+    body: Ban pets outright, turn a pet away based only on breed, size, weight or appearance, require declawing, or evict a tenant only for having a pet when the tenant follows the rules.
+  - heading: Must research labs try to place dogs and cats for adoption?
+    body: Yes. After studies that don't require euthanasia, labs must assess each dog or cat and offer suitable ones to a rescue group they have an agreement with. The exceptions and the protection from liability are the same in both.
+  - heading: Must labs report every year on these animals?
+    body: "Yes: how many were euthanized, found suitable or unsuitable for adoption, and offered for adoption. Which agency receives the reports differs (see above)."
+  - heading: Should animal testing be banned where a valid alternative exists?
+    body: Yes, with the Department of Public Health setting standards that consider international (OECD) guidelines. Medical research is exempt. The scope and timing differ (see above).

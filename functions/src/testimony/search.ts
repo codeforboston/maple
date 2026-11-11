@@ -42,7 +42,7 @@ export const {
     ],
     default_sorting_field: "publishedAt"
   },
-  filter: data => !data.ballotQuestionId,
+  filter: data => !data.ballotQuestionId && !data.conferenceId,
   convert: data => {
     const validation = Testimony.validateWithDefaults(data)
     if (!validation.success) {

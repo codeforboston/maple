@@ -19,6 +19,7 @@ export async function getStaticProps({ locale }: any) {
       ...(await serverSideTranslations(locale, [
         "auth",
         "common",
+        "conferences",
         "editProfile",
         "footer",
         "profile"

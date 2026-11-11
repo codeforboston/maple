@@ -14,8 +14,25 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from portal import DisclosureDetail, DisclosureMeta
+import pytest
+
+from portal import DisclosureDetail, DisclosureMeta, Registration
 import scrape
+
+
+@pytest.fixture(autouse=True)
+def _fetch_summary_via_meta_mock(monkeypatch):
+    """scrape fetches a registration page once via fetch_summary (disclosure
+    links + full registration). Tests mock fetch_disclosure_meta, so derive
+    fetch_summary from that mock at call time, with no registration."""
+    monkeypatch.setattr(
+        scrape,
+        "fetch_summary",
+        lambda session, url, use_archive=False: (
+            scrape.fetch_disclosure_meta(session, url, use_archive=use_archive),
+            None,
+        ),
+    )
 
 
 # ── Fake Firestore ────────────────────────────────────────────────────────────
@@ -324,7 +341,9 @@ def test_weekly_skips_already_processed_disclosure():
 def test_weekly_caches_prior_year_but_not_current_year():
     db = FakeFirestore()
     current_year = scrape.datetime.now(tz=scrape.timezone.utc).year
-    prior_year = current_year - 1
+    # Two years back, so a list cached today is past that year's last
+    # reports at any time of year (see test_weekly_cache_is_trusted_*).
+    prior_year = current_year - 2
     summary_url = "https://x/summary/a"
 
     with patch("scrape.make_session", return_value=None), patch(
@@ -344,6 +363,81 @@ def test_weekly_caches_prior_year_but_not_current_year():
         scrape.run_weekly(db, years=[current_year])
         scrape.run_weekly(db, years=[current_year])
         assert fetch_meta.call_count == 2
+
+
+def _cache_entry(db, summary_url, **data):
+    h = scrape._url_hash(summary_url)
+    db.document(scrape.SCRAPER_DOC).collection(scrape.SUMMARY_CACHE_COLLECTION).document(h).set(
+        {"summaryUrl": summary_url, "discUrls": ["https://x/disc/cached"], **data}
+    )
+
+
+@pytest.mark.parametrize(
+    "entry, trusted",
+    [
+        # Cached after the year's last reports were due, current versions only.
+        ({"supersededUrls": [], "cachedAt": "2025-03-10T00:00:00+00:00"}, True),
+        # Cached during the year, or before its Jul–Dec reports were due.
+        ({"supersededUrls": [], "cachedAt": "2024-11-02T00:00:00+00:00"}, False),
+        ({"supersededUrls": [], "cachedAt": "2025-01-20T00:00:00+00:00"}, False),
+        # Written before amendments were tracked: lists every version.
+        ({"cachedAt": "2025-03-10T00:00:00+00:00"}, False),
+    ],
+)
+def test_weekly_cache_is_trusted_only_once_the_year_is_settled(entry, trusted):
+    db = FakeFirestore()
+    _cache_entry(db, "https://x/summary/a", **entry)
+    cached = scrape._get_cached_disc_urls(db, "https://x/summary/a", 2024)
+    assert cached == (["https://x/disc/cached"] if trusted else None)
+
+
+def test_weekly_refetches_a_stale_cache_entry_and_removes_superseded():
+    """A pre-amendment cache entry is refetched live: the current version is
+    processed, the earlier one's filings removed, and the entry rewritten."""
+    db = FakeFirestore()
+    summary_url = "https://x/summary/a"
+    _cache_entry(db, summary_url, cachedAt="2025-03-10T00:00:00+00:00")
+    meta = _meta(summary_url, ["https://x/disc/amended"])
+    meta.superseded_urls = {"https://x/disc/original": "https://x/disc/amended"}
+    removed = []
+
+    with patch("scrape.make_session", return_value=None), patch(
+        "scrape.fetch_summary_links", side_effect=lambda session, y: [summary_url]
+    ), patch(
+        "scrape.fetch_disclosure_meta", side_effect=lambda session, url, use_archive=False: meta
+    ), patch(
+        "scrape.fetch_disclosure_detail", return_value=DisclosureDetail()
+    ), patch("scrape.write_registrant", return_value=None), patch(
+        "scrape.write_filings", return_value=0
+    ), patch(
+        "scrape.remove_superseded_filings",
+        side_effect=lambda db, urls: removed.extend(urls) or 0,
+    ):
+        scrape.run_weekly(db, years=[2024])
+
+    assert removed == ["https://x/disc/original"]
+    h = scrape._url_hash(summary_url)
+    entry = db.store[f"{scrape.SCRAPER_DOC}/{scrape.SUMMARY_CACHE_COLLECTION}/{h}"]
+    assert entry["discUrls"] == ["https://x/disc/amended"]
+    assert entry["supersededUrls"] == ["https://x/disc/original"]
+
+
+def test_weekly_does_not_cache_a_registrant_that_failed():
+    """A registrant whose disclosure failed isn't cached, so the next run
+    fetches it live again instead of trusting an unfinished list."""
+    db = FakeFirestore()
+    summary_url = "https://x/summary/a"
+    with patch("scrape.make_session", return_value=None), patch(
+        "scrape.fetch_summary_links", side_effect=lambda session, y: [summary_url]
+    ), patch(
+        "scrape.fetch_disclosure_meta",
+        side_effect=lambda session, url, use_archive=False: _meta(url, ["https://x/disc/1"]),
+    ), patch(
+        "scrape.fetch_disclosure_detail", side_effect=RuntimeError("portal down")
+    ):
+        scrape.run_weekly(db, years=[2020])
+    assert scrape._get_cached_disc_urls(db, summary_url, 2020) is None
+    assert not any(scrape.SUMMARY_CACHE_COLLECTION in p for p in db.store)
 
 
 def test_weekly_cursor_doc_never_exceeds_a_few_small_fields():
@@ -401,3 +495,209 @@ def test_weekly_never_passes_use_archive():
         scrape.run_weekly(db, years=[2020])
 
     assert fetch_meta.call_args[1].get("use_archive", False) is False
+
+
+def test_registrations_are_saved_by_weekly_and_backfill():
+    """Both modes save the registration from each registration page they
+    fetch, so lobbyists whose firm files for them are still recorded."""
+    db = FakeFirestore()
+    summary_url = "https://portal.test/Summary.aspx?s=1"
+    reg = Registration(url=summary_url, name="Jordan Ellery", year=2026, reg_type="Lobbyist")
+    saved = []
+    with patch("scrape.make_session", return_value=None), patch(
+        "scrape.fetch_summary_links", side_effect=lambda session, year: [summary_url]
+    ), patch(
+        "scrape.fetch_summary",
+        side_effect=lambda session, url, use_archive=False: (_meta(url, []), reg),
+    ), patch("scrape.write_registration", side_effect=lambda db, r: saved.append(r)):
+        scrape.run_weekly(db, [2026])
+        scrape.run_backfill(db, [2026], workers=1)
+    assert saved == [reg, reg]
+
+
+@pytest.mark.parametrize("fail", [False, True])
+@pytest.mark.parametrize("mode", ["weekly", "backfill"])
+def test_superseded_versions_removed_after_current_is_written(mode, fail):
+    """Filings of an amended disclosure's earlier versions are removed once
+    its current version is written, and kept if writing it failed."""
+    db = FakeFirestore()
+    summary_url = "https://x/summary/a"
+    meta = _meta(summary_url, ["https://x/disc/amended"])
+    meta.superseded_urls = {"https://x/disc/original": "https://x/disc/amended"}
+    events = []
+
+    def write_filings(db, meta, detail, url):
+        if fail:
+            raise RuntimeError("write failed")
+        events.append(("write", url))
+        return 0
+
+    with patch("scrape.make_session", return_value=None), patch(
+        "scrape.fetch_summary_links", side_effect=lambda session, year: [summary_url]
+    ), patch(
+        "scrape.fetch_disclosure_meta", side_effect=lambda session, url, use_archive=False: meta
+    ), patch(
+        "scrape.fetch_disclosure_detail", return_value=DisclosureDetail()
+    ), patch(
+        "scrape.write_registrant", return_value=None
+    ), patch("scrape.write_filings", side_effect=write_filings), patch(
+        "scrape.remove_superseded_filings",
+        side_effect=lambda db, urls: events.append(("remove", urls)) or 0,
+    ):
+        if mode == "weekly":
+            scrape.run_weekly(db, years=[2024])
+        else:
+            scrape.run_backfill(db, years=[2024], workers=1)
+
+    if fail:
+        assert events == []
+    else:
+        assert events == [("write", "https://x/disc/amended"), ("remove", ["https://x/disc/original"])]
+
+
+@pytest.mark.parametrize("mode", ["weekly", "backfill"])
+def test_a_version_both_current_and_superseded_keeps_its_filings(mode, capsys):
+    """A misread page listing a version as superseded by itself must not
+    delete the filings just written for it; the page is reported."""
+    db = FakeFirestore()
+    summary_url = "https://x/summary/a"
+    meta = _meta(summary_url, ["https://x/disc/amended"])
+    meta.superseded_urls = {"https://x/disc/amended": "https://x/disc/amended"}
+    removed = []
+
+    with patch("scrape.make_session", return_value=None), patch(
+        "scrape.fetch_summary_links", side_effect=lambda session, year: [summary_url]
+    ), patch(
+        "scrape.fetch_disclosure_meta", side_effect=lambda session, url, use_archive=False: meta
+    ), patch(
+        "scrape.fetch_disclosure_detail", return_value=DisclosureDetail()
+    ), patch(
+        "scrape.write_registrant", return_value=None
+    ), patch("scrape.write_filings", return_value=0), patch(
+        "scrape.remove_superseded_filings",
+        side_effect=lambda db, urls: removed.append(urls) or 0,
+    ):
+        if mode == "weekly":
+            scrape.run_weekly(db, years=[2024])
+        else:
+            scrape.run_backfill(db, years=[2024], workers=1)
+
+    assert removed == []
+    assert "1 superseded versions are also current on https://x/summary/a" in capsys.readouterr().err
+
+
+def test_stats_mode_only_recomputes_stats(monkeypatch):
+    """--mode stats recomputes lobbyingMeta without fetching or scraping."""
+    calls = []
+    monkeypatch.setattr(sys, "argv", ["scrape.py", "--mode", "stats"])
+    with patch("scrape.firestore.Client", return_value="db"), patch(
+        "scrape.compute_stats", side_effect=lambda db: calls.append(db)
+    ), patch("scrape.run_weekly") as weekly, patch("scrape.run_backfill") as backfill, patch(
+        "scrape.fetch_summary_links"
+    ) as links:
+        scrape.main()
+    assert calls == ["db"]
+    weekly.assert_not_called()
+    backfill.assert_not_called()
+    links.assert_not_called()
+
+
+# ── Summary pages are fetched once per registrant ────────────────────────────
+
+
+def _run_counting_summary_fetches(runner, summary_url, disc_urls, meta=None, meta_error=None):
+    """Run runner() with the page fetches mocked; return (summary fetch count,
+    meta objects passed to write_registrant). meta_error makes every summary
+    fetch raise it."""
+    meta = meta or _meta(summary_url, disc_urls)
+
+    def fetch_meta(session, url, use_archive=False):
+        if meta_error:
+            raise meta_error
+        return meta
+
+    written = []
+    with patch("scrape.make_session", return_value=None), patch(
+        "scrape.fetch_summary_links", side_effect=lambda session, y, *a: [summary_url]
+    ), patch(
+        "scrape.fetch_disclosure_meta", side_effect=fetch_meta
+    ) as fetch_meta_mock, patch(
+        "scrape.fetch_disclosure_detail", return_value=DisclosureDetail()
+    ), patch(
+        "scrape.write_registrant", side_effect=lambda db, m, d, u: written.append(m)
+    ), patch("scrape.write_filings", return_value=0):
+        runner()
+    return fetch_meta_mock.call_count, written
+
+
+def test_backfill_fetches_each_summary_page_once():
+    db = FakeFirestore()
+    url = "https://x/summary/a"
+    discs = [f"https://x/disc/{i}" for i in range(4)]
+    meta = _meta(url, discs)
+    fetches, written = _run_counting_summary_fetches(
+        lambda: scrape.run_backfill(db, years=[2020], use_archive=True), url, discs, meta
+    )
+    assert fetches == 1
+    assert written == [meta] * 4
+
+
+def test_weekly_live_summary_is_fetched_once_for_all_new_disclosures():
+    db = FakeFirestore()
+    url = "https://x/summary/a"
+    discs = [f"https://x/disc/{i}" for i in range(3)]
+    fetches, written = _run_counting_summary_fetches(
+        lambda: scrape.run_weekly(db, years=[2020]), url, discs
+    )
+    assert fetches == 1
+    assert len(written) == 3
+
+
+def test_weekly_cache_hit_fetches_summary_once_when_disclosures_are_new():
+    db = FakeFirestore()
+    url = "https://x/summary/a"
+    discs = [f"https://x/disc/{i}" for i in range(3)]
+    _cache_entry(
+        db, url, discUrls=discs, supersededUrls=[], cachedAt="2025-03-10T00:00:00+00:00"
+    )
+    fetches, written = _run_counting_summary_fetches(
+        lambda: scrape.run_weekly(db, years=[2020]), url, discs
+    )
+    assert fetches == 1
+    assert len(written) == 3
+
+
+def test_weekly_cache_hit_with_nothing_new_fetches_no_summary():
+    db = FakeFirestore()
+    url = "https://x/summary/a"
+    discs = ["https://x/disc/1", "https://x/disc/2"]
+    _cache_entry(
+        db, url, discUrls=discs, supersededUrls=[], cachedAt="2025-03-10T00:00:00+00:00"
+    )
+    for d in discs:
+        scrape._mark_processed(db, d)
+    fetches, written = _run_counting_summary_fetches(
+        lambda: scrape.run_weekly(db, years=[2020]), url, discs
+    )
+    assert fetches == 0
+    assert written == []
+
+
+def test_weekly_cache_hit_summary_fetch_failure_processes_nothing():
+    db = FakeFirestore()
+    url = "https://x/summary/a"
+    discs = ["https://x/disc/1", "https://x/disc/2"]
+    _cache_entry(
+        db, url, discUrls=discs, supersededUrls=[], cachedAt="2025-03-10T00:00:00+00:00"
+    )
+    fetches, written = _run_counting_summary_fetches(
+        lambda: scrape.run_weekly(db, years=[2020]),
+        url,
+        discs,
+        meta_error=RuntimeError("portal down"),
+    )
+    assert written == []
+    entry = db.store[
+        f"{scrape.SCRAPER_DOC}/{scrape.SUMMARY_CACHE_COLLECTION}/{scrape._url_hash(url)}"
+    ]
+    assert entry["cachedAt"] == "2025-03-10T00:00:00+00:00"
