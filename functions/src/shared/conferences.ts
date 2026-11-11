@@ -1,4 +1,5 @@
 import type { Conference } from "../conferences/types"
+import type { ConferencePosition } from "../testimony/types"
 
 /** Once the report is filed, the committee has decided: each question says
  * how the law resolved it. */
@@ -21,3 +22,10 @@ type Named = { name?: string | null; title?: string | null }
 /** The short name where there is one, else the act title. */
 export const conferenceName = (c: Named) =>
   c.name?.trim() || c.title?.trim() || ""
+// The site's wording, conferences input.position.*.long; a test holds them equal.
+export const CONFERENCE_STANCES: Record<ConferencePosition, string> = {
+  passSomething: "Please pass something",
+  passSenateVersion: "Pass the Senate version",
+  passHouseVersion: "Pass the House version",
+  passNothing: "Don't pass anything"
+}

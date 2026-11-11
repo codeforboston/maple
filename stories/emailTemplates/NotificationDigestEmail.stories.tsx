@@ -4,11 +4,11 @@ import { EmailTemplateRenderer } from "./EmailTemplateRenderer"
 import {
   BillDigest,
   BillResult,
-  CONFERENCE_STANCES,
   ConferenceDigest,
   NotificationEmailDigest,
   UserDigest
 } from "functions/src/notifications/emailTypes"
+import { CONFERENCE_STANCES } from "functions/src/shared/conferences"
 import { Frequency } from "components/auth"
 
 const meta: Meta = {

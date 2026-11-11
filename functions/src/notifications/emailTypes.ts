@@ -1,13 +1,4 @@
 import { Frequency } from "../auth/types"
-import type { ConferencePosition } from "../testimony/types"
-
-// The site's wording, conferences input.position.*.long; a test holds them equal.
-export const CONFERENCE_STANCES: Record<ConferencePosition, string> = {
-  passSomething: "Please pass something",
-  passSenateVersion: "Pass the Senate version",
-  passHouseVersion: "Pass the House version",
-  passNothing: "Don't pass anything"
-}
 
 export type BillDigest = {
   billId: string
@@ -61,4 +52,27 @@ export type NotificationEmailDigest = {
   numBallotQuestionsWithNewTestimony: number
   conferences: ConferenceDigest[] // cap of 4
   numConferencesWithNewTestimony: number
+}
+
+type ConferenceUpdateRow = {
+  label: string
+  count: number
+  /** "▲ 3", "▼ 1" or "—". */
+  delta: string
+}
+export type ConferenceUpdateEmail = {
+  /** "S.2581 / H.5366" */
+  bills: string
+  title: string
+  conferenceUrl: string
+  /** "September 21–27, 2026" */
+  weekLabel: string
+  sentLabel: string
+  conferees: { name: string; chair: boolean }[]
+  total: number
+  totalDelta: string
+  groups: ConferenceUpdateRow[]
+  /** Each with its share of the bar, in whole percent, and its colour. */
+  positions: (ConferenceUpdateRow & { width: number; color: string })[]
+  changes: string[]
 }

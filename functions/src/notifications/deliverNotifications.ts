@@ -13,7 +13,6 @@ import {
   BallotQuestionDigest,
   BillDigest,
   BillResult,
-  CONFERENCE_STANCES,
   ConferenceDigest,
   NotificationEmailDigest,
   Position,
@@ -22,6 +21,7 @@ import {
 import { prepareHandlebars } from "../email/handlebarsHelpers"
 import { Frequency } from "../auth/types"
 import { ConferencePosition } from "../testimony/types"
+import { CONFERENCE_STANCES } from "../shared/conferences"
 
 const PROFILE_BATCH_SIZE = 50
 const NUM_BILLS_TO_DISPLAY = 4
