@@ -174,7 +174,7 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
   // Conference testimony is written on the conference page, while it takes
   // testimony.
   if (revision.conferenceId) {
-    if (conference && takesTestimony(conference.status))
+    if (conference && takesTestimony(conference))
       items.push(
         <PolicyActionItem
           key="add-testimony"

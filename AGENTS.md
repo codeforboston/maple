@@ -102,7 +102,8 @@ Run these on a fresh branch from `upstream/main`, before making changes, so you 
 | `yarn check-types`      | No errors.                                                                                                                                                             |
 | `yarn check-formatting` | "All matched files use Prettier code style!"                                                                                                                           |
 | `yarn lint`             | Finishes, but prints existing warnings such as `i18next/no-literal-string`. Only warnings in files you changed are yours to fix.                                       |
-| `yarn test`             | All test suites pass.                                                                                                                                                  |
+| `yarn test`             | All Cloud Functions test suites pass.                                                                                                                                  |
+| `yarn test:website`     | All website test suites pass.                                                                                                                                          |
 | `yarn dev`              | `curl -I http://localhost:3000` returns `200`. The first request compiles the page and can take 20 seconds or more.                                                    |
 | Python (only if needed) | `pip install -r llm/requirements.txt` (or `lobbying-scraper/requirements.txt`) first, then the Python checks [below](#checks-that-run-on-every-pr).                    |
 
@@ -175,8 +176,12 @@ your branch ──PR──▶ main ──(automatic)──▶ dev site + dev bac
 | Lint                                       | `yarn lint`                                                                                                |
 | Formatting (all files, including Markdown) | `yarn check-formatting`; fix with `yarn fix`                                                               |
 | Types                                      | `yarn check-types`                                                                                         |
-| Unit tests (Cloud Functions)               | `yarn test`                                                                                                |
+| Cloud Functions tests                      | `yarn test`                                                                                                |
+| Website tests                              | `yarn test:website`                                                                                        |
+| Integration tests                          | `yarn test:integration-ci <files>` (needs Java for the emulators)                                          |
 | Python in `llm/`                           | `ruff check llm/`, `ruff format --check llm/`, `pytest llm/` (after `pip install -r llm/requirements.txt`) |
+
+CI runs only the website tests named in the `test:website` script and the integration test files listed in [repo-checks.yml](.github/workflows/repo-checks.yml). Add a new test to one of those lists, or it can fail on `main` unnoticed.
 
 Chromatic builds Storybook for every PR, and Terraform checks run when `infra/gcp` changes. Optional: install [pre-commit](https://pre-commit.com/) to run Prettier and lint on each commit ([.pre-commit-config.yaml](.pre-commit-config.yaml)).
 

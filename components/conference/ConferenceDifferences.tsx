@@ -1,39 +1,38 @@
-import { Fragment, KeyboardEvent, ReactNode, useRef, useState } from "react"
-import { DateTime } from "luxon"
+import { Fragment, KeyboardEvent, useRef, useState } from "react"
 import { Trans, useTranslation } from "next-i18next"
+import ReactMarkdown from "react-markdown"
 import styled from "styled-components"
 import { FEEDBACK_URL } from "../common"
 import { shortName } from "../formatting"
 import { yoursKey } from "./Conferees"
 import { useMyLegislators } from "./hooks"
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Check,
-  ChevronRight,
-  Star
-} from "./input/icons"
+import { ArrowRight, Check, ChevronRight, Star } from "./input/icons"
 import {
   brand,
   caution,
   chamberInk,
   ink,
+  keptTint,
+  lawInk,
   line,
   positive,
-  red,
   shadow,
+  wash,
   yea
 } from "./input/tokens"
 import { useWide } from "./input/useWide"
 import { TABS_H } from "./ConferenceTabs"
 import { CardTitle, CommitteeCard } from "./styles"
 import {
-  CHAMBERS,
-  ConfereeView,
-  DifferenceView,
-  SimilarityView,
-  SourceView
-} from "./types"
+  Chip,
+  ChipCount,
+  EditedMark,
+  OUTCOMES,
+  OutcomeChip,
+  OutcomeFilter,
+  countOutcomes
+} from "./ConferenceResolution"
+import { CHAMBERS, ConfereeView, DifferenceView, SimilarityView } from "./types"
 
 /** The mockup's card, which keeps its gutters at every width. */
 const Frame = styled(CommitteeCard)`
@@ -64,13 +63,34 @@ const Body = styled.div`
   }
 `
 
-const Gist = styled.p`
+/** A short paragraph on what the bills are, with the invitation to send
+ * feedback under it. */
+const Gist = styled.div`
   margin: 0 0 2px;
   padding-left: 16px;
   border-left: 2px solid ${line.strong};
-  font-size: 0.8125rem;
-  line-height: 1.65;
-  color: ${ink.mid};
+  max-width: 65ch;
+
+  p {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.65;
+    color: ${ink.mid};
+  }
+  /* The feedback line beneath the gist. */
+  > div + p {
+    margin-top: 8px;
+    font-size: 0.8125rem;
+    color: ${ink.faint};
+  }
+`
+
+/** The gist's own text, written as markdown, so its paragraphs are told
+ * apart from the feedback line. */
+const GistText = styled.div`
+  p + p {
+    margin-top: 8px;
+  }
 `
 
 const DottedLink = styled.a`
@@ -100,7 +120,7 @@ const List = styled.ul<{ $gap: number }>`
   list-style: none;
 `
 
-/** The SENATE and HOUSE labels' small caps, for a column or the sources. */
+/** The SENATE and HOUSE labels' small caps, for a column. */
 const Label = styled.p`
   display: flex;
   align-items: baseline;
@@ -167,12 +187,14 @@ const Answers = styled.div`
 `
 
 /** Each chamber's text on its own surface, outlined in the chamber's ink. */
-const Answer = styled.div<{ $ink: string }>`
+const Answer = styled.div<{ $ink: string; $silent?: boolean }>`
   flex: 1 1 0;
   min-width: 0;
   padding: 16px;
   background: var(--maple-surface-base);
-  border: 1px solid ${({ $ink }) => $ink};
+  border: 1px
+    ${({ $silent, $ink }) =>
+      $silent ? `dashed ${line.strong}` : `solid ${$ink}`};
   border-radius: var(--maple-radius-xl);
 `
 
@@ -191,6 +213,80 @@ const AnswerText = styled.p<{ $absent: boolean }>`
   @media (min-width: 390px) {
     font-size: 0.875rem;
   }
+`
+
+/** A resolved question's heading, with how it was resolved under it and its
+ * outcome beside, falling below on a narrow screen. */
+const ToggleHead = styled.span`
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 8px 16px;
+  min-width: 0;
+`
+
+const ToggleText = styled.span`
+  display: flex;
+  flex: 1 1 320px;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+`
+
+const ResolutionLine = styled.span`
+  max-width: 72ch;
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: ${ink.mid};
+`
+
+const OutcomeMarks = styled.span`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+`
+
+/** A resolved question opened: the two bills, then the law, then why it
+ * matters. */
+const Opened = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 14px;
+
+  @media (min-width: 390px) {
+    padding-left: 27px;
+  }
+  & > ${Answers} {
+    margin: 0;
+    padding: 0;
+  }
+`
+
+/** The law's card, beside the bills' in shape. */
+const Law = styled(Answer)`
+  flex: none;
+  background: ${lawInk.tint};
+`
+
+const LawLabel = styled(Label)`
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 4px;
+  color: ${lawInk.fill};
+`
+
+const Why = styled.p`
+  margin: 0;
+  padding: 12px 14px;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: ${ink.strong};
+  background: ${wash.default};
+  border-radius: 12px;
 `
 
 /** A span rather than a button, so a term of several words breaks across
@@ -329,43 +425,90 @@ const RowBody = styled.p`
   color: ${ink.mid};
 `
 
-/** The mockup's citation mark. */
-const Mark = styled.sup`
-  margin-left: 1px;
-  font-size: 0.55em;
-  font-weight: 600;
-  color: ${ink.faint};
+/** The groups a resolved conference's questions fall in: which chambers'
+ * bills took each one up. */
+const GROUPS = ["both", "house", "senate", "neither"] as const
+
+const Sub = styled.p`
+  margin: -12px 0 0;
+  max-width: 68ch;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: ${ink.mid};
 `
 
-/** The ballot page's bibliography, as the mockup parks it: one sentence per
- * source, the host as the link. */
-const Sources = styled.ol`
-  margin: 12px 0 0;
-  padding-left: 20px;
-  font-size: 0.8125rem;
-  line-height: 1.6;
-  color: ${ink.strong};
+const Filters = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+`
 
-  li + li {
-    margin-top: 8px;
+const FiltersLabel = styled.span`
+  margin-right: 4px;
+  font-size: 0.8125rem;
+  color: ${ink.mid};
+`
+
+const Group = styled.section`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`
+
+const GroupHead = styled.div`
+  h3 {
+    margin: 0;
+    font-family: var(--maple-font-heading);
+    font-weight: 500;
+    font-size: 1.0625rem;
+    color: ${ink.strong};
   }
-  li::marker {
-    color: ${ink.faint};
+  p {
+    margin: 2px 0 0;
+    max-width: 70ch;
+    font-size: 0.875rem;
+    color: ${ink.mid};
   }
-  a {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 3px;
-    color: ${brand.fill};
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    &:hover {
-      color: ${red.hover};
-    }
+`
+
+const KeptChip = styled(Chip)`
+  color: ${yea};
+  background: ${keptTint};
+`
+
+const Settled = styled.ul`
+  display: flex;
+  flex-direction: column;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+    padding-block: 12px;
+    border-top: 1px solid ${line.default};
   }
-  svg {
-    align-self: center;
+  li:first-child {
+    border-top: 0;
   }
+`
+
+const SettledWhat = styled.span`
+  display: block;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: ${ink.strong};
+`
+
+const SettledNote = styled.span`
+  display: block;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: ${ink.mid};
 `
 
 /**
@@ -379,7 +522,10 @@ export function ConferenceDifferences({
   similarities,
   conferees,
   onShare,
-  posted
+  posted,
+  resolved,
+  filter,
+  onFilter
 }: {
   gist: string | null
   differences: DifferenceView[]
@@ -389,106 +535,106 @@ export function ConferenceDifferences({
   onShare?: () => void
   /** The reader is already on the record. */
   posted: boolean
+  /** Once the report is filed: the questions say how the law resolved them,
+   * and which to show is shared with the resolution's bar. */
+  resolved: boolean
+  filter: OutcomeFilter
+  onFilter: (f: OutcomeFilter) => void
 }) {
   const { t } = useTranslation("conferences")
   const body = useRef<HTMLDivElement>(null)
   // The mockup's container query: below 720px the matches are left out.
   const wide = useWide(body, 720)
-  const cited = sourcesOf([...differences, ...(wide ? similarities : [])])
-  const markFor = (s: SourceView | null) => {
-    const n = s ? cited.findIndex(c => c.url === s.url) + 1 : 0
-    return n ? <Mark>{n}</Mark> : null
-  }
+  const yours = (
+    <YourLegislators conferees={conferees} onShare={onShare} posted={posted} />
+  )
 
   return (
     <Frame aria-labelledby="decided-q">
       <HeadingBand>
         <CardTitle id="decided-q" className="mb-0">
-          {t("decided.title")}
+          {t(resolved ? "resolved.list_title" : "decided.title")}
         </CardTitle>
       </HeadingBand>
       <Body ref={body}>
         {gist && (
           <Gist>
-            {gist}{" "}
-            <Trans
-              t={t}
-              i18nKey="decided.gist"
-              components={[
-                <DottedLink
-                  key="feedback"
-                  href={FEEDBACK_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                />
-              ]}
-            />
+            <GistText>
+              <ReactMarkdown
+                components={{
+                  a: ({ node: _node, ...props }) => (
+                    <DottedLink
+                      {...props}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    />
+                  )
+                }}
+              >
+                {gist}
+              </ReactMarkdown>
+            </GistText>
+            <p>
+              <Trans
+                t={t}
+                i18nKey="decided.gist"
+                components={[
+                  <DottedLink
+                    key="feedback"
+                    href={FEEDBACK_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  />
+                ]}
+              />
+            </p>
           </Gist>
         )}
-        <Grid $wide={wide}>
-          <div>
-            <List $gap={26} aria-label={t("decided.differ")}>
-              {differences.map((d, i) => (
-                <Difference
-                  key={d.heading}
-                  d={d}
-                  mark={markFor(d.source)}
-                  defaultOpen={i === 0}
-                />
-              ))}
-            </List>
-            <YourLegislators
-              conferees={conferees}
-              onShare={onShare}
-              posted={posted}
-            />
-          </div>
-          {wide && similarities.length > 0 && (
+        {resolved ? (
+          <Resolved
+            differences={differences}
+            similarities={similarities}
+            filter={filter}
+            onFilter={onFilter}
+            yours={yours}
+          />
+        ) : (
+          <Grid $wide={wide}>
             <div>
-              <Label>
-                {t("decided.match")}
-                <Count>{similarities.length}</Count>
-              </Label>
-              <List $gap={2}>
-                {similarities.map(s => (
-                  <Similarity key={s.heading} s={s} mark={markFor(s.source)} />
+              <List $gap={26} aria-label={t("decided.differ")}>
+                {differences.map((d, i) => (
+                  <Difference key={d.heading} d={d} defaultOpen={i === 0} />
                 ))}
               </List>
+              {yours}
             </div>
-          )}
-        </Grid>
-        {cited.length > 0 && (
-          <div>
-            <Label>{t("decided.sources")}</Label>
-            <Sources>
-              {cited.map(s => (
-                <Source key={s.url} source={s} />
-              ))}
-            </Sources>
-          </div>
+            {wide && similarities.length > 0 && (
+              <div>
+                <Label>
+                  {t("decided.match")}
+                  <Count>{similarities.length}</Count>
+                </Label>
+                <List $gap={2}>
+                  {similarities.map(s => (
+                    <Similarity key={s.heading} s={s} />
+                  ))}
+                </List>
+              </div>
+            )}
+          </Grid>
         )}
       </Body>
     </Frame>
   )
 }
 
-/** Each source once, in the order the points first cite it. */
-const sourcesOf = (points: { source: SourceView | null }[]) => [
-  ...new Map(
-    points.flatMap(p => (p.source ? [[p.source.url, p.source] as const] : []))
-  ).values()
-]
-
 function Difference({
   d,
-  mark,
   defaultOpen
 }: {
   d: DifferenceView
-  mark: ReactNode
   defaultOpen: boolean
 }) {
-  const { t } = useTranslation("conferences")
   const [open, setOpen] = useState(defaultOpen)
   return (
     <li>
@@ -496,32 +642,179 @@ function Difference({
         <Chevron>
           <ChevronRight size={19} />
         </Chevron>
-        <span>
-          {d.heading}
-          {mark}
-        </span>
+        <span>{d.heading}</span>
+      </Toggle>
+      {open && <ChamberAnswers d={d} />}
+    </li>
+  )
+}
+
+/** Each chamber's text in its own card. A chamber whose bill was silent is
+ * drawn as an absence, even where its text says what it lacked. */
+function ChamberAnswers({ d }: { d: DifferenceView }) {
+  const { t } = useTranslation("conferences")
+  const { addressedBy } = d
+  return (
+    <Answers>
+      {CHAMBERS.map(chamber => {
+        const key = chamber === "Senate" ? "senate" : "house"
+        const text = d[key]
+        // Before a report nothing says which bills took a question up.
+        const absent =
+          !!addressedBy && addressedBy !== "both" && addressedBy !== key
+        return (
+          <Answer key={chamber} $ink={chamberInk[chamber]} $silent={absent}>
+            <Chamber $ink={absent ? ink.mid : chamberInk[chamber]}>
+              {t(key)}
+            </Chamber>
+            <AnswerText $absent={!text}>
+              {text ? (
+                <Marked text={text} notes={d.notes} />
+              ) : (
+                t("decided.not_in_bill")
+              )}
+            </AnswerText>
+          </Answer>
+        )
+      })}
+    </Answers>
+  )
+}
+
+/** A question the law has resolved: how, under its heading, and opened, the
+ * two bills, the law and why it matters. */
+function ResolvedDifference({ d }: { d: DifferenceView }) {
+  const { t } = useTranslation("conferences")
+  const [open, setOpen] = useState(false)
+  const { outcome } = d
+  if (!outcome) return null
+  return (
+    <li>
+      <Toggle aria-expanded={open} onClick={() => setOpen(o => !o)}>
+        <Chevron>
+          <ChevronRight size={19} />
+        </Chevron>
+        <ToggleHead>
+          <ToggleText>
+            <span>{d.heading}</span>
+            {d.resolution && <ResolutionLine>{d.resolution}</ResolutionLine>}
+          </ToggleText>
+          <OutcomeMarks>
+            <OutcomeChip o={outcome} />
+            {d.edited && (
+              <EditedMark>
+                {t("resolved.edited_note", { note: d.edited })}
+              </EditedMark>
+            )}
+          </OutcomeMarks>
+        </ToggleHead>
       </Toggle>
       {open && (
-        <Answers>
-          {CHAMBERS.map(chamber => {
-            const key = chamber === "Senate" ? "senate" : "house"
-            const text = d[key]
-            return (
-              <Answer key={chamber} $ink={chamberInk[chamber]}>
-                <Chamber $ink={chamberInk[chamber]}>{t(key)}</Chamber>
-                <AnswerText $absent={!text}>
-                  {text ? (
-                    <Marked text={text} notes={d.notes} />
-                  ) : (
-                    t("decided.not_in_bill")
-                  )}
-                </AnswerText>
-              </Answer>
-            )
-          })}
-        </Answers>
+        <Opened>
+          <ChamberAnswers d={d} />
+          {d.law && (
+            <Law $ink={lawInk.fill}>
+              <LawLabel>
+                <span>{t("resolved.law")}</span>
+                <OutcomeChip o={outcome} />
+              </LawLabel>
+              <AnswerText $absent={false}>{d.law}</AnswerText>
+            </Law>
+          )}
+          {d.why && (
+            <Why>
+              <strong>{t("resolved.why")}</strong> {d.why}
+            </Why>
+          )}
+        </Opened>
       )}
     </li>
+  )
+}
+
+/** A resolved conference's questions: filtered by outcome, grouped by which
+ * bills took them up, with what both passed and the law kept below. */
+function Resolved({
+  differences,
+  similarities,
+  filter,
+  onFilter,
+  yours
+}: {
+  differences: DifferenceView[]
+  similarities: SimilarityView[]
+  filter: OutcomeFilter
+  onFilter: (f: OutcomeFilter) => void
+  yours: JSX.Element
+}) {
+  const { t } = useTranslation("conferences")
+  const counts = countOutcomes(differences)
+  const shown = differences.filter(
+    d => filter === "all" || d.outcome === filter
+  )
+  return (
+    <>
+      <Sub>{t("resolved.list_sub")}</Sub>
+      <Filters role="group" aria-label={t("resolved.filters")}>
+        <FiltersLabel>{t("resolved.show")}</FiltersLabel>
+        <Chip
+          as="button"
+          type="button"
+          aria-pressed={filter === "all"}
+          onClick={() => onFilter("all")}
+        >
+          {t("resolved.all")} <ChipCount>{differences.length}</ChipCount>
+        </Chip>
+        {OUTCOMES.filter(o => counts[o]).map(o => (
+          <OutcomeChip
+            key={o}
+            o={o}
+            count={counts[o]}
+            pressed={filter === o}
+            onClick={() => onFilter(o)}
+          />
+        ))}
+      </Filters>
+      {GROUPS.map(g => {
+        const items = shown.filter(d => d.addressedBy === g)
+        if (!items.length) return null
+        return (
+          <Group key={g} aria-labelledby={`group-${g}`}>
+            <GroupHead>
+              <h3 id={`group-${g}`}>
+                {t(`resolved.group.${g}.title`)} <Count>({items.length})</Count>
+              </h3>
+              <p>{t(`resolved.group.${g}.note`)}</p>
+            </GroupHead>
+            <List $gap={26}>
+              {items.map(d => (
+                <ResolvedDifference key={d.heading} d={d} />
+              ))}
+            </List>
+          </Group>
+        )
+      })}
+      {yours}
+      {similarities.length > 0 && (
+        <div>
+          <GroupHead>
+            <h3>{t("resolved.settled")}</h3>
+            <p>{t("resolved.settled_note")}</p>
+          </GroupHead>
+          <Settled>
+            {similarities.map(s => (
+              <li key={s.heading}>
+                <KeptChip>{t("resolved.kept")}</KeptChip>
+                <span>
+                  <SettledWhat>{s.heading}</SettledWhat>
+                  <SettledNote>{s.body}</SettledNote>
+                </span>
+              </li>
+            ))}
+          </Settled>
+        </div>
+      )}
+    </>
   )
 }
 
@@ -657,7 +950,7 @@ function YourLegislators({
   )
 }
 
-function Similarity({ s, mark }: { s: SimilarityView; mark: ReactNode }) {
+function Similarity({ s }: { s: SimilarityView }) {
   const [open, setOpen] = useState(false)
   return (
     <li>
@@ -670,31 +963,9 @@ function Similarity({ s, mark }: { s: SimilarityView; mark: ReactNode }) {
             <Check size={15} strokeWidth={2.5} />
           </Tick>
         </Marks>
-        <RowTitle>
-          {s.heading}
-          {mark}
-        </RowTitle>
+        <RowTitle>{s.heading}</RowTitle>
       </RowToggle>
       {open && <RowBody>{s.body}</RowBody>}
     </li>
   )
 }
-
-function Source({ source }: { source: SourceView }) {
-  const { t } = useTranslation("conferences")
-  return (
-    <li>
-      <em>{source.organisation}</em>
-      {source.publishedAt && `, ${published(source.publishedAt)}`}.{" "}
-      {t("decided.available")}{" "}
-      <a href={source.url} target="_blank" rel="noopener noreferrer">
-        {new URL(source.url).hostname.replace(/^www\./, "")}
-        <ArrowUpRight size={12} />
-      </a>
-    </li>
-  )
-}
-
-/** An ISO date as the citation prints it: "Sep 1, 2026". */
-const published = (iso: string) =>
-  DateTime.fromISO(iso, { zone: "utc" }).toLocaleString(DateTime.DATE_MED)

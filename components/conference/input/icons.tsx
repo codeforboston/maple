@@ -123,6 +123,13 @@ export const Check = (p: Props) => (
     <path d="M20 6 9 17l-5-5" />
   </Icon>
 )
+export const Link2 = (p: Props) => (
+  <Icon {...p}>
+    <path d="M9 17H7A5 5 0 0 1 7 7h2" />
+    <path d="M15 7h2a5 5 0 1 1 0 10h-2" />
+    <line x1="8" x2="16" y1="12" y2="12" />
+  </Icon>
+)
 export const SquarePen = (p: Props) => (
   <Icon {...p}>
     <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -144,5 +151,34 @@ export const ArrowUpRight = (p: Props) => (
 export const Star = (p: Props) => (
   <Icon {...p}>
     <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
+  </Icon>
+)
+export const UsersRound = (p: Props) => (
+  <Icon {...p}>
+    <path d="M18 21a8 8 0 0 0-16 0" />
+    <circle cx="10" cy="8" r="5" />
+    <path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3" />
+  </Icon>
+)
+export const BadgeCheck = (p: Props) => (
+  <Icon {...p}>
+    <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
+    <path d="m9 12 2 2 4-4" />
+  </Icon>
+)
+export const Maximize2 = (p: Props) => (
+  <Icon {...p}>
+    <path d="M15 3h6v6" />
+    <path d="m21 3-7 7" />
+    <path d="m3 21 7-7" />
+    <path d="M9 21H3v-6" />
+  </Icon>
+)
+export const Minimize2 = (p: Props) => (
+  <Icon {...p}>
+    <path d="m14 10 7-7" />
+    <path d="M20 10h-6V4" />
+    <path d="m3 21 7-7" />
+    <path d="M4 14h6v6" />
   </Icon>
 )

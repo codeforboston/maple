@@ -16,9 +16,11 @@ jest.mock("next-i18next", () => ({
 jest.mock("next/router", () => ({
   __esModule: true,
   default: { events: { on: () => {} } },
-  useRouter: () => ({ asPath: "/conferences/194/a" })
+  useRouter: () => ({ asPath: "/conferences/194/a", query: {} })
 }))
 jest.mock("usehooks-ts", () => ({ useMediaQuery: () => false }))
+// react-markdown ships ESM only, and the gist here is empty.
+jest.mock("react-markdown", () => ({ __esModule: true, default: () => null }))
 jest.mock("../featureFlags", () => ({
   useFlags: () => ({ legislators: false, hearingsAndTranscriptions: true })
 }))
@@ -29,6 +31,8 @@ jest.mock("./input/useFollowedAuthors", () => ({
 // The feed is not under test, and its actions reach for the store.
 jest.mock("./input/Kebab", () => ({ Kebab: () => null }))
 jest.mock("./input/EntryModal", () => ({ EntryModal: () => null }))
+// The bill text panel would otherwise read the dev backend.
+jest.mock("../db/bills", () => ({ useBill: () => ({ loading: true }) }))
 
 jest.mock("../auth", () => ({
   useAuth: () => ({
@@ -80,7 +84,9 @@ const summary = (id: string, senate: string, house: string) => ({
   senateBillId: senate,
   houseBillId: house,
   canonicalBillId: senate,
-  status: "appointed" as const
+  status: "appointed" as const,
+  covered: true,
+  reportBillId: null
 })
 const phoneFree = summary(
   "student-learning-and-mental-health",
@@ -96,7 +102,8 @@ const page = (conference: ConferencePageProps["conference"]) => ({
   hearings: [],
   gist: null,
   differences: [],
-  similarities: []
+  similarities: [],
+  testimonyCount: 0
 })
 
 describe("moving between conferences", () => {

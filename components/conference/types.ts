@@ -1,5 +1,9 @@
 import type { Branch } from "../../functions/src/common"
-import type { ConferenceStatus } from "../../functions/src/conferences/types"
+import type {
+  ConferenceAddressedBy,
+  ConferenceOutcome,
+  ConferenceStatus
+} from "../../functions/src/conferences/types"
 import type { EventSummary } from "../db/events"
 
 /** The chambers in the order every view shows them: Senate first. */
@@ -17,6 +21,10 @@ export type ConferenceSummary = {
   /** The bill testimony on the conference is filed against. */
   canonicalBillId: string
   status: ConferenceStatus
+  /** False where we haven't written the conference up yet. */
+  covered: boolean
+  /** The conference report's bill, once one is filed. */
+  reportBillId: string | null
 }
 
 /** A conferee with the member document resolved and their seat on the map
@@ -38,28 +46,25 @@ export const personKey = (c: ConfereeView) => c.seat ?? c.memberCode
 /** A linked hearing, without its videos. */
 export type HearingView = Pick<EventSummary, "id" | "eventId" | "startsAt">
 
-/** Where an authored point came from. */
-export type SourceView = {
-  organisation: string
-  url: string
-  publishedAt: string | null
-}
-
 /** One point the chambers disagree on; a chamber's text is null where its
- * bill has nothing on it. */
+ * bill has nothing on it. Once a report is filed, how the law resolved it. */
 export type DifferenceView = {
   heading: string
   senate: string | null
   house: string | null
   notes: Record<string, string[]>
-  source: SourceView | null
+  outcome: ConferenceOutcome | null
+  edited: string | null
+  addressedBy: ConferenceAddressedBy | null
+  resolution: string | null
+  law: string | null
+  why: string | null
 }
 
 /** One point where the two texts match. */
 export type SimilarityView = {
   heading: string
   body: string
-  source: SourceView | null
 }
 
 export type ConferencePageProps = {
@@ -67,10 +72,12 @@ export type ConferencePageProps = {
   conferences: ConferenceSummary[]
   conferees: ConfereeView[]
   hearings: HearingView[]
-  /** What the bill is, in one sentence; null where none is written. */
+  /** What the bill is, in markdown; null where none is written. */
   gist: string | null
   differences: DifferenceView[]
   similarities: SimilarityView[]
+  /** Published input on the conference, as the testimony triggers count it. */
+  testimonyCount: number
 }
 
 /** The index: every conference, active first, with its conferees by

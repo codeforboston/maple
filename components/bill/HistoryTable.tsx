@@ -4,18 +4,34 @@ import styled from "styled-components"
 import { BillHistory } from "../db"
 import { CourtContext } from "./Status"
 import { useTranslation } from "next-i18next"
+import createDOMPurify from "dompurify"
 
 export type HistoryProps = { billHistory: BillHistory }
+
+const historyActionText = (action: string) => {
+  // History modals are opened in the browser. Keep server rendering DOM-free.
+  if (typeof window === "undefined") return action
+
+  const fragment = createDOMPurify().sanitize(action, {
+    ALLOWED_TAGS: ["br"],
+    ALLOWED_ATTR: [],
+    RETURN_DOM_FRAGMENT: true
+  })
+  fragment.querySelectorAll("br").forEach(br => br.replaceWith("\n"))
+  // Render decoded text through React, never insert the feed's HTML into the page.
+  return fragment.textContent ?? ""
+}
 
 const LinkConnectedBills = ({ action }: { action: string }): JSX.Element => {
   /* regex must have capture group for split to work */
   const billRegex = new RegExp(/([HS]\d+)/)
 
   const court = useContext(CourtContext)
-  if (!billRegex.test(action)) {
-    return <>{action}</>
+  const text = historyActionText(action)
+  if (!billRegex.test(text)) {
+    return <>{text}</>
   }
-  const words = action.split(billRegex)
+  const words = text.split(billRegex)
   const wordMap = words.map((w, i) =>
     billRegex.test(w) ? (
       <Wrap key={i} href={billSiteURL(w, court)}>
@@ -112,6 +128,10 @@ const StyledTable = styled.table`
 
     td:last-child {
       text-align: center;
+    }
+
+    td:nth-child(2) {
+      white-space: pre-line;
     }
   }
 

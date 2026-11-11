@@ -1,4 +1,4 @@
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 import { BillStatusCard } from "components/BillStatusCard/BillStatusCard"
 import { createMeta } from "stories/utils"
 
@@ -7,7 +7,7 @@ export default createMeta({
   component: BillStatusCard
 })
 
-const Template: ComponentStory<typeof BillStatusCard> = props => {
+const Template: StoryFn<typeof BillStatusCard> = props => {
   return <BillStatusCard {...props} />
 }
 

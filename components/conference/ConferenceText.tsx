@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { memo, useState } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
@@ -31,7 +31,7 @@ const Picker = styled.div`
 `
 
 /** The recessed tray the sheets sit in, the height the mockup gives it. */
-const Well = styled.div`
+export const Well = styled.div`
   display: flex;
   gap: 1rem;
   height: min(74vh, 860px);
@@ -48,7 +48,7 @@ const Well = styled.div`
 
 /** One document, which scrolls on its own so a section of one text can be
  * held against the same section of the other. */
-const Paper = styled.article`
+export const Paper = styled.article`
   flex: 1 1 0;
   min-width: 0;
   max-width: 680px;
@@ -170,9 +170,10 @@ function Sheet({
  * The two texts the conference is reconciling, side by side, or one chamber's
  * at a time. Fetched in the browser rather than with the page: an omnibus
  * pair is half a megabyte. Both are fetched here, once, so switching version
- * does not fetch a text again.
+ * does not fetch a text again. Memoised: the page around it re-renders as
+ * the reader filters and composes, and a text is long to lay out again.
  */
-export function ConferenceText({
+export const ConferenceText = memo(function ConferenceText({
   conference
 }: {
   conference: ConferenceSummary
@@ -220,4 +221,4 @@ export function ConferenceText({
       </Well>
     </section>
   )
-}
+})

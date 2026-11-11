@@ -196,9 +196,14 @@ function useTestimony(
   useEffect(() => {
     if (draftRef)
       return onSnapshot(draftRef, {
+        // Gone on the server is deleted elsewhere, as by another tab.
         next: snap =>
-          snap.exists() &&
-          dispatch({ type: "loadDraft", value: snap.data() as WorkingDraft }),
+          snap.exists()
+            ? dispatch({
+                type: "loadDraft",
+                value: snap.data() as WorkingDraft
+              })
+            : !snap.metadata.fromCache && dispatch({ type: "discardDraft" }),
         error: error => dispatch({ type: "error", error })
       })
   }, [dispatch, draftRef])
@@ -206,12 +211,16 @@ function useTestimony(
   useEffect(() => {
     if (publicationRef)
       return onSnapshot(publicationRef, {
+        // Gone on the server is deleted elsewhere, as a cosign is with the
+        // testimony it cosigns.
         next: snap =>
-          snap.exists() &&
-          dispatch({
-            type: "loadPublication",
-            value: snap.data() as Testimony
-          }),
+          snap.exists()
+            ? dispatch({
+                type: "loadPublication",
+                value: snap.data() as Testimony
+              })
+            : !snap.metadata.fromCache &&
+              dispatch({ type: "deletePublication" }),
         error: error => dispatch({ type: "error", error })
       })
   }, [dispatch, publicationRef])
@@ -225,7 +234,7 @@ function usePublishTestimony(
     useCallback(async () => {
       if (conferenceId) ConferenceDraftTestimony.check(workingDraft)
       else DraftTestimony.check(workingDraft)
-      // TODO: don't publish again if draft.publishedVersion is defined
+      if (workingDraft?.publishedVersion !== undefined) return
       if (draftRef) {
         const result = await publishTestimony({ draftId: draftRef.id })
         dispatch({ type: "resolvePublication", id: result.data.publicationId })
@@ -236,18 +245,19 @@ function usePublishTestimony(
 }
 
 function useDeleteTestimony(
-  { publicationRef }: State,
+  { publicationRef, uid }: State,
   dispatch: Dispatch<Action>
 ) {
   return useAsyncCallback(
     useCallback(async () => {
       if (publicationRef) {
         const result = await deleteTestimony({
+          uid,
           publicationId: publicationRef.id
         })
         if (result.data.deleted) dispatch({ type: "deletePublication" })
       }
-    }, [dispatch, publicationRef]),
+    }, [dispatch, publicationRef, uid]),
     { onError: error => dispatch({ type: "error", error }) }
   )
 }
@@ -271,6 +281,8 @@ type SaveDraftRequest = Pick<
   | "attachmentId"
   | "recipientMemberCodes"
   | "editReason"
+  | "cosignOfId"
+  | "cosignOfAuthorUid"
 > & { ballotQuestionId?: string | null }
 type SaveConferenceDraftRequest = Omit<SaveDraftRequest, "position"> & {
   position: ConferencePosition
@@ -297,6 +309,8 @@ function useSaveDraft(
         attachmentId,
         recipientMemberCodes,
         editReason,
+        cosignOfId,
+        cosignOfAuthorUid,
         ballotQuestionId: requestBallotQuestionId
       }: SaveDraftRequest) => {
         if (draftLoading) {
@@ -312,7 +326,9 @@ function useSaveDraft(
             attachmentId: attachmentId ?? null,
             ballotQuestionId:
               requestBallotQuestionId ?? ballotQuestionId ?? null,
-            conferenceId: conferenceId ?? null
+            conferenceId: conferenceId ?? null,
+            cosignOfId: cosignOfId ?? null,
+            cosignOfAuthorUid: cosignOfAuthorUid ?? null
           }
           const result = await addDoc(
             collection(firestore, `/users/${uid}/draftTestimony`),
@@ -321,7 +337,10 @@ function useSaveDraft(
           dispatch({ type: "resolveDraft", id: result.id })
         } else if (draftRef) {
           dispatch({ type: "loadingDraft" })
-          const hasChanges = hasDraftChanged(draft, publication)
+          const hasChanges = hasDraftChanged(
+            draft && { ...draft, position, content, attachmentId },
+            publication
+          )
           await updateDoc(draftRef, {
             position,
             content,
@@ -330,6 +349,8 @@ function useSaveDraft(
             editReason: editReason ?? null,
             ballotQuestionId:
               requestBallotQuestionId ?? ballotQuestionId ?? null,
+            cosignOfId: cosignOfId ?? null,
+            cosignOfAuthorUid: cosignOfAuthorUid ?? null,
             publishedVersion: hasChanges ? deleteField() : undefined
           })
         }

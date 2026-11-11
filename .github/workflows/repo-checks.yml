@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup-repo
 
       - name: Linting
@@ -36,10 +36,14 @@ jobs:
         if: always()
         run: yarn check-formatting
 
-      # TODO: Fix non-functions unit tests
-      - name: Unit Tests
+      - name: Cloud Functions Tests
         if: always()
         run: yarn test
+
+      # Emulator-backed tests under components/ are excluded; see the script
+      - name: Website Tests
+        if: always()
+        run: yarn test:website
 
       - name: Types
         if: always()
@@ -64,7 +68,7 @@ jobs:
           - typesense-data:/app/data
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup-repo
       - uses: actions/setup-java@v6
         with:
@@ -91,3 +95,7 @@ jobs:
           tests/integration/profile.test.ts
           tests/integration/ballotQuestions.test.ts
           tests/integration/backfillTestimonyScope.test.ts
+          tests/integration/conferences.test.ts
+          components/auth/hooks.test.ts
+          components/db/useUpcoming.test.ts
+          components/db/testimony

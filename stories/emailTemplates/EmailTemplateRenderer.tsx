@@ -17,12 +17,26 @@ export const EmailTemplateRenderer: FC<{
   context: any
 }> = ({ templateSrcUrl, context }) => {
   const [html, setHtml] = useState<string | undefined>()
+  const [error, setError] = useState<string | undefined>()
   useEffect(() => {
+    setError(undefined)
     loadHandlebars()
       .then(() => fetch(templateSrcUrl))
       .then(r => r.text())
       .then(raw => Handlebars.compile(raw)(context))
       .then(setHtml)
+      .catch(e => {
+        console.error("Failed to render email template", e)
+        setHtml(undefined)
+        setError(e instanceof Error ? e.message : String(e))
+      })
   }, [context, templateSrcUrl])
+  if (error) {
+    return (
+      <pre style={{ color: "crimson", whiteSpace: "pre-wrap" }}>
+        Failed to render email template: {error}
+      </pre>
+    )
+  }
   return html ? <div dangerouslySetInnerHTML={{ __html: html }} /> : null
 }

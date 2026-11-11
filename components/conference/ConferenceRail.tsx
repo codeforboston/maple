@@ -39,8 +39,13 @@ const List = styled.ul`
 `
 
 /** `$filed`: the committee has filed its report, so its row is dimmed as a
- * whole, unless it is the one being read. */
-const RailRow = styled(Internal)<{ $on: boolean; $filed: boolean }>`
+ * whole, unless it is the one being read. `$covered`: false where we haven't
+ * covered it, so its name is muted. */
+const RailRow = styled(Internal)<{
+  $on: boolean
+  $filed: boolean
+  $covered: boolean
+}>`
   display: block;
   overflow: hidden;
   border-left: 3px solid
@@ -63,8 +68,12 @@ const RailRow = styled(Internal)<{ $on: boolean; $filed: boolean }>`
     font-size: 0.9375rem;
     line-height: 1.35;
     font-weight: ${({ $on }) => ($on ? 600 : 400)};
-    color: ${({ $on }) =>
-      $on ? "var(--maple-brand-primary)" : "var(--maple-text-strong)"};
+    color: ${({ $on, $covered }) =>
+      $on
+        ? "var(--maple-brand-primary)"
+        : $covered
+        ? "var(--maple-text-strong)"
+        : "var(--maple-text-muted)"};
   }
   .bills {
     display: block;
@@ -79,8 +88,8 @@ const RailRow = styled(Internal)<{ $on: boolean; $filed: boolean }>`
   }
 `
 
-/** "S.1234 · H.5678", and the status once the conference has finished. The
- * caller styles `.status`. */
+/** "S.1234 · H.5678", the status once the conference has finished, and a
+ * label where we haven't covered it. The caller styles `.status`. */
 export function BillLine({ c }: { c: ConferenceSummary }) {
   const { t } = useTranslation("conferences")
   return (
@@ -89,6 +98,7 @@ export function BillLine({ c }: { c: ConferenceSummary }) {
       {c.status !== "appointed" && (
         <span className="status">{t(`status.${c.status}`)}</span>
       )}
+      {!c.covered && <span className="status">{t("not_covered")}</span>}
     </>
   )
 }
@@ -133,6 +143,7 @@ export function RailList({
             aria-current={c.id === current ? "page" : undefined}
             $on={c.id === current}
             $filed={c.status === "reportFiled"}
+            $covered={c.covered}
           >
             <span className="name">{conferenceName(c)}</span>
             <span className="bills">

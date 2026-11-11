@@ -1,70 +1,32 @@
 import React from "react"
 import { useTranslation } from "next-i18next"
-import { MAPLE_COLORS } from "./chartTheme"
-
-type Position = "support" | "oppose" | "neutral" | "none"
-
-/** Each position a pale fill, dark ink and a pale outline in the same hue. */
-const CHIP_STYLES: Record<Position, React.CSSProperties> = {
-  support: {
-    background: MAPLE_COLORS.greenSubtleBg,
-    color: MAPLE_COLORS.greenSubtleText,
-    border: `1px solid ${MAPLE_COLORS.greenBorder}`
-  },
-  oppose: {
-    background: MAPLE_COLORS.orangeSubtleBg,
-    color: MAPLE_COLORS.orangeSubtleText,
-    border: `1px solid ${MAPLE_COLORS.orangeBorder}`
-  },
-  neutral: {
-    background: MAPLE_COLORS.blueSubtleBg,
-    color: MAPLE_COLORS.blueSubtleText,
-    border: `1px solid ${MAPLE_COLORS.blueBorder}`
-  },
-  none: {
-    background: MAPLE_COLORS.graySubtleBg,
-    color: MAPLE_COLORS.textMuted,
-    border: `1px solid ${MAPLE_COLORS.graySubtleBorder}`
-  }
-}
-
-function normalizePosition(raw: string): Position {
-  const lower = raw.toLowerCase()
-  if (lower.includes("support")) return "support"
-  if (lower.includes("oppose") || lower.includes("against")) return "oppose"
-  if (lower.includes("neutral")) return "neutral"
-  return "none"
-}
+import type { Position } from "./activity"
+import { POSITION_TONES } from "./chartTheme"
 
 interface LobbyingPositionChipProps {
-  position: string
+  // Normalized with normalizePosition.
+  position: Position
   className?: string
-  /** The words exactly as the filing reports them (a dash when there are
-   * none) rather than the translated label; the colours still follow the
-   * position.
-   * The bill page uses it, as it showed the reported words before it used
-   * this chip. */
-  showReported?: boolean
+  title?: string
 }
 
 export const LobbyingPositionChip: React.FC<LobbyingPositionChipProps> = ({
   position,
   className,
-  showReported = false
+  title
 }) => {
   const { t } = useTranslation("lobbying")
-  const key = normalizePosition(position)
-  const label = showReported ? position || "—" : t(`position.${key}`)
 
   return (
     <span
       className={className}
+      title={title}
       style={{
         ...chipBaseStyle,
-        ...CHIP_STYLES[key]
+        ...POSITION_TONES[position].chip
       }}
     >
-      {label}
+      {t(`position.${position}`)}
     </span>
   )
 }
@@ -78,6 +40,3 @@ const chipBaseStyle: React.CSSProperties = {
   letterSpacing: "0.01em",
   whiteSpace: "nowrap"
 }
-
-export { normalizePosition }
-export type { Position }

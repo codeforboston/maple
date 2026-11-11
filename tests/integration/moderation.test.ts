@@ -92,6 +92,7 @@ describe("moderate testimony", () => {
 
     report = (await reportRef.get()).data() as Report
     expect(report.resolution?.resolution).toEqual("remove-testimony")
+    expect((await pubRef.get()).exists).toBeFalsy()
 
     await reportRef.delete()
     const testDraftRef = testDb.doc(

@@ -12,7 +12,7 @@ jobs:
     environment: prod
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
       - name: Setup Build Environment
         uses: ./.github/actions/setup-repo
       - name: Build and Deploy to Firebase

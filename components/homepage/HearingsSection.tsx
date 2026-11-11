@@ -1,7 +1,7 @@
 import { useTranslation } from "next-i18next"
 import { Internal } from "components/links"
 import { useCalendarEvents } from "components/HearingsScheduled/calendarEvents"
-import { CURRENT_COURT_NUMBER } from "components/search/courtSessions"
+import { currentGeneralCourt } from "functions/src/shared"
 import styles from "./Homepage.module.css"
 
 /** Browse Hearings from here opens the hearings search on Upcoming rather
@@ -15,7 +15,7 @@ const upcomingHearingsHref = (() => {
   params.append(`${index}[sortBy]`, "hearings/sort/startsAt:asc")
   params.append(
     `${index}[refinementList][court][]`,
-    String(CURRENT_COURT_NUMBER)
+    String(currentGeneralCourt)
   )
   return `/hearings?${params}`
 })()

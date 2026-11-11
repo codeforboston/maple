@@ -2,9 +2,7 @@ id: student-learning-and-mental-health
 name: Phone-Free Schools
 court: 194
 title: "An Act to promote student learning and mental health "
-# LOREM IPSUM: gist, differences and similarities are placeholders until the
-# sensemaking is written.
-gist: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.
+gist: Both bills require every public school district to adopt a policy barring student use of phones and other personal devices during the school day, with a state model policy and no suspension or expulsion as discipline. Only the House adds rules for social media platforms (an under-14 ban, parental consent at 14 and 15, age verification, feed limits), required social media instruction and a phone-disabling technology pilot. The chambers also differ on whether students may keep phones on their person.
 senateBillId: S2581
 houseBillId: H5366
 canonicalBillId: S2581
@@ -27,101 +25,44 @@ conferees:
 hearingIds:
   - hearing-5710
 differences:
-  - heading: Lorem ipsum dolor
-    senate: Not in the Senate bill. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    house: Sed do eiusmod tempor under the Consectetur Adipiscing Chapter, ut labore et dolore magna aliqua.
-    notes:
-      Consectetur Adipiscing Chapter:
-        - Ut enim ad minim veniam, quis nostrud exercitation.
-        - Duis aute irure dolor in reprehenderit in voluptate.
-        - Excepteur sint occaecat cupidatat non proident.
-    source:
-      organisation: Lorem Gazette
-      url: https://example.com/lorem-explainer
-      publishedAt: "2026-09-01"
-  - heading: Sit amet curriculum
-    house: Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-    source:
-      organisation: Lorem Gazette
-      url: https://example.com/lorem-explainer
-      publishedAt: "2026-09-01"
-  - heading: Consectetur pilot
-    house: Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-  - heading: Adipiscing or possession
-    senate: Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt.
-    house: Mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem.
-    source:
-      organisation: Ipsum Public Radio
-      url: https://example.org/ipsum-report
-      publishedAt: "2026-09-14"
-  - heading: Elit exceptions
-    senate: Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.
-    house: Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur.
-    source:
-      organisation: Ipsum Public Radio
-      url: https://example.org/ipsum-report
-      publishedAt: "2026-09-14"
-  - heading: Tempor hearing
-    senate: Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit.
-    source:
-      organisation: Dolor Daily
-      url: https://example.net/dolor
-      publishedAt: "2026-10-02"
-  - heading: Incididunt dates
-    senate: Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse.
-    house: At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium.
-    source:
-      organisation: Dolor Daily
-      url: https://example.net/dolor
-      publishedAt: "2026-10-02"
+  - heading: Should children under 14 be barred from social media, and should 14- and 15-year-olds need a parent's consent?
+    house: Yes. Platforms would have to close the accounts of users under 14 and delete their data, unless another law requires keeping it. Users who are 14 or 15 would need "verifiable consent" from a parent. Email, texting, cloud storage and document-sharing services are not covered. (§3, new c.93M §§1, 2(a)–(b))
+  - heading: Should social media platforms have to check users' ages, and how should that information be protected?
+    house: Platforms would have to check or estimate the age of every user, using the best technology practicable. Users could appeal, with a decision due within 3 days of submitting documents. Information collected to check age or consent must be kept separate and used for nothing else. Platforms may not share data about a minor's LGBTQ+ status or other status protected by the state anti-discrimination law (c.151B). Platforms must publish how many users they checked, admitted, denied and removed. (§3, new c.93M §§2–4)
+  - heading: Should social media feeds, notifications and settings be limited for 14- and 15-year-olds?
+    house: Yes. Users who are 14 or 15 could not be shown an "addictive social media feed," meaning content picked by an algorithm combined with features such as infinite scroll, push notifications, like counts or auto-play. They could not get notifications between midnight and 6 a.m. Their accounts would start with settings that limit who can see them, share their posts and message them to people they are connected with. Platforms may not reduce service or raise prices because of these limits. (§3, new c.93M §§1, 2(b)(4)–(7))
+  - heading: How would any social media rules be enforced, and when would they start?
+    house: Violations would count as unfair or deceptive business practices under the state consumer protection law (c.93A). Fines would be up to $5,000 for each account that breaks the age, consent, feed or settings rules, and up to $1,000,000 a day for not publishing user counts. The Attorney General must write regulations by Sept. 1, 2026 and run an online complaint form. The rules take effect Oct. 1, 2026. Both dates have now passed. (§3, new c.93M §§5–7; §§8–9)
+  - heading: Should schools be required to teach students about the risks of social media?
+    house: Yes. Each district would teach the "social, emotional and physical risks and harms of social media use" at grade levels it chooses, following state curriculum standards. The state education department, working with the Attorney General and the Department of Public Health, would issue guidance and help schools find materials and train teachers. (§2, new c.71 §103; §7)
+  - heading: Should students be barred from keeping phones on them, or only from using them?
+    senate: 'Students may not use their phones or keep them on their person during the school day, including recess, lunch and time between classes. The bill''s wording: policies must bar "the use and actual possession, strictly on their person." Districts may set different rules by grade level, but not to allow use or possession beyond the listed exceptions. (§2, new c.71 §102(a)(i), (d))'
+    house: "Students may not use their phones during the school day. The bill does not say whether they may carry them. Each district must choose how to block use: secure storage, technology that disables the phone, or another method the state education department approves. (§2, new c.71 §102(a)(1)–(2))"
+  - heading: Should the state test technology that disables students' phones at school?
+    senate: No test program. The state education department's yearly guidance updates must take into account technology that can disable phones on school grounds. (§1, new c.69 §40(d))
+    house: Yes. The state education department would run a 1-year pilot in 10 districts, hiring vendors through competitive bidding. Phones must still be able to call 911, run apps the district allows, and reach parents. Vendors may collect data only to disable phones, may not sell it, and must destroy it. (§4)
+  - heading: Besides disability and health needs, when may students use phones at school, and may the state education department add exceptions?
+    senate: Districts may also allow phones while students travel to early college, dual enrollment or vocational programs off campus. Districts may also adopt extra exceptions that the state education department puts in its model policy after finding a "compelling need." The health exception covers phones needed "to treat" a condition. (§2, new c.71 §102(b)(iii)–(v); §1, new c.69 §40(b)(2))
+    house: Districts may also allow phones in an emergency, or when the superintendent states in writing that a student needs one for translation or interpretation. The health exception covers phones needed "to treat or monitor" a condition. Every exception applies only as far as necessary. The bill has no travel exception and no provision for the state education department to add exceptions. (§2, new c.71 §102(b))
+  - heading: What public input and notice to families should be required?
+    senate: The state education department must hold at least 1 public hearing before finalizing its model policy. Local school boards must ask for public input before approving a policy. Each school must notify families and post the policy on its website every year by Sept. 1. (§1, c.69 §40(b)(3); §2, c.71 §102(e)–(f))
+    house: The state education department must ask for public input; a hearing is not required. The bill does not require local public input. Families are notified at least once a year, on a schedule the state education department sets. The bill does not require posting the policy online. (§1, c.69 §40(c)(1), (e)(2); §2, c.71 §102(a)(3), (c))
 similarities:
-  - heading: Lorem ipsum barred during the day
-    body: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-    source:
-      organisation: Lorem Gazette
-      url: https://example.com/lorem-explainer
-      publishedAt: "2026-09-01"
-  - heading: Dolor issues guidance and a model
-    body: Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-    source:
-      organisation: Lorem Gazette
-      url: https://example.com/lorem-explainer
-      publishedAt: "2026-09-01"
-  - heading: Sit amet takes over past a deadline
-    body: Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.
-  - heading: Consectetur filed every year
-    body: Identical in both bills.
-    source:
-      organisation: Lorem Gazette
-      url: https://example.com/lorem-explainer
-      publishedAt: "2026-09-01"
-  - heading: Adipiscing told every year
-    body: "Senate: excepteur sint occaecat. House: cupidatat non proident, sunt in culpa."
-    source:
-      organisation: Lorem Gazette
-      url: https://example.com/lorem-explainer
-      publishedAt: "2026-09-01"
-  - heading: Exceptions for sed do eiusmod
-    body: Qui officia deserunt mollit anim id est laborum.
-    source:
-      organisation: Lorem Gazette
-      url: https://example.com/lorem-explainer
-      publishedAt: "2026-09-01"
-  - heading: A guaranteed way to tempor
-    body: Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium.
-    source:
-      organisation: Lorem Gazette
-      url: https://example.com/lorem-explainer
-      publishedAt: "2026-09-01"
-  - heading: No incididunt for ut labore
-    body: Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit.
-    source:
-      organisation: Lorem Gazette
-      url: https://example.com/lorem-explainer
-      publishedAt: "2026-09-01"
-  - heading: Magna aliqua reports back
-    body: Senate by lorem 2027; House by ipsum 2028.
-    source:
-      organisation: Lorem Gazette
-      url: https://example.com/lorem-explainer
-      publishedAt: "2026-09-01"
+  - heading: Must every school district adopt a policy barring students from using phones during the school day?
+    body: Yes. Each district files its policy with the state education department every year by Sept. 1. A district without an approved policy follows the state's model policy. (In the House bill, this fallback is written only for the first deadline, Sept. 1, 2026.)
+  - heading: Which devices are covered?
+    body: Phones, tablets, laptops, smartwatches, Bluetooth devices and other portable devices that can connect to a network. Devices the school issues or approves for schoolwork are not covered.
+  - heading: Does the ban cover lunch and time between classes?
+    body: Yes. It covers the whole school day, including lunch, time between classes and school-sponsored activities during the day. Districts may set their own rules for times outside the school day.
+  - heading: Can students be suspended or expelled for breaking the policy?
+    body: No. Neither bill allows suspension or expulsion as punishment for breaking the policy, and both require safeguards against unequal discipline. (The House wording bars it when the punishment is "solely due to" breaking the policy.)
+  - heading: Must families and students be able to reach each other during the day?
+    body: Yes. Each policy must give at least one way for families and students to reach each other, with a plan for emergencies.
+  - heading: What must the state education department provide?
+    body: Guidance and a model policy covering how phones are stored and how the rules are enforced, posted online and reviewed every year.
+  - heading: Are there exceptions for disability and health needs?
+    body: Yes. Districts may allow a phone when a student's IEP or Section 504 plan calls for it, when a disability accommodation required by law (such as under the ADA) calls for it, or when a health care provider states in writing that the student needs it for a health condition.
+  - heading: Who adopts each district's policy?
+    body: The local school committee or similar board. The House adds the superintendent, and a charter school's board of trustees.
+  - heading: Must the state education department report back to the Legislature?
+    body: Yes, to the House and Senate Ways and Means committees and the Joint Committee on Education. The due dates differ.

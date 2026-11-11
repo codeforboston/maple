@@ -2,12 +2,15 @@ import { Hit } from "instantsearch.js"
 import { SearchPage, SortOptionInput } from "../shared"
 import { HearingHit } from "./HearingHit"
 import { SessionSubtitle } from "../SessionMark"
-import { CURRENT_COURT_NUMBER, formatCourtFilterLabel } from "../courtSessions"
+import { currentGeneralCourt, generalCourts } from "functions/src/shared"
 import { useMemo, useRef } from "react"
 import type { HearingSearchRecord } from "functions/src/hearings/types"
 import { hearingsRelevanceSort, hearingsSearchParams } from "../searchParams"
 
 export type HearingHitData = Hit<HearingSearchRecord>
+
+const formatCourtFilterLabel = (number: number) =>
+  generalCourts[number]?.Name ?? String(number)
 
 /** Relevance searches every hearing, past and upcoming. Clearing the window
  * explicitly is load-bearing: SortBy calls useConfigure(selected.configure ?? {}),
@@ -76,7 +79,7 @@ export const HearingSearch = () => {
       initialUiState={{
         [sortOptions[0].value]: {
           refinementList: {
-            court: [String(CURRENT_COURT_NUMBER)],
+            court: [String(currentGeneralCourt)],
             hasVideo: ["true"]
           }
         }

@@ -2,6 +2,7 @@
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
+  roots: ["<rootDir>/src"],
   moduleNameMapper: {
     // This maps firebase-admin/auth to the correct location within node_modules
     "^firebase-admin/auth$":

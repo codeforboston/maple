@@ -7,7 +7,7 @@ import { useMediaQuery } from "usehooks-ts"
 
 import { useReportTestimony } from "components/api/report"
 import { formUrl } from "components/publish/hooks"
-import { TestimonyContent } from "components/testimony"
+import { TestimonyContent } from "components/testimony/TestimonyContent"
 import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
 import { ViewAttachment } from "components/ViewAttachment"
 import { Button, Col, Row, Stack } from "../bootstrap"
