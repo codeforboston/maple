@@ -6,6 +6,7 @@ senateBillId: S3064
 houseBillId: H5518
 canonicalBillId: S3064
 status: appointed
+covered: false
 conferees:
   - memberCode: JAC0
     branch: Senate

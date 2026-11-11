@@ -37,16 +37,22 @@ fi
 docker build -t "$IMAGE" .
 docker push "$IMAGE"
 
+# The stats step runs out of memory at Cloud Run's 512 MiB default: a full
+# rebuild peaked at about 690 MiB in October 2026.
+RESOURCES=(--memory=2Gi --cpu=1)
+
 if gcloud run jobs describe "$JOB" \
   --region="$REGION" --project="$PROJECT" >/dev/null 2>&1; then
   gcloud run jobs update "$JOB" \
     --image="$IMAGE" \
     --update-env-vars=ARCHIVE_RAW=1 \
+    "${RESOURCES[@]}" \
     --region="$REGION" --project="$PROJECT"
 else
   gcloud run jobs create "$JOB" \
     --image="$IMAGE" \
     --set-env-vars=ARCHIVE_RAW=1 \
+    "${RESOURCES[@]}" \
     --task-timeout=24h \
     --max-retries=0 \
     --region="$REGION" --project="$PROJECT"

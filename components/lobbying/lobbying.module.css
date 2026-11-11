@@ -3,3 +3,17 @@
     display: none !important;
   }
 }
+
+/* An unstyled button filling a sortable <th>, so the header is reachable and
+   operable by keyboard without changing its look. */
+.sortButton {
+  all: unset;
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortButton:focus-visible {
+  outline: 2px solid #1a3185;
+  outline-offset: 2px;
+  border-radius: 2px;
+}

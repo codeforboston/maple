@@ -1,5 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 import { Image } from "components/bootstrap"
 import { useState } from "react"
 import { createMeta } from "stories/utils"
@@ -10,7 +10,7 @@ export default createMeta({
   component: LoadingButton
 })
 
-const Template: ComponentStory<typeof LoadingButton> = ({
+const Template: StoryFn<typeof LoadingButton> = ({
   children,
   disabled = false,
   loading = false,

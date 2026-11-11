@@ -61,7 +61,10 @@ const props: ConferenceIndexProps = {
       title: "An Act to promote student learning and mental health",
       senateBillId: "S2581",
       houseBillId: "H5366",
-      status: "appointed"
+      canonicalBillId: "S2581",
+      status: "appointed",
+      covered: true,
+      reportBillId: null
     },
     {
       id: "data-privacy",
@@ -70,7 +73,10 @@ const props: ConferenceIndexProps = {
       title: "An Act establishing the Massachusetts data privacy act",
       senateBillId: "S2619",
       houseBillId: "H5479",
-      status: "reportFiled"
+      canonicalBillId: "S2619",
+      status: "reportFiled",
+      covered: true,
+      reportBillId: null
     }
   ],
   conferees: {

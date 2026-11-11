@@ -74,7 +74,8 @@ const createNotificationFields = (
           testimonyId: entity.testimonyId,
           userRole: entity.userRole,
           ballotQuestionId: entity.ballotQuestionId ?? null,
-          ballotQuestionCourt: entity.ballotQuestionCourt ?? null
+          ballotQuestionCourt: entity.ballotQuestionCourt ?? null,
+          conferenceId: entity.conferenceId ?? null
         },
         createdAt: Timestamp.now()
       }
@@ -140,7 +141,11 @@ export const publishNotifications = onDocumentWritten(
             ]
           : [
               `testimony-${topic.userId}`,
-              `bill-${topic.billCourt}-${topic.billId}`,
+              // Conference testimony is kept off its bill, so the bill's
+              // followers don't hear of it.
+              ...(topic.conferenceId
+                ? []
+                : [`bill-${topic.billCourt}-${topic.billId}`]),
               ...(topic.ballotQuestionId && topic.ballotQuestionCourt != null
                 ? [
                     `ballot-question-${topic.ballotQuestionCourt}-${topic.ballotQuestionId}`

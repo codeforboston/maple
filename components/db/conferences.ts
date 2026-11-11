@@ -1,4 +1,12 @@
-import { collection, getDocs, limit, query, where } from "firebase/firestore"
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  query,
+  where
+} from "firebase/firestore"
 import type { Conference } from "../../functions/src/conferences/types"
 import { firestore } from "../firebase"
 
@@ -11,6 +19,11 @@ export async function listConferences(court: number) {
   // Unordered: every caller sorts by activity.
   const snap = await getDocs(conferences(court))
   return snap.docs.map(d => d.data() as Conference)
+}
+
+export async function getConference(court: number, id: string) {
+  const snap = await getDoc(doc(conferences(court), id))
+  return snap.data() as Conference | undefined
 }
 
 /** A conference references its two bills; nothing on a bill points back. So

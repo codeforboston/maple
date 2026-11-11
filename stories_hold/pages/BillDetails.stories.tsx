@@ -1,4 +1,4 @@
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 import { createMeta } from "stories/utils"
 import { BillDetails } from "components/bill/BillDetails"
 import { Providers } from "components/providers"
@@ -11,9 +11,7 @@ export default createMeta({
   component: BillDetails
 })
 
-const Template: ComponentStory<typeof BillDetails> = args => (
-  <BillDetails {...args} />
-)
+const Template: StoryFn<typeof BillDetails> = args => <BillDetails {...args} />
 
 export const Primary = Template.bind({})
 

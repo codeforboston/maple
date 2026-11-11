@@ -1,10 +1,9 @@
 import { DocumentSnapshot } from "@google-cloud/firestore"
+import { onDocumentDeleted } from "firebase-functions/v2/firestore"
 import { onCall } from "firebase-functions/v2/https"
 import type { CallableRequest } from "firebase-functions/v2/https"
 import * as logger from "firebase-functions/logger"
 import { Record } from "runtypes"
-import { BallotQuestion } from "../ballotQuestions/types"
-import { Bill } from "../bills/types"
 import {
   checkAuth,
   checkRequest,
@@ -15,8 +14,8 @@ import {
 } from "../common"
 import { db, FieldValue } from "../firebase"
 import { Attachments } from "./attachments"
+import { targetCountsUpdate, targetOf } from "./target"
 import { DraftTestimony, Testimony } from "./types"
-import { updateTestimonyCounts } from "./updateTestimonyCounts"
 
 const DeleteTestimonyRequest = Record({
   uid: Id,
@@ -59,6 +58,27 @@ export const performDeleteTestimony = async (
   return { deleted: output.deleted }
 }
 
+/** Deletes a deleted publication's cosigns, each the way any testimony is
+ * deleted. Publish refuses a parent that is gone, so no new cosign can appear.
+ * A cascade that stops partway is retried, and finds only the cosigns left. */
+export const deleteCosignsOfDeletedTestimony = onDocumentDeleted(
+  {
+    document: "/users/{uid}/publishedTestimony/{testimonyId}",
+    timeoutSeconds: 540,
+    retry: true
+  },
+  async event => {
+    const cosigns = await db
+      .collectionGroup("publishedTestimony")
+      .where("cosignOfId", "==", event.params.testimonyId)
+      .select()
+      .get()
+    for (const cosign of cosigns.docs) {
+      await performDeleteTestimony(cosign.ref.parent.parent!.id, cosign.id)
+    }
+  }
+)
+
 type TransactionOutput = { deleted: boolean; attachmentId?: Maybe<string> }
 class DeleteTestimonyTransaction {
   private t
@@ -67,10 +87,6 @@ class DeleteTestimonyTransaction {
 
   private publicationSnap!: DocumentSnapshot
   private publication!: Testimony
-  private billSnap!: DocumentSnapshot
-  private bill!: Bill
-  private ballotQuestion?: BallotQuestion
-  private ballotQuestionRef?: FirebaseFirestore.DocumentReference
   private draftSnap?: DocumentSnapshot
 
   constructor(
@@ -86,27 +102,28 @@ class DeleteTestimonyTransaction {
   async run(): Promise<TransactionOutput> {
     await this.loadPublication()
     if (!this.publicationSnap.exists) return { deleted: false }
-    await this.loadBill()
-    await this.loadBallotQuestion()
-    await this.loadDraft()
-
-    const billUpdate: DocUpdate<Bill> = {
-      ...(await this.resolveNewLatestTestimony()),
-      ...updateTestimonyCounts(this.bill, this.publication, undefined)
-    }
+    const target = targetOf(this.publication)
+    const [targetSnap, latest] = await Promise.all([
+      this.t.get(target.ref),
+      target.kind === "bill" ? this.resolveNewLatestTestimony() : {},
+      this.loadDraft()
+    ])
 
     const draftUpdate: DocUpdate<DraftTestimony> = {
       publishedVersion: FieldValue.delete()
     }
 
-    if (!this.publication.ballotQuestionId) {
-      this.t.update(this.billSnap.ref, billUpdate)
-    }
-    if (this.ballotQuestion && this.ballotQuestionRef) {
-      this.t.update(
-        this.ballotQuestionRef,
-        updateTestimonyCounts(this.ballotQuestion, this.publication, undefined)
-      )
+    // A target that is gone (a removed ballot question, say) has no counts.
+    if (targetSnap.exists) {
+      this.t.update(target.ref, {
+        ...latest,
+        ...targetCountsUpdate(
+          target,
+          targetSnap.data(),
+          this.publication,
+          undefined
+        )
+      })
     }
     this.t.delete(this.publicationSnap.ref)
     if (this.draftSnap) this.t.update(this.draftSnap.ref, draftUpdate)
@@ -128,36 +145,22 @@ class DeleteTestimonyTransaction {
     }
   }
 
-  private async loadBill() {
-    this.billSnap = await this.t.get(
-      db.doc(
-        `/generalCourts/${this.publication.court}/bills/${this.publication.billId}`
-      )
-    )
-    this.bill = Bill.checkWithDefaults(this.billSnap.data())
-  }
-
   private async loadDraft() {
     const result = await this.t.get(
       db
         .collection(`users/${this.uid}/draftTestimony`)
         .where("billId", "==", this.publication.billId)
+        .where(
+          "ballotQuestionId",
+          "==",
+          this.publication.ballotQuestionId ?? null
+        )
+        .where("conferenceId", "==", this.publication.conferenceId ?? null)
     )
 
     if (result.docs.length === 1) {
       this.draftSnap = result.docs[0]
     }
-  }
-
-  private async loadBallotQuestion() {
-    const ballotQuestionId = this.publication.ballotQuestionId ?? null
-    if (!ballotQuestionId) return
-
-    this.ballotQuestionRef = db.doc(`/ballotQuestions/${ballotQuestionId}`)
-    const snap = await this.t.get(this.ballotQuestionRef)
-    if (!snap.exists) return
-
-    this.ballotQuestion = BallotQuestion.checkWithDefaults(snap.data())
   }
 
   private async resolveNewLatestTestimony() {
@@ -167,6 +170,7 @@ class DeleteTestimonyTransaction {
         .where("billId", "==", this.publication.billId)
         .where("court", "==", this.publication.court)
         .where("ballotQuestionId", "==", null)
+        .where("conferenceId", "==", null)
         .orderBy("publishedAt", "desc")
         .limit(2)
     )

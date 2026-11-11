@@ -42,7 +42,7 @@ const defaults: Record<Env, FeatureFlags> = {
     lobbyingTable: true,
     hearingsAndTranscriptions: true,
     phoneVerificationUI: true,
-    ballotQuestions: true,
+    ballotQuestions: false,
     legislators: true,
     conferences: true
   },

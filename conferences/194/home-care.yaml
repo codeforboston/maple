@@ -5,7 +5,8 @@ title: An Act to improve Massachusetts home care
 senateBillId: S3183
 houseBillId: H4706
 canonicalBillId: H4706
-status: reportFiled
+status: enacted
+reportBillId: H5627
 conferees:
   - memberCode: TMS1
     branch: House
@@ -23,5 +24,155 @@ conferees:
     branch: Senate
 hearingIds:
   - hearing-5759
-differences: []
-similarities: []
+differences:
+  - heading: Should the definition of abusive treatment list home care workers among the people it covers?
+    senate: Physical, verbal or mental abuse, so any one type qualifies. Adds home care workers to the list. (§1, §16HH)
+    house: Physical, verbal and mental abuse, including bullying, directed at or committed by consumers, surrogates, family members, other caregivers and anyone else in the household during a visit. Home care workers are not on the list. (§1, G.L. c. 6A §16HH)
+    outcome: senate
+    edited: House's “either” kept
+    addressedBy: both
+    resolution: Yes. Home care workers are on the list, as the Senate wrote.
+    law: The Senate definition, with “or” and with home care workers on the list. The House's word “either” stays in. (§1, §16HH)
+  - heading: Should the law define “violent act” for the abuse advisory committee's work?
+    senate: No definition. The Senate's debriefing clause did not use the term.
+    house: No definition. The House used “violent acts” once, in the debriefing clause, without defining it.
+    outcome: new
+    addressedBy: neither
+    resolution: Yes. The law adds a definition neither chamber wrote.
+    law: A new definition. A violent act is an assault, an infliction or threat of death or bodily harm, or damage to or destruction of property. The list of people matches the abusive-treatment definition, including home care workers. (§1, §16HH)
+    why: The term appears once in the law, in the advisory committee's charge on debriefing after “abusive treatment and violent acts.” Property damage counts as a violent act.
+  - heading: After which incidents should the advisory committee recommend a debriefing process for affected workers and consumers?
+    senate: Debriefing best practices following “abusive treatment,” the defined term. (§1, §16JJ(d)(i))
+    house: Debriefing best practices following “violent acts,” a term the House did not define. (§1, G.L. c. 6A §16JJ(d)(i))
+    outcome: combined
+    addressedBy: both
+    resolution: Both kinds. Debriefing follows abusive treatment and violent acts.
+    law: "Joins the two triggers: debriefing following “abusive treatment and violent acts.” The law also adds a definition of “violent act.” (§1, §16JJ(d)(i))"
+  - heading: Must an agency get a chance to appeal when the state suspends, revokes or refuses to renew its license?
+    senate: The same power, used under the licensing regulations, with an opportunity for appeal. The text refers to regulations “promulgated by the department,” though subsection (e) has the executive office write them. (§1, §16II(b)(2))
+    house: EOHHS may suspend, revoke or refuse to renew a license for cause. No appeal or procedure is stated. (§1, G.L. c. 6A §16II(b)(2))
+    outcome: senate
+    edited: Drafting errors fixed
+    addressedBy: both
+    resolution: Yes. Actions follow the licensing regulations and can be appealed, as the Senate wrote.
+    law: The Senate text, with “the department” changed to “the executive office” and “refusal or renewal” to “refusal of renewal.” (§1, §16II(b)(2))
+  - heading: Should each day a violation continues count as a separate offense?
+    senate: No provision. The Senate kept the $500-per-day fine without this sentence.
+    house: Yes. Alongside the fine of up to $500 for each day of noncompliance, each day a violation continues is a separate offense. (§1, G.L. c. 6A §16II(c))
+    outcome: dropped
+    addressedBy: house
+    resolution: Dropped. The fine of up to $500 per day stays.
+    law: Not in the law. The fine of up to $500 for each day of noncompliance remains.
+  - heading: Should the new licensing rules align with existing long-term care oversight, avoid duplicating it, or both?
+    senate: EOHHS must avoid “unnecessary duplication” of that oversight. The oversight council advises on aligning and avoiding duplication “where applicable.” (§1, §16II(e)(2))
+    house: EOHHS must make the new requirements align with existing long-term care oversight, such as home health licensing and monitoring by aging services access points. The oversight council advises on the same alignment. (§1, G.L. c. 6A §16II(e)(2))
+    outcome: combined
+    addressedBy: both
+    resolution: Both. Requirements must align with and avoid duplicating existing oversight.
+    law: "The House sentence with the Senate's idea added: requirements must “align with and avoid the duplication of” existing oversight. The oversight council's charge gets the same pairing. “Unnecessary” and “where applicable” are gone. (§1, §16II(e)(2), §16KK(b)(iv))"
+    why: The Senate limited the duty to “unnecessary” duplication. The law's duty to avoid duplication has no such qualifier.
+  - heading: Should the licensing rules require state and national fingerprint-based criminal checks for home care workers?
+    senate: State and national fingerprint-based criminal checks in place of the Massachusetts check. The other checks are the same. (§1, §16II(e)(1)(i))
+    house: Massachusetts criminal background checks, plus checks in other places the worker lived or worked in the past 5 years, federal exclusion and nurse aide registry reviews, and driving records for workers who transport consumers. (§1, G.L. c. 6A §16II(e)(3)(i))
+    outcome: house
+    edited: Minor Senate wording
+    addressedBy: both
+    resolution: No. The law lists Massachusetts criminal background checks, as the House wrote.
+    law: "The House list. Two small wording changes come from the Senate: the “United States” Office of Inspector General, and driving records for “not less than” 5 years. (§1, §16II(e)(3)(i))"
+    why: The list is a minimum (“shall include, but shall not be limited to”), so the regulations could still add fingerprint checks. The law does not require them.
+  - heading: Should the licensing rules require agency payroll to follow state and federal labor and wage laws?
+    senate: Agencies must keep a payroll process. Labor and wage laws are not mentioned in this item. (§1, §16II(e)(1)(iv))
+    house: Agencies must keep a payroll process that follows all state and federal labor and wage laws. (§1, G.L. c. 6A §16II(e)(3)(iv))
+    outcome: house
+    addressedBy: both
+    resolution: Yes, as the House wrote.
+    law: The House text, word for word. (§1, §16II(e)(3)(iv))
+    why: Both versions also had the license review check that applicants can afford to operate while complying with labor and employment laws.
+  - heading: Should the worker-safety rules include evacuation protocols and backup care so that workers who evacuate avoid discipline?
+    senate: Yes. Safety policies must include safe evacuation protocols and emergency backup care for evacuations, to avoid disciplinary actions. (§1, §16II(e)(1)(vi))
+    house: No provision on evacuations. The House's safety item ends at “a process for submitting complaints.”
+    outcome: dropped
+    addressedBy: senate
+    resolution: Dropped. The law keeps the House's shorter safety item.
+    law: Not in the law. The law's item covers safe working conditions, safety training and a complaint process, as the House wrote.
+  - heading: When an agency changes hands, should the state review whether the new owner can meet the conditions of licensure?
+    senate: Advance notice to consumers and workers only. No review of the new owner. (§1, §16II(f)(ii))
+    house: A change-of-ownership process with advance notice to consumers and workers, and an EOHHS suitability review of the new owner. (§1, G.L. c. 6A §16II(f)(ii))
+    outcome: house
+    addressedBy: both
+    resolution: Yes. The House's review of new owners is in the law.
+    law: The House text, word for word. (§1, §16II(f)(ii))
+  - heading: Should the ranking minority members of the aging committee sit on the two new advisory bodies alongside the chairs?
+    senate: The chairs and the ranking minority members, on both the abuse advisory committee and the oversight council. No member totals are stated. (§1, §16JJ(b), §16KK(a))
+    house: The aging committee chairs only. The abuse advisory committee has 15 members and the oversight council has 9. (§1, G.L. c. 6A §16JJ(c), §16KK(a))
+    outcome: senate
+    addressedBy: both
+    resolution: Yes, on both bodies, as the Senate wrote.
+    law: The Senate membership on both bodies, set out in the House's layout. The House's totals of 15 and 9 are removed. (§1, §16JJ(c), §16KK(a))
+    why: Each body gains two legislative seats. Counting the listed members, the abuse committee goes from 15 to 17 and the oversight council from 9 to 11.
+  - heading: Should the committee's work on warning caregivers about unsafe homes cover personal care attendants, and what should the warnings cover?
+    senate: Names home care workers and personal care attendants throughout. Warnings cover “patterns and signs” of abuse, and the privacy balance weighs attendant safety too. Does not name the PCA council or MassHealth. (§1, §16JJ(d)(iii))
+    house: Best practices for requiring employers or state entities to warn home care workers of patterns of abusive treatment. Names the PCA council and MassHealth as the entities for attendants. Balances consumer privacy with home care worker safety. (§1, G.L. c. 6A §16JJ(d)(iii))
+    outcome: combined
+    addressedBy: both
+    resolution: Attendants are named in the topic. The rest is the House text, which speaks of warning home care workers.
+    law: "The Senate's opening phrase, which names attendants as people to be informed. Everything after it is the House text: warnings to “home care workers” about “patterns” of abuse, the PCA council and MassHealth named, and a privacy balance that mentions home care worker safety only. (§1, §16JJ(d)(iii))"
+    why: The topic names attendants, yet the sentence describing who must be told still names only home care workers.
+  - heading: Should the committee's training recommendations focus on recognizing, preventing and addressing abuse, and single out de-escalation with consumers who have neurocognitive disorders?
+    senate: Frames the training as “recognizing, preventing and addressing abuse.” De-escalation includes techniques for consumers with neurocognitive disorders. (§1, §16JJ(d)(iv))
+    house: Training on abusive treatment, escalation cycles and de-escalation, and culturally competent, peer-to-peer harm prevention with hands-on practice. (§1, G.L. c. 6A §16JJ(d)(iv))
+    outcome: combined
+    addressedBy: both
+    resolution: The Senate's framing is in. The neurocognitive item is out.
+    law: The Senate's “recognizing, preventing and addressing abuse” framing with the House's list of topics. The reference to neurocognitive disorders is gone. (§1, §16JJ(d)(iv))
+  - heading: Should the oversight council help implement the licensing regulations as well as develop them, and how should its market analysis be shared?
+    senate: The council helps develop the regulations only. It advises on developments in other states. The market analysis could end in a report or other published information. (§1, §16KK(b))
+    house: The council helps develop and implement the regulations. It advises on developments and trends in other states, and on a process for a statewide market analysis and report. (§1, G.L. c. 6A §16KK(b))
+    outcome: house
+    edited: Senate wording on report
+    addressedBy: both
+    resolution: The House's wider role. The market analysis ends in a report.
+    law: "The House duties: developing and implementing the regulations, and “developments and trends” in other states. The market analysis ends in a report, in the Senate's words “issue a report,” without “or otherwise publish information.” (§1, §16KK(b))"
+  - heading: Which of the state's anti-discrimination provisions should apply to consumers who employ personal care attendants?
+    senate: The same list, except it ends with subsection 1 where the House had 19. Subsection 1 is already within “1 to 3,” so the Senate list leaves out 19. (§2, §4(20))
+    house: Consumers who employ personal care attendants are bound by subsections 1 to 3, 4 to 5, 9A, 11A, 16, 16A and 19 of the anti-discrimination law. (§2, G.L. c. 151B §4(20))
+    outcome: house
+    edited: Punctuation differs
+    addressedBy: both
+    resolution: The House list, including subsection 19.
+    law: The House list, including subsection 19, with mixed punctuation. (§2, §4(20))
+  - heading: Should the state create a special commission to study family caregiving policy, including paying spouses as caregivers under MassHealth?
+    senate: No provision. The Senate created a different study commission, on a long-term services and supports benefit.
+    house: Added on the House floor. A special legislative commission studies family caregiving policy, including the cost, access and quality effects of letting spouses be paid caregivers in MassHealth. The aging committee chairs co-chair it, with 4 more legislators, 7 agency officials and 12 governor appointees. Report due December 1, 2026. (§2A (House amendment 5))
+    outcome: modified
+    addressedBy: house
+    resolution: Yes. The House's commission, with a later report date and one more appointed seat.
+    law: "The House commission with two changes from the House text: the report is due July 1, 2027, and the governor appoints 13 members. The gerontologist becomes a separate seat, where the House counted it as one of the 2 academic seats. (§3)"
+    why: The House's December 1, 2026 date would have left the commission less than four months after the law was signed on August 6, 2026.
+  - heading: Should a special commission study creating a statewide long-term services and supports benefit program?
+    senate: "A special commission studies a statewide long-term services and supports benefit: building it into existing benefit plans, who participates (including working adults), mandatory enrollment, insurance options and workforce needs. The HHS secretary chairs it, with 19 governor appointees. It reviews the 2023 actuarial study and reports within 2 years. (§3)"
+    outcome: senate
+    edited: Working-adults example cut
+    addressedBy: senate
+    resolution: Yes, as the Senate wrote, minus a reference to working adults.
+    law: The Senate commission, membership and 2-year deadline. The law cuts “including, but not limited to, working adults,” rewords the description of the 2023 actuarial study, and updates one appointee organization's name. (§4)
+    why: Mandatory enrollment is still a listed topic. The law no longer names working adults when it lists criteria for participation.
+similarities:
+  - heading: A state license to run a home care agency
+    body: EOHHS issues 3-year licenses that cannot be transferred. Both bills covered agencies that employ workers directly and those that contract with employers, with the same definitions and exclusions. The law follows the House's sentence structure.
+  - heading: Penalties of up to $500 a day
+    body: Both let EOHHS deny an application, modify, suspend or revoke a license, or fine up to $500 for each day of noncompliance. The House's separate-offense sentence is listed above.
+  - heading: Required contents of the licensing rules
+    body: Both listed service plans with written rates and total costs, insurance minimums, training on topics including dementia and wage-and-hour rights, emergency plans, quality metrics, annual reporting, complaint processes and equipment. The law uses the House wording. Differences on background checks, payroll and evacuations are listed above.
+  - heading: Screening of license applicants
+    body: Both required checks of debarment and federal exclusion lists, disclosures and background checks for anyone owning 5 percent or more, and a review of financial capacity. The law takes the Senate's “not less than” 5 percent wording.
+  - heading: Statewide standards on abusive treatment
+    body: EOHHS adopts them with the advisory committee, MassHealth, the aging and public health agencies and the PCA council, for the same five aims in both bills. The law says the standards “recommend” training and support, the Senate's word, where the House said “promote.”
+  - heading: Abuse advisory committee and oversight council
+    body: Same agency members and governor-appointed seats in both bills, including the Home Care Aide Council, the Home Care Alliance of Massachusetts, the Massachusetts Aging Access Association and Local 1199 SEIU. Legislative seats differed and are listed above. The law adds the Senate's Ways and Means committees to the abuse committee's report recipients.
+  - heading: PCA consumers covered by anti-discrimination law
+    body: Both bills added subsection 20 to G.L. c. 151B §4. The list of covered subsections differed and is listed above.
+  - heading: Temporary licenses within 180 days
+    body: For applicants already under contract with an aging services access point or MassHealth, valid until the licensing deadline. Same in both bills; the law uses the House wording.
+  - heading: Rollout deadlines
+    body: Regulations within 1 year, a licensing deadline no more than 1 year after that, monthly abuse committee meetings and an initial report within 6 months, and an oversight council within 60 days. Same in both bills.

@@ -1,6 +1,6 @@
 import { useProfile } from "components/db"
 import { useProfileState } from "components/db/profile/redux"
-import { User } from "firebase/auth"
+import { IdTokenResult, User } from "firebase/auth"
 import Router, { useRouter } from "next/router"
 import React, { useCallback, useEffect, useRef } from "react"
 import { auth } from "../firebase"
@@ -16,12 +16,7 @@ export const { Provider } = createService(() => {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async user => {
-      let claims: Claim | undefined = undefined
-      if (user) {
-        let token = await getToken(user)
-        const fromToken = Claim.validate(token.claims)
-        if (fromToken.success) claims = fromToken.value
-      }
+      const claims = user ? claimsOf(await getToken(user)) : undefined
       dispatch(authChanged({ user, claims }))
     })
     return () => {
@@ -29,6 +24,12 @@ export const { Provider } = createService(() => {
     }
   }, [dispatch, getToken])
 })
+
+/** The claims a token carries, if they are what we expect. */
+export const claimsOf = (token: IdTokenResult): Claim | undefined => {
+  const parsed = Claim.validate(token.claims)
+  return parsed.success ? parsed.value : undefined
+}
 
 /**
  * The token does not refresh when the user's profile or claims in firebase auth change,

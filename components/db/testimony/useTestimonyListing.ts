@@ -122,8 +122,12 @@ function merge(
   return Array.from(testimony.values())
 }
 
+/** Conference testimony shares its bill's id, so it would merge into the bill's
+ * row; it is listed on the conference page instead. */
 function mapSnap<T extends BaseTestimony>(snap: QuerySnapshot) {
-  return snap.docs.map(d => ({ id: d.id, value: d.data() as T }))
+  return snap.docs
+    .map(d => ({ id: d.id, value: d.data() as T }))
+    .filter(d => !d.value.conferenceId)
 }
 
 function byDraftOnlyThenPublishedAt(t1: BillTestimony, t2: BillTestimony) {

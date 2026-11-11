@@ -67,7 +67,7 @@ const ThumbWrap = styled.div`
 `
 
 const ThumbIcon = styled.div<{ $position: string }>`
-  background-image: url(thumbs-${({ $position }) => $position}.svg);
+  background-image: url(/thumbs-${({ $position }) => $position}.svg);
   height: 36px;
   width: 36px;
   background-size: cover;

@@ -1,4 +1,4 @@
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 import { TestimonyItem } from "components/TestimonyCard/TestimonyItem"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
@@ -33,7 +33,7 @@ export default createMeta({
   ]
 })
 
-const Template: ComponentStory<typeof TestimonyItemFC> = args => {
+const Template: StoryFn<typeof TestimonyItemFC> = args => {
   return <TestimonyItemFC {...args} />
 }
 

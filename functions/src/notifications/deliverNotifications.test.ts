@@ -1,4 +1,4 @@
-import { buildDigestData } from "./deliverNotifications"
+import { buildDigestData, CONFERENCE_STANCES } from "./deliverNotifications"
 import { Timestamp } from "../firebase"
 
 // Mock firebase module
@@ -300,5 +300,62 @@ describe("buildDigestData — users", () => {
     })
     expect(result.users[0].bills).toHaveLength(2)
     expect(result.numUsersWithNewTestimony).toBe(1)
+  })
+})
+
+describe("buildDigestData — conference testimony", () => {
+  it("links the conference and words the stance for a followed author", async () => {
+    const base = {
+      type: "testimony",
+      isBillMatch: false,
+      isUserMatch: true,
+      isBallotQuestionMatch: false,
+      header: "A Bill",
+      court: "194",
+      timestamp: now,
+      authorUid: "author1",
+      subheader: "Alice",
+      bodyText: "",
+      userRole: "user",
+      delivered: false,
+      ballotQuestionId: null,
+      ballotQuestionCourt: null
+    }
+    setupCollection([
+      {
+        ...base,
+        billId: "S2581",
+        position: "passSenateVersion",
+        testimonyId: "t1",
+        conferenceId: "student-learning-and-mental-health"
+      },
+      {
+        ...base,
+        billId: "H1234",
+        position: "endorse",
+        testimonyId: "t2",
+        conferenceId: null
+      }
+    ])
+
+    const result = await buildDigestData("uid1", now as any, "Weekly")
+
+    expect(result.users[0].bills).toEqual([
+      {
+        billId: "S2581",
+        court: "194",
+        conferenceId: "student-learning-and-mental-health",
+        stance: "Pass the Senate version"
+      },
+      { billId: "H1234", court: "194", position: "endorse" }
+    ])
+  })
+})
+
+describe("CONFERENCE_STANCES", () => {
+  it("says what the site says", () => {
+    const { input } = require("../../../public/locales/en/conferences.json")
+    for (const [position, stance] of Object.entries(CONFERENCE_STANCES))
+      expect(stance).toBe(input.position[position].long)
   })
 })

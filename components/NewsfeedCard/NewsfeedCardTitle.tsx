@@ -7,6 +7,8 @@ import { Internal } from "components/links"
 interface NewsfeedCardTitleProps {
   authorUid?: string
   billId?: string
+  /** Set on testimony to a committee of conference: its conference page */
+  conferenceHref?: string
   court?: string
   header?: string
   subheader?: string
@@ -25,6 +27,7 @@ export const NewsfeedCardTitle = (props: NewsfeedCardTitleProps) => {
   const {
     authorUid,
     billId,
+    conferenceHref,
     court,
     header,
     isBillMatch,
@@ -43,6 +46,7 @@ export const NewsfeedCardTitle = (props: NewsfeedCardTitleProps) => {
         <CardTitleHeadline
           authorUid={authorUid}
           billId={billId}
+          conferenceHref={conferenceHref}
           court={court}
           header={header}
           subheader={subheader}
@@ -98,7 +102,8 @@ const CardHeaderImg = (props: NewsfeedCardTitleProps) => {
 }
 
 const CardTitleHeadline = (props: NewsfeedCardTitleProps) => {
-  const { authorUid, billId, court, header, subheader, type } = props
+  const { authorUid, billId, conferenceHref, court, header, subheader, type } =
+    props
   const { t } = useTranslation("common")
 
   switch (type) {
@@ -113,8 +118,12 @@ const CardTitleHeadline = (props: NewsfeedCardTitleProps) => {
                 <strong>{subheader}</strong>
               </Internal>
 
-              {t("newsfeed.endorsed")}
-              <a href={`/bills/${court}/${billId}`}>
+              {t(
+                conferenceHref
+                  ? "newsfeed.conferenceInput"
+                  : "newsfeed.endorsed"
+              )}
+              <a href={conferenceHref ?? `/bills/${court}/${billId}`}>
                 {billId && <strong>{formatBillId(billId)}</strong>}
               </a>
             </CardBootstrap.Title>

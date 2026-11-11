@@ -1,6 +1,7 @@
 import {
   collection,
   doc,
+  documentId,
   getDoc,
   getDocs,
   limit,
@@ -8,9 +9,10 @@ import {
   query,
   where
 } from "firebase/firestore"
+import { chunk, uniq } from "lodash"
+import { useMemo } from "react"
 import { useAsync } from "react-async-hook"
 import type {
-  LobbyingClientSummary,
   LobbyingFiling,
   LobbyingRegistrant,
   LobbyingStats
@@ -21,19 +23,87 @@ import { firestore } from "../firebase"
 // pulling firebase-admin (a Node-only package) into the browser bundle.
 const FILINGS_COLLECTION = "lobbyingFilings"
 const REGISTRANTS_COLLECTION = "lobbyingRegistrants"
-const CLIENTS_COLLECTION = "lobbyingClients"
 const LOBBYING_STATS_COLLECTION = "lobbyingMeta"
 const LOBBYING_STATS_DOC_ID = "stats"
+
+/**
+ * useAsync, but `result` always belongs to the current arguments. Right after
+ * they change, react-async-hook still reports the previous result (and
+ * "success") for a render, which would show one session's rows under
+ * another's label; until the new result arrives this reports "loading".
+ */
+function useCurrentAsync<R, A extends unknown[]>(
+  fn: (...args: A) => Promise<R>,
+  args: A
+) {
+  const key = JSON.stringify(args)
+  const state = useAsync(
+    async (...a: A) => ({ key: JSON.stringify(a), value: await fn(...a) }),
+    args
+  )
+  const current = state.result?.key === key
+  return {
+    ...state,
+    result: current ? state.result?.value : undefined,
+    status: state.status === "success" && !current ? "loading" : state.status,
+    loading: state.loading || (state.status === "success" && !current)
+  }
+}
 
 // ── Internal fetchers ─────────────────────────────────────────────────────────
 
 /** The most recent legislative session (General Court) with lobbying data. */
 export async function fetchLatestLobbyingCourt(): Promise<number> {
-  const stats = await fetchLobbyingStats()
+  return latestCourt(await fetchLobbyingStats())
+}
+
+/** The session in progress: the newest with any lobbying data. */
+/** Every session with lobbying data, newest first. */
+export function sessionsNewestFirst(
+  stats: Pick<LobbyingStats, "courtsWithData"> | undefined
+): number[] {
+  return [...(stats?.courtsWithData ?? [])].sort((a, b) => b - a)
+}
+
+export function latestCourt(
+  stats: Pick<LobbyingStats, "courtsWithData"> | undefined
+): number {
   return Math.max(...(stats?.courtsWithData ?? []))
 }
 
-async function fetchLobbyingStats(): Promise<LobbyingStats | undefined> {
+/** A client's bills over the given sessions (bill numbers are per session,
+ * so they add up), or null when no session has a count. */
+export function sumBills(
+  courts: ClientSummaryRow["courts"] | undefined
+): number | null {
+  const bills = Object.values(courts ?? {}).map(e => e.bills)
+  return bills.some(b => b != null)
+    ? bills.reduce<number>((sum, b) => sum + (b ?? 0), 0)
+    : null
+}
+
+/** load(key), once per key for the life of the page; a failure is retried. */
+function cachedBy<K, T>(
+  cache: Map<K, Promise<T>>,
+  key: K,
+  load: (key: K) => Promise<T>
+): Promise<T> {
+  let value = cache.get(key)
+  if (!value) {
+    value = load(key)
+    value.catch(() => cache.delete(key))
+    cache.set(key, value)
+  }
+  return value
+}
+
+async function fetchJson<T>(url: string): Promise<T> {
+  const res = await fetch(url)
+  if (!res.ok) throw new Error(`Failed to load ${url}`)
+  return res.json() as Promise<T>
+}
+
+export async function fetchLobbyingStats(): Promise<LobbyingStats | undefined> {
   const snap = await getDoc(
     doc(firestore, LOBBYING_STATS_COLLECTION, LOBBYING_STATS_DOC_ID)
   )
@@ -94,29 +164,6 @@ async function fetchFilingsForRegistrant(
   return snap.docs.map(d => d.data() as LobbyingFiling)
 }
 
-async function fetchClients(opts: {
-  year?: number
-  pageSize?: number
-}): Promise<LobbyingClientSummary[]> {
-  const constraints = [
-    opts.year ? where("years", "array-contains", opts.year) : undefined,
-    orderBy("clientNameNorm"),
-    limit(opts.pageSize ?? 50)
-  ].filter(Boolean) as Parameters<typeof query>[1][]
-
-  const snap = await getDocs(
-    query(collection(firestore, CLIENTS_COLLECTION), ...constraints)
-  )
-  return snap.docs.map(d => d.data() as LobbyingClientSummary)
-}
-
-async function fetchClient(
-  clientSlug: string
-): Promise<LobbyingClientSummary | undefined> {
-  const snap = await getDoc(doc(firestore, CLIENTS_COLLECTION, clientSlug))
-  return snap.exists() ? (snap.data() as LobbyingClientSummary) : undefined
-}
-
 async function fetchAllRegistrants(): Promise<LobbyingRegistrant[]> {
   const snap = await getDocs(
     query(
@@ -164,14 +211,19 @@ async function fetchFilingsForCourt(court: number): Promise<LobbyingFiling[]> {
   return snap.docs.map(d => d.data() as LobbyingFiling)
 }
 
+/** A client's filings in one session, or in every session ("all"). A big
+ * client has filed thousands per session, so read only what's shown. */
 async function fetchFilingsForClient(
-  clientNameNorm: string
+  clientNameNorm: string,
+  court: number | "all"
 ): Promise<LobbyingFiling[]> {
   const snap = await getDocs(
     query(
       collection(firestore, FILINGS_COLLECTION),
       where("clientNameNorm", "==", clientNameNorm),
-      orderBy("year", "desc")
+      ...(court === "all"
+        ? [orderBy("year", "desc")]
+        : [where("generalCourt", "==", court)])
     )
   )
   return snap.docs.map(d => d.data() as LobbyingFiling)
@@ -180,27 +232,23 @@ async function fetchFilingsForClient(
 // ── Public hooks ──────────────────────────────────────────────────────────────
 
 export function useLobbyingFilingsForCourt(court: number) {
-  return useAsync(fetchFilingsForCourt, [court])
+  return useCurrentAsync(fetchFilingsForCourt, [court])
 }
 
 export function useLobbyingAllRegistrants() {
-  return useAsync(fetchAllRegistrants, [])
+  return useCurrentAsync(fetchAllRegistrants, [])
 }
 
 export function useLobbyingRegistrantsByEntityName(entityNameNorm: string) {
-  return useAsync(fetchRegistrantsByEntityName, [entityNameNorm])
+  return useCurrentAsync(fetchRegistrantsByEntityName, [entityNameNorm])
 }
 
 export function useLobbyingFilingsForEntityName(entityNameNorm: string) {
-  return useAsync(fetchFilingsForEntityName, [entityNameNorm])
-}
-
-export function useLobbyingStats() {
-  return useAsync(fetchLobbyingStats, [])
+  return useCurrentAsync(fetchFilingsForEntityName, [entityNameNorm])
 }
 
 export function useLobbyingFilingsForBill(court: number, billId: string) {
-  return useAsync(fetchFilingsForBill, [court, billId])
+  return useCurrentAsync(fetchFilingsForBill, [court, billId])
 }
 
 export function useLobbyingRegistrants(opts: {
@@ -208,41 +256,73 @@ export function useLobbyingRegistrants(opts: {
   year?: number
   pageSize?: number
 }) {
-  return useAsync(fetchRegistrants, [opts])
+  return useCurrentAsync(fetchRegistrants, [opts])
 }
 
 export function useLobbyingRegistrant(registrantId: string) {
-  return useAsync(fetchRegistrant, [registrantId])
+  return useCurrentAsync(fetchRegistrant, [registrantId])
 }
 
 export function useLobbyingFilingsForRegistrant(registrantId: string) {
-  return useAsync(fetchFilingsForRegistrant, [registrantId])
+  return useCurrentAsync(fetchFilingsForRegistrant, [registrantId])
 }
 
-export function useLobbyingClients(
-  opts: { year?: number; pageSize?: number } = {}
+// Firestore's limit on the values in one "in" query.
+const IN_QUERY_LIMIT = 30
+
+/** What the lobbying activity helpers need from a lobbyingRegistrants doc. */
+export type RegistrantInfo = {
+  periodEnd: string | null
+  lobbyists: string[]
+  clientLobbyists: Record<string, string[]>
+}
+
+/** The period and lobbyists of each given registrant, keyed by registrantId.
+ * Ids with no doc are absent. */
+export async function fetchRegistrantsByIds(
+  ids: string[]
+): Promise<Record<string, RegistrantInfo>> {
+  const snaps = await Promise.all(
+    chunk(uniq(ids), IN_QUERY_LIMIT).map(batch =>
+      getDocs(
+        query(
+          collection(firestore, REGISTRANTS_COLLECTION),
+          where(documentId(), "in", batch)
+        )
+      )
+    )
+  )
+  const result: Record<string, RegistrantInfo> = {}
+  for (const snap of snaps)
+    for (const d of snap.docs) {
+      const r = d.data() as LobbyingRegistrant
+      result[d.id] = {
+        periodEnd: r.periodEnd ?? null,
+        lobbyists: r.lobbyists ?? [],
+        clientLobbyists: r.clientLobbyists ?? {}
+      }
+    }
+  return result
+}
+
+export function useLobbyingRegistrantsByIds(ids: string[]) {
+  const idsKey = useMemo(() => uniq(ids).sort().join(","), [ids])
+  return useCurrentAsync(
+    (key: string) => fetchRegistrantsByIds(key ? key.split(",") : []),
+    [idsKey]
+  )
+}
+
+export function useLobbyingFilingsForClient(
+  clientNameNorm: string,
+  court: number | "all"
 ) {
-  return useAsync(fetchClients, [opts])
-}
-
-export function useLobbyingClient(clientSlug: string) {
-  return useAsync(fetchClient, [clientSlug])
-}
-
-export function useLobbyingFilingsForClient(clientNameNorm: string) {
-  return useAsync(fetchFilingsForClient, [clientNameNorm])
+  return useCurrentAsync(fetchFilingsForClient, [clientNameNorm, court])
 }
 
 async function fetchEntityFilingCounts(): Promise<Record<string, number>> {
   const snap = await getDoc(
     doc(firestore, LOBBYING_STATS_COLLECTION, "entityFilingCounts")
-  )
-  return snap.exists() ? (snap.data() as Record<string, number>) : {}
-}
-
-async function fetchClientFilingCounts(): Promise<Record<string, number>> {
-  const snap = await getDoc(
-    doc(firestore, LOBBYING_STATS_COLLECTION, "clientFilingCounts")
   )
   return snap.exists() ? (snap.data() as Record<string, number>) : {}
 }
@@ -256,19 +336,34 @@ export type BillSummaryEntry = {
   title?: string
   clients?: number
   lobbyists?: number
+  // Distinct organizations per position; one with two positions is in both.
+  // Absent on summaries computed before they existed.
+  orgSupport?: number
+  orgOppose?: number
+  orgNeutral?: number
+  // Each organization once, by the positions it reported in its latest
+  // half-year, as on the Bill page: more than one is "multiple". They add up
+  // to the organizations with a position.
+  orgLatestSupport?: number
+  orgLatestOppose?: number
+  orgLatestNeutral?: number
+  orgLatestMultiple?: number
 }
 
+/** A Bills list row: only what the lists show (it's embedded in the page
+ * and served by the bills API route). */
 export type BillRow = {
   billId: string
   court: number
+  // Filings.
   total: number
-  support: number
-  oppose: number
-  neutral: number
-  none: number
   title: string
+  // Organizations.
   clients: number
-  lobbyists: number
+  orgLatestSupport: number
+  orgLatestOppose: number
+  orgLatestNeutral: number
+  orgLatestMultiple: number
 }
 
 async function fetchLobbyingBillSummaries(
@@ -290,7 +385,23 @@ async function fetchLobbyingBillSummaries(
 }
 
 export function useLobbyingBillSummaries(court: number) {
-  return useAsync(fetchLobbyingBillSummaries, [court])
+  return useCurrentAsync(fetchLobbyingBillSummaries, [court])
+}
+
+// For one session: each client's in-house filers (entityNameNorms of its own
+// staff, or the client filing for itself), keyed by clientNameNorm. Clients
+// with no in-house filer are absent.
+async function fetchInHouseFilers(
+  court: number
+): Promise<Record<string, string[]>> {
+  const snap = await getDoc(
+    doc(firestore, LOBBYING_STATS_COLLECTION, `inHouseFilers_${court}`)
+  )
+  return snap.exists() ? (snap.data() as Record<string, string[]>) : {}
+}
+
+export function useLobbyingInHouseFilers(court: number) {
+  return useCurrentAsync(fetchInHouseFilers, [court])
 }
 
 // ── Client / firm summaries (precomputed server-side by compute_stats in
@@ -315,8 +426,53 @@ export type ClientSummaryRow = {
   // summaries computed before session filters existed.
   courts?: Record<
     string,
-    { filings: number; lobbyistCount: number; compensation: number | null }
+    {
+      filings: number
+      lobbyistCount: number
+      compensation: number | null
+      // Fields below are absent on summaries computed before they existed.
+      // Distinct bills in the client's filings.
+      bills?: number
+      // Distinct filers that are the client's own staff.
+      inHouseCount?: number
+      // Distinct people lobbying for the client, and the part who aren't its
+      // own staff (a hired firm's agents, or a hired individual lobbyist).
+      // Firms name their agents from 2014, so show these from the 189th
+      // session (2015–16) on: the 188th (2013–14) has no 2013 firm agents, and
+      // earlier sessions count only individual filers.
+      individuals?: number
+      firmAgents?: number
+      // Lobbyists and entities working for the client, split into its own
+      // staff and those it hired, counted from one set so they add up; a
+      // hired individual counts as a one-person firm. From the 189th on,
+      // pair hiredFirms with individuals/firmAgents ("k in-house · m firms
+      // (n agents)"); before it, and for all sessions, the total is
+      // inHouseLobbyists + hiredFirms.
+      inHouseLobbyists?: number
+      hiredFirms?: number
+      // Hired firms that named no agents for the client: with individuals,
+      // the exact people total from the 189th session on.
+      firmsWithoutAgents?: number
+      // The client's in-house filers that session (entityNameNorms), as in
+      // inHouseFilers_{gc}.
+      inHouseFilers?: string[]
+    }
   >
+  // All-time counterparts of the per-session counts above (hiredFirms leaves
+  // out anyone in-house in any session).
+  inHouseCount?: number
+  individuals?: number
+  inHouseLobbyists?: number
+  hiredFirms?: number
+  // Earliest registration start date (ISO), the latest registration's year,
+  // and the client's own page on the SoS website (else the latest
+  // registration listing it).
+  firstRegistered?: string | null
+  lastRegisteredYear?: number | null
+  registrationUrl?: string | null
+  // The portal's "No client": listed, but not an organization, so not counted
+  // as a client. Absent on every other client.
+  placeholder?: true
 }
 
 export type FirmRegistrationParty = {
@@ -355,19 +511,7 @@ export type FirmSummaryRow = {
   courts?: Record<string, { filings: number; clientCount: number }>
 }
 
-async function fetchClientSummaries(): Promise<ClientSummaryRow[]> {
-  const snap = await getDocs(
-    collection(
-      firestore,
-      LOBBYING_STATS_COLLECTION,
-      "clientSummaries",
-      "clients"
-    )
-  )
-  return snap.docs.map(d => d.data() as ClientSummaryRow)
-}
-
-async function fetchClientSummary(
+export async function fetchClientSummary(
   clientNameNorm: string
 ): Promise<ClientSummaryRow | undefined> {
   const snap = await getDoc(
@@ -389,10 +533,6 @@ async function fetchFirmSummaries(): Promise<FirmSummaryRow[]> {
   return snap.docs.map(d => d.data() as FirmSummaryRow)
 }
 
-export function useLobbyingClientSummary(clientNameNorm: string) {
-  return useAsync(fetchClientSummary, [clientNameNorm])
-}
-
 async function fetchFirmSummary(
   entityNameNorm: string
 ): Promise<FirmSummaryRow | undefined> {
@@ -409,23 +549,55 @@ async function fetchFirmSummary(
 }
 
 export function useLobbyingFirmSummary(entityNameNorm: string) {
-  return useAsync(fetchFirmSummary, [entityNameNorm])
+  return useCurrentAsync(fetchFirmSummary, [entityNameNorm])
+}
+
+function toBillRow(
+  billId: string,
+  court: number,
+  e: BillSummaryEntry
+): BillRow {
+  return {
+    billId,
+    court,
+    total: e.total,
+    title: e.title ?? "",
+    clients: e.clients ?? 0,
+    orgLatestSupport: e.orgLatestSupport ?? 0,
+    orgLatestOppose: e.orgLatestOppose ?? 0,
+    orgLatestNeutral: e.orgLatestNeutral ?? 0,
+    orgLatestMultiple: e.orgLatestMultiple ?? 0
+  }
 }
 
 export async function fetchBillRows(court: number): Promise<BillRow[]> {
   const summaries = await fetchLobbyingBillSummaries(court)
-  return Object.entries(summaries).map(([billId, e]) => ({
-    billId,
-    court,
-    total: e.total,
-    support: e.support,
-    oppose: e.oppose,
-    neutral: e.neutral,
-    none: e.none,
-    title: e.title ?? "",
-    clients: e.clients ?? 0,
-    lobbyists: e.lobbyists ?? 0
-  }))
+  return Object.entries(summaries).map(([billId, e]) =>
+    toBillRow(billId, court, e)
+  )
+}
+
+/** A session's most-lobbied bills: the `count` with the most organizations
+ * (clients). Reads only those docs. */
+export async function fetchTopBillRows(
+  court: number,
+  count: number
+): Promise<BillRow[]> {
+  const snap = await getDocs(
+    query(
+      collection(
+        firestore,
+        LOBBYING_STATS_COLLECTION,
+        `billSummaries_${court}`,
+        "bills"
+      ),
+      orderBy("clients", "desc"),
+      limit(count)
+    )
+  )
+  return snap.docs.map(d =>
+    toBillRow(d.id, court, d.data() as BillSummaryEntry)
+  )
 }
 
 // Reads through the CDN-cached API route rather than Firestore directly, and
@@ -434,22 +606,14 @@ export async function fetchBillRows(court: number): Promise<BillRow[]> {
 const billRowsBySession = new Map<number, Promise<BillRow[]>>()
 
 function fetchCachedBillRows(court: number): Promise<BillRow[]> {
-  let rows = billRowsBySession.get(court)
-  if (!rows) {
-    rows = fetch(`/api/lobbying/bills/${court}`).then(res => {
-      if (!res.ok) throw new Error(`Failed to load bills for session ${court}`)
-      return res.json() as Promise<BillRow[]>
-    })
-    // Let a failed request be retried.
-    rows.catch(() => billRowsBySession.delete(court))
-    billRowsBySession.set(court, rows)
-  }
-  return rows
+  return cachedBy(billRowsBySession, court, c =>
+    fetchJson<BillRow[]>(`/api/lobbying/bills/${c}`)
+  )
 }
 
 export function useLobbyingBillRows(courts: number[]) {
   const courtsKey = courts.join(",")
-  return useAsync(
+  return useCurrentAsync(
     async (key: string) => {
       if (!key) return [] as BillRow[]
       const rows = await Promise.all(
@@ -466,58 +630,164 @@ export function useLobbyingBillRows(courts: number[]) {
 // JSON-serializable (null, never undefined) and hold only what the lists
 // show, since they're embedded in the page. ─────────────────────────────────
 
-export type FirmListRow = {
+/** A Lobbyists list row for one session (its lobbyists and entities, with
+ * that session's clients and filings) or for all sessions. */
+export type FirmSessionRow = {
   entityName: string
   entityNameNorm: string
   regType: string
   years: number[]
   clientCount: number
-  totalFilings: number | null
+  // Null when there are none to show.
+  filings: number | null
   lobbyists: string[]
   employers: string[]
+  // False for one with no filings of its own (that session, or ever).
   hasFilings: boolean
-  courts: Record<string, { filings: number; clientCount: number }>
 }
 
-export async function fetchFirmListRows(): Promise<FirmListRow[]> {
-  const [summaries, filingCounts] = await Promise.all([
-    fetchFirmSummaries(),
-    fetchEntityFilingCounts()
-  ])
-  return summaries.map(f => ({
-    entityName: f.entityName,
-    entityNameNorm: f.entityNameNorm,
-    regType: f.regType,
-    years: f.years,
-    clientCount: f.clientCount,
-    totalFilings: filingCounts[f.entityNameNorm] ?? null,
-    lobbyists: f.lobbyists ?? [],
-    employers: f.employers ?? [],
-    hasFilings: f.hasFilings ?? true,
-    courts: f.courts ?? {}
-  }))
+/** The Lobbyists list for one session, from its precomputed firmList doc
+ * (one read), or for all sessions from every firm summary (there's no
+ * all-sessions doc: it would pass Firestore's 1 MiB limit). Runs
+ * server-side: at build/revalidation, or in the cached
+ * /api/lobbying/firms/[session] route. */
+export async function fetchFirmList(
+  session: number | "all"
+): Promise<FirmSessionRow[]> {
+  if (session === "all") {
+    const [summaries, filingCounts] = await Promise.all([
+      fetchFirmSummaries(),
+      fetchEntityFilingCounts()
+    ])
+    return summaries.map(f => ({
+      entityName: f.entityName,
+      entityNameNorm: f.entityNameNorm,
+      regType: f.regType,
+      years: f.years,
+      clientCount: f.clientCount,
+      // One that filed but reported no activity shows 0, not "—".
+      filings:
+        filingCounts[f.entityNameNorm] ?? (f.hasFilings === false ? null : 0),
+      lobbyists: f.lobbyists ?? [],
+      employers: f.employers ?? [],
+      hasFilings: f.hasFilings ?? true
+    }))
+  }
+  const snap = await getDoc(
+    doc(firestore, LOBBYING_STATS_COLLECTION, `firmList_${session}`)
+  )
+  const entries = (snap.data()?.rows ?? {}) as Record<string, FirmListEntry>
+  return Object.entries(entries).map(([entityNameNorm, e]) => {
+    // Filed a disclosure of its own that session, even one reporting
+    // nothing (its counts show as 0); registered only, they show as "—".
+    // Docs written before filedInSession fall back to whether it reported
+    // any filings or clients.
+    const active = e.filedInSession ?? (e.filings > 0 || e.clientCount > 0)
+    return {
+      entityName: e.name,
+      entityNameNorm,
+      regType: e.regType,
+      years: e.years,
+      clientCount: e.clientCount,
+      filings: active ? e.filings : null,
+      lobbyists: e.lobbyists ?? [],
+      employers: e.employers ?? [],
+      hasFilings: active
+    }
+  })
 }
 
+// Precomputed list docs written by compute_stats, so the list pages' API
+// routes read one document instead of every summary: lobbyingMeta/
+// clientList_{court} and clientList_all, and firmList_{court} (no
+// all-sessions lobbyist doc: it would pass Firestore's 1 MiB limit). Each
+// holds its rows under `rows`, a map keyed by the normalized name.
+export type ClientListEntry = {
+  name: string
+  bills: number
+  compensation: number | null
+  // Per session only (absent in clientList_all).
+  individuals?: number
+  firmAgents?: number
+  firmsWithoutAgents?: number
+  inHouseLobbyists: number
+  hiredFirms: number
+  // "No client" (see ClientSummaryRow.placeholder).
+  placeholder?: true
+}
+
+export type FirmListEntry = {
+  name: string
+  regType: string
+  years: number[]
+  // For the doc's session.
+  clientCount: number
+  filings: number
+  lobbyists?: string[]
+  employers?: string[]
+  // Filed a disclosure of its own in the doc's session (absent on docs
+  // written before it was recorded).
+  filedInSession?: boolean
+}
+
+/** A Clients list row for one session, or for all of them: only what the
+ * list shows. People counts (individuals, firmAgents) are per session, so
+ * null for all sessions. */
 export type ClientListRow = {
   clientName: string
   clientNameNorm: string
-  totalCompensation: number | null
-  registrantCount: number
-  totalFilings: number | null
-  courts: NonNullable<ClientSummaryRow["courts"]>
+  bills: number | null
+  compensation: number | null
+  individuals: number | null
+  firmAgents: number | null
+  firmsWithoutAgents: number | null
+  inHouseLobbyists: number | null
+  hiredFirms: number | null
+  // "No client": listed, but not an organization. Set only when true, so
+  // the other rows' payload doesn't grow.
+  placeholder?: true
 }
 
-export async function fetchClientListRows(): Promise<ClientListRow[]> {
-  const [summaries, filingCounts] = await Promise.all([
-    fetchClientSummaries(),
-    fetchClientFilingCounts()
-  ])
-  return summaries.map(c => ({
-    clientName: c.clientName,
-    clientNameNorm: c.clientNameNorm,
-    totalCompensation: c.totalCompensation ?? null,
-    registrantCount: c.registrantCount,
-    totalFilings: filingCounts[c.clientNameNorm] ?? null,
-    courts: c.courts ?? {}
+/** The Clients list for one session (its active clients) or for all
+ * sessions, from its precomputed list doc (one read). Runs server-side: at
+ * build/revalidation, or in the cached /api/lobbying/clients/[session]
+ * route. */
+export async function fetchClientList(
+  session: number | "all"
+): Promise<ClientListRow[]> {
+  const snap = await getDoc(
+    doc(firestore, LOBBYING_STATS_COLLECTION, `clientList_${session}`)
+  )
+  const entries = (snap.data()?.rows ?? {}) as Record<string, ClientListEntry>
+  return Object.entries(entries).map(([clientNameNorm, e]) => ({
+    clientName: e.name,
+    clientNameNorm,
+    bills: e.bills ?? null,
+    compensation: e.compensation ?? null,
+    individuals: e.individuals ?? null,
+    firmAgents: e.firmAgents ?? null,
+    firmsWithoutAgents: e.firmsWithoutAgents ?? null,
+    inHouseLobbyists: e.inHouseLobbyists ?? null,
+    hiredFirms: e.hiredFirms ?? null,
+    ...(e.placeholder ? { placeholder: true as const } : {})
   }))
 }
+
+/** A hook for a list's rows of one session (or all), loaded through its
+ * CDN-cached API route (`/api/lobbying/<list>/<session>`), each once for the
+ * life of the page. Undefined loads nothing (e.g. the prerendered session). */
+function sessionRowsHook<R>(list: string) {
+  const bySession = new Map<number | "all", Promise<R[]>>()
+  const load = (session: number | "all" | undefined) =>
+    session === undefined
+      ? Promise.resolve(undefined)
+      : cachedBy(bySession, session, s =>
+          fetchJson<R[]>(`/api/lobbying/${list}/${s}`)
+        )
+  return function useSessionRows(session: number | "all" | undefined) {
+    return useCurrentAsync(load, [session])
+  }
+}
+
+export const useLobbyingClientRows = sessionRowsHook<ClientListRow>("clients")
+export const useLobbyingFirmRows = sessionRowsHook<FirmSessionRow>("firms")

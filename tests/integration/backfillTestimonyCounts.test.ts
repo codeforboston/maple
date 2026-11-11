@@ -15,7 +15,7 @@ beforeEach(async () => {
 
 afterAll(terminateFirebase)
 
-describe.skip("backfillTestimonyCounts", () => {
+describe("backfillTestimonyCounts", () => {
   it("Calculates testimony counts", async () => {
     await setPublication("user-1", "t-1", {
       position: "endorse",
@@ -36,6 +36,13 @@ describe.skip("backfillTestimonyCounts", () => {
       position: "endorse",
       billId,
       court: currentGeneralCourt
+    })
+    // Conference testimony shares the bill id but not its counts.
+    await setPublication("user-5", "t-5", {
+      position: "passSenateVersion",
+      billId,
+      court: currentGeneralCourt,
+      conferenceId: "some-conference"
     })
 
     await testDb
@@ -76,7 +83,9 @@ describe.skip("backfillTestimonyCounts", () => {
 async function setPublication(
   uid: string,
   id: string,
-  testimony: PartialTestimony
+  testimony: PartialTestimony & { conferenceId?: string }
 ): Promise<void> {
-  await testDb.doc(`/users/${uid}/publishedTestimony/${id}`).set(testimony)
+  await testDb
+    .doc(`/users/${uid}/publishedTestimony/${id}`)
+    .set({ ballotQuestionId: null, conferenceId: null, ...testimony })
 }

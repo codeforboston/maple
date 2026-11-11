@@ -308,8 +308,8 @@ export const CopyButton = ({
 }) => {
   const { t } = useTranslation("common")
   const [show, setShow] = useState(false)
-  const target = useRef(null)
-  const closeTimeout = useRef<any>()
+  const target = useRef<HTMLButtonElement>(null)
+  const closeTimeout = useRef<any>(undefined)
   return (
     <>
       <CopyToClipboard
@@ -330,7 +330,11 @@ export const CopyButton = ({
           {children}
         </Button>
       </CopyToClipboard>
-      <Overlay target={target} show={show} placement="top">
+      <Overlay
+        target={target as React.RefObject<HTMLElement>}
+        show={show}
+        placement="top"
+      >
         {props => <Tooltip {...props}>{t("copiedToClipboard")}</Tooltip>}
       </Overlay>
     </>
@@ -350,8 +354,8 @@ export const ShareLinkButton = ({
 }) => {
   const { t } = useTranslation("common")
   const [show, setShow] = useState(false)
-  const target = useRef(null)
-  const closeTimeout = useRef<any>()
+  const target = useRef<HTMLButtonElement>(null)
+  const closeTimeout = useRef<any>(undefined)
   return (
     <>
       <CopyToClipboard
@@ -377,7 +381,11 @@ export const ShareLinkButton = ({
           {children}
         </Button>
       </CopyToClipboard>
-      <Overlay target={target} show={show} placement="top">
+      <Overlay
+        target={target as React.RefObject<HTMLElement>}
+        show={show}
+        placement="top"
+      >
         {props => <Tooltip {...props}>{t("copiedToClipboard")}</Tooltip>}
       </Overlay>
     </>

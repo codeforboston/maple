@@ -2,7 +2,8 @@ import React from "react"
 import { useTranslation } from "next-i18next"
 import { MAPLE_COLORS } from "./chartTheme"
 
-const SOS_URL = "https://www.sec.state.ma.us/LobbyistPublicSearch/Default.aspx"
+export const SOS_URL =
+  "https://www.sec.state.ma.us/LobbyistPublicSearch/Default.aspx"
 
 export const LobbyingAttribution: React.FC<{ className?: string }> = ({
   className
