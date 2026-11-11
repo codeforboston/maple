@@ -19,7 +19,7 @@ import {
   MemberBillSummary
 } from "functions/src/members/memberBillSummary"
 import { BillFilter, BillFilterButtons } from "./BillFilterButtons"
-import { billSearchByTopicLinkAndPrimarySponsor } from "components/links"
+import { billSearchByTopicLinkAndSponsorType } from "components/links"
 import { MemberContent } from "components/db"
 
 const BillsByTopicContainer = ({
@@ -42,6 +42,12 @@ const BillsByTopicContainer = ({
       : t("profiles.coSponsor")
 
   const topicGroups = billGroup.topics
+  let sponsorType =
+    selectedFilter === "all"
+      ? "all"
+      : selectedFilter === "sponsored"
+      ? "primarySponsor"
+      : "cosponsors"
 
   return (
     <StyledBillsByTopic>
@@ -66,13 +72,14 @@ const BillsByTopicContainer = ({
               {group.subtopics.map(({ topic, count }) => (
                 <StyledTopicLink
                   key={topic}
-                  href={billSearchByTopicLinkAndPrimarySponsor(
+                  href={billSearchByTopicLinkAndSponsorType(
                     court,
                     {
                       category: group.topic,
                       topic
                     },
-                    member
+                    member,
+                    sponsorType
                   )}
                   aria-label={`${topic} (${count} bills)`}
                 >

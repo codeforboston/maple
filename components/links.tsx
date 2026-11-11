@@ -179,16 +179,34 @@ export const billSearchByTopicLink = (court: number, topic: BillTopic) => {
   return `${maple.billSearch()}?${new URLSearchParams(params).toString()}`
 }
 
-export const billSearchByTopicLinkAndPrimarySponsor = (
+export const billSearchByTopicLinkAndSponsorType = (
   court: number,
   topic: BillTopic,
-  member: MemberContent
+  member: MemberContent,
+  sponsorType: string
 ) => {
+  const sponsorParameters = (sponsorType: string) => {
+    let sponsorFilter
+    if (sponsorType === "all") {
+      sponsorFilter = {
+        [billRefinementKey("primarySponsor")]: member.Name,
+        [billRefinementKey("cosponsors")]: member.Name
+      }
+    } else {
+      sponsorFilter = { [billRefinementKey(`${sponsorType}`)]: member.Name }
+    }
+    return sponsorFilter
+  }
+
+  const sponsorConverted = sponsorParameters(sponsorType)
+
   const params = {
-    [billRefinementKey("primarySponsor")]: member.Name,
+    ...sponsorConverted,
     [billRefinementKey("court")]: String(court),
     [`${billsDefaultIndex}[multiselectHierarchicalMenu][topics.lvl1][0]`]: `${topic.category} > ${topic.topic}`
   }
+
+  console.log(`${maple.billSearch()}?${new URLSearchParams(params).toString()}`)
 
   return `${maple.billSearch()}?${new URLSearchParams(params).toString()}`
 }
