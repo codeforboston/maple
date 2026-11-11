@@ -3,6 +3,8 @@ import * as logger from "firebase-functions/logger"
 import { Conference } from "../conferences/types"
 import { db, Timestamp } from "../firebase"
 import { timeZone } from "../malegislature"
+import { resolveRecipients } from "../email/recipients"
+import { convertHtmlToText } from "../notifications/helpers"
 import { splitMemberName } from "../shared/names"
 import { takesTestimony } from "../shared/conferences"
 import { Testimony } from "../testimony/types"
@@ -10,6 +12,7 @@ import { stateOf } from "./inputEvents"
 import { ConferenceInputEvent, ConferenceUpdate } from "./types"
 import {
   buildConferenceUpdateEmail,
+  conferenceUpdateSubject,
   renderConferenceUpdate,
   summarize,
   tally,
@@ -17,14 +20,20 @@ import {
 } from "./weeklyUpdate"
 
 const ALREADY_EXISTS = 6
+const REPLY_TO = "info@mapletestimony.org"
+const DEFAULT_FROM = "notifications@mapletestimony.org"
 
-/** "Sen. Crighton" or "Rep. Peisch", for a header's To line. */
+/** "Sen. Crighton" or "Rep. Peisch", for a header's To line, and the address
+ * the update goes to, if the member document has one. */
 const conferee = async (court: number, c: Conference["conferees"][number]) => {
   const snap = await db
     .doc(`/generalCourts/${court}/members/${c.memberCode}`)
     .get()
   const name: string | undefined = snap.data()?.content?.Name
+  const email: string | undefined = snap.data()?.content?.EmailAddress?.trim()
   return {
+    memberCode: c.memberCode,
+    email: email || undefined,
     name: `${c.branch === "Senate" ? "Sen." : "Rep."} ${
       name ? splitMemberName(name).surname : c.memberCode
     }`,
@@ -75,18 +84,19 @@ export async function compileWeeklyUpdates(now = new Date()) {
       )
 
       const changes = summarize(conferenceEvents)
-      const html = renderConferenceUpdate(
-        buildConferenceUpdateEmail({
-          conference,
-          conferees: await Promise.all(
-            conference.conferees.map(c => conferee(court, c))
-          ),
-          standing,
-          changes,
-          start,
-          now
-        })
+      const conferees = await Promise.all(
+        conference.conferees.map(c => conferee(court, c))
       )
+      const data = buildConferenceUpdateEmail({
+        conference,
+        conferees,
+        standing,
+        changes,
+        start,
+        now
+      })
+      const html = renderConferenceUpdate(data)
+      const reachable = conferees.filter(c => c.email)
       const update: ConferenceUpdate = {
         court,
         conferenceId: id,
@@ -94,13 +104,44 @@ export async function compileWeeklyUpdates(now = new Date()) {
         standing,
         changes,
         html,
+        delivery: {
+          sentTo: reachable.map(c => c.memberCode),
+          skipped: conferees.filter(c => !c.email).map(c => c.memberCode)
+        },
         createdAt: Timestamp.now()
       }
+
+      // One batch, so the update and its email exist together or not at all:
+      // a second run finds the update and sends nothing.
+      const updateRef = db
+        .collection("/conferenceUpdates")
+        .doc(`${court}_${id}_${start.toISODate()}`)
+      const batch = db.batch()
+      batch.create(updateRef, update)
+      const { to, subjectPrefix } = resolveRecipients(
+        reachable.map(c => c.email!)
+      )
+      if (to.length) {
+        batch.create(db.collection("emails").doc(updateRef.id), {
+          to,
+          from: `"MAPLE" <${process.env.CONFEREE_UPDATE_FROM ?? DEFAULT_FROM}>`,
+          replyTo: REPLY_TO,
+          // The extension reads headers from the document, not from `message`.
+          headers: {
+            "X-SMTPAPI": JSON.stringify({ category: ["conferee-update"] })
+          },
+          message: {
+            subject: subjectPrefix + conferenceUpdateSubject(data),
+            text: convertHtmlToText(html),
+            html
+          },
+          createdAt: Timestamp.now()
+        })
+      } else {
+        logger.warn(`No recipients for the update to conference ${key}`)
+      }
       try {
-        await db
-          .collection("/conferenceUpdates")
-          .doc(`${court}_${id}_${start.toISODate()}`)
-          .create(update)
+        await batch.commit()
         stored++
       } catch (e) {
         if ((e as { code?: number }).code !== ALREADY_EXISTS) throw e

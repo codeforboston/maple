@@ -1485,6 +1485,105 @@ describe("conference weekly update", () => {
     )
   }, 60000)
 
+  describe("sending", () => {
+    const env = { ...process.env }
+    afterEach(() => {
+      process.env = { ...env }
+    })
+
+    /** An appointed conference whose conferees are `members`, a null address
+     * standing for a member document without one. */
+    const conferenceWith = async (members: (string | null)[]) => {
+      const conferees = []
+      for (const [i, address] of members.entries()) {
+        const memberCode = `T${nanoid(6)}`
+        await testDb
+          .doc(`/generalCourts/${currentGeneralCourt}/members/${memberCode}`)
+          .set({
+            id: memberCode,
+            content: { Name: `Test Member${i}`, EmailAddress: address }
+          })
+        conferees.push({
+          memberCode,
+          branch: i % 2 ? ("House" as const) : ("Senate" as const),
+          chair: i < 2
+        })
+      }
+      const conferenceId = await createConference(
+        billId,
+        "appointed",
+        conferees
+      )
+      await fileInput(signInUser1, billId, conferenceId, "passNothing")
+      await waitFor(
+        async () => expect((await eventsOf(conferenceId)).size).toBe(1),
+        { timeout: 20000 }
+      )
+      const now = weekWindow(new Date()).end.plus({ weeks: 1, hours: 1 })
+      const weekStart = weekWindow(now.toJSDate()).start.toISODate()
+      const id = `${currentGeneralCourt}_${conferenceId}_${weekStart}`
+      return { conferees, now: now.toJSDate(), id }
+    }
+    const emailOf = async (id: string) =>
+      (await testDb.doc(`/emails/${id}`).get()).data() as any
+
+    it("sends the update to the test address outside production, once", async () => {
+      process.env.GCLOUD_PROJECT = "digital-testimony-dev"
+      process.env.LETTER_TEST_RECIPIENT = "test@example.org"
+      const { conferees, now, id } = await conferenceWith([
+        "one@example.org",
+        null,
+        "three@example.org"
+      ])
+      await compileWeeklyUpdates(now)
+
+      const email = await emailOf(id)
+      expect(email.to).toEqual(["test@example.org"])
+      expect(email.replyTo).toBe("info@mapletestimony.org")
+      expect(email.from).toMatch(/^"MAPLE" <.+@mapletestimony\.org>$/)
+      expect(email.message.subject).toContain(
+        "[dev] would have gone to: one@example.org, three@example.org"
+      )
+      expect(email.headers["X-SMTPAPI"]).toBe(
+        '{"category":["conferee-update"]}'
+      )
+      expect(email.message.html).toContain("Sen.")
+
+      const update = (await testDb.doc(`/conferenceUpdates/${id}`).get()).data()
+      expect(update!.delivery).toEqual({
+        sentTo: [conferees[0].memberCode, conferees[2].memberCode],
+        skipped: [conferees[1].memberCode]
+      })
+
+      await compileWeeklyUpdates(now)
+      expect((await emailOf(id)).createdAt).toEqual(email.createdAt)
+    }, 60000)
+
+    it("sends to the conferees' own addresses in production", async () => {
+      process.env.GCLOUD_PROJECT = "digital-testimony-prod"
+      const { now, id } = await conferenceWith([
+        "one@example.org",
+        "two@example.org"
+      ])
+      await compileWeeklyUpdates(now)
+
+      const email = await emailOf(id)
+      expect(email.to).toEqual(["one@example.org", "two@example.org"])
+      expect(email.message.subject).not.toContain("[dev]")
+    }, 60000)
+
+    it("stores the update without an email when no conferee has an address", async () => {
+      process.env.GCLOUD_PROJECT = "digital-testimony-prod"
+      const { conferees, now, id } = await conferenceWith([null])
+      await compileWeeklyUpdates(now)
+
+      expect(await emailOf(id)).toBeUndefined()
+      expect(
+        (await testDb.doc(`/conferenceUpdates/${id}`).get()).data()!.delivery
+      ).toEqual({ sentTo: [], skipped: [conferees[0].memberCode] })
+    }, 60000)
+  })
+
   it("compiles nothing for a week without a change", async () => {
     const conferenceId = await createConference(billId)
     await fileInput(signInUser1, billId, conferenceId, "passNothing")
@@ -1727,7 +1826,15 @@ async function createDraftAttachment(uid: string, id: string, content: string) {
 
 /** A conference whose canonical bill is `billId`, with its counts zeroed. It
  * takes testimony only while `status` is appointed. */
-async function createConference(billId: string, status = "appointed") {
+async function createConference(
+  billId: string,
+  status = "appointed",
+  conferees: {
+    memberCode: string
+    branch: "House" | "Senate"
+    chair?: boolean
+  }[] = []
+) {
   const id = `conference-${nanoid()}`.toLowerCase()
   await testDb
     .doc(`/generalCourts/${currentGeneralCourt}/conferences/${id}`)
@@ -1738,7 +1845,7 @@ async function createConference(billId: string, status = "appointed") {
       senateBillId: billId,
       houseBillId: "H1",
       canonicalBillId: billId,
-      conferees: [],
+      conferees,
       status,
       hearingIds: [],
       differences: [],
