@@ -656,7 +656,7 @@ function formatDisclosureLabel(
 }
 
 export default createPage({
-  titleI18nKey: "titles.lobbying",
+  titleI18nKey: "titles.lobbying.firm",
   Page: FirmDetail
 })
 
