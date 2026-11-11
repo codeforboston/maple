@@ -122,7 +122,10 @@ export const oneTarget = ({
 
 export type DraftTestimony = Static<typeof DraftTestimony>
 export const DraftTestimony = BaseTestimony.extend({
-  publishedVersion: Optional(Number)
+  publishedVersion: Optional(Number),
+  /** Where replies to a conference input's letter go, in place of the
+   * author's own email. Never copied to the publication. */
+  replyTo: Maybe(RtString)
 })
   .withConstraint(positionMatchesTarget)
   .withConstraint(oneTarget)

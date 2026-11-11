@@ -49,6 +49,7 @@ jest.mock("../auth", () => ({
 const mounted: string[] = []
 jest.mock("../db", () => ({
   useProfile: () => ({ profile: {} }),
+  useMember: () => ({ member: undefined }),
   hasDraftChanged: () => false,
   useConferenceTestimony: () => ({ items: [], loading: false }),
   useEditConferenceTestimony: (

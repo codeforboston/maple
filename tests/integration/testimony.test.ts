@@ -576,6 +576,25 @@ describe("publishTestimony", () => {
       expect(bill.latestTestimonyId).toBeUndefined()
     })
 
+    it("Keeps a reply-to address on the private draft, never on the publication", async () => {
+      const { draftId: conferenceDraftId } = await createConferenceDraft(
+        uid,
+        billId,
+        conferenceId,
+        "passSenateVersion"
+      )
+      await updateDoc(refs.draftTestimony(uid, conferenceDraftId), {
+        replyTo: "reader.work@example.org"
+      })
+      const res = await publishTestimony({ draftId: conferenceDraftId })
+
+      const draft = await getDoc(refs.draftTestimony(uid, conferenceDraftId))
+      expect(draft.data()?.replyTo).toBe("reader.work@example.org")
+      const publication = await getPublication(uid, res.data.publicationId)
+      expect(publication).not.toHaveProperty("replyTo")
+      expect(JSON.stringify(publication)).not.toContain("reader.work")
+    })
+
     it("Keeps bill and conference testimony on the same bill apart", async () => {
       const resA = await publishTestimony({ draftId })
       const { draftId: conferenceDraftId } = await createConferenceDraft(
