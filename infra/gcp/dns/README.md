@@ -68,5 +68,5 @@ the name servers.
 
 One public managed zone, **$0.20/month**, in prod only — too few rows to be worth a table.
 Queries add $0.40 per million; DNSSEC signing is free and only makes responses larger; records
-inside a zone cost nothing, so the 15 here are free. The PDS zones belong to
+inside a zone cost nothing, so the ones here are free. The PDS zones belong to
 [infra/gcp](../README.md). List prices, Cloud Billing Catalog API, 2026-09-21.
