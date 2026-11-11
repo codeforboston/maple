@@ -1,11 +1,8 @@
 import { RefObject, useCallback, useEffect, useRef, useState } from "react"
-import { Timestamp } from "firebase/firestore"
 import { Trans, useTranslation } from "next-i18next"
 import styled, { keyframes } from "styled-components"
-import { useAuth } from "components/auth"
 import {
   ConferencePosition,
-  ConferenceTestimony,
   hasDraftChanged,
   Testimony,
   UseEditConferenceTestimony,
@@ -13,7 +10,8 @@ import {
   WorkingDraft
 } from "components/db"
 import { Internal } from "components/links"
-import { Entry } from "./Entry"
+import { hasLegislators } from "functions/src/conferenceLetters/letter"
+import { LetterReview } from "./Review"
 import { conferencePositions, positionColours } from "./positions"
 import { brand, ink, line, red, wash } from "./tokens"
 import { useAutosave } from "./useAutosave"
@@ -154,12 +152,6 @@ export const Primary = styled.button`
   }
 `
 
-const PreviewBox = styled.div`
-  background: var(--maple-surface-base);
-  border: 1px solid ${line.default};
-  border-radius: 16px;
-`
-
 export const Rules = styled.ul`
   margin: 0;
   padding-left: 16px;
@@ -259,7 +251,8 @@ export function ConductRule() {
  * from the review step.
  */
 export function InputForm({
-  uid,
+  court,
+  conferees,
   edit,
   subject,
   step,
@@ -267,7 +260,9 @@ export function InputForm({
   onCancel,
   onPosted
 }: {
-  uid: string
+  court: number
+  /** Initials of the conferees, for the weekly update's row. */
+  conferees: string[]
   /** The user's draft and publication on the conference. */
   edit: UseEditConferenceTestimony
   subject: string
@@ -278,7 +273,6 @@ export function InputForm({
   onPosted: () => void
 }) {
   const { t } = useTranslation("conferences")
-  const { claims } = useAuth()
   const { profile } = useProfile()
   const { saveDraft, publishTestimony, discardDraft } = edit
 
@@ -287,6 +281,8 @@ export function InputForm({
   )
   const [content, setContent] = useState("")
   const [reason, setReason] = useState("")
+  // The address replies to this letter go to, when not the reader's own.
+  const [chosen, setChosen] = useState("")
   const field = useRef<HTMLTextAreaElement>(null)
   const ask = useAsk(field)
 
@@ -302,23 +298,26 @@ export function InputForm({
     if (source?.position) setPosition(source.position)
     if (source?.content) setContent(source.content)
     if (edit.draft?.editReason) setReason(edit.draft.editReason)
+    if (edit.draft?.replyTo) setChosen(edit.draft.replyTo)
   }, [edit.loading, edit.draft, edit.publication])
 
   // Keep the draft as they type, once there are words to keep.
   const { save, dirty, posting, post, reset } = useAutosave({
     edit,
-    fields: { position, content, reason },
+    fields: { position, content, reason, chosen },
     // A cosign's draft is not this form's, whatever its words.
     matches: (draft, f) =>
       !draft?.cosignOfId &&
       draft?.content === f.content &&
       draft?.position === f.position &&
-      (draft?.editReason ?? "") === f.reason,
+      (draft?.editReason ?? "") === f.reason &&
+      (draft?.replyTo ?? "") === f.chosen,
     write: f =>
       saveDraft.execute({
         position: f.position,
         content: f.content,
-        editReason: f.reason || undefined
+        editReason: f.reason || undefined,
+        replyTo: f.chosen || undefined
       }),
     idle: f => !f.content.trim(),
     onPosted
@@ -355,16 +354,6 @@ export function InputForm({
   const showDelete = !!edit.draft && save === "none" && !dirty
 
   const name = profile?.fullName || t("input.anonymous")
-  const entry = {
-    authorUid: uid,
-    id: "preview",
-    position,
-    content,
-    authorRole: claims?.role ?? "user",
-    authorDisplayName: name,
-    fullName: name,
-    publishedAt: Timestamp.now()
-  } as unknown as ConferenceTestimony
 
   if (step === "compose")
     return (
@@ -420,22 +409,24 @@ export function InputForm({
       </Body>
     )
 
+  // Whether the letter goes anywhere, from the profile alone.
+  const sends = hasLegislators(profile ?? {})
   return (
     <Body>
       <Scroll>
-        <Label>
-          {t("input.preview_label")}{" "}
-          <em style={{ fontWeight: 400, color: ink.mid }}>
-            {t("input.preview_on", { subject })}
-          </em>
-        </Label>
-        <PreviewBox>
-          <Entry testimony={entry} bare />
-        </PreviewBox>
+        <LetterReview
+          court={court}
+          conferees={conferees}
+          author={name}
+          conference={subject}
+          position={position}
+          content={content}
+          chosen={chosen}
+          onChoose={setChosen}
+        />
         <div style={{ marginTop: 20 }}>
           <RuleLabel>{t("input.rules_label")}</RuleLabel>
           <Rules>
-            <li>{t("input.rule_public")}</li>
             <li>{t("input.rule_revise")}</li>
             <ConductRule />
           </Rules>
@@ -467,7 +458,7 @@ export function InputForm({
             }
             onClick={post}
           >
-            {t("input.post")}
+            {t(sends ? "review.post_and_send" : "input.post")}
           </Primary>
         </Actions>
       </div>
