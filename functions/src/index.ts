@@ -67,6 +67,7 @@ export {
   compileConferenceUpdates,
   recordConferenceInput
 } from "./conferenceUpdates"
+export { mailConferenceLetters } from "./conferenceLetters"
 export { scrapeElections } from "./legislators"
 
 export { transcriptionV2 } from "./webhooks"
