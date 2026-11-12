@@ -17,7 +17,14 @@ jest.mock("components/auth", () => ({
 const mockProfile: { current: Record<string, unknown> } = { current: {} }
 jest.mock("components/db", () => ({
   useProfile: () => ({ profile: mockProfile.current }),
-  useMember: () => ({ member: undefined })
+  useMember: () => ({ member: undefined }),
+  hasDraftChanged: () => true
+}))
+// The testimony ids with a letter on record.
+const mockOnRecord = new Set<string>()
+jest.mock("components/db/legislatorMail", () => ({
+  useLetterOnRecord: (testimonyId?: string) =>
+    !!testimonyId && mockOnRecord.has(testimonyId)
 }))
 
 beforeEach(() => {
@@ -100,6 +107,25 @@ describe("InputForm", () => {
       expect(
         screen.getByRole("button", { name: "review.post_and_send" })
       ).toBeInTheDocument()
+    })
+
+    it("marks the letter updated only when an earlier one is on record", () => {
+      const publication = { id: "t1", position: "passSomething", content: "" }
+      const edit = editing({
+        publication
+      } as Partial<UseEditConferenceTestimony>)
+      const { unmount } = review(edit)
+      expect(screen.getByText(/^Phone-Free Schools: /)).not.toHaveTextContent(
+        "(updated)"
+      )
+      unmount()
+
+      mockOnRecord.add("t1")
+      review(edit)
+      expect(screen.getByText(/^Phone-Free Schools: /)).toHaveTextContent(
+        /\(updated\)$/
+      )
+      mockOnRecord.clear()
     })
 
     it("says no one will be emailed when the profile has no legislators", () => {

@@ -3,6 +3,7 @@ import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { useAuth } from "components/auth"
 import { ProfileMember, useMember, useProfile } from "components/db"
+import { useLetterOnRecord } from "components/db/legislatorMail"
 import {
   ConferencePosition,
   hasLegislators,
@@ -466,7 +467,7 @@ export function LetterReview({
   conferees,
   author,
   conference,
-  edited,
+  testimonyId,
   position,
   content,
   cosign,
@@ -479,8 +480,9 @@ export function LetterReview({
   conferees: string[]
   author: string
   conference: string
-  /** The reader is editing input they posted before. */
-  edited: boolean
+  /** The input the reader posted before, when editing it. The letter is an
+   * update when one for it is on record. */
+  testimonyId?: string
   position: ConferencePosition
   /** The reader's own words, empty on a cosign without a note. */
   content: string
@@ -492,6 +494,7 @@ export function LetterReview({
 }) {
   const { representative, senator } = useLegislators(court)
   const { own, replyTo } = useReplyTo(chosen)
+  const edited = useLetterOnRecord(testimonyId)
   return (
     <>
       <Delivery

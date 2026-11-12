@@ -1,5 +1,13 @@
-import { doc, getDoc } from "firebase/firestore"
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where
+} from "firebase/firestore"
 import { nanoid } from "nanoid"
+import { hasLetterOnRecord } from "../../components/db/legislatorMail"
 import { firestore } from "../../components/firebase"
 import { sendConferenceLetters } from "../../functions/src/conferenceLetters/sendLetters"
 import { Timestamp } from "../../functions/src/firebase"
@@ -30,14 +38,41 @@ type Seed = {
   sen?: string
   withdrawn?: boolean
   replyTo?: string
-  change?: "added" | "edited"
+}
+
+type Input = { uid: string; testimonyId: string; conferenceId: string }
+
+/** An event saying the reader posted or edited their input, to `version`, at
+ * `at`. */
+const event = async (
+  input: Input,
+  change: "added" | "edited",
+  version: number,
+  at: Date
+) => {
+  const eventId = id()
+  const state = (version: number) => ({
+    position: "passSomething",
+    group: "individual",
+    version
+  })
+  await testDb.doc(`conferenceInputEvents/${eventId}`).set({
+    court: COURT,
+    conferenceId: input.conferenceId,
+    testimonyId: input.testimonyId,
+    authorUid: input.uid,
+    change,
+    ...(change === "edited" && { before: state(version - 1) }),
+    after: state(version),
+    at: Timestamp.fromDate(at)
+  })
+  return eventId
 }
 
 /** A reader who posted conference input yesterday, and the event that says so. */
 const seed = async (conferenceId: string, s: Seed = {}) => {
   const uid = id()
   const testimonyId = id()
-  const eventId = id()
   await testAuth.createUser({
     uid,
     email: `${uid}@example.com`,
@@ -65,20 +100,21 @@ const seed = async (conferenceId: string, s: Seed = {}) => {
     court: COURT,
     ...(s.replyTo ? { replyTo: s.replyTo } : {})
   })
-  await testDb.doc(`conferenceInputEvents/${eventId}`).set({
-    court: COURT,
-    conferenceId,
-    testimonyId,
-    authorUid: uid,
-    change: s.change ?? "added",
-    ...(s.change === "edited" && {
-      before: { position: "passNothing", group: "individual", version: 0 }
-    }),
-    after: { position: "passSomething", group: "individual", version: 1 },
-    at: Timestamp.fromDate(ADDED_AT)
-  })
-  return { uid, eventId, testimonyId }
+  const input = { uid, testimonyId, conferenceId }
+  const eventId = await event(input, "added", 1, ADDED_AT)
+  return { ...input, eventId }
 }
+
+const DAY = 24 * 60 * 60 * 1000
+/** The run `days` after the first, and its window's noon. */
+const run = (days: number) => new Date(NOW.getTime() + days * DAY)
+const noon = (days: number) => new Date(ADDED_AT.getTime() + days * DAY)
+
+/** The reader's input as published now, at `version`. */
+const publishVersion = (input: Input, version: number) =>
+  testDb
+    .doc(`users/${input.uid}/publishedTestimony/${input.testimonyId}`)
+    .update({ version })
 
 const email = async (eventId: string) =>
   (await testDb.doc(`emails/letter_${eventId}`).get()).data()
@@ -191,47 +227,81 @@ describe("sendConferenceLetters", () => {
 
   it("mails only the last of two posts of the same input", async () => {
     const first = await seed(conferenceId, { rep })
-    const secondId = id()
-    await testDb.doc(`conferenceInputEvents/${secondId}`).set({
-      court: COURT,
-      conferenceId,
-      testimonyId: first.testimonyId,
-      authorUid: first.uid,
-      change: "added",
-      after: { position: "passSomething", group: "individual", version: 2 },
-      at: Timestamp.fromDate(new Date(ADDED_AT.getTime() + 60_000))
-    })
+    const secondId = await event(
+      first,
+      "added",
+      2,
+      new Date(ADDED_AT.getTime() + 60_000)
+    )
     await sendConferenceLetters(NOW)
     expect(await email(first.eventId)).toBeUndefined()
     expect((await skip(first.eventId))!.reason).toBe("superseded")
     expect(await email(secondId)).toBeDefined()
   })
 
-  it("mails an edit as an update", async () => {
-    const { eventId } = await seed(conferenceId, { rep, change: "edited" })
-    await sendConferenceLetters(NOW)
-    expect((await email(eventId))!.message.subject).toMatch(
+  it("mails an edit as an update to the letter on record", async () => {
+    const posted = await seed(conferenceId, { rep })
+    await sendConferenceLetters(run(0))
+    expect(await record(posted.eventId)).toMatchObject({ updated: false })
+
+    await publishVersion(posted, 2)
+    const editId = await event(posted, "edited", 2, noon(1))
+    await sendConferenceLetters(run(1))
+    expect((await email(editId))!.message.subject).toMatch(
       /Phone-Free Schools: Please pass something \(updated\)$/
     )
-    expect(await record(eventId)).toMatchObject({
+    expect(await record(editId)).toMatchObject({
       subject: "Phone-Free Schools: Please pass something (updated)",
+      version: 2,
       updated: true
     })
   })
 
+  it("mails each version once", async () => {
+    // Posted the evening before the run, edited the morning after it, before
+    // the run read what was posted: the run mails the edit with the post.
+    const posted = await seed(conferenceId, { rep })
+    await publishVersion(posted, 2)
+    await sendConferenceLetters(run(0))
+    expect(await record(posted.eventId)).toMatchObject({
+      version: 2,
+      updated: false
+    })
+
+    const editId = await event(posted, "edited", 2, noon(1))
+    await sendConferenceLetters(run(1))
+    expect(await email(editId)).toBeUndefined()
+    expect((await skip(editId))!.reason).toBe("alreadySent")
+
+    await publishVersion(posted, 3)
+    const againId = await event(posted, "edited", 3, noon(2))
+    await sendConferenceLetters(run(2))
+    expect(await record(againId)).toMatchObject({ version: 3, updated: true })
+  })
+
+  it("mails an edit to input whose letter was skipped as new", async () => {
+    const posted = await seed(conferenceId, { rep, verified: false })
+    await sendConferenceLetters(run(0))
+    expect((await skip(posted.eventId))!.reason).toBe("noVerifiedEmail")
+
+    await testAuth.updateUser(posted.uid, { emailVerified: true })
+    await publishVersion(posted, 2)
+    const editId = await event(posted, "edited", 2, noon(1))
+    await sendConferenceLetters(run(1))
+    expect((await email(editId))!.message.subject).toMatch(
+      /Please pass something$/
+    )
+    expect(await record(editId)).toMatchObject({ updated: false })
+  })
+
   it("mails an input posted and edited the same day once, as new", async () => {
     const first = await seed(conferenceId, { rep })
-    const editId = id()
-    await testDb.doc(`conferenceInputEvents/${editId}`).set({
-      court: COURT,
-      conferenceId,
-      testimonyId: first.testimonyId,
-      authorUid: first.uid,
-      change: "edited",
-      before: { position: "passSomething", group: "individual", version: 1 },
-      after: { position: "passSomething", group: "individual", version: 2 },
-      at: Timestamp.fromDate(new Date(ADDED_AT.getTime() + 60_000))
-    })
+    const editId = await event(
+      first,
+      "edited",
+      2,
+      new Date(ADDED_AT.getTime() + 60_000)
+    )
     await sendConferenceLetters(NOW)
     expect((await skip(first.eventId))!.reason).toBe("superseded")
     expect((await email(editId))!.message.subject).toMatch(
@@ -253,5 +323,28 @@ describe("legislatorMail", () => {
 
     await signInUser2()
     await expectPermissionDenied(getDoc(ref))
+  })
+
+  it("tells the reader's preview whether a letter for their input is on record", async () => {
+    const reader = await signInUser1()
+    const testimonyId = id()
+    await testDb.doc(`legislatorMail/letter_${id()}`).set({
+      kind: "letter",
+      uid: reader.uid,
+      testimonyId
+    })
+    expect(await hasLetterOnRecord(reader.uid, testimonyId)).toBe(true)
+    expect(await hasLetterOnRecord(reader.uid, id())).toBe(false)
+
+    const other = await signInUser2()
+    expect(await hasLetterOnRecord(other.uid, testimonyId)).toBe(false)
+    await expectPermissionDenied(
+      getDocs(
+        query(
+          collection(firestore, "legislatorMail"),
+          where("testimonyId", "==", testimonyId)
+        )
+      )
+    )
   })
 })

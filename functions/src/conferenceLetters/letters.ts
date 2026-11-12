@@ -15,6 +15,7 @@ export function dayWindow(now: Date) {
 export type SkipReason =
   | "withdrawn"
   | "superseded"
+  | "alreadySent"
   | "noVerifiedEmail"
   | "noLegislator"
   | "noLegislatorEmail"
