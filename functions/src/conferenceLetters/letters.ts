@@ -1,6 +1,5 @@
 import { DateTime } from "luxon"
 import { timeZone } from "../malegislature"
-import { convertHtmlToText } from "../notifications/helpers"
 import { Letter } from "./letter"
 
 /** Yesterday, Eastern: the day whose new input the daily job mails. */
@@ -55,6 +54,21 @@ export const renderLetterHtml = (letter: Letter) => {
     .join("\n")
 }
 
+/** The same letter as plain text, for clients that show the text part. */
+export const renderLetterText = (letter: Letter) =>
+  [
+    letter.salutation,
+    ...letter.paragraphs,
+    letter.cosigned &&
+      [letter.cosigned.lead, ...letter.cosigned.quote]
+        .join("\n\n")
+        .replace(/^(.*)$/gm, line => (line ? `> ${line}` : ">")),
+    letter.signature.join("\n"),
+    letter.footer
+  ]
+    .filter(Boolean)
+    .join("\n\n")
+
 /** The `emails` document for a letter, for the send-email extension. Click and
  * open tracking are off per message: they would rewrite the links in a letter
  * to a legislator. */
@@ -91,7 +105,7 @@ export const buildLetterEmail = ({
     },
     message: {
       subject: subjectPrefix + letter.subject,
-      text: convertHtmlToText(html),
+      text: renderLetterText(letter),
       html
     },
     createdAt
