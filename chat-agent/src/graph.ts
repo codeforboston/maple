@@ -23,7 +23,7 @@ import { z } from "zod"
 import * as db from "./db"
 import { isCancelRequested } from "./threads"
 import { buildTools, UserId, userIdFrom } from "./tools"
-import { mcpCaller, type McpCall } from "./mcp"
+import { directCaller, type McpCall } from "./mcp"
 
 export const MAX_TOOL_CALLS_PER_TURN = 6
 const HISTORY_TOKENS = 6000
@@ -130,7 +130,7 @@ export type GraphDeps = {
   model: string | BaseChatModel
   db: db.Queryable
   embed: db.EmbedFn
-  /** MAPLE's MCP server, for bill, testimony and sponsor search. */
+  /** MAPLE's MCP tool queries, for bill, testimony and sponsor search. */
   mcp: McpCall
   monthlyBudget: number
   /** All users together, per month. */
@@ -313,12 +313,6 @@ export function buildGraph(deps: GraphDeps) {
   }).withConfig({ recursionLimit: 100 })
 }
 
-const required = (name: string) => {
-  const v = process.env[name]
-  if (!v) throw new Error(`${name} is not set`)
-  return v
-}
-
 /** The production graph, configured from env. The Express service passes a PostgresSaver. */
 export function graphFromEnv(checkpointer?: BaseCheckpointSaver) {
   const pool: db.Queryable = {
@@ -328,7 +322,7 @@ export function graphFromEnv(checkpointer?: BaseCheckpointSaver) {
     model: `google-genai:${process.env.CHAT_MODEL}`,
     db: pool,
     embed: db.embed,
-    mcp: mcpCaller(required("MAPLE_MCP_URL"), required("MAPLE_MCP_TOKEN")),
+    mcp: directCaller(),
     monthlyBudget: Number(process.env.MONTHLY_TOKEN_BUDGET ?? 200_000),
     globalMonthlyBudget: Number(
       process.env.GLOBAL_MONTHLY_TOKEN_BUDGET ?? 2_000_000

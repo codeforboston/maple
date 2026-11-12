@@ -27,7 +27,7 @@ const isoDate = () =>
     )
     .describe("ISO date, e.g. 2026-10-01")
 
-/** Bill, testimony and sponsor search go to MAPLE's MCP server; memory search to our own db. */
+/** Bill, testimony and sponsor search run MAPLE's MCP tool queries; memory search uses our own db. */
 export type ToolDeps = { db: db.Queryable; embed: db.EmbedFn; mcp: McpCall }
 
 /** A Firebase uid, verified by the site before it reaches this service. */

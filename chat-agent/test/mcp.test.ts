@@ -1,13 +1,7 @@
-import {
-  mcpBill,
-  mcpCaller,
-  mcpTestimony,
-  rpcBody,
-  type McpCall
-} from "../src/mcp"
+import { mcpBill, mcpTestimony, type McpCall } from "../src/mcp"
 import { buildTools } from "../src/tools"
 
-// Trimmed from real maple-dev responses (2026-11-01); author names replaced.
+// Trimmed from real maple-dev results (2026-11-01); author names replaced.
 const BILL = {
   relevanceScore: 0.75,
   id: "H1507",
@@ -21,7 +15,7 @@ const BILL = {
   opposeCount: 1,
   neutralCount: 0,
   testimonyCount: 4,
-  nextHearingAt: { _seconds: 0, _nanoseconds: 0 }
+  nextHearingAt: null
 }
 const TESTIMONY = {
   relevanceScore: 0.822,
@@ -31,16 +25,10 @@ const TESTIMONY = {
   billId: "H5008",
   court: 194,
   position: "endorse",
-  publishedAt: { _seconds: 1775839528, _nanoseconds: 197000000 },
+  // A Firestore Timestamp
+  publishedAt: { toDate: () => new Date(1775839528197) },
   contentPreview: "go rent control!"
 }
-
-const sse = (msg: unknown) => `event: message\ndata: ${JSON.stringify(msg)}\n\n`
-const toolResult = (v: unknown, isError = false) => ({
-  jsonrpc: "2.0",
-  id: 1,
-  result: { content: [{ type: "text", text: JSON.stringify(v) }], isError }
-})
 
 describe("mcp mapping", () => {
   test("bill: counts, committee name, trimmed summary", () => {
@@ -60,48 +48,8 @@ describe("mcp mapping", () => {
   test("testimony: endorse → support, timestamp → ISO, no uid path", () => {
     const t = mcpTestimony(TESTIMONY)
     expect(t.position).toBe("support")
-    expect(t.publishedAt).toBe("2026-04-10T16:45:28.000Z")
+    expect(t.publishedAt).toBe("2026-04-10T16:45:28.197Z")
     expect(JSON.stringify(t)).not.toContain("someUid")
-  })
-})
-
-describe("mcpCaller", () => {
-  const realFetch = global.fetch
-  afterEach(() => (global.fetch = realFetch))
-  const respond = (status: number, body: string) =>
-    (global.fetch = jest.fn(
-      async () => new Response(body, { status })
-    ) as unknown as typeof fetch)
-
-  test("parses an SSE tool result and sends the token header", async () => {
-    respond(200, sse(toolResult([BILL])))
-    const out = await mcpCaller("https://x.test/api/mcp", "tok")(
-      "search_bills",
-      {
-        query: "rent"
-      }
-    )
-    expect(out).toEqual([BILL])
-    const init = (global.fetch as jest.Mock).mock.calls[0][1]
-    expect(init.headers["X-Maple-Token"]).toBe("Bearer tok")
-    expect(JSON.parse(init.body).params).toEqual({
-      name: "search_bills",
-      arguments: { query: "rent" }
-    })
-  })
-
-  test("plain JSON bodies pass through", () => {
-    expect(rpcBody('{"a":1}')).toBe('{"a":1}')
-  })
-
-  test("HTTP errors and tool errors throw without echoing the token", async () => {
-    const call = mcpCaller("https://x.test/api/mcp", "secret-tok")
-    respond(401, '{"error":"Unauthorized"}')
-    await expect(call("search_bills", {})).rejects.toThrow("HTTP 401")
-    respond(200, sse(toolResult("bad query", true)))
-    await expect(call("search_bills", {})).rejects.toThrow(/bad query/)
-    respond(401, "")
-    await expect(call("search_bills", {})).rejects.not.toThrow(/secret-tok/)
   })
 })
 

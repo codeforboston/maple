@@ -1,3 +1,10 @@
+import {
+  initFirestore,
+  listSponsors,
+  searchBills,
+  searchTestimony
+} from "../../mcp-server/queries"
+
 /** The bill shape the model and the chat's bill cards read. */
 export type BillHit = {
   id: string
@@ -19,65 +26,30 @@ export type TestimonyHit = {
   contentPreview: string
 }
 
-/** Calls one MAPLE MCP tool and returns its parsed JSON result. */
+/** Runs one of MAPLE's MCP tool queries and returns its result. */
 export type McpCall = (
   name: string,
   args: Record<string, unknown>
 ) => Promise<unknown>
 
-// shortcut: one stateless JSON-RPC POST per call, no initialize handshake (mcp-server runs stateless);
-// switch to the MCP SDK client if the server starts requiring sessions.
-export function mcpCaller(
-  url: string,
-  token: string,
-  timeoutMs = 20_000
-): McpCall {
-  let id = 0
+const direct: Record<string, (args: unknown) => Promise<unknown>> = {
+  search_bills: searchBills,
+  search_testimony: searchTestimony,
+  list_sponsors: listSponsors
+}
+
+/** Runs the MCP server's queries in-process, against the Firestore of this service's project. */
+export function directCaller(): McpCall {
+  initFirestore()
   return async (name, args) => {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json, text/event-stream",
-        // The Firebase proxy strips Authorization, so the token goes in X-Maple-Token.
-        "X-Maple-Token": `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        id: ++id,
-        method: "tools/call",
-        params: { name, arguments: args }
-      }),
-      signal: AbortSignal.timeout(timeoutMs)
-    })
-    if (!res.ok) throw new Error(`MCP ${name}: HTTP ${res.status}`)
-    const msg = JSON.parse(rpcBody(await res.text()))
-    if (msg.error) throw new Error(`MCP ${name}: ${msg.error.message}`)
-    const text = (msg.result?.content ?? [])
-      .map((c: { text?: string }) => c.text ?? "")
-      .join("")
-    if (msg.result?.isError) throw new Error(`MCP ${name}: ${text}`)
-    return JSON.parse(text)
+    const query = direct[name]
+    if (!query) throw new Error(`Unknown MAPLE tool ${name}`)
+    return query(args)
   }
 }
 
-/** Streamable HTTP may answer as SSE: the JSON-RPC message is in the data lines. */
-export function rpcBody(body: string): string {
-  if (!body.startsWith("event:") && !body.startsWith("data:")) return body
-  return body
-    .split("\n")
-    .filter(l => l.startsWith("data:"))
-    .map(l => l.slice(5).trim())
-    .join("\n")
-}
-
-/** Firestore timestamps arrive as {_seconds, _nanoseconds}; 0 means unset. */
-const isoFrom = (t: any): string | null =>
-  typeof t === "string"
-    ? t
-    : t?._seconds
-    ? new Date(t._seconds * 1000).toISOString()
-    : null
+/** A Firestore Timestamp, or null. */
+const isoFrom = (t: any): string | null => t?.toDate?.().toISOString() ?? null
 
 export function mcpBill(b: any): BillHit {
   return {
