@@ -1,3 +1,5 @@
+import { faChevronRight } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { useMemo, useState } from "react"
 import { omit } from "lodash"
 import { useTranslation } from "next-i18next"
@@ -36,12 +38,17 @@ import {
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { createLobbyingListProps } from "components/lobbying/listPageProps"
 import {
-  FilterLabel,
+  listTableStyle,
+  listTdStyle,
   LobbyingFilterBar,
   LobbyingPanel,
-  sessionSelectStyle
+  pageIntroStyle,
+  sessionSelectStyle,
+  subTextStyle
 } from "components/lobbying/LobbyingPanel"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
+import lobbyingStyles from "components/lobbying/lobbying.module.css"
+import { InfoTooltip } from "components/tooltip"
 import {
   LegendSwatch,
   legendItemStyle,
@@ -56,12 +63,18 @@ import {
 } from "components/lobbying/SessionSelect"
 import {
   courtName,
-  courtOrdinal,
   courtShortLabel,
   courtStartYear,
-  courtYears
+  courtYears,
+  sessionYears
 } from "components/lobbying/sessions"
-import { thStyle } from "components/lobbying/SortTh"
+import {
+  SortTh,
+  thNoteStyle,
+  thTopStyle,
+  thWithNoteStyle,
+  type SortDir
+} from "components/lobbying/SortTh"
 
 const TOP_BILLS = 5
 
@@ -85,10 +98,11 @@ function useFigures(
   totalPaid: number
 ): Figure[] {
   const { t } = useTranslation("lobbying")
+  // The session's years ("in 2025–26"), as the panel titles name it, not
+  // its court; "in any session" for all of them.
   const where =
-    session === "all"
-      ? t("overview.whereAll")
-      : t("overview.whereSession", { session: courtName(session) })
+    session === "all" ? t("overview.whereAll") : sessionYears(session) ?? ""
+
   const all = session === "all"
   const c = all ? undefined : stats.courts?.[String(session)]
   const count = (n: number | undefined) =>
@@ -114,7 +128,7 @@ function useFigures(
       sub:
         firms === undefined
           ? undefined
-          : t("overview.figLobbyistsSub", { firms: formatCount(firms) }),
+          : t("overview.subLobbyists", { firms: formatCount(firms) }),
       definition: t("overview.defLobbyists", { where })
     },
     {
@@ -123,20 +137,6 @@ function useFigures(
       definition: t("overview.defPaid", { where })
     }
   ]
-}
-
-/** "2025–2026" for a session; the span of sessions with data for "all". */
-function keyFiguresYears(stats: OverviewStats, session: SessionFilter): string {
-  const courts = session === "all" ? stats.courtsWithData : [session]
-  if (!courts.length) return ""
-  const start = courtStartYear(Math.min(...courts))
-  const end = courtStartYear(Math.max(...courts)) + 1
-  return `${start}–${end}`
-}
-
-const keyFiguresYearsStyle: React.CSSProperties = {
-  display: "block",
-  marginTop: 2
 }
 
 function KeyFigures({
@@ -150,63 +150,45 @@ function KeyFigures({
 }) {
   const { t } = useTranslation("lobbying")
   const figures = useFigures(stats, session, totalPaid)
-  const [open, setOpen] = useState<Set<number>>(new Set())
-  const toggle = (i: number) =>
-    setOpen(prev => {
-      const next = new Set(prev)
-      if (next.has(i)) next.delete(i)
-      else next.add(i)
-      return next
-    })
 
   return (
     <LobbyingPanel
-      title={
-        <>
-          {t("overview.keyFigures", {
-            session:
-              session === "all"
-                ? t("filters.allSessions")
-                : t("overview.courtName", { court: courtOrdinal(session) })
-          })}
-          <span style={keyFiguresYearsStyle}>
-            {keyFiguresYears(stats, session)}
-          </span>
-        </>
-      }
-      style={{ height: "100%", gap: 0 }}
+      title={t("overview.keyFigures")}
+      session={session}
+      sessions={stats.courtsWithData}
+      // The panels' own space under the title, as the chart beside it has.
+      style={{ height: "100%", marginBottom: 0 }}
     >
       <div>
-        {figures.map((f, i) => {
-          const isOpen = open.has(i)
-          const defId = `key-figure-def-${i}`
-          return (
-            <div key={f.label} style={figureRowStyle}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <div style={figureValueStyle}>{f.value}</div>
-                <div style={figureLabelStyle}>
-                  {f.label}
-                  {f.sub && <div style={figureSubStyle}>{f.sub}</div>}
-                </div>
-                <button
-                  type="button"
-                  aria-expanded={isOpen}
-                  aria-controls={defId}
-                  aria-label={t("overview.defToggle", { label: f.label })}
-                  onClick={() => toggle(i)}
-                  style={infoButtonStyle(isOpen)}
-                >
-                  i
-                </button>
-              </div>
-              {isOpen && (
-                <p id={defId} style={figureDefStyle}>
+        {figures.map((f, i) => (
+          <div
+            key={f.label}
+            // The last row without space under it: the panel's own padding
+            // closes the card.
+            style={
+              i === figures.length - 1
+                ? { ...figureRowStyle, paddingBottom: 0 }
+                : figureRowStyle
+            }
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div style={figureValueStyle}>{f.value}</div>
+              <div style={figureLabelStyle}>
+                {f.label}
+                {f.sub && <div style={figureSubStyle}>{f.sub}</div>}
+                {/* On phones, which have no hover, the definition is shown
+                    under the label instead of in the info tooltip. */}
+                <div className="d-md-none" style={figureDefinitionStyle}>
                   {f.definition}
-                </p>
-              )}
+                </div>
+              </div>
+              {/* From md, the site's info tooltip (components/tooltip.tsx). */}
+              <span className="d-none d-md-inline-flex">
+                <InfoTooltip text={f.definition} />
+              </span>
             </div>
-          )
-        })}
+          </div>
+        ))}
       </div>
     </LobbyingPanel>
   )
@@ -268,8 +250,8 @@ function PaymentsChart({
   return (
     <LobbyingPanel
       title={t("overview.chartTitle")}
-      aside={t("overview.chartHint")}
-      style={{ height: "100%" }}
+      hint={t("overview.chartHint")}
+      style={{ height: "100%", marginBottom: 0 }}
     >
       <div
         role="img"
@@ -279,12 +261,12 @@ function PaymentsChart({
             .map(d => `${courtName(d.court)}: ${amount(d)}`)
             .join("; ")
         })}
-        style={{ height: 300 }}
+        style={{ height: 280 }}
       >
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={data}
-            margin={{ top: 8, right: 8, left: 0, bottom: 4 }}
+            margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
           >
             <defs>
               {Object.entries(STRIPE).map(([name, [a, b]]) => (
@@ -342,7 +324,15 @@ function PaymentsChart({
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <ul style={legendStyle}>
+      {/* Closer to the axis, and the note to it, than the panel's 0.875rem
+          between its parts. */}
+      <ul
+        style={{
+          ...legendStyle,
+          justifyContent: "center",
+          marginTop: "-0.375rem"
+        }}
+      >
         <li style={legendItemStyle}>
           <LegendSwatch background={MAPLE_COLORS.primary} />
           {t(
@@ -363,7 +353,14 @@ function PaymentsChart({
         </li>
       </ul>
       {firstPaid > FIRST_YEAR && Number.isFinite(firstPaid) && (
-        <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 12, margin: 0 }}>
+        <p
+          style={{
+            color: MAPLE_COLORS.textMuted,
+            fontSize: 12,
+            margin: "-0.375rem 0 0",
+            textAlign: "center"
+          }}
+        >
           {t("explainers.spendNotReported", {
             years:
               firstPaid - 1 === FIRST_YEAR
@@ -386,51 +383,80 @@ function TopBills({
   topBills: OverviewProps["topBills"]
 }) {
   const { t } = useTranslation("lobbying")
+  // Sortable by organizations, as the Lobbied Bills list is.
+  const [sortDir, setSortDir] = useState<SortDir>("desc")
   // The most-lobbied bills overall are among each session's most-lobbied.
-  const top = useMemo(
-    () =>
+  const top = useMemo(() => {
+    const rows =
       session === "all"
         ? Object.values(topBills)
             .flat()
             .sort((a, b) => b.clients - a.clients)
             .slice(0, TOP_BILLS)
-        : topBills[String(session)] ?? [],
-    [session, topBills]
-  )
+        : topBills[String(session)] ?? []
+    const mul = sortDir === "asc" ? 1 : -1
+    return [...rows].sort((a, b) => mul * (a.clients - b.clients))
+  }, [session, topBills, sortDir])
   return (
     <LobbyingPanel
-      title={t("overview.topBills", {
-        session:
-          session === "all" ? t("filters.allSessionsSince") : courtName(session)
-      })}
+      title={t("overview.topBills")}
+      hint={t("overview.topBillsHint")}
+      session={session}
+      sessions={Object.keys(topBills).map(Number)}
       aside={
+        // The counts' size (the list pages' corners), a chevron after it.
         <a
           href={`/lobbying/bills?session=${session}`}
-          style={{ fontWeight: 700, color: MAPLE_COLORS.primary }}
+          className={lobbyingStyles.quietLink}
+          style={{ fontWeight: 700, fontSize: 16, color: MAPLE_COLORS.primary }}
         >
-          {t("overview.topBillsLink")}
+          {/* The selected session's years, as the panel's title has them. */}
+          {t("overview.topBillsLink", {
+            years: sessionYears(session, Object.keys(topBills).map(Number))
+          })}
+          <FontAwesomeIcon
+            icon={faChevronRight}
+            aria-hidden
+            style={{ fontSize: "0.75em", marginLeft: "0.35em" }}
+          />
         </a>
       }
     >
-      <p
-        style={{ margin: 0, fontSize: 14, color: MAPLE_COLORS.graySubtleText }}
-      >
-        {t("overview.topBillsHint")}
-      </p>
       {top.length === 0 ? (
         <p style={{ color: MAPLE_COLORS.textMuted, margin: 0 }}>
           {t("noData")}
         </p>
       ) : (
         <div style={{ overflowX: "auto" }}>
-          <table style={tableStyle}>
+          {/* As the Lobbied Bills list's table (pages/lobbying/bills/
+              index.tsx), less its activities line. */}
+          <table style={listTableStyle(760)}>
+            <colgroup>
+              <col style={{ width: 150 }} />
+              <col />
+              {/* Organizations: wider, the title giving way. */}
+              <col style={{ width: 240 }} />
+              {/* The bar's 160px and the cell's 12px each side, so the bar
+                    ends as near the table's right edge as "Bill" starts from
+                    its left. */}
+              <col style={{ width: 184 }} />
+            </colgroup>
             <thead>
               <tr>
-                <th style={thStyle}>{t("fields.bill")}</th>
-                <th style={thStyle}>{t("overview.orgsReporting")}</th>
-                <th style={thStyle}>
+                <th style={thTopStyle}>{t("fields.bill")}</th>
+                <th style={{ ...thTopStyle, paddingLeft: "1.5rem" }}>
+                  {t("billList.title")}
+                </th>
+                <SortTh
+                  label={t("activity.organizations")}
+                  sortKey="orgs"
+                  current="orgs"
+                  dir={sortDir}
+                  onSort={() => setSortDir(d => (d === "asc" ? "desc" : "asc"))}
+                />
+                <th style={thWithNoteStyle}>
                   {t("overview.positionsReported")}{" "}
-                  <span style={{ textTransform: "none", fontWeight: 400 }}>
+                  <span style={thNoteStyle}>
                     {t("overview.hoverForCounts")}
                   </span>
                 </th>
@@ -462,28 +488,41 @@ function TopBillRow({
 }) {
   return (
     <tr>
-      <td style={tdStyle}>
+      <td style={listTdStyle}>
         <a
           href={`/lobbying/bills/${bill.court}/${bill.billId}`}
-          style={{ fontWeight: 700, color: MAPLE_COLORS.primary }}
+          style={{ color: MAPLE_COLORS.primary, fontWeight: 700, fontSize: 16 }}
         >
           {bill.billId}
         </a>
         {showSession && (
-          <span style={{ fontSize: 13, color: MAPLE_COLORS.graySubtleText }}>
-            {" "}
-            · {courtShortLabel(bill.court)}
-          </span>
-        )}
-        {bill.title && (
-          <div title={bill.title} style={clampedTitleStyle}>
-            {bill.title}
-          </div>
+          <div style={subTextStyle}>{courtShortLabel(bill.court)}</div>
         )}
       </td>
-      <td style={{ ...tdStyle, fontWeight: 700 }}>{bill.clients}</td>
-      <td style={{ ...tdStyle, verticalAlign: "middle" }}>
-        <PositionBar width={160} counts={billPositionCounts(bill)} />
+      <td
+        style={{
+          ...listTdStyle,
+          // More room before the title, after Bill, and after it, before
+          // Organizations.
+          paddingLeft: "1.5rem",
+          paddingRight: "2rem",
+          overflowWrap: "anywhere",
+          lineHeight: 1.4
+        }}
+      >
+        {bill.title || "—"}
+      </td>
+      <td style={listTdStyle}>
+        <div style={{ fontWeight: 700, fontSize: 16 }}>
+          {bill.clients || "—"}
+        </div>
+      </td>
+      <td style={{ ...listTdStyle, paddingTop: "1.1rem" }}>
+        <PositionBar
+          width={160}
+          height={12}
+          counts={billPositionCounts(bill)}
+        />
       </td>
     </tr>
   )
@@ -522,10 +561,16 @@ function LobbyingOverview({ stats, topBills }: OverviewProps) {
     <>
       <LobbyingSubnav />
       <Container>
-        <Row className="mt-4 mb-3">
+        {/* The title closer to the filters, the page under it where it was:
+            half the description's 1rem margin moved above the title. */}
+        {/* 1.5rem from the subtitle to the session select, its 0.5rem and
+            mb-3: the space the cards below keep between them (g-4). */}
+        <Row className="mb-3" style={{ marginTop: "1.875rem" }}>
           <Col>
             <h1>{t("titles.overview")}</h1>
-            <p style={{ color: MAPLE_COLORS.textMuted }}>{t("subtitle")}</p>
+            <p style={{ ...pageIntroStyle, marginBottom: "0.5rem" }}>
+              {t("subtitle")}
+            </p>
           </Col>
         </Row>
 
@@ -535,30 +580,41 @@ function LobbyingOverview({ stats, topBills }: OverviewProps) {
 
         {stats && session !== undefined && current !== undefined && (
           <>
-            <LobbyingFilterBar boxed="fit">
-              <FilterLabel htmlFor="overview-session">
-                {t("filters.session")}
-              </FilterLabel>
-              <SessionSelect
-                id="overview-session"
-                sessions={sessions}
-                value={session}
-                onChange={setChosen}
-                current={current}
-                allLabel={t("filters.allSessionsSince")}
-                style={sessionSelectStyle}
-              />
-            </LobbyingFilterBar>
+            {/* The session select as wide as Key Figures, over it: 1.5rem above
+                the cards, its bar's 1rem and mb-2, as the cards are apart and
+                as they are above Most-Lobbied Bills. */}
+            <Row className="g-4 mb-2">
+              <Col lg={5} className={lobbyingStyles.overviewLeft}>
+                <LobbyingFilterBar boxed="open">
+                  <SessionSelect
+                    id="overview-session"
+                    sessions={sessions}
+                    value={session}
+                    onChange={setChosen}
+                    current={current}
+                    allLabel={t("filters.allSessionsSince")}
+                    style={{ ...sessionSelectStyle, width: "100%" }}
+                    fill
+                  />
+                </LobbyingFilterBar>
+              </Col>
+            </Row>
 
+            {/* Key Figures and the chart beside it, their tops level. Each
+                panel fills its column's height, so neither keeps the panels'
+                1.5rem margin under it, which the column's height took in and
+                the panel then filled as empty space inside; the row's own
+                margin (mb-4, 1.5rem) puts the same space below them as between
+                and above them. */}
             <Row className="g-4 mb-4">
-              <Col lg={5} xl={4}>
+              <Col lg={5} className={lobbyingStyles.overviewLeft}>
                 <KeyFigures
                   stats={stats}
                   session={session}
                   totalPaid={totalPaid}
                 />
               </Col>
-              <Col lg={7} xl={8}>
+              <Col lg={7} className={lobbyingStyles.overviewRight}>
                 <PaymentsChart
                   data={paidBySession}
                   spendByYear={stats.spendByYear}
@@ -640,15 +696,18 @@ export const getStaticProps = createLobbyingListProps<OverviewProps>(
 // ── Styles ────────────────────────────────────────────────────────────────────
 
 const figureRowStyle: React.CSSProperties = {
-  padding: "0.75rem 0",
+  // More room in each row than the 0.75rem it had.
+  padding: "1.25rem 0",
   borderTop: `1px dashed ${MAPLE_COLORS.borderDefault}`
 }
 
 const figureValueStyle: React.CSSProperties = {
   flex: "none",
-  width: 118,
-  fontSize: 26,
-  fontWeight: 700,
+  // Room for "$162.3M" at 24px.
+  width: 108,
+  fontSize: 24,
+  // A step under bold, as the tables' figures (the Clients list).
+  fontWeight: 600,
   lineHeight: 1,
   color: MAPLE_COLORS.primary
 }
@@ -656,61 +715,33 @@ const figureValueStyle: React.CSSProperties = {
 const figureLabelStyle: React.CSSProperties = {
   flex: 1,
   minWidth: 0,
-  fontSize: 14,
-  fontWeight: 700,
+  // Clear of the info icon at the row's end.
+  paddingRight: "0.75rem",
+  // Lighter, as the list counts' words: the figure carries the weight, the
+  // label names it.
+  fontSize: 15,
+  fontWeight: 500,
   lineHeight: 1.3,
   color: MAPLE_COLORS.textStrong
 }
 
-const figureSubStyle: React.CSSProperties = {
+// The definition: the subtext's grey and size, light, its own paragraph.
+const figureDefinitionStyle: React.CSSProperties = {
+  marginTop: 4,
   fontSize: 13,
-  fontWeight: 400,
-  color: MAPLE_COLORS.graySubtleText
-}
-
-const figureDefStyle: React.CSSProperties = {
-  margin: "0.375rem 0 0 130px",
-  fontSize: 13,
+  fontWeight: 300,
   lineHeight: 1.45,
-  color: MAPLE_COLORS.graySubtleText
+  letterSpacing: "0.015em",
+  color: MAPLE_COLORS.textMuted
 }
 
-const infoButtonStyle = (open: boolean): React.CSSProperties => ({
-  flex: "none",
-  width: 24,
-  height: 24,
-  padding: 0,
-  borderRadius: 999,
-  border: `1px solid ${MAPLE_COLORS.textMuted}`,
-  background: open ? MAPLE_COLORS.primary : MAPLE_COLORS.surfaceBase,
-  color: open ? MAPLE_COLORS.surfaceBase : MAPLE_COLORS.graySubtleText,
+// Light, in the muted grey, spaced as the panels' hints.
+const figureSubStyle: React.CSSProperties = {
+  marginTop: 2,
   fontSize: 13,
-  fontWeight: 700,
-  lineHeight: 1,
-  cursor: "pointer"
-})
-
-const tableStyle: React.CSSProperties = {
-  width: "100%",
-  borderCollapse: "collapse",
-  fontSize: 14,
-  color: MAPLE_COLORS.textBody
-}
-
-const tdStyle: React.CSSProperties = {
-  padding: "0.75rem",
-  verticalAlign: "top",
-  borderTop: `1px solid ${MAPLE_COLORS.borderSubtle}`
-}
-
-// Appropriations titles run to several lines; two are enough here.
-const clampedTitleStyle: React.CSSProperties = {
-  fontSize: 13,
-  color: MAPLE_COLORS.graySubtleText,
-  display: "-webkit-box",
-  WebkitLineClamp: 2,
-  WebkitBoxOrient: "vertical",
-  overflow: "hidden"
+  fontWeight: 300,
+  letterSpacing: "0.015em",
+  color: MAPLE_COLORS.textMuted
 }
 
 const dataNotesStyle: React.CSSProperties = {

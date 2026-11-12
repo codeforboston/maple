@@ -13,7 +13,15 @@
     "next": "Next →",
     "pageNumber": "Page number"
   },
+  "sort": {
+    "az": "A to Z",
+    "za": "Z to A",
+    "lowFirst": "Lowest first",
+    "highFirst": "Highest first"
+  },
   "misc": {
+    "sessionYears": "in {{years}}",
+    "clearSearch": "Clear",
     "disclosures": "Disclosures",
     "disclosureLink": "Disclosure {{number}}",
     "showAll": "Show all {{count}}",
@@ -36,7 +44,7 @@
     "bills": "Bills",
     "clients": "Clients",
     "firms": "Lobbyists",
-    "firmLobbyists": "Lobbyists employed",
+    "firmLobbyists": "Lobbyists Employed",
     "employers": "Lobbyist at",
     "registrations": "Registrations"
   },
@@ -46,7 +54,7 @@
     "allSessions": "All sessions",
     "allPositions": "All positions",
     "allTypes": "All types",
-    "search": "Search…",
+    "search": "Filter by name",
     "currentSession": "{{label}} · current",
     "allSessionsSince": "All sessions since 2005",
     "anyPosition": "Any"
@@ -64,7 +72,7 @@
     "amount": "Compensation",
     "period": "Period",
     "filings": "Activities",
-    "clients": "Clients represented",
+    "clients": "Clients",
     "bill": "Bill",
     "activity": "Activity",
     "sessions": "Sessions",
@@ -82,7 +90,7 @@
   "loading": "Loading lobbying data…",
   "titles": {
     "overview": "Lobbying Explorer",
-    "bills": "Lobbied bills",
+    "bills": "Lobbied Bills",
     "clients": "Clients",
     "firms": "Lobbyists",
     "client": "Client Profile",
@@ -97,8 +105,8 @@
   "activity": {
     "organizations": "Organizations",
     "reportedPaid": "Reported paid",
-    "billSearch": "Bill number or title",
-    "clientSearch": "Client name",
+    "billSearch": "Filter by number or title",
+    "clientSearch": "Filter by name",
     "column": {
       "client": "Organization",
       "latestPosition": "Most recent position",
@@ -123,7 +131,6 @@
     "filings_other": "{{count}} activities",
     "chamberExecutive": "Executive",
     "chamberOther": "Other",
-    "chamberAgency": "{{chamber}} · {{agency}}",
     "whoInHouse_one": "{{count}} in-house lobbyist",
     "whoInHouse_other": "{{count}} in-house lobbyists",
     "whoNames": "{{text}} ({{names}})",
@@ -135,12 +142,12 @@
     "periodPosition": "{{period}}: {{position}}"
   },
   "overview": {
-    "keyFigures": "Key figures · {{session}}",
+    "keyFigures": "Key Figures",
     "courtName": "{{court}} General Court",
     "figBills": "Bills with reported lobbying",
     "figClients": "Clients",
     "figLobbyists": "Registered lobbyists",
-    "figLobbyistsSub": "people, plus {{firms}} lobbying firms & entities",
+    "subLobbyists": "people, plus {{firms}} lobbying firms & entities",
     "figPaid": "Reported paid for lobbying",
     "whereSession": "the {{session}}",
     "whereAll": "any session",
@@ -149,7 +156,7 @@
     "defLobbyists": "People registered as lobbyists and named on at least one filing in {{where}}, as its filer or as a firm's agent, each counted once. Firms and other lobbyist entities are counted separately.",
     "defPaid": "Sum of what clients reported paying lobbyists and firms in {{where}}. For in-house staff this is the share of salary the employer allocated to lobbying, not total pay.",
     "defToggle": "What does “{{label}}” count?",
-    "chartTitle": "Reported lobbying payments by session",
+    "chartTitle": "Reported Lobbying Payments by Session",
     "chartHint": "What clients reported paying in each two-year session. Select a bar to switch sessions.",
     "chartAmount": "{{amount}} reported",
     "chartAmountSoFar": "{{amount}} reported so far",
@@ -158,25 +165,25 @@
     "legendOther": "Other sessions",
     "legendAll": "All sessions shown",
     "legendInProgress": "Session in progress",
-    "topBills": "Most-lobbied bills · {{session}}",
+    "topBills": "Most-Lobbied Bills",
     "topBillsHint": "Ranked by the number of organizations that reported lobbying on the bill.",
-    "topBillsLink": "All bills in this session →",
-    "orgsReporting": "Organizations reporting",
+    "topBillsLink": "View All Bills {{years}}",
     "positionsReported": "Positions reported",
-    "hoverForCounts": "(hover for counts)"
+    "hoverForCounts": "Hover for counts"
   },
   "billList": {
-    "panelTitle": "Lobbied bills · {{session}}",
-    "count_one": "{{n}} bill with reported lobbying",
-    "count_other": "{{n}} bills with reported lobbying",
-    "sortHint": "select a column heading to sort",
+    "panelTitle": "Lobbied Bills",
+    "count_one": "bill",
+    "count_other": "bills",
+    "sortHint": "Select a column heading to sort.",
+    "hint": "Sorted by the number of organizations that reported lobbying on the bill.",
     "title": "Title",
     "items": "bills"
   },
   "clients": {
-    "panelTitle": "Clients · {{session}}",
-    "count_one": "{{n}} client with reported lobbying",
-    "count_other": "{{n}} clients with reported lobbying",
+    "panelTitle": "Clients",
+    "count_one": "client",
+    "count_other": "clients",
     "bills": "Bills",
     "lobbyists": "Lobbyists",
     "inHouse_one": "{{count}} in-house",
@@ -196,9 +203,9 @@
     "hidePayments": "Hide {{name}}'s payments by period"
   },
   "firmList": {
-    "count_one": "{{n}} lobbyist",
-    "count_other": "{{n}} lobbyists",
-    "dashNote": "— in Clients represented or Activities means registered, but with no disclosures of their own in the sessions shown (usually an entity files for them). 0 means they filed disclosures but reported no clients or activities.",
+    "count_one": "lobbyist",
+    "count_other": "lobbyists",
+    "dashNote": "— in Clients or Activities means registered, but with no disclosures of their own in the sessions shown (usually an entity files for them). 0 means they filed disclosures but reported no clients or activities.",
     "dashTitle": "No disclosures of their own in the sessions shown"
   },
   "bill": {
@@ -212,9 +219,9 @@
     "filers_other": "{{count}} lobbyists and firms",
     "positionsByOrg": "Positions, by organization",
     "orgCountNote": "Each organization is counted once, by the position its lobbyists reported in their latest six-month filing. Organizations whose lobbyists reported more than one position in that filing are shown in purple.",
-    "orgsPanel": "Organizations lobbying on {{bill}}",
+    "orgsPanel": "Organizations Lobbying on {{bill}}",
     "orgsHint": "Select an organization to see who filed for it.",
-    "filterOrgs": "Filter organizations",
+    "filterOrgs": "Filter by name",
     "items": "organizations",
     "noMatch": "No organizations match these filters."
   },
@@ -226,7 +233,7 @@
     "registeredSince": "registered {{from}}",
     "sosRegistration": "SoS registration ↗︎",
     "sosRegistrationYear": "{{year}} SoS registration ↗︎",
-    "summary": "Summary · {{session}}",
+    "summary": "Summary",
     "bills_one": "bill",
     "bills_other": "bills",
     "reportedBy": "reported by {{lobbyists}}, {{inHouse}}.",
@@ -236,9 +243,9 @@
     "noneInHouse": "none in-house",
     "paidLabel": "reported paid for lobbying",
     "paidNote": "Total of what the client reported paying its lobbyists and firms in {{where}}, for all bills. For in-house staff this is the share of salary allocated to lobbying.",
-    "billsPanel": "Bills lobbied on · {{session}}",
+    "billsPanel": "Bills Lobbied On",
     "billsHint": "One row per bill. Select a bill to see which lobbyists reported on it.",
-    "filterBills": "Filter bills",
+    "filterBills": "Filter by number or title",
     "items": "bills",
     "noMatch": "No bills match these filters.",
     "whereAll": "all sessions"

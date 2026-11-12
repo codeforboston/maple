@@ -10,7 +10,8 @@ export const Pill = styled.button`
   margin-right: 8px;
   padding: 4px 12px;
   border: 1px solid ${line.default};
-  border-radius: 8px;
+  /* Squared, as the site's inputs and panels (3px). */
+  border-radius: 3px;
   background: var(--maple-surface-base);
   font-size: 0.8125rem;
   font-weight: 600;

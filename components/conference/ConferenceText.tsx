@@ -1,4 +1,4 @@
-import { memo, useState } from "react"
+import { memo, RefObject, useEffect, useRef, useState } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
@@ -39,12 +39,45 @@ export const Well = styled.div`
   padding: 1.25rem;
   background: ${sunken};
   border: 1px solid var(--maple-surface-border);
-  border-radius: var(--maple-radius-xl);
+  /* A little less round than --maple-radius-xl (6px), as the input cards. */
+  border-radius: 5px;
 
   @media (min-width: 576px) {
     padding: 1.75rem;
   }
+
+  /* Held (useHeld): not yet all in the window, so the sheets keep still and
+     scrolling over them moves the page. */
+  &[data-held] > article {
+    overflow-y: hidden;
+  }
 `
+
+/**
+ * Holds the sheets in `well` still until the reader has scrolled far enough
+ * to see all of it, its foot in the window: until then a scroll over a sheet
+ * moves the page, rather than the sheet a reader is still coming down to.
+ * Written straight to the well as data-held, not through state, so the long
+ * texts inside aren't laid out again as it changes.
+ */
+function useHeld(well: RefObject<HTMLDivElement | null>) {
+  useEffect(() => {
+    const el = well.current
+    if (!el) return
+    const update = () =>
+      el.toggleAttribute(
+        "data-held",
+        el.getBoundingClientRect().bottom > window.innerHeight + 1
+      )
+    update()
+    window.addEventListener("scroll", update, { passive: true })
+    window.addEventListener("resize", update)
+    return () => {
+      window.removeEventListener("scroll", update)
+      window.removeEventListener("resize", update)
+    }
+  }, [well])
+}
 
 /** One document, which scrolls on its own so a section of one text can be
  * held against the same section of the other. */
@@ -186,6 +219,8 @@ export const ConferenceText = memo(function ConferenceText({
   const { court, senateBillId, houseBillId } = conference
   const senate = useBill(court, senateBillId)
   const house = useBill(court, houseBillId)
+  const well = useRef<HTMLDivElement>(null)
+  useHeld(well)
   const sheets = [
     { chamber: "senate", billId: senateBillId, fetched: senate },
     { chamber: "house", billId: houseBillId, fetched: house }
@@ -212,7 +247,7 @@ export const ConferenceText = memo(function ConferenceText({
           ))}
         </Form.Select>
       </Picker>
-      <Well>
+      <Well ref={well}>
         {sheets
           .filter(s => side === "both" || side === s.chamber)
           .map(s => (

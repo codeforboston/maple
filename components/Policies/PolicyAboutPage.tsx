@@ -111,6 +111,7 @@ export const PolicyAboutPage = ({ policy }: { policy: Policy }) => {
         section={t(`tabs.${policy}`)}
         eyebrow={t("about", { ns: "common" })}
         parent={{ label: t("title"), href: "/policies" }}
+        withoutHome
       />
       <LearnHeader title={t(`tabs.${policy}`)} titleSize="2.25rem" />
       <PolicyBody className="px-0">

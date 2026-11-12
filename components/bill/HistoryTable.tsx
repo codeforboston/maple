@@ -111,7 +111,7 @@ const StyledTable = styled.table`
   tbody {
     td {
       font: {
-        family: Nunito;
+        family: var(--maple-font-body);
         size: 16px;
         weight: 400;
       }
@@ -145,7 +145,7 @@ const StyledTable = styled.table`
     }
 
     td {
-      font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-family: var(--maple-font-body);
       font-size: 16px;
       font-weight: 400;
       letter-spacing: normal;

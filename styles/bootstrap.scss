@@ -41,7 +41,9 @@ $maple-nav-link-color-active: rgba(255, 255, 255, 1);
 // Brand
 $maple-brand-primary: #1a3185;
 $maple-brand-primary-strong: #12266f;
-$maple-brand-accent: #ff8600;
+// The accent, toward gold rather than MAPLE's orange (#ff8600). The blues
+// are untouched.
+$maple-brand-accent: #e5b93c;
 $maple-brand-danger: #c71e32;
 $maple-brand-dark: #0b0a3e;
 $maple-brand-senate: #a92929;
@@ -61,16 +63,20 @@ $maple-text-inverse-muted: rgba(255, 255, 255, 0.55);
 
 // Surfaces
 $maple-surface-base: #ffffff;
-// Provisional: keep the current page background in PR 1 and retune later with surface contrast as a group.
-$maple-surface-page: #eae7e7;
-// Learn section only. Distinct from $maple-surface-page on purpose.
-$maple-surface-learn: #eef0f8;
+// A near-white page rather than the warm mid-grey it was (#eae7e7), so white
+// cards read as raised without needing a shadow.
+$maple-surface-page: #f7f7f7;
+// Learn and About only, a ground a touch darker than the page grey elsewhere
+// (#f7f7f7), halfway to #f2f2f2, in place of the pale blue-grey it was
+// (#eef0f8). Distinct from $maple-surface-page on purpose.
+$maple-surface-learn: #f5f5f5;
 // The HOW badge on /learn/testimony. Not part of the core brand palette.
 $maple-learn-cyan: #42c1e1;
-$maple-surface-muted: rgba(248, 250, 252, 0.9);
+$maple-surface-muted: #fafafa;
 $maple-surface-accent: rgba(94, 114, 228, 0.08);
 $maple-surface-accent-strong: rgba(94, 114, 228, 0.12);
-$maple-surface-border: rgba(15, 23, 42, 0.08);
+// Borders do the work the shadows used to.
+$maple-surface-border: rgba(15, 23, 42, 0.12);
 $maple-surface-hearing-search: #8c98c2;
 $maple-surface-hearing-header: #c0c4dc;
 $maple-surface-transcript-stripe: #e8ecf4;
@@ -96,7 +102,7 @@ $maple-overlay-backdrop-subtle: rgba(0, 0, 0, 0.3);
 $maple-overlay-backdrop: rgba(0, 0, 0, 0.6);
 
 // Borders
-$maple-border-default: rgba(15, 23, 42, 0.15);
+$maple-border-default: rgba(15, 23, 42, 0.14);
 $maple-border-inverse-soft: rgba(255, 255, 255, 0.75);
 $maple-border-accent: rgba(94, 114, 228, 0.18);
 $maple-border-accent-strong: rgba(94, 114, 228, 0.24);
@@ -105,16 +111,18 @@ $maple-border-accent-strong: rgba(94, 114, 228, 0.24);
 $maple-focus-ring: rgba(94, 114, 228, 0.35);
 $maple-focus-border: rgba(94, 114, 228, 0.5);
 
-// Shadows
-$maple-shadow-sm: 0 0.25rem 1rem rgba(15, 23, 42, 0.06);
-$maple-shadow-md: 0 0.5rem 1.5rem rgba(15, 23, 42, 0.06);
-$maple-shadow-hover: 0 0.65rem 1.35rem rgba(15, 23, 42, 0.12);
+// Shadows. Almost gone. Kept faintly on hover so interactive things still
+// signal that they are interactive.
+$maple-shadow-sm: none;
+$maple-shadow-md: 0 1px 2px rgba(15, 23, 42, 0.06);
+$maple-shadow-hover: 0 2px 6px rgba(15, 23, 42, 0.1);
 
-// Radius
-$maple-radius-sm: 4px;
-$maple-radius-md: 8px;
-$maple-radius-lg: 10px;
-$maple-radius-xl: 16px;
+// Radius. Near-square, 2 to 6px rather than 4 to 16. The pill is left alone,
+// since a half-rounded pill is just a bad rectangle.
+$maple-radius-sm: 2px;
+$maple-radius-md: 3px;
+$maple-radius-lg: 4px;
+$maple-radius-xl: 6px;
 $maple-radius-pill: 999px;
 
 // Spacing
@@ -256,7 +264,7 @@ $utilities: (
 
 // Import fonts using the default bootstrap weights.
 // Lexend is the display face for the Learn section headings; Nunito remains the body face.
-@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;700&family=Lexend:wght@300;400;500;600;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&family=Lexend:wght@300;400;500;600;700;900&display=swap");
 
 :root {
   --bs-blue-100: #{$blue-100};
@@ -269,9 +277,10 @@ $utilities: (
   // Nunito, the original body face, for places that keep it instead of Lexend.
   --maple-font-body: #{$font-family-sans-serif};
 
-  // Height of the sticky site navbar. The Learn process rail sticks below it,
-  // and section rows use it for scroll-margin so smooth-scroll targets clear it.
-  --maple-navbar-height: 4.5rem;
+  // Height of the sticky site navbar: its 72px logo with 8px above and below
+  // (styles/globals.css). The Learn process rail sticks below it, and section
+  // rows use it for scroll-margin so smooth-scroll targets clear it.
+  --maple-navbar-height: 5.5rem;
 
   // How far a pinned element must sit below the top of the viewport to clear
   // the navbar. Same as the navbar height while the bar is sticky; zero when
@@ -308,9 +317,11 @@ $utilities: (
   --maple-surface-accent-strong: #{$maple-surface-accent-strong};
   --maple-surface-border: #{$maple-surface-border};
   // The edge on white cards that otherwise rely on a shadow or the page ground
-  // to stand out. Invisible here; the Digital Democracy skin, which drops the
-  // shadows, gives it the soft surface border.
-  --maple-card-edge: transparent;
+  // to stand out, now the shadows are gone: the soft surface border.
+  --maple-card-edge: var(--maple-surface-border);
+  // Cards that draw their own outline (the legislator profile's, which fall
+  // back to their own #b8c0c9) take the card edge instead.
+  --maple-card-outline: var(--maple-card-edge);
   --maple-surface-hearing-search: #{$maple-surface-hearing-search};
   --maple-surface-hearing-header: #{$maple-surface-hearing-header};
   --maple-surface-transcript-stripe: #{$maple-surface-transcript-stripe};
@@ -396,68 +407,25 @@ $utilities: (
 }
 
 // -----------------------------------------------------------------------------
-// The redesign's values, over the originals above.
+// Bootstrap's own runtime values, over the ones Bootstrap writes itself, so
+// components styled by Bootstrap classes follow the redesign: the page ground,
+// borders and corners above, and smaller buttons.
 //
-// Nothing above changes value; this block only overrides custom properties.
-// It and the redesign's rules across the site are written under :root (in
-// styled-components, *:root, since their parser joins a selector that starts
-// with a colon onto the component's own class). :root always matches, and it
-// keeps the specificity these rules had when they sat over the originals, so
-// they still win where the two meet.
-//
-// What it borrows is surface and shape, not hue. MAPLE stays blue. Type is
-// deliberately untouched: the CalMatters and Honolulu Civil Beat editions of
-// Digital Democracy use different typefaces, so type is not part of what the
-// two share.
+// These stay an override rather than being folded into Bootstrap's settings,
+// which would also change how its components are built. Written under :root
+// (in styled-components, *:root, since their parser joins a selector that
+// starts with a colon onto the component's own class), as the redesign's rules
+// across the site are. :root always matches, and it keeps the specificity
+// these rules had when they sat over the originals, so they still win where
+// the two meet.
 // -----------------------------------------------------------------------------
 
 :root {
-  // The desktop navbar's height in this skin: its 72px logo with 8px above and
-  // below (styles/globals.css). Where the bar is pinned (every page but the
-  // homepage), what sticks or scrolls to an anchor below it clears this.
-  --maple-navbar-height: 5.5rem;
-
-  // Surfaces. A near-white page instead of the warm mid-grey, so white cards
-  // read as raised without needing a shadow.
-  --maple-surface-page: #f7f7f7;
-  --maple-surface-base: #ffffff;
-  --maple-surface-muted: #fafafa;
-  // Learn and About sit on a ground a touch darker than the page grey
-  // elsewhere (#f7f7f7), halfway to #f2f2f2, in place of Maple's pale
-  // blue-grey.
-  --maple-surface-learn: #f5f5f5;
-
-  // Borders do the work the shadows used to.
-  --maple-surface-border: rgba(15, 23, 42, 0.12);
-  --maple-card-edge: var(--maple-surface-border);
-  // Cards that draw their own outline (the legislator profile's, which fall
-  // back to their own #b8c0c9) take the card edge instead.
-  --maple-card-outline: var(--maple-card-edge);
-  --maple-border-default: rgba(15, 23, 42, 0.14);
-
-  // Shape. Near-square, 2 to 6px rather than 4 to 16. The pill is left alone,
-  // since a half-rounded pill is just a bad rectangle.
-  --maple-radius-sm: 2px;
-  --maple-radius-md: 3px;
-  --maple-radius-lg: 4px;
-  --maple-radius-xl: 6px;
-
-  // Shadow. Almost gone. Kept faintly on hover so interactive things still
-  // signal that they are interactive.
-  --maple-shadow-sm: none;
-  --maple-shadow-md: 0 1px 2px rgba(15, 23, 42, 0.06);
-  --maple-shadow-hover: 0 2px 6px rgba(15, 23, 42, 0.1);
-
-  // Accent moves from orange toward gold. The blues are untouched.
-  --maple-brand-accent: #e5b93c;
-
-  // Buttons run smaller in this skin.
+  // Buttons run smaller.
   --bs-btn-padding-x: 0.85rem;
   --bs-btn-padding-y: 0.3rem;
   --bs-btn-font-size: 0.875rem;
 
-  // Bootstrap's own runtime layer, so components styled by Bootstrap classes
-  // follow the skin instead of staying behind.
   --bs-body-bg: #f7f7f7;
   --bs-border-color: rgba(15, 23, 42, 0.14);
   --bs-border-radius-sm: 2px;
@@ -473,8 +441,9 @@ $utilities: (
 :root {
   // Lexend everywhere, not just the headings. Bootstrap emits its body face as
   // a runtime custom property, so this reaches every component that inherits
-  // it. Four places hardcode Nunito and will not follow: AboutPagesCard,
-  // HistoryTable, and three rules in globals.css.
+  // it. Text that keeps Nunito on purpose (long-form and supporting text, such
+  // as transcripts, history tables and chart labels) sets it with
+  // --maple-font-body rather than the font's name, so it doesn't follow.
   --bs-font-sans-serif: "Lexend", system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
 }
@@ -493,15 +462,6 @@ $utilities: (
   font-weight: 600;
   line-height: 1.15;
   color: var(--maple-brand-dark);
-}
-
-// The blue navbar keeps the current MAPLE shape, so its sign-in button is not
-// squared off by the tighter radii above.
-[data-navbar-variant="blue"] {
-  --maple-radius-sm: #{$maple-radius-sm};
-  --maple-radius-md: #{$maple-radius-md};
-  --maple-radius-lg: #{$maple-radius-lg};
-  --maple-radius-xl: #{$maple-radius-xl};
 }
 
 .btn {

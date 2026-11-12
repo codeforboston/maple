@@ -68,7 +68,11 @@ export const FaqPage = () => {
 
   return (
     <LearnLayout width="medium">
-      <LearnBreadcrumb section={content.breadcrumb} eyebrow={t("about")} />
+      <LearnBreadcrumb
+        section={content.breadcrumb}
+        eyebrow={t("about")}
+        withoutHome
+      />
       <LearnHeader
         title={content.title}
         subhead={content.subhead}

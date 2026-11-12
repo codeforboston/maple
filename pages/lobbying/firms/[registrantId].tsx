@@ -20,6 +20,7 @@ import {
   MAPLE_COLORS
 } from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
+import { courtShortLabel } from "components/lobbying/sessions"
 import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 import { usePagination } from "components/lobbying/usePagination"
 import { LobbyingPaginationBar } from "components/lobbying/LobbyingPaginationBar"
@@ -31,7 +32,8 @@ import {
   listTableStyle,
   listTdStyle,
   subTextStyle,
-  toggleButtonStyle
+  toggleButtonStyle,
+  ToggleChevron
 } from "components/lobbying/LobbyingPanel"
 import { thStyle } from "components/lobbying/SortTh"
 import {
@@ -449,11 +451,12 @@ function FirmBillsTable({ filings }: { filings: LobbyingFiling[] }) {
         {/* The client, whose names run longest, takes what the fixed
             columns leave. */}
         <colgroup>
-          <col style={{ width: 200 }} />
+          <col style={{ width: 280 }} />
           <col />
           <col style={{ width: 104 }} />
           <col style={{ width: 112 }} />
-          {showSource && <col style={{ width: 64 }} />}
+          {/* Room for "Source", its header the widest thing in it. */}
+          {showSource && <col style={{ width: 88 }} />}
         </colgroup>
         <thead>
           <tr>
@@ -469,12 +472,20 @@ function FirmBillsTable({ filings }: { filings: LobbyingFiling[] }) {
             <tr key={f.filingId}>
               <td style={listTdStyle}>
                 {f.billId ? (
-                  <a
-                    href={`/lobbying/bills/${f.generalCourt}/${f.billId}`}
-                    style={{ ...linkStyle, fontWeight: 700 }}
-                  >
-                    {f.billId}
-                  </a>
+                  // As the Lobbied Bills list's Bill column, with the session
+                  // under it, as that list shows across all sessions: these
+                  // filings span them, and a bill number such as H2 recurs.
+                  <>
+                    <a
+                      href={`/lobbying/bills/${f.generalCourt}/${f.billId}`}
+                      style={{ ...linkStyle, fontWeight: 700, fontSize: 16 }}
+                    >
+                      {f.billId}
+                    </a>
+                    <div style={subTextStyle}>
+                      {courtShortLabel(f.generalCourt)}
+                    </div>
+                  </>
                 ) : (
                   <NonBillActivity filing={f} showTitle />
                 )}
@@ -556,7 +567,7 @@ function ClientList({ clients }: { clients: FirmClient[] }) {
                   onClick={() => toggle(c.clientNameNorm)}
                   style={toggleButtonStyle}
                 >
-                  {isOpen ? "▾" : "▸"}
+                  <ToggleChevron open={isOpen} />
                 </button>
               ) : (
                 <span style={{ ...toggleButtonStyle, cursor: "default" }} />
@@ -631,9 +642,10 @@ function ShowMoreList<T>({
           onClick={() => setAll(v => !v)}
           style={showMoreStyle}
         >
+          <ToggleChevron open={all} />{" "}
           {all
-            ? `▾ ${t("misc.showFewer")}`
-            : `▸ ${t("misc.showAll", { count: items.length })}`}
+            ? t("misc.showFewer")
+            : t("misc.showAll", { count: items.length })}
         </button>
       )}
     </>

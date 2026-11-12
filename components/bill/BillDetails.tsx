@@ -117,7 +117,9 @@ export const BillDetails = ({
             )}
           </Col>
           <Col md={4}>
-            <Committees bill={bill} className="mt-4 pb-1" />
+            {/* Level with Sponsors beside it from md up; stacked under the
+                left column on a phone, the space above it is kept. */}
+            <Committees bill={bill} className="mt-4 mt-md-0 pb-1" />
             <Hearing
               bill={bill}
               className="bg-secondary d-flex justify-content-center mt-4 pb-1 text-light"

@@ -934,7 +934,7 @@ export const LegislativeProcess = () => {
     // "medium" rather than "narrow": the h1 wraps at 48rem.
     <LearnLayout width="medium" enlarge={false}>
       <div ref={scopeRef}>
-        <LearnBreadcrumb section={t("process.breadcrumb")} />
+        <LearnBreadcrumb section={t("process.breadcrumb")} withoutHome />
         <HeaderAnchor ref={headerRef}>
           <LearnHeader
             title={t("process.title")}

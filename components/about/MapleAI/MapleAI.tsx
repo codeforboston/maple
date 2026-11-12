@@ -99,6 +99,7 @@ const MapleAI = () => {
         section={t("breadcrumb")}
         eyebrow={t("common:about")}
         parent={{ label: t("footer:headers.policies"), href: "/policies" }}
+        withoutHome
       />
       <LearnHeader
         title={t("title")}

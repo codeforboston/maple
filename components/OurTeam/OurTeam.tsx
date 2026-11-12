@@ -34,7 +34,11 @@ export const OurTeam = () => {
 
   return (
     <LearnLayout width="medium">
-      <LearnBreadcrumb section={t("breadcrumb")} eyebrow={t("common:about")} />
+      <LearnBreadcrumb
+        section={t("breadcrumb")}
+        eyebrow={t("common:about")}
+        withoutHome
+      />
       <LearnHeader title={t("title")} titleSize="2.25rem" />
       <TeamBody>
         <Tab.Container defaultActiveKey="steering_committee">

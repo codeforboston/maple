@@ -10,12 +10,13 @@ import { NavLink } from "./Navlink"
 import { maple, Wrap } from "./links"
 import { BetaTag } from "./shared/CommonComponents"
 
-export const DESKTOP_NAV_ITEM_CLASS = "desktop-navbar-link px-3 py-1"
+// No py-1: its !important would undo the items' taller padding
+// (styles/globals.css).
+export const DESKTOP_NAV_ITEM_CLASS = "desktop-navbar-link px-3"
 
 /**
- * Whether the navbar is in its mobile (hamburger) layout. MainNavbar provides
- * it, since that turns on whether the bar's links fit, not on the width alone.
- * Outside the navbar, the width decides.
+ * Whether the navbar is in its mobile (hamburger) layout, at 768px and below.
+ * MainNavbar provides it; outside the navbar, the width decides.
  */
 export const NavbarMobileContext = createContext<boolean | null>(null)
 
@@ -135,10 +136,28 @@ export const NavbarLinkLobbying: React.FC<
   React.PropsWithChildren<{
     handleClick?: any
     other?: any
+    /** In the Browse More menu (components/Navbar.tsx) rather than on the
+     * bar. */
+    dropdown?: boolean
   }>
-> = ({ handleClick, other }) => {
+> = ({ handleClick, other, dropdown = false }) => {
   const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
+  const { pathname } = useRouter()
+  if (dropdown) {
+    return (
+      <NavbarDropdownLink
+        href="/lobbying"
+        handleClick={handleClick}
+        other={{ active: pathname.startsWith("/lobbying"), ...other }}
+      >
+        {t("navigation.lobbying")}
+        {/* BETA in the menu only, where there is room for it; the bar keeps
+            its links plain. */}
+        <BetaTag>{t("beta_feature")}</BetaTag>
+      </NavbarDropdownLink>
+    )
+  }
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
@@ -147,7 +166,6 @@ export const NavbarLinkLobbying: React.FC<
         {...other}
       >
         {t("navigation.lobbying")}
-        <BetaTag>{t("beta_feature")}</BetaTag>
       </NavLink>
     </Nav.Item>
   )
@@ -178,11 +196,26 @@ export const NavbarLinkConferences: React.FC<
   React.PropsWithChildren<{
     handleClick?: any
     other?: any
+    /** In the Browse More menu (components/Navbar.tsx) rather than on the
+     * bar. */
+    dropdown?: boolean
   }>
-> = ({ handleClick, other }) => {
+> = ({ handleClick, other, dropdown = false }) => {
   const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   const { pathname } = useRouter()
+  if (dropdown) {
+    return (
+      <NavbarDropdownLink
+        href={maple.conferences()}
+        handleClick={handleClick}
+        other={{ active: pathname.startsWith(maple.conferences()), ...other }}
+      >
+        {t("navigation.conferences")}
+        <BetaTag>{t("beta_feature")}</BetaTag>
+      </NavbarDropdownLink>
+    )
+  }
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
@@ -204,10 +237,24 @@ export const NavbarLinkHearings: React.FC<
   React.PropsWithChildren<{
     handleClick?: any
     other?: any
+    /** In the Browse More menu (components/Navbar.tsx) rather than on the
+     * bar. */
+    dropdown?: boolean
   }>
-> = ({ handleClick, other }) => {
+> = ({ handleClick, other, dropdown = false }) => {
   const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
+  if (dropdown) {
+    return (
+      <NavbarDropdownLink
+        href="/hearings"
+        handleClick={handleClick}
+        other={other}
+      >
+        {t("navigation.hearings")}
+      </NavbarDropdownLink>
+    )
+  }
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
@@ -490,10 +537,24 @@ export const NavbarLinkTestimony: React.FC<
   React.PropsWithChildren<{
     handleClick?: any
     other?: any
+    /** In the Browse More menu (components/Navbar.tsx) rather than on the
+     * bar. */
+    dropdown?: boolean
   }>
-> = ({ handleClick, other }) => {
+> = ({ handleClick, other, dropdown = false }) => {
   const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
+  if (dropdown) {
+    return (
+      <NavbarDropdownLink
+        href="/testimony"
+        handleClick={handleClick}
+        other={other}
+      >
+        {t("navigation.testimony")}
+      </NavbarDropdownLink>
+    )
+  }
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink

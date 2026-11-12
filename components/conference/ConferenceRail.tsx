@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { formatBillId } from "../formatting"
@@ -10,7 +11,10 @@ import { conferenceName, ConferenceSummary } from "./types"
 const Nav = styled.nav`
   font-family: var(--maple-font-heading);
   flex: 0 0 auto;
-  width: clamp(200px, 22vw, 288px);
+  /* 288px at 1440px, giving up 1px for every 10px the window narrows, to
+     about 243px at 992px, where the compact rail takes over
+     (ConferenceDetails.tsx). */
+  width: clamp(200px, calc(243.2px + (100vw - 992px) * 0.1), 288px);
   position: sticky;
   top: var(--maple-navbar-height);
   align-self: flex-start;
@@ -36,11 +40,19 @@ const List = styled.ul`
   li + li {
     border-top: 1px solid ${RULE};
   }
+
+  /* The same line above the first and below the last, closing the list. */
+  li:first-child {
+    border-top: 1px solid ${RULE};
+  }
+  li:last-child {
+    border-bottom: 1px solid ${RULE};
+  }
 `
 
 /** `$filed`: the committee has filed its report, so its row is dimmed as a
  * whole, unless it is the one being read. `$covered`: false where we haven't
- * covered it, so its name is muted. */
+ * covered it, so its name is muted, even while it is the one being read. */
 const RailRow = styled(Internal)<{
   $on: boolean
   $filed: boolean
@@ -50,7 +62,8 @@ const RailRow = styled(Internal)<{
   overflow: hidden;
   border-left: 3px solid
     ${({ $on }) => ($on ? "var(--maple-brand-primary)" : "transparent")};
-  padding: 0.75rem 0.75rem 0.75rem 1rem;
+  /* Tighter than 0.75rem above and below. */
+  padding: 0.5rem 0.75rem 0.5rem 1rem;
   border-radius: 0 var(--maple-radius-md) var(--maple-radius-md) 0;
   background: ${({ $on }) => ($on ? "var(--maple-surface-base)" : "none")};
   box-shadow: ${({ $on }) => ($on ? `inset 0 0 0 1px ${RULE}` : "none")};
@@ -65,20 +78,22 @@ const RailRow = styled(Internal)<{
 
   .name {
     display: block;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     line-height: 1.35;
     font-weight: ${({ $on }) => ($on ? 600 : 400)};
+    /* An uncovered conference's name stays muted even while it is the one
+       being read. */
     color: ${({ $on, $covered }) =>
-      $on
+      !$covered
+        ? "var(--maple-text-muted)"
+        : $on
         ? "var(--maple-brand-primary)"
-        : $covered
-        ? "var(--maple-text-strong)"
-        : "var(--maple-text-muted)"};
+        : "var(--maple-text-strong)"};
   }
   .bills {
     display: block;
     margin-top: 1px;
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     line-height: 1.35;
     color: var(--maple-text-muted);
   }
@@ -90,7 +105,15 @@ const RailRow = styled(Internal)<{
 
 /** "S.1234 · H.5678", the status once the conference has finished, and a
  * label where we haven't covered it. The caller styles `.status`. */
-export function BillLine({ c }: { c: ConferenceSummary }) {
+export function BillLine({
+  c,
+  noteUncovered = true
+}: {
+  c: ConferenceSummary
+  /** "Not covered" where we haven't covered it; off in the Explorer's
+   * table (ConferenceTable). */
+  noteUncovered?: boolean
+}) {
   const { t } = useTranslation("conferences")
   return (
     <>
@@ -98,7 +121,9 @@ export function BillLine({ c }: { c: ConferenceSummary }) {
       {c.status !== "appointed" && (
         <span className="status">{t(`status.${c.status}`)}</span>
       )}
-      {!c.covered && <span className="status">{t("not_covered")}</span>}
+      {noteUncovered && !c.covered && (
+        <span className="status">{t("not_covered")}</span>
+      )}
     </>
   )
 }
@@ -118,14 +143,41 @@ export function ConferenceRail({
   className?: string
 }) {
   const { t } = useTranslation("conferences")
+  const nav = useRef<HTMLElement>(null)
+  // The conference being read kept in view in the rail, which scrolls on its
+  // own: one at the bottom (not in the trial) would otherwise sit out of
+  // sight. Only the rail scrolls, not the page.
+  useEffect(() => {
+    const box = nav.current
+    const row = box?.querySelector<HTMLElement>('[aria-current="page"]')
+    if (!box || !row) return
+    const top =
+      row.getBoundingClientRect().top -
+      box.getBoundingClientRect().top +
+      box.scrollTop
+    if (
+      top < box.scrollTop ||
+      top + row.offsetHeight > box.scrollTop + box.clientHeight
+    )
+      box.scrollTop = top - (box.clientHeight - row.offsetHeight) / 2
+  }, [current])
   return (
-    <Nav aria-label={t("in_conference")} className={className}>
+    <Nav ref={nav} aria-label={t("in_conference")} className={className}>
       <RailList conferences={conferences} current={current} />
     </Nav>
   )
 }
 
-/** The rows, shared by the rail and the picker that stands in for it. */
+/** The conferences the rail lists, and the picker that stands in for it
+ * (ConferencePicker.tsx): enacted ones left out, even the one being read;
+ * those not in the trial ("Not covered") at the bottom, each group in its
+ * order. */
+export const railConferences = (conferences: ConferenceSummary[]) =>
+  conferences
+    .filter(c => c.status !== "enacted")
+    .sort((a, b) => Number(!a.covered) - Number(!b.covered))
+
+/** The rail's rows (railConferences). */
 export function RailList({
   conferences,
   current
@@ -133,13 +185,13 @@ export function RailList({
   conferences: ConferenceSummary[]
   current: string
 }) {
+  const shown = railConferences(conferences)
   return (
     <List>
-      {conferences.map(c => (
+      {shown.map(c => (
         <li key={c.id}>
           <RailRow
             href={maple.conference(c)}
-            scroll={false}
             aria-current={c.id === current ? "page" : undefined}
             $on={c.id === current}
             $filed={c.status === "reportFiled"}

@@ -2,7 +2,7 @@ import React from "react"
 import { useRouter } from "next/router"
 import { useTranslation } from "next-i18next"
 import { Container } from "components/bootstrap"
-import { SlimBanner } from "components/shared/StyledSharedComponents"
+import { BetaBanner } from "components/shared/BetaBanner"
 import { MAPLE_COLORS } from "./chartTheme"
 
 export function LobbyingSubnav() {
@@ -19,10 +19,7 @@ export function LobbyingSubnav() {
   return (
     <>
       {/* The beta note: a slim pale orange note asking for feedback. */}
-      <SlimBanner>
-        {t("banner.feedback")}{" "}
-        <a href="mailto:info@mapletestimony.org">info@mapletestimony.org</a>
-      </SlimBanner>
+      <BetaBanner tagOnlyOnMobile>{t("banner.feedback")}</BetaBanner>
       <div style={barStyle}>
         <Container>
           <div style={innerStyle}>

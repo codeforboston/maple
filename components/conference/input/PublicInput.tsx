@@ -96,7 +96,8 @@ const Spot = styled.div`
 
 const Empty = styled.div<{ $after: boolean }>`
   margin-top: ${({ $after }) => ($after ? "20px" : "0")};
-  padding: 22px;
+  /* Taller than its 22px all round. */
+  padding: 44px 22px;
   text-align: center;
   background: var(--maple-surface-base);
   border: 1.5px dashed ${line.strong};

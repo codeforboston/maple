@@ -83,7 +83,7 @@ export const AiTools = () => {
   // mcp-server/auth.ts and functions/src/mcp/proxy.ts point users to.
   return (
     <LearnLayout width="wide">
-      <LearnBreadcrumb section={tLearn("aiTools.breadcrumb")} />
+      <LearnBreadcrumb section={tLearn("aiTools.breadcrumb")} withoutHome />
       <LearnHeader
         title={t("title")}
         subhead={t("description")}

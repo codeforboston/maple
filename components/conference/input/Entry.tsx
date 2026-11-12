@@ -20,7 +20,7 @@ const Card = styled.article<{ $bare: boolean; $own: boolean }>`
       ? ""
       : `background: ${$own ? brand.soft : "var(--maple-surface-base)"};
   border: 1px solid ${$own ? brand.edge : line.default};
-  border-radius: 8px;
+  border-radius: 5px;
   box-shadow: ${shadow.raised};`}
 
   @media (max-width: 450px) {

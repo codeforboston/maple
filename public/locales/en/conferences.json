@@ -1,5 +1,7 @@
 {
   "in_conference": "In conference",
+  "back_to_home": "Back to Conference Home",
+  "beta_feedback": "Conference committee pages are in beta. Send feedback to",
   "byline": "Conference committee to pass <1>{{title}}</1> by resolving differences between <3>{{senate}}</3> and <5>{{house}}</5>",
   "status": {
     "reportFiled": "Report filed",
@@ -12,6 +14,7 @@
     "not_covered": "We’re trialling these pages with a limited set of conference committees, and this isn’t one of them yet. You can’t add your input here."
   },
   "who": "Who’s in the committee?",
+  "view_committees": "View the committees →",
   "senate": "Senate",
   "house": "House",
   "seats_lit": "{{chamber}} · {{count}} of {{total}}",
@@ -36,6 +39,7 @@
   "chair_col": "Chair",
   "minority_col": "Minority",
   "explorer": "Conference Explorer",
+  "explorer_panel": "Committee Members",
   "explorer_empty": "Select a committee, map area, or toggle to highlight specific legislators.",
   "clear": "Clear",
   "clear_committee": "Clear this committee",
@@ -51,27 +55,28 @@
     "steps": [
       {
         "h": "Two versions pass",
-        "p": "Each chamber passes its own text of the bill, and the two don't match."
+        "p": "Each chamber passes a bill and must end up with identical text to pass. If they don't, a conference committee is appointed to reconcile them."
       },
       {
         "h": "Six are named",
-        "p": "Three from each chamber. In each, one of the three comes from the minority party."
+        "p": "Each chamber names three legislators, including one from the minority party. Together, these six negotiate the final text."
       },
       {
         "h": "They negotiate",
-        "p": "Their meetings are public unless a majority votes to close them, and they can't close the first one."
+        "p": "The first meeting is public. The rest are as well, unless a majority votes to close them. A final bill only proceeds once 2/3 of the conferees from each chamber agree."
       },
       {
         "h": "The report is posted",
-        "p": "A majority of each chamber's three has to agree to it. It goes up on the legislature's website, and neither chamber can vote on it for at least 24 hours."
+        "p": "Once it goes up on the legislature's website, the legislators have at least 24 hours to read it before either chamber can vote."
       },
       {
         "h": "Yes or no",
-        "p": "Each chamber accepts or rejects it as written. Changing it takes a new conference committee."
+        "p": "Each chamber votes without amendments. If either rejects it, the bill can return to a new conference committee, or otherwise it doesn't pass."
       }
     ],
     "sources": "From MAPLE’s <1>guide to the legislative process</1> and the legislature’s <3>Joint Rules</3>.",
-    "see": "See the committees"
+    "see": "See the committees",
+    "see_unavailable": "Conference committees didn't load. Please try again in a minute."
   },
   "bill_text": "Bill Text",
   "version": "Version",

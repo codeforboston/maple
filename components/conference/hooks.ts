@@ -1,26 +1,15 @@
-import Router, { useRouter } from "next/router"
 import {
   RefObject,
   useCallback,
+  useEffect,
   useLayoutEffect,
   useMemo,
-  useRef,
   useState
 } from "react"
 import { useMediaQuery } from "usehooks-ts"
+import { RAIL_HIDDEN } from "./styles"
 import { useProfile } from "../db"
-import { jumping, navbarBottom } from "./navbar"
-
-/** Whether the page arriving is one Back or Forward reached within the app,
- * where the browser puts the reader back. Those have moved the address by the
- * time Next starts the change; a link, such as a rail click from a scrolled
- * landing, moves it after. A reload is not one: Layout renders nothing until
- * the client mounts, so the browser has nothing to restore against. */
-let returning = false
-if (typeof window !== "undefined")
-  Router.events.on("routeChangeStart", (url: string) => {
-    returning = new URL(url, location.href).href === location.href
-  })
+import { navbarBottom } from "./navbar"
 
 /**
  * What the pointer is over, and a setter that ignores it on a coarse pointer:
@@ -50,121 +39,76 @@ export function useMyLegislators() {
   )
 }
 
-/** How far into the conference the window still snaps, in px: enough that a
- * flick coming up through it is already being snapped at its top. */
-const SNAP_REACH = 120
-
-/** Where `el` starts in the document, in px. */
-const topOf = (el: HTMLElement | null) =>
-  el ? Math.max(0, el.getBoundingClientRect().top + window.scrollY) : 0
+/** A phone's width: the site's md breakpoint, where the hamburger shows. */
+const PHONE = "(max-width: 767.98px)"
 
 /**
- * Where a conference page rests: on the whole hero, or on the conference from
- * its top. Returns the ref for the conference's column and the scroll that
- * puts the reader at its top.
- *
- * The landing opens on the hero and every other address on the conference,
- * on each change of address, since a rail click is a client navigation that
- * Next would otherwise scroll to the hero. The browser's own mandatory snap
- * keeps the reader off the stretch where both would share the screen; it is
- * on only near the top, because a snapping window eases every scroll further
- * down too.
+ * Whether the window is a phone's (PHONE), for what renders differently
+ * there. False on the server and through the first render, so the page
+ * hydrates as it was served; the stylesheet covers the phone meanwhile.
+ * Without matchMedia, or a listener on what it gives (older Safari has only
+ * the older one; the tests stand in for it with neither), read once.
  */
-export function useConferenceTop(openOnHero: boolean) {
-  // A change to the query alone, such as the page letting go of a link's
-  // `?cosign`, leaves the reader where they are.
-  const path = useRouter().asPath.split(/[?#]/)[0]
-  const top = useRef<HTMLDivElement>(null)
-  const mounted = useRef(false)
-  const hero = useRef<HTMLElement>(null)
-  const reduceMotion = useMediaQuery("(prefers-reduced-motion: reduce)")
+export function usePhone() {
+  return useMatches(PHONE)
+}
 
-  const toConference = useCallback(
-    () =>
-      window.scrollTo({
-        top: topOf(top.current),
-        behavior: reduceMotion ? "auto" : "smooth"
-      }),
-    [reduceMotion]
-  )
+/** Whether a committee page is without its rail (RAIL_HIDDEN, styles.ts), as
+ * usePhone is for a phone's width. */
+export function useRailHidden() {
+  return useMatches(RAIL_HIDDEN)
+}
 
-  // The site's header scrolls away above the hero. Resting on the hero means
-  // resting at the document's top with the header showing, so the hero's snap
-  // point and height are measured from where it starts.
-  //
-  // Where the conference starts is measured here, not on each scroll event,
-  // and again whenever the page's size changes: the header can change height
-  // without a resize, from a webfont arriving or the nav items changing with
-  // sign-in.
+/** Whether the window matches `media`, as usePhone describes. */
+export function useMatches(media: string) {
+  const [matches, setMatches] = useState(false)
+  useEffect(() => {
+    if (typeof window.matchMedia !== "function") return
+    const query = window.matchMedia(media)
+    const update = () => setMatches(Boolean(query.matches))
+    update()
+    if (query.addEventListener) {
+      query.addEventListener("change", update)
+      return () => query.removeEventListener("change", update)
+    }
+    if (query.addListener) {
+      query.addListener(update)
+      return () => query.removeListener(update)
+    }
+  }, [media])
+  return matches
+}
+
+/**
+ * Fits `ref`'s one line of text to the room it has while `active`: its font
+ * stepped down from the stylesheet's size just far enough that the line
+ * fits, no smaller than `min` px, past which the stylesheet's ellipsis takes
+ * over. The stylesheet's size again when not active. Measured again as the
+ * room it sits in changes width, and when `text` changes.
+ */
+export function useFitText(
+  ref: RefObject<HTMLElement | null>,
+  active: boolean,
+  min: number,
+  text: string
+) {
   useLayoutEffect(() => {
-    const root = document.documentElement
-    let offset = -1
-    let reach = 0
-    const sync = () => {
-      // A jump from near the top is on its way further down.
-      if (jumping()) return
-      const want = window.scrollY <= reach ? "y mandatory" : ""
-      if (root.style.scrollSnapType !== want) root.style.scrollSnapType = want
+    const el = ref.current
+    if (!el) return
+    const fit = () => {
+      el.style.fontSize = ""
+      if (!active || !el.scrollWidth || el.scrollWidth <= el.clientWidth) return
+      const base = parseFloat(getComputedStyle(el).fontSize)
+      const size = (base * el.clientWidth) / el.scrollWidth
+      el.style.fontSize = `${Math.max(min, Math.floor(size * 10) / 10)}px`
     }
-    const measure = () => {
-      if (!hero.current) return
-      const next = topOf(hero.current)
-      if (next !== offset) {
-        offset = next
-        root.style.setProperty("--conference-nav", `${offset}px`)
-      }
-      reach = topOf(top.current) + SNAP_REACH
-      sync()
-    }
-    measure()
-    const observer =
-      typeof ResizeObserver === "undefined"
-        ? undefined
-        : new ResizeObserver(measure)
-    // The hero's own height is where the conference starts: it follows the
-    // window's height and its text's wrapping.
-    if (hero.current) observer?.observe(hero.current)
-    // Whatever sits above the hero moves it when it changes height, however
-    // far up: the siblings before it and before each of its ancestors. The
-    // body is no use, being a fixed-height box.
-    for (let el = hero.current; el && el !== document.body; ) {
-      if (el.previousElementSibling)
-        observer?.observe(el.previousElementSibling)
-      el = el.parentElement
-    }
-    window.addEventListener("scroll", sync, { passive: true })
-    return () => {
-      observer?.disconnect()
-      window.removeEventListener("scroll", sync)
-      root.style.removeProperty("--conference-nav")
-      root.style.scrollSnapType = ""
-    }
-  }, [])
-
-  useLayoutEffect(() => {
-    // On arriving by Back the browser has put the reader back, at the top
-    // too: leave them there. Any other arrival, or a later change of address,
-    // is a click.
-    const restored = !mounted.current && returning
-    mounted.current = true
-    if (location.hash || restored) return
-    const start = openOnHero ? 0 : topOf(top.current)
-    window.scrollTo({ top: start, behavior: "auto" })
-    if (openOnHero) return
-    // A font arriving after the jump can resize the hero; put the reader
-    // back unless they have scrolled since.
-    let stale = false
-    document.fonts?.ready.then(() => {
-      // A jump begun meanwhile, to a linked card, has not moved them yet.
-      if (stale || jumping() || Math.abs(window.scrollY - start) > 1) return
-      window.scrollTo({ top: topOf(top.current), behavior: "auto" })
-    })
-    return () => {
-      stale = true
-    }
-  }, [path, openOnHero])
-
-  return { top, hero, toConference }
+    fit()
+    const room = el.parentElement
+    if (!room || typeof ResizeObserver === "undefined") return
+    const observer = new ResizeObserver(fit)
+    observer.observe(room)
+    return () => observer.disconnect()
+  }, [ref, active, min, text])
 }
 
 /**
@@ -215,4 +159,59 @@ export function usePinnedNavbar(scope: RefObject<HTMLElement | null>) {
       window.removeEventListener("resize", publish)
     }
   }, [scope])
+}
+
+/**
+ * How far the rail of conferences, the first child of `page`, has been pushed
+ * up past the navbar's edge by the end of the page, published on `scope` as
+ * --rail-lift (0px, or less): the bands that hold at the top of the main
+ * column add it to their own top, so they go with the rail rather than holding
+ * on after it has started to leave. 0px where the rail isn't shown.
+ */
+export function useRailLift(
+  page: RefObject<HTMLElement | null>,
+  scope: RefObject<HTMLElement | null>
+) {
+  useLayoutEffect(() => {
+    const el = scope.current
+    if (!el || !page.current) return
+    let published = ""
+    const publish = () => {
+      // Out of the page between a scroll and this, as one page gives way to
+      // another: nothing to measure.
+      const box = page.current
+      if (!box) return
+      const rail = box.firstElementChild as HTMLElement | null
+      const height = rail?.offsetHeight ?? 0
+      // The rail holds until the bottom of the page's content, inside its
+      // padding, reaches its own bottom.
+      const end =
+        box.getBoundingClientRect().bottom -
+        parseFloat(getComputedStyle(box).paddingBottom)
+      const lift = height === 0 ? 0 : Math.min(0, end - height - navbarBottom())
+      const value = `${Math.round(lift)}px`
+      if (value === published) return
+      published = value
+      el.style.setProperty("--rail-lift", value)
+    }
+    publish()
+    const observer = new ResizeObserver(publish)
+    observer.observe(page.current)
+    // Not a box inside the page, such as a bill text's sheet, whose scrolling
+    // leaves the page where it was.
+    const scrolled = (e: Event) => {
+      if (e.target instanceof Node && page.current?.contains(e.target)) return
+      publish()
+    }
+    document.addEventListener("scroll", scrolled, {
+      passive: true,
+      capture: true
+    })
+    window.addEventListener("resize", publish)
+    return () => {
+      observer.disconnect()
+      document.removeEventListener("scroll", scrolled, { capture: true })
+      window.removeEventListener("resize", publish)
+    }
+  }, [page, scope])
 }

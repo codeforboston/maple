@@ -41,6 +41,28 @@ const Feed = styled.div`
   margin: 0 auto;
   max-width: 48rem;
   padding: 0 1.5rem;
+
+  /* With columns={2}: above 768px, the rows as separate cards across the
+     whole column, one to a row, then two by two from lg. Up to 768px, the
+     rows in the panel. */
+  @media (min-width: 769px) {
+    &.two-up {
+      background: none;
+      border: none;
+      border-radius: 0;
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: 1fr;
+      max-width: none;
+      padding: 0;
+    }
+  }
+
+  @media (min-width: 992px) {
+    &.two-up {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
 `
 
 const Item = styled.div`
@@ -54,6 +76,21 @@ const Item = styled.div`
 
   &:last-child {
     border-bottom: none;
+  }
+
+  /* A card, in the feed as cards (Feed, .two-up). */
+  @media (min-width: 769px) {
+    .two-up > & {
+      background: var(--maple-surface-base);
+      border: 1px solid var(--maple-surface-border);
+      border-radius: var(--maple-radius-md);
+      padding: 1.25rem 1.5rem;
+    }
+
+    /* On its own, across both columns. */
+    .two-up > &:only-child {
+      grid-column: 1 / -1;
+    }
   }
 
   /* The quote rows, with the circle at the top of the quote. */
@@ -241,13 +278,15 @@ const FeedItem = ({
 
 export default function TestimonyFeed({
   testimony,
-  variant = "bill"
+  variant = "bill",
+  columns = 1
 }: {
   testimony: FeedTestimony[]
   variant?: Variant
+  columns?: 1 | 2
 }) {
   return (
-    <Feed>
+    <Feed className={columns === 2 ? "two-up" : undefined}>
       {testimony.map(item => (
         <FeedItem
           key={item.authorUid + item.billId}

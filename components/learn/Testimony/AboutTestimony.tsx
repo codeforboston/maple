@@ -231,7 +231,7 @@ export const AboutTestimony = () => {
 
   return (
     <LearnLayout width="medium">
-      <LearnBreadcrumb section={t("testimony.breadcrumb")} />
+      <LearnBreadcrumb section={t("testimony.breadcrumb")} withoutHome />
       <LearnHeader
         title={t("testimony.title")}
         subhead={t("testimony.subhead")}

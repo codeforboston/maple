@@ -502,7 +502,10 @@ export const WhyUseMaple = ({
 
   return (
     <LearnLayout width="wide">
-      <LearnBreadcrumb section={t("learn:whyUseMaple.breadcrumb")} />
+      <LearnBreadcrumb
+        section={t("learn:whyUseMaple.breadcrumb")}
+        withoutHome
+      />
       <LearnHeader
         title={t("learn:whyUseMaple.title")}
         subhead={t("learn:whyUseMaple.subhead")}

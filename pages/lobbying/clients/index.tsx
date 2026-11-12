@@ -19,13 +19,13 @@ import {
 import { lobbyistMix, lobbyistMixText } from "components/lobbying/clientCounts"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import {
-  FilterLabel,
+  FloatingSearch,
+  listTableStyle,
+  listTdStyle,
   LobbyingFilterBar,
   LobbyingLoadError,
   LobbyingPanel,
-  listTableStyle,
-  listTdStyle,
-  listSearchStyle,
+  pageIntroStyle,
   sessionSelectStyle,
   subTextStyle
 } from "components/lobbying/LobbyingPanel"
@@ -35,7 +35,6 @@ import { LobbyingSubnav } from "components/lobbying/LobbyingSubnav"
 import { usePrerenderedRows } from "components/lobbying/usePrerenderedRows"
 import { matchesSearch } from "components/lobbying/searchMatch"
 import { SessionFilter, SessionSelect } from "components/lobbying/SessionSelect"
-import { courtName } from "components/lobbying/sessions"
 import { SortTh, type SortDir } from "components/lobbying/SortTh"
 
 const PAGE_SIZE = 50
@@ -123,10 +122,7 @@ function LobbyingClientsTable({
 
   return (
     <>
-      <LobbyingFilterBar boxed>
-        <FilterLabel htmlFor="clients-session">
-          {t("filters.session")}
-        </FilterLabel>
+      <LobbyingFilterBar boxed="open">
         <SessionSelect
           id="clients-session"
           sessions={sessions}
@@ -136,34 +132,29 @@ function LobbyingClientsTable({
           allLabel={t("filters.allSessionsSince")}
           style={sessionSelectStyle}
         />
-        <input
-          type="search"
-          placeholder={`${t("activity.clientSearch")}…`}
-          aria-label={t("activity.clientSearch")}
+        <FloatingSearch
+          id="clients-search"
+          label={t("activity.clientSearch")}
           value={search}
-          onChange={e => setSearch(e.target.value)}
-          style={listSearchStyle}
+          onChange={setSearch}
+          grow
         />
       </LobbyingFilterBar>
 
       <LobbyingPanel
-        title={t("clients.panelTitle", {
-          session:
-            session === "all"
-              ? t("filters.allSessionsSince")
-              : courtName(session)
-        })}
+        title={t("clients.panelTitle")}
+        // How to sort, beside the title, on the Clients list only.
+        titleNote={t("billList.sortHint")}
+        session={session}
+        sessions={sessions}
         aside={
           !loading && (
-            <>
-              <strong>
-                {t("clients.count", {
-                  count: clientCount,
-                  n: formatCount(clientCount)
-                })}
-              </strong>{" "}
-              · {t("billList.sortHint")}
-            </>
+            // The count in bold Lexend, then what it counts in light Lexend, at
+            // one size.
+            <strong style={countStyle}>
+              <span style={countNumberStyle}>{formatCount(clientCount)}</span>
+              {t("clients.count", { count: clientCount })}
+            </strong>
           )
         }
         footer={t("clients.paidNote")}
@@ -188,6 +179,7 @@ function LobbyingClientsTable({
                   <tr>
                     <SortTh
                       label={t("fields.clientName")}
+                      byName
                       sortKey="name"
                       current={sortKey}
                       dir={sortDir}
@@ -219,14 +211,15 @@ function LobbyingClientsTable({
                 <tbody>
                   {pageItems.map(c => (
                     <tr key={c.clientNameNorm}>
-                      <td style={listTdStyle}>
+                      <td style={rowTdStyle}>
                         <a
                           href={`/lobbying/clients/${encodeURIComponent(
                             c.clientNameNorm
                           )}`}
                           style={{
                             color: MAPLE_COLORS.primary,
-                            fontWeight: 700
+                            fontWeight: 700,
+                            fontSize: 15
                           }}
                         >
                           {c.clientName}
@@ -237,11 +230,12 @@ function LobbyingClientsTable({
                           </div>
                         )}
                       </td>
-                      <td style={{ ...listTdStyle, ...figureStyle }}>
-                        {c.bills ?? "—"}
+                      <td style={rowTdStyle}>
+                        <div style={figureStyle}>{c.bills ?? "—"}</div>
                       </td>
-                      <td style={listTdStyle}>
-                        <div style={{ fontWeight: 700 }}>
+                      <td style={rowTdStyle}>
+                        {/* As the Bills and Reported paid figures. */}
+                        <div style={figureStyle}>
                           {c.lobbyists?.total ?? "—"}
                         </div>
                         {/* In-house and firms don't apply to "No client". */}
@@ -251,10 +245,12 @@ function LobbyingClientsTable({
                           </div>
                         )}
                       </td>
-                      <td style={{ ...listTdStyle, ...figureStyle }}>
-                        {c.compensation != null
-                          ? formatCurrency(c.compensation)
-                          : "—"}
+                      <td style={rowTdStyle}>
+                        <div style={figureStyle}>
+                          {c.compensation != null
+                            ? formatCurrency(c.compensation)
+                            : "—"}
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -282,10 +278,12 @@ function LobbyingClientsPage(props: ClientsPageProps) {
     <>
       <LobbyingSubnav />
       <Container>
-        <Row className="mt-4 mb-3">
+        {/* The title closer to the filters, the page under it where it was:
+            half the description's 1rem margin moved above the title. */}
+        <Row className="mb-3" style={{ marginTop: "1.875rem" }}>
           <Col>
             <h1>{t("titles.clients")}</h1>
-            <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 14 }}>
+            <p style={{ ...pageIntroStyle, marginBottom: "0.5rem" }}>
               {t("explainers.clients")}
             </p>
           </Col>
@@ -320,8 +318,32 @@ export const getStaticProps = createLobbyingListProps(async () => {
   }
 })
 
+// Every cell of a row at its top.
+const rowTdStyle: React.CSSProperties = {
+  ...listTdStyle,
+  verticalAlign: "top"
+}
+
 const figureStyle: React.CSSProperties = {
-  fontWeight: 700,
+  // A step under bold, so the table isn't all bold beside its bold names.
+  fontWeight: 600,
   fontSize: 16,
   color: MAPLE_COLORS.textStrong
+}
+
+const countStyle: React.CSSProperties = {
+  // Lexend at its lightest loaded weight (styles/bootstrap.scss).
+  fontFamily: "var(--maple-font-heading)",
+  fontSize: 16,
+  fontWeight: 300,
+  // The label and the larger count centred on each other.
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "0.3em"
+}
+
+const countNumberStyle: React.CSSProperties = {
+  fontFamily: "var(--maple-font-heading)",
+  fontSize: 16,
+  fontWeight: 700
 }

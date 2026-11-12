@@ -4,17 +4,9 @@ import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
 
-/* The site navbar's two looks. "auto", what the site uses, gives the neutral
-   bar (components/Navbar.tsx). */
 const meta: Meta<typeof MainNavbar> = {
   title: "Organisms/Navbar",
   component: MainNavbar,
-  argTypes: {
-    variant: {
-      control: "inline-radio",
-      options: ["blue", "neutral", "auto"]
-    }
-  },
   decorators: [
     (Story, ...rest) => {
       const { store } = wrapper.useWrappedStore(...rest)
@@ -34,6 +26,4 @@ export default meta
 
 type Story = StoryObj<typeof MainNavbar>
 
-export const Blue: Story = { args: { variant: "blue" } }
-
-export const Neutral: Story = { args: { variant: "neutral" } }
+export const Default: Story = {}

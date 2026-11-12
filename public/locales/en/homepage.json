@@ -44,6 +44,19 @@
     "bodytext": "We help you craft your testimony, publish it to the community, and send it directly to the right legislators.",
     "title": "How"
   },
+  "newFeatures": {
+    "subtitle": "Help us improve these tools! <phoneBreak/>Send feedback to <mail>{{email}}</mail>",
+    "conferences": {
+      "body": "Committees resolving the House and Senate versions of a bill",
+      "name": "Conference Committees"
+    },
+    "lobbying": {
+      "body": "Who's lobbying on Massachusetts bills and on whose behalf",
+      "name": "Lobbying"
+    },
+    "title": "Explore MAPLE's Latest Features",
+    "tryIt": "Try it"
+  },
   "topics": {
     "climate": "Climate, Energy & Environment",
     "democracy": "Government, Rights & Safety",
@@ -66,7 +79,7 @@
     "title": "Who"
   },
   "why": {
-    "bodytext": "Your voice is important; we help amplify it. We make the Massachusetts' legislature's testimony process more accessible and transparent.",
+    "bodytext": "Your voice is important; we help amplify it. We make the Massachusetts legislature's testimony process more accessible and transparent.",
     "title": "Why"
   }
 }

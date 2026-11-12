@@ -13,6 +13,8 @@ import CustomDropdown, {
 import { FooterContainer } from "./FooterContainer"
 import { NEWSLETTER_SIGNUP_URL } from "components/common"
 import { flags } from "../featureFlags"
+import { maple } from "../links"
+import { BetaTag } from "../shared/CommonComponents"
 
 export type PageFooterProps = {
   children?: any
@@ -29,8 +31,8 @@ const TextHeader = styled.h6`
   margin: 0;
 `
 
-/* A section heading that follows another section in the same column (About
-   after Browse, Policies after Learn, Other Resources after Account), set
+/* A section heading that follows another section in the same column (Learn
+   after Browse, Policies after About, Other Resources after Account), set
    apart from what is above it. */
 const NextSectionHeader = styled(TextHeader)`
   margin-top: 1.5rem;
@@ -244,6 +246,9 @@ const AboutLinks = () => {
       <StyledInternalLink href="/about/support-maple">
         {t("links.supportMaple")}
       </StyledInternalLink>
+      <StyledInternalLink href="/about/in-the-news">
+        {t("navigation.inTheNews", { ns: "common" })}
+      </StyledInternalLink>
       <StyledInternalLink href="/about/faq-page">
         {t("links.faq")}
       </StyledInternalLink>
@@ -251,8 +256,10 @@ const AboutLinks = () => {
   )
 }
 
-/* The Browse group: the explorers, listed as plain links under a heading like
-   the other groups'. */
+/* The Browse group: every explorer the header shows (components/Navbar.tsx),
+   in its order (Conference Committees next to Bills) and under the same
+   flags, listed as plain links under a heading like the other groups', with
+   BETA tags as the header's Browse More menu has them. */
 const BrowseLinks = () => {
   const { t } = useTranslation("common")
   return (
@@ -260,6 +267,12 @@ const BrowseLinks = () => {
       <StyledInternalLink href="/bills">
         {t("navigation.bills")}
       </StyledInternalLink>
+      {flags().conferences ? (
+        <StyledInternalLink href={maple.conferences()}>
+          {t("navigation.conferences")}
+          <BetaTag>{t("beta_feature")}</BetaTag>
+        </StyledInternalLink>
+      ) : null}
       {flags().hearingsAndTranscriptions ? (
         <StyledInternalLink href="/hearings">
           {t("navigation.hearings")}
@@ -271,6 +284,12 @@ const BrowseLinks = () => {
       {flags().ballotQuestions ? (
         <StyledInternalLink href="/ballotQuestions">
           {t("navigation.ballotQuestions")}
+        </StyledInternalLink>
+      ) : null}
+      {flags().lobbyingTable ? (
+        <StyledInternalLink href="/lobbying">
+          {t("navigation.lobbying")}
+          <BetaTag>{t("beta_feature")}</BetaTag>
         </StyledInternalLink>
       ) : null}
     </>
@@ -328,7 +347,7 @@ const PageFooter = (props: PageFooterProps) => {
   return (
     <FooterContainer
       fluid
-      className="d-flex flex-wrap flex-column-reverse flex-md-row align-items-center align-items-md-stretch p-2 p-md-5"
+      className="site-footer d-flex flex-wrap flex-column-reverse flex-md-row align-items-center align-items-md-stretch p-2 p-md-5"
       style={{ backgroundColor: "#000" }}
     >
       <Navbar
@@ -343,11 +362,11 @@ const PageFooter = (props: PageFooterProps) => {
             <CustomDropdown title={t("headers.browse")}>
               <BrowseLinks />
             </CustomDropdown>
-            <CustomDropdown title={t("about", { ns: "common" })}>
-              <AboutLinks />
-            </CustomDropdown>
             <CustomDropdown title={t("learn", { ns: "common" })}>
               <LearnLinks />
+            </CustomDropdown>
+            <CustomDropdown title={t("about", { ns: "common" })}>
+              <AboutLinks />
             </CustomDropdown>
             <CustomDropdown title={t("headers.policies")}>
               <TermsAndPolicies />
@@ -361,23 +380,31 @@ const PageFooter = (props: PageFooterProps) => {
           </div>
         </Nav>
       </Navbar>
-      <div className={`d-none d-md-flex order-1 flex-grow-1`}>
-        {/* Browse and About, Learn and Policies, then Account and Other
+      {/* Sized from nothing rather than from the columns' unwrapped width
+          (flex: 1 1 0), so long links wrap within their column instead of
+          pushing Follow MAPLE onto a line of its own; 1.5rem between the
+          columns, which have no gutters of their own here, so a long link
+          wraps before it reaches the next column. */}
+      <div
+        className={`d-none d-md-flex order-1 flex-grow-1`}
+        style={{ flex: "1 1 0", minWidth: 0, columnGap: "1.5rem" }}
+      >
+        {/* Browse and Learn, About and Policies, then Account and Other
             Resources, with the disclaimer at the foot. */}
         <Col>
           <ColumnStack>
             <TextHeader>{t("headers.browse")}</TextHeader>
             <BrowseLinks />
             <NextSectionHeader>
-              {t("about", { ns: "common" })}
+              {t("learn", { ns: "common" })}
             </NextSectionHeader>
-            <AboutLinks />
+            <LearnLinks />
           </ColumnStack>
         </Col>
         <Col>
           <ColumnStack>
-            <TextHeader>{t("learn", { ns: "common" })}</TextHeader>
-            <LearnLinks />
+            <TextHeader>{t("about", { ns: "common" })}</TextHeader>
+            <AboutLinks />
             <NextSectionHeader>{t("headers.policies")}</NextSectionHeader>
             <TermsAndPolicies />
           </ColumnStack>

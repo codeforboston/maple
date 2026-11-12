@@ -21,7 +21,6 @@ import {
   yea
 } from "./input/tokens"
 import { useWide } from "./input/useWide"
-import { TABS_H } from "./ConferenceTabs"
 import { CardTitle, CommitteeCard } from "./styles"
 import {
   Chip,
@@ -34,22 +33,11 @@ import {
 } from "./ConferenceResolution"
 import { CHAMBERS, ConfereeView, DifferenceView, SimilarityView } from "./types"
 
-/** The mockup's card, which keeps its gutters at every width. */
+/** The mockup's card, which keeps its gutters at every width: 32px at the
+ * left as at the right, so its content lines up with the committee card's
+ * above (Card's 2rem). */
 const Frame = styled(CommitteeCard)`
-  --pad-x: 32px;
-  padding: 24px 32px 32px 34px;
-`
-
-/** The heading holds under the tabs while the section scrolls, on a white
- * band run out to the card's edges so what passes under it is covered. */
-const HeadingBand = styled.div`
-  position: sticky;
-  top: calc(var(--maple-navbar-height) + var(--title-h, 5rem) + ${TABS_H});
-  z-index: 9;
-  margin: -12px calc(-1 * var(--pad-x));
-  padding: 12px var(--pad-x);
-  background: var(--maple-surface-base);
-  border-radius: var(--maple-radius-xl) var(--maple-radius-xl) 0 0;
+  padding: 24px 32px 32px 32px;
 `
 
 const Body = styled.div`
@@ -63,15 +51,16 @@ const Body = styled.div`
   }
 `
 
-/** A short paragraph on what the bills are, with the invitation to send
- * feedback under it. */
+/** A short paragraph on what the bills are, its lines kept to a readable
+ * length (90ch) rather than the card's full width, with the invitation to
+ * send feedback under it, one sentence on a line of its own. */
 const Gist = styled.div`
   margin: 0 0 2px;
   padding-left: 16px;
   border-left: 2px solid ${line.strong};
-  max-width: 65ch;
 
   p {
+    max-width: 90ch;
     margin: 0;
     font-size: 0.875rem;
     line-height: 1.65;
@@ -79,6 +68,7 @@ const Gist = styled.div`
   }
   /* The feedback line beneath the gist. */
   > div + p {
+    max-width: none;
     margin-top: 8px;
     font-size: 0.8125rem;
     color: ${ink.faint};
@@ -551,11 +541,11 @@ export function ConferenceDifferences({
 
   return (
     <Frame aria-labelledby="decided-q">
-      <HeadingBand>
-        <CardTitle id="decided-q" className="mb-0">
-          {t(resolved ? "resolved.list_title" : "decided.title")}
-        </CardTitle>
-      </HeadingBand>
+      {/* The heading scrolls with the section, as the other sections'
+          headings do, rather than holding under the tabs. */}
+      <CardTitle id="decided-q" className="mb-0">
+        {t(resolved ? "resolved.list_title" : "decided.title")}
+      </CardTitle>
       <Body ref={body}>
         {gist && (
           <Gist>

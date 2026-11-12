@@ -1,6 +1,5 @@
 import "@testing-library/jest-dom"
 import { act, fireEvent, render, screen, within } from "@testing-library/react"
-import Router from "next/router"
 import { ConferenceDetails } from "./ConferenceDetails"
 import type { ConferencePageProps } from "./types"
 
@@ -44,9 +43,6 @@ jest.mock("next/router", () => ({
   default: { events: { on: jest.fn() } },
   useRouter: () => ({ asPath, query: mockQuery, replace: mockReplace })
 }))
-/** Next starting a change of address, as the hooks hear it. */
-const routeChangeStart = (url: string) =>
-  jest.mocked(Router.events.on).mock.calls[0][1](url)
 
 jest.mock("usehooks-ts", () => ({ useMediaQuery: () => false }))
 // react-markdown ships ESM only. This reads one link, as the gist writes it.
@@ -309,8 +305,6 @@ describe("ConferenceDetails", () => {
 
   beforeEach(() => {
     asPath = "/conferences/194/data-privacy"
-    // Arriving by a link, unless a test says otherwise.
-    routeChangeStart("/conferences/194/elsewhere")
     window.scrollTo = jest.fn()
   })
 
@@ -324,63 +318,18 @@ describe("ConferenceDetails", () => {
     Object.defineProperty(window, "scrollY", { value: 0, configurable: true })
   })
 
-  it("leaves a reader Back brought, even to the top, then re-lands them on a new address", () => {
-    routeChangeStart(location.pathname)
-    const { rerender } = render(<ConferenceDetails {...props} />)
-    expect(window.scrollTo).not.toHaveBeenCalled()
-
-    asPath = "/conferences/194/other"
-    rerender(<ConferenceDetails {...props} />)
-    expect(window.scrollTo).toHaveBeenCalledWith(
-      expect.objectContaining({ behavior: "auto" })
-    )
-  })
-
-  it("lands a reader a link brought, scrolled or not, at the conference", () => {
-    // A rail click from the landing keeps the landing's scroll; Next starts
-    // the change before the address moves.
-    Object.defineProperty(window, "scrollY", { value: 900, configurable: true })
-    routeChangeStart("/conferences/194/data-privacy")
+  it("has one h1, the conference's", () => {
     render(<ConferenceDetails {...props} />)
-    expect(window.scrollTo).toHaveBeenCalledWith(
-      expect.objectContaining({ behavior: "auto" })
-    )
-    // Back has moved it already.
-    jest.mocked(window.scrollTo).mockClear()
-    routeChangeStart(location.pathname)
-    render(<ConferenceDetails {...props} />)
-    expect(window.scrollTo).not.toHaveBeenCalled()
-  })
-
-  it("has one h1: the conference's, or the hero's on the landing", () => {
-    const { unmount } = render(<ConferenceDetails {...props} />)
-    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1)
-    unmount()
-    render(<ConferenceDetails {...props} openOnHero />)
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1)
   })
 
-  it("opens a conference's address at the conference, under the hero", () => {
+  // The hero is a page of its own, the Conference Committees page
+  // (ConferenceHero.test.tsx).
+  it("opens a conference's address with no hero above it", () => {
     render(<ConferenceDetails {...props} />)
     expect(
-      screen.getByRole("heading", { name: "hero.steps.0.h" })
-    ).toBeInTheDocument()
-    expect(window.scrollTo).toHaveBeenCalledWith(
-      expect.objectContaining({ top: 0, behavior: "auto" })
-    )
-  })
-
-  it("opens the landing on the hero and links to the explorer", () => {
-    render(<ConferenceDetails {...props} openOnHero />)
-    expect(screen.getAllByRole("listitem").length).toBeGreaterThanOrEqual(5)
-    expect(screen.getByRole("link", { name: "explorer" })).toHaveAttribute(
-      "href",
-      "/conferences/explorer"
-    )
-    fireEvent.click(screen.getByRole("button", { name: /hero.see/ }))
-    expect(window.scrollTo).toHaveBeenLastCalledWith(
-      expect.objectContaining({ behavior: "smooth" })
-    )
+      screen.queryByRole("heading", { name: "hero.steps.0.h" })
+    ).not.toBeInTheDocument()
   })
 
   it("names the six, the chairs, the bills and the hearing", () => {
@@ -459,9 +408,18 @@ describe("ConferenceDetails", () => {
     expect(container.querySelector('a[aria-current="page"]')).toHaveTextContent(
       "Phone-Free Schools"
     )
-    // The phone picker opens the same list from the title.
+    // On mobile, the floating button slides the same list in from the left,
+    // hung off the body rather than the page. The drawer asks the window's
+    // width of matchMedia, which jsdom leaves out.
+    window.matchMedia = jest.fn(() => ({
+      matches: false,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {}
+    })) as never
     fireEvent.click(screen.getByLabelText("pick_conference"))
-    expect(container.querySelectorAll(other)).toHaveLength(2)
+    expect(document.querySelectorAll(other)).toHaveLength(2)
   })
 
   it("lights a district when a conferee is pointed at", () => {
@@ -482,9 +440,10 @@ describe("ConferenceDetails", () => {
 
   it("takes input only while the conference is appointed", () => {
     const { unmount } = render(<ConferenceDetails {...props} />)
-    // The title's, and the one beside the reader's own legislator.
+    // The title's (from md), the floating one (on mobile), and the one
+    // beside the reader's own legislator.
     expect(screen.getAllByRole("button", { name: "input.share" })).toHaveLength(
-      2
+      3
     )
     unmount()
     const reported = { ...conference, status: "reportFiled" as const }

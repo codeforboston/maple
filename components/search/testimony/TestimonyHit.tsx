@@ -143,12 +143,13 @@ const DateLabel = styled.span`
   margin-left: auto;
 `
 
+/* Shallower than it was (3px above and below). */
 const CommitteePill = styled.span`
   background: var(--bs-blue);
   border-radius: var(--maple-radius-pill);
   color: var(--maple-text-inverse);
   font-size: 0.7rem;
-  padding: 3px var(--maple-space-sm);
+  padding: 1px var(--maple-space-sm);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

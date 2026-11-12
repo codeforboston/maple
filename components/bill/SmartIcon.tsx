@@ -22,7 +22,7 @@ const SMART_ICON_SRC: Record<string, string> = {
   Energy: "/SmartTagIcons/Energy.svg",
   "Environmental Protection": "/SmartTagIcons/Environmental-Protection.svg",
   Families: "/SmartTagIcons/Families.svg",
-  "Food, Drugs and Alcohol": "/SmartTagIcons/Food-Drugs-and-Alcohol.svg",
+  "Food, Drugs, and Alcohol": "/SmartTagIcons/Food-Drugs-and-Alcohol.svg",
   "Government Operations and Elections":
     "/SmartTagIcons/Government-Operations-and-Elections.svg",
   Healthcare: "/SmartTagIcons/Healthcare.svg",
@@ -103,7 +103,7 @@ export const SmartIcon = ({ icon }: { icon: String }) => {
           alt={t("bill.icon.families")}
         />
       )
-    case "Food, Drugs and Alcohol":
+    case "Food, Drugs, and Alcohol":
       return (
         <Spacer>
           <Image

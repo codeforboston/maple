@@ -1,8 +1,7 @@
 import { useTranslation } from "next-i18next"
 import { useRouter } from "next/router"
-import React, { useCallback, useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { flushSync } from "react-dom"
-import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useIsomorphicLayoutEffect, useMediaQuery } from "usehooks-ts"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
@@ -41,75 +40,46 @@ const MobileCollapse = styled(Navbar.Collapse)`
 `
 
 /**
- * The site navbar's look, set as data-navbar-variant for styles/globals.css.
- *
- * - "auto", the default: the neutral bar, as the site shows it.
- * - "neutral": a light band with the long navy logo and dark links.
- * - "blue": the blue bar. No page uses it; it is kept for the Navbar story
- *   (stories/organisms/Navbar.stories.tsx).
+ * The site navbar's one look, the neutral bar: a light band with the long
+ * navy logo and dark links. Set on the bar as data-navbar-variant, which
+ * styles/globals.css keys its rules to.
  */
-export type NavbarVariant = "blue" | "neutral" | "auto"
+const NAVBAR_VARIANT = "auto"
 
-export const MainNavbar: React.FC<{ variant?: NavbarVariant }> = ({
-  variant = "auto"
-}) => {
-  const narrow = useMediaQuery("(max-width: 768px)")
+export const MainNavbar: React.FC = () => {
+  // The bar collapses to the hamburger at 768px and below. Above that, links
+  // that don't fit fold into a Browse More menu (DesktopNav) instead.
+  const isMobile = useMediaQuery("(max-width: 768px)")
   const { pathname } = useRouter()
-  const { authenticated } = useAuth()
-
-  // The bar collapses to the hamburger whenever its links do not fit, rather
-  // than at a set width, so it follows whichever links are showing (feature
-  // flags, signed in or not). DesktopNav reports the window width its links
-  // need when they overflow; narrower than that, the mobile bar shows. At
-  // 768px and below it always does.
-  // A measurement holds only for the links it was taken with.
-  const linksKey = `${variant}|${authenticated}`
-  const [fit, setFit] = useState<{ linksKey: string; needed: number } | null>(
-    null
-  )
-  const fitsFrom = fit?.linksKey === linksKey ? fit.needed : null
-  const [windowWidth, setWindowWidth] = useState(() =>
-    typeof window === "undefined" ? 0 : window.innerWidth
-  )
-
-  useEffect(() => {
-    const update = () => setWindowWidth(window.innerWidth)
-    window.addEventListener("resize", update)
-    return () => window.removeEventListener("resize", update)
-  }, [])
-
-  const handleOverflow = useCallback(
-    (needed: number) => {
-      setWindowWidth(window.innerWidth)
-      setFit({ linksKey, needed })
-    },
-    [linksKey]
-  )
-
-  const isMobile = narrow || (fitsFrom !== null && windowWidth < fitsFrom)
 
   // Pinned everywhere except the homepage, where the bar scrolls away with the
-  // hero.
-  const pinned = pathname !== "/"
+  // hero, and the Conference Committees pages (the page, the explorer and
+  // each conference), where it scrolls away, so a conference's own title and
+  // tabs hold at the top, keeping its shadow there.
+  const conference =
+    pathname === "/conferences" ||
+    pathname === "/conferences/explorer" ||
+    pathname === "/conferences/[court]/[id]"
+  const pinned = pathname !== "/" && !conference
+  // A shadow under the bar everywhere but the homepage, on desktop and
+  // mobile alike, pinned or not (navbar-shadow, styles/globals.css).
+  const shadow = pathname !== "/"
 
   return (
     <NavbarMobileContext.Provider value={isMobile}>
       {isMobile ? (
-        <MobileNav variant={variant} />
+        <MobileNav shadow={shadow} />
       ) : (
-        <DesktopNav
-          variant={variant}
-          pinned={pinned}
-          onOverflow={handleOverflow}
-        />
+        <DesktopNav pinned={pinned} shadow={shadow} />
       )}
     </NavbarMobileContext.Provider>
   )
 }
 
 const MobileNav: React.FC<{
-  variant: NavbarVariant
-}> = ({ variant }) => {
+  /** The bar's shadow (navbar-shadow). */
+  shadow?: boolean
+}> = ({ shadow = false }) => {
   const ProfileLinks = () => {
     return (
       <Nav className="my-4 d-flex align-items-start">
@@ -140,11 +110,9 @@ const MobileNav: React.FC<{
     return (
       <Nav className="my-4">
         <NavbarLinkBills handleClick={closeNav} />
-        {/* Out on this branch only (storybook-experiment-topics).
         {flags().ballotQuestions ? (
           <NavbarLinkBallotQuestions handleClick={closeNav} />
         ) : null}
-        */}
         {flags().conferences ? (
           <NavbarLinkConferences handleClick={closeNav} />
         ) : null}
@@ -156,6 +124,13 @@ const MobileNav: React.FC<{
           <NavbarLinkLobbying handleClick={closeNav} />
         ) : null}
         {authenticated ? <NavbarLinkNewsfeed handleClick={closeNav} /> : <></>}
+        <NavDropdown className={"navLink-primary"} title={t("learn")}>
+          <NavbarLinkEffective handleClick={closeNav} />
+          <NavbarLinkProcess handleClick={closeNav} />
+          <NavbarLinkWhyUse handleClick={closeNav} />
+          <NavbarLinkAiTools handleClick={closeNav} />
+        </NavDropdown>
+
         <NavDropdown className={"navLink-primary"} title={t("about")}>
           <NavbarLinkGoals handleClick={closeNav} />
           <NavbarLinkTeam handleClick={closeNav} />
@@ -163,13 +138,6 @@ const MobileNav: React.FC<{
           <NavbarLinkInTheNews handleClick={closeNav} />
           <NavbarLinkFAQ handleClick={closeNav} />
           <NavbarLinkPolicies handleClick={closeNav} />
-        </NavDropdown>
-
-        <NavDropdown className={"navLink-primary"} title={t("learn")}>
-          <NavbarLinkEffective handleClick={closeNav} />
-          <NavbarLinkProcess handleClick={closeNav} />
-          <NavbarLinkWhyUse handleClick={closeNav} />
-          <NavbarLinkAiTools handleClick={closeNav} />
         </NavDropdown>
       </Nav>
     )
@@ -202,12 +170,14 @@ const MobileNav: React.FC<{
 
   return (
     <Navbar
-      className={`main-navbar w-100 ${isExpanded ? "pb-0" : ""}`}
-      data-navbar-variant={variant}
+      className={`main-navbar w-100 ${isExpanded ? "pb-0" : ""} ${
+        shadow ? "navbar-shadow" : ""
+      }`}
+      data-navbar-variant={NAVBAR_VARIANT}
       style={{ backgroundColor: "var(--maple-navbar-bg)" }}
       data-bs-theme="dark"
-      // Never laid out open: this bar shows at any width where the desktop
-      // links do not fit (MainNavbar).
+      // Never laid out open: this bar shows only at 768px and below
+      // (MainNavbar).
       expand={false}
       expanded={isExpanded}
     >
@@ -277,41 +247,76 @@ const MobileNav: React.FC<{
 }
 
 const DesktopNav: React.FC<{
-  variant: NavbarVariant
   pinned: boolean
-  /** Called with the window width the links need, when they overflow. */
-  onOverflow: (needed: number) => void
-}> = ({ variant, pinned, onOverflow }) => {
+  /** The bar's shadow (navbar-shadow), pinned or not. */
+  shadow?: boolean
+}> = ({ pinned, shadow = false }) => {
   const { authenticated } = useAuth()
   const { t } = useTranslation(["common", "auth"])
 
-  // Measured before paint, and again whenever the bar or its links change
-  // size (applied before the next paint), so an overflowing bar is not shown.
-  // The links do not wrap or shrink while this is on (styles/globals.css), so
-  // not fitting shows up as overflow.
+  // How much of the bar folds into the Browse More menu, by how much room its
+  // links have: 0, none (every link on the bar); 1, Conference Committees and
+  // Lobbying; 2, Hearings and Testimony as well. Bills always stays out. The
+  // bar is measured at each step, before paint and whenever it or its links
+  // change size; when its links overflow, the window width they need at that
+  // step is kept, and below it the next step is taken. The links do not shrink
+  // while measured (styles/globals.css), so not fitting shows up as overflow.
+  // Measurements hold only for the links they were taken with.
   const barRef = useRef<HTMLDivElement>(null)
+  const linksKey = `${authenticated}`
+  const [fit, setFit] = useState<{
+    linksKey: string
+    needed: (number | undefined)[]
+  } | null>(null)
+  const needed = fit?.linksKey === linksKey ? fit.needed : []
+  const [windowWidth, setWindowWidth] = useState(() =>
+    typeof window === "undefined" ? 0 : window.innerWidth
+  )
+  const LAST_STEP = 2
+  let folded = 0
+  while (
+    folded < LAST_STEP &&
+    needed[folded] !== undefined &&
+    windowWidth < needed[folded]!
+  )
+    folded++
+
+  useEffect(() => {
+    const update = () => setWindowWidth(window.innerWidth)
+    window.addEventListener("resize", update)
+    return () => window.removeEventListener("resize", update)
+  }, [])
+
   useIsomorphicLayoutEffect(() => {
     const bar = barRef.current
-    if (!bar) return
-    const overflow = () => bar.scrollWidth - bar.clientWidth
-    if (overflow() > 0) onOverflow(window.innerWidth + overflow())
-    const observer = new ResizeObserver(() => {
-      const over = overflow()
-      if (over > 0) flushSync(() => onOverflow(window.innerWidth + over))
-    })
+    if (!bar || folded === LAST_STEP) return
+    const measure = () => {
+      const over = bar.scrollWidth - bar.clientWidth
+      if (over > 0) {
+        setWindowWidth(window.innerWidth)
+        setFit(prev => {
+          const kept = prev?.linksKey === linksKey ? [...prev.needed] : []
+          kept[folded] = window.innerWidth + over
+          return { linksKey, needed: kept }
+        })
+      }
+    }
+    measure()
+    const observer = new ResizeObserver(() => flushSync(measure))
     observer.observe(bar)
     Array.from(bar.children).forEach(child => observer.observe(child))
     return () => observer.disconnect()
-  }, [onOverflow])
+  }, [linksKey, folded])
 
-  // Pinned, the bar always casts its shadow (sticky-top, styles/globals.css).
+  // Pinned, the bar always casts its shadow (sticky-top, styles/globals.css);
+  // unpinned with `shadow`, it keeps it (navbar-shadow).
   return (
     <Container
       fluid
       className={`main-navbar desktop-navbar d-flex py-2 ${
         pinned ? "sticky-top" : ""
-      } justify-content-end gap-2`}
-      data-navbar-variant={variant}
+      } ${shadow ? "navbar-shadow" : ""} justify-content-end gap-2`}
+      data-navbar-variant={NAVBAR_VARIANT}
       style={{ backgroundColor: "var(--maple-navbar-bg)" }}
     >
       {/* Logo, nav items and the sign-in action share one container, set to
@@ -327,39 +332,69 @@ const DesktopNav: React.FC<{
         </div>
 
         <div className={`desktop-navbar-items align-items-center d-flex gap-2`}>
+          {/* Bills, then the rest on the bar while there's room for them, in
+              the bar's order (Conference Committees next to Bills):
+              Conference Committees and Lobbying go into Browse More first,
+              then Hearings and Testimony (folded, above). */}
           <div className={`align-self-center`}>
             <NavbarLinkBills />
           </div>
 
-          {/* Out on this branch only (storybook-experiment-topics).
           {flags().ballotQuestions ? (
             <div className={`align-self-center`}>
               <NavbarLinkBallotQuestions />
             </div>
           ) : null}
-          */}
 
-          {flags().conferences ? (
+          {folded < 1 && flags().conferences ? (
             <div className={`align-self-center`}>
               <NavbarLinkConferences />
             </div>
           ) : null}
 
-          {flags().hearingsAndTranscriptions ? (
-            <div className={`align-self-center`}>
-              <NavbarLinkHearings />
-            </div>
-          ) : (
-            <></>
-          )}
+          {folded < 2 ? (
+            <>
+              {flags().hearingsAndTranscriptions ? (
+                <div className={`align-self-center`}>
+                  <NavbarLinkHearings />
+                </div>
+              ) : null}
+              <div className="align-self-center">
+                <NavbarLinkTestimony />
+              </div>
+            </>
+          ) : null}
 
-          <div className="align-self-center">
-            <NavbarLinkTestimony />
-          </div>
-
-          {flags().lobbyingTable ? (
+          {folded < 1 && flags().lobbyingTable ? (
             <div className={`align-self-center`}>
               <NavbarLinkLobbying />
+            </div>
+          ) : null}
+
+          {/* Only with something in it. */}
+          {folded === 2 ||
+          (folded === 1 && (flags().conferences || flags().lobbyingTable)) ? (
+            <div className={`align-self-center`}>
+              <Dropdown>
+                <Dropdown.Toggle
+                  variant="light"
+                  className={`${DESKTOP_NAV_ITEM_CLASS}`}
+                >
+                  {t("more")}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {flags().conferences ? (
+                    <NavbarLinkConferences dropdown />
+                  ) : null}
+                  {folded === 2 && flags().hearingsAndTranscriptions ? (
+                    <NavbarLinkHearings dropdown />
+                  ) : null}
+                  {folded === 2 ? <NavbarLinkTestimony dropdown /> : null}
+                  {flags().lobbyingTable ? (
+                    <NavbarLinkLobbying dropdown />
+                  ) : null}
+                </Dropdown.Menu>
+              </Dropdown>
             </div>
           ) : null}
 
@@ -377,15 +412,13 @@ const DesktopNav: React.FC<{
                 variant="light"
                 className={`${DESKTOP_NAV_ITEM_CLASS}`}
               >
-                {t("about")}
+                {t("learn")}
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <NavbarLinkGoals />
-                <NavbarLinkTeam />
-                <NavbarLinkSupport />
-                <NavbarLinkInTheNews />
-                <NavbarLinkFAQ />
-                <NavbarLinkPolicies />
+                <NavbarLinkEffective />
+                <NavbarLinkProcess />
+                <NavbarLinkWhyUse />
+                <NavbarLinkAiTools />
               </Dropdown.Menu>
             </Dropdown>
           </div>
@@ -396,13 +429,15 @@ const DesktopNav: React.FC<{
                 variant="light"
                 className={`${DESKTOP_NAV_ITEM_CLASS}`}
               >
-                {t("learn")}
+                {t("about")}
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <NavbarLinkEffective />
-                <NavbarLinkProcess />
-                <NavbarLinkWhyUse />
-                <NavbarLinkAiTools />
+                <NavbarLinkGoals />
+                <NavbarLinkTeam />
+                <NavbarLinkSupport />
+                <NavbarLinkInTheNews />
+                <NavbarLinkFAQ />
+                <NavbarLinkPolicies />
               </Dropdown.Menu>
             </Dropdown>
           </div>

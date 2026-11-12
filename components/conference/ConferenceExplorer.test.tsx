@@ -195,8 +195,10 @@ describe("ConferenceExplorer", () => {
     // (The table sits in the wide layout, hidden at jsdom's width, so the
     // buttons are found by selector rather than by role.)
     const name = (n: string) => row(container, n).querySelector("button")!
-    expect(name("Phone-Free Schools")).toHaveStyle({ fontWeight: 700 })
-    expect(name("Data Privacy")).toHaveStyle({ fontWeight: 400 })
+    // The redesign's weights (ConferenceTable's NameButton): 600 forward,
+    // 300 set back.
+    expect(name("Phone-Free Schools")).toHaveStyle({ fontWeight: 600 })
+    expect(name("Data Privacy")).toHaveStyle({ fontWeight: 300 })
 
     fireEvent.click(
       container.querySelector('polygon[aria-label="B. Crighton"]')!

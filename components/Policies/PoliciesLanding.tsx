@@ -55,6 +55,7 @@ export const PoliciesLanding = () => {
       <LearnBreadcrumb
         section={t("title")}
         eyebrow={t("about", { ns: "common" })}
+        withoutHome
       />
       <LearnHeader title={t("title")} />
       <Cards className="row g-4">

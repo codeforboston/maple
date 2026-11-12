@@ -3,7 +3,7 @@ import styled from "styled-components"
 import { Internal } from "../links"
 import { ChevronRightIcon } from "./icons"
 
-const Nav = styled.nav`
+const BreadcrumbNav = styled.nav`
   margin-bottom: 1rem;
 
   ol {
@@ -76,41 +76,63 @@ const Nav = styled.nav`
  * The eyebrow defaults to "Learn"; pass one (e.g. "About") to reuse the trail on
  * other sections. parent adds a step between them, for a page a level further
  * down ("About > Policies > Privacy Policy"), linked when it has an href. The
- * trail starts with Home.
+ * trail starts with Home, unless `withoutHome` (the Learn and About pages).
+ * Without a section, the eyebrow is the current page and the trail ends there,
+ * as on the Learn hub ("Learn").
  */
 export const LearnBreadcrumb = ({
   section,
   eyebrow,
-  parent
+  parent,
+  withoutHome = false
 }: {
-  section: string
+  section?: string
   eyebrow?: string
   /** The middle step; plain text when it has no href. */
   parent?: { label: string; href?: string }
+  /** Leave out the Home step. */
+  withoutHome?: boolean
 }) => {
   const { t } = useTranslation(["learn", "common"])
 
   return (
-    <Nav aria-label={t("breadcrumbLabel")}>
+    <BreadcrumbNav aria-label={t("breadcrumbLabel")}>
       <ol>
-        <li className="home-step">
-          <Internal href="/">{t("navigation.home", { ns: "common" })}</Internal>
-        </li>
-        <li
-          aria-hidden="true"
-          className="separator home-step align-items-center"
-        >
-          <ChevronRightIcon fontSize="inherit" />
-        </li>
+        {!withoutHome && (
+          <>
+            <li className="home-step">
+              <Internal href="/">
+                {t("navigation.home", { ns: "common" })}
+              </Internal>
+            </li>
+            <li
+              aria-hidden="true"
+              className="separator home-step align-items-center"
+            >
+              <ChevronRightIcon fontSize="inherit" />
+            </li>
+          </>
+        )}
         {/* The parent link is disabled for now -- the hub pages still exist, we
             just are not surfacing them yet. Restore the <Internal> wrapper to
             re-enable it. */}
-        <li>
-          <span className="disabled">{eyebrow ?? t("hub.eyebrow")}</span>
-        </li>
-        <li aria-hidden="true" className="separator d-flex align-items-center">
-          <ChevronRightIcon fontSize="inherit" />
-        </li>
+        {section ? (
+          <>
+            <li>
+              <span className="disabled">{eyebrow ?? t("hub.eyebrow")}</span>
+            </li>
+            <li
+              aria-hidden="true"
+              className="separator d-flex align-items-center"
+            >
+              <ChevronRightIcon fontSize="inherit" />
+            </li>
+          </>
+        ) : (
+          <li className="current" aria-current="page">
+            {eyebrow ?? t("hub.eyebrow")}
+          </li>
+        )}
         {parent && (
           <>
             <li>
@@ -128,11 +150,13 @@ export const LearnBreadcrumb = ({
             </li>
           </>
         )}
-        <li className="current" aria-current="page">
-          {section}
-        </li>
+        {section && (
+          <li className="current" aria-current="page">
+            {section}
+          </li>
+        )}
       </ol>
-    </Nav>
+    </BreadcrumbNav>
   )
 }
 

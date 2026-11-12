@@ -37,7 +37,7 @@ const TopicHeader = styled.header`
      text colour like a subtitle. The committee link takes that colour too and
      drops its underline, showing it only on hover. */
   .committee {
-    font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-family: var(--maple-font-body);
     font-size: 1.125rem;
     color: var(--maple-text-body);
     margin-bottom: 0;

@@ -1,6 +1,7 @@
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { Internal } from "../../links"
+import LearnBreadcrumb from "../LearnBreadcrumb"
 import LearnHeader from "../LearnHeader"
 import LearnLayout from "../LearnLayout"
 import {
@@ -111,11 +112,12 @@ export const LearnHub = () => {
 
   return (
     <LearnLayout width="wide">
+      {/* As the Learn pages open, with the trail ending here. */}
+      <LearnBreadcrumb withoutHome />
       <LearnHeader
-        eyebrow={t("hub.eyebrow")}
         title={t("hub.title")}
         subhead={t("hub.subhead")}
-        titleSize="2.5rem"
+        titleSize="2.25rem"
         subheadMaxWidth="none"
       />
 
