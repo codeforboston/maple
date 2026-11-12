@@ -422,7 +422,7 @@ export function InputForm({
           conferees={conferees}
           author={name}
           conference={subject}
-          edited={editing}
+          testimonyId={edit.publication?.id}
           position={position}
           content={content}
           chosen={chosen}

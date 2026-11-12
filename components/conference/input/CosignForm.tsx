@@ -418,7 +418,7 @@ export function CosignForm({
             conferees={conferees}
             author={name}
             conference={subject}
-            edited={editing}
+            testimonyId={edit.publication?.id}
             position={parent.position}
             content={content}
             cosign={{ author: nameOf(parent), content: parent.content }}

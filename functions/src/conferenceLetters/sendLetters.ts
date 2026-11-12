@@ -8,6 +8,7 @@ import { stateOf } from "../conferenceUpdates/inputEvents"
 import { ConferenceInputEvent } from "../conferenceUpdates/types"
 import { Testimony } from "../testimony/types"
 import { queueLegislatorEmail } from "../legislatorMail/queue"
+import { lastLetterFor } from "../legislatorMail/records"
 import { conferenceName } from "../shared/conferences"
 import { hasLegislators, looksLikeEmail, renderLetter } from "./letter"
 import { buildLetterEmail, dayWindow, SkipReason } from "./letters"
@@ -43,7 +44,6 @@ async function mailLetter(
   e: ConferenceInputEvent,
   eventId: string,
   lastFor: Map<string, string>,
-  edited: boolean,
   memberContent: (key: string) => Promise<Content>,
   conferenceOf: (key: string) => Promise<Conference | undefined>
 ): Promise<SkipReason | "queued" | "exists"> {
@@ -51,20 +51,30 @@ async function mailLetter(
   // with what is posted now.
   if (lastFor.get(e.testimonyId) !== eventId) return "superseded"
 
-  const [pubSnap, readerEmail, draft, conference] = await Promise.all([
-    db.doc(`/users/${e.authorUid}/publishedTestimony/${e.testimonyId}`).get(),
-    verifiedEmail(e.authorUid),
-    db
-      .collection(`/users/${e.authorUid}/draftTestimony`)
-      .where("conferenceId", "==", e.conferenceId)
-      .where("court", "==", e.court)
-      .limit(1)
-      .get(),
-    conferenceOf(`${e.court}/${e.conferenceId}`)
-  ])
+  const letterId = `letter_${eventId}`
+  const [own, last, pubSnap, readerEmail, draft, conference] =
+    await Promise.all([
+      db.doc(`/legislatorMail/${letterId}`).get(),
+      lastLetterFor(e.testimonyId),
+      db.doc(`/users/${e.authorUid}/publishedTestimony/${e.testimonyId}`).get(),
+      verifiedEmail(e.authorUid),
+      db
+        .collection(`/users/${e.authorUid}/draftTestimony`)
+        .where("conferenceId", "==", e.conferenceId)
+        .where("court", "==", e.court)
+        .limit(1)
+        .get(),
+      conferenceOf(`${e.court}/${e.conferenceId}`)
+    ])
+  // This event's letter went out on an earlier run.
+  if (own.exists) return "exists"
   const pub = pubSnap.data() as Testimony | undefined
   const state = pub && stateOf(pub)
   if (!pub || !state) return "withdrawn"
+  // A version goes out once, and a letter is an update only to one that went
+  // out before.
+  if (last?.version === pub.version) return "alreadySent"
+  const updated = !!last
   if (!readerEmail) return "noVerifiedEmail"
   if (!pub.representativeId && !pub.senatorId) return "noLegislator"
   if (!conference) return "noConference"
@@ -118,7 +128,7 @@ async function mailLetter(
     court: e.court,
     conferenceId: e.conferenceId,
     conference: conferenceName(conference),
-    edited,
+    edited: updated,
     position: state.position,
     content: pub.content,
     cosign,
@@ -126,7 +136,7 @@ async function mailLetter(
     senator
   })
   return queueLegislatorEmail(
-    `letter_${eventId}`,
+    letterId,
     reachable.flatMap(m => m?.email ?? []),
     buildLetterEmail({
       letter,
@@ -141,7 +151,7 @@ async function mailLetter(
       testimonyId: e.testimonyId,
       version: pub.version,
       conferenceId: e.conferenceId,
-      updated: edited
+      updated
     }
   )
 }
@@ -165,12 +175,6 @@ export async function sendConferenceLetters(now: Date) {
     .filter(({ e }) => e.change !== "withdrawn")
     .sort((a, b) => a.e.at.toMillis() - b.e.at.toMillis())
   const lastFor = new Map(written.map(({ id, e }) => [e.testimonyId, id]))
-  // An edit is an update unless the input was also posted in the window.
-  const postedIn = new Set(
-    written
-      .filter(({ e }) => e.change === "added")
-      .map(({ e }) => e.testimonyId)
-  )
   const memberContent = cached(
     async key =>
       (
@@ -189,12 +193,10 @@ export async function sendConferenceLetters(now: Date) {
   let sent = 0
   for (const { id, e } of written) {
     try {
-      const edited = !postedIn.has(e.testimonyId)
       const outcome = await mailLetter(
         e,
         id,
         lastFor,
-        edited,
         memberContent,
         conferenceOf
       )

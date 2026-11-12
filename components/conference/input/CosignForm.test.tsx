@@ -28,6 +28,9 @@ jest.mock("components/db", () => ({
   useProfile: () => ({ profile: mockProfile.current }),
   useMember: () => ({ member: undefined })
 }))
+jest.mock("components/db/legislatorMail", () => ({
+  useLetterOnRecord: () => false
+}))
 
 const legislators = {
   representative: { id: "r1", name: "Rae Rep", district: "3rd Middlesex" },
