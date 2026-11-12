@@ -1606,6 +1606,10 @@ describe("conference weekly update", () => {
   it("compiles nothing for a week without a change", async () => {
     const conferenceId = await createConference(billId)
     await fileInput(signInUser1, billId, conferenceId, "passNothing")
+    await waitFor(
+      async () => expect((await eventsOf(conferenceId)).size).toBe(1),
+      { timeout: 20000 }
+    )
 
     // Two weeks on, the week before it is empty.
     const now = weekWindow(new Date()).end.plus({ weeks: 2, hours: 1 })
@@ -1621,7 +1625,15 @@ describe("conference weekly update", () => {
           .get()
       ).exists
     ).toBe(false)
-    expect((await eventsOf(conferenceId)).size).toBe(0)
+    // The input is on record, but in an earlier week.
+    const { start, end } = weekWindow(now.toJSDate())
+    const inWeek = await testDb
+      .collection("/conferenceInputEvents")
+      .where("conferenceId", "==", conferenceId)
+      .where("at", ">=", start.toJSDate())
+      .where("at", "<", end.toJSDate())
+      .get()
+    expect(inWeek.size).toBe(0)
   })
 })
 
