@@ -17,23 +17,23 @@ const state = (over: Partial<InputState> = {}): InputState => ({
 })
 
 describe("weekWindow", () => {
-  it("is the Monday-to-Sunday week before the Monday on or before now", () => {
+  it("runs from a week before the run to the run", () => {
     // Monday Sept 28, 2026, 8am Eastern
-    const { start, end } = weekWindow(new Date("2026-09-28T12:00:00Z"))
-    expect(start.toISODate()).toBe("2026-09-21")
-    expect(end.toISODate()).toBe("2026-09-28")
-    expect(end.toISO()).toContain("T00:00:00.000-04:00")
+    const { week, start, end } = weekWindow(new Date("2026-09-28T12:00:00Z"))
+    expect(week.toISO()).toBe("2026-09-21T00:00:00.000-04:00")
+    expect(start.toISO()).toBe("2026-09-21T08:00:00.000-04:00")
+    expect(end.toISO()).toBe("2026-09-28T08:00:00.000-04:00")
   })
 
-  it("still ends on the Monday midday through the next Sunday", () => {
-    const { end } = weekWindow(new Date("2026-10-04T23:00:00Z"))
-    expect(end.toISODate()).toBe("2026-09-28")
+  it("names the week before through the next Sunday", () => {
+    const { week } = weekWindow(new Date("2026-10-04T23:00:00Z"))
+    expect(week.toISODate()).toBe("2026-09-21")
   })
 
   it("keeps Monday midnight across the autumn clock change", () => {
-    const { start, end } = weekWindow(new Date("2026-11-02T15:00:00Z"))
-    expect(start.toISO()).toBe("2026-10-26T00:00:00.000-04:00")
-    expect(end.toISO()).toBe("2026-11-02T00:00:00.000-05:00")
+    const { week, start } = weekWindow(new Date("2026-11-02T13:00:00Z"))
+    expect(week.toISO()).toBe("2026-10-26T00:00:00.000-04:00")
+    expect(start.toISO()).toBe("2026-10-26T08:00:00.000-04:00")
   })
 })
 
@@ -129,7 +129,7 @@ describe("the update email", () => {
     ],
     standing,
     changes,
-    start: weekWindow(new Date("2026-09-28T12:00:00Z")).start,
+    week: weekWindow(new Date("2026-09-28T12:00:00Z")).week,
     now: new Date("2026-09-28T12:00:00Z")
   })
 

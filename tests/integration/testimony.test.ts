@@ -1480,8 +1480,8 @@ describe("conference weekly update", () => {
     )
 
     // The week these events fall in is the one before next Monday.
-    const now = weekWindow(new Date()).end.plus({ weeks: 1, hours: 1 })
-    const weekStart = weekWindow(now.toJSDate()).start.toISODate()
+    const now = weekWindow(new Date()).week.plus({ weeks: 2, hours: 1 })
+    const weekStart = weekWindow(now.toJSDate()).week.toISODate()
     const path = `/conferenceUpdates/${currentGeneralCourt}_${conferenceId}_${weekStart}`
     await compileWeeklyUpdates(now.toJSDate())
 
@@ -1535,8 +1535,8 @@ describe("conference weekly update", () => {
         async () => expect((await eventsOf(conferenceId)).size).toBe(1),
         { timeout: 20000 }
       )
-      const now = weekWindow(new Date()).end.plus({ weeks: 1, hours: 1 })
-      const weekStart = weekWindow(now.toJSDate()).start.toISODate()
+      const now = weekWindow(new Date()).week.plus({ weeks: 2, hours: 1 })
+      const weekStart = weekWindow(now.toJSDate()).week.toISODate()
       const id = `${currentGeneralCourt}_${conferenceId}_${weekStart}`
       return { conferees, now: now.toJSDate(), id }
     }
@@ -1609,8 +1609,8 @@ describe("conference weekly update", () => {
     )
 
     // Two weeks on, the week before it is empty.
-    const now = weekWindow(new Date()).end.plus({ weeks: 2, hours: 1 })
-    const weekStart = weekWindow(now.toJSDate()).start.toISODate()
+    const now = weekWindow(new Date()).week.plus({ weeks: 3, hours: 1 })
+    const weekStart = weekWindow(now.toJSDate()).week.toISODate()
     await compileWeeklyUpdates(now.toJSDate())
 
     expect(

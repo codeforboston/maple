@@ -96,9 +96,10 @@ export type ConferenceUpdate = Static<typeof ConferenceUpdate>
 export const ConferenceUpdate = Record({
   court: Number,
   conferenceId: String,
-  /** Monday 00:00, Eastern. The week runs to the next Monday. */
+  /** Monday 00:00, Eastern, of the week the update is named for. */
   weekStart: InstanceOf(Timestamp),
-  /** The input on the conference when the update was compiled. */
+  /** The input on the conference when the update was compiled, where its
+   * changes end. */
   standing: Counts,
   changes: Changes,
   html: String,

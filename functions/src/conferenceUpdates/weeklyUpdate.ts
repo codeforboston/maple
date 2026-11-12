@@ -5,7 +5,7 @@ import * as path from "path"
 import { Conference } from "../conferences/types"
 import { timeZone } from "../malegislature"
 import { ConferenceUpdateEmail } from "../notifications/emailTypes"
-import { CONFERENCE_STANCES } from "../shared/conferences"
+import { CONFERENCE_STANCES, conferenceName } from "../shared/conferences"
 import { ConferencePosition } from "../testimony/types"
 import {
   AuthorGroup,
@@ -37,11 +37,14 @@ const GROUPS: Record<AuthorGroup, string> = {
   government: "Government offices"
 }
 
-/** The Monday-to-Sunday week, Eastern, that ended at the Monday on or before
- * `now`. `end` is exclusive. */
+/** The week an update run at `now` reports. `week` is the Monday, Eastern,
+ * of the Monday-to-Sunday week it is named for. Its changes run from `start`, a
+ * week before the run, to `end`, the run, so they end where the standing is
+ * counted; the weekly runs follow on from each other. `end` is exclusive. */
 export function weekWindow(now: Date) {
-  const end = DateTime.fromJSDate(now, { zone: timeZone }).startOf("week")
-  return { start: end.minus({ weeks: 1 }), end }
+  const end = DateTime.fromJSDate(now, { zone: timeZone })
+  const week = end.startOf("week").minus({ weeks: 1 })
+  return { week, start: end.minus({ weeks: 1 }), end }
 }
 
 const emptyCounts = (): Counts => ({
@@ -104,13 +107,13 @@ const formatWeek = (start: DateTime) => {
 }
 
 /** What the template shows. `before` is the standing at the start of the
- * week, which is the standing now less the week's net change. */
+ * changes, which is the standing now less their net change. */
 export function buildConferenceUpdateEmail({
   conference,
   conferees,
   standing,
   changes,
-  start,
+  week,
   now
 }: {
   conference: Pick<
@@ -120,7 +123,7 @@ export function buildConferenceUpdateEmail({
   conferees: { name: string; chair: boolean }[]
   standing: Counts
   changes: Changes
-  start: DateTime
+  week: DateTime
   now: Date
 }): ConferenceUpdateEmail {
   const { net } = changes
@@ -146,9 +149,9 @@ export function buildConferenceUpdateEmail({
     bills: `${billLabel(conference.senateBillId)} / ${billLabel(
       conference.houseBillId
     )}`,
-    title: conference.name ?? conference.title,
+    title: conferenceName(conference),
     conferenceUrl: `https://mapletestimony.org/conferences/${conference.court}/${conference.id}`,
-    weekLabel: formatWeek(start),
+    weekLabel: formatWeek(week),
     sentLabel: DateTime.fromJSDate(now, { zone: timeZone }).toFormat(
       "cccc, LLLL d, yyyy"
     ),
