@@ -8,16 +8,14 @@ import { BetaBanner } from "../shared/BetaBanner"
  * pinning under it (styles/globals.css, navbar.ts).
  */
 export function ConferenceBetaBanner({
-  className,
   tagOnlyOnMobile = false
 }: {
-  className?: string
   /** On a phone, the BETA tag alone (BetaBanner's tagOnlyOnMobile). */
   tagOnlyOnMobile?: boolean
 }) {
   const { t } = useTranslation("conferences")
   return (
-    <div className={`conference-beta-banner ${className ?? ""}`.trim()}>
+    <div className="conference-beta-banner">
       <BetaBanner tagOnlyOnMobile={tagOnlyOnMobile}>
         {t("beta_feedback")}
       </BetaBanner>

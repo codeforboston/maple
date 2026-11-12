@@ -46,8 +46,9 @@ const PHONE = "(max-width: 767.98px)"
  * Whether the window is a phone's (PHONE), for what renders differently
  * there. False on the server and through the first render, so the page
  * hydrates as it was served; the stylesheet covers the phone meanwhile.
- * Without matchMedia, or a listener on what it gives (older Safari has only
- * the older one; the tests stand in for it with neither), read once.
+ * Without matchMedia, false; without a listener on what it gives (older
+ * Safari has only the older one; the tests stand in for it with neither),
+ * read once.
  */
 export function usePhone() {
   return useMatches(PHONE)

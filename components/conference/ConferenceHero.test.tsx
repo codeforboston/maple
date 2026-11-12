@@ -19,7 +19,6 @@ jest.mock("next-i18next", () => ({
 // Not a phone: every step's text shows, nothing folds. And wide enough for
 // a conference's rail, so the button goes straight to the conference.
 jest.mock("./hooks", () => ({
-  usePhone: () => false,
   useMatches: () => false,
   useRailHidden: () => false
 }))

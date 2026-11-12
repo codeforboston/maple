@@ -109,16 +109,10 @@ const Fab = styled.button`
 /** "Share your input" as a floating button, for mobile (ConferenceDetails.tsx
  * floats it below md, and only while there is nothing filed and the panel
  * is put away). */
-export function ShareFab({
-  onClick,
-  className
-}: {
-  onClick: () => void
-  className?: string
-}) {
+export function ShareFab({ onClick }: { onClick: () => void }) {
   const { t } = useTranslation("conferences")
   return (
-    <Fab type="button" onClick={onClick} className={className}>
+    <Fab type="button" onClick={onClick}>
       <Plus size={22} />
       {t("input.share")}
     </Fab>

@@ -561,8 +561,6 @@ function LobbyingOverview({ stats, topBills }: OverviewProps) {
     <>
       <LobbyingSubnav />
       <Container>
-        {/* The title closer to the filters, the page under it where it was:
-            half the description's 1rem margin moved above the title. */}
         {/* 1.5rem from the subtitle to the session select, its 0.5rem and
             mb-3: the space the cards below keep between them (g-4). */}
         <Row className="mb-3" style={{ marginTop: "1.875rem" }}>

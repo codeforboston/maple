@@ -9,7 +9,6 @@ import { MOBILE_LAYOUT, RAIL_COMPACT } from "./styles"
 /** Its own row under the navbar, across the full width, 2rem in from the
  * window's edges (1.25rem on a phone), outside the page's column. */
 const Row = styled.div<{
-  $tight: boolean
   $notMobile: boolean
   $committee: boolean
   $divider: boolean
@@ -20,12 +19,6 @@ const Row = styled.div<{
 
   @media (min-width: 576px) {
     --side: 2rem;
-  }
-
-  /* Nothing under it where the page below brings its own room above
-     (BackToConferences' tight). */
-  && {
-    ${({ $tight }) => ($tight ? "padding-bottom: 0;" : "")}
   }
 
   /* With divider, a faint line under it, within its sides, as the rail's
@@ -82,14 +75,10 @@ const Link = styled(Back)`
  * the page.
  */
 export function BackToConferences({
-  tight = false,
   notMobile = false,
   committee = false,
   divider = false
 }: {
-  /** No room under the row: on a committee's page, whose title and rail
-   * bring their own above them (ConferenceDetails.tsx). */
-  tight?: boolean
   /** Not in a committee page's mobile layout (MOBILE_LAYOUT, styles.ts). */
   notMobile?: boolean
   /** Over a committee's page, in line with its sides (RAIL_COMPACT). */
@@ -99,12 +88,7 @@ export function BackToConferences({
 }) {
   const { t } = useTranslation("conferences")
   return (
-    <Row
-      $tight={tight}
-      $notMobile={notMobile}
-      $committee={committee}
-      $divider={divider}
-    >
+    <Row $notMobile={notMobile} $committee={committee} $divider={divider}>
       <Link href={maple.conferences()}>
         <FontAwesomeIcon
           icon={faChevronLeft}

@@ -21,7 +21,7 @@ const Frame = styled(CommitteeCard)`
 
 /**
  * Two name lists and two maps, laid out as one grid, as the prototype does.
- * Stacked (LAYOUT_STACKED, styles.ts), two pairs in equal halves: the
+ * Stacked (below LAYOUT_WIDE, styles.ts), two pairs in equal halves: the
  * Senate's names then its map, and the House mirrored, its map then its
  * names, so the two maps sit together. Wide (LAYOUT_WIDE), the two lists then
  * the two maps in one row, the maps equal and taking every pixel the names

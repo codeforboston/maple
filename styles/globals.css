@@ -1045,24 +1045,6 @@
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
 }
 
-/* While a conference page is locked on its conference (useConferenceTop,
-   components/conference/hooks.ts), the navbar is out of the page with the
-   hero above it; a second scroll up, or "Back up to Conference Home", brings
-   both back. */
-.conference-locked .main-navbar {
-  display: none !important;
-}
-
-/* On a phone, while the hero shows, it is a screen of its own: the conference
-   and the footer are out of the page below it, so nothing scrolls on into
-   them, and the hero's buttons are the only way across. */
-@media (max-width: 767.98px) {
-  .conference-on-hero .conference-page,
-  .conference-on-hero .site-footer {
-    display: none !important;
-  }
-}
-
 /* The Conference Committees page's beta note, under the navbar, sticks at the
    top of the window once it reaches it, over the conference's own title and
    tabs, which pin under it (components/conference/navbar.ts). */

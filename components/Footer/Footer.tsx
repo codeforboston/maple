@@ -347,7 +347,7 @@ const PageFooter = (props: PageFooterProps) => {
   return (
     <FooterContainer
       fluid
-      className="site-footer d-flex flex-wrap flex-column-reverse flex-md-row align-items-center align-items-md-stretch p-2 p-md-5"
+      className="d-flex flex-wrap flex-column-reverse flex-md-row align-items-center align-items-md-stretch p-2 p-md-5"
       style={{ backgroundColor: "#000" }}
     >
       <Navbar

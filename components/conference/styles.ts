@@ -62,7 +62,6 @@ export const FULL_LAYOUT = "(min-width: 768px)"
  * (ConferenceDetails.tsx). Below it, the card stacks. */
 export const WIDE_FROM = 1200
 export const LAYOUT_WIDE = `(min-width: ${WIDE_FROM}px)`
-export const LAYOUT_STACKED = `(max-width: ${WIDE_FROM - 0.02}px)`
 
 /** The site's eyebrow, a size down: the mockup sets these at 11px. */
 export const Eyebrow = styled.p.attrs((props): { className: string } => ({
@@ -156,11 +155,10 @@ export const partyColor = (party: string) =>
     ? "#b53333"
     : "#b5b4ae"
 
-/** A line the page says about itself: a conference we don't cover, or why a
- * link could not do what it asked. */
-/** The site's orange note (SlimBanner, as the lobbying explorer's beta note
- * and the bill page's conference banner), set in the page: edged all round
- * and rounded rather than a strip across it, and read from the left. */
+/** A line the page says about itself, such as a conference we don't cover,
+ * or why a link could not do what it asked: the site's orange note
+ * (SlimBanner), set in the page, edged all round and rounded rather than a
+ * strip across it, and read from the left. */
 export const Notice = styled(SlimBanner)`
   margin: 1rem 0 0;
   padding: 0.75rem 1rem;

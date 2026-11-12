@@ -336,7 +336,7 @@ const countStyle: React.CSSProperties = {
   fontFamily: "var(--maple-font-heading)",
   fontSize: 16,
   fontWeight: 300,
-  // The label and the larger count centred on each other.
+  // The label and the count centred on each other.
   display: "inline-flex",
   alignItems: "center",
   gap: "0.3em"

@@ -45,8 +45,6 @@ const Pick = styled.button`
   }
 `
 
-/** 36px unless `$size` says otherwise; a parent can resize it through
- * `--portrait-size`. */
 /** The empty circle's ground while a photo loads: a light grey, with a band
  * of a deeper grey running down it on the diagonal, from the top left to the
  * bottom right, again and again. Only the colours inside the circle change; the
@@ -66,6 +64,8 @@ const skeleton = keyframes`
  * img transition). */
 const FADE_MS = 200
 
+/** 36px unless `$size` says otherwise; a parent can resize it through
+ * `--portrait-size`. */
 const Portrait = styled.span<{
   $ring: string
   $lit: boolean

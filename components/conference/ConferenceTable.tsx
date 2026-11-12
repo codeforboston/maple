@@ -224,10 +224,8 @@ export function ConferenceTable({
         {conferences.map(c => {
           const people = conferees[c.id] ?? []
           const isSelected = selected === c.id
-          // In a held conference, the row pointed at keeps its faces dimmed
-          // but in colour, rather than greyed with the rest (Face, below).
-          // In a held conference, a row the legislator pointed at in the panel
-          // also sits on: named as forward as in the highlight mode.
+          // In a held conference, whether this row shares the legislator
+          // ringed in the panel.
           const sharesRinged =
             mode === "held" &&
             ringed != null &&

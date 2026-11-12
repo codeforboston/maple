@@ -40,7 +40,6 @@ let mockQuery: Record<string, string> = {}
 const mockReplace = jest.fn(async () => true)
 jest.mock("next/router", () => ({
   __esModule: true,
-  default: { events: { on: jest.fn() } },
   useRouter: () => ({ asPath, query: mockQuery, replace: mockReplace })
 }))
 

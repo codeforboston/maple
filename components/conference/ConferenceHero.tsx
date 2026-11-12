@@ -18,14 +18,14 @@ import { ConferenceSummary } from "./types"
 const JOINT_RULES = "https://malegislature.gov/Laws/Rules/Joint"
 
 /** Where the steps stack, one under another, rather than in a row: below
- * 992px. There they fold, the first open to begin with, and the two ways on
+ * 992px. There they fold, the first open to begin with, and the two buttons
  * are pinned to the screen's foot. */
 const STACKED = "(max-width: 991.98px)"
 const MAPLE_PROCESS = "https://www.mapletestimony.org/learn/legislative-process"
 
 /**
- * The Conference Committees page: what a conference committee is, and the
- * ways on to a conference and the explorer. At least the rest of the first
+ * The Conference Committees page: what a conference committee is, and
+ * buttons on to a conference and the explorer. At least the rest of the first
  * screen: the page's wrapper is that tall, less the beta note above this
  * (pages/conferences/index.tsx), and this fills what is left of it.
  */
@@ -49,10 +49,10 @@ const Section = styled(PageColumn)`
   }
 
   /* Centred down the screen. Where the steps stack, at the top, as the
-     folded steps leave it far shorter than the screen, and all but the ways
-     on in a column of the lead's 720px centred across it, so the title and
-     the steps share both its edges; the ways on run the screen's width,
-     their own in line with the column (.actions, below). */
+     folded steps leave it far shorter than the screen. Everything but the
+     buttons sits in a 720px column centred across it; the buttons' bar runs
+     the screen's width, the buttons in line with the column (.actions,
+     below). */
   .block {
     margin: auto 0;
 
@@ -120,7 +120,7 @@ const Section = styled(PageColumn)`
     gap: 0.75rem 1.5rem;
   }
 
-  /* Where the steps stack, the two ways on are pinned to the foot of the
+  /* Where the steps stack, the two buttons are pinned to the foot of the
      screen while the hero is in it, the steps scrolling under them: at the
      hero's foot (the block filling it), and held at the window's while the
      hero runs on below. Across the screen's full width, on the page's own
@@ -205,8 +205,7 @@ const StepList = styled.div`
     min-width: 0;
     padding-top: 5px;
   }
-  h2,
-  h3 {
+  h2 {
     margin: 0;
     font-size: 0.9375rem;
     /* Bold, so each step's title stands clear of the muted text under it. */
@@ -544,7 +543,6 @@ export function ConferenceHero({
                       conferences={conferences}
                       show={picking && sheet}
                       onHide={stopPicking}
-                      placement="bottom"
                     />
                   )}
                   {picking && !sheet && (

@@ -360,8 +360,8 @@ function Details({
   similarities,
   testimonyCount
 }: ConferencePageProps) {
-  // The page, the rail and the main column both (usePinnedNavbar,
-  // useRailLift).
+  // The page, which holds the rail and the main column; usePinnedNavbar and
+  // useRailLift both measure it.
   const top = useRef<HTMLDivElement>(null)
   const { t } = useTranslation("conferences")
   const { user, authenticated, loading: authLoading, authFlowStep } = useAuth()
@@ -563,12 +563,9 @@ function Details({
     startCosign
   ])
 
-  // The tabs hold under the title, so they need its height; the byline stops
-  // where the title's cell does, short of the share button beside it, so it
-  // needs that width (ConferenceByline.tsx).
+  // The tabs hold under the title, so they need its height.
   const main = useRef<HTMLDivElement>(null)
   const band = useRef<HTMLDivElement>(null)
-  const titleCell = useRef<HTMLDivElement>(null)
   // On mobile, the title's one line fitted to its room, from 32px down to
   // 20px (PageTitle).
   const titleText = useRef<HTMLHeadingElement>(null)
@@ -582,7 +579,6 @@ function Details({
   useRailLift(top, main)
   useLayoutEffect(() => {
     const el = band.current
-    const cell = titleCell.current
     if (!el) return
     const read = () => {
       // Exact sizes, not offsetHeight's whole pixels, which can fall short of
@@ -591,16 +587,10 @@ function Details({
         "--title-h",
         `${el.getBoundingClientRect().height}px`
       )
-      if (cell)
-        main.current?.style.setProperty(
-          "--title-w",
-          `${cell.getBoundingClientRect().width}px`
-        )
     }
     read()
     const ro = new ResizeObserver(read)
     ro.observe(el)
-    if (cell) ro.observe(cell)
     return () => ro.disconnect()
   }, [])
   const input = useMemo(
@@ -649,7 +639,7 @@ function Details({
               $z={14}
             >
               <TitleRow>
-                <TitleCell ref={titleCell}>
+                <TitleCell>
                   <BackChevron
                     href={maple.conferences()}
                     aria-label={t("back_to_home")}

@@ -128,28 +128,24 @@ const Drawer = styled(Offcanvas)`
 `
 
 /**
- * The rail's conferences in a drawer that slides in from the left, as the
- * explorers' filters do (components/search/shared/RefinementPanel.tsx), or
- * rises from the screen's foot (`placement`): the screen's width on a
- * phone, a light heading and a close, and the rows made for a thumb,
- * `current` marked where there is one. Following a row puts it away.
+ * The rail's conferences in a sheet that rises from the screen's foot: a
+ * light heading and a close, and the rows made for a thumb, `current` marked
+ * where there is one. Following a row puts it away.
  */
 export function ConferenceDrawer({
   conferences,
   current,
   show,
-  onHide,
-  placement = "start"
+  onHide
 }: {
   conferences: ConferenceSummary[]
   current?: string
   show: boolean
   onHide: () => void
-  placement?: "start" | "bottom"
 }) {
   const { t } = useTranslation("conferences")
   return (
-    <Drawer show={show} onHide={onHide} placement={placement}>
+    <Drawer show={show} onHide={onHide} placement="bottom">
       <Offcanvas.Header closeButton>
         <DrawerTitle>{t("index_title")}</DrawerTitle>
       </Offcanvas.Header>
@@ -178,8 +174,9 @@ export function ConferenceDrawer({
   )
 }
 
-/** Between a phone and the rail (md to RAIL_FROM, styles.ts), the list as a
- * popover over the button rather than a drawer: a card rising from the
+/** From the sheet's width up to the rail's (576px to 767px, SHEET and
+ * RAIL_FROM in styles.ts), the list as a popover over the button rather than
+ * the sheet: a card rising from the
  * button's corner, as the mockup's menus are (its line, 16px corners and
  * deep, soft shadow), no wider than the screen leaves 20px either side of,
  * no taller than about three fifths of it, scrolling inside itself without
@@ -382,7 +379,6 @@ export function ConferenceSwitcher({
           current={current.id}
           show={open && sheet}
           onHide={close}
-          placement="bottom"
         />
       )}
       {open && !sheet && (
