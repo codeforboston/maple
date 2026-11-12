@@ -153,12 +153,12 @@ async function prepare(
   }
 }
 
-/** Mails each conference input posted or edited in the day before `now` to
+/** Mails each conference input posted or edited since the run a day before `now` to
  * the reader's rep and senator, as the letter the reader previewed. A letter is the
  * `emails` document /emails/letter_{input event id}, created, so a second run
  * sends nothing again. An input that is not mailed is recorded, with why, at
  * /conferenceLetterSkips/{input event id}. */
-export async function sendConferenceLetters(now = new Date()) {
+export async function sendConferenceLetters(now: Date) {
   const { start, end } = dayWindow(now)
   const events = await db
     .collection("/conferenceInputEvents")
@@ -219,11 +219,16 @@ export async function sendConferenceLetters(now = new Date()) {
       logger.error(`Letter for input event ${id} failed`, err)
     }
   }
-  logger.info(`Mailed ${sent} conference letters for ${start.toISODate()}`)
+  logger.info(
+    `Mailed ${sent} conference letters from ${start.toISO()} to ${end.toISO()}`
+  )
   return sent
 }
 
 export const mailConferenceLetters = onSchedule(
   { schedule: "0 9 * * *", timeZone, timeoutSeconds: 300 },
-  () => sendConferenceLetters().then(() => undefined)
+  // The time the run was due, not when it started, so each day's window
+  // begins exactly where the last one ended.
+  event =>
+    sendConferenceLetters(new Date(event.scheduleTime)).then(() => undefined)
 )

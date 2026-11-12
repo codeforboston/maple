@@ -1,3 +1,4 @@
+import { DateTime } from "luxon"
 import { renderLetter } from "./letter"
 import {
   buildLetterEmail,
@@ -20,19 +21,29 @@ const letter = renderLetter({
 })
 
 describe("dayWindow", () => {
-  it("is yesterday in Eastern time", () => {
+  it("runs from 9:00 the day before to the 9:00 run", () => {
     const { start, end } = dayWindow(new Date("2026-11-11T14:00:00Z"))
-    expect(start.toISO()).toBe("2026-11-10T00:00:00.000-05:00")
-    expect(end.toISO()).toBe("2026-11-11T00:00:00.000-05:00")
+    expect(start.toISO()).toBe("2026-11-10T09:00:00.000-05:00")
+    expect(end.toISO()).toBe("2026-11-11T09:00:00.000-05:00")
   })
 
-  it("is a 25 hour day when the clocks go back", () => {
-    const { start, end } = dayWindow(new Date("2026-11-02T14:00:00Z"))
+  it("mails input posted at 00:30 at 9:00 the same morning", () => {
+    const { start, end } = dayWindow(new Date("2026-11-11T14:00:00Z"))
+    const posted = DateTime.fromISO("2026-11-11T00:30:00-05:00")
+    expect(posted >= start && posted < end).toBe(true)
+  })
+
+  it("starts at 9:00 and runs 25 hours when the clocks go back", () => {
+    // Sunday Nov 1, 2026, 9am EST
+    const { start, end } = dayWindow(new Date("2026-11-01T14:00:00Z"))
+    expect(start.toISO()).toBe("2026-10-31T09:00:00.000-04:00")
     expect(end.diff(start, "hours").hours).toBe(25)
   })
 
-  it("is a 23 hour day when the clocks go forward", () => {
-    const { start, end } = dayWindow(new Date("2027-03-15T14:00:00Z"))
+  it("starts at 9:00 and runs 23 hours when the clocks go forward", () => {
+    // Sunday Mar 14, 2027, 9am EDT
+    const { start, end } = dayWindow(new Date("2027-03-14T13:00:00Z"))
+    expect(start.toISO()).toBe("2027-03-13T09:00:00.000-05:00")
     expect(end.diff(start, "hours").hours).toBe(23)
   })
 })

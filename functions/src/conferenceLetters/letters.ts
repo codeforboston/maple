@@ -2,9 +2,11 @@ import { DateTime } from "luxon"
 import { timeZone } from "../malegislature"
 import { Letter } from "./letter"
 
-/** Yesterday, Eastern: the day whose new input the daily job mails. */
+/** The input a daily run at `now` mails: from the same time the day before,
+ * Eastern, to the run, so the daily runs follow on from each other and each
+ * input goes out at the first run after it. `end` is exclusive. */
 export function dayWindow(now: Date) {
-  const end = DateTime.fromJSDate(now, { zone: timeZone }).startOf("day")
+  const end = DateTime.fromJSDate(now, { zone: timeZone })
   return { start: end.minus({ days: 1 }), end }
 }
 
