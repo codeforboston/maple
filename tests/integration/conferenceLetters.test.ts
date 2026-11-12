@@ -1,7 +1,10 @@
+import { doc, getDoc } from "firebase/firestore"
 import { nanoid } from "nanoid"
+import { firestore } from "../../components/firebase"
 import { sendConferenceLetters } from "../../functions/src/conferenceLetters/sendLetters"
 import { Timestamp } from "../../functions/src/firebase"
 import { testAuth, testDb } from "../testUtils"
+import { expectPermissionDenied, signInUser1, signInUser2 } from "./common"
 
 const COURT = 194
 const TEST_RECIPIENT = "test-inbox@example.com"
@@ -79,6 +82,8 @@ const seed = async (conferenceId: string, s: Seed = {}) => {
 
 const email = async (eventId: string) =>
   (await testDb.doc(`emails/letter_${eventId}`).get()).data()
+const record = async (eventId: string) =>
+  (await testDb.doc(`legislatorMail/letter_${eventId}`).get()).data()
 const skip = async (eventId: string) =>
   (await testDb.doc(`conferenceLetterSkips/${eventId}`).get()).data()
 
@@ -105,7 +110,7 @@ beforeAll(async () => {
 
 describe("sendConferenceLetters", () => {
   it("mails a letter once, to the test address, copying the reader", async () => {
-    const { eventId, uid } = await seed(conferenceId, {
+    const { eventId, uid, testimonyId } = await seed(conferenceId, {
       rep,
       sen,
       replyTo: "chosen@example.com"
@@ -129,10 +134,27 @@ describe("sendConferenceLetters", () => {
       "constituent-letters"
     ])
 
+    // The record names the legislators, not the test address, and the
+    // subject without the test prefix.
+    const sentRecord = await record(eventId)
+    expect(sentRecord).toEqual({
+      kind: "letter",
+      court: COURT,
+      memberCodes: [rep, sen],
+      subject: "Phone-Free Schools: Please pass something",
+      html: sent!.message.html,
+      text: sent!.message.text,
+      createdAt: sent!.createdAt,
+      uid,
+      testimonyId,
+      version: 1,
+      conferenceId,
+      updated: false
+    })
+
     const second = await sendConferenceLetters(NOW)
     expect(second).toBe(0)
     expect((await email(eventId))!.createdAt).toEqual(sent!.createdAt)
-    expect(uid).toBeTruthy()
   })
 
   it("replies to the reader's own address without an override", async () => {
@@ -151,6 +173,7 @@ describe("sendConferenceLetters", () => {
     const sent = await email(eventId)
     expect(sent!.message.subject).toContain("rep@malegislature.gov —")
     expect(sent!.message.html).not.toContain("Senator")
+    expect((await record(eventId))!.memberCodes).toEqual([rep])
   })
 
   it.each<[string, Seed, string]>([
@@ -162,6 +185,7 @@ describe("sendConferenceLetters", () => {
     const { eventId } = await seed(conferenceId, s)
     await sendConferenceLetters(NOW)
     expect(await email(eventId)).toBeUndefined()
+    expect(await record(eventId)).toBeUndefined()
     expect((await skip(eventId))!.reason).toBe(reason)
   })
 
@@ -189,6 +213,10 @@ describe("sendConferenceLetters", () => {
     expect((await email(eventId))!.message.subject).toMatch(
       /Phone-Free Schools: Please pass something \(updated\)$/
     )
+    expect(await record(eventId)).toMatchObject({
+      subject: "Phone-Free Schools: Please pass something (updated)",
+      updated: true
+    })
   })
 
   it("mails an input posted and edited the same day once, as new", async () => {
@@ -209,5 +237,21 @@ describe("sendConferenceLetters", () => {
     expect((await email(editId))!.message.subject).toMatch(
       /Please pass something$/
     )
+  })
+})
+
+describe("legislatorMail", () => {
+  it("lets a reader read only the records of their own letters", async () => {
+    const reader = await signInUser1()
+    const recordId = `letter_${id()}`
+    await testDb.doc(`legislatorMail/${recordId}`).set({
+      kind: "letter",
+      uid: reader.uid
+    })
+    const ref = doc(firestore, `legislatorMail/${recordId}`)
+    expect((await getDoc(ref)).exists()).toBe(true)
+
+    await signInUser2()
+    await expectPermissionDenied(getDoc(ref))
   })
 })

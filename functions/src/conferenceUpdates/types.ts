@@ -1,7 +1,6 @@
 import {
   InstanceOf,
   Literal as L,
-  Array,
   Number,
   Optional,
   Record,
@@ -80,29 +79,4 @@ export const Changes = Record({
   edited: Number,
   withdrawn: Number,
   net: Counts
-})
-
-/** Who an update was sent to, by member code. Skipped conferees have no
- * email address on their member document. */
-export type Delivery = Static<typeof Delivery>
-export const Delivery = Record({
-  sentTo: Array(String),
-  skipped: Array(String)
-})
-
-/** One conference's update for one week, stored so it can be sent.
- * Firestore: /conferenceUpdates/{court}_{conferenceId}_{weekStart date} */
-export type ConferenceUpdate = Static<typeof ConferenceUpdate>
-export const ConferenceUpdate = Record({
-  court: Number,
-  conferenceId: String,
-  /** Monday 00:00, Eastern, of the week the update is named for. */
-  weekStart: InstanceOf(Timestamp),
-  /** The input on the conference when the update was compiled, where its
-   * changes end. */
-  standing: Counts,
-  changes: Changes,
-  html: String,
-  delivery: Delivery,
-  createdAt: InstanceOf(Timestamp)
 })

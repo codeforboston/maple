@@ -79,6 +79,11 @@ service cloud.firestore {
       allow read: if true;
       allow write: if request.auth.token.get("role", "user") == "admin";
     }
+    // Emails sent to legislators, written by functions only. A reader can
+    // read the records of their own letters.
+    match /legislatorMail/{id} {
+      allow read: if request.auth != null && resource.data.uid == request.auth.uid;
+    }
     match /users/{uid} {
       allow read, write: if request.auth.token.get("role", "user") == "admin"
       match /draftTestimony/{id} {

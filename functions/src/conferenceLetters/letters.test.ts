@@ -105,10 +105,7 @@ describe("buildLetterEmail", () => {
   const email = buildLetterEmail({
     letter,
     author: "Ada",
-    fromAddress: "notifications@mapletestimony.org",
-    to: ["rep@malegislature.gov"],
-    subjectPrefix: "[dev] ",
-    createdAt: null
+    fromAddress: "notifications@mapletestimony.org"
   })
 
   it("copies the reader and sends replies to them", () => {
@@ -117,9 +114,8 @@ describe("buildLetterEmail", () => {
     expect(email.from).toBe(
       '"Ada via MAPLE" <notifications@mapletestimony.org>'
     )
-    expect(email.to).toEqual(["rep@malegislature.gov"])
     expect(email.message.subject).toBe(
-      "[dev] Phone-Free Schools: Please pass something"
+      "Phone-Free Schools: Please pass something"
     )
   })
 
