@@ -273,6 +273,17 @@ Updates the conferences collection to match `conferences/`, deleting any documen
 
 <!-- TODO: document -->
 
+#### `runConferenceMail`
+
+Local only. Runs the conference letters or weekly updates job once, since the emulators never fire schedules. The emails go to `LETTER_TEST_RECIPIENT` (set it in `functions/.env.local`), and the send-email extension delivers them once `extensions/firestore-send-email.secret.local` holds `SMTP_PASSWORD`. `yarn emulators:start` leaves the extension out, so start the emulators with it, and with a quota project for the extension download:
+
+```sh
+GOOGLE_CLOUD_QUOTA_PROJECT=digital-testimony-dev npx firebase --project demo-dtp emulators:start \
+  --only auth,functions,pubsub,firestore,storage,extensions --import tests/integration/exportedTestData
+yarn firebase-admin run-script runConferenceMail --env local --job letters
+yarn firebase-admin run-script runConferenceMail --env local --job updates --now 2026-11-16T08:00
+```
+
 #### `runScrapers`
 
 <!-- TODO: document -->
