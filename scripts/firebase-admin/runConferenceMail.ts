@@ -73,6 +73,6 @@ export const script: Script = async ({ env, args }) => {
   if (job === "letters") await sendConferenceLetters(now.toJSDate())
   else await compileWeeklyUpdates(now.toJSDate())
   console.log(
-    "Check /emails (delivery) and /conferenceLetterSkips in the emulator UI"
+    "Check /emails (delivery), /legislatorMail and /conferenceLetterSkips in the emulator UI"
   )
 }

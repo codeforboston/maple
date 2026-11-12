@@ -1,5 +1,6 @@
 import { DateTime } from "luxon"
 import { timeZone } from "../malegislature"
+import type { LegislatorEmail } from "../legislatorMail/types"
 import { Letter } from "./letter"
 
 /** The input a daily run at `now` mails: from the same time the day before,
@@ -71,45 +72,34 @@ export const renderLetterText = (letter: Letter) =>
     .filter(Boolean)
     .join("\n\n")
 
-/** The `emails` document for a letter, for the send-email extension. Click and
- * open tracking are off per message: they would rewrite the links in a letter
- * to a legislator. */
+/** The email for a letter, for the send-email extension. Click and open
+ * tracking are off per message: they would rewrite the links in a letter to a
+ * legislator. */
 export const buildLetterEmail = ({
   letter,
   author,
-  fromAddress,
-  to,
-  subjectPrefix,
-  createdAt
+  fromAddress
 }: {
   letter: Letter
   author: string
   fromAddress: string
-  to: string[]
-  subjectPrefix: string
-  createdAt: unknown
-}) => {
-  const html = renderLetterHtml(letter)
-  return {
-    to,
-    cc: [letter.cc],
-    from: letterFrom(author, fromAddress),
-    replyTo: letter.replyTo,
-    // The extension reads headers from the document, not from `message`.
-    headers: {
-      "X-SMTPAPI": JSON.stringify({
-        category: ["constituent-letters"],
-        filters: {
-          opentrack: { settings: { enable: 0 } },
-          clicktrack: { settings: { enable: 0 } }
-        }
-      })
-    },
-    message: {
-      subject: subjectPrefix + letter.subject,
-      text: renderLetterText(letter),
-      html
-    },
-    createdAt
+}): LegislatorEmail => ({
+  cc: [letter.cc],
+  from: letterFrom(author, fromAddress),
+  replyTo: letter.replyTo,
+  // The extension reads headers from the document, not from `message`.
+  headers: {
+    "X-SMTPAPI": JSON.stringify({
+      category: ["constituent-letters"],
+      filters: {
+        opentrack: { settings: { enable: 0 } },
+        clicktrack: { settings: { enable: 0 } }
+      }
+    })
+  },
+  message: {
+    subject: letter.subject,
+    text: renderLetterText(letter),
+    html: renderLetterHtml(letter)
   }
-}
+})

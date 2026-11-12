@@ -3,12 +3,12 @@ import * as logger from "firebase-functions/logger"
 import { Conference } from "../conferences/types"
 import { db, Timestamp } from "../firebase"
 import { timeZone } from "../malegislature"
-import { resolveRecipients } from "../email/recipients"
 import { splitMemberName } from "../shared/names"
 import { takesTestimony } from "../shared/conferences"
 import { Testimony } from "../testimony/types"
 import { stateOf } from "./inputEvents"
-import { ConferenceInputEvent, ConferenceUpdate } from "./types"
+import { queueLegislatorEmail } from "../legislatorMail/queue"
+import { ConferenceInputEvent } from "./types"
 import {
   buildConferenceUpdateEmail,
   conferenceUpdateSubject,
@@ -19,7 +19,6 @@ import {
   weekWindow
 } from "./weeklyUpdate"
 
-const ALREADY_EXISTS = 6
 const REPLY_TO = "info@mapletestimony.org"
 const DEFAULT_FROM = "notifications@mapletestimony.org"
 
@@ -42,10 +41,10 @@ const conferee = async (court: number, c: Conference["conferees"][number]) => {
 }
 
 /** Compiles the update for each appointed conference that had a
- * change in the week up to `now`, and stores it as
- * /conferenceUpdates/{court}_{conferenceId}_{week}. Creating it rather than
- * setting it means a second run in the same week leaves the first update as
- * it was. */
+ * change in the week up to `now`, and mails it to the conferees as
+ * /emails/{court}_{conferenceId}_{week}, recorded at /legislatorMail under the
+ * same id. Both are created, so a second run in the same week sends nothing
+ * again. */
 export async function compileWeeklyUpdates(now: Date) {
   const { week, start, end } = weekWindow(now)
   const events = await db
@@ -61,7 +60,7 @@ export async function compileWeeklyUpdates(now: Date) {
     eventsOf.set(key, [...(eventsOf.get(key) ?? []), e])
   }
 
-  let stored = 0
+  let sent = 0
   for (const [key, conferenceEvents] of eventsOf) {
     const { court, conferenceId: id } = conferenceEvents[0]
     try {
@@ -95,35 +94,20 @@ export async function compileWeeklyUpdates(now: Date) {
         week,
         now
       })
-      const html = renderConferenceUpdate(data)
-      const reachable = conferees.filter(c => c.email)
-      const update: ConferenceUpdate = {
-        court,
-        conferenceId: id,
-        weekStart: Timestamp.fromDate(week.toJSDate()),
-        standing,
-        changes,
-        html,
-        delivery: {
-          sentTo: reachable.map(c => c.memberCode),
-          skipped: conferees.filter(c => !c.email).map(c => c.memberCode)
-        },
-        createdAt: Timestamp.now()
+      const skipped = conferees.filter(c => !c.email)
+      if (skipped.length) {
+        logger.warn(
+          `No address for conferees ${skipped
+            .map(c => c.memberCode)
+            .join(", ")} of conference ${key}`
+        )
       }
 
-      // One batch, so the update and its email exist together or not at all:
-      // a second run finds the update and sends nothing.
-      const updateRef = db
-        .collection("/conferenceUpdates")
-        .doc(`${court}_${id}_${week.toISODate()}`)
-      const batch = db.batch()
-      batch.create(updateRef, update)
-      const { to, subjectPrefix } = resolveRecipients(
-        reachable.map(c => c.email!)
-      )
-      if (to.length) {
-        batch.create(db.collection("emails").doc(updateRef.id), {
-          to,
+      const reachable = conferees.filter(c => c.email)
+      const outcome = await queueLegislatorEmail(
+        `${court}_${id}_${week.toISODate()}`,
+        reachable.map(c => c.email!),
+        {
           from: `"MAPLE" <${process.env.CONFEREE_UPDATE_FROM ?? DEFAULT_FROM}>`,
           replyTo: REPLY_TO,
           // The extension reads headers from the document, not from `message`.
@@ -131,26 +115,30 @@ export async function compileWeeklyUpdates(now: Date) {
             "X-SMTPAPI": JSON.stringify({ category: ["conferee-update"] })
           },
           message: {
-            subject: subjectPrefix + conferenceUpdateSubject(data),
+            subject: conferenceUpdateSubject(data),
             text: renderConferenceUpdateText(data),
-            html
-          },
-          createdAt: Timestamp.now()
-        })
-      } else {
+            html: renderConferenceUpdate(data)
+          }
+        },
+        {
+          kind: "conferenceUpdate",
+          court,
+          memberCodes: reachable.map(c => c.memberCode),
+          conferenceId: id,
+          weekStart: Timestamp.fromDate(week.toJSDate()),
+          standing,
+          changes
+        }
+      )
+      if (outcome === "queued") sent++
+      if (outcome === "noRecipients") {
         logger.warn(`No recipients for the update to conference ${key}`)
-      }
-      try {
-        await batch.commit()
-        stored++
-      } catch (e) {
-        if ((e as { code?: number }).code !== ALREADY_EXISTS) throw e
       }
     } catch (e) {
       logger.error(`Weekly update for conference ${key} failed`, e)
     }
   }
-  logger.info(`Stored ${stored} weekly conference updates`)
+  logger.info(`Mailed ${sent} weekly conference updates`)
 }
 
 export const compileConferenceUpdates = onSchedule(

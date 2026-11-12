@@ -1423,6 +1423,11 @@ describe("publishTestimony", () => {
 })
 
 describe("conference weekly update", () => {
+  const env = { ...process.env }
+  afterEach(() => {
+    process.env = { ...env }
+  })
+
   const eventsOf = (conferenceId: string) =>
     testDb
       .collection("/conferenceInputEvents")
@@ -1447,8 +1452,28 @@ describe("conference weekly update", () => {
     return { uid, draftId, publicationId: res.data.publicationId }
   }
 
+  /** The `i`th conferee, whose member document has `address`; null stands
+   * for a member document without one. */
+  const conferee = async (address: string | null, i = 0) => {
+    const memberCode = `T${nanoid(6)}`
+    await testDb
+      .doc(`/generalCourts/${currentGeneralCourt}/members/${memberCode}`)
+      .set({
+        id: memberCode,
+        content: { Name: `Test Member${i}`, EmailAddress: address }
+      })
+    return {
+      memberCode,
+      branch: i % 2 ? ("House" as const) : ("Senate" as const),
+      chair: i < 2
+    }
+  }
+
   it("compiles one update from a week of changes", async () => {
-    const conferenceId = await createConference(billId)
+    process.env.GCLOUD_PROJECT = "digital-testimony-prod"
+    const conferenceId = await createConference(billId, "appointed", [
+      await conferee("one@example.org")
+    ])
     const first = await fileInput(
       signInUser1,
       billId,
@@ -1481,10 +1506,11 @@ describe("conference weekly update", () => {
     // The week these events fall in is the one before next Monday.
     const now = weekWindow(new Date()).week.plus({ weeks: 2, hours: 1 })
     const weekStart = weekWindow(now.toJSDate()).week.toISODate()
-    const path = `/conferenceUpdates/${currentGeneralCourt}_${conferenceId}_${weekStart}`
+    const path = `/legislatorMail/${currentGeneralCourt}_${conferenceId}_${weekStart}`
     await compileWeeklyUpdates(now.toJSDate())
 
     const update = (await testDb.doc(path).get()).data() as any
+    expect(update.kind).toBe("conferenceUpdate")
     expect(update.standing.total).toBe(1)
     expect(update.standing.byPosition.passNothing).toBe(1)
     expect(update.changes).toMatchObject({
@@ -1497,7 +1523,7 @@ describe("conference weekly update", () => {
       `https://mapletestimony.org/conferences/${currentGeneralCourt}/${conferenceId}`
     )
 
-    // A second run in the same week leaves the update as it was.
+    // A second run in the same week sends and records nothing more.
     await compileWeeklyUpdates(now.toJSDate())
     expect((await testDb.doc(path).get()).data()!.createdAt).toEqual(
       update.createdAt
@@ -1505,28 +1531,12 @@ describe("conference weekly update", () => {
   }, 60000)
 
   describe("sending", () => {
-    const env = { ...process.env }
-    afterEach(() => {
-      process.env = { ...env }
-    })
-
     /** An appointed conference whose conferees are `members`, a null address
      * standing for a member document without one. */
     const conferenceWith = async (members: (string | null)[]) => {
       const conferees = []
       for (const [i, address] of members.entries()) {
-        const memberCode = `T${nanoid(6)}`
-        await testDb
-          .doc(`/generalCourts/${currentGeneralCourt}/members/${memberCode}`)
-          .set({
-            id: memberCode,
-            content: { Name: `Test Member${i}`, EmailAddress: address }
-          })
-        conferees.push({
-          memberCode,
-          branch: i % 2 ? ("House" as const) : ("Senate" as const),
-          chair: i < 2
-        })
+        conferees.push(await conferee(address, i))
       }
       const conferenceId = await createConference(
         billId,
@@ -1568,11 +1578,15 @@ describe("conference weekly update", () => {
       )
       expect(email.message.html).toContain("Sen.")
 
-      const update = (await testDb.doc(`/conferenceUpdates/${id}`).get()).data()
-      expect(update!.delivery).toEqual({
-        sentTo: [conferees[0].memberCode, conferees[2].memberCode],
-        skipped: [conferees[1].memberCode]
-      })
+      // The record names the conferees, not the test address.
+      const update = (await testDb.doc(`/legislatorMail/${id}`).get()).data()
+      expect(update!.memberCodes).toEqual([
+        conferees[0].memberCode,
+        conferees[2].memberCode
+      ])
+      expect(email.message.subject).toContain(update!.subject)
+      expect(update!.subject).not.toContain("[dev]")
+      expect(update!.createdAt).toEqual(email.createdAt)
 
       await compileWeeklyUpdates(now)
       expect((await emailOf(id)).createdAt).toEqual(email.createdAt)
@@ -1591,15 +1605,16 @@ describe("conference weekly update", () => {
       expect(email.message.subject).not.toContain("[dev]")
     }, 60000)
 
-    it("stores the update without an email when no conferee has an address", async () => {
-      process.env.GCLOUD_PROJECT = "digital-testimony-prod"
-      const { conferees, now, id } = await conferenceWith([null])
+    it("sends and records nothing when no conferee has an address", async () => {
+      process.env.GCLOUD_PROJECT = "digital-testimony-dev"
+      process.env.LETTER_TEST_RECIPIENT = "test@example.org"
+      const { now, id } = await conferenceWith([null])
       await compileWeeklyUpdates(now)
 
       expect(await emailOf(id)).toBeUndefined()
-      expect(
-        (await testDb.doc(`/conferenceUpdates/${id}`).get()).data()!.delivery
-      ).toEqual({ sentTo: [], skipped: [conferees[0].memberCode] })
+      expect((await testDb.doc(`/legislatorMail/${id}`).get()).exists).toBe(
+        false
+      )
     }, 60000)
   })
 
@@ -1620,7 +1635,7 @@ describe("conference weekly update", () => {
       (
         await testDb
           .doc(
-            `/conferenceUpdates/${currentGeneralCourt}_${conferenceId}_${weekStart}`
+            `/legislatorMail/${currentGeneralCourt}_${conferenceId}_${weekStart}`
           )
           .get()
       ).exists

@@ -1,17 +1,17 @@
 import { onSchedule } from "firebase-functions/v2/scheduler"
 import * as logger from "firebase-functions/logger"
+import { createdUnlessExists } from "../common"
 import { Conference } from "../conferences/types"
-import { resolveRecipients } from "../email/recipients"
 import { auth, db, Timestamp } from "../firebase"
 import { timeZone } from "../malegislature"
 import { stateOf } from "../conferenceUpdates/inputEvents"
 import { ConferenceInputEvent } from "../conferenceUpdates/types"
 import { Testimony } from "../testimony/types"
+import { queueLegislatorEmail } from "../legislatorMail/queue"
 import { conferenceName } from "../shared/conferences"
 import { hasLegislators, looksLikeEmail, renderLetter } from "./letter"
 import { buildLetterEmail, dayWindow, SkipReason } from "./letters"
 
-const ALREADY_EXISTS = 6
 const DEFAULT_FROM = "notifications@mapletestimony.org"
 
 type Content = Record<string, any> | undefined
@@ -35,34 +35,21 @@ const verifiedEmail = async (uid: string) => {
   }
 }
 
-const create = async (
-  ref: FirebaseFirestore.DocumentReference,
-  data: object
-) => {
-  try {
-    await ref.create(data)
-    return true
-  } catch (e) {
-    if ((e as { code?: number }).code !== ALREADY_EXISTS) throw e
-    return false
-  }
-}
-
 // As the site names an author (`nameOf`): an empty full name falls back too.
 const readerAuthor = (t: Testimony) => t.fullName || t.authorDisplayName
 
-/** The letter for one input, or why it is not sent. */
-async function prepare(
+/** Mails the letter for one input, or says why it is not sent. */
+async function mailLetter(
   e: ConferenceInputEvent,
   eventId: string,
   lastFor: Map<string, string>,
   edited: boolean,
   memberContent: (key: string) => Promise<Content>,
   conferenceOf: (key: string) => Promise<Conference | undefined>
-): Promise<{ skip: SkipReason } | { email: object }> {
+): Promise<SkipReason | "queued" | "exists"> {
   // An input posted or edited more than once in the window is mailed once,
   // with what is posted now.
-  if (lastFor.get(e.testimonyId) !== eventId) return { skip: "superseded" }
+  if (lastFor.get(e.testimonyId) !== eventId) return "superseded"
 
   const [pubSnap, readerEmail, draft, conference] = await Promise.all([
     db.doc(`/users/${e.authorUid}/publishedTestimony/${e.testimonyId}`).get(),
@@ -77,10 +64,10 @@ async function prepare(
   ])
   const pub = pubSnap.data() as Testimony | undefined
   const state = pub && stateOf(pub)
-  if (!pub || !state) return { skip: "withdrawn" }
-  if (!readerEmail) return { skip: "noVerifiedEmail" }
-  if (!pub.representativeId && !pub.senatorId) return { skip: "noLegislator" }
-  if (!conference) return { skip: "noConference" }
+  if (!pub || !state) return "withdrawn"
+  if (!readerEmail) return "noVerifiedEmail"
+  if (!pub.representativeId && !pub.senatorId) return "noLegislator"
+  if (!conference) return "noConference"
 
   // Only those who can receive it are written to, so the salutation names
   // exactly who gets the letter. The member document's own name and district
@@ -93,8 +80,9 @@ async function prepare(
     ].map(async ([id, recorded]) => {
       const content = id ? await memberContent(`${e.court}/${id}`) : undefined
       const email: string | undefined = content?.EmailAddress?.trim()
-      return content?.Name && email
+      return id && content?.Name && email
         ? {
+            memberCode: id,
             email,
             member: {
               name: content.Name as string,
@@ -106,7 +94,7 @@ async function prepare(
   )
   const [representative, senator] = reachable.map(m => m?.member)
   if (!hasLegislators({ representative, senator })) {
-    return { skip: "noLegislatorEmail" }
+    return "noLegislatorEmail"
   }
 
   let cosign: { author: string; content: string } | undefined
@@ -118,7 +106,7 @@ async function prepare(
         )
         .get()
     ).data() as Testimony | undefined
-    if (!parent) return { skip: "withdrawn" }
+    if (!parent) return "withdrawn"
     cosign = { author: readerAuthor(parent), content: parent.content }
   }
 
@@ -137,26 +125,32 @@ async function prepare(
     representative,
     senator
   })
-  const { to, subjectPrefix } = resolveRecipients(
-    reachable.flatMap(m => m?.email ?? [])
-  )
-  if (!to.length) return { skip: "noRecipients" }
-  return {
-    email: buildLetterEmail({
+  return queueLegislatorEmail(
+    `letter_${eventId}`,
+    reachable.flatMap(m => m?.email ?? []),
+    buildLetterEmail({
       letter,
       author,
-      fromAddress: process.env.LETTER_FROM ?? DEFAULT_FROM,
-      to,
-      subjectPrefix,
-      createdAt: Timestamp.now()
-    })
-  }
+      fromAddress: process.env.LETTER_FROM ?? DEFAULT_FROM
+    }),
+    {
+      kind: "letter",
+      court: e.court,
+      memberCodes: reachable.flatMap(m => m?.memberCode ?? []),
+      uid: e.authorUid,
+      testimonyId: e.testimonyId,
+      version: pub.version,
+      conferenceId: e.conferenceId,
+      updated: edited
+    }
+  )
 }
 
 /** Mails each conference input posted or edited since the run a day before `now` to
  * the reader's rep and senator, as the letter the reader previewed. A letter is the
- * `emails` document /emails/letter_{input event id}, created, so a second run
- * sends nothing again. An input that is not mailed is recorded, with why, at
+ * `emails` document /emails/letter_{input event id} and its record at
+ * /legislatorMail/letter_{input event id}, created, so a second run sends
+ * nothing again. An input that is not mailed is recorded, with why, at
  * /conferenceLetterSkips/{input event id}. */
 export async function sendConferenceLetters(now: Date) {
   const { start, end } = dayWindow(now)
@@ -196,7 +190,7 @@ export async function sendConferenceLetters(now: Date) {
   for (const { id, e } of written) {
     try {
       const edited = !postedIn.has(e.testimonyId)
-      const result = await prepare(
+      const outcome = await mailLetter(
         e,
         id,
         lastFor,
@@ -204,16 +198,17 @@ export async function sendConferenceLetters(now: Date) {
         memberContent,
         conferenceOf
       )
-      if ("skip" in result) {
-        await create(db.doc(`/conferenceLetterSkips/${id}`), {
-          testimonyId: e.testimonyId,
-          authorUid: e.authorUid,
-          conferenceId: e.conferenceId,
-          reason: result.skip,
-          createdAt: Timestamp.now()
-        })
-      } else if (await create(db.doc(`/emails/letter_${id}`), result.email)) {
-        sent++
+      if (outcome === "queued") sent++
+      else if (outcome !== "exists") {
+        await createdUnlessExists(
+          db.doc(`/conferenceLetterSkips/${id}`).create({
+            testimonyId: e.testimonyId,
+            authorUid: e.authorUid,
+            conferenceId: e.conferenceId,
+            reason: outcome,
+            createdAt: Timestamp.now()
+          })
+        )
       }
     } catch (err) {
       logger.error(`Letter for input event ${id} failed`, err)
