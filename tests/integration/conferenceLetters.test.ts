@@ -43,12 +43,13 @@ type Seed = {
 type Input = { uid: string; testimonyId: string; conferenceId: string }
 
 /** An event saying the reader posted or edited their input, to `version`, at
- * `at`. */
+ * `at`, recorded then or at `recordedAt`. */
 const event = async (
   input: Input,
   change: "added" | "edited",
   version: number,
-  at: Date
+  at: Date,
+  recordedAt = at
 ) => {
   const eventId = id()
   const state = (version: number) => ({
@@ -64,7 +65,8 @@ const event = async (
     change,
     ...(change === "edited" && { before: state(version - 1) }),
     after: state(version),
-    at: Timestamp.fromDate(at)
+    at: Timestamp.fromDate(at),
+    recordedAt: Timestamp.fromDate(recordedAt)
   })
   return eventId
 }
@@ -292,6 +294,44 @@ describe("sendConferenceLetters", () => {
       /Please pass something$/
     )
     expect(await record(editId)).toMatchObject({ updated: false })
+  })
+
+  it("mails an event recorded after the run on the next run", async () => {
+    const posted = await seed(conferenceId, { rep })
+    await sendConferenceLetters(run(0))
+
+    // Edited just before the next run, recorded by the trigger just after it.
+    await publishVersion(posted, 2)
+    const lateId = await event(
+      posted,
+      "edited",
+      2,
+      new Date(run(1).getTime() - 2_000),
+      new Date(run(1).getTime() + 6_000)
+    )
+    await sendConferenceLetters(run(1))
+    expect(await email(lateId)).toBeUndefined()
+    expect(await skip(lateId)).toBeUndefined()
+
+    await sendConferenceLetters(run(2))
+    expect(await record(lateId)).toMatchObject({ version: 2, updated: true })
+  })
+
+  it("leaves a mailed event alone when a rerun finds a later one", async () => {
+    const posted = await seed(conferenceId, { rep })
+    await sendConferenceLetters(NOW)
+    expect(await email(posted.eventId)).toBeDefined()
+
+    await publishVersion(posted, 2)
+    const editId = await event(
+      posted,
+      "edited",
+      2,
+      new Date(ADDED_AT.getTime() + 60_000)
+    )
+    await sendConferenceLetters(NOW)
+    expect(await skip(posted.eventId)).toBeUndefined()
+    expect(await record(editId)).toMatchObject({ version: 2, updated: true })
   })
 
   it("mails an input posted and edited the same day once, as new", async () => {

@@ -1,5 +1,6 @@
 import { onDocumentWritten } from "firebase-functions/v2/firestore"
-import { db, Timestamp } from "../firebase"
+import { createdUnlessExists } from "../common"
+import { db, FieldValue, Timestamp } from "../firebase"
 import { ConferencePosition, Testimony } from "../testimony/types"
 import { authorGroupOf, ConferenceInputEvent, InputState } from "./types"
 
@@ -24,7 +25,7 @@ export function conferenceInputEvent(
   before: Publication | undefined,
   after: Publication | undefined,
   testimonyId: string
-): Omit<ConferenceInputEvent, "at"> | undefined {
+): Omit<ConferenceInputEvent, "at" | "recordedAt"> | undefined {
   const current = after ?? before
   if (!current?.conferenceId) return undefined
   const b = before && stateOf(before)
@@ -42,9 +43,9 @@ export function conferenceInputEvent(
   }
 }
 
-/** Records each change to conference input, for the weekly update to
- * read. The event's id is the trigger event's, so a retry writes the same
- * document. */
+/** Records each change to conference input, for the letters and the weekly
+ * update to read. The event's id is the trigger event's and the document is
+ * created, so a retry or a second delivery keeps the first `recordedAt`. */
 export const recordConferenceInput = onDocumentWritten(
   {
     document: "/users/{userId}/publishedTestimony/{testimonyId}",
@@ -60,9 +61,15 @@ export const recordConferenceInput = onDocumentWritten(
       event.params.testimonyId
     )
     if (!body) return
-    await db
-      .collection("/conferenceInputEvents")
-      .doc(event.id)
-      .set({ ...body, at: Timestamp.fromDate(new Date(event.time)) })
+    await createdUnlessExists(
+      db
+        .collection("/conferenceInputEvents")
+        .doc(event.id)
+        .create({
+          ...body,
+          at: Timestamp.fromDate(new Date(event.time)),
+          recordedAt: FieldValue.serverTimestamp()
+        })
+    )
   }
 )

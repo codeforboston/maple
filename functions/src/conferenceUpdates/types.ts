@@ -57,7 +57,10 @@ export const InputState = Record({
 })
 
 /** One conference input appearing, changing or going. Written by
- * `recordConferenceInput`; the weekly update reads a week of them.
+ * `recordConferenceInput`. `at` is when the input was written, `recordedAt`
+ * when this event was, which can be later; the letters and the weekly update
+ * read the events recorded in their window, so a late event falls in the next
+ * one rather than in none.
  * Firestore: /conferenceInputEvents/{eventId} */
 export type ConferenceInputEvent = Static<typeof ConferenceInputEvent>
 export const ConferenceInputEvent = Record({
@@ -68,7 +71,8 @@ export const ConferenceInputEvent = Record({
   change: Union(L("added"), L("edited"), L("withdrawn")),
   before: Optional(InputState),
   after: Optional(InputState),
-  at: InstanceOf(Timestamp)
+  at: InstanceOf(Timestamp),
+  recordedAt: InstanceOf(Timestamp)
 })
 
 /** What changed in a week, as the update says it. `net` is the resulting
