@@ -52,22 +52,18 @@ async function mailLetter(
   if (lastFor.get(e.testimonyId) !== eventId) return "superseded"
 
   const letterId = `letter_${eventId}`
-  const [own, last, pubSnap, readerEmail, draft, conference] =
-    await Promise.all([
-      db.doc(`/legislatorMail/${letterId}`).get(),
-      lastLetterFor(e.testimonyId),
-      db.doc(`/users/${e.authorUid}/publishedTestimony/${e.testimonyId}`).get(),
-      verifiedEmail(e.authorUid),
-      db
-        .collection(`/users/${e.authorUid}/draftTestimony`)
-        .where("conferenceId", "==", e.conferenceId)
-        .where("court", "==", e.court)
-        .limit(1)
-        .get(),
-      conferenceOf(`${e.court}/${e.conferenceId}`)
-    ])
-  // This event's letter went out on an earlier run.
-  if (own.exists) return "exists"
+  const [last, pubSnap, readerEmail, draft, conference] = await Promise.all([
+    lastLetterFor(e.testimonyId),
+    db.doc(`/users/${e.authorUid}/publishedTestimony/${e.testimonyId}`).get(),
+    verifiedEmail(e.authorUid),
+    db
+      .collection(`/users/${e.authorUid}/draftTestimony`)
+      .where("conferenceId", "==", e.conferenceId)
+      .where("court", "==", e.court)
+      .limit(1)
+      .get(),
+    conferenceOf(`${e.court}/${e.conferenceId}`)
+  ])
   const pub = pubSnap.data() as Testimony | undefined
   const state = pub && stateOf(pub)
   if (!pub || !state) return "withdrawn"
@@ -156,18 +152,19 @@ async function mailLetter(
   )
 }
 
-/** Mails each conference input posted or edited since the run a day before `now` to
+/** Mails each conference input event recorded since the run a day before `now` to
  * the reader's rep and senator, as the letter the reader previewed. A letter is the
  * `emails` document /emails/letter_{input event id} and its record at
  * /legislatorMail/letter_{input event id}, created, so a second run sends
  * nothing again. An input that is not mailed is recorded, with why, at
- * /conferenceLetterSkips/{input event id}. */
+ * /conferenceLetterSkips/{input event id}. A letter that fails fails the run,
+ * after the others, so the scheduler runs it again. */
 export async function sendConferenceLetters(now: Date) {
   const { start, end } = dayWindow(now)
   const events = await db
     .collection("/conferenceInputEvents")
-    .where("at", ">=", Timestamp.fromDate(start.toJSDate()))
-    .where("at", "<", Timestamp.fromDate(end.toJSDate()))
+    .where("recordedAt", ">=", Timestamp.fromDate(start.toJSDate()))
+    .where("recordedAt", "<", Timestamp.fromDate(end.toJSDate()))
     .get()
 
   const written = events.docs
@@ -175,6 +172,19 @@ export async function sendConferenceLetters(now: Date) {
     .filter(({ e }) => e.change !== "withdrawn")
     .sort((a, b) => a.e.at.toMillis() - b.e.at.toMillis())
   const lastFor = new Map(written.map(({ id, e }) => [e.testimonyId, id]))
+  // An event mailed or skipped on an earlier run is decided, and a rerun
+  // leaves it: a skip is final.
+  const decided = written.length
+    ? await db.getAll(
+        ...written.flatMap(({ id }) => [
+          db.doc(`/legislatorMail/letter_${id}`),
+          db.doc(`/conferenceLetterSkips/${id}`)
+        ])
+      )
+    : []
+  const done = new Set(
+    decided.filter(d => d.exists).map(d => d.id.replace(/^letter_/, ""))
+  )
   const memberContent = cached(
     async key =>
       (
@@ -191,7 +201,9 @@ export async function sendConferenceLetters(now: Date) {
   )
 
   let sent = 0
+  const failed: string[] = []
   for (const { id, e } of written) {
+    if (done.has(id)) continue
     try {
       const outcome = await mailLetter(
         e,
@@ -214,18 +226,22 @@ export async function sendConferenceLetters(now: Date) {
       }
     } catch (err) {
       logger.error(`Letter for input event ${id} failed`, err)
+      failed.push(id)
     }
   }
   logger.info(
     `Mailed ${sent} conference letters from ${start.toISO()} to ${end.toISO()}`
   )
+  if (failed.length) {
+    throw new Error(`Letters for input events ${failed.join(", ")} failed`)
+  }
   return sent
 }
 
 export const mailConferenceLetters = onSchedule(
-  { schedule: "0 9 * * *", timeZone, timeoutSeconds: 300 },
+  { schedule: "0 9 * * *", timeZone, timeoutSeconds: 300, retryCount: 3 },
   // The time the run was due, not when it started, so each day's window
-  // begins exactly where the last one ended.
+  // begins exactly where the last one ended, and a retry reads the same one.
   event =>
     sendConferenceLetters(new Date(event.scheduleTime)).then(() => undefined)
 )

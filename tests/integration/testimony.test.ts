@@ -1645,8 +1645,8 @@ describe("conference weekly update", () => {
     const inWeek = await testDb
       .collection("/conferenceInputEvents")
       .where("conferenceId", "==", conferenceId)
-      .where("at", ">=", start.toJSDate())
-      .where("at", "<", end.toJSDate())
+      .where("recordedAt", ">=", start.toJSDate())
+      .where("recordedAt", "<", end.toJSDate())
       .get()
     expect(inWeek.size).toBe(0)
   })

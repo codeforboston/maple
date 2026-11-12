@@ -41,16 +41,17 @@ const conferee = async (court: number, c: Conference["conferees"][number]) => {
 }
 
 /** Compiles the update for each appointed conference that had a
- * change in the week up to `now`, and mails it to the conferees as
+ * change recorded in the week up to `now`, and mails it to the conferees as
  * /emails/{court}_{conferenceId}_{week}, recorded at /legislatorMail under the
  * same id. Both are created, so a second run in the same week sends nothing
- * again. */
+ * again. An update that fails fails the run, after the others, so the
+ * scheduler runs it again. */
 export async function compileWeeklyUpdates(now: Date) {
   const { week, start, end } = weekWindow(now)
   const events = await db
     .collection("/conferenceInputEvents")
-    .where("at", ">=", Timestamp.fromDate(start.toJSDate()))
-    .where("at", "<", Timestamp.fromDate(end.toJSDate()))
+    .where("recordedAt", ">=", Timestamp.fromDate(start.toJSDate()))
+    .where("recordedAt", "<", Timestamp.fromDate(end.toJSDate()))
     .get()
 
   const eventsOf = new Map<string, ConferenceInputEvent[]>()
@@ -61,6 +62,7 @@ export async function compileWeeklyUpdates(now: Date) {
   }
 
   let sent = 0
+  const failed: string[] = []
   for (const [key, conferenceEvents] of eventsOf) {
     const { court, conferenceId: id } = conferenceEvents[0]
     try {
@@ -136,18 +138,25 @@ export async function compileWeeklyUpdates(now: Date) {
       }
     } catch (e) {
       logger.error(`Weekly update for conference ${key} failed`, e)
+      failed.push(key)
     }
   }
   logger.info(`Mailed ${sent} weekly conference updates`)
+  if (failed.length) {
+    throw new Error(
+      `Weekly updates for conferences ${failed.join(", ")} failed`
+    )
+  }
 }
 
 export const compileConferenceUpdates = onSchedule(
   {
     schedule: "0 8 * * 1", // Monday 8:00 AM
     timeZone,
-    timeoutSeconds: 300
+    timeoutSeconds: 300,
+    retryCount: 3
   },
   // The time the run was due, not when it started, so each week's window
-  // begins exactly where the last one ended.
+  // begins exactly where the last one ended, and a retry reads the same one.
   event => compileWeeklyUpdates(new Date(event.scheduleTime))
 )
