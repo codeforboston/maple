@@ -2,6 +2,7 @@ import {
   buildConferenceUpdateEmail,
   conferenceUpdateSubject,
   renderConferenceUpdate,
+  renderConferenceUpdateText,
   summarize,
   tally,
   weekWindow
@@ -171,6 +172,18 @@ describe("the update email", () => {
     const html = renderConferenceUpdate(data).toLowerCase()
     expect(html).not.toContain("unsubscribe")
     expect(html).not.toContain("open questions")
+  })
+
+  it("says the same in its text part, a line per figure", () => {
+    const text = renderConferenceUpdateText(data)
+    expect(text).toContain("To: Sen. Sam Sen (chair), Rep. Pat Rep\n")
+    expect(text).toContain(
+      "Total testimonies: 3 (▲ 2 this week)\nIndividuals: 2 (▲ 1)\n"
+    )
+    expect(text).toContain("- 2 inputs added.\n")
+    expect(text).toContain(
+      "https://mapletestimony.org/conferences/194/phone-free-schools"
+    )
   })
 
   it("links the page without saying how many it holds", () => {

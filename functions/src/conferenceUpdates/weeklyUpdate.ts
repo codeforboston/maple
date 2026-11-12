@@ -183,3 +183,33 @@ export const renderConferenceUpdate = (data: ConferenceUpdateEmail) =>
   (template ??= handlebars.compile(
     fs.readFileSync(path.join(__dirname, EMAIL_TEMPLATE_PATH), "utf8")
   ))(data)
+
+/** The same update as plain text, section by section as the template. */
+export const renderConferenceUpdateText = (d: ConferenceUpdateEmail) =>
+  [
+    [
+      `To: ${d.conferees
+        .map(c => (c.chair ? `${c.name} (chair)` : c.name))
+        .join(", ")}`,
+      `Re: ${d.bills} — ${d.title} — conference committee`,
+      `Week of: ${d.weekLabel} · Sent: ${d.sentLabel}`
+    ].join("\n"),
+    `Public input on ${d.title}: where it stands, and what changed this week`,
+    "One summary a week from MAPLE, in place of individual emails. Everything here is drawn from testimony submitted publicly on MAPLE whose authors chose to share it with the committee.",
+    [
+      "1 · Where input stands",
+      `Total testimonies: ${d.total} (${d.totalDelta} this week)`,
+      ...d.groups.map(g => `${g.label}: ${g.count} (${g.delta})`),
+      "",
+      "Position on the bills",
+      ...d.positions.map(p => `${p.label}: ${p.count} (${p.delta})`)
+    ].join("\n"),
+    ["2 · What changed this week", ...d.changes.map(c => `- ${c}`)].join("\n"),
+    [
+      "3 · Read the testimony",
+      "Every submission is public on MAPLE with the author's stated position. Nothing in this summary is paraphrased from private input.",
+      d.conferenceUrl
+    ].join("\n"),
+    "How this is compiled. Counts and positions are from testimony submitted on MAPLE. Positions are the authors' own, not MAPLE's view.",
+    "MAPLE is nonpartisan infrastructure and takes no position on this or any bill. Questions, or a reply to this email: info@mapletestimony.org."
+  ].join("\n\n")
