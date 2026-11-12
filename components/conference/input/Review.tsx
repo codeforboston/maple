@@ -8,6 +8,7 @@ import {
   hasLegislators,
   Letter,
   LetterMember,
+  looksLikeEmail,
   renderLetter
 } from "functions/src/conferenceLetters/letter"
 import { Disc as Avatar } from "./Entry"
@@ -340,8 +341,6 @@ export function Delivery({
   )
 }
 
-const looksLikeEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)
-
 /** The reply-to address and the way to give another for this letter only. */
 export function ReplyTo({
   own,
@@ -463,9 +462,11 @@ export function LetterPreview({ letter }: { letter: Letter }) {
  * on the review step alone, so the legislators are read only there. */
 export function LetterReview({
   court,
+  conferenceId,
   conferees,
   author,
   conference,
+  edited,
   position,
   content,
   cosign,
@@ -473,10 +474,13 @@ export function LetterReview({
   onChoose
 }: {
   court: number
+  conferenceId: string
   /** Initials of the conferees, for the weekly update's row. */
   conferees: string[]
   author: string
   conference: string
+  /** The reader is editing input they posted before. */
+  edited: boolean
   position: ConferencePosition
   /** The reader's own words, empty on a cosign without a note. */
   content: string
@@ -503,7 +507,10 @@ export function LetterReview({
             letter={renderLetter({
               author,
               replyTo,
+              court,
+              conferenceId,
               conference,
+              edited,
               position,
               content,
               cosign,

@@ -10,6 +10,8 @@ import {
 const letter = renderLetter({
   author: 'Ada "Ace" <Lovelace>',
   replyTo: "ada@example.org",
+  court: 194,
+  conferenceId: "H1-S1",
   conference: "Phone-Free Schools",
   position: "passSomething",
   content: "First.\n\nSecond & third.",
@@ -74,6 +76,8 @@ describe("renderLetterText", () => {
     const cosigned = renderLetter({
       author: "Ada",
       replyTo: "ada@example.org",
+      court: 194,
+      conferenceId: "H1-S1",
       conference: "Phone-Free Schools",
       position: "passSomething",
       content: "Agreed.",

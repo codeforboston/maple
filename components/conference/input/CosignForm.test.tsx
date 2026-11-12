@@ -72,6 +72,7 @@ const mount = (
       edit={edit}
       parent={parent}
       court={194}
+      conferenceId="H1-S1"
       subject="Phone-Free Schools"
       conferees={["CC", "BF"]}
       step={step}

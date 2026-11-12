@@ -3,6 +3,8 @@ import { hasLegislators, LetterInput, renderLetter } from "./letter"
 const base: LetterInput = {
   author: "Ada Example",
   replyTo: "ada@example.org",
+  court: 194,
+  conferenceId: "H4321-S2100",
   conference: "Data privacy conference committee",
   position: "passSenateVersion",
   content: "First thought.\n\nSecond thought.",
@@ -65,11 +67,25 @@ describe("renderLetter", () => {
     expect(l.cosigned?.quote).toEqual(["Pass it."])
   })
 
-  it("links the post once it has one", () => {
-    expect(renderLetter(base).footer.endsWith("publicly.")).toBe(true)
+  it("links the conference page, where the input is posted", () => {
+    expect(renderLetter(base).footer).toContain(
+      "publicly: https://mapletestimony.org/conferences/194/H4321-S2100"
+    )
+  })
+
+  it("marks an edit as an update", () => {
+    expect(renderLetter({ ...base, edited: true }).subject).toBe(
+      "Data privacy conference committee: Pass the Senate version (updated)"
+    )
     expect(
-      renderLetter({ ...base, postUrl: "https://example.org/p" }).footer
-    ).toContain("publicly: https://example.org/p")
+      renderLetter({
+        ...base,
+        edited: true,
+        cosign: { author: "Grace", content: "Pass it." }
+      }).subject
+    ).toBe(
+      "Data privacy conference committee: Cosigned input (Pass the Senate version) (updated)"
+    )
   })
 })
 
