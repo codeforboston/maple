@@ -42,12 +42,12 @@ const conferee = async (court: number, c: Conference["conferees"][number]) => {
 }
 
 /** Compiles the update for each appointed conference that had a
- * change in the week before `now`, and stores it as
- * /conferenceUpdates/{court}_{conferenceId}_{week start}. Creating it
- * rather than setting it means a second run in the same week leaves the
- * first update as it was. */
+ * change in the week up to `now`, and stores it as
+ * /conferenceUpdates/{court}_{conferenceId}_{week}. Creating it rather than
+ * setting it means a second run in the same week leaves the first update as
+ * it was. */
 export async function compileWeeklyUpdates(now = new Date()) {
-  const { start, end } = weekWindow(now)
+  const { week, start, end } = weekWindow(now)
   const events = await db
     .collection("/conferenceInputEvents")
     .where("at", ">=", Timestamp.fromDate(start.toJSDate()))
@@ -92,7 +92,7 @@ export async function compileWeeklyUpdates(now = new Date()) {
         conferees,
         standing,
         changes,
-        start,
+        week,
         now
       })
       const html = renderConferenceUpdate(data)
@@ -100,7 +100,7 @@ export async function compileWeeklyUpdates(now = new Date()) {
       const update: ConferenceUpdate = {
         court,
         conferenceId: id,
-        weekStart: Timestamp.fromDate(start.toJSDate()),
+        weekStart: Timestamp.fromDate(week.toJSDate()),
         standing,
         changes,
         html,
@@ -115,7 +115,7 @@ export async function compileWeeklyUpdates(now = new Date()) {
       // a second run finds the update and sends nothing.
       const updateRef = db
         .collection("/conferenceUpdates")
-        .doc(`${court}_${id}_${start.toISODate()}`)
+        .doc(`${court}_${id}_${week.toISODate()}`)
       const batch = db.batch()
       batch.create(updateRef, update)
       const { to, subjectPrefix } = resolveRecipients(
