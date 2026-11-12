@@ -4,6 +4,7 @@ import type {
   ConferenceOutcome,
   ConferenceStatus
 } from "../../functions/src/conferences/types"
+import { conferenceName } from "../../functions/src/shared/conferences"
 import type { EventSummary } from "../db/events"
 
 /** The chambers in the order every view shows them: Senate first. */
@@ -87,8 +88,7 @@ export type ConferenceIndexProps = {
   conferees: Record<string, ConfereeView[]>
 }
 
-/** The short name where there is one, else the act title. */
-export const conferenceName = (c: Named) => c.name?.trim() || c.title.trim()
+export { conferenceName }
 
 type Named = { name?: string | null; title: string }
 

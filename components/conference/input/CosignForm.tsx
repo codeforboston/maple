@@ -259,6 +259,7 @@ export function CosignForm({
   edit,
   parent,
   court,
+  conferenceId,
   subject,
   conferees,
   step,
@@ -267,6 +268,7 @@ export function CosignForm({
   onPosted
 }: {
   court: number
+  conferenceId: string
   /** What the conference is called, for the letter's subject. */
   subject: string
   /** Initials of the conferees, for the weekly update's row. */
@@ -412,9 +414,11 @@ export function CosignForm({
           {!content.trim() && <NoLine onAdd={() => onStep("write")} />}
           <LetterReview
             court={court}
+            conferenceId={conferenceId}
             conferees={conferees}
             author={name}
             conference={subject}
+            edited={editing}
             position={parent.position}
             content={content}
             cosign={{ author: nameOf(parent), content: parent.content }}

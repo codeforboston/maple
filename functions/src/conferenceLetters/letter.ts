@@ -2,15 +2,14 @@
  * One renderer: the review step previews it and the daily sender mails it, so
  * what the reader approves is what is sent. Pure, so the website can import it. */
 
+import { CONFERENCE_STANCES } from "../shared/conferences"
 import type { ConferencePosition } from "../testimony/types"
 export type { ConferencePosition }
 
-const positionLabels: Record<ConferencePosition, string> = {
-  passSomething: "Please pass something",
-  passSenateVersion: "Pass the Senate version",
-  passHouseVersion: "Pass the House version",
-  passNothing: "Don't pass anything"
-}
+/** A single address, as a reply-to must be: the draft is the reader's to
+ * write, so the sender checks it again, and a list could copy anyone. */
+export const looksLikeEmail = (s: string) =>
+  /^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/.test(s)
 
 export type LetterMember = { name: string; district: string }
 
@@ -20,7 +19,12 @@ export type LetterInput = {
   /** Where replies go, and who is copied: the reader's own address, or the
    * one they chose for this letter. */
   replyTo: string
+  court: number
+  conferenceId: string
+  /** The conference's name. */
   conference: string
+  /** Set when the input was posted before and this is its edit. */
+  edited?: boolean
   position: ConferencePosition
   /** The reader's own words, empty on a cosign without a note. */
   content: string
@@ -28,8 +32,6 @@ export type LetterInput = {
   cosign?: { author: string; content: string }
   representative?: LetterMember
   senator?: LetterMember
-  /** The posted input's page, known once it is posted. */
-  postUrl?: string
 }
 
 export type Letter = {
@@ -59,7 +61,7 @@ const paragraphsOf = (text: string) =>
     .filter(Boolean)
 
 export function renderLetter(i: LetterInput): Letter {
-  const label = positionLabels[i.position]
+  const label = CONFERENCE_STANCES[i.position]
   const { representative: rep, senator: sen } = i
   const salutation = `Dear ${[
     rep && `Representative ${rep.name}`,
@@ -81,9 +83,9 @@ export function renderLetter(i: LetterInput): Letter {
     to: [rep && `Rep. ${rep.name}`, sen && `Sen. ${sen.name}`]
       .filter(Boolean)
       .join(", "),
-    subject: i.cosign
-      ? `${i.conference}: Cosigned input (${label})`
-      : `${i.conference}: ${label}`,
+    subject: `${i.conference}: ${
+      i.cosign ? `Cosigned input (${label})` : label
+    }${i.edited ? " (updated)" : ""}`,
     salutation,
     paragraphs: paragraphsOf(i.content),
     cosigned: i.cosign && {
@@ -92,7 +94,7 @@ export function renderLetter(i: LetterInput): Letter {
     },
     signature,
     footer:
-      `Position: ${label}. Sent by a constituent through MAPLE, where ${where} is posted publicly` +
-      (i.postUrl ? `: ${i.postUrl}` : ".")
+      `Position: ${label}. Sent by a constituent through MAPLE, where ${where} is posted publicly: ` +
+      `https://mapletestimony.org/conferences/${i.court}/${i.conferenceId}`
   }
 }

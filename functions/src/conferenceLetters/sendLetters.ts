@@ -7,7 +7,8 @@ import { timeZone } from "../malegislature"
 import { stateOf } from "../conferenceUpdates/inputEvents"
 import { ConferenceInputEvent } from "../conferenceUpdates/types"
 import { Testimony } from "../testimony/types"
-import { hasLegislators, renderLetter } from "./letter"
+import { conferenceName } from "../shared/conferences"
+import { hasLegislators, looksLikeEmail, renderLetter } from "./letter"
 import { buildLetterEmail, dayWindow, SkipReason } from "./letters"
 
 const ALREADY_EXISTS = 6
@@ -55,11 +56,12 @@ async function prepare(
   e: ConferenceInputEvent,
   eventId: string,
   lastFor: Map<string, string>,
+  edited: boolean,
   memberContent: (key: string) => Promise<Content>,
   conferenceOf: (key: string) => Promise<Conference | undefined>
 ): Promise<{ skip: SkipReason } | { email: object }> {
-  // An input withdrawn and posted again in the window has two "added" events;
-  // only the last is mailed, with what is posted now.
+  // An input posted or edited more than once in the window is mailed once,
+  // with what is posted now.
   if (lastFor.get(e.testimonyId) !== eventId) return { skip: "superseded" }
 
   const [pubSnap, readerEmail, draft, conference] = await Promise.all([
@@ -68,6 +70,7 @@ async function prepare(
     db
       .collection(`/users/${e.authorUid}/draftTestimony`)
       .where("conferenceId", "==", e.conferenceId)
+      .where("court", "==", e.court)
       .limit(1)
       .get(),
     conferenceOf(`${e.court}/${e.conferenceId}`)
@@ -120,10 +123,14 @@ async function prepare(
   }
 
   const author = readerAuthor(pub)
+  const chosen = (draft.docs[0]?.data().replyTo as string | null)?.trim()
   const letter = renderLetter({
     author,
-    replyTo: (draft.docs[0]?.data().replyTo as string)?.trim() || readerEmail,
-    conference: conference.name ?? conference.title,
+    replyTo: chosen && looksLikeEmail(chosen) ? chosen : readerEmail,
+    court: e.court,
+    conferenceId: e.conferenceId,
+    conference: conferenceName(conference),
+    edited,
     position: state.position,
     content: pub.content,
     cosign,
@@ -146,8 +153,8 @@ async function prepare(
   }
 }
 
-/** Mails each conference input added in the day before `now` to the reader's
- * rep and senator, as the letter the reader previewed. A letter is the
+/** Mails each conference input posted or edited in the day before `now` to
+ * the reader's rep and senator, as the letter the reader previewed. A letter is the
  * `emails` document /emails/letter_{input event id}, created, so a second run
  * sends nothing again. An input that is not mailed is recorded, with why, at
  * /conferenceLetterSkips/{input event id}. */
@@ -159,11 +166,17 @@ export async function sendConferenceLetters(now = new Date()) {
     .where("at", "<", Timestamp.fromDate(end.toJSDate()))
     .get()
 
-  const added = events.docs
+  const written = events.docs
     .map(doc => ({ id: doc.id, e: doc.data() as ConferenceInputEvent }))
-    .filter(({ e }) => e.change === "added")
+    .filter(({ e }) => e.change !== "withdrawn")
     .sort((a, b) => a.e.at.toMillis() - b.e.at.toMillis())
-  const lastFor = new Map(added.map(({ id, e }) => [e.testimonyId, id]))
+  const lastFor = new Map(written.map(({ id, e }) => [e.testimonyId, id]))
+  // An edit is an update unless the input was also posted in the window.
+  const postedIn = new Set(
+    written
+      .filter(({ e }) => e.change === "added")
+      .map(({ e }) => e.testimonyId)
+  )
   const memberContent = cached(
     async key =>
       (
@@ -180,9 +193,17 @@ export async function sendConferenceLetters(now = new Date()) {
   )
 
   let sent = 0
-  for (const { id, e } of added) {
+  for (const { id, e } of written) {
     try {
-      const result = await prepare(e, id, lastFor, memberContent, conferenceOf)
+      const edited = !postedIn.has(e.testimonyId)
+      const result = await prepare(
+        e,
+        id,
+        lastFor,
+        edited,
+        memberContent,
+        conferenceOf
+      )
       if ("skip" in result) {
         await create(db.doc(`/conferenceLetterSkips/${id}`), {
           testimonyId: e.testimonyId,

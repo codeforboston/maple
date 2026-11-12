@@ -252,6 +252,7 @@ export function ConductRule() {
  */
 export function InputForm({
   court,
+  conferenceId,
   conferees,
   edit,
   subject,
@@ -261,6 +262,7 @@ export function InputForm({
   onPosted
 }: {
   court: number
+  conferenceId: string
   /** Initials of the conferees, for the weekly update's row. */
   conferees: string[]
   /** The user's draft and publication on the conference. */
@@ -416,9 +418,11 @@ export function InputForm({
       <Scroll>
         <LetterReview
           court={court}
+          conferenceId={conferenceId}
           conferees={conferees}
           author={name}
           conference={subject}
+          edited={editing}
           position={position}
           content={content}
           chosen={chosen}

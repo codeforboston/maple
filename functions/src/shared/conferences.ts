@@ -12,6 +12,10 @@ export const hasReport = (c: Pick<Conference, "status">) =>
 export const takesTestimony = (c: Pick<Conference, "status" | "covered">) =>
   c.status === "appointed" && c.covered !== false
 
+/** The short name where there is one, else the act title. */
+export const conferenceName = (c: { name?: string | null; title: string }) =>
+  c.name?.trim() || c.title.trim()
+
 // The site's wording, conferences input.position.*.long; a test holds them equal.
 export const CONFERENCE_STANCES: Record<ConferencePosition, string> = {
   passSomething: "Please pass something",

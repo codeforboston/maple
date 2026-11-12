@@ -656,6 +656,7 @@ function InputPanel({
           edit={edit}
           parent={cosigning}
           court={conference.court}
+          conferenceId={conference.id}
           subject={subject}
           conferees={initials}
           step={cosignStep}
@@ -666,6 +667,7 @@ function InputPanel({
       ) : (
         <InputForm
           court={conference.court}
+          conferenceId={conference.id}
           conferees={initials}
           edit={edit}
           subject={subject}

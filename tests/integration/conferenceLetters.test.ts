@@ -27,6 +27,7 @@ type Seed = {
   sen?: string
   withdrawn?: boolean
   replyTo?: string
+  change?: "added" | "edited"
 }
 
 /** A reader who posted conference input yesterday, and the event that says so. */
@@ -66,7 +67,10 @@ const seed = async (conferenceId: string, s: Seed = {}) => {
     conferenceId,
     testimonyId,
     authorUid: uid,
-    change: "added",
+    change: s.change ?? "added",
+    ...(s.change === "edited" && {
+      before: { position: "passNothing", group: "individual", version: 0 }
+    }),
     after: { position: "passSomething", group: "individual", version: 1 },
     at: Timestamp.fromDate(ADDED_AT)
   })
@@ -118,6 +122,9 @@ describe("sendConferenceLetters", () => {
       `[dev] would have gone to: rep@malegislature.gov, sen@malegislature.gov — Phone-Free Schools: Please pass something`
     )
     expect(sent!.message.html).toContain(`Dear Representative Member ${rep}`)
+    expect(sent!.message.html).toContain(
+      `https://mapletestimony.org/conferences/${COURT}/${conferenceId}`
+    )
     expect(JSON.parse(sent!.headers["X-SMTPAPI"]).category).toEqual([
       "constituent-letters"
     ])
@@ -174,5 +181,33 @@ describe("sendConferenceLetters", () => {
     expect(await email(first.eventId)).toBeUndefined()
     expect((await skip(first.eventId))!.reason).toBe("superseded")
     expect(await email(secondId)).toBeDefined()
+  })
+
+  it("mails an edit as an update", async () => {
+    const { eventId } = await seed(conferenceId, { rep, change: "edited" })
+    await sendConferenceLetters(NOW)
+    expect((await email(eventId))!.message.subject).toMatch(
+      /Phone-Free Schools: Please pass something \(updated\)$/
+    )
+  })
+
+  it("mails an input posted and edited the same day once, as new", async () => {
+    const first = await seed(conferenceId, { rep })
+    const editId = id()
+    await testDb.doc(`conferenceInputEvents/${editId}`).set({
+      court: COURT,
+      conferenceId,
+      testimonyId: first.testimonyId,
+      authorUid: first.uid,
+      change: "edited",
+      before: { position: "passSomething", group: "individual", version: 1 },
+      after: { position: "passSomething", group: "individual", version: 2 },
+      at: Timestamp.fromDate(new Date(ADDED_AT.getTime() + 60_000))
+    })
+    await sendConferenceLetters(NOW)
+    expect((await skip(first.eventId))!.reason).toBe("superseded")
+    expect((await email(editId))!.message.subject).toMatch(
+      /Please pass something$/
+    )
   })
 })

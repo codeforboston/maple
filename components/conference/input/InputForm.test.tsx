@@ -43,6 +43,7 @@ const review = (edit: UseEditConferenceTestimony) =>
   render(
     <InputForm
       court={194}
+      conferenceId="H1-S1"
       conferees={["CC", "BF"]}
       edit={edit}
       subject="Phone-Free Schools"
@@ -71,6 +72,7 @@ describe("InputForm", () => {
     render(
       <InputForm
         court={194}
+        conferenceId="H1-S1"
         conferees={[]}
         edit={edit}
         subject="Phone-Free Schools"
