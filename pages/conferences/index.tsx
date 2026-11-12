@@ -3,7 +3,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import { currentGeneralCourt } from "functions/src/shared"
 import { flags } from "components/featureFlags"
 import { ConferenceHero } from "components/conference/ConferenceHero"
-import { loadLandingPage } from "components/conference/load"
+import { loadLandingAndRail } from "components/conference/load"
 import { maple } from "components/links"
 import { createPage } from "../../components/page"
 import { ConferenceBetaBanner } from "components/conference/ConferenceBetaBanner"
@@ -48,15 +48,20 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   )
 
   const locale = ctx.locale ?? ctx.defaultLocale ?? "en"
-  const [page, translations] = await Promise.all([
-    loadLandingPage(currentGeneralCourt),
+  const [{ landing, conferences }, translations] = await Promise.all([
+    loadLandingAndRail(currentGeneralCourt),
     serverSideTranslations(locale, ["auth", "common", "footer", "conferences"])
   ])
   // The page always opens, without a redirect. Its button opens the first
   // conference; where the court has none yet, as a new session starts, it is
   // disabled. Only the link goes to the page, not the conference.
-  const see = page ? maple.conference(page.conference) : null
-  const conferences = page ? page.conferences : null
+  const see = landing ? maple.conference(landing) : null
 
-  return { props: { see, conferences, ...translations } }
+  return {
+    props: {
+      see,
+      conferences: landing ? conferences : null,
+      ...translations
+    }
+  }
 }

@@ -19,6 +19,7 @@ import {
   byActivity,
   ConfereeView,
   ConferenceIndexProps,
+  ConferenceLanding,
   ConferencePageProps,
   ConferenceSummary,
   HearingView
@@ -38,6 +39,9 @@ const summarize = (c: Conference): ConferenceSummary => ({
   covered: c.covered !== false,
   reportBillId: c.reportBillId ?? null
 })
+
+/** Every conference as the rail lists them: active first, then by name. */
+const railOf = (all: Conference[]) => all.map(summarize).sort(byActivity)
 
 /** The member's cell on the map: their district id, or null where the map has
  * no such seat. */
@@ -116,25 +120,39 @@ export async function loadConferencePage(
   return pageFor(court, await listConferences(court), id)
 }
 
-/** The page for the first covered conference in the rail's order, which the
- * landing opens on; null where the court has none. */
-export async function loadLandingPage(
+/** Where the landing's button goes: the first covered conference in the
+ * rail's order, else the rail's first; null where the court has none. */
+export async function loadLanding(
   court: number
-): Promise<ConferencePageProps | null> {
-  return pageFor(court, await listConferences(court))
+): Promise<ConferenceLanding | null> {
+  const rail = railOf(await listConferences(court))
+  const landing = rail.find(c => c.covered) ?? rail[0]
+  return landing ? { court: landing.court, id: landing.id } : null
 }
 
-/** The page for conference `id` among `all`, or for the rail's first where
- * there is no `id`. */
+/** The landing (loadLanding) and every conference in the rail's order, for
+ * the Conference Committees page: its button, and the list the button opens
+ * on mobile. No members or hearings. */
+export async function loadLandingAndRail(court: number): Promise<{
+  landing: ConferenceLanding | null
+  conferences: ConferenceSummary[]
+}> {
+  const conferences = railOf(await listConferences(court))
+  const landing = conferences.find(c => c.covered) ?? conferences[0]
+  return {
+    landing: landing ? { court: landing.court, id: landing.id } : null,
+    conferences
+  }
+}
+
+/** The page for conference `id` among `all`. */
 async function pageFor(
   court: number,
   all: Conference[],
-  id?: string
+  id: string
 ): Promise<ConferencePageProps | null> {
-  const rail = all.map(summarize).sort(byActivity)
-  const summary = id
-    ? rail.find(c => c.id === id)
-    : rail.find(c => c.covered) ?? rail[0]
+  const rail = railOf(all)
+  const summary = rail.find(c => c.id === id)
   const conference = all.find(c => c.id === summary?.id)
   if (!summary || !conference) return null
   const [members, hearings] = await Promise.all([
@@ -193,7 +211,7 @@ export async function loadConferenceIndex(
     ? membersFromIndex(index)
     : await membersByRead(court, confereeCodes(all))
   return {
-    conferences: all.map(summarize).sort(byActivity),
+    conferences: railOf(all),
     conferees: resolveConferees(all, members)
   }
 }
