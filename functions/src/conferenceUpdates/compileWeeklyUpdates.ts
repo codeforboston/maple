@@ -46,7 +46,7 @@ const conferee = async (court: number, c: Conference["conferees"][number]) => {
  * /conferenceUpdates/{court}_{conferenceId}_{week}. Creating it rather than
  * setting it means a second run in the same week leaves the first update as
  * it was. */
-export async function compileWeeklyUpdates(now = new Date()) {
+export async function compileWeeklyUpdates(now: Date) {
   const { week, start, end } = weekWindow(now)
   const events = await db
     .collection("/conferenceInputEvents")
@@ -159,5 +159,7 @@ export const compileConferenceUpdates = onSchedule(
     timeZone,
     timeoutSeconds: 300
   },
-  () => compileWeeklyUpdates()
+  // The time the run was due, not when it started, so each week's window
+  // begins exactly where the last one ended.
+  event => compileWeeklyUpdates(new Date(event.scheduleTime))
 )
