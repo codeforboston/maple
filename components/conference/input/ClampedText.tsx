@@ -11,7 +11,7 @@ const Wrap = styled.div`
  * text with it too. */
 export const Body = styled.p<{ $small: boolean }>`
   margin: 0;
-  font-size: ${({ $small }) => ($small ? "0.9375rem" : "1rem")};
+  font-size: ${({ $small }) => ($small ? "0.875rem" : "0.9375rem")};
   line-height: 1.55;
   color: ${ink.strong};
   white-space: pre-line;
@@ -27,7 +27,7 @@ const More = styled.button`
   border: 0;
   padding: 0;
   background: none;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 600;
   color: ${brand.fill};
   &:hover {

@@ -1054,6 +1054,21 @@
   z-index: 20;
 }
 
+/* At lg and up, where the input panel stands beside the page, the note steps
+   aside for it as the page does (--conference-shift, set by
+   components/conference/ConferenceDetails.tsx while the panel is open). */
+@media (min-width: 1024px) {
+  .conference-beta-banner {
+    padding-right: var(--conference-shift, 0px);
+    transition: padding-right 400ms ease-out;
+  }
+}
+@media (min-width: 1024px) and (prefers-reduced-motion: reduce) {
+  .conference-beta-banner {
+    transition: none;
+  }
+}
+
 /* The unpinned bar that keeps its shadow is lifted as the pinned one is
    (Bootstrap's sticky-top, z-index 1020), so what follows it, such as a
    conference page's beta note, doesn't paint over the shadow. */

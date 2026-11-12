@@ -48,6 +48,10 @@ export function usePanelWidth() {
 }
 
 const Aside = styled.aside<{ $open: boolean; $full: boolean }>`
+  /* Nunito throughout, as the mockup sets the panel, over the site's Lexend
+     body face (styles/bootstrap.scss); its title and the cosign card's name
+     set Lexend themselves. */
+  font-family: var(--maple-font-body);
   position: fixed;
   z-index: 40;
   right: 0;

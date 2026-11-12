@@ -3,7 +3,7 @@ import styled from "styled-components"
 import { ConferenceTestimony } from "components/db"
 import { cosignRefusal } from "functions/src/testimony/cosign"
 import { useInputContext } from "./context"
-import { ink, line, wash } from "./tokens"
+import { ink, line } from "./tokens"
 
 export const Pill = styled.button`
   flex-shrink: 0;
@@ -17,9 +17,10 @@ export const Pill = styled.button`
   font-weight: 600;
   white-space: nowrap;
   color: ${ink.strong};
+  /* A light wash on hover, half the panels' (wash.default), its edge as
+     it is. */
   &:hover {
-    background: ${wash.default};
-    border-color: ${line.strong};
+    background: rgba(0, 0, 0, 0.025);
   }
 `
 

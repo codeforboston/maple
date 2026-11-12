@@ -48,7 +48,7 @@ export const Disc = styled.div`
   border-radius: 9999px;
   background: ${brand.soft};
   border: 1px solid ${brand.edge};
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   letter-spacing: 0.02em;
   color: ${brand.ink};
@@ -60,7 +60,7 @@ const Portrait = styled(Disc)`
   @media (max-width: 767px) {
     width: 34px;
     height: 34px;
-    font-size: 0.625rem;
+    font-size: 0.6875rem;
   }
   @media (max-width: 450px) {
     width: 26px;
@@ -74,19 +74,21 @@ export const Who = styled.div`
 `
 
 const NameRow = styled.p`
+  /* Names in Lexend, as the cosign card's, in Nunito cards too. */
+  font-family: var(--maple-font-heading);
   display: flex;
   align-items: flex-end;
   flex-wrap: wrap;
   gap: 6px;
   margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 0.9375rem;
+  font-weight: 400;
   line-height: 1;
   color: ${ink.strong};
 
-  /* The position chip a size up on the card; the newsfeed's keeps its own. */
+  /* The position chip a pixel up on the card; the newsfeed's keeps its own. */
   .position-chip {
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
   }
 
   svg {
@@ -102,7 +104,7 @@ const NameRow = styled.p`
   }
   @media (max-width: 450px) {
     gap: 4px;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     svg {
       width: 13px;
       height: 13px;
@@ -145,6 +147,8 @@ export const NoWords = styled(Body)`
 `
 
 const Chip = styled.span<{ $bg: string; $ink: string }>`
+  /* Lexend, as every chip on the conference pages, in Nunito cards too. */
+  font-family: var(--maple-font-heading);
   flex-shrink: 0;
   padding: 1px 8px;
   border-radius: 9999px;
@@ -183,7 +187,7 @@ export const OwnChip = styled(Chip).attrs({ $bg: brand.fill, $ink: "#fff" })``
 
 export const Descriptor = styled.p`
   margin: 8px 0 0;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   line-height: 1.4;
   color: ${ink.faint};
   overflow: hidden;
@@ -193,8 +197,7 @@ export const Descriptor = styled.p`
 
 export const When = styled.span<{ $quiet: boolean; $banded: boolean }>`
   margin-right: 2px;
-  /* A step up from 0.8125rem and 0.75rem, as this card's other small text. */
-  font-size: ${({ $banded }) => ($banded ? "0.9375rem" : "0.875rem")};
+  font-size: ${({ $banded }) => ($banded ? "0.875rem" : "0.8125rem")};
   white-space: nowrap;
   color: ${({ $quiet }) => ($quiet ? ink.faint : ink.mid)};
 `

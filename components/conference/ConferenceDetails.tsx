@@ -623,13 +623,19 @@ function Details({
   // Signing fills the window with what is signed beside the form; once agreed,
   // the reader may fold it back to the drawer.
   const filled = !!cosigning && (cosignStep === "confirm" || full)
+  const shift = open && !filled ? width : 0
+  // The room the panel takes, for what sits outside the page (the beta
+  // note, styles/globals.css) to step aside for it too.
+  useEffect(() => {
+    const root = document.documentElement
+    root.style.setProperty("--conference-shift", `${shift}px`)
+    return () => {
+      root.style.removeProperty("--conference-shift")
+    }
+  }, [shift])
   return (
     <InputContext.Provider value={input}>
-      <Shift
-        style={
-          { "--shift": `${open && !filled ? width : 0}px` } as CSSProperties
-        }
-      >
+      <Shift style={{ "--shift": `${shift}px` } as CSSProperties}>
         <Page ref={top}>
           <SideRail conferences={conferences} current={conference.id} />
           <Main ref={main}>

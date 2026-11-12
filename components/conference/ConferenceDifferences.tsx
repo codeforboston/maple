@@ -152,7 +152,9 @@ const Toggle = styled.button`
   border: 0;
   border-radius: 8px;
   text-align: left;
-  font-weight: 500;
+  /* The question in Lexend, light, in the card's Nunito. */
+  font-family: var(--maple-font-heading);
+  font-weight: 300;
   font-size: 1rem;
   line-height: 1.35;
   color: ${ink.strong};
@@ -195,6 +197,10 @@ const Chamber = styled(Label)<{ $ink: string }>`
 /** Faint italic is for the bare fallback alone: an absence, not content. */
 const AnswerText = styled.p<{ $absent: boolean }>`
   margin: 2px 0 0;
+  /* Lexend, light, as the question over it (Toggle); its chamber's label
+     (Label) keeps the card's Nunito. */
+  font-family: var(--maple-font-heading);
+  font-weight: 300;
   font-size: 0.8125rem;
   line-height: 1.4;
   color: ${({ $absent }) => ($absent ? ink.faint : ink.strong)};
@@ -225,6 +231,8 @@ const ToggleText = styled.span`
 `
 
 const ResolutionLine = styled.span`
+  /* Nunito, as the card, under the question's Lexend (Toggle). */
+  font-family: var(--maple-font-body);
   max-width: 72ch;
   font-weight: 400;
   font-size: 0.875rem;

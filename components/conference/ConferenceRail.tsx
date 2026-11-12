@@ -63,7 +63,7 @@ const RailRow = styled(Internal)<{
   border-left: 3px solid
     ${({ $on }) => ($on ? "var(--maple-brand-primary)" : "transparent")};
   /* Tighter than 0.75rem above and below. */
-  padding: 0.5rem 0.75rem 0.5rem 1rem;
+  padding: calc(0.5rem + 2px) 0.75rem calc(0.5rem + 2px) 1rem;
   border-radius: 0 var(--maple-radius-md) var(--maple-radius-md) 0;
   background: ${({ $on }) => ($on ? "var(--maple-surface-base)" : "none")};
   box-shadow: ${({ $on }) => ($on ? `inset 0 0 0 1px ${RULE}` : "none")};
