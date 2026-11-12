@@ -23,12 +23,6 @@ const bottomAt = (y: number, { height, letsGo }: ReturnType<typeof navbar>) =>
  * holds, less as it goes, none once it has gone. */
 export const navbarBottom = () => bottomAt(window.scrollY, navbar())
 
-/** Ends the jump under way, if one is. */
-let endJump: (() => void) | undefined
-
-/** Whether a jump is on its way, which the hero's snap waits out. */
-export const jumping = () => endJump !== undefined
-
 /**
  * Scrolls `el` to its scroll margin under the navbar, where the navbar will be
  * on arrival. The browser's own jump takes the margin as it is before the
@@ -44,29 +38,6 @@ export function jumpTo(el: HTMLElement) {
   // Short of where the navbar lets go it is there on arrival, taking its
   // height; past it, it is gone. Partly gone has no resting place to aim at.
   const to = top <= bar.letsGo ? top - bar.height : top
-  // The hero's snap, on near the conference's top, would snap the landing
-  // too, holding a jump to a section further down short of it. Off for the
-  // jump, and held off until it arrives: the hero turns it back on near the
-  // top, which cuts a smooth jump from there short on its first frame.
-  const root = document.documentElement
-  root.style.scrollSnapType = ""
-  endJump?.()
-  // A scroll already running when the jump began ends too; only arriving
-  // ends this one. The page may be too short to reach `to`.
-  const arrived = () => {
-    const most = root.scrollHeight - window.innerHeight
-    if (Math.abs(window.scrollY - Math.min(to, most)) < 2) end()
-  }
-  // A jump to where the reader already is, or one they take over, never
-  // arrives.
-  const timer = setTimeout(() => end(), 2000)
-  const end = () => {
-    window.removeEventListener("scrollend", arrived)
-    clearTimeout(timer)
-    endJump = undefined
-  }
-  endJump = end
-  window.addEventListener("scrollend", arrived)
   window.scrollTo({
     top: to,
     behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches

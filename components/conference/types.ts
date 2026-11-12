@@ -88,10 +88,18 @@ export type ConferenceIndexProps = {
 }
 
 /** The short name where there is one, else the act title. */
-export const conferenceName = (c: { name?: string | null; title: string }) =>
-  c.name?.trim() || c.title.trim()
+export const conferenceName = (c: Named) => c.name?.trim() || c.title.trim()
+
+type Named = { name?: string | null; title: string }
+
+/** Alphabetical by the name a conference goes by. */
+export const byName = (a: Named, b: Named) =>
+  conferenceName(a).localeCompare(conferenceName(b))
 
 /** The ordering the rail uses: still sitting first, then finished. */
 export const byActivity = (a: ConferenceSummary, b: ConferenceSummary) =>
   Number(b.status === "appointed") - Number(a.status === "appointed") ||
-  conferenceName(a).localeCompare(conferenceName(b))
+  byName(a, b)
+
+/** The conference the landing's button opens. */
+export type ConferenceLanding = Pick<ConferenceSummary, "court" | "id">
