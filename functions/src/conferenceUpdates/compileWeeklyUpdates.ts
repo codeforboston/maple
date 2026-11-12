@@ -4,7 +4,6 @@ import { Conference } from "../conferences/types"
 import { db, Timestamp } from "../firebase"
 import { timeZone } from "../malegislature"
 import { resolveRecipients } from "../email/recipients"
-import { convertHtmlToText } from "../notifications/helpers"
 import { splitMemberName } from "../shared/names"
 import { takesTestimony } from "../shared/conferences"
 import { Testimony } from "../testimony/types"
@@ -14,6 +13,7 @@ import {
   buildConferenceUpdateEmail,
   conferenceUpdateSubject,
   renderConferenceUpdate,
+  renderConferenceUpdateText,
   summarize,
   tally,
   weekWindow
@@ -132,7 +132,7 @@ export async function compileWeeklyUpdates(now = new Date()) {
           },
           message: {
             subject: subjectPrefix + conferenceUpdateSubject(data),
-            text: convertHtmlToText(html),
+            text: renderConferenceUpdateText(data),
             html
           },
           createdAt: Timestamp.now()

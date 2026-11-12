@@ -3,7 +3,8 @@ import {
   buildLetterEmail,
   dayWindow,
   letterFrom,
-  renderLetterHtml
+  renderLetterHtml,
+  renderLetterText
 } from "./letters"
 
 const letter = renderLetter({
@@ -53,6 +54,35 @@ describe("renderLetterHtml", () => {
     const html = renderLetterHtml(letter)
     expect(html).toContain("Second &amp; third.")
     expect(html).not.toContain("<Lovelace>")
+  })
+})
+
+describe("renderLetterText", () => {
+  it("keeps the paragraphs and signature lines apart", () => {
+    expect(renderLetterText(letter)).toBe(
+      [
+        "Dear Representative Pat Rep and Senator Sam Sen,",
+        "First.",
+        "Second & third.",
+        'Ada "Ace" <Lovelace>\nHouse district: 3rd Essex\nSenate district: 1st Suffolk\nada@example.org',
+        letter.footer
+      ].join("\n\n")
+    )
+  })
+
+  it("quotes the cosigned input", () => {
+    const cosigned = renderLetter({
+      author: "Ada",
+      replyTo: "ada@example.org",
+      conference: "Phone-Free Schools",
+      position: "passSomething",
+      content: "Agreed.",
+      cosign: { author: "Bo", content: "One.\n\nTwo." },
+      representative: { name: "Pat Rep", district: "3rd Essex" }
+    })
+    expect(renderLetterText(cosigned)).toContain(
+      "> I cosigned this input by Bo on MAPLE:\n>\n> One.\n>\n> Two."
+    )
   })
 })
 
