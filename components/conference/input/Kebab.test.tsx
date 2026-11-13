@@ -25,7 +25,11 @@ const mine = {
   fullName: "Me"
 } as unknown as ConferenceTestimony
 
-const mount = (onEdit?: () => void) =>
+const mount = (
+  onEdit?: () => void,
+  cosignLink?: (t: ConferenceTestimony) => string,
+  testimony: ConferenceTestimony = mine
+) =>
   render(
     <InputContext.Provider
       value={{
@@ -34,10 +38,11 @@ const mount = (onEdit?: () => void) =>
         followed: new Set(),
         onEdit,
         signedIn: true,
+        cosignLink,
         byId: new Map()
       }}
     >
-      <Kebab testimony={mine} />
+      <Kebab testimony={testimony} />
     </InputContext.Provider>
   )
 
@@ -78,5 +83,59 @@ describe("Kebab", () => {
     fireEvent.keyDown(report, { key: "Escape" })
     expect(toggle).toHaveFocus()
     expect(toggle).toHaveAttribute("aria-expanded", "false")
+  })
+
+  describe("Copy cosign link", () => {
+    const link = (t: ConferenceTestimony) =>
+      `https://maple.test/c?cosign=${t.id}`
+    // null for a closed conference, which offers no link.
+    const open = async (
+      testimony: ConferenceTestimony,
+      cosignLink: typeof link | null = link
+    ) => {
+      mount(undefined, cosignLink ?? undefined, testimony)
+      fireEvent.click(screen.getByRole("button"))
+      await screen.findByRole("menu")
+    }
+    const item = () =>
+      screen.queryByRole("menuitem", { name: "input.copy_cosign_link" })
+
+    it("copies the link from the author's own card", async () => {
+      const writeText = jest.fn(async () => {})
+      Object.assign(navigator, { clipboard: { writeText } })
+      await open({ ...mine, authorRole: "organization" } as ConferenceTestimony)
+      fireEvent.click(item()!)
+      expect(
+        await screen.findByText("input.cosign_link_copied")
+      ).toBeInTheDocument()
+      expect(writeText).toHaveBeenCalledWith("https://maple.test/c?cosign=t1")
+    })
+
+    it("shows the link where there is no clipboard", async () => {
+      Object.assign(navigator, { clipboard: undefined })
+      await open({ ...mine, authorRole: "organization" } as ConferenceTestimony)
+      fireEvent.click(item()!)
+      expect(
+        await screen.findByText("input.cosign_link_not_copied")
+      ).toBeInTheDocument()
+    })
+
+    it("is not offered on a cosign", async () => {
+      await open({ ...mine, cosignOfId: "t0" } as ConferenceTestimony)
+      expect(item()).not.toBeInTheDocument()
+    })
+
+    it("is not offered on a legislator's input", async () => {
+      await open({ ...mine, authorRole: "legislator" } as ConferenceTestimony)
+      expect(item()).not.toBeInTheDocument()
+    })
+
+    it("is not offered once the conference has closed", async () => {
+      await open(
+        { ...mine, authorRole: "organization" } as ConferenceTestimony,
+        null
+      )
+      expect(item()).not.toBeInTheDocument()
+    })
   })
 })

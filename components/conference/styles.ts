@@ -75,3 +75,16 @@ export const partyColor = (party: string) =>
     : party === "Republican"
     ? "#b53333"
     : "#b5b4ae"
+
+/** A line the page says about itself: a conference we don't cover, or why a
+ * link could not do what it asked. */
+export const Notice = styled.p`
+  margin: 1rem 0 0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--maple-radius-md);
+  background: var(--maple-color-gray-subtle-bg);
+  border: 1px solid var(--maple-color-gray-subtle-border);
+  color: var(--maple-text-strong);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+`

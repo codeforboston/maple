@@ -20,17 +20,24 @@ export const cosignShape = ({
   return content.length > 0 || "Content is empty"
 }
 
-/** Why `uid` cannot cosign `parent`, if they cannot: an individual's or an
- * organization's testimony can be cosigned, never a legislator's, a cosign or
- * one's own. Publishing refuses with it; the website offers no Cosign. */
-export const cosignRefusal = (
-  uid: string | undefined,
-  parent: { authorUid: string; authorRole: Role; cosignOfId?: string | null }
-) =>
-  parent.authorUid === uid
-    ? "You cannot cosign your own testimony"
-    : parent.cosignOfId
+type Parent = {
+  authorUid: string
+  authorRole: Role
+  cosignOfId?: string | null
+}
+
+/** Why nobody can cosign `parent`, if nobody can: an individual's or an
+ * organization's testimony can be cosigned, never a legislator's or a cosign. */
+export const uncosignable = (parent: Parent) =>
+  parent.cosignOfId
     ? "A cosign cannot be cosigned"
     : parent.authorRole === "legislator"
     ? "A legislator's testimony cannot be cosigned"
     : undefined
+
+/** Why `uid` cannot cosign `parent`, if they cannot: as `uncosignable`, and
+ * never one's own. Publishing refuses with it; the website offers no Cosign. */
+export const cosignRefusal = (uid: string | undefined, parent: Parent) =>
+  parent.authorUid === uid
+    ? "You cannot cosign your own testimony"
+    : uncosignable(parent)

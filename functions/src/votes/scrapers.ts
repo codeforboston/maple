@@ -10,24 +10,62 @@ import {
 } from "./scrapeRollCall"
 import * as functions from "firebase-functions"
 import { currentGeneralCourt } from "../shared"
-import { RollCallVote, HouseRollCall, SenateRollCall, Branch } from "./types"
+import {
+  RollCallVote,
+  RollCallResponse,
+  HouseRollCall,
+  SenateRollCall,
+  Branch,
+  LegislativeMemberSummary
+} from "./types"
 import { BulkWriter, Timestamp } from "firebase-admin/firestore"
-import { getRollCall } from "../malegislature"
+import { getRollCall, getRollCalls } from "../malegislature"
+import {
+  AddResult,
+  ScrapeSummary,
+  describeSummary,
+  scrapeList,
+  scrapeSequential
+} from "./scrapeLoop"
 
-async function getHighestProcessedRollCall(branch: Branch): Promise<number> {
-  const lastVote = await db
+/** Roll call numbers already stored for a court and branch. */
+export async function getProcessedRollCalls(
+  court: number,
+  branch: Branch
+): Promise<Set<number>> {
+  const snapshot = await db
     .collection("votes")
     .where("type", "==", "RollCall")
     .where("branch", "==", branch)
-    .where("generalCourtNumber", "==", currentGeneralCourt)
-    .orderBy("rollCallNumber", "desc")
+    .where("generalCourtNumber", "==", court)
     .select("rollCallNumber")
-    .limit(1)
     .get()
+  return new Set(snapshot.docs.map(doc => doc.get("rollCallNumber")))
+}
 
-  // Roll call numbering starts at 1
-  const number = lastVote.empty ? 0 : lastVote.docs[0].get("rollCallNumber")
-  return number
+/** Runs `scrape` with a BulkWriter that is always flushed and closed. */
+async function withWriter(
+  scrape: (writer: BulkWriter) => Promise<ScrapeSummary>
+): Promise<ScrapeSummary> {
+  const writer = db.bulkWriter()
+  try {
+    return await scrape(writer)
+  } finally {
+    await writer.close()
+  }
+}
+
+function logSummary(label: string, summary: ScrapeSummary) {
+  const message = describeSummary(label, summary)
+  if (summary.failed.length || summary.fatal) {
+    functions.logger.error(message)
+  } else {
+    functions.logger.info(message)
+  }
+}
+
+function httpStatus(e: unknown): number | undefined {
+  return (e as { response?: { status?: number } })?.response?.status
 }
 
 export class SenateRollCallScraper {
@@ -61,12 +99,15 @@ export class SenateRollCallScraper {
     writer: BulkWriter,
     court: number,
     rollCallNumber: number
-  ): Promise<string> {
+  ): Promise<AddResult> {
     let rollCall
     try {
       rollCall = await getRollCall(court, "Senate", rollCallNumber)
     } catch (e) {
-      return `fetch error: ${e}`
+      // The API answers 400 for a roll call number that doesn't exist.
+      const status = httpStatus(e)
+      if (status === 400 || status === 404) return { status: "missing" }
+      return { status: "failed", reason: `fetch error: ${e}` }
     }
     const pdfURL = senateDownloadUrl(court, rollCallNumber)
     const bill = await fetchSenateBillNumber(pdfURL)
@@ -85,91 +126,57 @@ export class SenateRollCallScraper {
     const docId = `senate-${court}-${rollCallNumber}`
     writer.set(db.collection("votes").doc(docId), rollCallRewritten)
 
-    for (let i = 0; i < (rollCall.Yeas ?? []).length; i++) {
-      const memberCode = rollCall?.Yeas?.[i]?.MemberCode
-      if (!memberCode) {
-        continue
+    // In the Senate PDFs, members listed as absent appear under
+    // "ABSENT OR NOT VOTING", so "Absent" is stored as the more general
+    // "Not Voting".
+    const groups: [LegislativeMemberSummary[] | undefined, RollCallResponse][] =
+      [
+        [rollCall.Yeas, "Yea"],
+        [rollCall.Nays, "Nay"],
+        [rollCall.Absent, "Not Voting"]
+      ]
+    for (const [members, response] of groups) {
+      for (const member of members ?? []) {
+        const memberCode = member?.MemberCode
+        if (!memberCode) {
+          continue
+        }
+        const voteRewritten: RollCallVote = {
+          response,
+          branch: "Senate",
+          memberCode,
+          generalCourtNumber: court,
+          rollCallNumber
+        }
+        writer.set(
+          db.collection(`votes/${docId}/vote`).doc(memberCode),
+          voteRewritten
+        )
       }
-      const voteRewritten: RollCallVote = {
-        response: "Yea",
-        branch: "Senate",
-        memberCode: memberCode!,
-        generalCourtNumber: court,
-        rollCallNumber
-      }
-      writer.set(
-        db.collection(`votes/${docId}/vote`).doc(memberCode),
-        voteRewritten
-      )
     }
-    for (let i = 0; i < (rollCall.Nays ?? []).length; i++) {
-      const memberCode = rollCall?.Nays?.[i]?.MemberCode
-      if (!memberCode) {
-        continue
-      }
-      const voteRewritten: RollCallVote = {
-        response: "Nay",
-        branch: "Senate",
-        memberCode: memberCode!,
-        generalCourtNumber: court,
-        rollCallNumber
-      }
-      writer.set(
-        db.collection(`votes/${docId}/vote`).doc(memberCode),
-        voteRewritten
-      )
-    }
-    // The senate PDFs, members who are listed as absent
-    // are listed in the section "ABSENT OR NOT VOTING",
-    // so absent is switch to "Not Voting" (the more general
-    // description) here.
-    for (let i = 0; i < (rollCall.Absent ?? []).length; i++) {
-      const memberCode = rollCall?.Absent?.[i]?.MemberCode
-      if (!memberCode) {
-        continue
-      }
-      const voteRewritten: RollCallVote = {
-        response: "Not Voting",
-        branch: "Senate",
-        memberCode: memberCode!,
-        generalCourtNumber: court,
-        rollCallNumber
-      }
-      writer.set(
-        db.collection(`votes/${docId}/vote`).doc(memberCode),
-        voteRewritten
-      )
-    }
-    return "success"
+    return { status: "added" }
+  }
+
+  /** Scrapes the given roll call numbers, replacing any stored copies. */
+  scrapeNumbers(court: number, numbers: number[]): Promise<ScrapeSummary> {
+    return withWriter(writer =>
+      scrapeList(numbers, n => this.addRollCall(writer, court, n))
+    )
+  }
+
+  /** Scrapes every roll call the API lists that isn't stored yet. */
+  async scrapeNew(court: number): Promise<ScrapeSummary> {
+    const listed = (await getRollCalls(court, "Senate")).map(
+      r => r.RollCallNumber
+    )
+    const stored = await getProcessedRollCalls(court, "Senate")
+    const todo = listed.filter(n => !stored.has(n)).sort((a, b) => a - b)
+    return this.scrapeNumbers(court, todo)
   }
 
   private async run() {
-    let rollCallNumber = (await getHighestProcessedRollCall("Senate")) + 1
-
-    const writer = db.bulkWriter()
-
-    let rollcall = await this.addRollCall(
-      writer,
-      currentGeneralCourt,
-      rollCallNumber
-    )
-    while (rollcall === "success") {
-      rollCallNumber += 1
-
-      rollcall = await this.addRollCall(
-        writer,
-        currentGeneralCourt,
-        rollCallNumber
-      )
-    }
-
-    await writer.close()
-
-    if (!rollcall.startsWith("fetch error")) {
-      functions.logger.error(
-        `Error collecting house rollcall ${rollCallNumber}: ${rollcall}`
-      )
-    }
+    const summary = await this.scrapeNew(currentGeneralCourt)
+    logSummary(`Senate roll calls, court ${currentGeneralCourt}`, summary)
   }
 }
 
@@ -177,7 +184,7 @@ export class HouseRollCallScraper {
   private schedule
   private timeout
   private memory
-  private legislators: [string, string][] | null
+  private legislators: Map<number, [string, string][]>
 
   constructor(
     schedule: string = "every 24 hours",
@@ -187,7 +194,7 @@ export class HouseRollCallScraper {
     this.schedule = schedule
     this.timeout = timeout
     this.memory = memory
-    this.legislators = null
+    this.legislators = new Map()
   }
 
   get function() {
@@ -202,32 +209,46 @@ export class HouseRollCallScraper {
     )
   }
 
+  private async loadLegislators(
+    court: number
+  ): Promise<[string, string][] | string> {
+    const cached = this.legislators.get(court)
+    if (cached) return cached
+    const legislators = await getHouseLegislators(court)
+    if (typeof legislators === "string") {
+      return `error collecting legislators: ${legislators}`
+    }
+    if (!legislators.length) {
+      return `no House legislators found in generalCourts/${court}/members`
+    }
+    this.legislators.set(court, legislators)
+    return legislators
+  }
+
   async addRollCall(
     writer: BulkWriter,
     court: number,
     rollCallNumber: number
-  ): Promise<string> {
-    if (!this.legislators) {
-      const legislators = await getHouseLegislators(court)
-      if (typeof legislators === "string") {
-        this.legislators = []
-        return `error collecting legislators: ${legislators}`
-      } else {
-        if (!legislators.length) {
-          return `error no legislators found in database`
-        }
-        this.legislators = legislators
-      }
-    }
-    if (this.legislators!.length === 0) {
-      return "no legislators available"
+  ): Promise<AddResult> {
+    const legislators = await this.loadLegislators(court)
+    if (typeof legislators === "string") {
+      return { status: "fatal", reason: legislators }
     }
     const rollCall = await getHouseRollCall(court, rollCallNumber)
     if (!rollCall) {
-      return "fetch error"
+      return { status: "missing" }
     }
     if (typeof rollCall === "string") {
-      return rollCall
+      return { status: "failed", reason: rollCall }
+    }
+    const names = rollCall.votes.map(
+      vote => [vote.initial, vote.lastName] as [string | null, string]
+    )
+    const ids = translateNames(names, legislators)
+    // Check before writing anything, so a roll call is never stored
+    // without its member votes.
+    if (typeof ids === "string") {
+      return { status: "failed", reason: `matching error: ${ids}` }
     }
     const rollcallRewritten: HouseRollCall = {
       type: "RollCall",
@@ -241,13 +262,6 @@ export class HouseRollCallScraper {
     }
     const docId = `house-${court}-${rollCallNumber}`
     writer.set(db.collection("votes").doc(docId), rollcallRewritten)
-    const names = rollCall.votes.map(
-      vote => [vote.initial, vote.lastName] as [string | null, string]
-    )
-    const ids = translateNames(names, this.legislators)
-    if (typeof ids === "string") {
-      return `matching error: ${ids}`
-    }
     for (let i = 0; i < rollCall.votes.length; i++) {
       const voteRewritten: RollCallVote = {
         response: rollCall.votes[i].vote,
@@ -261,36 +275,31 @@ export class HouseRollCallScraper {
         voteRewritten
       )
     }
-    return "success"
+    return { status: "added" }
+  }
+
+  /** Scrapes the given roll call numbers, replacing any stored copies. */
+  scrapeNumbers(court: number, numbers: number[]): Promise<ScrapeSummary> {
+    return withWriter(writer =>
+      scrapeList(numbers, n => this.addRollCall(writer, court, n))
+    )
+  }
+
+  /**
+   * Scrapes every roll call PDF that isn't stored yet. House numbering
+   * starts at 0 and there is no list endpoint, so this walks upward until
+   * several numbers in a row have no PDF.
+   */
+  async scrapeNew(court: number): Promise<ScrapeSummary> {
+    const stored = await getProcessedRollCalls(court, "House")
+    return withWriter(writer =>
+      scrapeSequential(0, stored, n => this.addRollCall(writer, court, n))
+    )
   }
 
   private async run() {
-    let rollCallNumber = (await getHighestProcessedRollCall("House")) + 1
-
-    const writer = db.bulkWriter()
-
-    let rollcall = await this.addRollCall(
-      writer,
-      currentGeneralCourt,
-      rollCallNumber
-    )
-
-    while ((this.legislators ?? []).length && rollcall === "success") {
-      rollCallNumber += 1
-      rollcall = await this.addRollCall(
-        writer,
-        currentGeneralCourt,
-        rollCallNumber
-      )
-    }
-
-    await writer.close()
-
-    if (!rollcall.startsWith("fetch error")) {
-      functions.logger.error(
-        `Error collecting house rollcall ${rollCallNumber}: ${rollcall}`
-      )
-    }
+    const summary = await this.scrapeNew(currentGeneralCourt)
+    logSummary(`House roll calls, court ${currentGeneralCourt}`, summary)
   }
 }
 

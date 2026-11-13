@@ -23,6 +23,7 @@
   "hearing_scheduled": "Hearing scheduled for {{date}}",
   "no_hearings": "No hearings have been disclosed.",
   "pick_conference": "Choose a conference committee",
+  "rail_closed": "No longer taking input ({{count}})",
   "bill_banner": {
     "appointed": "This bill is in a conference committee: <1>{{name}}</1>",
     "reportFiled": "The conference committee on this bill has filed its report: <1>{{name}}</1>",
@@ -36,6 +37,7 @@
   "chair_col": "Chair",
   "minority_col": "Minority",
   "explorer": "Conference Explorer",
+  "what_is_conference_committee": "What is a conference committee?",
   "explorer_empty": "Select a committee, map area, or toggle to highlight specific legislators.",
   "clear": "Clear",
   "clear_committee": "Clear this committee",
@@ -71,7 +73,7 @@
       }
     ],
     "sources": "From MAPLE’s <1>guide to the legislative process</1> and the legislature’s <3>Joint Rules</3>.",
-    "see": "See the committees"
+    "see": "Browse the committees"
   },
   "bill_text": "Bill Text",
   "version": "Version",
@@ -84,6 +86,7 @@
   "tabs_label": "Sections of this conference committee",
   "tab_committee": "Committee",
   "tab_decided": "Unresolved Text",
+  "tab_resolved": "Resolved Text",
   "tab_input": "Public Input",
   "tab_text": "Bill Text",
   "decided": {
@@ -94,6 +97,62 @@
     "not_in_bill": "Not in the bill",
     "yours_one": "{{who}} is on this committee, <0>{{name}}</0>.",
     "yours_both": "Both of your legislators are on this committee, <0>{{a}}</0> and <1>{{b}}</1>."
+  },
+  "resolved": {
+    "title": "How the conference resolved it",
+    "summary_one": "{{count}} open question · Senate text {{senate}}, House text {{house}}, dropped {{dropped}}, and {{neither}} resolved in words neither chamber passed",
+    "summary_other": "{{count}} open questions · Senate text {{senate}}, House text {{house}}, dropped {{dropped}}, and {{neither}} resolved in words neither chamber passed",
+    "settled_count": " · {{count}} settled beforehand",
+    "bar": "Open questions by resolution. Select a segment to filter.",
+    "segment": "{{label}}: {{count}} of {{total}}",
+    "key": "What the labels mean",
+    "outcome": {
+      "senate": "Senate text",
+      "house": "House text",
+      "combined": "Combined",
+      "modified": "Modified",
+      "new": "New",
+      "dropped": "Dropped"
+    },
+    "meaning": {
+      "senate": "The law follows the Senate's version.",
+      "house": "The law follows the House's version.",
+      "combined": "Assembled from both versions. The result matches neither.",
+      "modified": "One chamber's provision, with substance changed in words neither chamber passed.",
+      "new": "Text that appears in neither chamber's version.",
+      "dropped": "In at least one version, absent from the law.",
+      "edited": "Small wording changes made in conference. The label still holds."
+    },
+    "edited": "Edited",
+    "edited_note": "Edited: {{note}}",
+    "list_title": "What needed to be resolved, and how it was",
+    "list_sub": "Questions are grouped by which chamber's bill addressed them. A provision that only one chamber passed was still an open question for the conference: keep it or drop it.",
+    "show": "Show",
+    "filters": "Filter by resolution",
+    "all": "All",
+    "group": {
+      "both": {
+        "title": "Both chambers wrote different text",
+        "note": "The questions a House-versus-Senate comparison surfaces on its own."
+      },
+      "house": {
+        "title": "Only the House addressed it",
+        "note": "The Senate's bill was silent. The conference chose whether to keep the House text."
+      },
+      "senate": {
+        "title": "Only the Senate addressed it",
+        "note": "The House's bill was silent. The conference chose whether to keep the Senate text."
+      },
+      "neither": {
+        "title": "Neither chamber's bill",
+        "note": "Text that first appeared in the conference report."
+      }
+    },
+    "law": "Law",
+    "why": "Why it matters.",
+    "settled": "Already settled before conference",
+    "settled_note": "Both chambers passed these in substance, and the law kept them.",
+    "kept": "Kept"
   },
   "input": {
     "share": "Share your input",
@@ -196,6 +255,14 @@
     "cosign_continue": "Continue",
     "cosign_replaces": "You have an unposted note on your cosign of {{name}}. You can cosign only one input, so continuing will delete that note and cosign this one instead.",
     "cosign_replaces_gone": "You have an unposted note on another cosign. You can cosign only one input, so continuing will delete that note and cosign this one instead.",
+    "copy_cosign_link": "Copy cosign link",
+    "cosign_link_copied": "Link copied. Anyone who opens it can cosign this input.",
+    "cosign_link_not_copied": "Couldn’t copy the link. Here it is: {{link}}",
+    "cosign_link_removed": "The input this link was for has been removed.",
+    "cosign_link_not_cosignable": "This input can’t be cosigned.",
+    "cosign_link_closed": "This conference is no longer taking input, so this input can’t be cosigned.",
+    "cosign_link_filed": "You’ve already given input on this conference, so you can’t cosign more.",
+    "cosign_link_drafting": "You’ve started input of your own on this conference, so you can’t cosign while it’s drafted.",
     "cosigned": "cosigned",
     "cosign_including_you": ", including you! ",
     "cosign_view_yours": "View input",

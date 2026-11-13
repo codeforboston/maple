@@ -1,11 +1,13 @@
 import * as fs from "fs"
 import * as yaml from "js-yaml"
 import * as path from "path"
-import { Boolean, Optional, Record, String } from "runtypes"
+import { Boolean, Optional, Record, Runtype, String } from "runtypes"
 import {
   Conference,
-  conferenceCountFields
+  conferenceCountFields,
+  conferenceResolutionFields
 } from "../../functions/src/conferences/types"
+import { hasReport } from "../../functions/src/shared/conferences"
 import { Script } from "./types"
 
 /**
@@ -42,9 +44,10 @@ export const script: Script = async ({ db, args }) => {
     const conf = checked.value
     // The document is the YAML as written, so a misspelt key would land in
     // Firestore beside the field it meant to set.
-    const unknown = Object.keys(raw).filter(k => !(k in Conference.fields))
+    const unknown = unknownKeys(Conference, raw)
     if (unknown.length)
       errors.push(`${file}: unknown field(s) ${unknown.join(", ")}`)
+    errors.push(...resolutionErrors(conf).map(e => `${file}: ${e}`))
     // getConferenceForBill picks the field to query from the bill's prefix.
     if (!conf.senateBillId.startsWith("S") || !conf.houseBillId.startsWith("H"))
       errors.push(
@@ -155,4 +158,55 @@ export const script: Script = async ({ db, args }) => {
     console.log(`${toSet.length + toDelete.length} write(s) committed`)
   }
   return { set: toSet, delete: toDelete, warnings }
+}
+
+/** Keys the runtype has no field for, at any depth, by path. runtypes
+ * records let extra keys through. */
+function unknownKeys(type: Runtype, value: unknown, at = ""): string[] {
+  const r = type.reflect
+  const under = (k: string | number) =>
+    typeof k === "number" ? `${at}[${k}]` : at ? `${at}.${k}` : k
+  if (r.tag === "optional") return unknownKeys(r.underlying, value, at)
+  if (r.tag === "array" && Array.isArray(value))
+    return value.flatMap((v, i) => unknownKeys(r.element, v, under(i)))
+  if (r.tag === "record" && value && typeof value === "object")
+    return Object.entries(value).flatMap(([k, v]) =>
+      k in r.fields ? unknownKeys(r.fields[k], v, under(k)) : [under(k)]
+    )
+  return []
+}
+
+/** Once the report is filed, every question says how the law resolved it;
+ * before, none can. */
+function resolutionErrors(conf: Conference) {
+  const errors: string[] = []
+  conf.differences.forEach((d, i) => {
+    const at = `differences[${i}]`
+    if (!hasReport(conf)) {
+      const set = conferenceResolutionFields.filter(k => d[k] !== undefined)
+      if (set.length)
+        errors.push(`${at}: ${set.join(", ")} before a report is filed`)
+      return
+    }
+    if (!d.outcome || !d.addressedBy) {
+      errors.push(`${at}: outcome and addressedBy once a report is filed`)
+      return
+    }
+    if (d.edited && !["senate", "house", "combined"].includes(d.outcome))
+      errors.push(`${at}: edited goes only with senate, house or combined`)
+    if ((d.outcome === "new") !== (d.addressedBy === "neither"))
+      errors.push(
+        `${at}: outcome new goes with addressedBy neither, and only it`
+      )
+    // A question one bill alone took up can't end in the other's text.
+    if (
+      (d.addressedBy === "senate" || d.addressedBy === "house") &&
+      (d.outcome === "senate" || d.outcome === "house") &&
+      d.outcome !== d.addressedBy
+    )
+      errors.push(
+        `${at}: outcome ${d.outcome} on a question only the ${d.addressedBy} took up`
+      )
+  })
+  return errors
 }

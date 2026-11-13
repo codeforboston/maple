@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
-import { jumpTo } from "./navbar"
+import { jumpTo, putHash } from "./navbar"
 
 /** The mockup's theme.css values, for the colours the site has no token for. */
 const ink = { strong: "#141413", mid: "#73726c" }
@@ -42,8 +42,15 @@ const Tab = styled.a`
 
 /** The page's sections, as the mockup's tab row: each tab scrolls to its
  * section, and the one being read is underlined. A row of one has nothing to
- * choose between, so it is left out. */
-export function ConferenceTabs({ sections }: { sections: readonly string[] }) {
+ * choose between, so it is left out. A section's label is its `tab_` string
+ * unless `labels` names another. */
+export function ConferenceTabs({
+  sections,
+  labels = {}
+}: {
+  sections: readonly string[]
+  labels?: Partial<Record<string, string>>
+}) {
   const { t } = useTranslation("conferences")
   const [current, setCurrent] = useState(sections[0])
 
@@ -106,15 +113,10 @@ export function ConferenceTabs({ sections }: { sections: readonly string[] }) {
             if (!el) return
             e.preventDefault()
             jumpTo(el)
-            // Next's state kept: on Back to a null-state entry Next only
-            // rewrites the URL, leaving the page it came from on screen.
-            // Its as path takes the hash, since Back restores that path.
-            const state = history.state
-            const as = state?.as && `${state.as.split("#")[0]}#${s}`
-            history.replaceState(as ? { ...state, as } : state, "", `#${s}`)
+            putHash(s)
           }}
         >
-          {t(`tab_${s}`)}
+          {t(labels[s] ?? `tab_${s}`)}
         </Tab>
       ))}
     </Row>

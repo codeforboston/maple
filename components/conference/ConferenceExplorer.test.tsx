@@ -153,6 +153,13 @@ const row = (container: HTMLElement, name: string) =>
   within(table(container)).getByText(name).closest("tr")!
 
 describe("ConferenceExplorer", () => {
+  it("leads back to what a conference committee is", () => {
+    render(<ConferenceExplorer {...props} />)
+    expect(
+      screen.getByRole("link", { name: "what_is_conference_committee" })
+    ).toHaveAttribute("href", "/conferences")
+  })
+
   it("lists every conference and lights every conferee's seat", () => {
     const { container } = render(<ConferenceExplorer {...props} />)
     expect(table(container).querySelectorAll("tbody tr")).toHaveLength(2)

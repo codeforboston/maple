@@ -1,6 +1,5 @@
 import "@testing-library/jest-dom"
 import { act, fireEvent, render, screen, within } from "@testing-library/react"
-import Router from "next/router"
 import { ConferenceDetails } from "./ConferenceDetails"
 import type { ConferencePageProps } from "./types"
 
@@ -37,16 +36,36 @@ jest.mock("next-i18next", () => ({
 }))
 
 let asPath = "/conferences/194/data-privacy"
+let mockQuery: Record<string, string> = {}
+const mockReplace = jest.fn(async () => true)
 jest.mock("next/router", () => ({
-  __esModule: true,
-  default: { events: { on: jest.fn() } },
-  useRouter: () => ({ asPath })
+  useRouter: () => ({ asPath, query: mockQuery, replace: mockReplace })
 }))
-/** Next starting a change of address, as the hooks hear it. */
-const routeChangeStart = (url: string) =>
-  jest.mocked(Router.events.on).mock.calls[0][1](url)
 
 jest.mock("usehooks-ts", () => ({ useMediaQuery: () => false }))
+// react-markdown ships ESM only. This reads one link, as the gist writes it.
+jest.mock("react-markdown", () => ({
+  __esModule: true,
+  default: ({
+    children,
+    components
+  }: {
+    children: string
+    components?: { a?: React.ComponentType<any> }
+  }) => {
+    const match = children.match(/\[([^\]]+)\]\(([^)]+)\)/)
+    const Link = components?.a ?? "a"
+    return match ? (
+      <p>
+        {children.slice(0, match.index)}
+        <Link href={match[2]}>{match[1]}</Link>
+        {children.slice((match.index ?? 0) + match[0].length)}
+      </p>
+    ) : (
+      <p>{children}</p>
+    )
+  }
+}))
 
 let mockLegislators = false
 jest.mock("../featureFlags", () => ({
@@ -98,8 +117,10 @@ jest.mock("components/api/report", () => ({
 }))
 jest.mock("components/TestimonyCard/ReportModal", () => ({}))
 jest.mock("components/TestimonyCard/ReportToast", () => () => null)
+// The panel stands for itself by its title, open or not.
 jest.mock("./input/Panel", () => ({
-  Panel: () => null,
+  Panel: ({ open, title }: { open: boolean; title: string }) =>
+    open ? <div role="dialog" aria-label={title} /> : null,
   usePanelWidth: () => ({ width: 480, drag: jest.fn() })
 }))
 const mockDispatch = jest.fn()
@@ -145,6 +166,16 @@ const conference: ConferencePageProps["conference"] = {
   status: "appointed",
   covered: true,
   reportBillId: null
+}
+
+/** A question before any report: nothing on how it was resolved. */
+const unresolved = {
+  outcome: null,
+  edited: null,
+  addressedBy: null,
+  resolution: null,
+  law: null,
+  why: null
 }
 
 const props: ConferencePageProps = {
@@ -233,13 +264,15 @@ const props: ConferencePageProps = {
       heading: "Social media ban",
       senate: null,
       house: "Regulates social media companies under Chapter 93M.",
-      notes: { "Chapter 93M": ["Platforms must bar users under 14."] }
+      notes: { "Chapter 93M": ["Platforms must bar users under 14."] },
+      ...unresolved
     },
     {
       heading: "Use or possession",
       senate: "Bans use and possession.",
       house: "Bans use.",
-      notes: {}
+      notes: {},
+      ...unresolved
     }
   ],
   similarities: [
@@ -270,75 +303,31 @@ describe("ConferenceDetails", () => {
 
   beforeEach(() => {
     asPath = "/conferences/194/data-privacy"
-    // Arriving by a link, unless a test says otherwise.
-    routeChangeStart("/conferences/194/elsewhere")
     window.scrollTo = jest.fn()
   })
 
   afterEach(() => {
     mockUser = undefined
     mockItems = []
+    mockQuery = {}
+    mockReplace.mockClear()
+    mockDispatch.mockClear()
     window.scrollTo = scrollTo
-    Object.defineProperty(window, "scrollY", { value: 0, configurable: true })
   })
 
-  it("leaves a reader Back brought, even to the top, then re-lands them on a new address", () => {
-    routeChangeStart(location.pathname)
-    const { rerender } = render(<ConferenceDetails {...props} />)
-    expect(window.scrollTo).not.toHaveBeenCalled()
-
-    asPath = "/conferences/194/other"
-    rerender(<ConferenceDetails {...props} />)
-    expect(window.scrollTo).toHaveBeenCalledWith(
-      expect.objectContaining({ behavior: "auto" })
-    )
-  })
-
-  it("lands a reader a link brought, scrolled or not, at the conference", () => {
-    // A rail click from the landing keeps the landing's scroll; Next starts
-    // the change before the address moves.
-    Object.defineProperty(window, "scrollY", { value: 900, configurable: true })
-    routeChangeStart("/conferences/194/data-privacy")
+  it("has one h1, the conference's, and no hero above it", () => {
     render(<ConferenceDetails {...props} />)
-    expect(window.scrollTo).toHaveBeenCalledWith(
-      expect.objectContaining({ behavior: "auto" })
-    )
-    // Back has moved it already.
-    jest.mocked(window.scrollTo).mockClear()
-    routeChangeStart(location.pathname)
-    render(<ConferenceDetails {...props} />)
-    expect(window.scrollTo).not.toHaveBeenCalled()
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1)
+    expect(
+      screen.queryByRole("heading", { name: "hero.steps.0.h" })
+    ).not.toBeInTheDocument()
   })
 
-  it("has one h1: the conference's, or the hero's on the landing", () => {
-    const { unmount } = render(<ConferenceDetails {...props} />)
-    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1)
-    unmount()
-    render(<ConferenceDetails {...props} openOnHero />)
-    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1)
-  })
-
-  it("opens a conference's address at the conference, under the hero", () => {
+  it("leads back to what a conference committee is", () => {
     render(<ConferenceDetails {...props} />)
     expect(
-      screen.getByRole("heading", { name: "hero.steps.0.h" })
-    ).toBeInTheDocument()
-    expect(window.scrollTo).toHaveBeenCalledWith(
-      expect.objectContaining({ top: 0, behavior: "auto" })
-    )
-  })
-
-  it("opens the landing on the hero and links to the explorer", () => {
-    render(<ConferenceDetails {...props} openOnHero />)
-    expect(screen.getAllByRole("listitem").length).toBeGreaterThanOrEqual(5)
-    expect(screen.getByRole("link", { name: "explorer" })).toHaveAttribute(
-      "href",
-      "/conferences/explorer"
-    )
-    fireEvent.click(screen.getByRole("button", { name: /hero.see/ }))
-    expect(window.scrollTo).toHaveBeenLastCalledWith(
-      expect.objectContaining({ behavior: "smooth" })
-    )
+      screen.getByRole("link", { name: "what_is_conference_committee" })
+    ).toHaveAttribute("href", "/conferences")
   })
 
   it("names the six, the chairs, the bills and the hearing", () => {
@@ -536,6 +525,117 @@ describe("ConferenceDetails", () => {
     }
   })
 
+  describe("a link to cosign an input", () => {
+    const letter = {
+      id: "t1",
+      authorUid: "org",
+      authorDisplayName: "Example Coalition",
+      fullName: "Example Coalition",
+      authorRole: "organization",
+      position: "passSomething",
+      content: "The letter.",
+      publishedAt: { toDate: () => new Date(2026, 9, 1) }
+    }
+    const address = "/conferences/194/student-learning-and-mental-health"
+    // The page drops ?cosign from its address without moving the reader.
+    const letGo = () =>
+      expect(mockReplace).toHaveBeenCalledWith(address, undefined, {
+        shallow: true,
+        scroll: false
+      })
+    beforeEach(() => {
+      mockItems = [letter]
+      mockQuery = { cosign: "t1" }
+      // Landing on Your Input asks whether to move smoothly.
+      window.matchMedia = jest.fn(() => ({ matches: true })) as never
+    })
+
+    it("opens the cosign panel for a signed-in reader, and lets go of the link", () => {
+      mockUser = { uid: "reader", emailVerified: true }
+      render(<ConferenceDetails {...props} />)
+      expect(
+        screen.getByRole("dialog", { name: "input.panel_title" })
+      ).toBeInTheDocument()
+      letGo()
+    })
+
+    it("sends a signed-out reader to sign in once, keeping the link, and picks up after", () => {
+      const { rerender } = render(<ConferenceDetails {...props} />)
+      expect(mockDispatch).toHaveBeenCalledTimes(1)
+      expect(mockDispatch).toHaveBeenCalledWith(
+        expect.objectContaining({ payload: "start" })
+      )
+      expect(mockReplace).not.toHaveBeenCalled()
+
+      mockUser = { uid: "reader", emailVerified: true }
+      rerender(<ConferenceDetails {...props} />)
+      expect(
+        screen.getByRole("dialog", { name: "input.panel_title" })
+      ).toBeInTheDocument()
+      expect(mockDispatch).toHaveBeenCalledTimes(1)
+    })
+
+    it("waits for a new account's email to be verified", () => {
+      mockUser = { uid: "reader", emailVerified: false }
+      render(<ConferenceDetails {...props} />)
+      expect(mockDispatch).toHaveBeenCalledWith(
+        expect.objectContaining({ payload: "verifyEmail" })
+      )
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+      expect(mockReplace).not.toHaveBeenCalled()
+    })
+
+    it("asks a reader who signs in to an unverified account to verify", () => {
+      const { rerender } = render(<ConferenceDetails {...props} />)
+      mockUser = { uid: "reader", emailVerified: false }
+      rerender(<ConferenceDetails {...props} />)
+      expect(mockDispatch).toHaveBeenCalledTimes(2)
+      expect(mockDispatch).toHaveBeenLastCalledWith(
+        expect.objectContaining({ payload: "verifyEmail" })
+      )
+    })
+
+    const says = (why: string) => {
+      expect(screen.getByRole("status")).toHaveTextContent(
+        `input.cosign_link_${why}`
+      )
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+      letGo()
+    }
+
+    it("says the input has been removed", () => {
+      mockQuery = { cosign: "gone" }
+      render(<ConferenceDetails {...props} />)
+      says("removed")
+    })
+
+    it("says the conference has closed, without asking a reader to sign in", () => {
+      const reported = { ...conference, status: "reportFiled" as const }
+      render(<ConferenceDetails {...props} conference={reported} />)
+      says("closed")
+      expect(mockDispatch).not.toHaveBeenCalled()
+    })
+
+    it("says a legislator's input or a cosign can't be cosigned", () => {
+      mockItems = [{ ...letter, authorRole: "legislator" }]
+      render(<ConferenceDetails {...props} />)
+      says("not_cosignable")
+    })
+
+    it("says a reader who has filed here can't cosign, the author included", () => {
+      mockUser = { uid: "org", emailVerified: true }
+      render(<ConferenceDetails {...props} />)
+      says("filed")
+    })
+
+    it("can be dismissed", () => {
+      mockQuery = { cosign: "gone" }
+      render(<ConferenceDetails {...props} />)
+      fireEvent.click(screen.getByRole("button", { name: "input.close" }))
+      expect(screen.queryByRole("status")).not.toBeInTheDocument()
+    })
+  })
+
   it("leads from its tabs to its sections", () => {
     const { container } = render(<ConferenceDetails {...props} />)
     const tabs = within(screen.getByRole("navigation", { name: "tabs_label" }))
@@ -607,6 +707,19 @@ describe("ConferenceDetails", () => {
       expect(screen.getByText("Bans use.")).toBeInTheDocument()
     })
 
+    it("links a markdown link in the gist, out to a new tab", () => {
+      render(
+        <ConferenceDetails
+          {...props}
+          gist="Voters passed [Question 1](https://example.org/q1) in November."
+        />
+      )
+      const link = screen.getByRole("link", { name: "Question 1" })
+      expect(link).toHaveAttribute("href", "https://example.org/q1")
+      expect(link).toHaveAttribute("target", "_blank")
+      expect(link).toHaveAttribute("rel", "noopener noreferrer")
+    })
+
     it("opens a term's note on hover", () => {
       render(<ConferenceDetails {...props} />)
       fireEvent.pointerEnter(screen.getByText("Chapter 93M"))
@@ -650,12 +763,173 @@ describe("ConferenceDetails", () => {
       )
     })
 
+    it("says nothing of how it was resolved before a report", () => {
+      render(<ConferenceDetails {...props} />)
+      expect(screen.queryByText("resolved.title")).not.toBeInTheDocument()
+      expect(screen.getByText("decided.title")).toBeInTheDocument()
+      expect(
+        screen.getByRole("link", { name: "tab_decided" })
+      ).toBeInTheDocument()
+    })
+
     it("leaves the section and its tab out where nothing is written", () => {
       render(
         <ConferenceDetails {...props} differences={[]} similarities={[]} />
       )
       expect(screen.queryByText("decided.title")).not.toBeInTheDocument()
       expect(screen.queryByText("tab_decided")).not.toBeInTheDocument()
+    })
+  })
+
+  describe("how the conference resolved it", () => {
+    afterEach(() => {
+      delete (window as Partial<Window>).matchMedia
+    })
+    const question = {
+      senate: "The Senate's text.",
+      house: "The House's text.",
+      notes: {},
+      ...unresolved
+    }
+    const resolved: ConferencePageProps = {
+      ...props,
+      conference: { ...conference, status: "enacted", reportBillId: "H5350" },
+      differences: [
+        {
+          ...question,
+          heading: "Who appoints the commissioners?",
+          outcome: "combined",
+          addressedBy: "both",
+          resolution: "The governor appoints all three.",
+          law: "The House structure, with a new proviso.",
+          why: "One official chooses every commissioner."
+        },
+        {
+          ...question,
+          heading: "Are commissioners full time?",
+          outcome: "senate",
+          addressedBy: "both",
+          edited: "One word cut",
+          resolution: "All three, as the Senate wrote.",
+          law: "The Senate's rule."
+        },
+        {
+          ...question,
+          heading: "How are hemp drinks regulated?",
+          senate: "No study.",
+          outcome: "dropped",
+          addressedBy: "house",
+          resolution: "Left out.",
+          law: "Not in the law."
+        },
+        {
+          ...question,
+          heading: "When does it take effect?",
+          senate: null,
+          house: null,
+          outcome: "new",
+          addressedBy: "neither",
+          resolution: "On signing.",
+          law: "An emergency preamble."
+        }
+      ]
+    }
+    const shownQuestions = () =>
+      screen
+        .getAllByRole("button", { expanded: false })
+        .map(b => b.textContent!)
+        .filter(text => text.includes("?"))
+
+    it("counts the outcomes over a bar, and keys the labels", () => {
+      render(<ConferenceDetails {...resolved} />)
+      const card = screen.getByRole("region", { name: "resolved.title" })
+      // Senate 1, House 0, dropped 1, and 2 in words neither passed.
+      expect(card).toHaveTextContent(
+        "resolved.summary 4 1 0 1 2resolved.settled_count 1"
+      )
+      const bar = screen.getByRole("group", { name: "resolved.bar" })
+      expect(
+        Array.from(bar.querySelectorAll("button")).map(b =>
+          b.getAttribute("aria-label")
+        )
+      ).toEqual([
+        "resolved.segment resolved.outcome.senate 1 4",
+        "resolved.segment resolved.outcome.combined 1 4",
+        "resolved.segment resolved.outcome.new 1 4",
+        "resolved.segment resolved.outcome.dropped 1 4"
+      ])
+      expect(card).toHaveTextContent("resolved.meaning.modified")
+    })
+
+    it("groups the questions by which bills took them up", () => {
+      render(<ConferenceDetails {...resolved} />)
+      expect(screen.getByText("resolved.list_title")).toBeInTheDocument()
+      expect(
+        screen.getByRole("link", { name: "tab_resolved" })
+      ).toBeInTheDocument()
+      expect(
+        screen
+          .getAllByRole("heading", { level: 3 })
+          .map(h => h.textContent)
+          .filter(h => h?.startsWith("resolved."))
+      ).toEqual([
+        "resolved.group.both.title (2)",
+        "resolved.group.house.title (1)",
+        "resolved.group.neither.title (1)",
+        "resolved.settled"
+      ])
+      expect(screen.getByText("resolved.kept")).toBeInTheDocument()
+    })
+
+    it("filters from the bar or the row, and the bar's segment again clears it", () => {
+      // The bar's segment jumps to the questions, which asks after motion.
+      window.matchMedia = jest.fn(() => ({ matches: true })) as any
+      render(<ConferenceDetails {...resolved} />)
+      const segment = screen.getByRole("button", {
+        name: "resolved.segment resolved.outcome.dropped 1 4"
+      })
+      fireEvent.click(segment)
+      expect(window.scrollTo).toHaveBeenCalled()
+      expect(shownQuestions()).toEqual([
+        expect.stringContaining("How are hemp drinks regulated?")
+      ])
+      expect(segment).toHaveAttribute("aria-pressed", "true")
+      const row = screen.getByRole("group", { name: "resolved.filters" })
+      expect(
+        within(row).getByRole("button", { pressed: true })
+      ).toHaveTextContent("resolved.outcome.dropped 1")
+      fireEvent.click(segment)
+      expect(shownQuestions()).toHaveLength(4)
+      fireEvent.click(
+        within(row).getByRole("button", { name: "resolved.outcome.new 1" })
+      )
+      expect(shownQuestions()).toEqual([
+        expect.stringContaining("When does it take effect?")
+      ])
+    })
+
+    it("marks the outcome and any edit, and opens to the bills and the law", () => {
+      render(<ConferenceDetails {...resolved} />)
+      const fullTime = screen.getByRole("button", {
+        name: /Are commissioners full time\?/
+      })
+      expect(fullTime).toHaveTextContent("All three, as the Senate wrote.")
+      expect(fullTime).toHaveTextContent("resolved.outcome.senate")
+      expect(fullTime).toHaveTextContent("resolved.edited_note One word cut")
+      fireEvent.click(
+        screen.getByRole("button", { name: /Who appoints the commissioners/ })
+      )
+      expect(
+        screen.getByText("The House structure, with a new proviso.")
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText("One official chooses every commissioner.")
+      ).toBeInTheDocument()
+      // A silent chamber's card still says what its bill lacked.
+      fireEvent.click(
+        screen.getByRole("button", { name: /How are hemp drinks regulated/ })
+      )
+      expect(screen.getByText("No study.")).toBeInTheDocument()
     })
   })
 

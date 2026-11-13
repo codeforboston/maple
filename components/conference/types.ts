@@ -1,5 +1,10 @@
 import type { Branch } from "../../functions/src/common"
-import type { ConferenceStatus } from "../../functions/src/conferences/types"
+import { isSitting } from "../../functions/src/shared"
+import type {
+  ConferenceAddressedBy,
+  ConferenceOutcome,
+  ConferenceStatus
+} from "../../functions/src/conferences/types"
 import type { EventSummary } from "../db/events"
 
 /** The chambers in the order every view shows them: Senate first. */
@@ -43,12 +48,18 @@ export const personKey = (c: ConfereeView) => c.seat ?? c.memberCode
 export type HearingView = Pick<EventSummary, "id" | "eventId" | "startsAt">
 
 /** One point the chambers disagree on; a chamber's text is null where its
- * bill has nothing on it. */
+ * bill has nothing on it. Once a report is filed, how the law resolved it. */
 export type DifferenceView = {
   heading: string
   senate: string | null
   house: string | null
   notes: Record<string, string[]>
+  outcome: ConferenceOutcome | null
+  edited: string | null
+  addressedBy: ConferenceAddressedBy | null
+  resolution: string | null
+  law: string | null
+  why: string | null
 }
 
 /** One point where the two texts match. */
@@ -62,7 +73,7 @@ export type ConferencePageProps = {
   conferences: ConferenceSummary[]
   conferees: ConfereeView[]
   hearings: HearingView[]
-  /** What the bill is, in one sentence; null where none is written. */
+  /** What the bill is, in markdown; null where none is written. */
   gist: string | null
   differences: DifferenceView[]
   similarities: SimilarityView[]
@@ -78,10 +89,17 @@ export type ConferenceIndexProps = {
 }
 
 /** The short name where there is one, else the act title. */
-export const conferenceName = (c: { name?: string | null; title: string }) =>
-  c.name?.trim() || c.title.trim()
+export const conferenceName = (c: Named) => c.name?.trim() || c.title.trim()
+
+type Named = { name?: string | null; title: string }
+
+/** Alphabetical by the name a conference goes by. */
+export const byName = (a: Named, b: Named) =>
+  conferenceName(a).localeCompare(conferenceName(b))
 
 /** The ordering the rail uses: still sitting first, then finished. */
 export const byActivity = (a: ConferenceSummary, b: ConferenceSummary) =>
-  Number(b.status === "appointed") - Number(a.status === "appointed") ||
-  conferenceName(a).localeCompare(conferenceName(b))
+  Number(isSitting(b)) - Number(isSitting(a)) || byName(a, b)
+
+/** The conference the landing's button opens. */
+export type ConferenceLanding = Pick<ConferenceSummary, "court" | "id">

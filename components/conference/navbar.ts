@@ -35,14 +35,11 @@ export function jumpTo(el: HTMLElement) {
     parseFloat(getComputedStyle(el).scrollMarginTop) -
     bottomAt(window.scrollY, bar)
   const top = el.getBoundingClientRect().top + window.scrollY - below
-  // The hero's snap, on near the conference's top, would snap the landing
-  // too, holding a jump to a section further down short of it. Off for the
-  // jump; the hero turns it back on near the top.
-  document.documentElement.style.scrollSnapType = ""
+  // Short of where the navbar lets go it is there on arrival, taking its
+  // height; past it, it is gone. Partly gone has no resting place to aim at.
+  const to = top <= bar.letsGo ? top - bar.height : top
   window.scrollTo({
-    // Short of where the navbar lets go it is there on arrival, taking its
-    // height; past it, it is gone. Partly gone has no resting place to aim at.
-    top: top <= bar.letsGo ? top - bar.height : top,
+    top: to,
     behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
       ? "auto"
       : "smooth"
@@ -54,5 +51,14 @@ export function jumpTo(el: HTMLElement) {
 export function jumpToSection(id: string) {
   const el = document.getElementById(id)
   if (el) jumpTo(el)
-  history.replaceState(null, "", `${location.pathname}#${id}`)
+  putHash(id)
+}
+
+/** Puts a section's id in the address, keeping Next's state: on Back to a
+ * null-state entry Next only rewrites the URL, leaving the page it came from
+ * on screen. Its as path takes the hash, since Back restores that path. */
+export function putHash(id: string) {
+  const state = history.state
+  const as = state?.as && `${state.as.split("#")[0]}#${id}`
+  history.replaceState(as ? { ...state, as } : state, "", `#${id}`)
 }

@@ -2,18 +2,19 @@ import { GetServerSideProps } from "next"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import { currentGeneralCourt } from "functions/src/shared"
 import { flags } from "components/featureFlags"
-import { ConferenceDetails } from "components/conference/ConferenceDetails"
-import { loadLandingPage } from "components/conference/load"
-import { ConferencePageProps } from "components/conference/types"
-import { maple } from "components/links"
+import { ConferenceHero } from "components/conference/ConferenceHero"
+import { loadLanding } from "components/conference/load"
+import { ConferenceLanding } from "components/conference/types"
 import { createPage } from "../../components/page"
 
-export default createPage<ConferencePageProps>({
+type Props = { landing: ConferenceLanding | null }
+
+export default createPage<Props>({
   titleI18nKey: "titles.conferences",
-  Page: props => <ConferenceDetails {...props} openOnHero />
+  Page: ({ landing }) => <ConferenceHero landing={landing} />
 })
 
-export const getServerSideProps: GetServerSideProps = async ctx => {
+export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
   if (!flags().conferences) return { notFound: true }
   ctx.res.setHeader(
     "Cache-Control",
@@ -21,16 +22,12 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   )
 
   const locale = ctx.locale ?? ctx.defaultLocale ?? "en"
-  const [page, translations] = await Promise.all([
-    loadLandingPage(currentGeneralCourt),
+  const [landing, translations] = await Promise.all([
+    loadLanding(currentGeneralCourt),
     serverSideTranslations(locale, ["auth", "common", "footer", "conferences"])
   ])
-  // A court with no conferences yet has nothing to open on; the explorer says
-  // so, where a 404 would leave the navbar's link dead.
-  if (!page)
-    return {
-      redirect: { destination: maple.conferenceExplorer(), permanent: false }
-    }
 
-  return { props: { ...page, ...translations } }
+  // A court with no conferences yet still has the hero, with the explorer
+  // its only way on.
+  return { props: { landing, ...translations } }
 }
