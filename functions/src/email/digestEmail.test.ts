@@ -52,7 +52,7 @@ describe("digest email, conferences", () => {
       "https://mapletestimony.org/conferences/194/phones#input"
     )
     expect(html).toContain("Phone-Free Schools")
-    expect(html).toContain("New Input")
+    expect(html).toContain("New Inputs")
     expect(html).toMatch(/2<\/td>\s*<td[^>]*>Please pass something/)
     expect(html).toContain("Don&#x27;t pass anything")
   })
@@ -75,7 +75,9 @@ describe("digest email, conferences", () => {
       numConferencesWithNewTestimony: 6
     })
     expect(html).toContain(
-      "2 other conference committees you follow received testimony"
+      "2 other conference committees you follow received input"
     )
+    expect(html).toContain("New Input")
+    expect(html).not.toContain("New Inputs")
   })
 })

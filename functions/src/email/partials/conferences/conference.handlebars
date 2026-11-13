@@ -14,7 +14,11 @@
       </div>
       <div style="height: 20px; font-weight: 700; font-size: 16px; line-height: 125%;
                   letter-spacing: 0.015em; color: #3E3E3E; margin: auto; text-align: center">
-        New Input
+        {{#ifGreaterThan this.newTestimonyCount 1}}
+          New Inputs
+        {{else}}
+          New Input
+        {{/ifGreaterThan}}
       </div>
       <table style="margin: 16px auto 14px auto; font-size: 14px; font-weight: 700;
                     line-height: 125%; color: #000000; text-align: left">
