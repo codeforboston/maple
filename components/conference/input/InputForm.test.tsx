@@ -83,7 +83,7 @@ describe("InputForm", () => {
         conferees={[]}
         edit={edit}
         subject="Phone-Free Schools"
-        step="compose"
+        step="write"
         onStep={jest.fn()}
         onCancel={jest.fn()}
         onPosted={jest.fn()}
@@ -136,6 +136,27 @@ describe("InputForm", () => {
       expect(
         screen.getByRole("button", { name: "input.post" })
       ).toBeInTheDocument()
+    })
+
+    it("starts the next edit without the last one's reason", async () => {
+      const edit = editing({
+        publication: { id: "t1", position: "passSomething", content: "Pass." },
+        draft: {
+          position: "passSomething",
+          content: "Pass it, please.",
+          editReason: "Clearer"
+        }
+      })
+      review(edit)
+      const reason = screen.getByPlaceholderText("publish.reasonPlaceholder")
+      expect(reason).toHaveValue("Clearer")
+      await act(async () =>
+        fireEvent.click(
+          screen.getByRole("button", { name: "review.post_and_send" })
+        )
+      )
+      expect(edit.publishTestimony.execute).toHaveBeenCalled()
+      expect(reason).toHaveValue("")
     })
 
     it("keeps another reply-to address on the draft, for this letter alone", async () => {

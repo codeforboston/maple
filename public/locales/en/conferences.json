@@ -278,7 +278,6 @@
     "cosign_optional": "Optional",
     "cosign_prompt": "Why does this matter to you? One or two sentences in your own words will have more impact with lawmakers.",
     "cosign_no_words_label": "I do not want to add input of my own",
-    "cosign_save": "Save Cosign",
     "cosign_edit_title": "Edit Your Cosign",
     "cosign_parent_gone": "The input you are cosigning has been removed, so your cosign could not be filed.",
     "cosign_closed": "This conference committee is no longer taking input, so your cosign could not be filed.",
@@ -315,7 +314,6 @@
     "subject": "Subject",
     "post_and_send": "Post and Send",
     "cosign_and_send": "Cosign and Send",
-    "back": "Back to Editing",
     "reply_to_invalid": "That doesn’t look like an email address.",
     "no_line": "You didn’t add a line of your own. That’s fine: your cosign still counts. A sentence about why it matters to you tends to carry more weight with legislators.",
     "add_line": "Add a line"
