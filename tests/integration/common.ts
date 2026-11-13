@@ -91,6 +91,36 @@ export async function deleteOrg(id: string) {
 
 export const createFakeBill = () => createNewBill().then(b => b)
 
+/** A conference on `billId`, taking input unless `fields` say otherwise. */
+export async function createConference(
+  billId: string,
+  fields: Record<string, unknown> = {}
+) {
+  const id = `conference-${nanoid()}`.toLowerCase()
+  await testDb
+    .doc(`/generalCourts/${currentGeneralCourt}/conferences/${id}`)
+    .set({
+      id,
+      court: currentGeneralCourt,
+      title: "Test conference",
+      senateBillId: billId,
+      houseBillId: "H1",
+      canonicalBillId: billId,
+      conferees: [],
+      status: "appointed",
+      hearingIds: [],
+      differences: [],
+      similarities: [],
+      testimonyCount: 0,
+      passNothingCount: 0,
+      passSomethingCount: 0,
+      passSenateVersionCount: 0,
+      passHouseVersionCount: 0,
+      ...fields
+    })
+  return id
+}
+
 export async function expectPermissionDenied(work: Promise<any>) {
   const warn = console.warn
   console.warn = jest.fn()

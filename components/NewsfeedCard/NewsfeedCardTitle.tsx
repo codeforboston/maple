@@ -9,6 +9,10 @@ interface NewsfeedCardTitleProps {
   billId?: string
   /** Set on testimony to a committee of conference: its conference page */
   conferenceHref?: string
+  /** The conference's name, for a reader who follows it */
+  conferenceName?: string | null
+  /** The testimony cosigns another */
+  cosigned?: boolean
   court?: string
   header?: string
   subheader?: string
@@ -17,6 +21,7 @@ interface NewsfeedCardTitleProps {
   inHeaderElement?: ReactElement
   isBallotQuestionMatch?: boolean
   isBillMatch?: boolean
+  isConferenceMatch?: boolean
   isUserMatch?: boolean
   type?: string
   userRole?: string
@@ -28,10 +33,13 @@ export const NewsfeedCardTitle = (props: NewsfeedCardTitleProps) => {
     authorUid,
     billId,
     conferenceHref,
+    conferenceName,
+    cosigned,
     court,
     header,
     isBillMatch,
     isBallotQuestionMatch,
+    isConferenceMatch,
     isUserMatch,
     subheader,
     type,
@@ -47,6 +55,7 @@ export const NewsfeedCardTitle = (props: NewsfeedCardTitleProps) => {
           authorUid={authorUid}
           billId={billId}
           conferenceHref={conferenceHref}
+          cosigned={cosigned}
           court={court}
           header={header}
           subheader={subheader}
@@ -55,7 +64,9 @@ export const NewsfeedCardTitle = (props: NewsfeedCardTitleProps) => {
         {isNewsfeed ? (
           <CardTitleFollowing
             billId={billId}
+            conferenceName={conferenceName}
             header={header}
+            isConferenceMatch={isConferenceMatch}
             isBallotQuestionMatch={isBallotQuestionMatch}
             subheader={subheader}
             isBillMatch={isBillMatch}
@@ -102,9 +113,22 @@ const CardHeaderImg = (props: NewsfeedCardTitleProps) => {
 }
 
 const CardTitleHeadline = (props: NewsfeedCardTitleProps) => {
-  const { authorUid, billId, conferenceHref, court, header, subheader, type } =
-    props
+  const {
+    authorUid,
+    billId,
+    conferenceHref,
+    cosigned,
+    court,
+    header,
+    subheader,
+    type
+  } = props
   const { t } = useTranslation("common")
+  const action = !conferenceHref
+    ? "newsfeed.endorsed"
+    : cosigned
+    ? "newsfeed.conferenceCosign"
+    : "newsfeed.conferenceInput"
 
   switch (type) {
     case "testimony":
@@ -118,11 +142,7 @@ const CardTitleHeadline = (props: NewsfeedCardTitleProps) => {
                 <strong>{subheader}</strong>
               </Internal>
 
-              {t(
-                conferenceHref
-                  ? "newsfeed.conferenceInput"
-                  : "newsfeed.endorsed"
-              )}
+              {t(action)}
               <a href={conferenceHref ?? `/bills/${court}/${billId}`}>
                 {billId && <strong>{formatBillId(billId)}</strong>}
               </a>
@@ -166,9 +186,11 @@ const CardTitleHeadline = (props: NewsfeedCardTitleProps) => {
 const CardTitleFollowing = (props: NewsfeedCardTitleProps) => {
   const {
     billId,
+    conferenceName,
     header,
     isBallotQuestionMatch,
     isBillMatch,
+    isConferenceMatch,
     isUserMatch,
     subheader,
     type
@@ -210,6 +232,21 @@ const CardTitleFollowing = (props: NewsfeedCardTitleProps) => {
           </CardBootstrap.Title>
         )}
       </>
+    )
+  } else if (isConferenceMatch) {
+    return (
+      <CardBootstrap.Title
+        className={`align-items-start fs-6 lh-sm mb-1 text-body-tertiary`}
+      >
+        {t("newsfeed.follow")}
+        <strong>{conferenceName || header}</strong>
+        {isUserMatch && (
+          <>
+            {t("newsfeed.and")}
+            {subheader}
+          </>
+        )}
+      </CardBootstrap.Title>
     )
   } else if (isBillMatch && isUserMatch) {
     return (

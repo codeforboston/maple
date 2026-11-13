@@ -15,3 +15,9 @@ export const isSitting = (c: Pick<Conference, "status">) =>
  * existed counts as covered. */
 export const takesTestimony = (c: Pick<Conference, "status" | "covered">) =>
   isSitting(c) && c.covered !== false
+
+type Named = { name?: string | null; title?: string | null }
+
+/** The short name where there is one, else the act title. */
+export const conferenceName = (c: Named) =>
+  c.name?.trim() || c.title?.trim() || ""

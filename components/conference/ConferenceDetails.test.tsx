@@ -128,6 +128,16 @@ jest.mock("../hooks", () => ({ useAppDispatch: () => mockDispatch }))
 // A card's actions reach for the report API; the page's own tests do not.
 jest.mock("./input/Kebab", () => ({ Kebab: () => null }))
 jest.mock("./input/EntryModal", () => ({ EntryModal: () => null }))
+// Following has its own tests; here it is a switch.
+let mockFollowVisible = false
+jest.mock("./FollowConference", () => ({
+  ...jest.requireActual("./FollowConference"),
+  useConferenceFollow: () => ({
+    visible: mockFollowVisible,
+    following: false,
+    toggle: jest.fn()
+  })
+}))
 jest.mock("./input/useFollowedAuthors", () => ({
   useFollowedAuthors: () => new Set()
 }))
@@ -443,6 +453,39 @@ describe("ConferenceDetails", () => {
     ).not.toBeInTheDocument()
     // Public Input stays for the input it was given.
     expect(screen.getByText("input.empty_title")).toBeInTheDocument()
+  })
+
+  describe("the Follow control", () => {
+    afterEach(() => {
+      mockFollowVisible = false
+    })
+
+    it("sits beside the title's button while the conference takes input", () => {
+      mockFollowVisible = true
+      render(<ConferenceDetails {...props} />)
+      const follow = screen.getByRole("button", { name: "follow.follow" })
+      const [share] = screen.getAllByRole("button", { name: "input.share" })
+      expect(follow.parentElement).toBe(share.parentElement)
+    })
+
+    it("stands alone on a closed conference, where it is shown", () => {
+      mockFollowVisible = true
+      const enacted = { ...conference, status: "enacted" as const }
+      render(<ConferenceDetails {...props} conference={enacted} />)
+      expect(
+        screen.getByRole("button", { name: "follow.follow" })
+      ).toBeInTheDocument()
+      expect(
+        screen.queryByRole("button", { name: "input.share" })
+      ).not.toBeInTheDocument()
+    })
+
+    it("is absent where the hook hides it", () => {
+      render(<ConferenceDetails {...props} />)
+      expect(
+        screen.queryByRole("button", { name: "follow.follow" })
+      ).not.toBeInTheDocument()
+    })
   })
 
   it("greys the title's button once the reader has filed", () => {

@@ -21,3 +21,9 @@ export function splitMemberName(fullName: string) {
 
 export const extractLastName = (fullName: string) =>
   splitMemberName(fullName).surname
+
+/** The name a piece of testimony is shown under. */
+export const nameOf = (t: {
+  fullName?: string | null
+  authorDisplayName?: string | null
+}) => t.fullName || t.authorDisplayName || ""

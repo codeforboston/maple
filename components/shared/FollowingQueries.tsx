@@ -14,6 +14,11 @@ export const billTopicName = (court: number, billId: string) =>
 export const profileTopicName = (profileId: string) => `testimony-${profileId}`
 export const ballotQuestionTopicName = (court: number, id: string) =>
   `ballot-question-${court}-${id}`
+export const conferenceTopicName = (court: number, id: string) =>
+  `conference-${court}-${id}`
+
+/** What following a conference needs to know of it. */
+export type ConferenceRef = { id: string; court: number }
 
 export const followBill = async (uid: string | undefined, bill: Bill) => {
   const topicName = billTopicName(bill.court, bill.id)
@@ -81,6 +86,28 @@ export const unfollowBallotQuestion = async (
     uid,
     ballotQuestionTopicName(ballotQuestion.court, ballotQuestion.id)
   )
+
+export const followConference = async (
+  uid: string | undefined,
+  conference: ConferenceRef
+) => {
+  const topicName = conferenceTopicName(conference.court, conference.id)
+  await setDoc(getTopicRef(uid, topicName), {
+    topicName,
+    uid,
+    conferenceLookup: {
+      conferenceId: conference.id,
+      court: conference.court
+    },
+    type: "conference"
+  })
+}
+
+export const unfollowConference = async (
+  uid: string | undefined,
+  conference: ConferenceRef
+) =>
+  await unfollowTopic(uid, conferenceTopicName(conference.court, conference.id))
 
 export const followsTopic = async (
   uid: string | undefined,

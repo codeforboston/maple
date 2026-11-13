@@ -19,6 +19,7 @@ import styled from "styled-components"
 import { ConferenceByline } from "./ConferenceByline"
 import { ConferenceCommittee } from "./ConferenceCommittee"
 import { ConferenceDifferences } from "./ConferenceDifferences"
+import { FollowConferenceButton, useConferenceFollow } from "./FollowConference"
 import { ConferencePicker } from "./ConferencePicker"
 import { ClosedFold, ConferenceRail } from "./ConferenceRail"
 import { ConferenceResolution, OutcomeFilter } from "./ConferenceResolution"
@@ -78,18 +79,18 @@ const Shift = styled.div`
  * button; level with the title itself where there is no button. Below md the
  * picker stands for the title, with the link over it and the button under it
  * at the left. */
-const TitleRow = styled.div<{ $taking: boolean }>`
+const TitleRow = styled.div<{ $actions: boolean }>`
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-areas: ${({ $taking }) =>
-    $taking ? `". link" "title share"` : `"title link"`};
+  grid-template-areas: ${({ $actions }) =>
+    $actions ? `". link" "title share"` : `"title link"`};
   align-items: center;
   gap: 0.5rem 24px;
 
   @media (max-width: 767.98px) {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: ${({ $taking }) =>
-      $taking ? `"link" "picker" "share"` : `"link" "picker"`};
+    grid-template-areas: ${({ $actions }) =>
+      $actions ? `"link" "picker" "share"` : `"link" "picker"`};
   }
 `
 
@@ -100,6 +101,9 @@ const Picker = styled.div`
 const Share = styled.div`
   grid-area: share;
   justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 18px;
 
   @media (max-width: 767.98px) {
     justify-self: start;
@@ -264,6 +268,8 @@ function Details({
   const followed = useFollowedAuthors(user?.uid)
   const subject = conferenceName(conference)
   const taking = takesTestimony(conference)
+  const follow = useConferenceFollow(conference)
+  const actions = taking || follow.visible
   const decided = differences.length > 0 || similarities.length > 0
   // Once the report is filed, each question says how the law resolved it.
   const resolved = hasReport(conference) && differences.length > 0
@@ -485,7 +491,7 @@ function Details({
           />
           <Main ref={main}>
             <TitleBand ref={band} $top="var(--maple-navbar-height)" $z={14}>
-              <TitleRow $taking={taking}>
+              <TitleRow $actions={actions}>
                 <Picker className="d-md-none">
                   <ConferencePicker
                     conferences={conferences}
@@ -495,9 +501,17 @@ function Details({
                 </Picker>
                 <PageTitle>{subject}</PageTitle>
                 <OverviewLink />
-                {taking && (
+                {actions && (
                   <Share>
-                    <ShareButton onClick={share} disabled={Boolean(mine)} />
+                    {follow.visible && (
+                      <FollowConferenceButton
+                        following={follow.following}
+                        toggle={follow.toggle}
+                      />
+                    )}
+                    {taking && (
+                      <ShareButton onClick={share} disabled={Boolean(mine)} />
+                    )}
                   </Share>
                 )}
               </TitleRow>

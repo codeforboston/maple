@@ -1,4 +1,7 @@
 import { Timestamp } from "firebase/firestore"
+import type { CosignOf } from "functions/src/notifications/types"
+
+export type { CosignOf }
 
 export type NotificationProps = {
   authorUid: string // Testimony author
@@ -25,6 +28,9 @@ export type NotificationProps = {
   ballotStatus?: string
   // Set on testimony to a committee of conference
   conferenceId?: string | null
+  conferenceName?: string | null
+  isConferenceMatch?: boolean // is subscribed to the conference
+  cosignOf?: CosignOf | null // set when the testimony cosigns another
 }
 
 export type Notifications = NotificationProps[]

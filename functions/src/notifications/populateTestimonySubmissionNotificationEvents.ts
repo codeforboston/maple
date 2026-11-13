@@ -12,8 +12,47 @@ import {
 } from "firebase-functions/v2/firestore"
 import * as logger from "firebase-functions/logger"
 import { db, Timestamp } from "../firebase"
+import { conferenceName, nameOf } from "../shared"
 import { Testimony } from "../testimony/types"
-import { TestimonySubmissionNotification } from "./types"
+import { CosignOf, TestimonySubmissionNotification } from "./types"
+
+/** The conference's name for headings, as the site shows it: its short name,
+ * falling back to its title. Null when the document is missing, so the
+ * notification still goes out. */
+const conferenceNameOf = async (court: number, conferenceId: string) => {
+  const snap = await db
+    .doc(`/generalCourts/${court}/conferences/${conferenceId}`)
+    .get()
+  const data = snap.data()
+  return (data && conferenceName(data)) || null
+}
+
+/** The most of a cosigned input the newsfeed quotes; the event, and each
+ * follower's copy of it, carries no more. */
+const QUOTE_LENGTH = 600
+
+/** What a cosign cosigns, as it reads now, for the newsfeed to quote. Null
+ * when the testimony isn't a cosign or the cosigned testimony is gone, so the
+ * notification still goes out. */
+const cosignOfIn = async ({
+  cosignOfId,
+  cosignOfAuthorUid
+}: Testimony): Promise<CosignOf | null> => {
+  if (!cosignOfId || !cosignOfAuthorUid) return null
+  const snap = await db
+    .doc(`/users/${cosignOfAuthorUid}/publishedTestimony/${cosignOfId}`)
+    .get()
+  const data = snap.data()
+  if (!data) return null
+  const content: string = data.content ?? ""
+  return {
+    authorName: nameOf(data),
+    content:
+      content.length > QUOTE_LENGTH
+        ? `${content.slice(0, QUOTE_LENGTH)}...`
+        : content
+  }
+}
 
 export const populateTestimonySubmissionNotificationEventsHandler = async (
   event: FirestoreEvent<
@@ -49,6 +88,11 @@ export const populateTestimonySubmissionNotificationEventsHandler = async (
     const testimony = checked.value
 
     const bqId = testimony.ballotQuestionId ?? null
+    const conferenceId = testimony.conferenceId ?? null
+    const [conferenceName, cosignOf] = await Promise.all([
+      conferenceId ? conferenceNameOf(testimony.court, conferenceId) : null,
+      cosignOfIn(testimony)
+    ])
 
     const newNotificationEvent: TestimonySubmissionNotification = {
       type: "testimony",
@@ -67,7 +111,9 @@ export const populateTestimonySubmissionNotificationEventsHandler = async (
 
       ballotQuestionId: bqId,
       ballotQuestionCourt: bqId ? testimony.court : null,
-      conferenceId: testimony.conferenceId ?? null,
+      conferenceId,
+      conferenceName,
+      cosignOf,
 
       updateTime: Timestamp.now()
     }

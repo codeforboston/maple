@@ -4,6 +4,8 @@ import { EmailTemplateRenderer } from "./EmailTemplateRenderer"
 import {
   BillDigest,
   BillResult,
+  CONFERENCE_STANCES,
+  ConferenceDigest,
   NotificationEmailDigest,
   UserDigest
 } from "functions/src/notifications/emailTypes"
@@ -145,10 +147,34 @@ const users = [
   generateTestUserData("QDPq42rNB0O6wqVzfMmDHmNE8sN3", "Iranout Ofnameideas", 3)
 ]
 
+// Invented conference committees, counted by stance.
+const conferenceStances = (counts: number[]) =>
+  Object.values(CONFERENCE_STANCES).map((stance, i) => ({
+    stance,
+    count: counts[i]
+  }))
+const conferences: ConferenceDigest[] = [
+  {
+    conferenceId: "quiet-libraries",
+    conferenceName: "Quiet Libraries",
+    court: "194",
+    newTestimonyCount: 6,
+    stances: conferenceStances([3, 1, 0, 2])
+  },
+  {
+    conferenceId: "harbor-ferries",
+    conferenceName: "Harbor Ferries",
+    court: "194",
+    newTestimonyCount: 1,
+    stances: conferenceStances([0, 0, 1, 0])
+  }
+]
+
 const generateTestData = (
   frequency: Exclude<Frequency, "None">,
   numBills: number,
-  numUsers: number
+  numUsers: number,
+  numConferences = 0
 ): NotificationEmailDigest => {
   const endDateDay = {
     Monthly: "30",
@@ -164,7 +190,9 @@ const generateTestData = (
     numBillsWithNewTestimony: numBills,
     numUsersWithNewTestimony: numUsers,
     ballotQuestions: [],
-    numBallotQuestionsWithNewTestimony: 0
+    numBallotQuestionsWithNewTestimony: 0,
+    conferences: conferences.slice(0, numConferences),
+    numConferencesWithNewTestimony: numConferences
   }
 }
 
@@ -188,6 +216,10 @@ export const DailyDigest: Story = createDigestStory(
 )
 export const OnlyBills: Story = createDigestStory(
   generateTestData("Weekly", 5, 0)
+)
+
+export const OnlyConferences: Story = createDigestStory(
+  generateTestData("Weekly", 0, 0, 2)
 )
 
 export const OnlyUsers: Story = createDigestStory(
