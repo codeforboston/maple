@@ -10,6 +10,7 @@ import {
 } from "./NewsfeedCardBody"
 import NewsfeedCardTitle from "./NewsfeedCardTitle"
 import { maple } from "components/links"
+import { CosignOf } from "../Newsfeed/NotificationProps"
 
 const Container = styled.div`
   max-width: 700px;
@@ -23,6 +24,7 @@ export const NewsfeedCard = (props: {
   bodyText: string
   conferenceId?: string | null
   conferenceName?: string | null
+  cosignOf?: CosignOf | null
   court?: string
   header: string
   isBallotQuestionMatch?: boolean
@@ -75,6 +77,7 @@ export const NewsfeedCard = (props: {
       <NewsfeedConferenceTestimonyCardBody
         billText={props.header}
         conferenceHref={conferenceHref}
+        cosignOf={props.cosignOf}
         position={props.position}
         text={props.bodyText}
         timestamp={formattedTimestamp}

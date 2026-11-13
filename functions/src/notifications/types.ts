@@ -15,6 +15,15 @@ export type BillHistoryUpdateNotification = Notification & {
   billHistory: BillHistory
 }
 
+/** The testimony a cosign cosigns, as it read when the cosign was published,
+ * so the newsfeed can quote it. */
+export type CosignOf = {
+  id: string
+  authorUid: string
+  authorName: string
+  content: string
+}
+
 export type TestimonySubmissionNotification = Notification & {
   type: "testimony"
   userId: string
@@ -29,6 +38,8 @@ export type TestimonySubmissionNotification = Notification & {
   conferenceId?: string | null
   /** The conference's name for headings, set with conferenceId. */
   conferenceName?: string | null
+  /** Set on a cosign whose cosigned testimony still exists. */
+  cosignOf?: CosignOf | null
 }
 
 export interface TestimonySubmissionNotificationFields {
@@ -55,6 +66,7 @@ export interface TestimonySubmissionNotificationFields {
     ballotQuestionCourt?: number | null
     conferenceId?: string | null
     conferenceName?: string | null
+    cosignOf?: CosignOf | null
   }
   createdAt: FirebaseFirestore.Timestamp
 }

@@ -253,6 +253,7 @@ export default function Newsfeed() {
                             bodyText={element.bodyText}
                             conferenceId={element.conferenceId}
                             conferenceName={element.conferenceName}
+                            cosignOf={element.cosignOf}
                             court={element.court}
                             header={element.header}
                             isBillMatch={element.isBillMatch}

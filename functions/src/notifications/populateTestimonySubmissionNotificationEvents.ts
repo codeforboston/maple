@@ -14,7 +14,7 @@ import * as logger from "firebase-functions/logger"
 import { db, Timestamp } from "../firebase"
 import { conferenceName } from "../shared"
 import { Testimony } from "../testimony/types"
-import { TestimonySubmissionNotification } from "./types"
+import { CosignOf, TestimonySubmissionNotification } from "./types"
 
 /** The conference's name for headings, as the site shows it: its short name,
  * falling back to its title. Null when the document is missing, so the
@@ -25,6 +25,28 @@ const conferenceNameOf = async (court: number, conferenceId: string) => {
     .get()
   const data = snap.data()
   return (data && conferenceName(data)) || null
+}
+
+/** What a cosign cosigns, as it reads now, for the newsfeed to quote. Null
+ * when the testimony isn't a cosign or the cosigned testimony is gone, so the
+ * notification still goes out. */
+const cosignOfIn = async ({
+  cosignOfId,
+  cosignOfAuthorUid
+}: Testimony): Promise<CosignOf | null> => {
+  if (!cosignOfId || !cosignOfAuthorUid) return null
+  const snap = await db
+    .doc(`/users/${cosignOfAuthorUid}/publishedTestimony/${cosignOfId}`)
+    .get()
+  const data = snap.data()
+  return data
+    ? {
+        id: cosignOfId,
+        authorUid: cosignOfAuthorUid,
+        authorName: data.fullName ?? "",
+        content: data.content ?? ""
+      }
+    : null
 }
 
 export const populateTestimonySubmissionNotificationEventsHandler = async (
@@ -62,6 +84,10 @@ export const populateTestimonySubmissionNotificationEventsHandler = async (
 
     const bqId = testimony.ballotQuestionId ?? null
     const conferenceId = testimony.conferenceId ?? null
+    const [conferenceName, cosignOf] = await Promise.all([
+      conferenceId ? conferenceNameOf(testimony.court, conferenceId) : null,
+      cosignOfIn(testimony)
+    ])
 
     const newNotificationEvent: TestimonySubmissionNotification = {
       type: "testimony",
@@ -81,9 +107,8 @@ export const populateTestimonySubmissionNotificationEventsHandler = async (
       ballotQuestionId: bqId,
       ballotQuestionCourt: bqId ? testimony.court : null,
       conferenceId,
-      conferenceName: conferenceId
-        ? await conferenceNameOf(testimony.court, conferenceId)
-        : null,
+      conferenceName,
+      cosignOf,
 
       updateTime: Timestamp.now()
     }

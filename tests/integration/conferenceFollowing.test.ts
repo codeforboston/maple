@@ -15,7 +15,8 @@ import {
   deleteBill,
   expectPermissionDenied,
   signInUser1,
-  signInUser2
+  signInUser2,
+  signInUser3
 } from "./common"
 
 afterAll(terminateFirebase)
@@ -126,4 +127,58 @@ describe("following a conference", () => {
 
     await subscription(follower.uid, topicName).delete()
   }, 30000)
+
+  it("sends a cosign with the input it cosigns, even with no line of its own", async () => {
+    const follower = await signInUser2()
+    await followConference(follower.uid, { id: conferenceId, court })
+
+    const author = await signInUser1()
+    const lead = await publishInput(author.uid, {
+      content: "Keep the libraries quiet.",
+      position: "passSenateVersion"
+    })
+
+    const cosigner = await signInUser3()
+    const cosign = await publishInput(cosigner.uid, {
+      content: "",
+      position: "passSenateVersion",
+      cosignOfId: lead,
+      cosignOfAuthorUid: author.uid
+    })
+
+    await waitFor(
+      async () => {
+        const feed = await feedFor(follower.uid, cosign)
+        expect(feed.size).toBe(1)
+        expect(feed.docs[0].data().notification).toMatchObject({
+          isConferenceMatch: true,
+          bodyText: "",
+          cosignOf: {
+            id: lead,
+            authorUid: author.uid,
+            authorName: expect.any(String),
+            content: "Keep the libraries quiet."
+          }
+        })
+      },
+      { timeout: 20000, interval: 500 }
+    )
+
+    await subscription(follower.uid, topicName).delete()
+  }, 30000)
+
+  /** Publishes input on the conference as the signed-in user. */
+  async function publishInput(uid: string, fields: Record<string, unknown>) {
+    const draftId = nanoid()
+    await setDoc(doc(firestore, `/users/${uid}/draftTestimony/${draftId}`), {
+      billId,
+      court,
+      attachmentId: null,
+      ballotQuestionId: null,
+      conferenceId,
+      ...fields
+    })
+    const { data } = await publishTestimony({ draftId })
+    return data.publicationId
+  }
 })

@@ -141,6 +141,66 @@ describe("NewsfeedCard", () => {
     )
   })
 
+  describe("a cosign", () => {
+    const cosignOf = {
+      id: "lead",
+      authorUid: "author2",
+      authorName: "Grace",
+      content: "Pass a strong final bill this session."
+    }
+    const quoted = () => document.querySelector("blockquote")
+
+    it("is tagged, with its own line first and the cosigned input under it", () => {
+      render(
+        <NewsfeedCard
+          {...testimony}
+          bodyText="As a parent, this matters to me."
+          conferenceId="phones"
+          cosignOf={cosignOf}
+          position="passSomething"
+        />
+      )
+
+      expect(screen.getByText("newsfeed.cosigned")).toBeInTheDocument()
+      const line = screen.getByText('"As a parent, this matters to me."')
+      const credit = screen.getByText("newsfeed.cosignedInput")
+      expect(
+        line.compareDocumentPosition(credit) & Node.DOCUMENT_POSITION_FOLLOWING
+      ).toBeTruthy()
+      expect(quoted()).toHaveTextContent(cosignOf.content)
+    })
+
+    it("shows the cosigned input without an empty quote when it has no line", () => {
+      render(
+        <NewsfeedCard
+          {...testimony}
+          bodyText=""
+          conferenceId="phones"
+          cosignOf={cosignOf}
+          position="passSomething"
+        />
+      )
+
+      expect(screen.getByText("newsfeed.cosigned")).toBeInTheDocument()
+      expect(screen.queryByText('""')).toBeNull()
+      expect(screen.getByText("newsfeed.cosignedInput")).toBeInTheDocument()
+      expect(quoted()).toHaveTextContent(cosignOf.content)
+    })
+
+    it("isn't tagged on input that cosigns nothing", () => {
+      render(
+        <NewsfeedCard
+          {...testimony}
+          conferenceId="phones"
+          position="passSomething"
+        />
+      )
+
+      expect(screen.queryByText("newsfeed.cosigned")).toBeNull()
+      expect(quoted()).toBeNull()
+    })
+  })
+
   it("keeps bill testimony on its bill, testimony page and thumbs", () => {
     render(<NewsfeedCard {...testimony} position="endorse" />)
 

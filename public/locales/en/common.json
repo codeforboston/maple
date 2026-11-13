@@ -160,6 +160,8 @@
     "notFollowEither": "You do not follow either",
     "conferenceInput": " gave input to the conference committee on ",
     "conferenceInputPost": "Input Posted ",
+    "cosigned": "Cosigned",
+    "cosignedInput": "Cosigned {{name}}’s input:",
     "endorsed": " endorsed ",
     "endorsementPost": "Endorsement Posted ",
     "follow": "You follow ",

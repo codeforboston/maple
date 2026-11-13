@@ -77,7 +77,8 @@ const createNotificationFields = (
           ballotQuestionId: entity.ballotQuestionId ?? null,
           ballotQuestionCourt: entity.ballotQuestionCourt ?? null,
           conferenceId: entity.conferenceId ?? null,
-          conferenceName: entity.conferenceName ?? null
+          conferenceName: entity.conferenceName ?? null,
+          cosignOf: entity.cosignOf ?? null
         },
         createdAt: Timestamp.now()
       }

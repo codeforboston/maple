@@ -64,6 +64,12 @@ const setupConference = (data: object | undefined) =>
     get: jest.fn().mockResolvedValue({ data: () => data })
   })
 
+/** Documents the handler reads, by path; any other path is missing. */
+const setupDocs = (byPath: Record<string, object>) =>
+  mockDb.doc.mockImplementation((path: string) => ({
+    get: jest.fn().mockResolvedValue({ data: () => byPath[path] })
+  }))
+
 beforeEach(() => {
   jest.clearAllMocks()
 })
@@ -142,6 +148,78 @@ describe("populateTestimonySubmissionNotificationEventsHandler", () => {
     expect(mockDb.doc).not.toHaveBeenCalled()
     expect(mockAdd).toHaveBeenCalledWith(
       expect.objectContaining({ conferenceId: null, conferenceName: null })
+    )
+  })
+
+  describe("on a cosign", () => {
+    const cosign = (content = "") =>
+      makeTestimony({
+        conferenceId: "phones",
+        position: "passSomething",
+        content,
+        cosignOfId: "lead-id",
+        cosignOfAuthorUid: "lead-uid"
+      })
+
+    it("carries the input it cosigns, credited to its author", async () => {
+      setupCollection(true)
+      setupDocs({
+        "/generalCourts/194/conferences/phones": { name: "Phone-Free Schools" },
+        "/users/lead-uid/publishedTestimony/lead-id": {
+          fullName: "Lead Author",
+          content: "Keep phones out of classrooms."
+        }
+      })
+
+      await populateTestimonySubmissionNotificationEventsHandler(
+        makeEvent(null, cosign()) as any
+      )
+
+      expect(mockAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          conferenceName: "Phone-Free Schools",
+          testimonyContent: "",
+          cosignOf: {
+            id: "lead-id",
+            authorUid: "lead-uid",
+            authorName: "Lead Author",
+            content: "Keep phones out of classrooms."
+          }
+        })
+      )
+    })
+
+    it("still goes out when the cosigned input is gone", async () => {
+      setupCollection(true)
+      setupDocs({})
+
+      await populateTestimonySubmissionNotificationEventsHandler(
+        makeEvent(null, cosign("My own line.")) as any
+      )
+
+      expect(mockAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          testimonyContent: "My own line.",
+          cosignOf: null
+        })
+      )
+    })
+  })
+
+  it("reads nothing more for testimony that cosigns nothing", async () => {
+    setupCollection(true)
+    setupConference({ name: "Phone-Free Schools" })
+
+    await populateTestimonySubmissionNotificationEventsHandler(
+      makeEvent(
+        null,
+        makeTestimony({ conferenceId: "phones", position: "passSomething" })
+      ) as any
+    )
+
+    expect(mockDb.doc).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledWith(
+      expect.objectContaining({ cosignOf: null })
     )
   })
 
