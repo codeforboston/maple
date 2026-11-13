@@ -278,7 +278,7 @@
 .hearingsActionDesktop:focus-visible,
 .hearingsActionMobile:hover,
 .hearingsActionMobile:focus-visible {
-  background: #f0f2f8;
+  background: #f9fafb;
   color: var(--maple-brand-primary-strong);
 }
 
@@ -883,9 +883,9 @@
 
 :root .primaryAction:hover,
 :root .primaryAction:focus-visible {
-  background: var(--maple-surface-base);
-  border-color: var(--maple-brand-primary);
-  color: var(--maple-brand-primary);
+  background: var(--maple-brand-primary-strong);
+  border-color: var(--maple-brand-primary-strong);
+  color: var(--maple-text-inverse);
 }
 
 :root .secondaryAction {
@@ -1277,6 +1277,11 @@
    it reads as the same size as the solid button beside it. */
 .heroSection.heroStatehouse .secondaryAction {
   border-color: rgba(15, 23, 42, 0.18);
+}
+
+.heroSection.heroStatehouse .secondaryAction:hover,
+.heroSection.heroStatehouse .secondaryAction:focus-visible {
+  border-color: rgba(15, 23, 42, 0.26);
 }
 
 /* Side by side (from 901px), the white button 1px taller above and below

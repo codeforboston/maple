@@ -1139,6 +1139,15 @@
   margin-left: 1rem;
 }
 
+:root .main-navbar .btn-primary:hover,
+:root .main-navbar .btn-primary:focus-visible {
+  background-color: #f9fafb;
+  border: 2px solid var(--maple-brand-primary);
+  color: var(--maple-brand-primary-strong);
+  padding: calc(var(--bs-btn-padding-y) - 1px)
+    calc(var(--bs-btn-padding-x) - 1px);
+}
+
 /* The desktop menus' carets centred on their words' lowercase letters,
    rather than Bootstrap's 0.255em up, and the account menu's on the avatar
    beside it. */
