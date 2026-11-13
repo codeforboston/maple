@@ -10,6 +10,8 @@ import { auth, firestore, functions, storage } from "../../components/firebase"
 import { terminateFirebase, testDb, testStorage } from "../testUtils"
 import { script as backfillTestimonyScope } from "../../scripts/firebase-admin/backfillTestimonyScope"
 import { resolveReport } from "components/db"
+import { compileWeeklyUpdates } from "functions/src/conferenceUpdates/compileWeeklyUpdates"
+import { weekWindow } from "functions/src/conferenceUpdates/weeklyUpdate"
 import {
   createFakeBill,
   createNewReport,
@@ -572,6 +574,25 @@ describe("publishTestimony", () => {
       const bill = await getBill(billId)
       expect(bill.testimonyCount).toBe(0)
       expect(bill.latestTestimonyId).toBeUndefined()
+    })
+
+    it("Keeps a reply-to address on the private draft, never on the publication", async () => {
+      const { draftId: conferenceDraftId } = await createConferenceDraft(
+        uid,
+        billId,
+        conferenceId,
+        "passSenateVersion"
+      )
+      await updateDoc(refs.draftTestimony(uid, conferenceDraftId), {
+        replyTo: "reader.work@example.org"
+      })
+      const res = await publishTestimony({ draftId: conferenceDraftId })
+
+      const draft = await getDoc(refs.draftTestimony(uid, conferenceDraftId))
+      expect(draft.data()?.replyTo).toBe("reader.work@example.org")
+      const publication = await getPublication(uid, res.data.publicationId)
+      expect(publication).not.toHaveProperty("replyTo")
+      expect(JSON.stringify(publication)).not.toContain("reader.work")
     })
 
     it("Keeps bill and conference testimony on the same bill apart", async () => {
@@ -1401,6 +1422,236 @@ describe("publishTestimony", () => {
   })
 })
 
+describe("conference weekly update", () => {
+  const env = { ...process.env }
+  afterEach(() => {
+    process.env = { ...env }
+  })
+
+  const eventsOf = (conferenceId: string) =>
+    testDb
+      .collection("/conferenceInputEvents")
+      .where("conferenceId", "==", conferenceId)
+      .get()
+
+  /** The conference's input from `author`, in `position`. */
+  const fileInput = async (
+    author: () => Promise<User>,
+    billId: string,
+    conferenceId: string,
+    position: BaseTestimony["position"]
+  ) => {
+    const { uid } = await author()
+    const { draftId } = await createConferenceDraft(
+      uid,
+      billId,
+      conferenceId,
+      position
+    )
+    const res = await publishTestimony({ draftId })
+    return { uid, draftId, publicationId: res.data.publicationId }
+  }
+
+  /** The `i`th conferee, whose member document has `address`; null stands
+   * for a member document without one. */
+  const conferee = async (address: string | null, i = 0) => {
+    const memberCode = `T${nanoid(6)}`
+    await testDb
+      .doc(`/generalCourts/${currentGeneralCourt}/members/${memberCode}`)
+      .set({
+        id: memberCode,
+        content: { Name: `Test Member${i}`, EmailAddress: address }
+      })
+    return {
+      memberCode,
+      branch: i % 2 ? ("House" as const) : ("Senate" as const),
+      chair: i < 2
+    }
+  }
+
+  it("compiles one update from a week of changes", async () => {
+    process.env.GCLOUD_PROJECT = "digital-testimony-prod"
+    const conferenceId = await createConference(billId, "appointed", [
+      await conferee("one@example.org")
+    ])
+    const first = await fileInput(
+      signInUser1,
+      billId,
+      conferenceId,
+      "passSenateVersion"
+    )
+    const second = await fileInput(
+      signInUser2,
+      billId,
+      conferenceId,
+      "passHouseVersion"
+    )
+    await signInUser1()
+    await updateDoc(refs.draftTestimony(first.uid, first.draftId), {
+      position: "passNothing",
+      editReason: "Changed my mind"
+    })
+    await publishTestimony({ draftId: first.draftId })
+    await signInTestAdmin()
+    await deleteTestimony({
+      uid: second.uid,
+      publicationId: second.publicationId
+    })
+
+    await waitFor(
+      async () => expect((await eventsOf(conferenceId)).size).toBe(4),
+      { timeout: 20000 }
+    )
+
+    // The week these events fall in is the one before next Monday.
+    const now = weekWindow(new Date()).week.plus({ weeks: 2, hours: 1 })
+    const weekStart = weekWindow(now.toJSDate()).week.toISODate()
+    const path = `/legislatorMail/${currentGeneralCourt}_${conferenceId}_${weekStart}`
+    await compileWeeklyUpdates(now.toJSDate())
+
+    const update = (await testDb.doc(path).get()).data() as any
+    expect(update.kind).toBe("conferenceUpdate")
+    expect(update.standing.total).toBe(1)
+    expect(update.standing.byPosition.passNothing).toBe(1)
+    expect(update.changes).toMatchObject({
+      added: 2,
+      edited: 1,
+      withdrawn: 1
+    })
+    expect(update.changes.net.total).toBe(1)
+    expect(update.html).toContain(
+      `https://mapletestimony.org/conferences/${currentGeneralCourt}/${conferenceId}`
+    )
+
+    // A second run in the same week sends and records nothing more.
+    await compileWeeklyUpdates(now.toJSDate())
+    expect((await testDb.doc(path).get()).data()!.createdAt).toEqual(
+      update.createdAt
+    )
+  }, 60000)
+
+  describe("sending", () => {
+    /** An appointed conference whose conferees are `members`, a null address
+     * standing for a member document without one. */
+    const conferenceWith = async (members: (string | null)[]) => {
+      const conferees = []
+      for (const [i, address] of members.entries()) {
+        conferees.push(await conferee(address, i))
+      }
+      const conferenceId = await createConference(
+        billId,
+        "appointed",
+        conferees
+      )
+      await fileInput(signInUser1, billId, conferenceId, "passNothing")
+      await waitFor(
+        async () => expect((await eventsOf(conferenceId)).size).toBe(1),
+        { timeout: 20000 }
+      )
+      const now = weekWindow(new Date()).week.plus({ weeks: 2, hours: 1 })
+      const weekStart = weekWindow(now.toJSDate()).week.toISODate()
+      const id = `${currentGeneralCourt}_${conferenceId}_${weekStart}`
+      return { conferees, now: now.toJSDate(), id }
+    }
+    const emailOf = async (id: string) =>
+      (await testDb.doc(`/emails/${id}`).get()).data() as any
+
+    it("sends the update to the test address outside production, once", async () => {
+      process.env.GCLOUD_PROJECT = "digital-testimony-dev"
+      process.env.LETTER_TEST_RECIPIENT = "test@example.org"
+      const { conferees, now, id } = await conferenceWith([
+        "one@example.org",
+        null,
+        "three@example.org"
+      ])
+      await compileWeeklyUpdates(now)
+
+      const email = await emailOf(id)
+      expect(email.to).toEqual(["test@example.org"])
+      expect(email.replyTo).toBe("info@mapletestimony.org")
+      expect(email.from).toMatch(/^"MAPLE" <.+@mapletestimony\.org>$/)
+      expect(email.message.subject).toContain(
+        "[dev] would have gone to: one@example.org, three@example.org"
+      )
+      expect(email.headers["X-SMTPAPI"]).toBe(
+        '{"category":["conferee-update"]}'
+      )
+      expect(email.message.html).toContain("Sen.")
+
+      // The record names the conferees, not the test address.
+      const update = (await testDb.doc(`/legislatorMail/${id}`).get()).data()
+      expect(update!.memberCodes).toEqual([
+        conferees[0].memberCode,
+        conferees[2].memberCode
+      ])
+      expect(email.message.subject).toContain(update!.subject)
+      expect(update!.subject).not.toContain("[dev]")
+      expect(update!.createdAt).toEqual(email.createdAt)
+
+      await compileWeeklyUpdates(now)
+      expect((await emailOf(id)).createdAt).toEqual(email.createdAt)
+    }, 60000)
+
+    it("sends to the conferees' own addresses in production", async () => {
+      process.env.GCLOUD_PROJECT = "digital-testimony-prod"
+      const { now, id } = await conferenceWith([
+        "one@example.org",
+        "two@example.org"
+      ])
+      await compileWeeklyUpdates(now)
+
+      const email = await emailOf(id)
+      expect(email.to).toEqual(["one@example.org", "two@example.org"])
+      expect(email.message.subject).not.toContain("[dev]")
+    }, 60000)
+
+    it("sends and records nothing when no conferee has an address", async () => {
+      process.env.GCLOUD_PROJECT = "digital-testimony-dev"
+      process.env.LETTER_TEST_RECIPIENT = "test@example.org"
+      const { now, id } = await conferenceWith([null])
+      await compileWeeklyUpdates(now)
+
+      expect(await emailOf(id)).toBeUndefined()
+      expect((await testDb.doc(`/legislatorMail/${id}`).get()).exists).toBe(
+        false
+      )
+    }, 60000)
+  })
+
+  it("compiles nothing for a week without a change", async () => {
+    const conferenceId = await createConference(billId)
+    await fileInput(signInUser1, billId, conferenceId, "passNothing")
+    await waitFor(
+      async () => expect((await eventsOf(conferenceId)).size).toBe(1),
+      { timeout: 20000 }
+    )
+
+    // Two weeks on, the week before it is empty.
+    const now = weekWindow(new Date()).week.plus({ weeks: 3, hours: 1 })
+    const weekStart = weekWindow(now.toJSDate()).week.toISODate()
+    await compileWeeklyUpdates(now.toJSDate())
+
+    expect(
+      (
+        await testDb
+          .doc(
+            `/legislatorMail/${currentGeneralCourt}_${conferenceId}_${weekStart}`
+          )
+          .get()
+      ).exists
+    ).toBe(false)
+    // The input is on record, but in an earlier week.
+    const { start, end } = weekWindow(now.toJSDate())
+    const inWeek = await testDb
+      .collection("/conferenceInputEvents")
+      .where("conferenceId", "==", conferenceId)
+      .where("recordedAt", ">=", start.toJSDate())
+      .where("recordedAt", "<", end.toJSDate())
+      .get()
+    expect(inWeek.size).toBe(0)
+  })
+})
+
 describe("deleteTestimony", () => {
   async function getSignedInAdmin() {
     const adminUser = await signInTestAdmin()
@@ -1621,7 +1872,15 @@ async function createDraftAttachment(uid: string, id: string, content: string) {
 
 /** A conference whose canonical bill is `billId`, with its counts zeroed. It
  * takes testimony only while `status` is appointed. */
-async function createConference(billId: string, status = "appointed") {
+async function createConference(
+  billId: string,
+  status = "appointed",
+  conferees: {
+    memberCode: string
+    branch: "House" | "Senate"
+    chair?: boolean
+  }[] = []
+) {
   const id = `conference-${nanoid()}`.toLowerCase()
   await testDb
     .doc(`/generalCourts/${currentGeneralCourt}/conferences/${id}`)
@@ -1632,7 +1891,7 @@ async function createConference(billId: string, status = "appointed") {
       senateBillId: billId,
       houseBillId: "H1",
       canonicalBillId: billId,
-      conferees: [],
+      conferees,
       status,
       hearingIds: [],
       differences: [],

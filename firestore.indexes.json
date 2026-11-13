@@ -1137,6 +1137,20 @@
           "order": "DESCENDING"
         }
       ]
+    },
+    {
+      "collectionGroup": "legislatorMail",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "testimonyId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        }
+      ]
     }
   ],
   "fieldOverrides": [

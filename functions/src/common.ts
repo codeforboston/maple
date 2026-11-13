@@ -91,6 +91,20 @@ export const logFetchError = (label: string, id?: string) => (e: any) => {
   }
 }
 
+const ALREADY_EXISTS = 6
+
+/** Awaits a Firestore create, or a batch of creates: false when a document
+ * already exists, so a rerun writes nothing. */
+export async function createdUnlessExists(write: Promise<unknown>) {
+  try {
+    await write
+    return true
+  } catch (e) {
+    if ((e as { code?: number }).code !== ALREADY_EXISTS) throw e
+    return false
+  }
+}
+
 // In particular, reject "/" in ID strings
 const simpleId = /^[A-Za-z0-9-_ ]+$/
 /** Validates firestore-compatible ID's */
