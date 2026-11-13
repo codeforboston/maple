@@ -22,10 +22,12 @@ export const NewsfeedCard = (props: {
   billId?: string
   bodyText: string
   conferenceId?: string | null
+  conferenceName?: string | null
   court?: string
   header: string
   isBallotQuestionMatch?: boolean
   isBillMatch?: boolean
+  isConferenceMatch?: boolean
   isUserMatch?: boolean
   position?: string
   subheader?: string
@@ -45,10 +47,12 @@ export const NewsfeedCard = (props: {
       authorUid={props.authorUid}
       billId={props.billId}
       conferenceHref={conferenceHref}
+      conferenceName={props.conferenceName}
       court={props.court}
       header={props.header}
       isBallotQuestionMatch={props.isBallotQuestionMatch}
       isBillMatch={props.isBillMatch}
+      isConferenceMatch={props.isConferenceMatch}
       isUserMatch={props.isUserMatch}
       subheader={props.subheader}
       timestamp={formattedTimestamp}

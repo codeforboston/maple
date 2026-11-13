@@ -1,11 +1,12 @@
 import type { Branch } from "../../functions/src/common"
-import { isSitting } from "../../functions/src/shared"
+import { conferenceName, isSitting } from "../../functions/src/shared"
 import type {
   ConferenceAddressedBy,
   ConferenceOutcome,
   ConferenceStatus
 } from "../../functions/src/conferences/types"
 import type { EventSummary } from "../db/events"
+import { flags } from "../featureFlags"
 
 /** The chambers in the order every view shows them: Senate first. */
 export const CHAMBERS = ["Senate", "House"] as const
@@ -89,9 +90,14 @@ export type ConferenceIndexProps = {
 }
 
 /** The short name where there is one, else the act title. */
-export const conferenceName = (c: Named) => c.name?.trim() || c.title.trim()
+export { conferenceName }
 
 type Named = { name?: string | null; title: string }
+
+/** Whether the site shows a conference: one still sitting always, one no
+ * longer taking input only behind the closedConferences flag. */
+export const isShown = (c: Pick<ConferenceSummary, "status">) =>
+  isSitting(c) || flags().closedConferences
 
 /** Alphabetical by the name a conference goes by. */
 export const byName = (a: Named, b: Named) =>

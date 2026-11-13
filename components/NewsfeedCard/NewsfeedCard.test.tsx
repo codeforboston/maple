@@ -106,6 +106,41 @@ describe("NewsfeedCard", () => {
     expect(document.querySelector("a[href^='/testimony/']")).toBeNull()
   })
 
+  it("says a reader follows the conference, by name, when that is the match", () => {
+    render(
+      <NewsfeedCard
+        {...testimony}
+        isUserMatch={false}
+        isConferenceMatch={true}
+        conferenceId="phones"
+        conferenceName="Phone-Free Schools"
+        position="passSomething"
+      />
+    )
+
+    const reason = screen.getByText("newsfeed.follow").closest(".card-title")!
+    expect(reason).toHaveTextContent("newsfeed.followPhone-Free Schools")
+    expect(reason).not.toHaveTextContent("Alice")
+  })
+
+  it("names the conference and the author when the reader follows both", () => {
+    render(
+      <NewsfeedCard
+        {...testimony}
+        isConferenceMatch={true}
+        conferenceId="phones"
+        conferenceName={null}
+        position="passSomething"
+      />
+    )
+
+    // With no name stored, the conference goes by its bill's title.
+    const titles = Array.from(document.querySelectorAll(".card-title"))
+    expect(titles.map(t => t.textContent)).toContain(
+      "newsfeed.followAn Act relative to student learningnewsfeed.andAlice"
+    )
+  })
+
   it("keeps bill testimony on its bill, testimony page and thumbs", () => {
     render(<NewsfeedCard {...testimony} position="endorse" />)
 

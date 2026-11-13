@@ -11,7 +11,8 @@ jest.mock("firebase-functions/logger", () => ({
 // The Testimony type needs the admin package's own Timestamp class.
 jest.mock("../firebase", () => ({
   db: {
-    collection: jest.fn()
+    collection: jest.fn(),
+    doc: jest.fn()
   },
   Timestamp: jest.requireActual("firebase-admin/firestore").Timestamp
 }))
@@ -57,6 +58,12 @@ const makeEvent = (before: object | null, after: object | null) => ({
   params: { userId: "author-uid", testimonyId: "testimony-id" }
 })
 
+/** The conference document the event names its conference from. */
+const setupConference = (data: object | undefined) =>
+  mockDb.doc.mockReturnValue({
+    get: jest.fn().mockResolvedValue({ data: () => data })
+  })
+
 beforeEach(() => {
   jest.clearAllMocks()
 })
@@ -78,6 +85,63 @@ describe("populateTestimonySubmissionNotificationEventsHandler", () => {
         testimonyId: "testimony-id",
         testimonyVersion: 1
       })
+    )
+  })
+
+  it("names the conference on conference testimony", async () => {
+    setupCollection(true)
+    setupConference({ name: "Phone-Free Schools", title: "An Act relative" })
+
+    const event = makeEvent(
+      null,
+      makeTestimony({ conferenceId: "phones", position: "passSomething" })
+    )
+    await populateTestimonySubmissionNotificationEventsHandler(event as any)
+
+    expect(mockDb.doc).toHaveBeenCalledWith(
+      "/generalCourts/194/conferences/phones"
+    )
+    expect(mockAdd).toHaveBeenCalledWith(
+      expect.objectContaining({
+        conferenceId: "phones",
+        conferenceName: "Phone-Free Schools"
+      })
+    )
+  })
+
+  it("falls back to the conference's title, then to no name", async () => {
+    setupCollection(true)
+    setupConference({ title: "An Act relative to phones" })
+    const testimony = makeTestimony({
+      conferenceId: "phones",
+      position: "passSomething"
+    })
+    await populateTestimonySubmissionNotificationEventsHandler(
+      makeEvent(null, testimony) as any
+    )
+    expect(mockAdd).toHaveBeenLastCalledWith(
+      expect.objectContaining({ conferenceName: "An Act relative to phones" })
+    )
+
+    setupConference(undefined)
+    await populateTestimonySubmissionNotificationEventsHandler(
+      makeEvent(null, testimony) as any
+    )
+    expect(mockAdd).toHaveBeenLastCalledWith(
+      expect.objectContaining({ conferenceId: "phones", conferenceName: null })
+    )
+  })
+
+  it("names no conference on bill testimony", async () => {
+    setupCollection(true)
+
+    await populateTestimonySubmissionNotificationEventsHandler(
+      makeEvent(null, makeTestimony()) as any
+    )
+
+    expect(mockDb.doc).not.toHaveBeenCalled()
+    expect(mockAdd).toHaveBeenCalledWith(
+      expect.objectContaining({ conferenceId: null, conferenceName: null })
     )
   })
 

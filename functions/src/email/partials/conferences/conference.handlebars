@@ -1,0 +1,34 @@
+{{!-- A followed committee of conference. Its stances are in words: the
+  position images are bill stances --}}
+<article>
+  <div style="font-weight: 600; font-size: 20px; line-height: 125%;
+              text-decoration-line: underline; color: #000000; margin-bottom: 24px">
+    <a href="https://mapletestimony.org/conferences/{{this.court}}/{{this.conferenceId}}#input" target="_blank" rel="noopener noreferrer" style="color: inherit">{{this.conferenceName}}</a>
+  </div>
+  <a href="https://mapletestimony.org/conferences/{{this.court}}/{{this.conferenceId}}#input" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: inherit">
+    <div style="padding: 12px; background: #EAE7E7;
+                border-radius: 12px; margin-bottom: 12px; text-align: center">
+      <div style="height: 49px; font-weight: 500; font-size: 39px; line-height: 125%;
+                  letter-spacing: -0.015em; color: #000000; margin: auto; text-align: center">
+        {{this.newTestimonyCount}}
+      </div>
+      <div style="height: 20px; font-weight: 700; font-size: 16px; line-height: 125%;
+                  letter-spacing: 0.015em; color: #3E3E3E; margin: auto; text-align: center">
+        {{#ifGreaterThan this.newTestimonyCount 1}}
+          New Testimonies
+        {{else}}
+          New Testimony
+        {{/ifGreaterThan}}
+      </div>
+      <table style="margin: 16px auto 14px auto; font-size: 14px; font-weight: 700;
+                    line-height: 125%; color: #000000; text-align: left">
+        {{#each this.stances}}
+          <tr>
+            <td style="padding: 2px 12px 2px 0; text-align: right">{{this.count}}</td>
+            <td style="padding: 2px 0">{{this.stance}}</td>
+          </tr>
+        {{/each}}
+      </table>
+    </div>
+  </a>
+</article>

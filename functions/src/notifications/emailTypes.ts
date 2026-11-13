@@ -1,4 +1,13 @@
 import { Frequency } from "../auth/types"
+import type { ConferencePosition } from "../testimony/types"
+
+// The site's wording, conferences input.position.*.long; a test holds them equal.
+export const CONFERENCE_STANCES: Record<ConferencePosition, string> = {
+  passSomething: "Please pass something",
+  passSenateVersion: "Pass the Senate version",
+  passHouseVersion: "Pass the House version",
+  passNothing: "Don't pass anything"
+}
 
 export type BillDigest = {
   billId: string
@@ -31,6 +40,15 @@ export type BallotQuestionDigest = {
   neutralCount: number
   opposeCount: number
 }
+/** Testimony on a followed committee of conference, counted by stance. */
+export type ConferenceDigest = {
+  conferenceId: string
+  conferenceName: string
+  court: string
+  newTestimonyCount: number
+  /** Every stance, in the site's order, so digests compare at a glance. */
+  stances: { stance: string; count: number }[]
+}
 export type NotificationEmailDigest = {
   notificationFrequency: Frequency
   startDate: Date
@@ -41,4 +59,6 @@ export type NotificationEmailDigest = {
   numUsersWithNewTestimony: number
   ballotQuestions: BallotQuestionDigest[] // cap of 4
   numBallotQuestionsWithNewTestimony: number
+  conferences: ConferenceDigest[] // cap of 4
+  numConferencesWithNewTestimony: number
 }

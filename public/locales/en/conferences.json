@@ -286,5 +286,10 @@
     "cosign_closed": "This conference committee is no longer taking input, so your cosign could not be filed.",
     "fill_window": "Fill the window",
     "leave_full": "Leave full screen"
+  },
+  "follow": {
+    "follow": "Follow",
+    "following": "Following",
+    "unfollow": "Unfollow"
   }
 }

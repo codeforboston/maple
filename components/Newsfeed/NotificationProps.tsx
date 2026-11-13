@@ -25,6 +25,8 @@ export type NotificationProps = {
   ballotStatus?: string
   // Set on testimony to a committee of conference
   conferenceId?: string | null
+  conferenceName?: string | null
+  isConferenceMatch?: boolean // is subscribed to the conference
 }
 
 export type Notifications = NotificationProps[]

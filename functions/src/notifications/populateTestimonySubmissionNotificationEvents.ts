@@ -12,8 +12,20 @@ import {
 } from "firebase-functions/v2/firestore"
 import * as logger from "firebase-functions/logger"
 import { db, Timestamp } from "../firebase"
+import { conferenceName } from "../shared"
 import { Testimony } from "../testimony/types"
 import { TestimonySubmissionNotification } from "./types"
+
+/** The conference's name for headings, as the site shows it: its short name,
+ * falling back to its title. Null when the document is missing, so the
+ * notification still goes out. */
+const conferenceNameOf = async (court: number, conferenceId: string) => {
+  const snap = await db
+    .doc(`/generalCourts/${court}/conferences/${conferenceId}`)
+    .get()
+  const data = snap.data()
+  return (data && conferenceName(data)) || null
+}
 
 export const populateTestimonySubmissionNotificationEventsHandler = async (
   event: FirestoreEvent<
@@ -49,6 +61,7 @@ export const populateTestimonySubmissionNotificationEventsHandler = async (
     const testimony = checked.value
 
     const bqId = testimony.ballotQuestionId ?? null
+    const conferenceId = testimony.conferenceId ?? null
 
     const newNotificationEvent: TestimonySubmissionNotification = {
       type: "testimony",
@@ -67,7 +80,10 @@ export const populateTestimonySubmissionNotificationEventsHandler = async (
 
       ballotQuestionId: bqId,
       ballotQuestionCourt: bqId ? testimony.court : null,
-      conferenceId: testimony.conferenceId ?? null,
+      conferenceId,
+      conferenceName: conferenceId
+        ? await conferenceNameOf(testimony.court, conferenceId)
+        : null,
 
       updateTime: Timestamp.now()
     }

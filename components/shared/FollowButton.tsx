@@ -15,7 +15,11 @@ import {
   profileTopicName,
   ballotQuestionTopicName,
   followBallotQuestion,
-  unfollowBallotQuestion
+  unfollowBallotQuestion,
+  ConferenceRef,
+  conferenceTopicName,
+  followConference,
+  unfollowConference
 } from "./FollowingQueries"
 import { FollowContext } from "./FollowContext"
 import { Modal } from "components/bootstrap"
@@ -70,6 +74,54 @@ export function FollowBillButton({
   )
 }
 
+/**
+ * Whether the reader follows a topic, shared through FollowContext so every
+ * control for the topic agrees, and a toggle that sends a signed-out reader
+ * to log in first. `loaded` is false until a signed-in reader's status is
+ * read.
+ */
+export function useFollowTopic(
+  topicName: string,
+  followAction: () => Promise<void>,
+  unfollowAction: () => Promise<void>,
+  /** False skips reading the follow status, for a control that can't show. */
+  enabled = true
+) {
+  const uid = useAuth().user?.uid
+  const router = useRouter()
+  const { followStatus, setFollowStatus } = useContext(FollowContext)
+
+  useEffect(() => {
+    if (!uid || !enabled) return
+    followsTopic(uid, topicName).then(result =>
+      setFollowStatus(prev => ({ ...prev, [topicName]: result }))
+    )
+  }, [uid, topicName, setFollowStatus, enabled])
+
+  const follow = async () => {
+    await followAction()
+    setFollowStatus(prev => ({ ...prev, [topicName]: true }))
+  }
+
+  const unfollow = async () => {
+    await unfollowAction()
+    setFollowStatus(prev => ({ ...prev, [topicName]: false }))
+  }
+
+  const following = !!uid && !!followStatus[topicName]
+  const loaded = !uid || topicName in followStatus
+
+  const toggle = () => {
+    if (!uid) {
+      router.push(`/login?redirect=${encodeURIComponent(router.asPath)}`)
+      return
+    }
+    return following ? unfollow() : follow()
+  }
+
+  return { following, loaded, follow, unfollow, toggle }
+}
+
 export const BaseFollowButton = ({
   topicName,
   followAction,
@@ -89,45 +141,19 @@ export const BaseFollowButton = ({
 }) => {
   const { t } = useTranslation(["profile"])
 
-  const { user } = useAuth()
-  const uid = user?.uid
-  const router = useRouter()
-
-  const { followStatus, setFollowStatus } = useContext(FollowContext)
   const [modalAction, setModalAction] = useState<"follow" | "unfollow" | null>(
     null
   )
+  const {
+    following: isFollowing,
+    follow: FollowClick,
+    unfollow: UnfollowClick,
+    toggle
+  } = useFollowTopic(topicName, followAction, unfollowAction)
 
-  useEffect(() => {
-    if (!uid) return
-    followsTopic(uid, topicName).then(result =>
-      setFollowStatus(prev => ({ ...prev, [topicName]: result }))
-    )
-  }, [uid, topicName, setFollowStatus])
-
-  const FollowClick = async () => {
-    await followAction()
-    setFollowStatus(prev => ({ ...prev, [topicName]: true }))
-  }
-
-  const UnfollowClick = async () => {
-    await unfollowAction()
-    setFollowStatus(prev => ({ ...prev, [topicName]: false }))
-  }
-
-  const isFollowing = followStatus[topicName]
-  const text = isFollowing ? t("button.following") : t("button.follow")
-  const checkmark = isFollowing ? (
-    <StyledImage src="/check-white.svg" alt="" />
-  ) : null
   const handleClick = (event: any) => {
     event.preventDefault()
-    if (!uid) {
-      const currentPath = router.asPath
-      router.push(`/login?redirect=${encodeURIComponent(currentPath)}`)
-      return
-    }
-    isFollowing ? UnfollowClick() : FollowClick()
+    toggle()
   }
 
   return (
@@ -219,6 +245,24 @@ export function FollowBallotQuestionButton({
       topicName={topicName}
       followAction={() => followBallotQuestion(uid, ballotQuestion)}
       unfollowAction={() => unfollowBallotQuestion(uid, ballotQuestion)}
+    />
+  )
+}
+
+export function FollowConferenceTopicButton({
+  conference,
+  confirmUnfollow
+}: {
+  conference: ConferenceRef
+  confirmUnfollow?: boolean
+}) {
+  const uid = useAuth().user?.uid
+  return (
+    <BaseFollowButton
+      topicName={conferenceTopicName(conference.court, conference.id)}
+      followAction={() => followConference(uid, conference)}
+      unfollowAction={() => unfollowConference(uid, conference)}
+      confirmUnfollow={confirmUnfollow}
     />
   )
 }

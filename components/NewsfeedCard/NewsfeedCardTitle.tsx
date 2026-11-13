@@ -9,6 +9,8 @@ interface NewsfeedCardTitleProps {
   billId?: string
   /** Set on testimony to a committee of conference: its conference page */
   conferenceHref?: string
+  /** The conference's name, for a reader who follows it */
+  conferenceName?: string | null
   court?: string
   header?: string
   subheader?: string
@@ -17,6 +19,7 @@ interface NewsfeedCardTitleProps {
   inHeaderElement?: ReactElement
   isBallotQuestionMatch?: boolean
   isBillMatch?: boolean
+  isConferenceMatch?: boolean
   isUserMatch?: boolean
   type?: string
   userRole?: string
@@ -28,10 +31,12 @@ export const NewsfeedCardTitle = (props: NewsfeedCardTitleProps) => {
     authorUid,
     billId,
     conferenceHref,
+    conferenceName,
     court,
     header,
     isBillMatch,
     isBallotQuestionMatch,
+    isConferenceMatch,
     isUserMatch,
     subheader,
     type,
@@ -55,7 +60,9 @@ export const NewsfeedCardTitle = (props: NewsfeedCardTitleProps) => {
         {isNewsfeed ? (
           <CardTitleFollowing
             billId={billId}
+            conferenceName={conferenceName}
             header={header}
+            isConferenceMatch={isConferenceMatch}
             isBallotQuestionMatch={isBallotQuestionMatch}
             subheader={subheader}
             isBillMatch={isBillMatch}
@@ -166,9 +173,11 @@ const CardTitleHeadline = (props: NewsfeedCardTitleProps) => {
 const CardTitleFollowing = (props: NewsfeedCardTitleProps) => {
   const {
     billId,
+    conferenceName,
     header,
     isBallotQuestionMatch,
     isBillMatch,
+    isConferenceMatch,
     isUserMatch,
     subheader,
     type
@@ -210,6 +219,21 @@ const CardTitleFollowing = (props: NewsfeedCardTitleProps) => {
           </CardBootstrap.Title>
         )}
       </>
+    )
+  } else if (isConferenceMatch) {
+    return (
+      <CardBootstrap.Title
+        className={`align-items-start fs-6 lh-sm mb-1 text-body-tertiary`}
+      >
+        {t("newsfeed.follow")}
+        <strong>{conferenceName || header}</strong>
+        {isUserMatch && (
+          <>
+            {t("newsfeed.and")}
+            {subheader}
+          </>
+        )}
+      </CardBootstrap.Title>
     )
   } else if (isBillMatch && isUserMatch) {
     return (

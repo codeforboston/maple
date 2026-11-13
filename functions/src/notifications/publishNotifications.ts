@@ -69,13 +69,15 @@ const createNotificationFields = (
           isBillMatch: false,
           isUserMatch: false,
           isBallotQuestionMatch: false,
+          isConferenceMatch: false,
           delivered: false,
           authorUid: entity.userId,
           testimonyId: entity.testimonyId,
           userRole: entity.userRole,
           ballotQuestionId: entity.ballotQuestionId ?? null,
           ballotQuestionCourt: entity.ballotQuestionCourt ?? null,
-          conferenceId: entity.conferenceId ?? null
+          conferenceId: entity.conferenceId ?? null,
+          conferenceName: entity.conferenceName ?? null
         },
         createdAt: Timestamp.now()
       }
@@ -141,11 +143,11 @@ export const publishNotifications = onDocumentWritten(
             ]
           : [
               `testimony-${topic.userId}`,
-              // Conference testimony is kept off its bill, so the bill's
-              // followers don't hear of it.
-              ...(topic.conferenceId
-                ? []
-                : [`bill-${topic.billCourt}-${topic.billId}`]),
+              // Conference testimony goes to the conference's followers and
+              // is kept off its bill, so the bill's followers don't hear of it.
+              topic.conferenceId
+                ? `conference-${topic.billCourt}-${topic.conferenceId}`
+                : `bill-${topic.billCourt}-${topic.billId}`,
               ...(topic.ballotQuestionId && topic.ballotQuestionCourt != null
                 ? [
                     `ballot-question-${topic.ballotQuestionCourt}-${topic.ballotQuestionId}`
@@ -179,6 +181,8 @@ export const publishNotifications = onDocumentWritten(
             users[uid].notification.isUserMatch = true
           } else if (type === "ballotQuestion") {
             users[uid].notification.isBallotQuestionMatch = true
+          } else if (type === "conference") {
+            users[uid].notification.isConferenceMatch = true
           } else {
             users[uid].notification.isBillMatch = true
           }
