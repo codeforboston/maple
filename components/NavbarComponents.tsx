@@ -12,7 +12,7 @@ import { BetaTag } from "./shared/CommonComponents"
 
 // No py-1: its !important would undo the items' taller padding
 // (styles/globals.css).
-export const DESKTOP_NAV_ITEM_CLASS = "desktop-navbar-link px-3"
+export const DESKTOP_NAV_ITEM_CLASS = "desktop-navbar-link px-3 py-2"
 
 /**
  * Whether the navbar is in its mobile (hamburger) layout, at 768px and below.

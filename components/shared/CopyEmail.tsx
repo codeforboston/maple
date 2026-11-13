@@ -96,7 +96,8 @@ function placeAtPointer(
 const Wrap = styled.span<{ $flash: boolean; $follow: boolean }>`
   position: relative;
 
-  &:hover ${Tip}, &:has(:focus-visible) ${Tip} {
+  /* No "Copy" when pointed at or focused, only "Copied!" once it has. */
+  &:hover ${Tip}[data-copied], &:has(:focus-visible) ${Tip}[data-copied] {
     opacity: 1;
   }
   ${({ $flash }) => ($flash ? `${Tip} { opacity: 1; }` : "")}
@@ -270,7 +271,7 @@ function Copier({
 
 /**
  * An email address in a line of text that copies itself rather than opening
- * a mail app, with a tip beside it: "Copy", then "Copied!". Where the browser
+ * a mail app, saying "Copied!" by the pointer once it has. Where the browser
  * can't copy, a plain email link instead. Shows `children` where given (as
  * Trans passes the address in), or the address.
  */

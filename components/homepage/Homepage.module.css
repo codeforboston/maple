@@ -1545,10 +1545,15 @@
   margin: 0 0 1.5rem;
 }
 
-/* The email in it (CopyEmail): the line's own weight, set apart by its
-   underline, rather than the banners' bold. */
+/* The email in it (CopyEmail): light, rather than the banners' bold, and
+   underlined only while pointed at. */
 .newFeaturesSubtitle button {
-  font-weight: inherit;
+  font-weight: 300;
+  text-decoration: none;
+}
+
+.newFeaturesSubtitle button:hover {
+  text-decoration: underline;
 }
 
 .newFeatures {
