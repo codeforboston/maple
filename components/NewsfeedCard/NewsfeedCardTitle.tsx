@@ -11,6 +11,8 @@ interface NewsfeedCardTitleProps {
   conferenceHref?: string
   /** The conference's name, for a reader who follows it */
   conferenceName?: string | null
+  /** The testimony cosigns another */
+  cosigned?: boolean
   court?: string
   header?: string
   subheader?: string
@@ -32,6 +34,7 @@ export const NewsfeedCardTitle = (props: NewsfeedCardTitleProps) => {
     billId,
     conferenceHref,
     conferenceName,
+    cosigned,
     court,
     header,
     isBillMatch,
@@ -52,6 +55,7 @@ export const NewsfeedCardTitle = (props: NewsfeedCardTitleProps) => {
           authorUid={authorUid}
           billId={billId}
           conferenceHref={conferenceHref}
+          cosigned={cosigned}
           court={court}
           header={header}
           subheader={subheader}
@@ -109,9 +113,22 @@ const CardHeaderImg = (props: NewsfeedCardTitleProps) => {
 }
 
 const CardTitleHeadline = (props: NewsfeedCardTitleProps) => {
-  const { authorUid, billId, conferenceHref, court, header, subheader, type } =
-    props
+  const {
+    authorUid,
+    billId,
+    conferenceHref,
+    cosigned,
+    court,
+    header,
+    subheader,
+    type
+  } = props
   const { t } = useTranslation("common")
+  const action = !conferenceHref
+    ? "newsfeed.endorsed"
+    : cosigned
+    ? "newsfeed.conferenceCosign"
+    : "newsfeed.conferenceInput"
 
   switch (type) {
     case "testimony":
@@ -125,11 +142,7 @@ const CardTitleHeadline = (props: NewsfeedCardTitleProps) => {
                 <strong>{subheader}</strong>
               </Internal>
 
-              {t(
-                conferenceHref
-                  ? "newsfeed.conferenceInput"
-                  : "newsfeed.endorsed"
-              )}
+              {t(action)}
               <a href={conferenceHref ?? `/bills/${court}/${billId}`}>
                 {billId && <strong>{formatBillId(billId)}</strong>}
               </a>

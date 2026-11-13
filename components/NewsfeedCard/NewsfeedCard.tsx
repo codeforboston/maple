@@ -50,6 +50,7 @@ export const NewsfeedCard = (props: {
       billId={props.billId}
       conferenceHref={conferenceHref}
       conferenceName={props.conferenceName}
+      cosigned={!!props.cosignOf}
       court={props.court}
       header={props.header}
       isBallotQuestionMatch={props.isBallotQuestionMatch}

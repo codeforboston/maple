@@ -16,10 +16,8 @@ export type BillHistoryUpdateNotification = Notification & {
 }
 
 /** The testimony a cosign cosigns, as it read when the cosign was published,
- * so the newsfeed can quote it. */
+ * so the newsfeed can quote it: its author's name and its first words. */
 export type CosignOf = {
-  id: string
-  authorUid: string
   authorName: string
   content: string
 }

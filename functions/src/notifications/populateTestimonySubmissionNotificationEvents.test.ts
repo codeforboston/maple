@@ -58,17 +58,13 @@ const makeEvent = (before: object | null, after: object | null) => ({
   params: { userId: "author-uid", testimonyId: "testimony-id" }
 })
 
-/** The conference document the event names its conference from. */
-const setupConference = (data: object | undefined) =>
-  mockDb.doc.mockReturnValue({
-    get: jest.fn().mockResolvedValue({ data: () => data })
-  })
-
 /** Documents the handler reads, by path; any other path is missing. */
-const setupDocs = (byPath: Record<string, object>) =>
+const setupDocs = (byPath: Record<string, object | undefined>) =>
   mockDb.doc.mockImplementation((path: string) => ({
     get: jest.fn().mockResolvedValue({ data: () => byPath[path] })
   }))
+
+const PHONES = "/generalCourts/194/conferences/phones"
 
 beforeEach(() => {
   jest.clearAllMocks()
@@ -96,7 +92,9 @@ describe("populateTestimonySubmissionNotificationEventsHandler", () => {
 
   it("names the conference on conference testimony", async () => {
     setupCollection(true)
-    setupConference({ name: "Phone-Free Schools", title: "An Act relative" })
+    setupDocs({
+      [PHONES]: { name: "Phone-Free Schools", title: "An Act relative" }
+    })
 
     const event = makeEvent(
       null,
@@ -117,7 +115,7 @@ describe("populateTestimonySubmissionNotificationEventsHandler", () => {
 
   it("falls back to the conference's title, then to no name", async () => {
     setupCollection(true)
-    setupConference({ title: "An Act relative to phones" })
+    setupDocs({ [PHONES]: { title: "An Act relative to phones" } })
     const testimony = makeTestimony({
       conferenceId: "phones",
       position: "passSomething"
@@ -129,7 +127,7 @@ describe("populateTestimonySubmissionNotificationEventsHandler", () => {
       expect.objectContaining({ conferenceName: "An Act relative to phones" })
     )
 
-    setupConference(undefined)
+    setupDocs({ [PHONES]: undefined })
     await populateTestimonySubmissionNotificationEventsHandler(
       makeEvent(null, testimony) as any
     )
@@ -180,11 +178,29 @@ describe("populateTestimonySubmissionNotificationEventsHandler", () => {
           conferenceName: "Phone-Free Schools",
           testimonyContent: "",
           cosignOf: {
-            id: "lead-id",
-            authorUid: "lead-uid",
             authorName: "Lead Author",
             content: "Keep phones out of classrooms."
           }
+        })
+      )
+    })
+
+    it("names an author without a full name as the site does, and trims a long input", async () => {
+      setupCollection(true)
+      setupDocs({
+        "/users/lead-uid/publishedTestimony/lead-id": {
+          authorDisplayName: "Lead Org",
+          content: "x".repeat(700)
+        }
+      })
+
+      await populateTestimonySubmissionNotificationEventsHandler(
+        makeEvent(null, cosign()) as any
+      )
+
+      expect(mockAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          cosignOf: { authorName: "Lead Org", content: `${"x".repeat(600)}...` }
         })
       )
     })
@@ -208,7 +224,7 @@ describe("populateTestimonySubmissionNotificationEventsHandler", () => {
 
   it("reads nothing more for testimony that cosigns nothing", async () => {
     setupCollection(true)
-    setupConference({ name: "Phone-Free Schools" })
+    setupDocs({ [PHONES]: { name: "Phone-Free Schools" } })
 
     await populateTestimonySubmissionNotificationEventsHandler(
       makeEvent(

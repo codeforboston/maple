@@ -89,22 +89,10 @@ describe("following a conference", () => {
     await followConference(follower.uid, { id: conferenceId, court })
 
     const author = await signInUser1()
-    const draftId = nanoid()
-    await setDoc(
-      doc(firestore, `/users/${author.uid}/draftTestimony/${draftId}`),
-      {
-        billId,
-        court,
-        content: "Keep the libraries quiet.",
-        position: "passSenateVersion",
-        attachmentId: null,
-        ballotQuestionId: null,
-        conferenceId
-      }
-    )
-    const {
-      data: { publicationId }
-    } = await publishTestimony({ draftId })
+    const publicationId = await publishInput(author.uid, {
+      content: "Keep the libraries quiet.",
+      position: "passSenateVersion"
+    })
 
     await waitFor(
       async () => {
@@ -154,8 +142,6 @@ describe("following a conference", () => {
           isConferenceMatch: true,
           bodyText: "",
           cosignOf: {
-            id: lead,
-            authorUid: author.uid,
             authorName: expect.any(String),
             content: "Keep the libraries quiet."
           }

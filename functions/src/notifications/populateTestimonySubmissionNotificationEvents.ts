@@ -12,7 +12,7 @@ import {
 } from "firebase-functions/v2/firestore"
 import * as logger from "firebase-functions/logger"
 import { db, Timestamp } from "../firebase"
-import { conferenceName } from "../shared"
+import { conferenceName, nameOf } from "../shared"
 import { Testimony } from "../testimony/types"
 import { CosignOf, TestimonySubmissionNotification } from "./types"
 
@@ -27,6 +27,10 @@ const conferenceNameOf = async (court: number, conferenceId: string) => {
   return (data && conferenceName(data)) || null
 }
 
+/** The most of a cosigned input the newsfeed quotes; the event, and each
+ * follower's copy of it, carries no more. */
+const QUOTE_LENGTH = 600
+
 /** What a cosign cosigns, as it reads now, for the newsfeed to quote. Null
  * when the testimony isn't a cosign or the cosigned testimony is gone, so the
  * notification still goes out. */
@@ -39,14 +43,15 @@ const cosignOfIn = async ({
     .doc(`/users/${cosignOfAuthorUid}/publishedTestimony/${cosignOfId}`)
     .get()
   const data = snap.data()
-  return data
-    ? {
-        id: cosignOfId,
-        authorUid: cosignOfAuthorUid,
-        authorName: data.fullName ?? "",
-        content: data.content ?? ""
-      }
-    : null
+  if (!data) return null
+  const content: string = data.content ?? ""
+  return {
+    authorName: nameOf(data),
+    content:
+      content.length > QUOTE_LENGTH
+        ? `${content.slice(0, QUOTE_LENGTH)}...`
+        : content
+  }
 }
 
 export const populateTestimonySubmissionNotificationEventsHandler = async (

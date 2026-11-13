@@ -197,12 +197,12 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
   )
 }
 
-/** Testimony on a committee of conference: the stance is the conference
- * page's chip, and the card leads to the conference, not the bill. */
 /**
- * Conference input in the feed. A cosign is tagged, with the cosigner's own
- * line first when they wrote one and the input they cosigned quoted under it,
- * as the email to their legislators sets it out.
+ * Testimony on a committee of conference: the stance is the conference page's
+ * chip, and the card leads to the conference, not the bill. A cosign is
+ * tagged, with the cosigner's own line first when they wrote one and the
+ * input they cosigned quoted under it, as the email to their legislators sets
+ * it out. That quote arrives already trimmed.
  */
 export const NewsfeedConferenceTestimonyCardBody = (props: {
   billText?: string
@@ -240,7 +240,7 @@ export const NewsfeedConferenceTestimonyCardBody = (props: {
                 {t("newsfeed.cosignedInput", { name: cosignOf.authorName })}
               </div>
               <blockquote className={`border-start border-3 ps-3 mt-1 mb-0`}>
-                {truncateText(cosignOf.content, 600)}
+                {cosignOf.content}
               </blockquote>
             </>
           )}

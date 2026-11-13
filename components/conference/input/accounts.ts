@@ -1,5 +1,8 @@
 import { Role } from "functions/src/auth/types"
 
+/** The name an entry is shown under. */
+export { nameOf } from "functions/src/shared"
+
 export type AccountType = "individual" | "organization" | "government"
 
 export const accountTypes: AccountType[] = [
@@ -14,10 +17,6 @@ export const accountTypeOf = (role: Role): AccountType =>
     : role === "legislator"
     ? "government"
     : "individual"
-
-/** The name an entry is shown under. */
-export const nameOf = (t: { fullName?: string; authorDisplayName: string }) =>
-  t.fullName || t.authorDisplayName
 
 /** Two letters for the disc, where the account has no picture of its own. */
 export const initialsOf = (name: string) =>

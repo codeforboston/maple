@@ -1,12 +1,7 @@
 import { Timestamp } from "firebase/firestore"
+import type { CosignOf } from "functions/src/notifications/types"
 
-/** The testimony a cosign cosigns, as it read when the cosign was published. */
-export type CosignOf = {
-  id: string
-  authorUid: string
-  authorName: string
-  content: string
-}
+export type { CosignOf }
 
 export type NotificationProps = {
   authorUid: string // Testimony author

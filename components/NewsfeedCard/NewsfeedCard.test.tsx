@@ -143,8 +143,6 @@ describe("NewsfeedCard", () => {
 
   describe("a cosign", () => {
     const cosignOf = {
-      id: "lead",
-      authorUid: "author2",
       authorName: "Grace",
       content: "Pass a strong final bill this session."
     }
@@ -162,6 +160,8 @@ describe("NewsfeedCard", () => {
       )
 
       expect(screen.getByText("newsfeed.cosigned")).toBeInTheDocument()
+      expect(screen.getByText("newsfeed.conferenceCosign")).toBeInTheDocument()
+      expect(screen.queryByText("newsfeed.conferenceInput")).toBeNull()
       const line = screen.getByText('"As a parent, this matters to me."')
       const credit = screen.getByText("newsfeed.cosignedInput")
       expect(
@@ -197,6 +197,7 @@ describe("NewsfeedCard", () => {
       )
 
       expect(screen.queryByText("newsfeed.cosigned")).toBeNull()
+      expect(screen.getByText("newsfeed.conferenceInput")).toBeInTheDocument()
       expect(quoted()).toBeNull()
     })
   })
