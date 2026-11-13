@@ -306,7 +306,7 @@ function LobbyingClientsPage(props: ClientsPageProps) {
 }
 
 export default createPage({
-  titleI18nKey: "titles.lobbying",
+  titleI18nKey: "titles.lobbying.clients",
   Page: LobbyingClientsPage
 })
 

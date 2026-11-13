@@ -275,7 +275,7 @@ function LobbyingBillsPage(props: BillsPageProps) {
 }
 
 export default createPage({
-  titleI18nKey: "titles.lobbying",
+  titleI18nKey: "titles.lobbying.bills",
   Page: LobbyingBillsPage
 })
 

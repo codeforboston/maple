@@ -617,7 +617,7 @@ function LobbyingOverview({ stats, topBills }: OverviewProps) {
 }
 
 export default createPage({
-  titleI18nKey: "titles.lobbying",
+  titleI18nKey: "titles.lobbying.overview",
   Page: LobbyingOverview
 })
 
