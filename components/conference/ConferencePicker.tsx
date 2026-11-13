@@ -3,7 +3,7 @@ import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons"
 import { Dropdown } from "../bootstrap"
-import { RailList } from "./ConferenceRail"
+import { ClosedFold, RailList } from "./ConferenceRail"
 import { Title } from "./styles"
 import { conferenceName, ConferenceSummary } from "./types"
 
@@ -53,10 +53,12 @@ const Menu = styled(Dropdown.Menu)`
  */
 export function ConferencePicker({
   conferences,
-  current
+  current,
+  fold
 }: {
   conferences: ConferenceSummary[]
   current: ConferenceSummary
+  fold: ClosedFold
 }) {
   const { t } = useTranslation("conferences")
   return (
@@ -66,7 +68,7 @@ export function ConferencePicker({
         <FontAwesomeIcon className="chevron" icon={faChevronDown} />
       </Toggle>
       <Menu>
-        <RailList conferences={conferences} current={current.id} />
+        <RailList conferences={conferences} current={current.id} fold={fold} />
       </Menu>
     </Dropdown>
   )

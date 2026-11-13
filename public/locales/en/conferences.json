@@ -23,6 +23,7 @@
   "hearing_scheduled": "Hearing scheduled for {{date}}",
   "no_hearings": "No hearings have been disclosed.",
   "pick_conference": "Choose a conference committee",
+  "rail_closed": "No longer taking input ({{count}})",
   "bill_banner": {
     "appointed": "This bill is in a conference committee: <1>{{name}}</1>",
     "reportFiled": "The conference committee on this bill has filed its report: <1>{{name}}</1>",
