@@ -29,20 +29,17 @@ import {
   Primary,
   Problem,
   Quiet,
-  ReasonField,
+  ReviewStep,
   Rules,
   Scroll,
   Status,
+  Step,
   useAsk
 } from "./InputForm"
 import { useInputContext } from "./context"
 import { UsersRound } from "./icons"
-import { LetterReview, NoLine } from "./Review"
-import { hasLegislators } from "functions/src/conferenceLetters/letter"
 import { brand, caution, ink, line, red, wash } from "./tokens"
 import { useAutosave } from "./useAutosave"
-
-export type CosignStep = "confirm" | "write" | "review"
 
 /** Below lg, where the letter sits above it, the agreeing step takes the room
  * it needs and leaves the letter the rest. */
@@ -250,10 +247,10 @@ const refusalOf = (error?: Error) =>
     ?.refusal
 
 /**
- * Cosigning someone else's input, in the panel's two steps: agreeing to what
- * is signed, then an optional note of one's own. Editing a cosign is the
- * second step alone, and changes the note only. The cosign is the user's one
- * draft on the conference, kept as they type.
+ * Cosigning someone else's input, in the panel's three steps: agreeing to
+ * what is signed, an optional note of one's own, and the review every input
+ * goes through. Editing a cosign starts at the note, and changes it only. The
+ * cosign is the user's one draft on the conference, kept as they type.
  */
 export function CosignForm({
   edit,
@@ -277,8 +274,8 @@ export function CosignForm({
   edit: UseEditConferenceTestimony
   /** What is being cosigned. */
   parent: ConferenceTestimony
-  step: CosignStep
-  onStep: (s: CosignStep) => void
+  step: Step
+  onStep: (s: Step) => void
   onCancel: () => void
   /** The cosign is on the record. */
   onPosted: () => void
@@ -288,7 +285,6 @@ export function CosignForm({
   const { byId } = useInputContext()
   const { profile } = useProfile()
   const { saveDraft, publishTestimony, discardDraft } = edit
-  const editing = !!edit.publication
 
   const [note, setNote] = useState("")
   const [noWords, setNoWords] = useState(false)
@@ -334,7 +330,11 @@ export function CosignForm({
         replyTo: f.chosen || undefined
       }),
     active: step !== "confirm",
-    onPosted
+    // As InputForm's: the form outlives the post, so its reason goes too.
+    onPosted: () => {
+      setReason("")
+      onPosted()
+    }
   })
 
   // Ready to write on arrival, without scrolling the preview out of view.
@@ -343,8 +343,7 @@ export function CosignForm({
   }, [step])
 
   const ready = !!note.trim() || noWords
-  const changed = !editing || content !== edit.publication?.content
-  const needsReason = editing && changed
+  const editing = !!edit.publication
   // Delete Draft is offered once there are words kept to delete.
   const kept = edit.draft?.cosignOfId === parent.id && !!edit.draft.content
   const showDelete = !editing && kept && save === "none" && !dirty
@@ -406,49 +405,30 @@ export function CosignForm({
 
   const name = profile?.fullName || t("input.anonymous")
   const type = accountTypeOf(claims?.role ?? "user")
-  if (step === "review") {
-    const sends = hasLegislators(profile ?? {})
+  if (step === "review")
     return (
-      <Body>
-        <Scroll>
-          {!content.trim() && <NoLine onAdd={() => onStep("write")} />}
-          <LetterReview
-            court={court}
-            conferenceId={conferenceId}
-            conferees={conferees}
-            author={name}
-            conference={subject}
-            testimonyId={edit.publication?.id}
-            position={parent.position}
-            content={content}
-            cosign={{ author: nameOf(parent), content: parent.content }}
-            chosen={chosen}
-            onChoose={setChosen}
-          />
-          {problem}
-        </Scroll>
-        <Actions>
-          <Quiet
-            type="button"
-            onClick={() => onStep("write")}
-            style={{ marginRight: "auto" }}
-          >
-            {t("review.back")}
-          </Quiet>
-          <Leave type="button" onClick={onCancel}>
-            {t("input.cancel")}
-          </Leave>
-          <Press
-            type="button"
-            disabled={posting || publishTestimony.loading}
-            onClick={post}
-          >
-            {t(sends ? "review.cosign_and_send" : "input.cosign")}
-          </Press>
-        </Actions>
-      </Body>
+      <ReviewStep
+        edit={edit}
+        court={court}
+        conferenceId={conferenceId}
+        conferees={conferees}
+        author={name}
+        conference={subject}
+        position={parent.position}
+        content={content}
+        cosign={{ author: nameOf(parent), content: parent.content }}
+        chosen={chosen}
+        onChoose={setChosen}
+        ready={ready}
+        posting={posting}
+        problem={problem}
+        reason={reason}
+        onReason={setReason}
+        onBack={() => onStep("write")}
+        onCancel={onCancel}
+        onPost={post}
+      />
     )
-  }
   return (
     <Body>
       <Scroll>
@@ -502,7 +482,6 @@ export function CosignForm({
           />
           <span>{t("input.cosign_no_words_label")}</span>
         </Tick>
-        {needsReason && <ReasonField value={reason} onChange={setReason} />}
         {problem}
       </Scroll>
       <Actions>
@@ -521,18 +500,9 @@ export function CosignForm({
         <Press
           type="button"
           aria-disabled={!ready}
-          disabled={
-            (editing && (!changed || !reason.trim())) ||
-            posting ||
-            publishTestimony.loading
-          }
-          onClick={() => {
-            if (!ready) ask.ask()
-            else if (editing) post()
-            else onStep("review")
-          }}
+          onClick={() => (ready ? onStep("review") : ask.ask())}
         >
-          {t(editing ? "input.cosign_save" : "input.review")}
+          {t("input.review")}
         </Press>
       </Actions>
     </Body>

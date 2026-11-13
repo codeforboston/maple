@@ -4,7 +4,8 @@ import type {
   ConferenceTestimony,
   UseEditConferenceTestimony
 } from "components/db"
-import { CosignForm, CosignStep } from "./CosignForm"
+import { CosignForm } from "./CosignForm"
+import type { Step } from "./InputForm"
 
 jest.mock("next-i18next", () => ({
   useTranslation: () => ({
@@ -26,7 +27,17 @@ jest.mock("components/auth", () => ({
 const mockProfile: { current: Record<string, unknown> } = { current: {} }
 jest.mock("components/db", () => ({
   useProfile: () => ({ profile: mockProfile.current }),
-  useMember: () => ({ member: undefined })
+  useMember: () => ({ member: undefined }),
+  // As components/db compares a draft with what was posted.
+  hasDraftChanged: (
+    draft?: Record<string, unknown>,
+    published?: Record<string, unknown>
+  ) =>
+    !!draft &&
+    !!published &&
+    (["position", "content"] as const).some(
+      k => (draft[k] || undefined) !== (published[k] || undefined)
+    )
 }))
 jest.mock("components/db/legislatorMail", () => ({
   useLetterOnRecord: () => false
@@ -67,7 +78,7 @@ const editing = (
 
 const mount = (
   edit: UseEditConferenceTestimony,
-  step: CosignStep,
+  step: Step,
   more: { onStep?: jest.Mock; onPosted?: jest.Mock } = {}
 ) =>
   render(
@@ -252,29 +263,82 @@ describe("CosignForm", () => {
     expect(screen.getByRole("alert")).toHaveTextContent(message)
   })
 
-  it("edits a posted cosign's words alone, with a reason", () => {
-    const publication = { cosignOfId: "p1", content: "Before." }
-    mount(
-      editing({ publication } as Partial<UseEditConferenceTestimony>),
-      "write"
-    )
-    expect(screen.getByRole("textbox")).toHaveValue("Before.")
-    const save = screen.getByRole("button", { name: "input.cosign_save" })
-    expect(save).toBeDisabled()
-    expect(screen.queryByText("publish.reasonLabel")).not.toBeInTheDocument()
-    // No way to pick another position, or to leave the parent.
-    expect(
-      screen.queryByRole("button", { name: /input\.position\./ })
-    ).not.toBeInTheDocument()
+  describe("editing a posted cosign", () => {
+    const publication = {
+      id: "c1",
+      cosignOfId: "p1",
+      position: "passSenateVersion",
+      content: "Before."
+    }
 
-    fireEvent.change(screen.getByRole("textbox"), {
-      target: { value: "After." }
+    it("changes its words alone, and goes to review to post them", () => {
+      const onStep = jest.fn()
+      mount(
+        editing({ publication } as Partial<UseEditConferenceTestimony>),
+        "write",
+        { onStep }
+      )
+      expect(screen.getByRole("textbox")).toHaveValue("Before.")
+      // No way to pick another position, to leave the parent, or to post
+      // without seeing the letter.
+      expect(
+        screen.queryByRole("button", { name: /input\.position\./ })
+      ).not.toBeInTheDocument()
+      expect(screen.queryByText("publish.reasonLabel")).not.toBeInTheDocument()
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "After." }
+      })
+      press("input.review")
+      expect(onStep).toHaveBeenCalledWith("review")
     })
-    expect(screen.getByText("publish.reasonLabel")).toBeInTheDocument()
-    expect(save).toBeDisabled()
-    fireEvent.change(screen.getAllByRole("textbox")[1], {
-      target: { value: "Clearer" }
+
+    it("asks for a reason for the change at review", () => {
+      mount(
+        editing({
+          publication,
+          draft: { cosignOfId: "p1", content: "After." }
+        } as Partial<UseEditConferenceTestimony>),
+        "review"
+      )
+      const send = screen.getByRole("button", {
+        name: "review.cosign_and_send"
+      })
+      expect(send).toBeDisabled()
+      fireEvent.change(
+        screen.getByPlaceholderText("publish.reasonPlaceholder"),
+        { target: { value: "Clearer" } }
+      )
+      expect(send).toBeEnabled()
     })
-    expect(save).toBeEnabled()
+
+    it("posts the change with its reason", async () => {
+      const edit = editing({
+        publication,
+        draft: { cosignOfId: "p1", content: "After.", editReason: "Clearer" }
+      } as Partial<UseEditConferenceTestimony>)
+      const onPosted = jest.fn()
+      mount(edit, "review", { onPosted })
+      await act(async () => press("review.cosign_and_send"))
+      expect(edit.publishTestimony.execute).toHaveBeenCalled()
+      expect(onPosted).toHaveBeenCalled()
+      // The form stays mounted, so the next edit starts without this reason.
+      expect(
+        screen.getByPlaceholderText("publish.reasonPlaceholder")
+      ).toHaveValue("")
+    })
+
+    it("cannot post it unchanged", () => {
+      mount(
+        editing({
+          publication,
+          draft: { cosignOfId: "p1", content: "Before." }
+        } as Partial<UseEditConferenceTestimony>),
+        "review"
+      )
+      expect(
+        screen.getByRole("button", { name: "review.cosign_and_send" })
+      ).toBeDisabled()
+      expect(screen.queryByText("publish.reasonLabel")).not.toBeInTheDocument()
+    })
   })
 })
