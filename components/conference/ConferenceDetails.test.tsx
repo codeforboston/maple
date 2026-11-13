@@ -39,6 +39,7 @@ let asPath = "/conferences/194/data-privacy"
 let mockQuery: Record<string, string> = {}
 const mockReplace = jest.fn(async () => true)
 jest.mock("next/router", () => ({
+  __esModule: true,
   useRouter: () => ({ asPath, query: mockQuery, replace: mockReplace })
 }))
 
@@ -313,21 +314,21 @@ describe("ConferenceDetails", () => {
     mockReplace.mockClear()
     mockDispatch.mockClear()
     window.scrollTo = scrollTo
+    Object.defineProperty(window, "scrollY", { value: 0, configurable: true })
   })
 
-  it("has one h1, the conference's, and no hero above it", () => {
+  it("has one h1, the conference's", () => {
     render(<ConferenceDetails {...props} />)
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1)
+  })
+
+  // The hero is a page of its own, the Conference Committees page
+  // (ConferenceHero.test.tsx).
+  it("opens a conference's address with no hero above it", () => {
+    render(<ConferenceDetails {...props} />)
     expect(
       screen.queryByRole("heading", { name: "hero.steps.0.h" })
     ).not.toBeInTheDocument()
-  })
-
-  it("leads back to what a conference committee is", () => {
-    render(<ConferenceDetails {...props} />)
-    expect(
-      screen.getByRole("link", { name: "what_is_conference_committee" })
-    ).toHaveAttribute("href", "/conferences")
   })
 
   it("names the six, the chairs, the bills and the hearing", () => {
@@ -406,9 +407,18 @@ describe("ConferenceDetails", () => {
     expect(container.querySelector('a[aria-current="page"]')).toHaveTextContent(
       "Phone-Free Schools"
     )
-    // The phone picker opens the same list from the title.
+    // On mobile, the floating button slides the same list in from the left,
+    // hung off the body rather than the page. The drawer asks the window's
+    // width of matchMedia, which jsdom leaves out.
+    window.matchMedia = jest.fn(() => ({
+      matches: false,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {}
+    })) as never
     fireEvent.click(screen.getByLabelText("pick_conference"))
-    expect(container.querySelectorAll(other)).toHaveLength(2)
+    expect(document.querySelectorAll(other)).toHaveLength(2)
   })
 
   it("lights a district when a conferee is pointed at", () => {
@@ -429,9 +439,10 @@ describe("ConferenceDetails", () => {
 
   it("takes input only while the conference is appointed", () => {
     const { unmount } = render(<ConferenceDetails {...props} />)
-    // The title's, and the one beside the reader's own legislator.
+    // The title's (from md), the floating one (on mobile), and the one
+    // beside the reader's own legislator.
     expect(screen.getAllByRole("button", { name: "input.share" })).toHaveLength(
-      2
+      3
     )
     unmount()
     const reported = { ...conference, status: "reportFiled" as const }

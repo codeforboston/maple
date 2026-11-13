@@ -2,7 +2,7 @@ import { last } from "lodash"
 import { useState, createContext } from "react"
 import styled from "styled-components"
 import { Button, Modal } from "../bootstrap"
-import { StyledBillTitle, StyledModalTitle } from "./HistoryModal"
+import { BillHistoryHeading, StyledModalTitle } from "./HistoryModal"
 import { HistoryTable } from "./HistoryTable"
 import { BillProps } from "./types"
 import { useTranslation } from "next-i18next"
@@ -56,9 +56,7 @@ export const Status = ({ bill }: BillProps) => {
           <Modal.Header closeButton onClick={handleCloseBillHistory}>
             <StyledModalTitle>{t("bill.status_and_history")}</StyledModalTitle>
           </Modal.Header>
-          <StyledBillTitle>
-            {bill.id + " - " + bill.content.Title}
-          </StyledBillTitle>
+          <BillHistoryHeading bill={bill} />
           <Modal.Body>
             <HistoryTable billHistory={bill.history} />
           </Modal.Body>

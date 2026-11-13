@@ -104,6 +104,9 @@ export const CompleteTestimony = ({
   const { t } = useTranslation("testimony")
   const namespace =
     variant === "ballotQuestion" ? "ballotQuestion.panel" : "panel"
+  // Outside a ballot question, inverse-button makes it white with blue text
+  // on the panel's blue (styles/globals.css), where white text on Bootstrap's
+  // pale info is hard to read.
   const cta = (
     <OpenForm
       label={t(`${namespace}.completeTestimony.label`)}
@@ -111,7 +114,7 @@ export const CompleteTestimony = ({
       className={
         variant === "ballotQuestion"
           ? "w-100 py-2 small fw-semibold"
-          : "text-white"
+          : "inverse-button"
       }
     />
   )

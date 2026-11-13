@@ -5,32 +5,67 @@ import { Conferees } from "./Conferees"
 import { DistrictMap, seatsOf } from "./DistrictMap"
 import { ConferenceHearings } from "./ConferenceHearings"
 import { useHover, useMyLegislators } from "./hooks"
-import { Card, CardTitle } from "./styles"
+import { CardTitle, CommitteeCard, LAYOUT_WIDE } from "./styles"
 import { CHAMBERS, ConfereeView, HearingView } from "./types"
 
+/** The card, a little tighter on a phone than the cards' 1.25rem a side
+ * (Card, styles.ts), so the names and the map beside them have more of its
+ * width. */
+const Frame = styled(CommitteeCard)`
+  @media (max-width: 575.98px) {
+    && {
+      padding: 1rem 1rem 1.25rem;
+    }
+  }
+`
+
 /**
- * Two name lists and two maps, laid out as one grid so the maps are equal and
- * take every pixel the names leave. Below lg the pairs stack: each chamber's
- * names beside its own map.
+ * Two name lists and two maps, laid out as one grid, as the prototype does.
+ * Stacked (below LAYOUT_WIDE, styles.ts), two pairs in equal halves: the
+ * Senate's names then its map, and the House mirrored, its map then its
+ * names, so the two maps sit together. Wide (LAYOUT_WIDE), the two lists then
+ * the two maps in one row, the maps equal and taking every pixel the names
+ * leave.
  */
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: max-content minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   column-gap: 1.25rem;
   row-gap: 2rem;
   align-items: start;
 
-  @media (min-width: 992px) {
+  & > :nth-child(1) {
+    justify-self: start;
+  }
+  & > :nth-child(3) {
+    order: 4;
+    justify-self: center;
+  }
+  & > :nth-child(4) {
+    order: 3;
+  }
+
+  @media ${LAYOUT_WIDE} {
     grid-template-columns: max-content max-content minmax(0, 1fr) minmax(0, 1fr);
     & > :nth-child(2) {
       order: 3;
     }
     & > :nth-child(3) {
       order: 2;
+      justify-self: start;
       padding-right: 1.75rem;
     }
     & > :nth-child(4) {
       order: 4;
+    }
+    /* Each map at its 300px most (DistrictMap.tsx), centred in its column,
+       so the room the column has over that is shared out around it, as
+       breathing room from the names, rather than left after it. */
+    & > :nth-child(2),
+    & > :nth-child(4) {
+      justify-self: center;
+      width: 100%;
+      max-width: 300px;
     }
   }
 `
@@ -59,7 +94,7 @@ export function ConferenceCommittee({
   )
 
   return (
-    <Card>
+    <Frame>
       <CardTitle>{t("who")}</CardTitle>
       {/* The names and the maps are one area to the pointer: leaving the
           block is what lets a reading go. */}
@@ -88,6 +123,6 @@ export function ConferenceCommittee({
       <div className="mt-4">
         <ConferenceHearings hearings={hearings} />
       </div>
-    </Card>
+    </Frame>
   )
 }

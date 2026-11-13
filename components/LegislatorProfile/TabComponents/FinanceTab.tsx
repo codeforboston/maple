@@ -134,7 +134,7 @@ export function FinanceTab({ finance }: { finance?: MembersFinance }) {
             <div
               style={{
                 background: "white",
-                border: "1px #dee2e6 solid",
+                border: "1px var(--maple-card-outline, #dee2e6) solid",
                 borderRadius: 8,
                 padding: "20px 12px 20px 24px",
                 height: "100%"
@@ -187,7 +187,7 @@ export function FinanceTab({ finance }: { finance?: MembersFinance }) {
         <div
           style={{
             background: "white",
-            border: "1px #dee2e6 solid",
+            border: "1px var(--maple-card-outline, #dee2e6) solid",
             borderRadius: 8,
             padding: "20px 24px"
           }}

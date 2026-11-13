@@ -17,3 +17,127 @@
   outline-offset: 2px;
   border-radius: 2px;
 }
+
+/* The lobbying filters' floating fields (Bootstrap's form-floating): the
+   label in the grey it floats up in, whether it has floated or not, so it
+   never reads as a typed value; and on focus, the edit profile legislator
+   search's (react-select, components/legislatorSearch.tsx), the border with
+   a 1px line of it, no soft ring, in the brand blue softened to half
+   strength (#1a3185 at 50%). */
+.floatingField > label {
+  color: rgba(var(--bs-body-color-rgb), 0.65);
+}
+
+/* The search boxes show the pointer at rest, as the selects beside them do,
+   and the text cursor once focused, for typing. */
+.floatingField :global(.form-control):not(:focus) {
+  cursor: pointer;
+}
+
+.floatingField :global(.form-control):focus,
+.floatingField :global(.form-select):focus {
+  border-color: rgba(26, 49, 133, 0.5);
+  box-shadow: 0 0 0 1px rgba(26, 49, 133, 0.5);
+}
+
+/* Bootstrap's floating fields at their 3.5rem (its padding at the sides),
+   with a little room between the floated label and the value. Each is as
+   tall as its padding and its line rather than set, and an empty search box
+   keeps its label centred. The class twice to win over Bootstrap's own
+   form-floating rules. */
+.floatingField.floatingField > :global(.form-control),
+.floatingField.floatingField > :global(.form-select) {
+  height: auto;
+  min-height: 0;
+  padding-top: 1.125rem;
+  padding-bottom: 1.125rem;
+}
+
+.floatingField.floatingField > :global(.form-control):focus,
+.floatingField.floatingField > :global(.form-control):not(:placeholder-shown),
+.floatingField.floatingField > :global(.form-select) {
+  /* Bootstrap's are 1.625rem and 0.625rem; the value a touch lower. */
+  padding-top: 1.7rem;
+  padding-bottom: 0.55rem;
+}
+
+/* Empty: the label centred to the eye. Its line is centred at the field's
+   own 1.125rem, but its letters stand on a baseline with room under it for
+   descenders, so they read low; 2px up evens it. */
+.floatingField.floatingField > label {
+  padding-top: 1rem;
+  padding-bottom: 1.25rem;
+}
+
+/* Floated: at Bootstrap's 1rem. */
+.floatingField.floatingField > :global(.form-control):focus ~ label,
+.floatingField.floatingField
+  > :global(.form-control):not(:placeholder-shown)
+  ~ label,
+.floatingField.floatingField > :global(.form-select) ~ label {
+  padding-top: 1rem;
+}
+
+/* The search box's own clear button stands in for the browser's. */
+.floatingSearchInput::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* At the search box's right once it is typed in (FloatingSearch,
+   LobbyingPanel.tsx), in the brand blue: the × that empties it. */
+.clearSearch {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: var(--maple-brand-primary);
+  cursor: pointer;
+  display: flex;
+  font-size: 1rem;
+  height: 1.75rem;
+  justify-content: center;
+  padding: 0;
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.75rem;
+  z-index: 3;
+}
+
+.clearSearch:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid var(--maple-brand-primary);
+  outline-offset: 1px;
+}
+
+/* More room between a select's text and its chevron than Bootstrap's
+   2.25rem of padding leaves (the chevron sits in it, 0.75rem from the
+   edge): 3rem, about 1.25rem clear of the arrow. */
+.floatingField.floatingField > :global(.form-select) {
+  padding-right: 3rem;
+}
+
+/* The overview's top row (pages/lobbying/index.tsx): the session select and
+   Key Figures a little wider than a third at 1200px and up, between the
+   grid's 4 and 5 of 12, the chart the rest. The class twice to win over
+   Bootstrap's own column widths. */
+@media (min-width: 1200px) {
+  .overviewLeft.overviewLeft {
+    width: 37.5%;
+  }
+
+  .overviewRight.overviewRight {
+    width: 62.5%;
+  }
+}
+
+/* A link without its underline until it is pointed at or focused. */
+.quietLink {
+  text-decoration: none;
+}
+
+.quietLink:hover,
+.quietLink:focus-visible {
+  text-decoration: underline;
+}

@@ -19,6 +19,7 @@ import {
   useTestimonyEmail
 } from "./hooks"
 import { useTranslation, Trans } from "next-i18next"
+import { SectionHead } from "./SectionHead"
 
 export const positionActions = (
   isBallotQuestion: boolean
@@ -109,18 +110,28 @@ export const YourTestimony = styled<{ type: "draft" | "published" }>(
     const { copy } = usePublishCopy()
     return (
       <div className={className}>
-        <div className="d-flex justify-content-between mb-2">
-          <div className="title fs-4">
+        {/* The title row Email Recipients has (SelectRecipients.tsx), so the
+            two read alike. */}
+        <SectionHead>
+          <h3>
             {copy("yourTestimony.title", "ballotQuestion.yourTestimony.title")}
-          </div>
+          </h3>
           <CopyTestimony />
-        </div>
-        <TestimonyPreview type={type} />
+        </SectionHead>
+        <TestimonyPreview type={type} className="testimony-preview" />
       </div>
     )
   }
 )`
   border-radius: 1rem;
+
+  /* The testimony in a white box with an edge, which the page's grey would
+     otherwise swallow (SubmitTestimonyForm.tsx). Only here; the bill page's
+     panel keeps its own. */
+  *:root & .testimony-preview {
+    background: var(--maple-surface-base);
+    border: 1px solid rgba(15, 23, 42, 0.2);
+  }
 `
 
 export const TestimonyPreview = styled<{ type: "draft" | "published" }>(
@@ -145,7 +156,15 @@ export const TestimonyPreview = styled<{ type: "draft" | "published" }>(
     return (
       <div {...props}>
         {position && (
-          <p className="text-center">
+          <p>
+            {/* The stance's thumb beside it, in the testimony pages' colours
+                (search/testimony/TestimonyHit.tsx). */}
+            <img
+              alt=""
+              src={`/thumbs-${position}.svg`}
+              className="me-2"
+              style={{ height: "1.5em", width: "auto" }}
+            />
             {positionActions(isBallotQuestion)[position]}
           </p>
         )}

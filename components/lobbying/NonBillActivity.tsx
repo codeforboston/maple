@@ -4,7 +4,8 @@ import type { LobbyingFiling } from "functions/src/lobbying/types"
 import { MAPLE_COLORS } from "./chartTheme"
 
 /** A filing with no bill, such as an Executive item: what it is, the agency
- * when the portal names one, and its title unless a column already shows it. */
+ * on the line under it when the portal names one, and its title unless a
+ * column already shows it. */
 export function NonBillActivity({
   filing,
   showTitle
@@ -23,9 +24,20 @@ export function NonBillActivity({
     filing.agency && filing.agency !== "Other" ? filing.agency : null
   return (
     <>
-      <span style={{ color: MAPLE_COLORS.textBody }}>
-        {agency ? t("activity.chamberAgency", { chamber, agency }) : chamber}
+      {/* Bold and the size of a bill number in the column (16px), in the
+          body ink, as it is no link. */}
+      <span
+        style={{ color: MAPLE_COLORS.textBody, fontSize: 16, fontWeight: 700 }}
+      >
+        {chamber}
       </span>
+      {/* The size of the description under it (titleStyle), in the ink of
+          "Executive" above it. */}
+      {agency && (
+        <div style={{ color: MAPLE_COLORS.textBody, fontSize: 12 }}>
+          {agency}
+        </div>
+      )}
       {showTitle && filing.activityTitle && (
         <div style={titleStyle} title={filing.activityTitle}>
           {filing.activityTitle}

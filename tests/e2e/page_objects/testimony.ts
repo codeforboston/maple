@@ -2,11 +2,11 @@ import { expect, type Locator, type Page } from "@playwright/test"
 
 export class TestimonyPage {
   readonly page: Page
-  readonly allTab: Locator
+  readonly allOption: Locator
   readonly authorFilterItem: Locator
   readonly billFilterItem: Locator
-  readonly individualsTab: Locator
-  readonly organizationsTab: Locator
+  readonly individualsOption: Locator
+  readonly organizationsOption: Locator
   readonly positionFilterItem: Locator
   readonly queryFilterItem: Locator
   readonly resultsCountText: Locator
@@ -14,11 +14,18 @@ export class TestimonyPage {
 
   constructor(page: Page) {
     this.page = page
-    this.allTab = page.getByRole("tab", { name: "All" })
+    // The Author Type radios in the filter panel.
+    this.allOption = page.getByRole("radio", { name: "All", exact: true })
     this.authorFilterItem = page.getByText("authorDisplayName:").locator("..")
     this.billFilterItem = page.getByText("billId:").locator("..")
-    this.individualsTab = page.getByRole("tab", { name: "Individual" })
-    this.organizationsTab = page.getByRole("tab", { name: "Organizations" })
+    this.individualsOption = page.getByRole("radio", {
+      name: "Individuals",
+      exact: true
+    })
+    this.organizationsOption = page.getByRole("radio", {
+      name: "Organizations",
+      exact: true
+    })
     this.positionFilterItem = page.getByText("position:").locator("..")
     this.queryFilterItem = page.getByText("query:").locator("..")
     this.resultsCountText = page.getByText("Results").first()
@@ -33,8 +40,8 @@ export class TestimonyPage {
     await this.searchBar.fill(query)
   }
 
-  async filterByAuthorRoleTab(role: string) {
-    await this.page.getByRole("tab", { name: role }).click()
+  async filterByAuthorRole(role: string) {
+    await this.page.getByRole("radio", { name: role, exact: true }).check()
   }
 
   selectedSort(label: string) {

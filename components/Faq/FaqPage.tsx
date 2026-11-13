@@ -26,6 +26,7 @@ const Cta = styled.div`
   background: var(--maple-surface-base);
   border-radius: var(--maple-radius-xl);
   box-shadow: var(--maple-shadow-sm);
+  border: 1px solid var(--maple-card-edge);
   padding: 2.5rem 2rem;
   margin-top: 1.5rem;
   text-align: center;
@@ -67,7 +68,11 @@ export const FaqPage = () => {
 
   return (
     <LearnLayout width="medium">
-      <LearnBreadcrumb section={content.breadcrumb} eyebrow={t("about")} />
+      <LearnBreadcrumb
+        section={content.breadcrumb}
+        eyebrow={t("about")}
+        withoutHome
+      />
       <LearnHeader
         title={content.title}
         subhead={content.subhead}

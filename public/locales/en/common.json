@@ -80,6 +80,10 @@
   },
   "calendar": "Our Calendar",
   "copiedToClipboard": "Copied to Clipboard!",
+  "copyEmail": "Copy {{email}}",
+  "copy": "Copy",
+  "copied": "Copied!",
+  "more": "Browse More",
   "confirmation": {
     "unfollowMessage": "Are you sure you want to unfollow?",
     "yes": "Yes",
@@ -141,7 +145,6 @@
     "supportMaple": "Support MAPLE",
     "aboutTestimony": "How Testimony Works",
     "aiTools": "AI Research Tools",
-    "writingTestimony": "Writing Effective Testimony",
     "testimony": "Testimony",
     "viewProfile": "View Profile",
     "whyUseMaple": "Why Use MAPLE",

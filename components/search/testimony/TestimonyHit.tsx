@@ -71,6 +71,17 @@ const ThumbIcon = styled.div<{ $position: string }>`
   height: 36px;
   width: 36px;
   background-size: cover;
+
+  /* The whole thumb, never cropped (cover crops the taller endorse and oppose
+     drawings), inset 4px within the same box. */
+  *:root & {
+    box-sizing: border-box;
+    padding: 4px;
+    background-origin: content-box;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
 `
 
 const PositionLabel = styled.span`
@@ -132,12 +143,13 @@ const DateLabel = styled.span`
   margin-left: auto;
 `
 
+/* Shallower than it was (3px above and below). */
 const CommitteePill = styled.span`
   background: var(--bs-blue);
   border-radius: var(--maple-radius-pill);
   color: var(--maple-text-inverse);
   font-size: 0.7rem;
-  padding: 3px var(--maple-space-sm);
+  padding: 1px var(--maple-space-sm);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

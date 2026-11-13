@@ -1,8 +1,9 @@
-import { Container } from "components/bootstrap"
 import { dbService } from "components/db"
 import { BrowseBallotQuestions } from "components/ballotquestions/BrowseBallotQuestions"
 import type { BallotQuestionBrowseItem } from "components/ballotquestions/BrowseBallotQuestions"
 import { createPage } from "components/page"
+import { PageColumn } from "components/shared/PageColumn"
+import styled from "styled-components"
 import type { BallotQuestion } from "components/db"
 import { useTranslation } from "next-i18next"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
@@ -20,16 +21,21 @@ export default createPage({
     const { t } = useTranslation("ballotquestions")
 
     return (
-      <Container fluid="xl" className="mt-3 mb-4">
+      <ArtColumn $width="xwide" className="mt-3 mb-4">
         <h1>{t("browse_ballot_questions")}</h1>
         <p className="text-muted mb-4 col-lg-8 px-0">
           {t("browse_ballot_questions_intro")}
         </p>
         <BrowseBallotQuestions items={items} currentYear={currentYear} />
-      </Container>
+      </ArtColumn>
     )
   }
 })
+
+/* Positioned, as it has been since the page carried art placed against it. */
+const ArtColumn = styled(PageColumn)`
+  position: relative;
+`
 
 export const getServerSideProps: GetServerSideProps<
   BrowseBallotQuestionsPageProps

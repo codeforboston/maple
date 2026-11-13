@@ -1,4 +1,4 @@
-import { createPage } from "../../components/page"
+import { createPage } from "../components/page"
 import WritingTips from "components/learn/Testimony/WritingTips"
 import { createGetStaticTranslationProps } from "components/translations"
 

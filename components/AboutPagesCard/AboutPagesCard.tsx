@@ -4,7 +4,7 @@ import { FC, PropsWithChildren } from "react"
 
 const StyledHeader = styled(Card.Header)`
   transform: translate(0);
-  font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--maple-font-body);
   font-weight: 700;
   font-size: 1.25rem;
 

@@ -1,5 +1,6 @@
 import { useTranslation } from "next-i18next"
 import Image from "react-bootstrap/Image"
+import { Internal } from "components/links"
 import styles from "./Homepage.module.css"
 
 type FeatureItem = {
@@ -15,12 +16,12 @@ export default function FeaturesSection() {
       body: t("features.research")
     },
     {
-      icon: "/homepage/feature-2.svg",
-      body: t("features.publish")
-    },
-    {
       icon: "/homepage/feature-3.svg",
       body: t("features.share")
+    },
+    {
+      icon: "/homepage/feature-2.svg",
+      body: t("features.publish")
     }
   ]
 
@@ -54,6 +55,12 @@ export default function FeaturesSection() {
                 </div>
               </article>
             ))}
+            <Internal
+              href="/bills"
+              className={`${styles.primaryAction} ${styles.featuresAction}`}
+            >
+              {t("features.action")}
+            </Internal>
           </div>
         </div>
       </div>

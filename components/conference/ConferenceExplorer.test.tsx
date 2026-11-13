@@ -153,13 +153,6 @@ const row = (container: HTMLElement, name: string) =>
   within(table(container)).getByText(name).closest("tr")!
 
 describe("ConferenceExplorer", () => {
-  it("leads back to what a conference committee is", () => {
-    render(<ConferenceExplorer {...props} />)
-    expect(
-      screen.getByRole("link", { name: "what_is_conference_committee" })
-    ).toHaveAttribute("href", "/conferences")
-  })
-
   it("lists every conference and lights every conferee's seat", () => {
     const { container } = render(<ConferenceExplorer {...props} />)
     expect(table(container).querySelectorAll("tbody tr")).toHaveLength(2)
@@ -202,8 +195,10 @@ describe("ConferenceExplorer", () => {
     // (The table sits in the wide layout, hidden at jsdom's width, so the
     // buttons are found by selector rather than by role.)
     const name = (n: string) => row(container, n).querySelector("button")!
-    expect(name("Phone-Free Schools")).toHaveStyle({ fontWeight: 700 })
-    expect(name("Data Privacy")).toHaveStyle({ fontWeight: 400 })
+    // The redesign's weights (ConferenceTable's NameButton): 600 forward,
+    // 300 set back.
+    expect(name("Phone-Free Schools")).toHaveStyle({ fontWeight: 600 })
+    expect(name("Data Privacy")).toHaveStyle({ fontWeight: 300 })
 
     fireEvent.click(
       container.querySelector('polygon[aria-label="B. Crighton"]')!

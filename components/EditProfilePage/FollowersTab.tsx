@@ -61,6 +61,7 @@ export const FollowersTab = ({
     <PaginatedItemsCard
       className={className}
       title={t("follow.your_followers")}
+      titleInHeader
       description={t("follow.follower_info_disclaimer")}
       ItemCard={FollowUserCard}
       {...state}

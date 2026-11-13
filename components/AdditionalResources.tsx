@@ -29,6 +29,7 @@ const Section = styled.section`
 
   li {
     background: var(--maple-surface-base);
+    border: 1px solid var(--maple-card-edge);
     border-radius: var(--maple-radius-xl);
     box-shadow: var(--maple-shadow-sm);
     padding: 1.25rem 1.5rem;

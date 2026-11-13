@@ -25,6 +25,14 @@ const HearingDate = styled.div`
   max-width: 202px;
 `
 
+/** A bill page card's title in the blue bar, as the Testimonies card's (Head,
+ * components/TestimonyCard/ViewTestimony.tsx): 22px, in the page's own face
+ * (Lexend), rather than Bootstrap's h4, which is set in Nunito. Shared with
+ * the Bill Tracker. */
+export const CardHead = styled(Card.Header)`
+  font-size: 22px;
+`
+
 export const Committees: FC<React.PropsWithChildren<BillProps>> = ({
   bill,
   className
@@ -37,9 +45,9 @@ export const Committees: FC<React.PropsWithChildren<BillProps>> = ({
       <MapleCard
         className={className}
         headerElement={
-          <Card.Header className="h4 bg-secondary text-light">
+          <CardHead className="bg-secondary text-light">
             {t("bill.committee")}
-          </Card.Header>
+          </CardHead>
         }
         body={
           <div className={`d-flex justify-content-around p-2`}>
@@ -98,9 +106,9 @@ export const Sponsors: FC<React.PropsWithChildren<BillProps>> = ({
       <MapleCard
         className={className}
         headerElement={
-          <Card.Header className="h4 bg-secondary text-light">
+          <CardHead className="bg-secondary text-light">
             {t("sponsors")}
-          </Card.Header>
+          </CardHead>
         }
         body={
           <div className={`${className} p-2`}>

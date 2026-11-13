@@ -159,6 +159,8 @@ export const POSITION_TEXT_COLORS: Record<
 const TICK_STYLE = {
   fill: MAPLE_COLORS.textMuted,
   fontSize: 12,
+  // The font's name, not the --maple-font-body token: Recharts sets this as
+  // an SVG attribute, which can't read a CSS variable.
   fontFamily: "Nunito, system-ui, sans-serif"
 }
 
@@ -257,7 +259,7 @@ export const gradientFill = (index: number) => `url(#maple-gradient-${index})`
 export const LEGEND_PROPS = {
   wrapperStyle: {
     fontSize: 12,
-    fontFamily: "Nunito, system-ui, sans-serif",
+    fontFamily: "var(--maple-font-body)",
     color: MAPLE_COLORS.textMuted,
     paddingTop: 8
   },
@@ -319,7 +321,7 @@ const tooltipContainerStyle: React.CSSProperties = {
   borderRadius: 8,
   boxShadow: "0 0.5rem 1.5rem rgba(15, 23, 42, 0.06)",
   padding: "0.5rem 0.75rem",
-  fontFamily: "Nunito, system-ui, sans-serif",
+  fontFamily: "var(--maple-font-body)",
   fontSize: 13,
   color: MAPLE_COLORS.textBody,
   minWidth: 140
@@ -371,7 +373,7 @@ const chartContainerStyle: React.CSSProperties = {
 }
 
 const chartTitleStyle: React.CSSProperties = {
-  fontFamily: "Nunito, system-ui, sans-serif",
+  fontFamily: "var(--maple-font-body)",
   fontWeight: 700,
   fontSize: 13,
   color: MAPLE_COLORS.textMuted,

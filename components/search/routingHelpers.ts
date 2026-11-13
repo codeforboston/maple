@@ -30,7 +30,13 @@ export const pathToSearchState = (parseUrlArgs: {
   const { location, qsModule: qs } = parseUrlArgs
   const path = location.href
 
+  // A higher arrayLimit than qs's 20, past which numbered entries
+  // (court[0], court[1], ...) are read as an object rather than a list. The
+  // homepage's topic links select dozens of subtopics, and this page writes
+  // them back to the address numbered.
   return (
-    path.includes("?") ? qs.parse(path.substring(path.indexOf("?") + 1)) : {}
+    path.includes("?")
+      ? qs.parse(path.substring(path.indexOf("?") + 1), { arrayLimit: 500 })
+      : {}
   ) as UiState
 }

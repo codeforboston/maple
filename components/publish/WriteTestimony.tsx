@@ -9,6 +9,7 @@ import { useAppDispatch } from "../hooks"
 import * as links from "../links"
 import * as nav from "./NavigationButtons"
 import { SelectRecipients } from "./SelectRecipients"
+import { SectionHead } from "./SectionHead"
 import { StepHeader } from "./StepHeader"
 import { useFormRedirection, usePublishCopy, usePublishState } from "./hooks"
 import { setAttachmentId, setContent } from "./redux"
@@ -42,28 +43,31 @@ export const WriteTestimony = styled(props => {
   // const tabs = useTabs(write)
 
   const valid = !!write.content
+  const testimonyLabel = copy(
+    "submitTestimonyForm.write.testimonyLabel",
+    "ballotQuestion.submitTestimonyForm.write.testimonyLabel"
+  )
 
   return (
     <div {...props}>
-      <StepHeader step={2}>
+      <StepHeader>
         {copy(
           "submitTestimonyForm.write.header",
           "ballotQuestion.submitTestimonyForm.write.header"
         )}
       </StepHeader>
       {!isBallotQuestion && <SelectRecipients className="my-4" />}
-
-      <div className="divider" />
-
-      <div className="mt-4">
+      {/* The testimony under a title row of its own, as the recipients above
+          it are (SelectRecipients.tsx). */}
+      <section className="mb-4 titled">
+        <SectionHead>
+          <h3>{testimonyLabel}</h3>
+        </SectionHead>
         <TextArea
           setContent={write.setContent}
           content={write.content}
           error={write.error}
-          label={copy(
-            "submitTestimonyForm.write.testimonyLabel",
-            "ballotQuestion.submitTestimonyForm.write.testimonyLabel"
-          )}
+          label={testimonyLabel}
           placeholder={copy(
             "submitTestimonyForm.write.testimonyPlaceholder",
             "ballotQuestion.submitTestimonyForm.write.testimonyPlaceholder"
@@ -84,7 +88,7 @@ export const WriteTestimony = styled(props => {
             }
             components={[
               // eslint-disable-next-line react/jsx-key
-              <links.Internal href="/learn/writing-effective-testimony" />
+              <links.Internal href="/writing-effective-testimony" />
             ]}
           />
         </div>
@@ -104,8 +108,7 @@ export const WriteTestimony = styled(props => {
             "ballotQuestion.submitTestimonyForm.write.attachmentLabel"
           )}
         />
-      </div>
-
+      </section>
       <nav.FormNavigation
         left={<nav.Previous />}
         right={<nav.Next disabled={!valid} />}
@@ -121,10 +124,23 @@ export const WriteTestimony = styled(props => {
     font-size: 1.5rem;
   }
 
-  .divider {
+  /* Under its section's title the title names the box, so its own label is
+     kept for screen readers only. */
+  .titled .text-container > .form-label {
+    position: absolute;
+    width: 1px;
     height: 1px;
-    flex: auto;
-    background: var(--bs-gray-500);
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  /* The testimony box's edge darker than the site's faint field border, so the
+     space to write in is plain to see. Focused, it keeps Bootstrap's focus
+     border. */
+  *:root & .text-container .form-control:not(:focus) {
+    border-color: rgba(15, 23, 42, 0.3);
   }
 `
 

@@ -9,6 +9,7 @@ import { useTranslation } from "next-i18next"
 
 const Container = styled.div`
   background-color: white;
+  border: 1px solid var(--maple-card-edge);
   border-radius: 0.75rem;
   padding: 1rem;
 `

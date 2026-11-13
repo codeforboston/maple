@@ -1,12 +1,13 @@
 import { RefinementListItem } from "instantsearch.js/es/connectors/refinement-list/connectRefinementList"
 import { useRefinements } from "../useRefinements"
-import { useMemo } from "react"
+import { ReactNode, useMemo } from "react"
 import { useTranslation } from "next-i18next"
 
-export const useTestimonyRefinements = () => {
+export const useTestimonyRefinements = (leadingFilters?: ReactNode) => {
   const { t } = useTranslation("search")
 
   return useRefinements({
+    leadingFilters,
     refinementProps: useMemo(
       () =>
         [

@@ -8,17 +8,12 @@ import {
 } from "react-instantsearch"
 import { createInstantSearchRouterNext } from "react-instantsearch-router-nextjs"
 import singletonRouter from "next/router"
-import {
-  StyledTabContent,
-  StyledTabNav
-} from "components/EditProfilePage/StyledEditProfileComponents"
 import { currentGeneralCourt } from "functions/src/shared"
 import { SortByItem } from "instantsearch.js/es/connectors/sort-by/connectSortBy"
 import { useState, useMemo } from "react"
-import { TabContainer, TabPane } from "react-bootstrap"
 import styled from "styled-components"
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
-import { Col, Nav, Row } from "../../bootstrap"
+import { Col, Form, Row } from "../../bootstrap"
 import { NoResults } from "../NoResults"
 import { ResultCount } from "../ResultCount"
 import { SearchContainer } from "../SearchContainer"
@@ -32,6 +27,7 @@ import {
 } from "../searchParams"
 import { TestimonyHit } from "./TestimonyHit"
 import { useTestimonyRefinements } from "./useTestimonyRefinements"
+import { FilterLabel, FilterSection } from "../useRefinements"
 import { FollowContext, OrgFollowStatus } from "components/shared/FollowContext"
 import { pathToSearchState, searchStateToUrl } from "../routingHelpers"
 import { useTranslation } from "next-i18next"
@@ -141,12 +137,29 @@ const useSearchStatus = () => {
   }
 }
 
+const AuthorTypeFilterSection = styled(FilterSection)`
+  display: block;
+
+  /* Bootstrap's primary here is red (styles/bootstrap.scss), which checked
+     radios take; these use the site's navy instead. */
+  .form-check-input:checked {
+    background-color: var(--maple-brand-primary);
+    border-color: var(--maple-brand-primary);
+  }
+
+  /* The same for the focus ring, which Bootstrap also draws in its red. */
+  .form-check-input:focus {
+    border-color: var(--maple-brand-primary);
+    box-shadow: 0 0 0 0.25rem
+      color-mix(in srgb, var(--maple-brand-primary) 25%, transparent);
+  }
+`
+
 const tabs = ["All", "Individuals", "Organizations"]
 type Tab = (typeof tabs)[number]
 
 const Layout = () => {
   const [key, setKey] = useState<string>("All")
-  const refinements = useTestimonyRefinements()
   const status = useSearchStatus()
   const { indexUiState, setIndexUiState } = useInstantSearch()
   const { t } = useTranslation("search")
@@ -171,28 +184,36 @@ const Layout = () => {
     })
   }
 
+  /* The All / Individuals / Organizations choice, as the first group in the
+     filter panel. It sets the authorRole filter. */
+  const authorTypeFilter = (
+    // A radio group named by its heading, so the choice is announced as
+    // "Author type".
+    <AuthorTypeFilterSection
+      role="radiogroup"
+      aria-labelledby="author-type-label"
+    >
+      <FilterLabel id="author-type-label">{t("author_type")}</FilterLabel>
+      {tabs.map(tab => (
+        <Form.Check
+          key={tab}
+          type="radio"
+          id={`author-type-${tab}`}
+          name="author-type"
+          label={tab}
+          checked={key === tab}
+          onChange={() => onTabClick(tab)}
+        />
+      ))}
+    </AuthorTypeFilterSection>
+  )
+  const refinements = useTestimonyRefinements(authorTypeFilter)
+
   const [followStatus, setFollowStatus] = useState<OrgFollowStatus>({})
 
   return (
     <>
       <FollowContext.Provider value={{ followStatus, setFollowStatus }}>
-        <TabContainer activeKey={key} onSelect={(k: any) => setKey(k)}>
-          <StyledTabNav>
-            {tabs.map((t, i) => (
-              <Nav.Item key={t}>
-                <Nav.Link
-                  eventKey={t}
-                  className={`rounded-top m-0 p-0`}
-                  onClick={e => onTabClick(t)}
-                >
-                  <p className={`my-0 ${i == 0 ? "" : "mx-4"}`}>{t}</p>
-                  <hr className={`my-0`} />
-                </Nav.Link>
-              </Nav.Item>
-            ))}
-          </StyledTabNav>
-          <StyledTabContent></StyledTabContent>
-        </TabContainer>
         <SearchContainer>
           <ControlsBar>
             <SearchBox placeholder="Search For Testimony" />
@@ -208,7 +229,7 @@ const Layout = () => {
             <CurrentRefinements excludedAttributes={["authorRole"]} />
           </ControlsBar>
           <Row>
-            <Col xs={0} lg={3}>
+            <Col xs={0} lg={3} className="search-filter-column">
               {refinements.options}
             </Col>
             <Col className="d-flex flex-column">

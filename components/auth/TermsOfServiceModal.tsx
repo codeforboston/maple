@@ -24,7 +24,10 @@ export default function TermsOfServiceModal({
                 <h4>{t("privacyPolicy")}</h4>
               </Col>
               <Col md={3}>
-                <External className={`text-decoration-none`} href="/policies">
+                <External
+                  className={`text-decoration-none`}
+                  href="/policies/privacy"
+                >
                   {t("readMore")}
                 </External>
               </Col>
@@ -43,7 +46,10 @@ export default function TermsOfServiceModal({
                 <h4>{t("TOS")}</h4>
               </Col>
               <Col md={3}>
-                <External className={`text-decoration-none`} href="/policies">
+                <External
+                  className={`text-decoration-none`}
+                  href="/policies/privacy"
+                >
                   {t("readMore")}
                 </External>
               </Col>

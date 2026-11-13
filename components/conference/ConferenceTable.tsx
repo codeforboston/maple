@@ -34,6 +34,9 @@ const chamberCells = (cells: (chamber: Branch) => ReactNode[]) =>
   ])
 
 const DIM = 0.35
+/** A row pointed at while another is held: set back, but less than the
+ * rest, so it reads as the one being looked at. */
+const SOFT_DIM = 0.7
 
 const Table = styled.table`
   border-collapse: collapse;
@@ -51,6 +54,13 @@ const Table = styled.table`
     border-top: ${RULE};
     cursor: pointer;
     transition: background-color 150ms ease-out;
+  }
+  /* More room above and below a row than the header has, so a name that
+     wraps to two lines is not pressed against the rules. */
+  tbody th,
+  tbody td {
+    padding-top: 8px;
+    padding-bottom: 8px;
   }
   tbody tr[aria-selected="true"] {
     background: var(--maple-surface-page);
@@ -73,25 +83,34 @@ const SubLabel = styled.span`
   opacity: 0.7;
 `
 
+/** `near`: a row brought near the held one (pointed at while another is
+ * held, or another of the ringed legislator's), at 600 in the lighter
+ * colour. */
 const NameButton = styled.button<{
-  $tone: "strong" | "mid" | "faint"
-  $covered: boolean
+  $tone: "strong" | "mid" | "near" | "faint"
 }>`
   display: block;
-  width: 150px;
+  /* Wider than the mockup's 150px, so fewer names wrap. */
+  width: 190px;
   padding: 0;
   border: 0;
   background: none;
   text-align: left;
-  font-size: 0.875rem;
+  /* The mockup's 13px. */
+  font-size: 0.8125rem;
   line-height: 1.3;
-  color: ${({ $tone, $covered }) =>
-    $tone === "faint" || !$covered
+  color: ${({ $tone }) =>
+    $tone === "faint" || $tone === "near"
       ? "var(--maple-text-muted)"
       : "var(--maple-text-strong)"};
-  font-weight: ${({ $tone }) => ($tone === "mid" ? 700 : 400)};
+  font-weight: ${({ $tone }) =>
+    $tone === "mid" || $tone === "near" ? 600 : 300};
   &[aria-pressed="true"] {
-    font-weight: 600;
+    font-weight: 500;
+  }
+  /* In Lexend, though the card is Nunito. */
+  *:root & {
+    font-family: var(--maple-font-heading);
   }
 `
 
@@ -99,8 +118,11 @@ const Bills = styled.span`
   display: block;
   margin-top: 1px;
   font-size: 0.6875rem;
-  font-weight: 400;
+  font-weight: 300;
   color: var(--maple-text-muted);
+  *:root & {
+    font-family: var(--maple-font-heading);
+  }
   .status {
     margin-left: 0.375rem;
     font-style: italic;
@@ -108,9 +130,9 @@ const Bills = styled.span`
 `
 
 /** The table's faces: 22px, 26px once the card has the room. */
-const Face = styled.span<{ $dim: boolean; $gray: boolean }>`
+const Face = styled.span<{ $dim: boolean; $soft: boolean; $gray: boolean }>`
   display: block;
-  opacity: ${({ $dim }) => ($dim ? DIM : 1)};
+  opacity: ${({ $dim, $soft }) => (!$dim ? 1 : $soft ? SOFT_DIM : DIM)};
   filter: ${({ $gray }) => ($gray ? "grayscale(1)" : "none")};
   transition: opacity 150ms ease-out, filter 200ms ease-out;
 
@@ -145,6 +167,7 @@ export function ConferenceTable({
   conferees,
   selected,
   highlighted,
+  ringed = null,
   onSelect
 }: {
   conferences: ConferenceSummary[]
@@ -154,6 +177,11 @@ export function ConferenceTable({
   /** Keys of the legislators being highlighted, if any. Never set while a
    * conference is held. */
   highlighted: Set<string> | null
+  /** In a held conference, the legislator pointed at or pinned in the panel
+   * beside the table: their face takes the ring, in colour, in every row they
+   * sit on, and those rows' names come forward, as the highlighted
+   * legislators' do. */
+  ringed?: string | null
   onSelect: (id: string) => void
 }) {
   const { t } = useTranslation("conferences")
@@ -196,6 +224,12 @@ export function ConferenceTable({
         {conferences.map(c => {
           const people = conferees[c.id] ?? []
           const isSelected = selected === c.id
+          // In a held conference, whether this row shares the legislator
+          // ringed in the panel.
+          const sharesRinged =
+            mode === "held" &&
+            ringed != null &&
+            people.some(p => personKey(p) === ringed)
           // Whether this row stays forward in the current mode.
           const on =
             mode === "held"
@@ -212,6 +246,13 @@ export function ConferenceTable({
             : mode === "highlight" || mode === "hover"
             ? "mid"
             : "strong"
+          // In a held conference, the row pointed at, and the ringed
+          // legislator's other rows, are brought near: at 600, in the
+          // lighter colour (NameButton).
+          const near =
+            !isSelected &&
+            (sharesRinged || (mode === "held" && hovered === c.id))
+          const rowTone = near ? "near" : tone
           return (
             <tr
               key={c.id}
@@ -223,14 +264,13 @@ export function ConferenceTable({
                 <NameButton
                   type="button"
                   aria-pressed={isSelected}
-                  $tone={tone}
-                  $covered={c.covered}
+                  $tone={rowTone}
                   onFocus={() => hover(c.id)}
                   onBlur={() => hover(null)}
                 >
                   {conferenceName(c)}
                   <Bills>
-                    <BillLine c={c} />
+                    <BillLine c={c} noteUncovered={false} />
                   </Bills>
                 </NameButton>
               </td>
@@ -238,13 +278,26 @@ export function ConferenceTable({
                 const faces = chamberOrder(people, chamber)
                 return [0, 1, 2].map(slot => {
                   const p = faces[slot]
-                  const lit = Boolean(p && highlighted?.has(personKey(p)))
+                  const lit = Boolean(
+                    p &&
+                      (highlighted?.has(personKey(p)) ||
+                        (mode === "held" && ringed === personKey(p)))
+                  )
                   return (
                     <td key={`${chamber}-${slot}`}>
                       {p && (
                         <Face
-                          $dim={highlighted ? !lit : !on}
-                          $gray={mode === "held" && !isSelected}
+                          $dim={highlighted ? !lit : !on && !lit}
+                          // Pointed at while another is held: less dimmed.
+                          $soft={
+                            mode === "held" && !isSelected && hovered === c.id
+                          }
+                          $gray={
+                            mode === "held" &&
+                            !isSelected &&
+                            !lit &&
+                            hovered !== c.id
+                          }
                         >
                           <ConfereeFace c={p} size={22} lit={lit} labelled />
                         </Face>
@@ -284,6 +337,9 @@ const List = styled.ul`
   }
 `
 
+/** A row that links to its conference's page. One we don't cover has its
+ * name in the muted grey and "Not covered" after its bills, as in the rail
+ * (ConferenceRail.tsx). */
 const ListRow = styled(Internal)<{ $covered: boolean }>`
   display: flex;
   align-items: center;
@@ -295,9 +351,12 @@ const ListRow = styled(Internal)<{ $covered: boolean }>`
 
   .name {
     display: block;
-    font-weight: 600;
+    font-weight: 500;
     color: ${({ $covered }) =>
       $covered ? "inherit" : "var(--maple-text-muted)"};
+  }
+  *:root & .name {
+    font-family: var(--maple-font-heading);
   }
   .text {
     flex: 1 1 auto;

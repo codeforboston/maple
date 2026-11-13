@@ -1,10 +1,10 @@
 import { useTranslation } from "next-i18next"
 import Router from "next/router"
 import { useState } from "react"
-import { TabPane } from "react-bootstrap"
+import { Nav, TabPane } from "react-bootstrap"
 import TabContainer from "react-bootstrap/TabContainer"
 import { Frequency, useAuth } from "../auth"
-import { Container, Row, Spinner } from "../bootstrap"
+import { Col, Container, Row, Spinner } from "../bootstrap"
 import {
   Profile,
   ProfileHook,
@@ -19,16 +19,13 @@ import { FollowingTab } from "./FollowingTab"
 import { PersonalInfoTab } from "./PersonalInfoTab"
 import ProfileSettingsModal from "./ProfileSettingsModal"
 import { VerifyAccountSection } from "components/shared"
-import {
-  StyledTabContent,
-  TabNavItem,
-  TabNavWrapper
-} from "./StyledEditProfileComponents"
+import { StyledTabContent } from "./StyledEditProfileComponents"
 import { TestimoniesTab } from "./TestimoniesTab"
 import { useFlags } from "components/featureFlags"
 import LoginPage from "components/Login/Login"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 import { FollowersTab } from "./FollowersTab"
+import { TabsRow } from "components/OurTeam/OurTeam"
 
 const tabTitle = ["about-you", "testimonies", "following", "followers"] as const
 export type TabTitles = (typeof tabTitle)[number]
@@ -168,6 +165,16 @@ export function EditProfileForm({
 
   const { followOrg, phoneVerificationUI } = useFlags()
 
+  // Verify Account as a plain white card with its heading inside, like
+  // General info, rather than a header band.
+  const verifyAccount = phoneVerificationUI &&
+    user &&
+    (!user.emailVerified || !profile.phoneVerified) && (
+      <div className="verify-account-card" style={{ marginTop: "1.5rem" }}>
+        <VerifyAccountSection user={user} profile={profile} className="" />
+      </div>
+    )
+
   if (followOrg === false) {
     tabs.splice(2, 1)
   }
@@ -177,33 +184,33 @@ export function EditProfileForm({
       {isPendingUpgrade && <PendingUpgradeBanner />}
 
       <Container>
+        {/* Verify Account first, above the heading, as on the profile page. */}
+        {verifyAccount}
         <EditProfileHeader
           formUpdated={formUpdated}
           onSettingsModalOpen={onSettingsModalOpen}
           uid={uid}
           role={profile.role}
         />
-        {phoneVerificationUI &&
-          user &&
-          (!user.emailVerified || !profile.phoneVerified) && (
-            <div style={{ marginBottom: "3.5rem" }}>
-              <VerifyAccountSection
-                user={user}
-                profile={profile}
-                className=""
-              />
-            </div>
-          )}
         <TabContainer
           defaultActiveKey="about-you"
           activeKey={tabTitle}
           onSelect={(tabTitle: any) => handleOnClick(tabTitle)}
         >
-          <TabNavWrapper>
-            {tabs.map((t, i) => (
-              <TabNavItem key={i} tab={t} i={i} />
-            ))}
-          </TabNavWrapper>
+          {/* The About > Our Team tabs (the our-team-tab class and its row),
+              one column each, in a single tab list so the arrow keys move
+              between them. */}
+          <div>
+            <TabsRow className="py-2 g-0">
+              <Nav className="our-team-tab">
+                {tabs.map(t => (
+                  <Nav.Item key={t.eventKey} as={Col} className="text-center">
+                    <Nav.Link eventKey={t.eventKey}>{t.title}</Nav.Link>
+                  </Nav.Item>
+                ))}
+              </Nav>
+            </TabsRow>
+          </div>
           <StyledTabContent>
             {tabs.map(t => (
               <TabPane key={t.eventKey} title={t.title} eventKey={t.eventKey}>

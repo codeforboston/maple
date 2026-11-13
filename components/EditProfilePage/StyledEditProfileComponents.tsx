@@ -5,39 +5,6 @@ import { Col, Button, Nav, NavDropdown, Row } from "../bootstrap"
 import { FC, PropsWithChildren, ReactNode } from "react"
 import { ProfileIcon } from "components/ProfilePage/StyledUserIcons"
 
-export const StyledTabNav = styled(Nav).attrs(props => ({
-  className: props.className
-}))`
-  display: flex;
-
-  height: 2.5em;
-  margin-bottom: 1rem;
-
-  .nav-item {
-    flex-grow: 1;
-    width: auto;
-  }
-
-  text-align: center;
-  font-size: 1.25rem;
-  color: var(--bs-dark);
-
-  .nav-link.active {
-    color: var(--maple-brand-danger);
-  }
-
-  .nav-link {
-    cursor: pointer;
-    overflow: visible;
-    width: auto;
-    margin: 0 1rem;
-  }
-
-  .nav-link:first-child {
-    margin-left: 0;
-  }
-`
-
 export const TabNavWrapper = ({ children, className, ...props }: NavProps) => {
   return (
     <Nav
@@ -128,6 +95,54 @@ export const StyledTabContent = styled(TabContent)`
 
   @media (min-width: 517px) {
     margin-top: -0.5rem;
+  }
+
+  /* Under the Our Team tabs, which take their own room, the content follows
+     in normal flow. */
+  *:root && {
+    margin-top: 1rem;
+    z-index: auto;
+  }
+
+  /* The h2 headings left in the tabs (the testimony FAQ's; the cards' titles
+     sit in their bands) at the size of the form's subheadings (General info
+     and the others), Bootstrap's h4, so all the headings match. Same font,
+     weight and line height already; only the size differs. Below 1200px it
+     scales as Bootstrap scales h4. */
+  *:root && h2 {
+    font-size: calc(1.275rem + 0.3vw);
+  }
+
+  @media (min-width: 1200px) {
+    *:root && h2 {
+      font-size: 1.5rem;
+    }
+  }
+
+  /* Every heading in the tabs, the card headings and the form's subheadings
+     alike, in Lexend rather than Bootstrap's Nunito. */
+  *:root && :is(h2, h4, h5, h6, .h6) {
+    font-family: var(--maple-font-heading);
+  }
+
+  /* What is typed or filled in, in Nunito; placeholders stay in Lexend, the
+     skin's face. Covers the form fields and the legislator search
+     (react-select, leg-search). */
+  *:root && :is(input, textarea, select) {
+    font-family: var(--maple-font-body);
+  }
+
+  /* The legislator search is the exception: its chosen name and what is
+     typed in it are in Lexend, as its open list is. */
+  *:root && .leg-search__single-value,
+  *:root && .leg-search__input-container,
+  *:root && .leg-search__input-container input {
+    font-family: var(--maple-font-heading);
+  }
+
+  *:root && :is(input, textarea)::placeholder,
+  *:root && .leg-search__placeholder {
+    font-family: var(--maple-font-heading);
   }
 `
 

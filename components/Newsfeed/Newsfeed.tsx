@@ -9,7 +9,6 @@ import { Profile, useProfile, usePublicProfile } from "../db"
 import { NotificationProps, Notifications } from "./NotificationProps"
 import notificationQuery from "./notification-query"
 import {
-  BillCol,
   Header,
   HeaderTitle,
   StyledContainer
@@ -74,7 +73,7 @@ export default function Newsfeed() {
     fetchNotifications()
   }, [uid])
 
-  function Filters({ profile }: { profile: Profile }) {
+  function Filters() {
     return (
       <FilterBoxes
         onOrgFilterChange={(isShowing: boolean) => {
@@ -89,7 +88,6 @@ export default function Newsfeed() {
         isShowingOrgs={isShowingOrgs}
         isShowingBills={isShowingBills}
         isShowingBallotQuestions={isShowingBallotQuestions}
-        profile={profile}
       />
     )
   }
@@ -100,8 +98,7 @@ export default function Newsfeed() {
     isShowingBallotQuestions,
     onBillFilterChange,
     onOrgFilterChange,
-    onBallotQuestionFilterChange,
-    profile
+    onBallotQuestionFilterChange
   }: {
     isShowingBills: boolean
     isShowingOrgs: boolean
@@ -109,14 +106,15 @@ export default function Newsfeed() {
     onBillFilterChange: any
     onOrgFilterChange: any
     onBallotQuestionFilterChange: any
-    profile: Profile
   }) {
     const { t } = useTranslation("common")
 
     return (
       <>
-        <Row className={`d-flex ms-5 mt-2 ps-4`} xs="auto">
-          <Col className="form-check checkbox mt-3">
+        {/* One row, evenly spaced and in line with the content's left edge;
+            each label on one line, wrapping as a whole on a narrow screen. */}
+        <div className="d-flex flex-wrap column-gap-4 row-gap-2 mt-3">
+          <div className="form-check checkbox">
             <input
               className="form-check-input"
               type="checkbox"
@@ -130,8 +128,8 @@ export default function Newsfeed() {
             <label className="form-check-label" htmlFor="orgCheck">
               {t("user_updates")}
             </label>
-          </Col>
-          <BillCol className="form-check checkbox mt-3">
+          </div>
+          <div className="form-check checkbox">
             <input
               className="form-check-input"
               type="checkbox"
@@ -145,9 +143,9 @@ export default function Newsfeed() {
             <label className="form-check-label" htmlFor="billCheck">
               {t("bill_updates")}
             </label>
-          </BillCol>
+          </div>
           {flags().ballotQuestions && (
-            <BillCol className="form-check checkbox mt-3">
+            <div className="form-check checkbox">
               <input
                 className="form-check-input"
                 type="checkbox"
@@ -160,10 +158,9 @@ export default function Newsfeed() {
               <label className="form-check-label" htmlFor="ballotQuestionCheck">
                 Ballot Question Updates
               </label>
-            </BillCol>
+            </div>
           )}
-          <Buttons profile={profile} />
-        </Row>
+        </div>
       </>
     )
   }
@@ -199,6 +196,7 @@ export default function Newsfeed() {
             isUser={isUser}
             hideTestimonyButton={true}
             onSettingsModalOpen={onSettingsModalOpen}
+            className="m-0"
           />
         </div>
         <ProfileSettingsModal
@@ -236,7 +234,12 @@ export default function Newsfeed() {
                   <HeaderTitle className={`mb-4`}>
                     {t("navigation.newsfeed")}
                   </HeaderTitle>
-                  <Filters profile={result.profile} />
+                  {/* Followed Content and Settings sit beside the title, as
+                      Edit Profile's do. */}
+                  <Col xs={12} md="auto" className="mb-4">
+                    <Buttons profile={result.profile} />
+                  </Col>
+                  <Filters />
                 </Header>
                 {filteredResults.length > 0 ? (
                   <>

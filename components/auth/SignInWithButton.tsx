@@ -26,9 +26,23 @@ export default function SignInWithButton({
         className={`w-100 ${buttonClassName ?? ""}`.trim()}
         onClick={() => setCurrentModal("start")}
       >
-        {label ?? t("logInSignUp")}
+        <SplitLabel label={label ?? t("logInSignUp")} />
       </Button>
     </span>
+  )
+}
+
+/* A label such as "Log in / Sign up" in halves that each keep to one line
+   (styles/globals.css), so a narrow button wraps after the slash rather than
+   inside "Sign up". The text is unchanged. */
+const SplitLabel = ({ label }: { label: string }) => {
+  const halves = label.split(" / ")
+  if (halves.length !== 2) return <>{label}</>
+  return (
+    <>
+      <span className="sign-in-label-half">{halves[0]} /</span>{" "}
+      <span className="sign-in-label-half">{halves[1]}</span>
+    </>
   )
 }
 

@@ -229,12 +229,14 @@ const Head = styled.div`
 `
 
 const NameRow = styled.p`
+  /* Names in Lexend, as the cosign card's, in Nunito cards too. */
+  font-family: var(--maple-font-heading);
   display: flex;
   align-items: center;
   gap: 6px;
   margin: 0;
   font-size: 0.8125rem;
-  font-weight: 600;
+  font-weight: 400;
   line-height: 1.2;
   color: ${ink.strong};
 

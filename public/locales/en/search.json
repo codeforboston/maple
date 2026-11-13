@@ -1,5 +1,6 @@
 {
   "another_term": "Try another search term",
+  "author_type": "Author type",
   "browse_bills": "Browse Bills",
   "filter": "Filter",
   "topics": "Topics",
@@ -58,5 +59,8 @@
   "location_label": "Location",
   "agenda_label": "Agenda Topics",
   "bills_label": "Bills",
-  "more_bills": "and {{count}} others"
+  "more_bills": "and {{count}} others",
+  "remove_tag": "Remove {{label}}",
+  "show_fewer_tags": "Show less",
+  "show_more_tags": "+ {{count}} more"
 }

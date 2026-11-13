@@ -15,6 +15,7 @@ export const NewsCard = ({ newsItem }: NewsCardProps) => {
       style={{
         backgroundColor: "var(--maple-surface-base)",
         borderRadius: "var(--maple-radius-lg)",
+        border: "1px solid var(--maple-card-edge)",
         boxShadow: "var(--maple-shadow-sm)"
       }}
     >
@@ -57,7 +58,10 @@ export const NewsCard = ({ newsItem }: NewsCardProps) => {
         </h2>
         <div
           className="text-truncate"
-          style={{ color: "var(--maple-text-body)", fontSize: "0.9375rem" }}
+          style={{
+            color: "var(--maple-text-body)",
+            fontSize: "var(--learn-small-text, 0.9375rem)"
+          }}
         >
           {newsItem.description}
         </div>

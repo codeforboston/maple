@@ -12,7 +12,11 @@ const GoalsAndMission = () => {
   const { t } = useTranslation(["goalsandmission", "common"])
   return (
     <LearnLayout width="medium">
-      <LearnBreadcrumb section={t("breadcrumb")} eyebrow={t("common:about")} />
+      <LearnBreadcrumb
+        section={t("breadcrumb")}
+        eyebrow={t("common:about")}
+        withoutHome
+      />
       <LearnHeader title={t("header")} titleSize="2.25rem" />
       <AboutPagesCard title={t("goals.title")}>
         <OurGoalsCardContent />

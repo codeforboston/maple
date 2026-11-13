@@ -111,7 +111,7 @@ const StyledTable = styled.table`
   tbody {
     td {
       font: {
-        family: Nunito;
+        family: var(--maple-font-body);
         size: 16px;
         weight: 400;
       }
@@ -132,6 +132,23 @@ const StyledTable = styled.table`
 
     td:nth-child(2) {
       white-space: pre-line;
+    }
+  }
+
+  /* The cells in Nunito, as the block above intends (its Sass-style font: { }
+     nesting does not appear to be applied by styled-components), and the
+     header row in Lexend. Both at normal letter spacing; the tight -1.125px
+     crowds Lexend. */
+  *:root & {
+    th {
+      letter-spacing: normal;
+    }
+
+    td {
+      font-family: var(--maple-font-body);
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: normal;
     }
   }
 `

@@ -130,6 +130,21 @@ export async function loadLanding(
   return landing ? { court: landing.court, id: landing.id } : null
 }
 
+/** The landing (loadLanding) and every conference in the rail's order, for
+ * the Conference Committees page: its button, and the list the button opens
+ * on mobile. No members or hearings. */
+export async function loadLandingAndRail(court: number): Promise<{
+  landing: ConferenceLanding | null
+  conferences: ConferenceSummary[]
+}> {
+  const conferences = railOf(await listConferences(court))
+  const landing = conferences.find(c => c.covered) ?? conferences[0]
+  return {
+    landing: landing ? { court: landing.court, id: landing.id } : null,
+    conferences
+  }
+}
+
 /** The page for conference `id` among `all`. */
 async function pageFor(
   court: number,

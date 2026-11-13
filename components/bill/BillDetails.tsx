@@ -2,7 +2,7 @@ import { useTranslation } from "next-i18next"
 import { useAuth } from "../auth"
 import { Col, Container, Row } from "../bootstrap"
 import { TestimonyFormPanel } from "../publish"
-import { Banner } from "../shared/StyledSharedComponents"
+import { PageBanner } from "../shared/PageBanner"
 import { BillNumber, Styled } from "./BillNumber"
 import { BillTestimonies } from "./BillTestimonies"
 import BillTrackerConnectedView from "./BillTracker"
@@ -43,9 +43,13 @@ export const BillDetails = ({
     <>
       {isPendingUpgrade && <PendingUpgradeBanner />}
       {!isCurrentCourt(bill.court) && (
-        <Banner>{t("bill.old_session", { billCourt: bill.court })}</Banner>
+        <PageBanner>
+          {t("bill.old_session", { billCourt: bill.court })}
+        </PageBanner>
       )}
-      {isBallotMeasure && <Banner>{t("bill.ballot_initiative")}</Banner>}
+      {isBallotMeasure && (
+        <PageBanner>{t("bill.ballot_initiative")}</PageBanner>
+      )}
       <ConferenceBanner conference={conference} />
 
       <Container className="mt-3 mb-3">
@@ -113,7 +117,9 @@ export const BillDetails = ({
             )}
           </Col>
           <Col md={4}>
-            <Committees bill={bill} className="mt-4 pb-1" />
+            {/* Level with Sponsors beside it from md up; stacked under the
+                left column on a phone, the space above it is kept. */}
+            <Committees bill={bill} className="mt-4 mt-md-0 pb-1" />
             <Hearing
               bill={bill}
               className="bg-secondary d-flex justify-content-center mt-4 pb-1 text-light"

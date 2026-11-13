@@ -4,6 +4,7 @@ import { useTranslation } from "next-i18next"
 
 const Container = styled.div`
   background-color: white;
+  border: 1px solid var(--maple-card-edge);
   border-radius: 6px;
   padding: 3rem 1.5rem 3rem 1.5rem;
   display: flex;

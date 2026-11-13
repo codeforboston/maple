@@ -1,7 +1,6 @@
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { Internal } from "../../links"
-import LearnBreadcrumb from "../LearnBreadcrumb"
 import LearnHeader from "../LearnHeader"
 import LearnLayout from "../LearnLayout"
 import { CheckIcon } from "../icons"
@@ -21,6 +20,7 @@ const Card = styled.section`
   background: var(--maple-surface-base);
   border-radius: var(--maple-radius-xl);
   box-shadow: var(--maple-shadow-sm);
+  border: 1px solid var(--maple-card-edge);
   overflow: hidden;
   margin-bottom: 1rem;
 `
@@ -119,6 +119,7 @@ const Principle = styled.li<{ $color: string }>`
   background: var(--maple-surface-base);
   border-radius: var(--maple-radius-xl);
   box-shadow: var(--maple-shadow-sm);
+  border: 1px solid var(--maple-card-edge);
   padding: 1.5rem 1.75rem;
 
   .num {
@@ -187,6 +188,7 @@ const Cta = styled.div`
   background: var(--maple-surface-base);
   border-radius: var(--maple-radius-xl);
   box-shadow: var(--maple-shadow-sm);
+  border: 1px solid var(--maple-card-edge);
   padding: 2.5rem 2rem;
   text-align: center;
 
@@ -232,7 +234,8 @@ export const WritingTips = () => {
 
   return (
     <LearnLayout width="medium">
-      <LearnBreadcrumb section={t("writingTips.breadcrumb")} />
+      {/* No breadcrumb: the footer lists this page under Other Resources, not
+          Learn, so it has no Learn trail. */}
       <LearnHeader
         title={t("writingTips.title")}
         subhead={t("writingTips.subhead")}

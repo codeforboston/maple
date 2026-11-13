@@ -9,7 +9,7 @@ import ViewTestimony from "../TestimonyCard/ViewTestimony"
 import { Role, useAuth } from "../auth"
 import { Col, Container, Row, Spinner } from "../bootstrap"
 import { usePublicProfile, usePublishedTestimonyListing } from "../db"
-import { Banner } from "../shared/StyledSharedComponents"
+import { PageBanner } from "../shared/PageBanner"
 import { OrgContactInfo } from "./OrgContactInfo"
 import { ProfileAboutSection } from "./ProfileAboutSection"
 import { ProfileHeader } from "./ProfileHeader"
@@ -62,14 +62,15 @@ export function ProfilePage(profileprops: {
     boolean | undefined
   >(false)
 
-  /* profile?.public will not cause the <Banner> component to properly rerender 
-     to show current "publicity" when the "Make Public/Private" button is used.  
-     The leads to the <Banner> displaying incorrect/unsynced information. 
-     
-     A state variable is used to enforce a rerender on profile update when publicity
-     button is used.
-  
-     see variable: bannerContent, onProfilePublicityChanged
+  /* profile?.public will not cause the <PageBanner> component to properly
+     rerender to show current "publicity" when it is changed in the Settings
+     dialog's Public/Private menu. This leads to the <PageBanner> displaying
+     incorrect/unsynced information.
+
+     A state variable is used to enforce a rerender on profile update when
+     publicity is changed.
+
+     see variable: isProfilePublic, onProfilePublicityChanged
    */
 
   useEffect(() => {
@@ -87,22 +88,42 @@ export function ProfilePage(profileprops: {
     return <ErrorPage statusCode={404} withDarkMode={false} />
   }
 
+  // Verify Account as a plain white card with its heading inside, as on Edit
+  // Profile (styles/globals.css).
+  const verifyAccount =
+    phoneVerificationUI &&
+    isCurrentUser &&
+    (!user.emailVerified || !profile.phoneVerified) ? (
+      <Row className="mt-4">
+        <Col className="verify-account-card">
+          <VerifyAccountSection
+            className="mb-4"
+            user={user}
+            profile={profile}
+            onlyVisibleNote
+          />
+        </Col>
+      </Row>
+    ) : null
+
   return (
     <FollowContext.Provider value={{ followStatus, setFollowStatus }}>
       {isPendingUpgrade && isCurrentUser && <PendingUpgradeBanner />}
       {["user", "admin"].includes(role) && isCurrentUser ? (
         <>
-          <Banner>
+          <PageBanner>
             {" "}
             {t("content.viewingProfile")}
             <br />
             {isProfilePublic
               ? t("content.publicProfile")
               : t("content.privateProfile")}
-          </Banner>
+          </PageBanner>
         </>
       ) : null}
       <Container>
+        {/* Verify Account first, right under the banner that asks for it. */}
+        {verifyAccount}
         <ProfileHeader
           profileId={profileprops.id}
           isUser={isCurrentUser}
@@ -113,20 +134,6 @@ export function ProfilePage(profileprops: {
           <Row>
             <Col>
               <VerifyAccountSectionLegacy className="mb-4" user={user} />
-            </Col>
-          </Row>
-        ) : null}
-
-        {phoneVerificationUI &&
-        isCurrentUser &&
-        (!user.emailVerified || !profile.phoneVerified) ? (
-          <Row>
-            <Col>
-              <VerifyAccountSection
-                className="mb-4"
-                user={user}
-                profile={profile}
-              />
             </Col>
           </Row>
         ) : null}

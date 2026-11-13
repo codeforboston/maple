@@ -9,6 +9,19 @@ export function courtYears(court: number): string {
   return `${start}–${String(start + 1).slice(2)}`
 }
 
+/** "2025–26" for a session; for "all", the span of the sessions given
+ * ("2005–26"), or nothing when none are. */
+export function sessionYears(
+  session: "all" | number,
+  courts: number[] = []
+): string | undefined {
+  const span = session === "all" ? courts : [session]
+  if (!span.length) return undefined
+  const start = courtStartYear(Math.min(...span))
+  const end = courtStartYear(Math.max(...span)) + 1
+  return `${start}–${String(end).slice(2)}`
+}
+
 export function yearToCourt(year: number): number {
   return 184 + Math.floor((year - 2005) / 2)
 }

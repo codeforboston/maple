@@ -3,22 +3,24 @@ import styled from "styled-components"
 import { ConferenceTestimony } from "components/db"
 import { cosignRefusal } from "functions/src/testimony/cosign"
 import { useInputContext } from "./context"
-import { ink, line, wash } from "./tokens"
+import { ink, line } from "./tokens"
 
 export const Pill = styled.button`
   flex-shrink: 0;
   margin-right: 8px;
   padding: 4px 12px;
   border: 1px solid ${line.default};
-  border-radius: 8px;
+  /* Squared, as the site's inputs and panels (3px). */
+  border-radius: 3px;
   background: var(--maple-surface-base);
   font-size: 0.8125rem;
   font-weight: 600;
   white-space: nowrap;
   color: ${ink.strong};
+  /* A light wash on hover, half the panels' (wash.default), its edge as
+     it is. */
   &:hover {
-    background: ${wash.default};
-    border-color: ${line.strong};
+    background: rgba(0, 0, 0, 0.025);
   }
 `
 

@@ -44,6 +44,26 @@ export const FooterContainer = styled(Container)`
     background-position: right;
   }
 
+  /* The rules between the mobile dropdowns
+     (components/Footer/CustomFooterDropdown.tsx) softer than its 75%. */
+  *:root & .border-bottom.border-white {
+    --bs-border-opacity: 0.35;
+  }
+
+  /* The mobile dropdowns' titles in full white, not the muted white of the
+     links. */
+  *:root & .navbar-nav .nav-link.dropdown-toggle {
+    color: var(--maple-text-inverse);
+  }
+
+  /* Smaller arrows, the same size open or closed. Sized by height, since the
+     two images are framed at different widths. */
+  *:root & .dropdown-toggle::after,
+  *:root & .dropdown-toggle[aria-expanded="true"]::after {
+    background-size: auto 0.9em;
+    background-position: right center;
+  }
+
   .dropdown-menu {
     transition: 0.4s;
   }

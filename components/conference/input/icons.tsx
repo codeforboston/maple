@@ -59,6 +59,16 @@ export const ChevronDown = (p: Props) => (
     <path d="m6 9 6 6 6-6" />
   </Icon>
 )
+export const List = (p: Props) => (
+  <Icon {...p}>
+    <path d="M3 6h.01" />
+    <path d="M3 12h.01" />
+    <path d="M3 18h.01" />
+    <path d="M8 6h13" />
+    <path d="M8 12h13" />
+    <path d="M8 18h13" />
+  </Icon>
+)
 export const ChevronLeft = (p: Props) => (
   <Icon {...p}>
     <path d="m15 18-6-6 6-6" />

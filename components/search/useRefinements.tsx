@@ -6,9 +6,9 @@ import {
 } from "react-instantsearch"
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useCallback, useState } from "react"
+import { ReactNode, useCallback, useState } from "react"
 import styled from "styled-components"
-import { useMediaQuery } from "usehooks-ts"
+import { useFiltersInline } from "./useFiltersInline"
 import { Button, Offcanvas } from "../bootstrap"
 import {
   MultiselectHierarchicalMenu,
@@ -29,7 +29,7 @@ export const FilterButton = styled(Button)`
   }
 `
 
-const FilterSection = styled.div`
+export const FilterSection = styled.div`
   background: white;
   border: 1px solid var(--maple-surface-border);
   border-radius: var(--maple-radius-md);
@@ -38,7 +38,7 @@ const FilterSection = styled.div`
   margin-bottom: var(--maple-space-md);
 `
 
-const FilterLabel = styled.p`
+export const FilterLabel = styled.p`
   color: var(--bs-gray-700);
   font-size: 0.78rem;
   font-weight: var(--maple-font-weight-bold);
@@ -76,18 +76,22 @@ const useHasRefinements = () => {
 
 export const useRefinements = ({
   hierarchicalMenuProps,
-  refinementProps
+  refinementProps,
+  leadingFilters
 }: {
   hierarchicalMenuProps?: MultiselectHierarchicalMenuParams
   refinementProps: RefinementListProps[]
+  /** Hand-built filter sections shown above the generated ones. */
+  leadingFilters?: ReactNode
 }) => {
-  const inline = useMediaQuery("(min-width: 768px)")
+  const inline = useFiltersInline()
   const [show, setShow] = useState(false)
   const handleClose = useCallback(() => setShow(false), [])
   const handleOpen = useCallback(() => setShow(true), [])
 
   const refinements = (
     <>
+      {leadingFilters}
       {refinementProps
         .filter((p: any) => !p.hidden)
         .map((p, i) => (
@@ -136,8 +140,12 @@ export const useRefinements = ({
         active={show}
         onClick={handleOpen}
         className={hasRefinements ? "ais-FilterButton-has-refinements" : ""}
+        aria-label={t("filter")}
       >
-        <FontAwesomeIcon icon={faFilter} /> {t("filter")}
+        {/* The icon alone below 420px; the word stays in the label
+            (styles/globals.css). */}
+        <FontAwesomeIcon icon={faFilter} />
+        <span className="filter-button-word"> {t("filter")}</span>
       </FilterButton>
     )
   }

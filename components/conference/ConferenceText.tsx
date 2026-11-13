@@ -1,11 +1,12 @@
-import { memo, useState } from "react"
+import { memo, RefObject, useEffect, useRef, useState } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { Form, Spinner } from "../bootstrap"
 import { useBill } from "../db/bills"
 import { billPdfUrl, External } from "../links"
-import { Card, CardTitle, Eyebrow } from "./styles"
+import { ink, sunken } from "./input/tokens"
+import { CardTitle } from "./styles"
 import { ConferenceSummary } from "./types"
 
 const SIDES = ["senate", "house", "both"] as const
@@ -36,14 +37,47 @@ export const Well = styled.div`
   height: min(74vh, 860px);
   margin-top: 1rem;
   padding: 1.25rem;
-  background: var(--maple-surface-muted);
+  background: ${sunken};
   border: 1px solid var(--maple-surface-border);
-  border-radius: var(--maple-radius-xl);
+  /* A little less round than --maple-radius-xl (6px), as the input cards. */
+  border-radius: 5px;
 
   @media (min-width: 576px) {
     padding: 1.75rem;
   }
+
+  /* Held (useHeld): not yet all in the window, so the sheets keep still and
+     scrolling over them moves the page. */
+  &[data-held] > article {
+    overflow-y: hidden;
+  }
 `
+
+/**
+ * Holds the sheets in `well` still until the reader has scrolled far enough
+ * to see all of it, its foot in the window: until then a scroll over a sheet
+ * moves the page, rather than the sheet a reader is still coming down to.
+ * Written straight to the well as data-held, not through state, so the long
+ * texts inside aren't laid out again as it changes.
+ */
+function useHeld(well: RefObject<HTMLDivElement | null>) {
+  useEffect(() => {
+    const el = well.current
+    if (!el) return
+    const update = () =>
+      el.toggleAttribute(
+        "data-held",
+        el.getBoundingClientRect().bottom > window.innerHeight + 1
+      )
+    update()
+    window.addEventListener("scroll", update, { passive: true })
+    window.addEventListener("resize", update)
+    return () => {
+      window.removeEventListener("scroll", update)
+      window.removeEventListener("resize", update)
+    }
+  }, [well])
+}
 
 /** One document, which scrolls on its own so a section of one text can be
  * held against the same section of the other. */
@@ -64,19 +98,33 @@ export const Paper = styled.article`
   }
 `
 
+/* The sheet set as the mockup sets it: the title alone in Lexend, the
+   chamber and number above it and the text below in Nunito. */
+
+/** Which chamber's text this is, and its number. */
+const SheetLabel = styled.p`
+  margin: 0;
+  font-family: var(--maple-font-body);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  color: ${ink.mid};
+`
+
 const SheetTitle = styled.h3`
-  margin: 0.125rem 0 1.5rem;
+  margin: 2px 0 24px;
   font-family: var(--maple-font-heading);
   font-weight: 500;
-  font-size: 1.125rem;
+  font-size: 1rem;
   line-height: 1.3;
-  color: var(--maple-text-strong);
+  color: ${ink.strong};
 `
 
 const Line = styled.p`
   margin: 0 0 0.75rem;
-  font-size: 0.875rem;
-  line-height: 1.7;
+  font-family: var(--maple-font-body);
+  font-size: 0.8125rem;
+  line-height: 1.75;
+  color: ${ink.strong};
   white-space: pre-wrap;
   overflow-wrap: break-word;
 
@@ -94,7 +142,9 @@ const Empty = styled.div`
   text-align: center;
   font-size: 0.875rem;
   line-height: 1.7;
-  color: var(--maple-text-muted);
+  /* Body ink rather than muted: on the well's grey (sunken) the muted grey
+     falls short of AA contrast. */
+  color: var(--maple-text-body);
 `
 
 function Sheet({
@@ -135,9 +185,9 @@ function Sheet({
   // only structure a bill has.
   return (
     <Paper aria-label={`${name} ${billId}`}>
-      <Eyebrow>
+      <SheetLabel>
         {name} – {billId}
-      </Eyebrow>
+      </SheetLabel>
       <SheetTitle>{content?.Title}</SheetTitle>
       {text
         .split(/\r?\n/)
@@ -169,13 +219,17 @@ export const ConferenceText = memo(function ConferenceText({
   const { court, senateBillId, houseBillId } = conference
   const senate = useBill(court, senateBillId)
   const house = useBill(court, houseBillId)
+  const well = useRef<HTMLDivElement>(null)
+  useHeld(well)
   const sheets = [
     { chamber: "senate", billId: senateBillId, fetched: senate },
     { chamber: "house", billId: houseBillId, fetched: house }
   ] as const
 
+  // On the page itself rather than in a white card, as the mockup sets it: the
+  // well is the frame.
   return (
-    <Card>
+    <section>
       <CardTitle>{t("bill_text")}</CardTitle>
       <Picker>
         <Form.Label htmlFor="conference-text-version">
@@ -193,13 +247,13 @@ export const ConferenceText = memo(function ConferenceText({
           ))}
         </Form.Select>
       </Picker>
-      <Well>
+      <Well ref={well}>
         {sheets
           .filter(s => side === "both" || side === s.chamber)
           .map(s => (
             <Sheet key={s.chamber} court={court} {...s} />
           ))}
       </Well>
-    </Card>
+    </section>
   )
 })
