@@ -52,7 +52,7 @@ describe("digest email, conferences", () => {
       "https://mapletestimony.org/conferences/194/phones#input"
     )
     expect(html).toContain("Phone-Free Schools")
-    expect(html).toContain("New Testimonies")
+    expect(html).toContain("New Input")
     expect(html).toMatch(/2<\/td>\s*<td[^>]*>Please pass something/)
     expect(html).toContain("Don&#x27;t pass anything")
   })
