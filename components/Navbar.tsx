@@ -9,6 +9,7 @@ import { flags } from "./featureFlags"
 
 import {
   Avatar,
+  NavbarLinkAskMaple,
   NavbarLinkBallotQuestions,
   NavbarConferenceItems,
   DESKTOP_NAV_ITEM_CLASS,
@@ -93,6 +94,7 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         {flags().lobbyingTable ? (
           <NavbarLinkLobbying handleClick={closeNav} />
         ) : null}
+        <NavbarLinkAskMaple handleClick={closeNav} />
         {authenticated ? <NavbarLinkNewsfeed handleClick={closeNav} /> : <></>}
         <NavDropdown className={"navLink-primary"} title={t("about")}>
           <NavbarLinkGoals handleClick={closeNav} />
@@ -269,6 +271,10 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           <NavbarLinkLobbying />
         </div>
       ) : null}
+
+      <div className="align-self-center">
+        <NavbarLinkAskMaple />
+      </div>
 
       {authenticated ? (
         <div className="align-self-center">

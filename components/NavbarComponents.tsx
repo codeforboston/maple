@@ -145,6 +145,27 @@ export const NavbarLinkBills: React.FC<
   )
 }
 
+export const NavbarLinkAskMaple: React.FC<
+  React.PropsWithChildren<{
+    handleClick?: any
+    other?: any
+  }>
+> = ({ handleClick, other }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  const { t } = useTranslation(["common", "auth"])
+  return (
+    <Nav.Item onClick={handleClick}>
+      <NavLink
+        className={isMobile ? "navLink-primary" : DESKTOP_NAV_ITEM_CLASS}
+        href="/chat"
+        {...other}
+      >
+        {t("navigation.askMaple")}
+      </NavLink>
+    </Nav.Item>
+  )
+}
+
 export const NavbarLinkLobbying: React.FC<
   React.PropsWithChildren<{
     handleClick?: any
