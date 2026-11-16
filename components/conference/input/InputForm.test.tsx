@@ -158,23 +158,5 @@ describe("InputForm", () => {
       expect(edit.publishTestimony.execute).toHaveBeenCalled()
       expect(reason).toHaveValue("")
     })
-
-    it("keeps another reply-to address on the draft, for this letter alone", async () => {
-      jest.useFakeTimers()
-      const edit = editing()
-      review(edit)
-      fireEvent.click(screen.getByRole("button", { name: "review.use_other" }))
-      fireEvent.change(screen.getByLabelText("review.reply_to_label"), {
-        target: { value: "gina.work@example.org" }
-      })
-      fireEvent.click(screen.getByRole("button", { name: "review.done" }))
-      await act(async () => {
-        jest.advanceTimersByTime(2000)
-      })
-      expect(edit.saveDraft.execute).toHaveBeenCalledWith(
-        expect.objectContaining({ replyTo: "gina.work@example.org" })
-      )
-      jest.useRealTimers()
-    })
   })
 })

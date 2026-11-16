@@ -10,7 +10,7 @@ import { Testimony } from "../testimony/types"
 import { queueLegislatorEmail } from "../legislatorMail/queue"
 import { lastLetterFor } from "../legislatorMail/records"
 import { conferenceName } from "../shared/conferences"
-import { hasLegislators, looksLikeEmail, renderLetter } from "./letter"
+import { hasLegislators, renderLetter } from "./letter"
 import { buildLetterEmail, dayWindow, SkipReason } from "./letters"
 
 const DEFAULT_FROM = "notifications@mapletestimony.org"
@@ -52,16 +52,10 @@ async function mailLetter(
   if (lastFor.get(e.testimonyId) !== eventId) return "superseded"
 
   const letterId = `letter_${eventId}`
-  const [last, pubSnap, readerEmail, draft, conference] = await Promise.all([
+  const [last, pubSnap, readerEmail, conference] = await Promise.all([
     lastLetterFor(e.testimonyId),
     db.doc(`/users/${e.authorUid}/publishedTestimony/${e.testimonyId}`).get(),
     verifiedEmail(e.authorUid),
-    db
-      .collection(`/users/${e.authorUid}/draftTestimony`)
-      .where("conferenceId", "==", e.conferenceId)
-      .where("court", "==", e.court)
-      .limit(1)
-      .get(),
     conferenceOf(`${e.court}/${e.conferenceId}`)
   ])
   const pub = pubSnap.data() as Testimony | undefined
@@ -117,10 +111,9 @@ async function mailLetter(
   }
 
   const author = readerAuthor(pub)
-  const chosen = (draft.docs[0]?.data().replyTo as string | null)?.trim()
   const letter = renderLetter({
     author,
-    replyTo: chosen && looksLikeEmail(chosen) ? chosen : readerEmail,
+    email: readerEmail,
     court: e.court,
     conferenceId: e.conferenceId,
     conference: conferenceName(conference),

@@ -37,7 +37,6 @@ type Seed = {
   rep?: string
   sen?: string
   withdrawn?: boolean
-  replyTo?: string
 }
 
 type Input = { uid: string; testimonyId: string; conferenceId: string }
@@ -96,12 +95,6 @@ const seed = async (conferenceId: string, s: Seed = {}) => {
       ...(s.sen ? { senatorId: s.sen } : {})
     })
   }
-  await testDb.doc(`users/${uid}/draftTestimony/${id()}`).set({
-    conferenceId,
-    billId: "H9901",
-    court: COURT,
-    ...(s.replyTo ? { replyTo: s.replyTo } : {})
-  })
   const input = { uid, testimonyId, conferenceId }
   const eventId = await event(input, "added", 1, ADDED_AT)
   return { ...input, eventId }
@@ -150,15 +143,16 @@ describe("sendConferenceLetters", () => {
   it("mails a letter once, to the test address, copying the reader", async () => {
     const { eventId, uid, testimonyId } = await seed(conferenceId, {
       rep,
-      sen,
-      replyTo: "chosen@example.com"
+      sen
     })
     await sendConferenceLetters(NOW)
     const sent = await email(eventId)
+    // The auth emulator lowercases addresses.
+    const own = `${uid}@example.com`.toLowerCase()
     expect(sent).toMatchObject({
       to: [TEST_RECIPIENT],
-      cc: ["chosen@example.com"],
-      replyTo: "chosen@example.com",
+      cc: [own],
+      replyTo: own,
       from: '"Ada \\"Ace\\" Lovelace via MAPLE" <notifications@mapletestimony.org>'
     })
     expect(sent!.message.subject).toBe(
@@ -193,16 +187,6 @@ describe("sendConferenceLetters", () => {
     const second = await sendConferenceLetters(NOW)
     expect(second).toBe(0)
     expect((await email(eventId))!.createdAt).toEqual(sent!.createdAt)
-  })
-
-  it("replies to the reader's own address without an override", async () => {
-    const { eventId, uid } = await seed(conferenceId, { rep })
-    await sendConferenceLetters(NOW)
-    const sent = await email(eventId)
-    // The auth emulator lowercases addresses.
-    const own = `${uid}@example.com`.toLowerCase()
-    expect(sent!.replyTo).toBe(own)
-    expect(sent!.cc).toEqual([own])
   })
 
   it("writes to the legislator who has an address, and only names them", async () => {

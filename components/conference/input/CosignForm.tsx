@@ -289,8 +289,6 @@ export function CosignForm({
   const [note, setNote] = useState("")
   const [noWords, setNoWords] = useState(false)
   const [reason, setReason] = useState("")
-  // The address replies to this letter go to, when not the reader's own.
-  const [chosen, setChosen] = useState("")
   const field = useRef<HTMLTextAreaElement>(null)
   const ask = useAsk(field)
 
@@ -308,26 +306,23 @@ export function CosignForm({
     // Words drafted since are kept over the posted cosign's having none.
     if (edit.publication && !edit.publication.content && !seed) setNoWords(true)
     if (edit.draft?.editReason) setReason(edit.draft.editReason)
-    if (edit.draft?.replyTo) setChosen(edit.draft.replyTo)
   }, [edit.loading, edit.draft, edit.publication, parent.id])
 
   const content = noWords ? "" : note
   const { save, dirty, posting, post, flush, reset } = useAutosave({
     edit,
-    fields: { content, reason, chosen },
+    fields: { content, reason },
     matches: (draft, f) =>
       draft?.cosignOfId === parent.id &&
       draft?.content === f.content &&
-      (draft?.editReason ?? "") === f.reason &&
-      (draft?.replyTo ?? "") === f.chosen,
+      (draft?.editReason ?? "") === f.reason,
     write: f =>
       saveDraft.execute({
         position: parent.position,
         content: f.content,
         cosignOfId: parent.id,
         cosignOfAuthorUid: parent.authorUid,
-        editReason: f.reason || undefined,
-        replyTo: f.chosen || undefined
+        editReason: f.reason || undefined
       }),
     active: step !== "confirm",
     // As InputForm's: the form outlives the post, so its reason goes too.
@@ -417,8 +412,6 @@ export function CosignForm({
         position={parent.position}
         content={content}
         cosign={{ author: nameOf(parent), content: parent.content }}
-        chosen={chosen}
-        onChoose={setChosen}
         ready={ready}
         posting={posting}
         problem={problem}

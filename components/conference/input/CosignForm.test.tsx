@@ -210,40 +210,6 @@ describe("CosignForm", () => {
       await act(async () => press("input.cosign"))
       expect(edit.publishTestimony.execute).toHaveBeenCalled()
     })
-
-    it("keeps another reply-to address on the draft, for this letter alone", async () => {
-      jest.useFakeTimers()
-      const edit = editing({ draft } as Partial<UseEditConferenceTestimony>)
-      mount(edit, "review")
-      press("review.use_other")
-      fireEvent.change(screen.getByLabelText("review.reply_to_label"), {
-        target: { value: "gina.work@example.org" }
-      })
-      press("review.done")
-      await act(async () => {
-        jest.advanceTimersByTime(2000)
-      })
-      expect(edit.saveDraft.execute).toHaveBeenCalledWith(
-        expect.objectContaining({
-          cosignOfId: "p1",
-          replyTo: "gina.work@example.org"
-        })
-      )
-      jest.useRealTimers()
-    })
-
-    it("refuses an address that isn't one", () => {
-      const edit = editing({ draft } as Partial<UseEditConferenceTestimony>)
-      mount(edit, "review")
-      press("review.use_other")
-      fireEvent.change(screen.getByLabelText("review.reply_to_label"), {
-        target: { value: "not an address" }
-      })
-      press("review.done")
-      expect(screen.getByRole("alert")).toHaveTextContent(
-        "review.reply_to_invalid"
-      )
-    })
   })
 
   it.each([

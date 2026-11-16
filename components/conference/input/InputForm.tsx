@@ -385,8 +385,6 @@ export function InputForm({
   )
   const [content, setContent] = useState("")
   const [reason, setReason] = useState("")
-  // The address replies to this letter go to, when not the reader's own.
-  const [chosen, setChosen] = useState("")
   const field = useRef<HTMLTextAreaElement>(null)
   const ask = useAsk(field)
 
@@ -402,26 +400,23 @@ export function InputForm({
     if (source?.position) setPosition(source.position)
     if (source?.content) setContent(source.content)
     if (edit.draft?.editReason) setReason(edit.draft.editReason)
-    if (edit.draft?.replyTo) setChosen(edit.draft.replyTo)
   }, [edit.loading, edit.draft, edit.publication])
 
   // Keep the draft as they type, once there are words to keep.
   const { save, dirty, posting, post, reset } = useAutosave({
     edit,
-    fields: { position, content, reason, chosen },
+    fields: { position, content, reason },
     // A cosign's draft is not this form's, whatever its words.
     matches: (draft, f) =>
       !draft?.cosignOfId &&
       draft?.content === f.content &&
       draft?.position === f.position &&
-      (draft?.editReason ?? "") === f.reason &&
-      (draft?.replyTo ?? "") === f.chosen,
+      (draft?.editReason ?? "") === f.reason,
     write: f =>
       saveDraft.execute({
         position: f.position,
         content: f.content,
-        editReason: f.reason || undefined,
-        replyTo: f.chosen || undefined
+        editReason: f.reason || undefined
       }),
     idle: f => !f.content.trim(),
     // Publishing clears the draft's reason; the form outlives the post, behind
@@ -519,8 +514,6 @@ export function InputForm({
       conference={subject}
       position={position}
       content={content}
-      chosen={chosen}
-      onChoose={setChosen}
       ready={written}
       posting={posting}
       problem={failed && <Problem role="alert">{t("input.error")}</Problem>}

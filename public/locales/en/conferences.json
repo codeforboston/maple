@@ -308,10 +308,6 @@
     "conferees_label": "The conferees",
     "email_label": "Your email",
     "email_note": "Your email is included in the message so your legislators can reply to you directly. Replies go to you, not to MAPLE.",
-    "use_other": "Use a different email",
-    "reply_to_label": "Reply-to email",
-    "reply_to_note": "Used for this message only. Your MAPLE login email stays the same.",
-    "done": "Done",
     "preview_label": "Preview of the email",
     "from": "From",
     "reply_to": "Reply-To",
@@ -320,7 +316,6 @@
     "subject": "Subject",
     "post_and_send": "Post and Send",
     "cosign_and_send": "Cosign and Send",
-    "reply_to_invalid": "That doesn’t look like an email address.",
     "no_line": "You didn’t add a line of your own. That’s fine: your cosign still counts. A sentence about why it matters to you tends to carry more weight with legislators.",
     "add_line": "Add a line"
   }

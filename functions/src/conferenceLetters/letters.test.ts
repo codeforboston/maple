@@ -10,7 +10,7 @@ import {
 
 const letter = renderLetter({
   author: 'Ada "Ace" <Lovelace>',
-  replyTo: "ada@example.org",
+  email: "ada@example.org",
   court: 194,
   conferenceId: "H1-S1",
   conference: "Phone-Free Schools",
@@ -86,7 +86,7 @@ describe("renderLetterText", () => {
   it("quotes the cosigned input", () => {
     const cosigned = renderLetter({
       author: "Ada",
-      replyTo: "ada@example.org",
+      email: "ada@example.org",
       court: 194,
       conferenceId: "H1-S1",
       conference: "Phone-Free Schools",

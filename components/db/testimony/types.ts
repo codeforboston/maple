@@ -96,10 +96,7 @@ export type DraftTestimony = Static<typeof DraftTestimony>
 const DraftTestimonyFields = BaseTestimony.extend({
   publishedVersion: Optional(Number),
   /** If present, array of legislator member codes */
-  recipientMemberCodes: Maybe(Array(String)),
-  /** Where replies to this conference input's letter go, in place of the
-   * author's own email. Drafts are private, publications are not. */
-  replyTo: Maybe(String)
+  recipientMemberCodes: Maybe(Array(String))
 })
 export const DraftTestimony =
   DraftTestimonyFields.withConstraint(oneTarget).withConstraint(cosignShape)

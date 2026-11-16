@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { useAuth } from "components/auth"
@@ -9,7 +8,6 @@ import {
   hasLegislators,
   Letter,
   LetterMember,
-  looksLikeEmail,
   renderLetter
 } from "functions/src/conferenceLetters/letter"
 import { Disc as Avatar } from "./Entry"
@@ -93,59 +91,9 @@ const Box = styled.div`
 `
 
 const Current = styled.div`
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
   margin-top: 6px;
   font-size: 0.875rem;
   color: ${ink.strong};
-`
-
-const Link = styled.button`
-  padding: 6px 2px;
-  border: 0;
-  background: none;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: ${brand.ink};
-  text-decoration: underline;
-`
-
-const Edit = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 8px;
-  label {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: ${ink.mid};
-  }
-  div {
-    display: flex;
-    gap: 10px;
-  }
-  input {
-    flex: 1;
-    min-width: 0;
-    height: 40px;
-    padding: 0 12px;
-    border: 1px solid ${brand.fill};
-    border-radius: 8px;
-    font-size: 0.875rem;
-    color: ${ink.strong};
-  }
-  button {
-    height: 40px;
-    padding: 0 16px;
-    border: 1px solid ${brand.fill};
-    border-radius: 8px;
-    background: var(--maple-surface-base);
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: ${brand.fill};
-  }
 `
 
 const Message = styled.div`
@@ -260,12 +208,20 @@ export function useLegislators(court: number) {
   }
 }
 
-/** Where a reply goes: the reader's own address, or the one they gave for
- * this letter. Their login address is not changed. */
-function useReplyTo(chosen?: string | null) {
-  const { user } = useAuth()
-  const own = user?.email ?? ""
-  return { own, replyTo: chosen?.trim() || own }
+/** The reader's own address, which replies go to and which is copied. */
+function YourEmail({ email }: { email: string }) {
+  const { t } = useTranslation("conferences")
+  return (
+    <>
+      <Heading>{t("review.email_label")}</Heading>
+      <Box>
+        {t("review.email_note")}
+        <Current>
+          <span>{email}</span>
+        </Current>
+      </Box>
+    </>
+  )
 }
 
 /**
@@ -342,73 +298,6 @@ export function Delivery({
   )
 }
 
-/** The reply-to address and the way to give another for this letter only. */
-export function ReplyTo({
-  own,
-  value,
-  onChange
-}: {
-  /** The reader's login address. */
-  own: string
-  /** The address chosen for this letter; empty to use `own`. */
-  value: string
-  onChange: (replyTo: string) => void
-}) {
-  const { t } = useTranslation("conferences")
-  const [editing, setEditing] = useState(false)
-  const [text, setText] = useState("")
-  const [invalid, setInvalid] = useState(false)
-  const open = () => {
-    setText(value || own)
-    setEditing(true)
-  }
-  const done = () => {
-    const next = text.trim()
-    if (next && !looksLikeEmail(next)) return setInvalid(true)
-    onChange(next === own ? "" : next)
-    setEditing(false)
-  }
-  return (
-    <>
-      <Heading>{t("review.email_label")}</Heading>
-      <Box>
-        {t("review.email_note")}
-        {editing ? (
-          <Edit>
-            <label htmlFor="reply-to">{t("review.reply_to_label")}</label>
-            <div>
-              <input
-                id="reply-to"
-                type="email"
-                value={text}
-                aria-invalid={invalid}
-                onChange={e => {
-                  setText(e.target.value)
-                  setInvalid(false)
-                }}
-                onKeyDown={e => e.key === "Enter" && done()}
-              />
-              <button type="button" onClick={done}>
-                {t("review.done")}
-              </button>
-            </div>
-            <span role={invalid ? "alert" : undefined}>
-              {t(invalid ? "review.reply_to_invalid" : "review.reply_to_note")}
-            </span>
-          </Edit>
-        ) : (
-          <Current>
-            <span>{value || own}</span>
-            <Link type="button" onClick={open}>
-              {t("review.use_other")}
-            </Link>
-          </Current>
-        )}
-      </Box>
-    </>
-  )
-}
-
 /** The letter as it will be sent. */
 export function LetterPreview({ letter }: { letter: Letter }) {
   const { t } = useTranslation("conferences")
@@ -470,9 +359,7 @@ export function LetterReview({
   testimonyId,
   position,
   content,
-  cosign,
-  chosen,
-  onChoose
+  cosign
 }: {
   court: number
   conferenceId: string
@@ -488,12 +375,9 @@ export function LetterReview({
   content: string
   /** Whose input this cosigns. */
   cosign?: { author: string; content: string }
-  /** The reply-to the reader chose for this letter; empty for their own. */
-  chosen: string
-  onChoose: (replyTo: string) => void
 }) {
   const { representative, senator } = useLegislators(court)
-  const { own, replyTo } = useReplyTo(chosen)
+  const email = useAuth().user?.email ?? ""
   const edited = useLetterOnRecord(testimonyId)
   return (
     <>
@@ -505,11 +389,11 @@ export function LetterReview({
       />
       {hasLegislators({ representative, senator }) && (
         <>
-          <ReplyTo own={own} value={chosen} onChange={onChoose} />
+          <YourEmail email={email} />
           <LetterPreview
             letter={renderLetter({
               author,
-              replyTo,
+              email,
               court,
               conferenceId,
               conference,

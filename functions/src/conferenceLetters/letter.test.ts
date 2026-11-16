@@ -2,7 +2,7 @@ import { hasLegislators, LetterInput, renderLetter } from "./letter"
 
 const base: LetterInput = {
   author: "Ada Example",
-  replyTo: "ada@example.org",
+  email: "ada@example.org",
   court: 194,
   conferenceId: "H4321-S2100",
   conference: "Data privacy conference committee",

@@ -283,7 +283,6 @@ type SaveDraftRequest = Pick<
   | "editReason"
   | "cosignOfId"
   | "cosignOfAuthorUid"
-  | "replyTo"
 > & { ballotQuestionId?: string | null }
 type SaveConferenceDraftRequest = Omit<SaveDraftRequest, "position"> & {
   position: ConferencePosition
@@ -312,7 +311,6 @@ function useSaveDraft(
         editReason,
         cosignOfId,
         cosignOfAuthorUid,
-        replyTo,
         ballotQuestionId: requestBallotQuestionId
       }: SaveDraftRequest) => {
         if (draftLoading) {
@@ -330,8 +328,7 @@ function useSaveDraft(
               requestBallotQuestionId ?? ballotQuestionId ?? null,
             conferenceId: conferenceId ?? null,
             cosignOfId: cosignOfId ?? null,
-            cosignOfAuthorUid: cosignOfAuthorUid ?? null,
-            replyTo: replyTo ?? null
+            cosignOfAuthorUid: cosignOfAuthorUid ?? null
           }
           const result = await addDoc(
             collection(firestore, `/users/${uid}/draftTestimony`),
@@ -354,7 +351,6 @@ function useSaveDraft(
               requestBallotQuestionId ?? ballotQuestionId ?? null,
             cosignOfId: cosignOfId ?? null,
             cosignOfAuthorUid: cosignOfAuthorUid ?? null,
-            replyTo: replyTo ?? null,
             publishedVersion: hasChanges ? deleteField() : undefined
           })
         }

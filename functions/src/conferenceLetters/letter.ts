@@ -6,19 +6,13 @@ import { CONFERENCE_STANCES } from "../shared/conferences"
 import type { ConferencePosition } from "../testimony/types"
 export type { ConferencePosition }
 
-/** A single address, as a reply-to must be: the draft is the reader's to
- * write, so the sender checks it again, and a list could copy anyone. */
-export const looksLikeEmail = (s: string) =>
-  /^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/.test(s)
-
 export type LetterMember = { name: string; district: string }
 
 export type LetterInput = {
   /** The reader's name. */
   author: string
-  /** Where replies go, and who is copied: the reader's own address, or the
-   * one they chose for this letter. */
-  replyTo: string
+  /** The reader's own address: where replies go, and who is copied. */
+  email: string
   court: number
   conferenceId: string
   /** The conference's name. */
@@ -73,13 +67,13 @@ export function renderLetter(i: LetterInput): Letter {
     i.author,
     ...(rep ? [`House district: ${rep.district}`] : []),
     ...(sen ? [`Senate district: ${sen.district}`] : []),
-    i.replyTo
+    i.email
   ]
   const where = i.cosign ? "this cosign" : "this input"
   return {
     from: `${i.author} via MAPLE`,
-    replyTo: i.replyTo,
-    cc: i.replyTo,
+    replyTo: i.email,
+    cc: i.email,
     to: [rep && `Rep. ${rep.name}`, sen && `Sen. ${sen.name}`]
       .filter(Boolean)
       .join(", "),
