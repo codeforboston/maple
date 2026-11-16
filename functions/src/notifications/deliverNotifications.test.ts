@@ -1,5 +1,5 @@
 import { buildDigestData } from "./deliverNotifications"
-import { CONFERENCE_STANCES } from "./emailTypes"
+import { CONFERENCE_STANCES } from "../shared/conferences"
 import { Timestamp } from "../firebase"
 
 // Mock firebase module

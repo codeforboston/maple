@@ -27,6 +27,26 @@ function Icon({
 
 type Props = { size?: number; strokeWidth?: number; fill?: string }
 
+export const House = (p: Props) => (
+  <Icon {...p}>
+    <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
+    <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+  </Icon>
+)
+export const Mail = (p: Props) => (
+  <Icon {...p}>
+    <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+    <rect x="2" y="4" width="20" height="16" rx="2" />
+  </Icon>
+)
+export const CalendarDays = (p: Props) => (
+  <Icon {...p}>
+    <path d="M8 2v4" />
+    <path d="M16 2v4" />
+    <rect width="18" height="18" x="3" y="4" rx="2" />
+    <path d="M3 10h18" />
+  </Icon>
+)
 export const Megaphone = (p: Props) => (
   <Icon {...p}>
     <path d="m3 11 18-5v12L3 14v-3z" />

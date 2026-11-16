@@ -71,6 +71,8 @@ prod-build.env
 !*.secret
 infra/dev/typesense-secrets.yml
 infra/prod/typesense-secrets.yml
+# Firebase extension secrets for the emulator
+extensions/*.secret.local
 
 .python-version
 __pycache__/

@@ -1,0 +1,77 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Weekly update to the conferees</title>
+  </head>
+
+  <body style="margin: 0; padding: 0; background: #EAE7E7; font-family: 'Nunito', Arial, sans-serif; color: #212529;">
+    <table role="presentation" width="700" align="center" cellpadding="0" cellspacing="0" style="max-width: 700px; background: #ffffff; border: 1px solid #D8D5D5;">
+      <tr>
+        <td style="background: #000000; padding: 16px 22px;">
+          <img src="https://mapletestimony.org/email/images_no-svgs/Logo.png" alt="MAPLE" height="30" style="vertical-align: middle;" />
+          <span style="color: #ffffff; font-weight: 800; font-size: 15px; vertical-align: middle; margin-left: 12px;">Weekly update to the conferees</span>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 16px 22px; border-bottom: 1px solid #E7E4E4; font-size: 13.5px; color: #5C6470; line-height: 1.6;">
+          <div><b style="color: #212529;">To:</b> {{#each conferees}}{{name}}{{#if chair}} (chair){{/if}}{{#unless @last}}, {{/unless}}{{/each}}</div>
+          <div><b style="color: #212529;">Re:</b> {{bills}} — {{title}} — conference committee</div>
+          <div><b style="color: #212529;">Week of:</b> {{weekLabel}} &nbsp;·&nbsp; <b style="color: #212529;">Sent:</b> {{sentLabel}}</div>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 22px;">
+          <h1 style="font-size: 22px; line-height: 1.25; margin: 0 0 8px;">Public input on {{title}}: where it stands, and what changed this week</h1>
+          <p style="color: #5C6470; margin: 0 0 18px; font-size: 15px;">One summary a week from MAPLE, in place of individual emails. Everything here is drawn from testimony submitted publicly on MAPLE whose authors chose to share it with the committee.</p>
+
+          <h2 style="font-size: 17px; margin: 22px 0 8px;">1 · Where input stands</h2>
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="8" style="margin: 0 -8px 8px;">
+            <tr>
+              <td style="background: #F8F9FA; border: 1px solid #D8D5D5; border-radius: 6px; padding: 10px 12px;">
+                <div style="font-size: 12px; color: #5C6470; font-weight: 700;">Total testimonies</div>
+                <div style="font-size: 22px; font-weight: 900; color: #1A3185;">{{total}}</div>
+                <div style="font-size: 12px; color: #1F7A4D; font-weight: 700;">{{totalDelta}} this week</div>
+              </td>
+              {{#each groups}}
+              <td style="background: #F8F9FA; border: 1px solid #D8D5D5; border-radius: 6px; padding: 10px 12px;">
+                <div style="font-size: 12px; color: #5C6470; font-weight: 700;">{{label}}</div>
+                <div style="font-size: 22px; font-weight: 900; color: #1A3185;">{{count}}</div>
+                <div style="font-size: 12px; color: #1F7A4D; font-weight: 700;">{{delta}}</div>
+              </td>
+              {{/each}}
+            </tr>
+          </table>
+
+          <p style="font-size: 13.5px; color: #5C6470; margin: 14px 0 4px;">Position on the bills</p>
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="2" style="margin: 6px 0;">
+            <tr>
+              {{#each positions}}
+              <td width="{{width}}%" align="center" style="background: {{color}}; color: #ffffff; font-weight: 800; font-size: 12px; padding: 6px 0;">{{count}}</td>
+              {{/each}}
+            </tr>
+          </table>
+          <p style="font-size: 12.5px; color: #5C6470; margin: 0 0 6px;">
+            {{#each positions}}<span style="color: {{color}};">■</span> {{label}} {{count}} ({{delta}}){{#unless @last}} &nbsp;·&nbsp; {{/unless}}{{/each}}
+          </p>
+
+          <h2 style="font-size: 17px; margin: 22px 0 8px;">2 · What changed this week</h2>
+          <ul style="margin: 0; padding-left: 20px; font-size: 14.5px; line-height: 1.7;">
+            {{#each changes}}
+            <li>{{this}}</li>
+            {{/each}}
+          </ul>
+
+          <h2 style="font-size: 17px; margin: 22px 0 8px;">3 · Read the testimony</h2>
+          <p style="margin: 0 0 8px;">Every submission is public on MAPLE with the author's stated position. Nothing in this summary is paraphrased from private input.</p>
+          <a href="{{conferenceUrl}}" style="display: inline-block; background: #1A3185; color: #ffffff; text-decoration: none; font-weight: 700; font-size: 14px; padding: 9px 16px; border-radius: 6px;">Read the testimony →</a>
+        </td>
+      </tr>
+      <tr>
+        <td style="background: #1A3185; color: #D6DCF2; padding: 18px 22px; font-size: 12.5px; line-height: 1.55;">
+          <p style="margin: 0 0 6px;"><b style="color: #ffffff;">How this is compiled.</b> Counts and positions are from testimony submitted on MAPLE. Positions are the authors' own, not MAPLE's view.</p>
+          <p style="margin: 0;"><b style="color: #ffffff;">MAPLE is nonpartisan infrastructure</b> and takes no position on this or any bill. Questions, or a reply to this email: <a href="mailto:info@mapletestimony.org" style="color: #ffffff;">info@mapletestimony.org</a>.</p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
