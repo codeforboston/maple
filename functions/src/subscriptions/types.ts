@@ -16,4 +16,9 @@ export interface TopicSubscription {
     ballotQuestionId: string
     court: number
   }
+
+  conferenceLookup?: {
+    conferenceId: string
+    court: number
+  }
 }

@@ -1,4 +1,5 @@
-import { buildDigestData, CONFERENCE_STANCES } from "./deliverNotifications"
+import { buildDigestData } from "./deliverNotifications"
+import { CONFERENCE_STANCES } from "./emailTypes"
 import { Timestamp } from "../firebase"
 
 // Mock firebase module
@@ -348,6 +349,102 @@ describe("buildDigestData — conference testimony", () => {
         stance: "Pass the Senate version"
       },
       { billId: "H1234", court: "194", position: "endorse" }
+    ])
+  })
+})
+
+describe("buildDigestData — conferences", () => {
+  const conferenceDoc = (overrides: object) => ({
+    type: "testimony",
+    isBillMatch: false,
+    isUserMatch: false,
+    isBallotQuestionMatch: false,
+    isConferenceMatch: true,
+    billId: "S2581",
+    header: "An Act relative to phones",
+    court: "194",
+    position: "passSomething",
+    timestamp: now,
+    authorUid: "author1",
+    subheader: "Alice",
+    bodyText: "",
+    testimonyId: "t1",
+    userRole: "user",
+    delivered: false,
+    ballotQuestionId: null,
+    ballotQuestionCourt: null,
+    conferenceId: "phones",
+    conferenceName: "Phone-Free Schools",
+    ...overrides
+  })
+
+  it("counts a followed conference's testimony by stance, every stance listed", async () => {
+    setupCollection([
+      conferenceDoc({ testimonyId: "t1", position: "passSomething" }),
+      conferenceDoc({ testimonyId: "t2", position: "passSomething" }),
+      conferenceDoc({ testimonyId: "t3", position: "passNothing" })
+    ])
+
+    const result = await buildDigestData("uid1", now as any, "Weekly")
+
+    expect(result.conferences).toEqual([
+      {
+        conferenceId: "phones",
+        conferenceName: "Phone-Free Schools",
+        court: "194",
+        newTestimonyCount: 3,
+        stances: [
+          { stance: "Please pass something", count: 2 },
+          { stance: "Pass the Senate version", count: 0 },
+          { stance: "Pass the House version", count: 0 },
+          { stance: "Don't pass anything", count: 1 }
+        ]
+      }
+    ])
+    expect(result.numConferencesWithNewTestimony).toBe(1)
+    // A conference-only reader has something to send, and nothing else.
+    expect(result.numBillsWithNewTestimony).toBe(0)
+    expect(result.numUsersWithNewTestimony).toBe(0)
+  })
+
+  it("names the conference from the bill's title when it has no name", async () => {
+    setupCollection([conferenceDoc({ conferenceName: null })])
+
+    const result = await buildDigestData("uid1", now as any, "Weekly")
+
+    expect(result.conferences[0].conferenceName).toBe(
+      "An Act relative to phones"
+    )
+  })
+
+  it("caps conferences at 4, most testimony first, and reports the full count", async () => {
+    setupCollection([
+      ...Array.from({ length: 6 }, (_, i) =>
+        conferenceDoc({ testimonyId: `t${i}`, conferenceId: `c${i}` })
+      ),
+      conferenceDoc({ testimonyId: "extra", conferenceId: "c5" })
+    ])
+
+    const result = await buildDigestData("uid1", now as any, "Weekly")
+
+    expect(result.conferences).toHaveLength(4)
+    expect(result.conferences[0].conferenceId).toBe("c5")
+    expect(result.numConferencesWithNewTestimony).toBe(6)
+  })
+
+  it("shows testimony matching both the conference and its author in each section", async () => {
+    setupCollection([conferenceDoc({ isUserMatch: true })])
+
+    const result = await buildDigestData("uid1", now as any, "Weekly")
+
+    expect(result.numConferencesWithNewTestimony).toBe(1)
+    expect(result.users[0].bills).toEqual([
+      {
+        billId: "S2581",
+        court: "194",
+        conferenceId: "phones",
+        stance: "Please pass something"
+      }
     ])
   })
 })

@@ -11,7 +11,8 @@ jest.mock("firebase-functions/logger", () => ({
 // The Testimony type needs the admin package's own Timestamp class.
 jest.mock("../firebase", () => ({
   db: {
-    collection: jest.fn()
+    collection: jest.fn(),
+    doc: jest.fn()
   },
   Timestamp: jest.requireActual("firebase-admin/firestore").Timestamp
 }))
@@ -57,6 +58,14 @@ const makeEvent = (before: object | null, after: object | null) => ({
   params: { userId: "author-uid", testimonyId: "testimony-id" }
 })
 
+/** Documents the handler reads, by path; any other path is missing. */
+const setupDocs = (byPath: Record<string, object | undefined>) =>
+  mockDb.doc.mockImplementation((path: string) => ({
+    get: jest.fn().mockResolvedValue({ data: () => byPath[path] })
+  }))
+
+const PHONES = "/generalCourts/194/conferences/phones"
+
 beforeEach(() => {
   jest.clearAllMocks()
 })
@@ -78,6 +87,155 @@ describe("populateTestimonySubmissionNotificationEventsHandler", () => {
         testimonyId: "testimony-id",
         testimonyVersion: 1
       })
+    )
+  })
+
+  it("names the conference on conference testimony", async () => {
+    setupCollection(true)
+    setupDocs({
+      [PHONES]: { name: "Phone-Free Schools", title: "An Act relative" }
+    })
+
+    const event = makeEvent(
+      null,
+      makeTestimony({ conferenceId: "phones", position: "passSomething" })
+    )
+    await populateTestimonySubmissionNotificationEventsHandler(event as any)
+
+    expect(mockDb.doc).toHaveBeenCalledWith(
+      "/generalCourts/194/conferences/phones"
+    )
+    expect(mockAdd).toHaveBeenCalledWith(
+      expect.objectContaining({
+        conferenceId: "phones",
+        conferenceName: "Phone-Free Schools"
+      })
+    )
+  })
+
+  it("falls back to the conference's title, then to no name", async () => {
+    setupCollection(true)
+    setupDocs({ [PHONES]: { title: "An Act relative to phones" } })
+    const testimony = makeTestimony({
+      conferenceId: "phones",
+      position: "passSomething"
+    })
+    await populateTestimonySubmissionNotificationEventsHandler(
+      makeEvent(null, testimony) as any
+    )
+    expect(mockAdd).toHaveBeenLastCalledWith(
+      expect.objectContaining({ conferenceName: "An Act relative to phones" })
+    )
+
+    setupDocs({ [PHONES]: undefined })
+    await populateTestimonySubmissionNotificationEventsHandler(
+      makeEvent(null, testimony) as any
+    )
+    expect(mockAdd).toHaveBeenLastCalledWith(
+      expect.objectContaining({ conferenceId: "phones", conferenceName: null })
+    )
+  })
+
+  it("names no conference on bill testimony", async () => {
+    setupCollection(true)
+
+    await populateTestimonySubmissionNotificationEventsHandler(
+      makeEvent(null, makeTestimony()) as any
+    )
+
+    expect(mockDb.doc).not.toHaveBeenCalled()
+    expect(mockAdd).toHaveBeenCalledWith(
+      expect.objectContaining({ conferenceId: null, conferenceName: null })
+    )
+  })
+
+  describe("on a cosign", () => {
+    const cosign = (content = "") =>
+      makeTestimony({
+        conferenceId: "phones",
+        position: "passSomething",
+        content,
+        cosignOfId: "lead-id",
+        cosignOfAuthorUid: "lead-uid"
+      })
+
+    it("carries the input it cosigns, credited to its author", async () => {
+      setupCollection(true)
+      setupDocs({
+        "/generalCourts/194/conferences/phones": { name: "Phone-Free Schools" },
+        "/users/lead-uid/publishedTestimony/lead-id": {
+          fullName: "Lead Author",
+          content: "Keep phones out of classrooms."
+        }
+      })
+
+      await populateTestimonySubmissionNotificationEventsHandler(
+        makeEvent(null, cosign()) as any
+      )
+
+      expect(mockAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          conferenceName: "Phone-Free Schools",
+          testimonyContent: "",
+          cosignOf: {
+            authorName: "Lead Author",
+            content: "Keep phones out of classrooms."
+          }
+        })
+      )
+    })
+
+    it("names an author without a full name as the site does, and trims a long input", async () => {
+      setupCollection(true)
+      setupDocs({
+        "/users/lead-uid/publishedTestimony/lead-id": {
+          authorDisplayName: "Lead Org",
+          content: "x".repeat(700)
+        }
+      })
+
+      await populateTestimonySubmissionNotificationEventsHandler(
+        makeEvent(null, cosign()) as any
+      )
+
+      expect(mockAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          cosignOf: { authorName: "Lead Org", content: `${"x".repeat(600)}...` }
+        })
+      )
+    })
+
+    it("still goes out when the cosigned input is gone", async () => {
+      setupCollection(true)
+      setupDocs({})
+
+      await populateTestimonySubmissionNotificationEventsHandler(
+        makeEvent(null, cosign("My own line.")) as any
+      )
+
+      expect(mockAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          testimonyContent: "My own line.",
+          cosignOf: null
+        })
+      )
+    })
+  })
+
+  it("reads nothing more for testimony that cosigns nothing", async () => {
+    setupCollection(true)
+    setupDocs({ [PHONES]: { name: "Phone-Free Schools" } })
+
+    await populateTestimonySubmissionNotificationEventsHandler(
+      makeEvent(
+        null,
+        makeTestimony({ conferenceId: "phones", position: "passSomething" })
+      ) as any
+    )
+
+    expect(mockDb.doc).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledWith(
+      expect.objectContaining({ cosignOf: null })
     )
   })
 

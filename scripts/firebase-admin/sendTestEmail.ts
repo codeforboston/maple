@@ -201,7 +201,9 @@ const generateTestData = (
     numBillsWithNewTestimony: numBills,
     numUsersWithNewTestimony: numUsers,
     ballotQuestions: [],
-    numBallotQuestionsWithNewTestimony: 0
+    numBallotQuestionsWithNewTestimony: 0,
+    conferences: [],
+    numConferencesWithNewTestimony: 0
   }
 }
 

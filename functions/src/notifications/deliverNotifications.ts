@@ -13,6 +13,8 @@ import {
   BallotQuestionDigest,
   BillDigest,
   BillResult,
+  CONFERENCE_STANCES,
+  ConferenceDigest,
   NotificationEmailDigest,
   Position,
   UserDigest
@@ -26,15 +28,8 @@ const NUM_BILLS_TO_DISPLAY = 4
 const NUM_USERS_TO_DISPLAY = 4
 const NUM_TESTIMONIES_TO_DISPLAY = 6
 const NUM_BALLOT_QUESTIONS_TO_DISPLAY = 4
+const NUM_CONFERENCES_TO_DISPLAY = 4
 const EMAIL_TEMPLATE_PATH = "../email/digestEmail.handlebars"
-
-// The site's wording, conferences input.position.*.long; a test holds them equal.
-export const CONFERENCE_STANCES: Record<ConferencePosition, string> = {
-  passSomething: "Please pass something",
-  passSenateVersion: "Pass the Senate version",
-  passHouseVersion: "Pass the House version",
-  passNothing: "Don't pass anything"
-}
 
 const path = require("path")
 
@@ -117,7 +112,8 @@ const deliverEmailNotifications = async () => {
       if (
         digestData.numBillsWithNewTestimony === 0 &&
         digestData.numUsersWithNewTestimony === 0 &&
-        digestData.numBallotQuestionsWithNewTestimony === 0
+        digestData.numBallotQuestionsWithNewTestimony === 0 &&
+        digestData.numConferencesWithNewTestimony === 0
       ) {
         console.log(
           `No new notifications for ${profileDoc.id} - not sending email`
@@ -181,10 +177,14 @@ export const buildDigestData = async (
   const billsById: { [billId: string]: BillDigest } = {}
   const usersById: { [userId: string]: UserDigest } = {}
   const ballotQuestionsById: { [bqId: string]: BallotQuestionDigest } = {}
+  const conferencesById: { [conferenceId: string]: ConferenceDigest } = {}
 
   notificationsSnapshot.docs.forEach(notificationDoc => {
     const { notification } =
       notificationDoc.data() as TestimonySubmissionNotificationFields
+    // Read only for conference testimony; a bill position has no stance.
+    const stance =
+      CONFERENCE_STANCES[notification.position as ConferencePosition]
 
     if (notification.isBillMatch) {
       if (billsById[notification.billId]) {
@@ -223,8 +223,7 @@ export const buildDigestData = async (
         ...(notification.conferenceId
           ? {
               conferenceId: notification.conferenceId,
-              stance:
-                CONFERENCE_STANCES[notification.position as ConferencePosition]
+              stance
             }
           : { position: notification.position as Position })
       }
@@ -270,6 +269,25 @@ export const buildDigestData = async (
         }
       }
     }
+
+    if (notification.isConferenceMatch && notification.conferenceId) {
+      const id = notification.conferenceId
+      const conference = (conferencesById[id] ??= {
+        conferenceId: id,
+        conferenceName: notification.conferenceName || notification.header,
+        court: notification.court,
+        newTestimonyCount: 0,
+        stances: Object.values(CONFERENCE_STANCES).map(stance => ({
+          stance,
+          count: 0
+        }))
+      })
+      const row = conference.stances.find(s => s.stance === stance)
+      if (row) row.count++
+      else
+        console.error(`Unknown conference position: ${notification.position}`)
+      conference.newTestimonyCount++
+    }
   })
 
   const bills = Object.values(billsById).sort((a, b) => {
@@ -299,6 +317,10 @@ export const buildDigestData = async (
     )
   })
 
+  const conferences = Object.values(conferencesById).sort(
+    (a, b) => b.newTestimonyCount - a.newTestimonyCount
+  )
+
   return {
     notificationFrequency,
     startDate: startDate.toDate(),
@@ -308,7 +330,9 @@ export const buildDigestData = async (
     users: users.slice(0, NUM_USERS_TO_DISPLAY),
     numUsersWithNewTestimony: users.length,
     ballotQuestions: ballotQuestions.slice(0, NUM_BALLOT_QUESTIONS_TO_DISPLAY),
-    numBallotQuestionsWithNewTestimony: ballotQuestions.length
+    numBallotQuestionsWithNewTestimony: ballotQuestions.length,
+    conferences: conferences.slice(0, NUM_CONFERENCES_TO_DISPLAY),
+    numConferencesWithNewTestimony: conferences.length
   }
 }
 

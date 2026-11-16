@@ -25,6 +25,16 @@ jest.mock("../featureFlags", () => ({
   useFlags: () => ({ legislators: false, hearingsAndTranscriptions: true })
 }))
 jest.mock("../hooks", () => ({ useAppDispatch: () => jest.fn() }))
+// Following has its own tests; here it is a switch.
+let mockFollowVisible = false
+jest.mock("./FollowConference", () => ({
+  ...jest.requireActual("./FollowConference"),
+  useConferenceFollow: () => ({
+    visible: mockFollowVisible,
+    following: false,
+    toggle: jest.fn()
+  })
+}))
 jest.mock("./input/useFollowedAuthors", () => ({
   useFollowedAuthors: () => new Set()
 }))

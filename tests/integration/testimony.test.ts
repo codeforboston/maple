@@ -21,7 +21,8 @@ import {
   signInUser1,
   signInUser2,
   signInUser3,
-  signInUser4
+  signInUser4,
+  createConference
 } from "./common"
 
 type BaseTestimony = {
@@ -727,7 +728,7 @@ describe("publishTestimony", () => {
     it.each(["reportFiled", "enacted", "dissolved"])(
       "Refuses testimony on a conference that is %s",
       async status => {
-        const closedId = await createConference(billId, status)
+        const closedId = await createConference(billId, { status })
         const { draftId: conferenceDraftId } = await createConferenceDraft(
           uid,
           billId,
@@ -1621,31 +1622,6 @@ async function createDraftAttachment(uid: string, id: string, content: string) {
 
 /** A conference whose canonical bill is `billId`, with its counts zeroed. It
  * takes testimony only while `status` is appointed. */
-async function createConference(billId: string, status = "appointed") {
-  const id = `conference-${nanoid()}`.toLowerCase()
-  await testDb
-    .doc(`/generalCourts/${currentGeneralCourt}/conferences/${id}`)
-    .set({
-      id,
-      court: currentGeneralCourt,
-      title: "Test conference",
-      senateBillId: billId,
-      houseBillId: "H1",
-      canonicalBillId: billId,
-      conferees: [],
-      status,
-      hearingIds: [],
-      differences: [],
-      similarities: [],
-      testimonyCount: 0,
-      passNothingCount: 0,
-      passSomethingCount: 0,
-      passSenateVersionCount: 0,
-      passHouseVersionCount: 0
-    })
-  return id
-}
-
 async function getConference(id: string) {
   const doc = await testDb
     .doc(`/generalCourts/${currentGeneralCourt}/conferences/${id}`)
