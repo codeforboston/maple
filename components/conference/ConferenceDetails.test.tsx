@@ -597,7 +597,7 @@ describe("ConferenceDetails", () => {
       mockUser = { uid: "reader", emailVerified: true }
       render(<ConferenceDetails {...props} />)
       expect(
-        screen.getByRole("dialog", { name: "input.panel_title" })
+        screen.getByRole("dialog", { name: "input.cosign_title" })
       ).toBeInTheDocument()
       letGo()
     })
@@ -613,7 +613,7 @@ describe("ConferenceDetails", () => {
       mockUser = { uid: "reader", emailVerified: true }
       rerender(<ConferenceDetails {...props} />)
       expect(
-        screen.getByRole("dialog", { name: "input.panel_title" })
+        screen.getByRole("dialog", { name: "input.cosign_title" })
       ).toBeInTheDocument()
       expect(mockDispatch).toHaveBeenCalledTimes(1)
     })

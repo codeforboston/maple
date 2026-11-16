@@ -148,14 +148,14 @@ describe("CosignForm", () => {
     const onPosted = jest.fn()
     const onStep = jest.fn()
     mount(edit, "write", { onPosted, onStep })
-    press("input.review")
+    press("input.cosign_review")
     expect(onStep).not.toHaveBeenCalled()
 
     fireEvent.click(
       screen.getByRole("checkbox", { name: "input.cosign_no_words_label" })
     )
     expect(screen.getByRole("textbox")).toBeDisabled()
-    press("input.review")
+    press("input.cosign_review")
     expect(onStep).toHaveBeenCalledWith("review")
     expect(edit.publishTestimony.execute).not.toHaveBeenCalled()
   })
@@ -254,7 +254,7 @@ describe("CosignForm", () => {
       fireEvent.change(screen.getByRole("textbox"), {
         target: { value: "After." }
       })
-      press("input.review")
+      press("input.cosign_review")
       expect(onStep).toHaveBeenCalledWith("review")
     })
 

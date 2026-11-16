@@ -114,9 +114,7 @@ describe("buildLetterEmail", () => {
     expect(email.from).toBe(
       '"Ada via MAPLE" <notifications@mapletestimony.org>'
     )
-    expect(email.message.subject).toBe(
-      "Phone-Free Schools: Please pass something"
-    )
+    expect(email.message.subject).toBe("Phone-Free Schools: Pass a final bill")
   })
 
   it("turns tracking off per message", () => {

@@ -39,8 +39,8 @@ describe("digest email, conferences", () => {
           court: "194",
           newTestimonyCount: 3,
           stances: [
-            { stance: "Please pass something", count: 2 },
-            { stance: "Don't pass anything", count: 1 }
+            { stance: "Pass a final bill", count: 2 },
+            { stance: "Don’t pass a final bill", count: 1 }
           ]
         }
       ],
@@ -53,8 +53,8 @@ describe("digest email, conferences", () => {
     )
     expect(html).toContain("Phone-Free Schools")
     expect(html).toContain("New Inputs")
-    expect(html).toMatch(/2<\/td>\s*<td[^>]*>Please pass something/)
-    expect(html).toContain("Don&#x27;t pass anything")
+    expect(html).toMatch(/2<\/td>\s*<td[^>]*>Pass a final bill/)
+    expect(html).toContain("Don’t pass a final bill")
   })
 
   it("leaves the section out for a reader following no conference", () => {

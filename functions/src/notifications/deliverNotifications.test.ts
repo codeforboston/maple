@@ -394,10 +394,10 @@ describe("buildDigestData — conferences", () => {
         court: "194",
         newTestimonyCount: 3,
         stances: [
-          { stance: "Please pass something", count: 2 },
+          { stance: "Pass a final bill", count: 2 },
           { stance: "Pass the Senate version", count: 0 },
           { stance: "Pass the House version", count: 0 },
-          { stance: "Don't pass anything", count: 1 }
+          { stance: "Don’t pass a final bill", count: 1 }
         ]
       }
     ])
@@ -443,7 +443,7 @@ describe("buildDigestData — conferences", () => {
         billId: "S2581",
         court: "194",
         conferenceId: "phones",
-        stance: "Please pass something"
+        stance: "Pass a final bill"
       }
     ])
   })

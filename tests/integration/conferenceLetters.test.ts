@@ -156,7 +156,7 @@ describe("sendConferenceLetters", () => {
       from: '"Ada \\"Ace\\" Lovelace via MAPLE" <notifications@mapletestimony.org>'
     })
     expect(sent!.message.subject).toBe(
-      `[dev] would have gone to: rep@malegislature.gov, sen@malegislature.gov — Phone-Free Schools: Please pass something`
+      `[dev] would have gone to: rep@malegislature.gov, sen@malegislature.gov — Phone-Free Schools: Pass a final bill`
     )
     expect(sent!.message.html).toContain(`Dear Representative Member ${rep}`)
     expect(sent!.message.html).toContain(
@@ -173,7 +173,7 @@ describe("sendConferenceLetters", () => {
       kind: "letter",
       court: COURT,
       memberCodes: [rep, sen],
-      subject: "Phone-Free Schools: Please pass something",
+      subject: "Phone-Free Schools: Pass a final bill",
       html: sent!.message.html,
       text: sent!.message.text,
       createdAt: sent!.createdAt,
@@ -234,10 +234,10 @@ describe("sendConferenceLetters", () => {
     const editId = await event(posted, "edited", 2, noon(1))
     await sendConferenceLetters(run(1))
     expect((await email(editId))!.message.subject).toMatch(
-      /Phone-Free Schools: Please pass something \(updated\)$/
+      /Phone-Free Schools: Pass a final bill \(updated\)$/
     )
     expect(await record(editId)).toMatchObject({
-      subject: "Phone-Free Schools: Please pass something (updated)",
+      subject: "Phone-Free Schools: Pass a final bill (updated)",
       version: 2,
       updated: true
     })
@@ -274,9 +274,7 @@ describe("sendConferenceLetters", () => {
     await publishVersion(posted, 2)
     const editId = await event(posted, "edited", 2, noon(1))
     await sendConferenceLetters(run(1))
-    expect((await email(editId))!.message.subject).toMatch(
-      /Please pass something$/
-    )
+    expect((await email(editId))!.message.subject).toMatch(/Pass a final bill$/)
     expect(await record(editId)).toMatchObject({ updated: false })
   })
 
@@ -328,9 +326,7 @@ describe("sendConferenceLetters", () => {
     )
     await sendConferenceLetters(NOW)
     expect((await skip(first.eventId))!.reason).toBe("superseded")
-    expect((await email(editId))!.message.subject).toMatch(
-      /Please pass something$/
-    )
+    expect((await email(editId))!.message.subject).toMatch(/Pass a final bill$/)
   })
 })
 

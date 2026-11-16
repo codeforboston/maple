@@ -61,7 +61,33 @@ const review = (edit: UseEditConferenceTestimony) =>
     />
   )
 
+const write = (edit: UseEditConferenceTestimony) =>
+  render(
+    <InputForm
+      court={194}
+      conferenceId="H1-S1"
+      conferees={["CC", "BF"]}
+      edit={edit}
+      subject="Phone-Free Schools"
+      step="write"
+      onStep={jest.fn()}
+      onCancel={jest.fn()}
+      onPosted={jest.fn()}
+    />
+  )
+
 describe("InputForm", () => {
+  it("promises the email to legislators only when the profile has some", () => {
+    const { unmount } = write(editing())
+    expect(screen.getByText("input.delivery_note")).toBeInTheDocument()
+    unmount()
+
+    mockProfile.current = { fullName: "Gina K." }
+    write(editing())
+    expect(screen.getByText("input.delivery_note_weekly")).toBeInTheDocument()
+    expect(screen.queryByText("input.delivery_note")).not.toBeInTheDocument()
+  })
+
   it("leaves a cosign's draft alone while it sits behind a closed panel", () => {
     jest.useFakeTimers()
     const edit = {

@@ -664,12 +664,15 @@ function InputPanel({
     return () => onDraft(undefined)
   }, [edit.draft, edit.loading, onDraft])
 
+  const mode = cosigning ? "cosign_" : ""
   const title =
     step === "review"
-      ? "input.review_title"
-      : cosigning && edit.publication
+      ? `input.${mode}review_title`
+      : !cosigning
+      ? "input.panel_title"
+      : edit.publication
       ? "input.cosign_edit_title"
-      : "input.panel_title"
+      : "input.cosign_title"
   return (
     <Panel
       open={open}
