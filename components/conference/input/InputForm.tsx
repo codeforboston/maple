@@ -483,7 +483,20 @@ export function InputForm({
               setContent(e.target.value)
             }}
           />
-          <Delivery>{t("input.delivery_note")}</Delivery>
+          <Delivery>
+            {hasLegislators(profile ?? {}) ? (
+              t("input.delivery_note")
+            ) : (
+              <Trans t={t} i18nKey="input.delivery_note_weekly">
+                When you post, MAPLE will include your input in the weekly
+                update to the conferees.
+                <Internal href="/edit-profile/about-you">
+                  Add your representative and senator to your profile
+                </Internal>
+                and MAPLE will email them your input too.
+              </Trans>
+            )}
+          </Delivery>
           {failed && <Problem role="alert">{t("input.error")}</Problem>}
         </Scroll>
         <Actions>

@@ -210,6 +210,7 @@
     "position_label": "Your position",
     "body_label": "Your input",
     "delivery_note": "When you post, MAPLE will email your input to your state representative and state senator and include it in the weekly update to the conferees. You’ll see exactly what they get before you post.",
+    "delivery_note_weekly": "When you post, MAPLE will include your input in the weekly update to the conferees. <1>Add your state representative and senator to your profile</1> and MAPLE will email them your input too.",
     "saving": "Saving…",
     "saved": "Saved",
     "delete_draft": "Delete Draft",
