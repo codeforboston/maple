@@ -154,7 +154,7 @@ describe("the update email", () => {
     ])
     expect(data.changes).toContain("2 inputs added.")
     expect(data.changes).toContain("Counted input went from 1 to 3.")
-    expect(data.changes).toContain("Don't pass anything: 0 → 1.")
+    expect(data.changes).toContain("Don’t pass a final bill: 0 → 1.")
   })
 
   it("renders the conferees, figures and a link to the page", () => {

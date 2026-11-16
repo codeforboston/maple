@@ -173,20 +173,26 @@
     "clear_position": "Clear the {{position}} filter",
     "position": {
       "passSomething": {
-        "long": "Please pass something",
-        "short": "Pass something"
+        "long": "Pass a final bill",
+        "short": "Final bill",
+        "help": "Either version or a mix of both. Tell conferees what the final bill should include.",
+        "prompt": "What should the final bill include or leave out?"
       },
       "passSenateVersion": {
         "long": "Pass the Senate version",
-        "short": "Senate version"
+        "short": "Senate version",
+        "prompt": "Why should conferees adopt the Senate version?"
       },
       "passHouseVersion": {
         "long": "Pass the House version",
-        "short": "House version"
+        "short": "House version",
+        "prompt": "Why should conferees adopt the House version?"
       },
       "passNothing": {
-        "long": "Don't pass anything",
-        "short": "Pass nothing"
+        "long": "Don’t pass a final bill",
+        "short": "No final bill",
+        "help": "Neither version nor a compromise this session.",
+        "prompt": "Why shouldn’t this bill become law this session?"
       }
     },
     "show_more": "Show more",
@@ -203,19 +209,18 @@
     "close_panel": "Close Add Your Input",
     "position_label": "Your position",
     "body_label": "Your input",
-    "prompt": "What do you want lawmakers and other voters to know about this question?",
+    "delivery_note": "When you post, MAPLE will email your input to your state representative and state senator and include it in the weekly update to the conferees. You’ll see exactly what they get before you post.",
     "saving": "Saving…",
     "saved": "Saved",
     "delete_draft": "Delete Draft",
     "cancel": "Cancel",
     "review": "Review and Post",
-    "review_title": "Review and Post",
+    "review_title": "Review Your Input",
     "preview_label": "Preview",
-    "rules_label": "Before You Post",
     "rule_public": "Posting is public and stays attached to your account.",
     "rule_revise": "You can revise it later; earlier versions stay on the record.",
     "conduct": "All posts are governed by our <1>Code of Conduct</1>.",
-    "back": "Back to editing",
+    "back": "Back to Editing",
     "post": "Post",
     "empty_hint": "Write something first, then post it.",
     "error": "Your input could not be saved. Try again in a moment.",
@@ -275,11 +280,15 @@
     "cosign_wordless_note": "Hidden by default. Each card's cosigned count includes them either way.",
     "cosign_lands": "Each individual can provide input or cosign one position, with the option to add their own words. This is where that message will appear.",
     "cosign_no_words": "Each individual can provide input or cosign one position. This individual decided not to publicly share additional input.",
-    "cosign_body_label": "Your Input",
-    "cosign_optional": "Optional",
+    "cosign_body_label": "Add a line of your own",
+    "cosign_optional": "(optional)",
+    "cosign_line_hint": "It goes at the top of your message, above {{name}}’s input.",
     "cosign_prompt": "Why does this matter to you? One or two sentences in your own words will have more impact with lawmakers.",
     "cosign_no_words_label": "I do not want to add input of my own",
+    "cosign_title": "Cosign Input",
     "cosign_edit_title": "Edit Your Cosign",
+    "cosign_review_title": "Review Your Cosign",
+    "cosign_review": "Review and Cosign",
     "cosign_parent_gone": "The input you are cosigning has been removed, so your cosign could not be filed.",
     "cosign_closed": "This conference committee is no longer taking input, so your cosign could not be filed.",
     "fill_window": "Fill the window",
@@ -302,8 +311,8 @@
     "rep": "Rep. {{name}}",
     "sen": "Sen. {{name}}",
     "and": " and ",
-    "weekly_input": "Included in MAPLE’s weekly update to the conferees.",
-    "weekly_cosign": "Counted in MAPLE’s weekly update to the conferees.",
+    "weekly_input": "Included in MAPLE’s weekly update to the six conferees.",
+    "weekly_cosign": "Counted in MAPLE’s weekly update to the six conferees.",
     "conferees": "This committee’s conferees",
     "conferees_label": "The conferees",
     "email_label": "Your email",

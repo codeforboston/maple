@@ -24,8 +24,8 @@ export const conferenceName = (c: Named) =>
   c.name?.trim() || c.title?.trim() || ""
 // The site's wording, conferences input.position.*.long; a test holds them equal.
 export const CONFERENCE_STANCES: Record<ConferencePosition, string> = {
-  passSomething: "Please pass something",
+  passSomething: "Pass a final bill",
   passSenateVersion: "Pass the Senate version",
   passHouseVersion: "Pass the House version",
-  passNothing: "Don't pass anything"
+  passNothing: "Don’t pass a final bill"
 }

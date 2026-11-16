@@ -24,6 +24,7 @@ import {
   Body,
   ConductRule,
   Field,
+  Hint,
   Label,
   Muted,
   Primary,
@@ -231,6 +232,12 @@ const PreviewText = styled.div`
 
 const Optional = styled(Cosigned)`
   color: ${ink.faint};
+`
+
+/** Where the reader's line lands in the letter. */
+const LineHint = styled(Hint)`
+  margin: -4px 0 8px;
+  text-align: left;
 `
 
 const NoteField = styled(Field)`
@@ -447,6 +454,9 @@ export function CosignForm({
           {t("input.cosign_body_label")}{" "}
           <Optional>{t("input.cosign_optional")}</Optional>
         </Label>
+        <LineHint>
+          {t("input.cosign_line_hint", { name: nameOf(parent) })}
+        </LineHint>
         <NoteField
           ref={field}
           value={content}
@@ -495,7 +505,7 @@ export function CosignForm({
           aria-disabled={!ready}
           onClick={() => (ready ? onStep("review") : ask.ask())}
         >
-          {t("input.review")}
+          {t("input.cosign_review")}
         </Press>
       </Actions>
     </Body>
