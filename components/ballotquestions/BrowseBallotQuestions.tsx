@@ -1,4 +1,4 @@
-import { Alert, Button, Card, Form, Image } from "components/bootstrap"
+import { Button, Card, Form, Image } from "components/bootstrap"
 import { useTranslation } from "next-i18next"
 import Link from "next/link"
 import { useDeferredValue, useState } from "react"
@@ -6,6 +6,7 @@ import styled from "styled-components"
 import type { BallotQuestion } from "../db"
 import { maple } from "../links"
 import { QuestionTooltip } from "../tooltip"
+import { BallotQuestionAlert } from "./BallotQuestionAlert"
 import { SearchContainer } from "../search/SearchContainer"
 
 type BallotQuestionStatus = BallotQuestion["ballotStatus"]
@@ -419,15 +420,16 @@ export const BrowseBallotQuestions = ({
 
   return (
     <>
+      {/* The note on question numbers: the ballot question flag
+          (BallotQuestionAlert) in its info form. */}
       {showInfo && (
-        <Alert
-          variant="info"
-          dismissible
-          onClose={() => setShowInfo(false)}
-          className="maple-info-alert mb-3 rounded-4"
-        >
-          {questionNumberDisclaimer}
-        </Alert>
+        <div className="mb-3">
+          <BallotQuestionAlert
+            alertFlag={questionNumberDisclaimer}
+            variant="info"
+            dismiss={() => setShowInfo(false)}
+          />
+        </div>
       )}
 
       <SearchContainer>

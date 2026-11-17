@@ -3,6 +3,10 @@ import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { SortTh } from "./SortTh"
 
+jest.mock("next-i18next", () => ({
+  useTranslation: () => ({ t: (key: string) => key })
+}))
+
 describe("SortTh", () => {
   function header(current: "a" | "b", onSort = jest.fn()) {
     render(
@@ -33,16 +37,16 @@ describe("SortTh", () => {
 
   it("marks the sorted column and shows an arrow on every column", () => {
     header("a")
-    expect(screen.getByRole("columnheader")).toHaveAttribute(
-      "aria-sort",
-      "ascending"
-    )
-    expect(screen.getByText("↑")).toBeInTheDocument()
+    const th = screen.getByRole("columnheader")
+    expect(th).toHaveAttribute("aria-sort", "ascending")
+    expect(th.querySelector('svg[data-icon="arrow-up"]')).toBeInTheDocument()
+    expect(screen.getByText("sort.lowFirst")).toBeInTheDocument()
   })
 
-  it("shows ↕ on an unsorted column", () => {
+  it("shows both carets on an unsorted column", () => {
     header("b")
-    expect(screen.getByRole("columnheader")).not.toHaveAttribute("aria-sort")
-    expect(screen.getByText("↕")).toBeInTheDocument()
+    const th = screen.getByRole("columnheader")
+    expect(th).not.toHaveAttribute("aria-sort")
+    expect(th.querySelector('svg[data-icon="sort"]')).toBeInTheDocument()
   })
 })

@@ -57,42 +57,40 @@ test.describe("Testimony Filtering", () => {
     page
   }) => {
     const testimonyPage = new TestimonyPage(page)
-    await testimonyPage.filterByAuthorRoleTab("Individuals")
+    await testimonyPage.filterByAuthorRole("Individuals")
 
-    const { individualsTab } = testimonyPage
+    const { individualsOption } = testimonyPage
     await expect(page).toHaveURL(/.*authorRole%5D%5B0%5D=user/)
-    await expect(individualsTab).toHaveClass(/nav-link/)
-    await expect(individualsTab).toHaveClass(/active/)
+    await expect(individualsOption).toBeChecked()
   })
 
   test("should filter for testimonies by author role, organizations", async ({
     page
   }) => {
     const testimonyPage = new TestimonyPage(page)
-    await testimonyPage.filterByAuthorRoleTab("Organizations")
+    await testimonyPage.filterByAuthorRole("Organizations")
 
-    const { organizationsTab } = testimonyPage
+    const { organizationsOption } = testimonyPage
     await expect(page).toHaveURL(/.*authorRole%5D%5B0%5D=organization/)
-    await expect(organizationsTab).toHaveClass(/nav-link/)
-    await expect(organizationsTab).toHaveClass(/active/)
+    await expect(organizationsOption).toBeChecked()
   })
 
-  /* "All" is the page default, this test switches tabs then goes back to "All"
-    SKIP: This test will fail, switching from other tabs back to "All" currently has a bug
+  /* "All" is the page default, this test switches author type then goes back
+    to "All"
+    SKIP: This test will fail, switching from another author type back to "All"
+    currently has a bug
     https://github.com/codeforboston/maple/issues/1578 */
   test.skip("should filter for testimonies by all", async ({ page }) => {
     const testimonyPage = new TestimonyPage(page)
-    await testimonyPage.filterByAuthorRoleTab("Individuals")
+    await testimonyPage.filterByAuthorRole("Individuals")
 
-    const { individualsTab, allTab } = testimonyPage
+    const { individualsOption, allOption } = testimonyPage
     await expect(page).toHaveURL(/.*authorRole%5D%5B0%5D=user/)
-    await expect(individualsTab).toHaveClass(/nav-link/)
-    await expect(individualsTab).toHaveClass(/active/)
+    await expect(individualsOption).toBeChecked()
 
-    await testimonyPage.filterByAuthorRoleTab("All")
+    await testimonyPage.filterByAuthorRole("All")
     await expect(page).toHaveURL(/.*authorRole%5D%5B0%5D=all/)
-    await expect(allTab).toHaveClass(/nav-link/)
-    await expect(allTab).toHaveClass(/active/)
+    await expect(allOption).toBeChecked()
   })
 
   test("should filter by court", async ({ page }) => {

@@ -40,14 +40,20 @@ const Portrait = styled(Disc)`
 `
 
 const Name = styled.p`
+  /* Names in Lexend, as the cosign card's, in Nunito cards too. */
+  font-family: var(--maple-font-heading);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 4px 8px;
   margin: 0;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: 0.9375rem;
+  font-weight: 400;
   color: ${ink.strong};
+
+  .position-chip {
+    font-size: 0.75rem;
+  }
 `
 
 const Descriptor = styled.p`
@@ -59,19 +65,20 @@ const Descriptor = styled.p`
 const When = styled.p`
   flex-shrink: 0;
   margin: 0;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   color: ${ink.mid};
 `
 
 const Words = styled.p`
   margin: 0;
-  font-size: 0.8125rem;
-  line-height: 1.7;
+  font-size: 0.9375rem;
+  line-height: 1.55;
   color: ${ink.strong};
   white-space: pre-line;
 `
 
-/** What is being cosigned, whole, to read beside the form that signs it. */
+/** What is being cosigned, whole, to read beside the form that signs it, in
+ * the type of the entries in Public Input (Entry.tsx). */
 export function CosignLetter({ parent }: { parent: ConferenceTestimony }) {
   const { t, i18n } = useTranslation("conferences")
   const type = accountTypeOf(parent.authorRole)

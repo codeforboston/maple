@@ -10,15 +10,17 @@ import { positionColours } from "./positions"
 import { brand, ink, line, shadow } from "./tokens"
 import { useWide } from "./useWide"
 
+/** Its text in Nunito, as the page's other cards' is. */
 const Card = styled.article<{ $bare: boolean; $own: boolean }>`
   position: relative;
   padding: 20px;
+  font-family: var(--maple-font-body);
   ${({ $bare, $own }) =>
     $bare
       ? ""
       : `background: ${$own ? brand.soft : "var(--maple-surface-base)"};
   border: 1px solid ${$own ? brand.edge : line.default};
-  border-radius: 8px;
+  border-radius: 5px;
   box-shadow: ${shadow.raised};`}
 
   @media (max-width: 450px) {
@@ -46,7 +48,7 @@ export const Disc = styled.div`
   border-radius: 9999px;
   background: ${brand.soft};
   border: 1px solid ${brand.edge};
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   letter-spacing: 0.02em;
   color: ${brand.ink};
@@ -58,7 +60,7 @@ const Portrait = styled(Disc)`
   @media (max-width: 767px) {
     width: 34px;
     height: 34px;
-    font-size: 0.625rem;
+    font-size: 0.6875rem;
   }
   @media (max-width: 450px) {
     width: 26px;
@@ -72,15 +74,22 @@ export const Who = styled.div`
 `
 
 const NameRow = styled.p`
+  /* Names in Lexend, as the cosign card's, in Nunito cards too. */
+  font-family: var(--maple-font-heading);
   display: flex;
   align-items: flex-end;
   flex-wrap: wrap;
   gap: 6px;
   margin: 0;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: 0.9375rem;
+  font-weight: 400;
   line-height: 1;
   color: ${ink.strong};
+
+  /* The position chip a pixel up on the card; the newsfeed's keeps its own. */
+  .position-chip {
+    font-size: 0.75rem;
+  }
 
   svg {
     width: 16px;
@@ -95,7 +104,7 @@ const NameRow = styled.p`
   }
   @media (max-width: 450px) {
     gap: 4px;
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     svg {
       width: 13px;
       height: 13px;
@@ -138,6 +147,8 @@ export const NoWords = styled(Body)`
 `
 
 const Chip = styled.span<{ $bg: string; $ink: string }>`
+  /* Lexend, as every chip on the conference pages, in Nunito cards too. */
+  font-family: var(--maple-font-heading);
   flex-shrink: 0;
   padding: 1px 8px;
   border-radius: 9999px;
@@ -166,7 +177,7 @@ export function PositionChip({
   const { t } = useTranslation("conferences")
   const { chipBg, chipInk } = positionColours[position]
   return (
-    <Chip $bg={chipBg} $ink={chipInk}>
+    <Chip className="position-chip" $bg={chipBg} $ink={chipInk}>
       {t(`input.position.${position}.${long ? "long" : "short"}`)}
     </Chip>
   )
@@ -176,7 +187,7 @@ export const OwnChip = styled(Chip).attrs({ $bg: brand.fill, $ink: "#fff" })``
 
 export const Descriptor = styled.p`
   margin: 8px 0 0;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   line-height: 1.4;
   color: ${ink.faint};
   overflow: hidden;
@@ -186,7 +197,7 @@ export const Descriptor = styled.p`
 
 export const When = styled.span<{ $quiet: boolean; $banded: boolean }>`
   margin-right: 2px;
-  font-size: ${({ $banded }) => ($banded ? "0.8125rem" : "0.75rem")};
+  font-size: ${({ $banded }) => ($banded ? "0.875rem" : "0.8125rem")};
   white-space: nowrap;
   color: ${({ $quiet }) => ($quiet ? ink.faint : ink.mid)};
 `
@@ -228,7 +239,7 @@ const FootDate = styled.div`
   justify-content: flex-end;
   gap: 6px;
   margin-top: 12px;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   color: ${ink.mid};
 `
 

@@ -31,6 +31,8 @@ export function countOutcomes(differences: DifferenceView[]) {
 /** A label on an outcome's tint, or on a wash where there is none. As a
  * button it filters, outlined while pressed. */
 export const Chip = styled.span<{ $o?: ConferenceOutcome }>`
+  /* Lexend, as every chip on the conference pages, in Nunito cards too. */
+  font-family: var(--maple-font-heading);
   display: inline-flex;
   align-items: center;
   gap: 6px;

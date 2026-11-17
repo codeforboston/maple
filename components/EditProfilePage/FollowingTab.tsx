@@ -15,9 +15,10 @@ import { useTranslation } from "next-i18next"
 import { ComponentProps, useEffect, useMemo, useState } from "react"
 import { useAsync } from "react-async-hook"
 import { useAuth } from "../auth"
-import { Alert, Col, Row, Spinner } from "../bootstrap"
+import { Alert, Spinner } from "../bootstrap"
 import { firestore } from "../firebase"
 import { FollowUserCard } from "./FollowUserCard"
+import { FollowedItemRow } from "./FollowedItemRow"
 import {
   LoadableItemsState,
   PaginatedItemsCard
@@ -27,11 +28,13 @@ export function FollowingTab({ className }: { className?: string }) {
   const { t } = useTranslation("editProfile")
   const followedBallotQuestions = useFollowedBallotQuestions()
   const followedConferences = useFollowedConferences()
+  // Titles in the cards' header bands, as on the profile page.
   return (
     <>
       <PaginatedItemsCard
         className={className}
         title={t("follow.bills")}
+        titleInHeader
         ItemCard={FollowedBillCard}
         {...useFollowedBills()}
       />
@@ -39,6 +42,7 @@ export function FollowingTab({ className }: { className?: string }) {
         <PaginatedItemsCard
           className={className}
           title={t("follow.ballotQuestions")}
+          titleInHeader
           ItemCard={FollowedBallotQuestionCard}
           {...followedBallotQuestions}
         />
@@ -47,6 +51,7 @@ export function FollowingTab({ className }: { className?: string }) {
         <PaginatedItemsCard
           className={className}
           title={t("follow.conferences")}
+          titleInHeader
           ItemCard={FollowedConferenceCard}
           {...followedConferences}
         />
@@ -54,6 +59,7 @@ export function FollowingTab({ className }: { className?: string }) {
       <PaginatedItemsCard
         className={className}
         title={t("follow.orgs")}
+        titleInHeader
         ItemCard={item => <FollowUserCard {...item} confirmUnfollow={true} />}
         {...useFollowedUsers()}
       />
@@ -150,20 +156,15 @@ function FollowedBillCard({
   if (!bill) return null
 
   return (
-    <div className={`fs-3 lh-lg`}>
-      <Row className={`align-items-center flex-column flex-md-row`}>
+    <FollowedItemRow
+      lead={
         <Internal href={`/bills/${court}/${billId}`}>
           {formatBillId(billId)}
         </Internal>
-        <Col xs={12} md={8} className={`d-flex`}>
-          <h6>{bill.content.Title}</h6>
-        </Col>
-        <Col xs="auto" className="d-flex justify-content-end ms-auto p-0">
-          <FollowBillButton bill={bill} confirmUnfollow={true} />
-        </Col>
-      </Row>
-      <hr className={`mt-3`} />
-    </div>
+      }
+      title={bill.content.Title}
+      action={<FollowBillButton bill={bill} confirmUnfollow={true} />}
+    />
   )
 }
 
@@ -193,20 +194,15 @@ function FollowedBallotQuestionCard({
       : bq.description ?? ballotQuestionId
 
   return (
-    <div className={`fs-3 lh-lg`}>
-      <Row className={`align-items-center flex-column flex-md-row`}>
+    <FollowedItemRow
+      lead={
         <Internal href={`/ballotQuestions/${ballotQuestionId}`}>
           {label}
         </Internal>
-        <Col xs={12} md={8} className={`d-flex`}>
-          <h6>{bq.title ?? bq.description}</h6>
-        </Col>
-        <Col xs="auto" className="d-flex justify-content-end ms-auto p-0">
-          <FollowBallotQuestionButton ballotQuestion={bq} />
-        </Col>
-      </Row>
-      <hr className={`mt-3`} />
-    </div>
+      }
+      title={bq.title ?? bq.description}
+      action={<FollowBallotQuestionButton ballotQuestion={bq} />}
+    />
   )
 }
 
@@ -221,7 +217,6 @@ function FollowedConferenceCard({
   court: number
 }) {
   const { t } = useTranslation("editProfile")
-  const uid = useAuth().user?.uid
   const {
     loading,
     error,
@@ -233,25 +228,24 @@ function FollowedConferenceCard({
   const shown = conference && isShown(conference)
 
   return (
-    <div className={`fs-3 lh-lg`}>
-      <Row className={`align-items-center flex-column flex-md-row`}>
-        <Col xs={12} md={8} className={`d-flex`}>
-          {shown ? (
-            <Internal href={maple.conference({ court, id: conferenceId })}>
-              {conferenceName(conference)}
-            </Internal>
-          ) : (
-            <h6>{conference ? conferenceName(conference) : conferenceId}</h6>
-          )}
-        </Col>
-        <Col xs="auto" className="d-flex justify-content-end ms-auto p-0">
-          <FollowConferenceTopicButton
-            conference={{ id: conferenceId, court }}
-            confirmUnfollow
-          />
-        </Col>
-      </Row>
-      <hr className={`mt-3`} />
-    </div>
+    <FollowedItemRow
+      lead={
+        shown ? (
+          <Internal href={maple.conference({ court, id: conferenceId })}>
+            {conferenceName(conference)}
+          </Internal>
+        ) : conference ? (
+          conferenceName(conference)
+        ) : (
+          conferenceId
+        )
+      }
+      action={
+        <FollowConferenceTopicButton
+          conference={{ id: conferenceId, court }}
+          confirmUnfollow
+        />
+      }
+    />
   )
 }

@@ -43,8 +43,15 @@ export const parameters = {
     }
   },
   backgrounds: {
-    default: "medium",
+    // "page" is transparent on purpose, so the site's body background shows
+    // through instead of being painted over. The fixed values are still here
+    // for checking contrast against extremes.
+    default: "page",
     values: [
+      {
+        name: "page",
+        value: "transparent"
+      },
       {
         name: "light",
         value: "#ffffff"

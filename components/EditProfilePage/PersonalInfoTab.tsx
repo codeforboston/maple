@@ -110,158 +110,187 @@ export function PersonalInfoTab({
   )
 
   const { t } = useTranslation("editProfile")
+  // The cards take the profile page's look, a header band with the title and
+  // the card's own padding, and from 992px the legislators card sits to the
+  // right of General info.
+  const generalInfoCard = (
+    <TitledSectionCard
+      // Side by side for a person, the margin goes on the pair (below), so
+      // the two cards start level.
+      className={isOrg ? className : undefined}
+      title={t("tabs.personalInfo")}
+    >
+      <div
+        // Under the band, just the card's own padding above the content, as
+        // in the legislators card beside it.
+        className="d-flex flex-column"
+      >
+        {/* A minor subheading, as Social Media is. */}
+        <h6 className="mb-3">{t("forms.generalInfo")}</h6>
+        <Row>
+          <Input
+            label={t(isOrg ? "forms.orgName" : "forms.fullName")}
+            {...register("fullName", {
+              value: fullName?.trim(),
+              validate: value =>
+                value.trim().length >= 2 ||
+                t("forms.errEmptyAndMinLength").toString(),
+              required: t(
+                isOrg ? "forms.errOrgNameRequired" : "forms.errNameRequired"
+              ).toString()
+            })}
+            className="w-100"
+            defaultValue={fullName}
+            error={errors.fullName?.message}
+          />
+        </Row>
+        <Row>
+          <Input
+            as="textarea"
+            {...register("aboutYou")}
+            style={{ height: "10rem" }}
+            className="mt-3"
+            label={t("forms.aboutYou")}
+            defaultValue={about}
+          />
+        </Row>
+        <Row xs="auto" className="mt-2">
+          <Col>
+            <TooltipButton
+              text={t("forms.aboutYouTip")}
+              tooltip={t("tooltipText")}
+              variant="link"
+            />
+          </Col>
+        </Row>
+        {isOrg && (
+          <SelectOrgCategory
+            t={t}
+            register={register}
+            category={category}
+            setCategory={setCategory}
+          />
+        )}
 
-  return (
-    <Form onSubmit={onSubmit}>
-      <TitledSectionCard className={className}>
-        <div className={`mx-4 mt-3 d-flex flex-column`}>
-          <h4 className="mb-3">{t("forms.generalInfo")}</h4>
-          <Row>
-            <Input
-              label={t(isOrg ? "forms.orgName" : "forms.fullName")}
-              {...register("fullName", {
-                value: fullName?.trim(),
-                validate: value =>
-                  value.trim().length >= 2 ||
-                  t("forms.errEmptyAndMinLength").toString(),
-                required: t(
-                  isOrg ? "forms.errOrgNameRequired" : "forms.errNameRequired"
-                ).toString()
-              })}
-              className="w-100"
-              defaultValue={fullName}
-              error={errors.fullName?.message}
+        <div className="mb-3">
+          {/* Smaller, as a minor subheading. */}
+          <h6 className="mb-3 mt-5">{t("socialLinks.socialMedia")}</h6>
+          <div className={`row`}>
+            <SocialInput
+              label={t("socialLinks.twitter")}
+              defaultValue={social?.twitter}
+              className="col-sm-12 col-md-6 mb-1"
+              iconSrc="/twitter.svg"
+              {...register("twitter")}
             />
-          </Row>
-          <Row>
-            <Input
-              as="textarea"
-              {...register("aboutYou")}
-              style={{ height: "10rem" }}
-              className="mt-3"
-              label={t("forms.aboutYou")}
-              defaultValue={about}
+            <SocialInput
+              label={t("socialLinks.linkedIn")}
+              defaultValue={social?.linkedIn}
+              className="col-sm-12 col-md-6 mb-1"
+              iconSrc="/linkedin.svg"
+              {...register("linkedIn")}
             />
-          </Row>
-          <Row xs="auto" className="mt-2">
-            <Col>
-              <TooltipButton
-                text={t("forms.aboutYouTip")}
-                tooltip={t("tooltipText")}
-                variant="link"
-              />
-            </Col>
-          </Row>
-          {isOrg && (
-            <SelectOrgCategory
-              t={t}
-              register={register}
-              category={category}
-              setCategory={setCategory}
+            <SocialInput
+              label={t("socialLinks.blueSky")}
+              defaultValue={social?.blueSky}
+              className="col-sm-12 col-md-6 mb-1"
+              iconSrc="/bluesky.svg"
+              {...register("blueSky")}
             />
-          )}
-
-          <div className="mb-3">
-            <h4 className="mb-3 mt-5">{t("socialLinks.socialMedia")}</h4>
-            <div className={`row`}>
-              <SocialInput
-                label={t("socialLinks.twitter")}
-                defaultValue={social?.twitter}
-                className="col-sm-12 col-md-6 mb-1"
-                iconSrc="/twitter.svg"
-                {...register("twitter")}
-              />
-              <SocialInput
-                label={t("socialLinks.linkedIn")}
-                defaultValue={social?.linkedIn}
-                className="col-sm-12 col-md-6 mb-1"
-                iconSrc="/linkedin.svg"
-                {...register("linkedIn")}
-              />
-              <SocialInput
-                label={t("socialLinks.blueSky")}
-                defaultValue={social?.blueSky}
-                className="col-sm-12 col-md-6 mb-1"
-                iconSrc="/bluesky.svg"
-                {...register("blueSky")}
-              />
-              <SocialInput
-                label={t("socialLinks.mastodon")}
-                defaultValue={social?.mastodon}
-                className="col-sm-12 col-md-6 mb-1"
-                iconSrc="/mastodon.svg"
-                {...register("mastodon")}
-              />
-              {isOrg && (
-                <>
-                  <SocialInput
-                    label={t("socialLinks.instagram")}
-                    defaultValue={social?.instagram}
-                    className="col-sm-12 col-md-6 mb-1"
-                    iconSrc="/instagram.svg"
-                    {...register("instagram")}
-                  />
-                  <SocialInput
-                    label={t("socialLinks.facebook")}
-                    defaultValue={social?.fb}
-                    className="col-sm-12 col-md-6"
-                    iconSrc="/facebook.svg"
-                    {...register("fb")}
-                  />
-                </>
-              )}
-            </div>
+            <SocialInput
+              label={t("socialLinks.mastodon")}
+              defaultValue={social?.mastodon}
+              className="col-sm-12 col-md-6 mb-1"
+              iconSrc="/mastodon.svg"
+              {...register("mastodon")}
+            />
             {isOrg && (
               <>
-                <h4 className="mb-3 mt-5">{t("contact.contactInfo")}</h4>
-                <Row>
-                  <Input
-                    label={t("contact.email")}
-                    defaultValue={contactInfo?.publicEmail}
-                    {...register("publicEmail")}
-                  />
-                </Row>
-                <Row className="mt-3">
-                  <Input
-                    label={t("contact.phone")}
-                    defaultValue={contactInfo?.publicPhone}
-                    {...register("publicPhone", {
-                      minLength: {
-                        value: 10,
-                        message: t("contact.phoneLenWarning1")
-                      },
-                      maxLength: {
-                        value: 10,
-                        message: t("contact.phoneLenWarning2")
-                      },
-                      validate: () => {
-                        const phoneNum = getValues("publicPhone")
-                        return isNaN(phoneNum)
-                          ? t("contact.phoneNumWarning").toString()
-                          : undefined
-                      }
-                    })}
-                    error={errors.publicPhone?.message}
-                  />
-                </Row>
-                <Row className="mt-3">
-                  <Input
-                    label={t("contact.website")}
-                    defaultValue={contactInfo?.website}
-                    {...register("website")}
-                  />
-                </Row>
+                <SocialInput
+                  label={t("socialLinks.instagram")}
+                  defaultValue={social?.instagram}
+                  className="col-sm-12 col-md-6 mb-1"
+                  iconSrc="/instagram.svg"
+                  {...register("instagram")}
+                />
+                <SocialInput
+                  label={t("socialLinks.facebook")}
+                  defaultValue={social?.fb}
+                  className="col-sm-12 col-md-6"
+                  iconSrc="/facebook.svg"
+                  {...register("fb")}
+                />
               </>
             )}
           </div>
+          {isOrg && (
+            <>
+              <h4 className="mb-3 mt-5">{t("contact.contactInfo")}</h4>
+              <Row>
+                <Input
+                  label={t("contact.email")}
+                  defaultValue={contactInfo?.publicEmail}
+                  {...register("publicEmail")}
+                />
+              </Row>
+              <Row className="mt-3">
+                <Input
+                  label={t("contact.phone")}
+                  defaultValue={contactInfo?.publicPhone}
+                  {...register("publicPhone", {
+                    minLength: {
+                      value: 10,
+                      message: t("contact.phoneLenWarning1")
+                    },
+                    maxLength: {
+                      value: 10,
+                      message: t("contact.phoneLenWarning2")
+                    },
+                    validate: () => {
+                      const phoneNum = getValues("publicPhone")
+                      return isNaN(phoneNum)
+                        ? t("contact.phoneNumWarning").toString()
+                        : undefined
+                    }
+                  })}
+                  error={errors.publicPhone?.message}
+                />
+              </Row>
+              <Row className="mt-3">
+                <Input
+                  label={t("contact.website")}
+                  defaultValue={contactInfo?.website}
+                  {...register("website")}
+                />
+              </Row>
+            </>
+          )}
         </div>
-      </TitledSectionCard>
+      </div>
+    </TitledSectionCard>
+  )
 
-      {!isOrg && (
-        <TitledSectionCard>
-          <h2>{t("legislator.yourLegislators")}</h2>
-          <YourLegislators {...legislatorsProps} />
-        </TitledSectionCard>
+  const legislatorsCard = (
+    <TitledSectionCard title={t("legislator.yourLegislators")}>
+      <YourLegislators {...legislatorsProps} />
+    </TitledSectionCard>
+  )
+
+  return (
+    <Form onSubmit={onSubmit}>
+      {isOrg ? (
+        generalInfoCard
+      ) : (
+        <div className={className}>
+          <Row className="g-4">
+            <Col xs={12} lg={7}>
+              {generalInfoCard}
+            </Col>
+            <Col xs={12} lg={5}>
+              {legislatorsCard}
+            </Col>
+          </Row>
+        </div>
       )}
 
       <Row>

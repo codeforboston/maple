@@ -63,7 +63,14 @@
   },
   "testimonyCallout": {
     "bill": "Bill",
+    "byline": "- {{author}} on <1>{{bill}}</1>",
     "position": "{{position1}}"
+  },
+  "testimonyFeed": {
+    "billSeparator": " & ",
+    "endorse": "<1>{{author}}</1> endorses <2>{{bill}}</2>",
+    "neutral": "<1>{{author}}</1> is neutral on <2>{{bill}}</2>",
+    "oppose": "<1>{{author}}</1> opposes <2>{{bill}}</2>"
   },
   "testimonyCalloutSection": {
     "peopleSaying": "What people are saying...",

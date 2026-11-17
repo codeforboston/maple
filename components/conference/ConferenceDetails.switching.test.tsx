@@ -2,6 +2,7 @@ import "@testing-library/jest-dom"
 import { fireEvent, render } from "@testing-library/react"
 import { useState } from "react"
 import { ConferenceDetails } from "./ConferenceDetails"
+import { SHOW_PAST_CONFERENCES } from "./ConferenceRail"
 import type { ConferencePageProps } from "./types"
 
 jest.mock("next-i18next", () => ({
@@ -142,42 +143,47 @@ describe("moving between conferences", () => {
     expect(mounted).toEqual([phoneFree.id, privacy.id])
   })
 
-  describe("the group of conferences no longer taking input", () => {
-    // The rail's: the picker's menu holds a copy only once it is opened.
-    const folds = (c: HTMLElement) =>
-      [...c.querySelectorAll("details")].map(d => d.open)
+  // The fold's own behaviour, while past conferences are listed at all
+  // (SHOW_PAST_CONFERENCES).
+  ;(SHOW_PAST_CONFERENCES ? describe : describe.skip)(
+    "the group of conferences no longer taking input",
+    () => {
+      // The rail's: the picker's menu holds a copy only once it is opened.
+      const folds = (c: HTMLElement) =>
+        [...c.querySelectorAll("details")].map(d => d.open)
 
-    it("starts folded on a conference still sitting", () => {
-      const { container } = render(<ConferenceDetails {...page(privacy)} />)
-      expect(folds(container)).toEqual([false])
-    })
+      it("starts folded on a conference still sitting", () => {
+        const { container } = render(<ConferenceDetails {...page(privacy)} />)
+        expect(folds(container)).toEqual([false])
+      })
 
-    it("opens on arriving at a conference in it", () => {
-      const { container, rerender } = render(
-        <ConferenceDetails {...page(privacy)} />
-      )
-      rerender(<ConferenceDetails {...page(enacted)} />)
-      expect(folds(container)).toEqual([true])
-    })
+      it("opens on arriving at a conference in it", () => {
+        const { container, rerender } = render(
+          <ConferenceDetails {...page(privacy)} />
+        )
+        rerender(<ConferenceDetails {...page(enacted)} />)
+        expect(folds(container)).toEqual([true])
+      })
 
-    it("stays open on moving back to a conference still sitting", () => {
-      const { container, rerender } = render(
-        <ConferenceDetails {...page(enacted)} />
-      )
-      rerender(<ConferenceDetails {...page(privacy)} />)
-      expect(folds(container)).toEqual([true])
-    })
+      it("stays open on moving back to a conference still sitting", () => {
+        const { container, rerender } = render(
+          <ConferenceDetails {...page(enacted)} />
+        )
+        rerender(<ConferenceDetails {...page(privacy)} />)
+        expect(folds(container)).toEqual([true])
+      })
 
-    it("stays as the reader left it between conferences still sitting", () => {
-      const { container, rerender } = render(
-        <ConferenceDetails {...page(privacy)} />
-      )
-      const details = container.querySelector("details")!
-      details.open = true
-      fireEvent(details, new Event("toggle"))
+      it("stays as the reader left it between conferences still sitting", () => {
+        const { container, rerender } = render(
+          <ConferenceDetails {...page(privacy)} />
+        )
+        const details = container.querySelector("details")!
+        details.open = true
+        fireEvent(details, new Event("toggle"))
 
-      rerender(<ConferenceDetails {...page(phoneFree)} />)
-      expect(folds(container)).toEqual([true])
-    })
-  })
+        rerender(<ConferenceDetails {...page(phoneFree)} />)
+        expect(folds(container)).toEqual([true])
+      })
+    }
+  )
 })

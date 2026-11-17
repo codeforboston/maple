@@ -21,7 +21,7 @@ import {
   yea
 } from "./input/tokens"
 import { useWide } from "./input/useWide"
-import { TABS_H } from "./ConferenceTabs"
+import { CardTitle, CommitteeCard } from "./styles"
 import {
   Chip,
   ChipCount,
@@ -31,41 +31,13 @@ import {
   OutcomeFilter,
   countOutcomes
 } from "./ConferenceResolution"
-import { Card } from "./styles"
 import { CHAMBERS, ConfereeView, DifferenceView, SimilarityView } from "./types"
 
-/** The mockup's card, which keeps its gutters at every width. */
-const Frame = styled(Card)`
-  --pad-x: 32px;
-  padding: 24px 32px 32px 34px;
-`
-
-/** The heading holds under the tabs while the section scrolls, on a white
- * band run out to the card's edges so what passes under it is covered. */
-const HeadingBand = styled.div`
-  position: sticky;
-  top: calc(var(--maple-navbar-height) + var(--title-h, 5rem) + ${TABS_H});
-  z-index: 9;
-  margin: -12px calc(-1 * var(--pad-x));
-  padding: 12px var(--pad-x);
-  background: var(--maple-surface-base);
-  border-radius: var(--maple-radius-xl) var(--maple-radius-xl) 0 0;
-`
-
-const Heading = styled.h2`
-  position: relative;
-  left: -4px;
-  margin: 0;
-  font-family: var(--maple-font-heading);
-  font-weight: 400;
-  font-size: 1.25rem;
-  line-height: 1.4;
-  color: ${ink.strong};
-  text-wrap: balance;
-
-  @media (min-width: 992px) {
-    font-size: 1.375rem;
-  }
+/** The mockup's card, which keeps its gutters at every width: 32px at the
+ * left as at the right, so its content lines up with the committee card's
+ * above (Card's 2rem). */
+const Frame = styled(CommitteeCard)`
+  padding: 24px 32px 32px 32px;
 `
 
 const Body = styled.div`
@@ -79,15 +51,16 @@ const Body = styled.div`
   }
 `
 
-/** A short paragraph on what the bills are, with the invitation to send
- * feedback under it. */
+/** A short paragraph on what the bills are, its lines kept to a readable
+ * length (90ch) rather than the card's full width, with the invitation to
+ * send feedback under it, one sentence on a line of its own. */
 const Gist = styled.div`
   margin: 0 0 2px;
   padding-left: 16px;
   border-left: 2px solid ${line.strong};
-  max-width: 65ch;
 
   p {
+    max-width: 90ch;
     margin: 0;
     font-size: 0.875rem;
     line-height: 1.65;
@@ -95,6 +68,7 @@ const Gist = styled.div`
   }
   /* The feedback line beneath the gist. */
   > div + p {
+    max-width: none;
     margin-top: 8px;
     font-size: 0.8125rem;
     color: ${ink.faint};
@@ -178,7 +152,9 @@ const Toggle = styled.button`
   border: 0;
   border-radius: 8px;
   text-align: left;
-  font-weight: 500;
+  /* The question in Lexend, light, in the card's Nunito. */
+  font-family: var(--maple-font-heading);
+  font-weight: 300;
   font-size: 1rem;
   line-height: 1.35;
   color: ${ink.strong};
@@ -221,6 +197,10 @@ const Chamber = styled(Label)<{ $ink: string }>`
 /** Faint italic is for the bare fallback alone: an absence, not content. */
 const AnswerText = styled.p<{ $absent: boolean }>`
   margin: 2px 0 0;
+  /* Lexend, light, as the question over it (Toggle); its chamber's label
+     (Label) keeps the card's Nunito. */
+  font-family: var(--maple-font-heading);
+  font-weight: 300;
   font-size: 0.8125rem;
   line-height: 1.4;
   color: ${({ $absent }) => ($absent ? ink.faint : ink.strong)};
@@ -251,6 +231,8 @@ const ToggleText = styled.span`
 `
 
 const ResolutionLine = styled.span`
+  /* Nunito, as the card, under the question's Lexend (Toggle). */
+  font-family: var(--maple-font-body);
   max-width: 72ch;
   font-weight: 400;
   font-size: 0.875rem;
@@ -567,11 +549,11 @@ export function ConferenceDifferences({
 
   return (
     <Frame aria-labelledby="decided-q">
-      <HeadingBand>
-        <Heading id="decided-q">
-          {t(resolved ? "resolved.list_title" : "decided.title")}
-        </Heading>
-      </HeadingBand>
+      {/* The heading scrolls with the section, as the other sections'
+          headings do, rather than holding under the tabs. */}
+      <CardTitle id="decided-q" className="mb-0">
+        {t(resolved ? "resolved.list_title" : "decided.title")}
+      </CardTitle>
       <Body ref={body}>
         {gist && (
           <Gist>

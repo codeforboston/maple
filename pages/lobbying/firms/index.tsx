@@ -14,13 +14,15 @@ import { createLobbyingListProps } from "components/lobbying/listPageProps"
 import { formatCount, MAPLE_COLORS } from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import {
-  FilterLabel,
+  floatingFieldClass,
+  FloatingSearch,
+  listTableStyle,
+  listTdStyle,
   LobbyingFilterBar,
   LobbyingLoadError,
   LobbyingPanel,
-  listTableStyle,
-  listTdStyle,
-  listSearchStyle,
+  pageIntroStyle,
+  selectClass,
   selectStyle,
   sessionSelectStyle,
   subTextStyle
@@ -32,7 +34,7 @@ import { usePrerenderedRows } from "components/lobbying/usePrerenderedRows"
 import { matchesSearch } from "components/lobbying/searchMatch"
 import { regTypeLabel } from "components/lobbying/regTypeLabel"
 import { SessionFilter, SessionSelect } from "components/lobbying/SessionSelect"
-import { SortTh, thStyle, type SortDir } from "components/lobbying/SortTh"
+import { SortTh, thTopStyle, type SortDir } from "components/lobbying/SortTh"
 
 const PAGE_SIZE = 50
 
@@ -126,10 +128,7 @@ function LobbyingFirmsTable({
 
   return (
     <>
-      <LobbyingFilterBar boxed>
-        <FilterLabel htmlFor="firms-session">
-          {t("filters.session")}
-        </FilterLabel>
+      <LobbyingFilterBar boxed="open">
         <SessionSelect
           id="firms-session"
           sessions={sessions}
@@ -139,39 +138,49 @@ function LobbyingFirmsTable({
           allLabel={t("filters.allSessionsSince")}
           style={sessionSelectStyle}
         />
-        <select
-          value={regTypeFilter}
-          onChange={e =>
-            setRegTypeFilter(e.target.value as typeof regTypeFilter)
-          }
-          style={selectStyle}
-          aria-label={t("filters.allTypes")}
+        <div
+          className={`form-floating ${floatingFieldClass}`}
+          // The page's 16px, as the sign-up form's, not the filter bar's 14px,
+          // which the floating label would take.
+          style={{ fontSize: "1rem" }}
         >
-          <option value="all">{t("registrantType.all")}</option>
-          <option value="Lobbyist">{t("registrantType.lobbyist")}</option>
-          <option value="Employer">{t("registrantType.employer")}</option>
-        </select>
+          <select
+            id="firms-type"
+            value={regTypeFilter}
+            onChange={e =>
+              setRegTypeFilter(e.target.value as typeof regTypeFilter)
+            }
+            className={selectClass}
+            style={selectStyle}
+          >
+            <option value="all">{t("registrantType.all")}</option>
+            <option value="Lobbyist">{t("registrantType.lobbyist")}</option>
+            <option value="Employer">{t("registrantType.employer")}</option>
+          </select>
+          <label htmlFor="firms-type">{t("fields.type")}</label>
+        </div>
 
-        <input
-          type="search"
-          placeholder={t("filters.search")}
+        <FloatingSearch
+          id="firms-search"
+          label={t("filters.search")}
           value={search}
-          onChange={e => setSearch(e.target.value)}
-          style={listSearchStyle}
-          aria-label={t("filters.search")}
+          onChange={setSearch}
+          grow
         />
       </LobbyingFilterBar>
 
       <LobbyingPanel
         title={t("sections.firms")}
+        session={session}
+        sessions={sessions}
         footer={t("firmList.dashNote")}
         aside={
           !loading && (
-            <strong>
-              {t("firmList.count", {
-                count: totalItems,
-                n: formatCount(totalItems)
-              })}
+            // The count in bold Lexend, then what it counts in light Lexend, at
+            // one size.
+            <strong style={countStyle}>
+              <span style={countNumberStyle}>{formatCount(totalItems)}</span>
+              {t("firmList.count", { count: totalItems })}
             </strong>
           )
         }
@@ -193,18 +202,21 @@ function LobbyingFirmsTable({
                   <col style={{ width: 160 }} />
                   <col style={{ width: 120 }} />
                   <col style={{ width: 190 }} />
-                  <col style={{ width: 100 }} />
+                  {/* Room for "Activities" with its arrow, sorted and at the
+                      headers' 900 weight. */}
+                  <col style={{ width: 140 }} />
                 </colgroup>
                 <thead>
                   <tr>
                     <SortTh
                       label={t("fields.firmName")}
+                      byName
                       sortKey="name"
                       current={sortKey}
                       dir={sortDir}
                       onSort={handleSort}
                     />
-                    <th style={thStyle}>{t("fields.type")}</th>
+                    <th style={thTopStyle}>{t("fields.type")}</th>
                     <SortTh
                       label={t("fields.sessions")}
                       sortKey="sessions"
@@ -236,9 +248,11 @@ function LobbyingFirmsTable({
                           href={`/lobbying/firms/${encodeURIComponent(
                             f.entityNameNorm
                           )}`}
+                          // As the Clients list's names.
                           style={{
                             color: MAPLE_COLORS.primary,
-                            fontWeight: 700
+                            fontWeight: 700,
+                            fontSize: 15
                           }}
                         >
                           {f.entityName}
@@ -305,10 +319,12 @@ function LobbyingFirmsPage(props: FirmsPageProps) {
     <>
       <LobbyingSubnav />
       <Container>
-        <Row className="mt-4 mb-3">
+        {/* The title closer to the filters, the page under it where it was:
+            half the description's 1rem margin moved above the title. */}
+        <Row className="mb-3" style={{ marginTop: "1.875rem" }}>
           <Col>
             <h1>{t("titles.firms")}</h1>
-            <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 14 }}>
+            <p style={{ ...pageIntroStyle, marginBottom: "0.5rem" }}>
               {t("explainers.firms")}
             </p>
           </Col>
@@ -365,4 +381,21 @@ const figureTdStyle: React.CSSProperties = {
   ...listTdStyle,
   fontWeight: 700,
   color: MAPLE_COLORS.textStrong
+}
+
+const countStyle: React.CSSProperties = {
+  // Lexend at its lightest loaded weight (styles/bootstrap.scss).
+  fontFamily: "var(--maple-font-heading)",
+  fontSize: 16,
+  fontWeight: 300,
+  // The label and the count centred on each other.
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "0.3em"
+}
+
+const countNumberStyle: React.CSSProperties = {
+  fontFamily: "var(--maple-font-heading)",
+  fontSize: 16,
+  fontWeight: 700
 }

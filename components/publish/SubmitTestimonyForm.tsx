@@ -23,6 +23,15 @@ import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons"
 const Background = styled.div`
   background: var(--bs-white);
   height: 100%;
+
+  /* The redesign's page grey over the white above, so the steps' white cards
+     stand off it, and the outline buttons white on it. */
+  *:root & {
+    background: var(--bs-body-bg);
+  }
+  *:root & .btn-outline-secondary {
+    --bs-btn-bg: var(--maple-surface-base);
+  }
 `
 
 export const SubmitTestimonyForm = () => {
@@ -61,6 +70,10 @@ const FormContainer = styled.div`
   padding-right: 2rem;
   height: 100%;
   padding-top: 1rem;
+
+  *:root & {
+    background: var(--bs-body-bg);
+  }
 `
 
 const Divider = styled.div`
@@ -164,7 +177,7 @@ const Overview = ({ className }: { className: string }) => {
             )}
           </h1>
           <Divider className="me-5" />
-          <div className="mt-2" style={{ fontWeight: "bolder" }}>
+          <div className="mt-2">
             {copy(
               "submitTestimonyForm.overview.description",
               "ballotQuestion.submitTestimonyForm.overview.description"

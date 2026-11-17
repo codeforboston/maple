@@ -107,7 +107,7 @@ export const YourTestimony = () => {
     <NoteContent>
       <div className="text-center">
         <Image
-          className="px-5"
+          className="px-5 keep-note-art"
           alt=""
           src="/mailbox.svg"
           style={{ transform: "scaleY(0.85)" }}
@@ -134,7 +134,7 @@ export const BallotQuestionYourTestimony = () => {
     <NoteContent>
       <div className="text-center">
         <Image
-          className="px-5"
+          className="px-5 keep-note-art"
           alt=""
           src="/mailbox.svg"
           style={{ transform: "scaleY(0.85)" }}
@@ -163,7 +163,11 @@ export const PublishingToMAPLE = () => {
   return (
     <NoteContent>
       <div className="text-center">
-        <Image className="mx-auto" alt="" src="/computertextblob.svg" />
+        <Image
+          className="mx-auto keep-note-art"
+          alt=""
+          src="/computertextblob.svg"
+        />
       </div>
       <NoteSubtitle>
         {copy(
@@ -171,7 +175,7 @@ export const PublishingToMAPLE = () => {
           "ballotQuestion.submitTestimonyForm.keepNote.rulesHeader"
         )}
       </NoteSubtitle>
-      <ul style={{ color: "var(--bs-blue)" }}>
+      <ul>
         <NoteItem>
           {copy(
             "submitTestimonyForm.keepNote.editLimit",
@@ -204,6 +208,12 @@ const NoteContainer = styled.div`
     flex-direction: column;
     padding: 0rem 0rem 1rem 0rem;
     height: 100%;
+
+    /* A rule down its left, since the form beside it is the same grey
+       (SubmitTestimonyForm.tsx), as dark as the cards' edges. */
+    *:root & {
+      border-left: 1px solid rgba(15, 23, 42, 0.2);
+    }
   `,
   HeaderContainer = styled.h4`
     background: var(--bs-orange);
@@ -218,6 +228,12 @@ const NoteContainer = styled.div`
   `,
   NoteContent = styled.div`
     line-height: normal;
+
+    /* The panel's illustration smaller, so the notes under it come up the
+       page. */
+    *:root & .keep-note-art {
+      max-width: 70%;
+    }
   `,
   NoteItem = styled.li`
     margin-top: 20px;

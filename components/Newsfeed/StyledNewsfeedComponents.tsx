@@ -30,8 +30,7 @@ export const HeaderTitle = styled(Col)`
 export const StyledContainer = styled(Container)`
   max-width: 700px;
   .checkbox {
-    width: 187px;
-    padding: 0px;
+    white-space: nowrap;
     color: var(--maple-brand-primary-strong);
   }
   .checkbox input {

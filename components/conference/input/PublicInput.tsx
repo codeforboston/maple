@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
+import { CardTitle } from "../styles"
 import { ConferenceTestimony } from "components/db"
 import { useInputContext } from "./context"
 import { CosignButton } from "./CosignButton"
@@ -73,15 +74,6 @@ const Section = styled.section`
   ${parked}
 `
 
-const Heading = styled.h2`
-  margin: 12px 0 16px;
-  font-family: var(--maple-font-heading);
-  font-weight: 400;
-  font-size: 1.375rem;
-  line-height: 1.4;
-  color: ${ink.strong};
-`
-
 const Controls = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -104,7 +96,8 @@ const Spot = styled.div`
 
 const Empty = styled.div<{ $after: boolean }>`
   margin-top: ${({ $after }) => ($after ? "20px" : "0")};
-  padding: 22px;
+  /* Taller than its 22px all round. */
+  padding: 44px 22px;
   text-align: center;
   background: var(--maple-surface-base);
   border: 1.5px dashed ${line.strong};
@@ -294,7 +287,7 @@ export function PublicInput({
 
   return (
     <Section id="input">
-      <Heading>{t("input.title")}</Heading>
+      <CardTitle>{t("input.title")}</CardTitle>
       {showFilters && (
         <Controls>
           <AccountTypePicker value={type} onChange={narrowing(setType)} />

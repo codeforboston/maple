@@ -53,7 +53,11 @@ export const InTheNews = () => {
 
   return (
     <LearnLayout width="medium">
-      <LearnBreadcrumb section={t("breadcrumb")} eyebrow={t("common:about")} />
+      <LearnBreadcrumb
+        section={t("breadcrumb")}
+        eyebrow={t("common:about")}
+        withoutHome
+      />
       <LearnHeader
         title={t("title")}
         subhead={t("subhead")}

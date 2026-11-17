@@ -74,7 +74,7 @@ const Signing = styled.p`
   gap: 5px 8px;
   margin: 0;
   font-family: var(--maple-font-heading);
-  font-weight: 600;
+  font-weight: 400;
   font-size: 1rem;
   line-height: 1.3;
   color: ${ink.strong};
@@ -191,12 +191,13 @@ const Leave = styled(Muted)`
   }
 `
 
-/** Where the cosign will land: the card's own pieces, without its date and
- * actions, since nothing here is filed yet. */
+/** Where the cosign will land: the card's own pieces, in its type (Entry.tsx),
+ * without its date and actions, since nothing here is filed yet. */
 const Preview = styled.div`
   display: flex;
   flex-shrink: 0;
   gap: 14px;
+  font-family: var(--maple-font-body);
   margin-bottom: 20px;
   padding: 14px 16px 20px;
   background: var(--maple-surface-base);
@@ -204,22 +205,24 @@ const Preview = styled.div`
   border-radius: 8px;
 `
 
-const PreviewDisc = styled(Disc)`
-  width: 36px;
-  height: 36px;
-  border: 0;
-`
+const PreviewDisc = Disc
 
 const PreviewName = styled.p`
+  /* Names in Lexend, as the cosign card's, in Nunito cards too. */
+  font-family: var(--maple-font-heading);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
   margin: 0;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: 0.9375rem;
+  font-weight: 400;
   line-height: 1;
   color: ${ink.strong};
+
+  .position-chip {
+    font-size: 0.75rem;
+  }
 `
 
 const PreviewText = styled.div`

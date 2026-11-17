@@ -74,6 +74,12 @@ const Option = styled.button<{ $on: boolean; $position: ConferencePosition }>`
   }}
 `
 
+/** A position's label, in Lexend, as the page's headings are; what it
+ * means under it (OptionHelp) keeps the panel's type. */
+const OptionTitle = styled.span`
+  font-family: var(--maple-font-heading);
+`
+
 /** What a position means, under its label where it needs saying. */
 const OptionHelp = styled.span`
   display: block;
@@ -464,7 +470,7 @@ export function InputForm({
                   aria-pressed={p === position}
                   onClick={() => setPosition(p)}
                 >
-                  {t(`input.position.${p}.long`)}
+                  <OptionTitle>{t(`input.position.${p}.long`)}</OptionTitle>
                   {help && <OptionHelp>{help}</OptionHelp>}
                 </Option>
               )
