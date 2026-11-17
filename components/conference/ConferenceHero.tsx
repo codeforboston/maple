@@ -7,6 +7,7 @@ import { Internal, maple } from "../links"
 import { ConferenceDrawer, ConferencePopover } from "./ConferencePicker"
 import { useMatches, useRailHidden } from "./hooks"
 import {
+  MOBILE_LAYOUT,
   PageColumn,
   PHONE_GUTTER,
   RAIL_HIDDEN,
@@ -408,6 +409,12 @@ const ExplorerLink = styled(Internal)`
   &:hover,
   &:focus-visible {
     color: var(--maple-brand-primary-strong);
+  }
+
+  /* Not in the mobile layout, where the explorer isn't available
+     (ConferenceExplorer.tsx). */
+  @media ${MOBILE_LAYOUT} {
+    display: none;
   }
 `
 

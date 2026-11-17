@@ -17,6 +17,7 @@ import {
 import { cells } from "./map/geometry"
 import {
   byActivity,
+  isShown,
   ConfereeView,
   ConferenceIndexProps,
   ConferenceLanding,
@@ -40,7 +41,11 @@ const summarize = (c: Conference): ConferenceSummary => ({
   reportBillId: c.reportBillId ?? null
 })
 
-/** Every conference as the rail lists them: active first, then by name. */
+/** Every conference in the court the site shows. */
+const listShown = async (court: number) =>
+  (await listConferences(court)).filter(isShown)
+
+/** Conferences as the rail lists them: active first, then by name. */
 const railOf = (all: Conference[]) => all.map(summarize).sort(byActivity)
 
 /** The member's cell on the map: their district id, or null where the map has
@@ -117,7 +122,7 @@ export async function loadConferencePage(
   id: string
 ): Promise<ConferencePageProps | null> {
   // The rail needs every conference, and the page's own is among them.
-  return pageFor(court, await listConferences(court), id)
+  return pageFor(court, await listShown(court), id)
 }
 
 /** Where the landing's button goes: the first covered conference in the
@@ -125,7 +130,7 @@ export async function loadConferencePage(
 export async function loadLanding(
   court: number
 ): Promise<ConferenceLanding | null> {
-  const rail = railOf(await listConferences(court))
+  const rail = railOf(await listShown(court))
   const landing = rail.find(c => c.covered) ?? rail[0]
   return landing ? { court: landing.court, id: landing.id } : null
 }
@@ -204,7 +209,7 @@ export async function loadConferenceIndex(
 ): Promise<ConferenceIndexProps> {
   // The index doesn't depend on the conferences, so read both at once.
   const [all, index] = await Promise.all([
-    listConferences(court),
+    listShown(court),
     court === currentGeneralCourt ? getMemberSearchIndex() : undefined
   ])
   const members = index
@@ -222,7 +227,7 @@ export async function loadConferenceForBill(
   billId: string
 ): Promise<ConferenceSummary | null> {
   const c = await getConferenceForBill(court, billId)
-  return c ? summarize(c) : null
+  return c && isShown(c) ? summarize(c) : null
 }
 
 /** The conference a hearing belongs to, by the hearing page's numeric id. */
@@ -235,5 +240,5 @@ export async function loadConferenceForHearing(
     Number(generalCourtNumber),
     `hearing-${hearingId}`
   )
-  return c ? summarize(c) : null
+  return c && isShown(c) ? summarize(c) : null
 }

@@ -1,6 +1,9 @@
-import { useEffect, useRef } from "react"
+import { ReactNode, useEffect, useRef } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons"
+import { isSitting } from "../../functions/src/shared"
 import { formatBillId } from "../formatting"
 import { Internal, maple } from "../links"
 import { conferenceName, ConferenceSummary } from "./types"
@@ -80,7 +83,7 @@ const RailRow = styled(Internal)<{
     display: block;
     font-size: 0.875rem;
     line-height: 1.35;
-    font-weight: ${({ $on }) => ($on ? 600 : 400)};
+    font-weight: ${({ $on }) => ($on ? 600 : 300)};
     /* An uncovered conference's name stays muted even while it is the one
        being read. */
     color: ${({ $on, $covered }) =>
@@ -136,10 +139,12 @@ export function BillLine({
 export function ConferenceRail({
   conferences,
   current,
+  fold,
   className
 }: {
   conferences: ConferenceSummary[]
   current: string
+  fold: ClosedFold
   className?: string
 }) {
   const { t } = useTranslation("conferences")
@@ -163,32 +168,121 @@ export function ConferenceRail({
   }, [current])
   return (
     <Nav ref={nav} aria-label={t("in_conference")} className={className}>
-      <RailList conferences={conferences} current={current} />
+      <RailList conferences={conferences} current={current} fold={fold} />
     </Nav>
   )
 }
 
 /** The conferences the rail lists, and the picker that stands in for it
- * (ConferencePicker.tsx): enacted ones left out, even the one being read;
- * those not in the trial ("Not covered") at the bottom, each group in its
- * order. */
-export const railConferences = (conferences: ConferenceSummary[]) =>
-  conferences
-    .filter(c => c.status !== "enacted")
-    .sort((a, b) => Number(!a.covered) - Number(!b.covered))
+ * (ConferencePicker.tsx): those still sitting, then the rest, past, folded
+ * under them (PastFold); in each, those not in the trial ("Not covered") at
+ * the bottom, each group in its order. */
+export const railConferences = (conferences: ConferenceSummary[]) => {
+  const sorted = [...conferences].sort(
+    (a, b) => Number(!a.covered) - Number(!b.covered)
+  )
+  return {
+    sitting: sorted.filter(isSitting),
+    past: sorted.filter(c => !isSitting(c))
+  }
+}
 
-/** The rail's rows (railConferences). */
+/** Whether the past conferences are listed at all, in their fold under the
+ * ones still sitting (PastFold), in the rail and the picker's lists alike.
+ * Off for now: only the conferences still sitting are listed, so none
+ * enacted shows. */
+export const SHOW_PAST_CONFERENCES = false
+
+/** Whether the group of past conferences is open, and how the reader opens
+ * or folds it. The page holds it (ConferenceDetails.tsx), so the rail and
+ * the picker share it and it lasts between conferences. */
+export type ClosedFold = {
+  open: boolean
+  onToggle: (open: boolean) => void
+}
+
+/** The past conferences, folded under the ones still sitting. */
+const Closed = styled.details`
+  margin-top: 0.75rem;
+
+  > summary {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    /* In line with the rows' names (RailRow): their 3px edge and 1rem. */
+    padding: 0.4375rem 0.5rem 0.4375rem calc(1rem + 3px);
+    border-radius: 0 var(--maple-radius-md) var(--maple-radius-md) 0;
+    font-size: 0.75rem;
+    line-height: 1.35;
+    color: var(--maple-text-muted);
+    cursor: pointer;
+    list-style: none;
+    transition: background-color 120ms ease;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+    &:focus-visible {
+      outline: 3px solid var(--maple-focus-ring);
+      outline-offset: -3px;
+    }
+    .chevron {
+      font-size: 0.625rem;
+      transition: transform 150ms ease;
+    }
+  }
+  &[open] > summary .chevron {
+    transform: rotate(180deg);
+  }
+  > ul {
+    margin-top: 2px;
+  }
+`
+
+/** The fold the past conferences sit in, for the rail and the picker's
+ * lists alike. */
+export function PastFold({
+  count,
+  fold,
+  children
+}: {
+  count: number
+  fold: ClosedFold
+  children: ReactNode
+}) {
+  const { t } = useTranslation("conferences")
+  return (
+    <Closed
+      open={fold.open}
+      onToggle={e => fold.onToggle(e.currentTarget.open)}
+    >
+      <summary>
+        {t("rail_closed", { count })}
+        <FontAwesomeIcon className="chevron" icon={faChevronDown} />
+      </summary>
+      {children}
+    </Closed>
+  )
+}
+
+/** The rail's rows (railConferences): those still sitting, then the past
+ * ones in their fold. */
 export function RailList({
   conferences,
-  current
+  current,
+  fold
 }: {
   conferences: ConferenceSummary[]
   current: string
+  fold: ClosedFold
 }) {
-  const shown = railConferences(conferences)
-  return (
+  const { sitting, past } = railConferences(conferences)
+  const rows = (cs: ConferenceSummary[]) => (
     <List>
-      {shown.map(c => (
+      {cs.map(c => (
         <li key={c.id}>
           <RailRow
             href={maple.conference(c)}
@@ -205,5 +299,15 @@ export function RailList({
         </li>
       ))}
     </List>
+  )
+  return (
+    <>
+      {rows(sitting)}
+      {SHOW_PAST_CONFERENCES && past.length > 0 && (
+        <PastFold count={past.length} fold={fold}>
+          {rows(past)}
+        </PastFold>
+      )}
+    </>
   )
 }

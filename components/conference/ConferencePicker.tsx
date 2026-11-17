@@ -4,7 +4,13 @@ import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { Offcanvas } from "../bootstrap"
 import { Internal, maple } from "../links"
-import { BillLine, railConferences } from "./ConferenceRail"
+import {
+  BillLine,
+  ClosedFold,
+  PastFold,
+  railConferences,
+  SHOW_PAST_CONFERENCES
+} from "./ConferenceRail"
 import { useMatches, useRailHidden } from "./hooks"
 import { List } from "./input/icons"
 import { PHONE_GUTTER, SHEET } from "./styles"
@@ -116,6 +122,15 @@ const Row = styled(Internal)<{
   }
 `
 
+/** The fold the page holds where there is one (ConferenceDetails.tsx), so
+ * the list's past conferences open as the rail's do; on its own (the
+ * Conference Committees page's button, ConferenceHero.tsx), folded until the
+ * reader opens it. */
+function useFold(fold?: ClosedFold): ClosedFold {
+  const [open, setOpen] = useState(false)
+  return fold ?? { open, onToggle: setOpen }
+}
+
 /** The drawer risen from the screen's foot (ConferenceDrawer's bottom):
  * nearly all the way up, nine tenths of the screen, a sliver of the page
  * left over it, its top corners rounded as a sheet's. */
@@ -135,40 +150,52 @@ const Drawer = styled(Offcanvas)`
 export function ConferenceDrawer({
   conferences,
   current,
+  fold: held,
   show,
   onHide
 }: {
   conferences: ConferenceSummary[]
   current?: string
+  fold?: ClosedFold
   show: boolean
   onHide: () => void
 }) {
   const { t } = useTranslation("conferences")
+  const fold = useFold(held)
+  const { sitting, past } = railConferences(conferences)
+  const rows = (cs: ConferenceSummary[]) => (
+    <ul>
+      {cs.map(c => (
+        <li key={c.id}>
+          <Row
+            href={maple.conference(c)}
+            aria-current={c.id === current ? "page" : undefined}
+            $on={c.id === current}
+            $filed={c.status === "reportFiled"}
+            $covered={c.covered}
+            onClick={onHide}
+          >
+            <span className="name">{conferenceName(c)}</span>
+            <span className="bills">
+              <BillLine c={c} />
+            </span>
+          </Row>
+        </li>
+      ))}
+    </ul>
+  )
   return (
     <Drawer show={show} onHide={onHide} placement="bottom">
       <Offcanvas.Header closeButton>
         <DrawerTitle>{t("index_title")}</DrawerTitle>
       </Offcanvas.Header>
       <DrawerBody aria-label={t("in_conference")}>
-        <ul>
-          {railConferences(conferences).map(c => (
-            <li key={c.id}>
-              <Row
-                href={maple.conference(c)}
-                aria-current={c.id === current ? "page" : undefined}
-                $on={c.id === current}
-                $filed={c.status === "reportFiled"}
-                $covered={c.covered}
-                onClick={onHide}
-              >
-                <span className="name">{conferenceName(c)}</span>
-                <span className="bills">
-                  <BillLine c={c} />
-                </span>
-              </Row>
-            </li>
-          ))}
-        </ul>
+        {rows(sitting)}
+        {SHOW_PAST_CONFERENCES && past.length > 0 && (
+          <PastFold count={past.length} fold={fold}>
+            {rows(past)}
+          </PastFold>
+        )}
       </DrawerBody>
     </Drawer>
   )
@@ -233,17 +260,42 @@ const Popover = styled.nav`
 export function ConferencePopover({
   conferences,
   current,
+  fold: held,
   anchor,
   onClose,
   align = "start"
 }: {
   conferences: ConferenceSummary[]
   current?: string
+  fold?: ClosedFold
   anchor: RefObject<HTMLElement | null>
   onClose: () => void
   align?: "start" | "end"
 }) {
   const { t } = useTranslation("conferences")
+  const fold = useFold(held)
+  const { sitting, past } = railConferences(conferences)
+  const rows = (cs: ConferenceSummary[]) => (
+    <ul>
+      {cs.map(c => (
+        <li key={c.id}>
+          <Row
+            href={maple.conference(c)}
+            aria-current={c.id === current ? "page" : undefined}
+            $on={c.id === current}
+            $filed={c.status === "reportFiled"}
+            $covered={c.covered}
+            onClick={onClose}
+          >
+            <span className="name">{conferenceName(c)}</span>
+            <span className="bills">
+              <BillLine c={c} />
+            </span>
+          </Row>
+        </li>
+      ))}
+    </ul>
+  )
   const popover = useRef<HTMLElement>(null)
   const [at, setAt] = useState<{
     left?: number
@@ -304,25 +356,12 @@ export function ConferencePopover({
   if (!at) return null
   return createPortal(
     <Popover ref={popover} aria-label={t("in_conference")} style={at}>
-      <ul>
-        {railConferences(conferences).map(c => (
-          <li key={c.id}>
-            <Row
-              href={maple.conference(c)}
-              aria-current={c.id === current ? "page" : undefined}
-              $on={c.id === current}
-              $filed={c.status === "reportFiled"}
-              $covered={c.covered}
-              onClick={onClose}
-            >
-              <span className="name">{conferenceName(c)}</span>
-              <span className="bills">
-                <BillLine c={c} />
-              </span>
-            </Row>
-          </li>
-        ))}
-      </ul>
+      {rows(sitting)}
+      {SHOW_PAST_CONFERENCES && past.length > 0 && (
+        <PastFold count={past.length} fold={fold}>
+          {rows(past)}
+        </PastFold>
+      )}
     </Popover>,
     document.body
   )
@@ -337,10 +376,12 @@ export function ConferencePopover({
  */
 export function ConferenceSwitcher({
   conferences,
-  current
+  current,
+  fold
 }: {
   conferences: ConferenceSummary[]
   current: ConferenceSummary
+  fold: ClosedFold
 }) {
   const { t } = useTranslation("conferences")
   const [open, setOpen] = useState(false)
@@ -377,6 +418,7 @@ export function ConferenceSwitcher({
         <ConferenceDrawer
           conferences={conferences}
           current={current.id}
+          fold={fold}
           show={open && sheet}
           onHide={close}
         />
@@ -385,6 +427,7 @@ export function ConferenceSwitcher({
         <ConferencePopover
           conferences={conferences}
           current={current.id}
+          fold={fold}
           anchor={button}
           onClose={close}
         />

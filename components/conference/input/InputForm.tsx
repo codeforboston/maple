@@ -1,11 +1,16 @@
-import { RefObject, useCallback, useEffect, useRef, useState } from "react"
-import { Timestamp } from "firebase/firestore"
+import {
+  ComponentProps,
+  ReactNode,
+  RefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from "react"
 import { Trans, useTranslation } from "next-i18next"
 import styled, { keyframes } from "styled-components"
-import { useAuth } from "components/auth"
 import {
   ConferencePosition,
-  ConferenceTestimony,
   hasDraftChanged,
   Testimony,
   UseEditConferenceTestimony,
@@ -13,12 +18,14 @@ import {
   WorkingDraft
 } from "components/db"
 import { Internal } from "components/links"
-import { Entry } from "./Entry"
+import { hasLegislators } from "functions/src/conferenceLetters/letter"
+import { LetterReview, NoLine } from "./Review"
 import { conferencePositions, positionColours } from "./positions"
 import { brand, ink, line, red, wash } from "./tokens"
 import { useAutosave } from "./useAutosave"
 
-export type Step = "compose" | "review"
+/** The panel's steps. Only a cosign is agreed to first. */
+export type Step = "confirm" | "write" | "review"
 
 export const Body = styled.div`
   display: flex;
@@ -65,6 +72,20 @@ const Option = styled.button<{ $on: boolean; $position: ConferencePosition }>`
       : `font-weight: 300; background: #fdfdff; border: 1px solid ${line.default}; color: ${ink.strong};
          &:hover { background: ${wash.default}; border-color: ${line.strong}; }`
   }}
+`
+
+/** A position's label, in Lexend, as the page's headings are; what it
+ * means under it (OptionHelp) keeps the panel's type. */
+const OptionTitle = styled.span`
+  font-family: var(--maple-font-heading);
+`
+
+/** What a position means, under its label where it needs saying. */
+const OptionHelp = styled.span`
+  display: block;
+  margin-top: 2px;
+  font-size: 0.75rem;
+  font-weight: 300;
 `
 
 const ask = keyframes`
@@ -154,12 +175,6 @@ export const Primary = styled.button`
   }
 `
 
-const PreviewBox = styled.div`
-  background: var(--maple-surface-base);
-  border: 1px solid ${line.default};
-  border-radius: 16px;
-`
-
 export const Rules = styled.ul`
   margin: 0;
   padding-left: 16px;
@@ -174,26 +189,24 @@ export const Rules = styled.ul`
   }
 `
 
-const RuleLabel = styled.p`
-  margin: 0 0 8px;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: ${ink.mid};
-`
-
 export const Problem = styled.p`
   margin: 12px 0 0;
   font-size: 0.75rem;
   color: ${red.refused};
 `
 
-const Hint = styled.p`
+export const Hint = styled.p`
   margin: 0;
   text-align: right;
   font-size: 0.75rem;
   color: ${ink.mid};
+`
+
+/** Where posted input goes, under the field it is written in. */
+const Delivery = styled(Hint)`
+  margin-top: 8px;
+  text-align: left;
+  line-height: 1.5;
 `
 
 /** A field that asks for what is missing: pressed on without it, the field
@@ -216,7 +229,7 @@ export function useAsk(field: RefObject<HTMLElement | null>) {
 }
 
 /** The edit reason a republished filing needs, as it does everywhere else. */
-export function ReasonField({
+function ReasonField({
   value,
   onChange
 }: {
@@ -253,13 +266,99 @@ export function ConductRule() {
   )
 }
 
+/** The step before posting, for input and cosigns alike: where it goes, the
+ * letter as it will be sent, the reason when it changes what was posted, and
+ * the way to post it. */
+export function ReviewStep({
+  edit,
+  ready,
+  posting,
+  problem,
+  reason,
+  onReason,
+  onBack,
+  onCancel,
+  onPost,
+  ...letter
+}: Omit<ComponentProps<typeof LetterReview>, "testimonyId"> & {
+  /** The user's draft and publication on the conference. */
+  edit: UseEditConferenceTestimony
+  /** There is something to post: input's words, or a cosign with or without. */
+  ready: boolean
+  posting: boolean
+  problem?: ReactNode
+  reason: string
+  onReason: (reason: string) => void
+  onBack: () => void
+  onCancel: () => void
+  onPost: () => void
+}) {
+  const { t } = useTranslation("conferences")
+  const { profile } = useProfile()
+  // Whether the letter goes anywhere, from the profile alone.
+  const sends = hasLegislators(profile ?? {})
+  // Republishing needs a reason for the change, as it does everywhere else.
+  const editing = !!edit.publication
+  const changed =
+    !editing ||
+    hasDraftChanged(
+      {
+        position: letter.position,
+        content: letter.content
+      } as unknown as WorkingDraft,
+      edit.publication as unknown as Testimony
+    )
+  const needsReason = editing && changed
+  const canPost =
+    ready &&
+    changed &&
+    (!needsReason || !!reason.trim()) &&
+    !posting &&
+    !edit.publishTestimony.loading
+  const cosign = !!letter.cosign
+  return (
+    <Body>
+      <Scroll>
+        {cosign && !letter.content.trim() && <NoLine onAdd={onBack} />}
+        <LetterReview {...letter} testimonyId={edit.publication?.id} />
+        {needsReason && <ReasonField value={reason} onChange={onReason} />}
+        {problem}
+      </Scroll>
+      <div>
+        {!ready && <Hint>{t("input.empty_hint")}</Hint>}
+        <Actions>
+          <Quiet type="button" onClick={onBack} style={{ marginRight: "auto" }}>
+            {t("input.back")}
+          </Quiet>
+          <Muted type="button" onClick={onCancel}>
+            {t("input.cancel")}
+          </Muted>
+          <Primary type="button" disabled={!canPost} onClick={onPost}>
+            {t(
+              cosign
+                ? sends
+                  ? "review.cosign_and_send"
+                  : "input.cosign"
+                : sends
+                ? "review.post_and_send"
+                : "input.post"
+            )}
+          </Primary>
+        </Actions>
+      </div>
+    </Body>
+  )
+}
+
 /**
  * Writing, reviewing and posting testimony on a conference, in the panel's
- * three steps. The draft is the user's own, kept as they type and published
+ * two steps. The draft is the user's own, kept as they type and published
  * from the review step.
  */
 export function InputForm({
-  uid,
+  court,
+  conferenceId,
+  conferees,
   edit,
   subject,
   step,
@@ -267,7 +366,10 @@ export function InputForm({
   onCancel,
   onPosted
 }: {
-  uid: string
+  court: number
+  conferenceId: string
+  /** Initials of the conferees, for the weekly update's row. */
+  conferees: string[]
   /** The user's draft and publication on the conference. */
   edit: UseEditConferenceTestimony
   subject: string
@@ -278,7 +380,6 @@ export function InputForm({
   onPosted: () => void
 }) {
   const { t } = useTranslation("conferences")
-  const { claims } = useAuth()
   const { profile } = useProfile()
   const { saveDraft, publishTestimony, discardDraft } = edit
 
@@ -321,7 +422,12 @@ export function InputForm({
         editReason: f.reason || undefined
       }),
     idle: f => !f.content.trim(),
-    onPosted
+    // Publishing clears the draft's reason; the form outlives the post, behind
+    // the closed panel, so it clears its own for the next edit too.
+    onPosted: () => {
+      setReason("")
+      onPosted()
+    }
   })
 
   const written = content.trim().length > 0
@@ -343,53 +449,38 @@ export function InputForm({
     saveDraft.error ||
     publishTestimony.error ||
     discardDraft.error
-  // Republishing needs a reason for the change, as it does everywhere else.
-  const editing = !!edit.publication
-  const changed =
-    !editing ||
-    hasDraftChanged(
-      { position, content } as unknown as WorkingDraft,
-      edit.publication as unknown as Testimony
-    )
-  const needsReason = editing && changed
   const showDelete = !!edit.draft && save === "none" && !dirty
 
   const name = profile?.fullName || t("input.anonymous")
-  const entry = {
-    authorUid: uid,
-    id: "preview",
-    position,
-    content,
-    authorRole: claims?.role ?? "user",
-    authorDisplayName: name,
-    fullName: name,
-    publishedAt: Timestamp.now()
-  } as unknown as ConferenceTestimony
 
-  if (step === "compose")
+  if (step !== "review")
     return (
       <Body>
         <Scroll>
           <Label>{t("input.position_label")}</Label>
           <Options>
-            {conferencePositions.map(p => (
-              <Option
-                key={p}
-                type="button"
-                $on={p === position}
-                $position={p}
-                aria-pressed={p === position}
-                onClick={() => setPosition(p)}
-              >
-                {t(`input.position.${p}.long`)}
-              </Option>
-            ))}
+            {conferencePositions.map(p => {
+              const help = t(`input.position.${p}.help`, { defaultValue: "" })
+              return (
+                <Option
+                  key={p}
+                  type="button"
+                  $on={p === position}
+                  $position={p}
+                  aria-pressed={p === position}
+                  onClick={() => setPosition(p)}
+                >
+                  <OptionTitle>{t(`input.position.${p}.long`)}</OptionTitle>
+                  {help && <OptionHelp>{help}</OptionHelp>}
+                </Option>
+              )
+            })}
           </Options>
           <Label>{t("input.body_label")}</Label>
           <Field
             ref={field}
             value={content}
-            placeholder={t("input.prompt")}
+            placeholder={t(`input.position.${position}.prompt`)}
             $refused={ask.refused}
             $asking={ask.asking}
             onAnimationEnd={ask.asked}
@@ -398,6 +489,20 @@ export function InputForm({
               setContent(e.target.value)
             }}
           />
+          <Delivery>
+            {hasLegislators(profile ?? {}) ? (
+              t("input.delivery_note")
+            ) : (
+              <Trans t={t} i18nKey="input.delivery_note_weekly">
+                When you post, MAPLE will include your input in the weekly
+                update to the conferees.
+                <Internal href="/edit-profile/about-you">
+                  Add your representative and senator to your profile
+                </Internal>
+                and MAPLE will email them your input too.
+              </Trans>
+            )}
+          </Delivery>
           {failed && <Problem role="alert">{t("input.error")}</Problem>}
         </Scroll>
         <Actions>
@@ -421,56 +526,23 @@ export function InputForm({
     )
 
   return (
-    <Body>
-      <Scroll>
-        <Label>
-          {t("input.preview_label")}{" "}
-          <em style={{ fontWeight: 400, color: ink.mid }}>
-            {t("input.preview_on", { subject })}
-          </em>
-        </Label>
-        <PreviewBox>
-          <Entry testimony={entry} bare />
-        </PreviewBox>
-        <div style={{ marginTop: 20 }}>
-          <RuleLabel>{t("input.rules_label")}</RuleLabel>
-          <Rules>
-            <li>{t("input.rule_public")}</li>
-            <li>{t("input.rule_revise")}</li>
-            <ConductRule />
-          </Rules>
-        </div>
-        {needsReason && <ReasonField value={reason} onChange={setReason} />}
-        {failed && <Problem role="alert">{t("input.error")}</Problem>}
-      </Scroll>
-      <div>
-        {!written && <Hint>{t("input.empty_hint")}</Hint>}
-        <Actions>
-          <Quiet
-            type="button"
-            onClick={() => onStep("compose")}
-            style={{ marginRight: "auto" }}
-          >
-            {t("input.back")}
-          </Quiet>
-          <Muted type="button" onClick={onCancel}>
-            {t("input.cancel")}
-          </Muted>
-          <Primary
-            type="button"
-            disabled={
-              !written ||
-              !changed ||
-              (needsReason && !reason.trim()) ||
-              posting ||
-              publishTestimony.loading
-            }
-            onClick={post}
-          >
-            {t("input.post")}
-          </Primary>
-        </Actions>
-      </div>
-    </Body>
+    <ReviewStep
+      edit={edit}
+      court={court}
+      conferenceId={conferenceId}
+      conferees={conferees}
+      author={name}
+      conference={subject}
+      position={position}
+      content={content}
+      ready={written}
+      posting={posting}
+      problem={failed && <Problem role="alert">{t("input.error")}</Problem>}
+      reason={reason}
+      onReason={setReason}
+      onBack={() => onStep("write")}
+      onCancel={onCancel}
+      onPost={post}
+    />
   )
 }

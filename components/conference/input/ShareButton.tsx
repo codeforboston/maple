@@ -1,12 +1,11 @@
 import { Button } from "components/bootstrap"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
-import { LAYOUT_WIDE, RAIL_COMPACT } from "../styles"
+import { LAYOUT_WIDE } from "../styles"
 import { Plus } from "./icons"
 import { brand } from "./tokens"
 
-/* The site's primary button (MAPLE blue, styles/globals.css), set in Lexend.
-   && lifts these over Bootstrap's own .btn rules whatever order the
+/* The site's primary button (MAPLE blue, styles/globals.css). && lifts these over Bootstrap's own .btn rules whatever order the
    stylesheets load in. */
 const ShareCta = styled(Button)`
   && {
@@ -17,19 +16,19 @@ const ShareCta = styled(Button)`
     /* At the top of the title's first line beside the 29.7px title, and
        2px down beside the 36px one in the wide layout (below). */
     margin-top: 0;
-    /* 14px, 8px above and below and 24px a side (20px on the left, where
-       the plus is). */
-    padding: 0.5rem 1.5rem 0.5rem 1.25rem;
+    /* Set like the Follow button beside it (components/shared/FollowButton.tsx,
+       styles/globals.css): 14px in the row's face, medium, a step bolder
+       below 992px, 6px above and below (TitleShare in ConferenceDetails.tsx
+       sets Follow's to match) and 16px a side. */
+    padding: 0.375rem 1rem;
     font-size: 0.875rem;
-    font-family: var(--maple-font-heading);
+    font-family: inherit;
+    font-weight: 500;
     white-space: nowrap;
   }
-  /* Beside the compact rail (RAIL_COMPACT, styles.ts), narrower: 16px a
-     side, 12px on the left, where the plus is. */
-  @media ${RAIL_COMPACT} {
+  @media (max-width: 991.98px) {
     && {
-      padding-left: 0.75rem;
-      padding-right: 1rem;
+      font-weight: 600;
     }
   }
   /* In the wide layout (LAYOUT_WIDE, styles.ts), beside the 36px title: 2px

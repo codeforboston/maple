@@ -9,14 +9,21 @@ import {
 } from "react"
 import { useTranslation } from "next-i18next"
 import { useRouter } from "next/router"
-import { hasReport, takesTestimony } from "../../functions/src/shared"
+import {
+  hasReport,
+  isSitting,
+  takesTestimony
+} from "../../functions/src/shared"
 import { uncosignable } from "../../functions/src/testimony/cosign"
 import styled from "styled-components"
 import { ConferenceByline } from "./ConferenceByline"
 import { ConferenceCommittee } from "./ConferenceCommittee"
 import { ConferenceDifferences } from "./ConferenceDifferences"
+import { FollowConferenceTopicButton } from "../shared/FollowButton"
+import { useConferenceFollow } from "./FollowConference"
+import { BackChevron } from "./BackToConferences"
 import { ConferenceSwitcher } from "./ConferencePicker"
-import { ConferenceRail } from "./ConferenceRail"
+import { ClosedFold, ConferenceRail } from "./ConferenceRail"
 import { ConferenceResolution, OutcomeFilter } from "./ConferenceResolution"
 import { ConferenceTabs, TABS_H } from "./ConferenceTabs"
 import { ConferenceText } from "./ConferenceText"
@@ -32,7 +39,8 @@ import { useAppDispatch } from "../hooks"
 import { Internal, maple, siteUrl } from "../links"
 import { useFitText, usePhone, usePinnedNavbar, useRailLift } from "./hooks"
 import { InputContext } from "./input/context"
-import { CosignForm, CosignStep } from "./input/CosignForm"
+import { initialsOf } from "./input/accounts"
+import { CosignForm } from "./input/CosignForm"
 import { CosignLetter } from "./input/CosignLetter"
 import { InputForm, Step } from "./input/InputForm"
 import { Panel, usePanelWidth } from "./input/Panel"
@@ -40,13 +48,11 @@ import { PublicInput } from "./input/PublicInput"
 import { ShareButton, ShareFab } from "./input/ShareButton"
 import { useFollowedAuthors } from "./input/useFollowedAuthors"
 import { Close } from "./input/Close"
-import { ChevronLeft, X } from "./input/icons"
+import { X } from "./input/icons"
 import { jumpToSection } from "./navbar"
 import {
   COMMITTEE_PAGE_MAX,
-  FULL_LAYOUT,
   MOBILE_LAYOUT,
-  mobileIcon,
   Notice,
   PageColumn,
   PHONE_GUTTER,
@@ -55,7 +61,12 @@ import {
   RAIL_SHOWN,
   Title
 } from "./styles"
-import { conferenceName, ConferencePageProps, ConferenceSummary } from "./types"
+import {
+  conferenceName,
+  ConferencePageProps,
+  ConferenceSummary,
+  ConfereeView
+} from "./types"
 
 /** The shared column, widened once the rail sits beside it, its content
  * inside the column's 2rem a side. Doubled (&&) so it outranks PageColumn's
@@ -137,8 +148,21 @@ const TitleRow = styled.div`
   }
 `
 
-/** The way to share input at the title's end, from md (TitleRow). */
+/** Following the conference and the way to share input, at the title's
+ * end, from md (TitleRow). */
 const TitleShare = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  /* The Follow button (components/shared/FollowButton.tsx) 6px above and
+     below, as Share your input is (ShareButton.tsx). !important outranks
+     its py-1, which is !important itself. */
+  && .follow-button .btn {
+    padding-top: 0.375rem !important;
+    padding-bottom: 0.375rem !important;
+  }
+
   @media ${RAIL_HIDDEN} {
     display: none;
   }
@@ -162,33 +186,6 @@ const TitleCell = styled.div`
     grid-template-columns: 26px minmax(0, 1fr) 26px;
     align-items: center;
     gap: 8px;
-  }
-`
-
-/** On mobile, the way back to Conference Home before the title, standing in
- * for the way back's row over the page (BackToConferences.tsx): a large
- * chevron (32px) in the title's blue (mobileIcon), held at its size beside a
- * long title. Only as wide as the icon, 44px tall to tap, and drawn a
- * little out over the page's edge so the chevron itself starts 6px in. */
-const BackChevron = styled(Internal)`
-  ${mobileIcon}
-  flex: none;
-
-  /* Only in the mobile layout; from md, the way back's own row
-     (BackToConferences). */
-  @media ${FULL_LAYOUT} {
-    display: none;
-  }
-  width: 32px;
-  margin-left: -6px;
-  border-radius: var(--maple-radius-md);
-
-  &:hover {
-    color: var(--maple-brand-primary);
-  }
-  &:focus-visible {
-    outline: 2px solid var(--maple-focus-ring);
-    outline-offset: 0;
   }
 `
 
@@ -344,10 +341,29 @@ const RESOLVED_LABELS = { decided: "tab_resolved" }
  * that the title opens it.
  */
 export function ConferenceDetails(props: ConferencePageProps) {
+  const fold = useClosedFold(props.conference)
   // Keyed so moving to another conference starts clean: the panel's draft hook
   // is fixed to the conference it first mounted on, and would keep filing on
   // the old one.
-  return <Details key={props.conference.id} {...props} />
+  return <Details key={props.conference.id} {...props} fold={fold} />
+}
+
+/**
+ * Whether the rail's group of past conferences is open (PastFold,
+ * ConferenceRail.tsx), held above the keyed page so it lasts from one
+ * conference to the next. It starts open only on a conference in the group,
+ * and opens on arriving at one, so the conference being read is never folded
+ * away; otherwise it stays as the reader left it.
+ */
+function useClosedFold(conference: ConferenceSummary): ClosedFold {
+  const closed = !isSitting(conference)
+  const [open, setOpen] = useState(closed)
+  const [at, setAt] = useState(conference.id)
+  if (at !== conference.id) {
+    setAt(conference.id)
+    if (closed) setOpen(true)
+  }
+  return { open, onToggle: setOpen }
 }
 
 function Details({
@@ -358,8 +374,9 @@ function Details({
   gist,
   differences,
   similarities,
-  testimonyCount
-}: ConferencePageProps) {
+  testimonyCount,
+  fold
+}: ConferencePageProps & { fold: ClosedFold }) {
   // The page, which holds the rail and the main column; usePinnedNavbar and
   // useRailLift both measure it.
   const top = useRef<HTMLDivElement>(null)
@@ -378,11 +395,10 @@ function Details({
   )
   const byId = useMemo(() => new Map(items.map(x => [x.id, x])), [items])
   const [open, setOpen] = useState(false)
-  const [step, setStep] = useState<Step>("compose")
+  const [step, setStep] = useState<Step>("write")
   // The panel files one of two things: the reader's own input, or a cosign of
   // `cosigning`. Both are the reader's one draft on the conference.
   const [cosigning, setCosigning] = useState<ConferenceTestimony>()
-  const [cosignStep, setCosignStep] = useState<CosignStep>("confirm")
   const [full, setFull] = useState(true)
   // What the reader's draft holds, as far as the page cares: what it
   // cosigns, if anything, and whether it has words.
@@ -402,6 +418,7 @@ function Details({
   const followed = useFollowedAuthors(user?.uid)
   const subject = conferenceName(conference)
   const taking = takesTestimony(conference)
+  const follow = useConferenceFollow(conference)
   const decided = differences.length > 0 || similarities.length > 0
   // Once the report is filed, each question says how the law resolved it.
   const resolved = hasReport(conference) && differences.length > 0
@@ -426,12 +443,12 @@ function Details({
   const close = useCallback(() => setOpen(false), [])
   const compose = useCallback(() => {
     setCosigning(undefined)
-    setStep("compose")
+    setStep("write")
     setOpen(true)
   }, [])
   const resumeCosign = useCallback((parent: ConferenceTestimony) => {
     setCosigning(parent)
-    setCosignStep("write")
+    setStep("write")
     setOpen(true)
   }, [])
   // A posted cosign is edited as one, its note alone.
@@ -461,7 +478,7 @@ function Details({
       if (!signIn()) return
       if (draftWords && draftOf === parent.id) return resumeCosign(parent)
       setCosigning(parent)
-      setCosignStep("confirm")
+      setStep("confirm")
       setFull(true)
       setOpen(true)
     },
@@ -622,7 +639,7 @@ function Details({
   )
   // Signing fills the window with what is signed beside the form; once agreed,
   // the reader may fold it back to the drawer.
-  const filled = !!cosigning && (cosignStep === "confirm" || full)
+  const filled = !!cosigning && (step === "confirm" || full)
   const shift = open && !filled ? width : 0
   // The room the panel takes, for what sits outside the page (the beta
   // note, styles/globals.css) to step aside for it too.
@@ -637,7 +654,11 @@ function Details({
     <InputContext.Provider value={input}>
       <Shift style={{ "--shift": `${shift}px` } as CSSProperties}>
         <Page ref={top}>
-          <SideRail conferences={conferences} current={conference.id} />
+          <SideRail
+            conferences={conferences}
+            current={conference.id}
+            fold={fold}
+          />
           <Main ref={main}>
             <TitleBand
               ref={band}
@@ -646,19 +667,19 @@ function Details({
             >
               <TitleRow>
                 <TitleCell>
-                  <BackChevron
-                    href={maple.conferences()}
-                    aria-label={t("back_to_home")}
-                  >
-                    <ChevronLeft size={32} strokeWidth={2.5} />
-                  </BackChevron>
+                  <BackChevron />
                   <PageTitle ref={titleText} $muted={!conference.covered}>
                     {subject}
                   </PageTitle>
                 </TitleCell>
-                {taking && (
+                {(taking || follow.visible) && (
                   <TitleShare>
-                    <ShareButton onClick={share} disabled={Boolean(mine)} />
+                    {follow.visible && (
+                      <FollowConferenceTopicButton conference={conference} />
+                    )}
+                    {taking && (
+                      <ShareButton onClick={share} disabled={Boolean(mine)} />
+                    )}
                   </TitleShare>
                 )}
               </TitleRow>
@@ -738,6 +759,7 @@ function Details({
                 <ConferenceSwitcher
                   conferences={conferences}
                   current={conference}
+                  fold={fold}
                 />
               </SwitcherSlot>
               {taking && !mine && !open && <ShareFab onClick={share} />}
@@ -749,6 +771,7 @@ function Details({
         <InputPanel
           uid={user.uid}
           conference={conference}
+          conferees={conferees}
           subject={subject}
           open={open}
           width={width}
@@ -757,8 +780,6 @@ function Details({
           step={step}
           onStep={setStep}
           cosigning={cosigning}
-          cosignStep={cosignStep}
-          onCosignStep={setCosignStep}
           full={filled}
           onFull={setFull}
           onDraft={onDraft}
@@ -774,6 +795,7 @@ function Details({
 function InputPanel({
   uid,
   conference,
+  conferees,
   subject,
   open,
   width,
@@ -782,8 +804,6 @@ function InputPanel({
   step,
   onStep,
   cosigning,
-  cosignStep,
-  onCosignStep,
   full,
   onFull,
   onDraft,
@@ -791,6 +811,7 @@ function InputPanel({
 }: {
   uid: string
   conference: ConferenceSummary
+  conferees: ConfereeView[]
   subject: string
   open: boolean
   width: number
@@ -799,14 +820,16 @@ function InputPanel({
   step: Step
   onStep: (s: Step) => void
   cosigning?: ConferenceTestimony
-  cosignStep: CosignStep
-  onCosignStep: (s: CosignStep) => void
   full: boolean
   onFull: (full: boolean) => void
   onDraft: (draft?: ConferenceWorkingDraft, read?: boolean) => void
   onPosted: () => void
 }) {
   const { t } = useTranslation("conferences")
+  const initials = useMemo(
+    () => conferees.map(c => initialsOf(c.name)),
+    [conferees]
+  )
   const edit = useEditConferenceTestimony(
     uid,
     conference.court,
@@ -819,12 +842,15 @@ function InputPanel({
     return () => onDraft(undefined)
   }, [edit.draft, edit.loading, onDraft])
 
+  const mode = cosigning ? "cosign_" : ""
   const title =
-    cosigning && edit.publication
+    step === "review"
+      ? `input.${mode}review_title`
+      : !cosigning
+      ? "input.panel_title"
+      : edit.publication
       ? "input.cosign_edit_title"
-      : !cosigning && step === "review"
-      ? "input.review_title"
-      : "input.panel_title"
+      : "input.cosign_title"
   return (
     <Panel
       open={open}
@@ -835,7 +861,7 @@ function InputPanel({
       onClose={onClose}
       beside={cosigning && <CosignLetter parent={cosigning} />}
       full={full}
-      onFull={cosigning && cosignStep === "write" ? onFull : undefined}
+      onFull={cosigning && step === "write" ? onFull : undefined}
     >
       {cosigning ? (
         // Keyed so another parent starts from its own draft.
@@ -843,14 +869,20 @@ function InputPanel({
           key={cosigning.id}
           edit={edit}
           parent={cosigning}
-          step={cosignStep}
-          onStep={onCosignStep}
+          court={conference.court}
+          conferenceId={conference.id}
+          subject={subject}
+          conferees={initials}
+          step={step}
+          onStep={onStep}
           onCancel={onClose}
           onPosted={onPosted}
         />
       ) : (
         <InputForm
-          uid={uid}
+          court={conference.court}
+          conferenceId={conference.id}
+          conferees={initials}
           edit={edit}
           subject={subject}
           step={step}

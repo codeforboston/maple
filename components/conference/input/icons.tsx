@@ -27,6 +27,26 @@ function Icon({
 
 type Props = { size?: number; strokeWidth?: number; fill?: string }
 
+export const House = (p: Props) => (
+  <Icon {...p}>
+    <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
+    <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+  </Icon>
+)
+export const Mail = (p: Props) => (
+  <Icon {...p}>
+    <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+    <rect x="2" y="4" width="20" height="16" rx="2" />
+  </Icon>
+)
+export const CalendarDays = (p: Props) => (
+  <Icon {...p}>
+    <path d="M8 2v4" />
+    <path d="M16 2v4" />
+    <rect width="18" height="18" x="3" y="4" rx="2" />
+    <path d="M3 10h18" />
+  </Icon>
+)
 export const Megaphone = (p: Props) => (
   <Icon {...p}>
     <path d="m3 11 18-5v12L3 14v-3z" />
@@ -190,5 +210,29 @@ export const Minimize2 = (p: Props) => (
     <path d="M20 10h-6V4" />
     <path d="m3 21 7-7" />
     <path d="M4 14h6v6" />
+  </Icon>
+)
+
+const BellBase = () => <path d="M10.268 21a2 2 0 0 0 3.464 0" />
+export const Bell = (p: Props) => (
+  <Icon {...p}>
+    <BellBase />
+    <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
+  </Icon>
+)
+export const BellRing = (p: Props) => (
+  <Icon {...p}>
+    <BellBase />
+    <path d="M22 8c0-2.3-.8-4.3-2-6" />
+    <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
+    <path d="M4 2C2.8 3.7 2 5.7 2 8" />
+  </Icon>
+)
+export const BellOff = (p: Props) => (
+  <Icon {...p}>
+    <BellBase />
+    <path d="M17 17H4a1 1 0 0 1-.74-1.673C4.59 13.956 6 12.499 6 8a6 6 0 0 1 .258-1.742" />
+    <path d="m2 2 20 20" />
+    <path d="M8.668 3.01A6 6 0 0 1 18 8c0 2.687.77 4.653 1.707 6.05" />
   </Icon>
 )

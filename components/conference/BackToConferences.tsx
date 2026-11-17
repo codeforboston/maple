@@ -2,9 +2,10 @@ import { faChevronLeft } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
-import { maple } from "../links"
+import { Internal, maple } from "../links"
 import { Back } from "../shared/CommonComponents"
-import { MOBILE_LAYOUT, RAIL_COMPACT } from "./styles"
+import { ChevronLeft } from "./input/icons"
+import { FULL_LAYOUT, MOBILE_LAYOUT, mobileIcon, RAIL_COMPACT } from "./styles"
 
 /** Its own row under the navbar, across the full width, 2rem in from the
  * window's edges (1.25rem on a phone), outside the page's column. */
@@ -98,5 +99,43 @@ export function BackToConferences({
         <span className="words">{t("back_to_home")}</span>
       </Link>
     </Row>
+  )
+}
+
+/** On mobile, the way back to Conference Home before the title, standing in
+ * for the way back's row over the page (BackToConferences, notMobile): a
+ * large chevron (32px) in the title's blue (mobileIcon), held at its size
+ * beside a long title. Only as wide as the icon, 44px tall to tap, and drawn
+ * a little out over the page's edge so the chevron itself starts 6px in. */
+const Chevron = styled(Internal)`
+  ${mobileIcon}
+  flex: none;
+
+  /* Only in the mobile layout; from md, the way back's own row
+     (BackToConferences). */
+  @media ${FULL_LAYOUT} {
+    display: none;
+  }
+  width: 32px;
+  margin-left: -6px;
+  border-radius: var(--maple-radius-md);
+
+  &:hover {
+    color: var(--maple-brand-primary);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--maple-focus-ring);
+    outline-offset: 0;
+  }
+`
+
+/** The way back as a chevron beside the title, on a committee's page and the
+ * explorer in the mobile layout. */
+export function BackChevron() {
+  const { t } = useTranslation("conferences")
+  return (
+    <Chevron href={maple.conferences()} aria-label={t("back_to_home")}>
+      <ChevronLeft size={32} strokeWidth={2.5} />
+    </Chevron>
   )
 }

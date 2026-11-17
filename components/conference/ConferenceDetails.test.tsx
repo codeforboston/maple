@@ -129,6 +129,16 @@ jest.mock("../hooks", () => ({ useAppDispatch: () => mockDispatch }))
 // A card's actions reach for the report API; the page's own tests do not.
 jest.mock("./input/Kebab", () => ({ Kebab: () => null }))
 jest.mock("./input/EntryModal", () => ({ EntryModal: () => null }))
+// Following has its own tests; here it is a switch.
+let mockFollowVisible = false
+jest.mock("./FollowConference", () => ({
+  ...jest.requireActual("./FollowConference"),
+  useConferenceFollow: () => ({
+    visible: mockFollowVisible,
+    following: false,
+    toggle: jest.fn()
+  })
+}))
 jest.mock("./input/useFollowedAuthors", () => ({
   useFollowedAuthors: () => new Set()
 }))
@@ -456,6 +466,41 @@ describe("ConferenceDetails", () => {
     expect(screen.getByText("input.empty_title")).toBeInTheDocument()
   })
 
+  describe("the Follow control", () => {
+    afterEach(() => {
+      mockFollowVisible = false
+    })
+
+    it("sits beside the title's button while the conference takes input", () => {
+      mockFollowVisible = true
+      render(<ConferenceDetails {...props} />)
+      // The shared Follow button (components/shared/FollowButton.tsx), in its
+      // own wrapper, beside the title's button.
+      const follow = screen.getByRole("button", { name: "button.follow" })
+      const [share] = screen.getAllByRole("button", { name: "input.share" })
+      expect(share.parentElement).toContainElement(follow)
+    })
+
+    it("stands alone on a closed conference, where it is shown", () => {
+      mockFollowVisible = true
+      const enacted = { ...conference, status: "enacted" as const }
+      render(<ConferenceDetails {...props} conference={enacted} />)
+      expect(
+        screen.getByRole("button", { name: "button.follow" })
+      ).toBeInTheDocument()
+      expect(
+        screen.queryByRole("button", { name: "input.share" })
+      ).not.toBeInTheDocument()
+    })
+
+    it("is absent where the hook hides it", () => {
+      render(<ConferenceDetails {...props} />)
+      expect(
+        screen.queryByRole("button", { name: "button.follow" })
+      ).not.toBeInTheDocument()
+    })
+  })
+
   it("greys the title's button once the reader has filed", () => {
     mockUser = { uid: "reader", emailVerified: true }
     mockItems = [
@@ -565,7 +610,7 @@ describe("ConferenceDetails", () => {
       mockUser = { uid: "reader", emailVerified: true }
       render(<ConferenceDetails {...props} />)
       expect(
-        screen.getByRole("dialog", { name: "input.panel_title" })
+        screen.getByRole("dialog", { name: "input.cosign_title" })
       ).toBeInTheDocument()
       letGo()
     })
@@ -581,7 +626,7 @@ describe("ConferenceDetails", () => {
       mockUser = { uid: "reader", emailVerified: true }
       rerender(<ConferenceDetails {...props} />)
       expect(
-        screen.getByRole("dialog", { name: "input.panel_title" })
+        screen.getByRole("dialog", { name: "input.cosign_title" })
       ).toBeInTheDocument()
       expect(mockDispatch).toHaveBeenCalledTimes(1)
     })

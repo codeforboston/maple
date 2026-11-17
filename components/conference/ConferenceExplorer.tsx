@@ -1,17 +1,19 @@
-import { useMemo, useState } from "react"
-import { BackToConferences } from "./BackToConferences"
+import { ChangeEvent, useMemo, useState } from "react"
+import { BackChevron, BackToConferences } from "./BackToConferences"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { Form } from "../bootstrap"
 import { Internal, maple } from "../links"
 import { Chair, Conferees, ConfereeFace, yoursKey } from "./Conferees"
-import { ConferenceList, ConferenceTable } from "./ConferenceTable"
+import { ConferenceTable } from "./ConferenceTable"
 import { DistrictMap, seatsOf } from "./DistrictMap"
 import { useHover, useMyLegislators } from "./hooks"
 import {
   CommitteeCard,
   DottedInternal,
   Eyebrow,
+  FULL_LAYOUT,
+  MOBILE_LAYOUT,
   PageColumn,
   Title
 } from "./styles"
@@ -42,16 +44,45 @@ type Sitting = {
  * Committees" is (ConferenceHero.tsx). Each conference's own title keeps the
  * mockup's bold Nunito. */
 const ExplorerTitle = styled(Title)`
-  /* The room the intro left under the title, while the intro is out. */
-  margin-bottom: 1rem;
   *:root & {
     font-family: var(--maple-font-heading);
+  }
+
+  /* In the mobile layout, centred in the row's middle (TitleLine). */
+  @media ${MOBILE_LAYOUT} {
+    grid-column: 2;
+    text-align: center;
+  }
+`
+
+/** The title, and in the mobile layout the way back before it (BackChevron),
+ * standing in for the way back's row (BackToConferences, notMobile). */
+const TitleLine = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  /* The room the intro left under the title, while the intro is out. */
+  margin-bottom: 1rem;
+
+  /* In the mobile layout, as on a committee's page (TitleCell and TitleBand,
+     ConferenceDetails.tsx): the title centred across the row, the way back
+     at the left (its 26px in the row, the rest over the page's edge,
+     BackChevron) and as much room kept empty at the right, so the title's
+     middle is the row's; and 1.625rem above it, the room the way back's row
+     gives from md up. */
+  @media ${MOBILE_LAYOUT} {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr) 26px;
+    gap: 8px;
+    padding-top: 1.625rem;
   }
 `
 
 /** Widened to 1320 from 992, as the conference page is
- * (ConferenceDetails.tsx). The back link's row above (BackToConferences)
- * gives the room above the title. */
+ * (ConferenceDetails.tsx). From md up, the back link's row above
+ * (BackToConferences) gives the room above the title; in the mobile layout,
+ * TitleLine does. */
 const Page = styled(PageColumn)`
   padding-top: 0;
 
@@ -60,22 +91,48 @@ const Page = styled(PageColumn)`
   }
 `
 
-/** Below 960 the card is a list; from there up, the table and the
- * explorer side by side. Both render so the server's page is the reader's. */
+/** In the mobile layout, the card says the explorer isn't available, with
+ * the way back (Unavailable); from md up, the table and the explorer side by
+ * side. Both render so the server's page is the reader's. Conference Home
+ * doesn't link here in the mobile layout (ConferenceHero.tsx); this is for a
+ * reader who lands here anyway. */
 const Narrow = styled.div`
-  @media (min-width: 960px) {
+  @media ${FULL_LAYOUT} {
     display: none;
+  }
+`
+
+/** In the gray of the members' panel (Panel), its words set as the panel's
+ * prompt is (Empty). */
+const Unavailable = styled.div`
+  padding: 2rem 1.25rem;
+  background: #f7f7f7;
+  border-radius: var(--maple-radius-xl);
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--maple-text-muted);
+
+  p {
+    margin: 0 0 0.75rem;
   }
 `
 
 /** The card the table is in, with as much room under the table's last row
  * as above its header: the card's 1.5rem top less the last row's 8px, plus
- * the header's 5px. Only where the table shows (Wide); the list below that
- * keeps the card's own. */
+ * the header's 5px. Only where the table shows (Wide); the box below that
+ * (Unavailable) keeps the card's own. */
 const ExplorerCard = styled(CommitteeCard)`
-  @media (min-width: 960px) {
+  @media ${FULL_LAYOUT} {
     && {
       padding-bottom: calc(1.5rem - 3px);
+      /* The card's 2rem at the left from 1200 up, narrowing with the window
+         to 1.25rem at 992 and on down, so the room the table needs comes
+         from the white at the left of the names (and Wide's). */
+      padding-left: clamp(
+        1.25rem,
+        calc(1.25rem + (100vw - 992px) * 0.0577),
+        2rem
+      );
     }
   }
 `
@@ -83,12 +140,13 @@ const ExplorerCard = styled(CommitteeCard)`
 const Wide = styled.div`
   display: none;
 
-  @media (min-width: 960px) {
+  @media ${FULL_LAYOUT} {
     display: flex;
     gap: 24px;
     align-items: flex-start;
-    /* More room between the card's edge and the table. */
-    padding-left: 1rem;
+    /* More room between the card's edge and the table: 1rem from 1200 up,
+       narrowing with the window to none at 992 (ExplorerCard). */
+    padding-left: clamp(0px, calc((100vw - 992px) * 0.0769), 1rem);
   }
 `
 
@@ -166,8 +224,7 @@ const Chambers = styled.div`
   gap: 17px;
 `
 
-/** Side by side whenever the explorer shows: the card is wide enough from
- * 960 up. */
+/** Side by side whenever the explorer shows. */
 const Maps = styled.div`
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -183,6 +240,47 @@ const Below = styled.div`
   gap: 0.75rem 1.5rem;
   margin-top: 1.5rem;
   font-size: 0.8125rem;
+`
+
+/** The reader's own legislators' switch, at the left of the row under the
+ * maps (Below). Off, its edge and knob in the muted text's grey
+ * (--maple-text-muted), darker than Bootstrap's, which read as disabled; on,
+ * green, rather than Bootstrap's primary, which is red here
+ * (styles/bootstrap.scss). Bootstrap draws its focus (its red ring, and the
+ * knob and edge in its focus blue) on any focus, so it stayed after a click;
+ * here the switch keeps its own look on focus, and the keyboard alone gets
+ * the site's focus ring. */
+const LegislatorsSwitch = styled(Form.Check)`
+  && {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 0;
+    margin: 0 auto 0 0;
+    padding-left: 0;
+  }
+  && .form-check-input,
+  && .form-check-input:focus {
+    float: none;
+    margin: 0;
+    cursor: pointer;
+    border-color: var(--maple-text-muted);
+    box-shadow: none;
+    --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%2364748b'/%3e%3c/svg%3e");
+  }
+  && .form-check-input:checked,
+  && .form-check-input:checked:focus {
+    background-color: var(--bs-green);
+    border-color: var(--bs-green);
+    --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+  }
+  && .form-check-input:focus-visible {
+    outline: 3px solid var(--maple-focus-ring);
+    outline-offset: 2px;
+  }
+  && .form-check-label {
+    cursor: pointer;
+  }
 `
 
 const PersonCard = styled.div`
@@ -344,13 +442,22 @@ export function ConferenceExplorer({
 
   return (
     <>
-      {/* The way back, in its own row above the page. */}
-      <BackToConferences />
+      {/* The way back, in its own row above the page from md up; below
+          that, the chevron beside the title (TitleLine). */}
+      <BackToConferences notMobile />
       <Page>
-        <ExplorerTitle>{t("explorer")}</ExplorerTitle>
+        <TitleLine>
+          <BackChevron />
+          <ExplorerTitle>{t("explorer")}</ExplorerTitle>
+        </TitleLine>
         <ExplorerCard>
           <Narrow>
-            <ConferenceList conferences={conferences} conferees={conferees} />
+            <Unavailable>
+              <p>{t("explorer_unavailable")}</p>
+              <Internal href={maple.conferences()}>
+                {t("back_to_home")}
+              </Internal>
+            </Unavailable>
           </Narrow>
           <Wide>
             <ConferenceTable
@@ -433,12 +540,12 @@ export function ConferenceExplorer({
                 ) : (
                   <>
                     {mine.size > 0 && (
-                      <Form.Check
+                      <LegislatorsSwitch
                         type="switch"
                         id="conference-my-legislators"
                         label={t("my_legislators")}
                         checked={selected?.kind === "mine"}
-                        onChange={e =>
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
                           setSelected(
                             e.target.checked ? { kind: "mine" } : null
                           )

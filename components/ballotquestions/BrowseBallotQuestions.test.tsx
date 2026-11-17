@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom"
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
-import type { ReactNode } from "react"
+import type { ComponentType, ReactNode } from "react"
 import { BrowseBallotQuestions } from "./BrowseBallotQuestions"
 
 jest.mock("next-i18next", () => ({
@@ -44,6 +44,38 @@ jest.mock("next-i18next", () => ({
       return messages[key] ?? key
     }
   })
+}))
+
+// BallotQuestionAlert renders through react-markdown, which ships as ESM;
+// stood in for as BallotQuestionAlert.test.tsx does.
+jest.mock("react-markdown", () => ({
+  __esModule: true,
+  default: ({
+    children,
+    className,
+    components
+  }: {
+    children: string
+    className?: string
+    components?: { a?: ComponentType<any> }
+  }) => {
+    const match = children.match(/\[([^\]]+)\]\(([^)]+)\)/)
+    const Link = components?.a ?? "a"
+
+    return (
+      <div className={className}>
+        {match ? (
+          <>
+            {children.slice(0, match.index)}
+            <Link href={match[2]}>{match[1]}</Link>
+            {children.slice((match.index ?? 0) + match[0].length)}
+          </>
+        ) : (
+          children
+        )}
+      </div>
+    )
+  }
 }))
 
 jest.mock("next/link", () => ({

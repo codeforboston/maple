@@ -2,6 +2,7 @@ import "@testing-library/jest-dom"
 import { fireEvent, render } from "@testing-library/react"
 import { useState } from "react"
 import { ConferenceDetails } from "./ConferenceDetails"
+import { SHOW_PAST_CONFERENCES } from "./ConferenceRail"
 import type { ConferencePageProps } from "./types"
 
 jest.mock("next-i18next", () => ({
@@ -25,6 +26,16 @@ jest.mock("../featureFlags", () => ({
   useFlags: () => ({ legislators: false, hearingsAndTranscriptions: true })
 }))
 jest.mock("../hooks", () => ({ useAppDispatch: () => jest.fn() }))
+// Following has its own tests; here it is a switch.
+let mockFollowVisible = false
+jest.mock("./FollowConference", () => ({
+  ...jest.requireActual("./FollowConference"),
+  useConferenceFollow: () => ({
+    visible: mockFollowVisible,
+    following: false,
+    toggle: jest.fn()
+  })
+}))
 jest.mock("./input/useFollowedAuthors", () => ({
   useFollowedAuthors: () => new Set()
 }))
@@ -49,6 +60,7 @@ jest.mock("../auth", () => ({
 const mounted: string[] = []
 jest.mock("../db", () => ({
   useProfile: () => ({ profile: {} }),
+  useMember: () => ({ member: undefined }),
   hasDraftChanged: () => false,
   useConferenceTestimony: () => ({ items: [], loading: false }),
   useEditConferenceTestimony: (
@@ -94,10 +106,14 @@ const phoneFree = summary(
   "H5366"
 )
 const privacy = summary("data-privacy", "S2619", "H5479")
+const enacted = {
+  ...summary("home-care", "S3183", "H4706"),
+  status: "enacted" as const
+}
 
 const page = (conference: ConferencePageProps["conference"]) => ({
   conference,
-  conferences: [phoneFree, privacy],
+  conferences: [phoneFree, privacy, enacted],
   conferees: [],
   hearings: [],
   gist: null,
@@ -126,4 +142,48 @@ describe("moving between conferences", () => {
     // ...and the draft hook was mounted afresh, so it files on the new one.
     expect(mounted).toEqual([phoneFree.id, privacy.id])
   })
+
+  // The fold's own behaviour, while past conferences are listed at all
+  // (SHOW_PAST_CONFERENCES).
+  ;(SHOW_PAST_CONFERENCES ? describe : describe.skip)(
+    "the group of conferences no longer taking input",
+    () => {
+      // The rail's: the picker's menu holds a copy only once it is opened.
+      const folds = (c: HTMLElement) =>
+        [...c.querySelectorAll("details")].map(d => d.open)
+
+      it("starts folded on a conference still sitting", () => {
+        const { container } = render(<ConferenceDetails {...page(privacy)} />)
+        expect(folds(container)).toEqual([false])
+      })
+
+      it("opens on arriving at a conference in it", () => {
+        const { container, rerender } = render(
+          <ConferenceDetails {...page(privacy)} />
+        )
+        rerender(<ConferenceDetails {...page(enacted)} />)
+        expect(folds(container)).toEqual([true])
+      })
+
+      it("stays open on moving back to a conference still sitting", () => {
+        const { container, rerender } = render(
+          <ConferenceDetails {...page(enacted)} />
+        )
+        rerender(<ConferenceDetails {...page(privacy)} />)
+        expect(folds(container)).toEqual([true])
+      })
+
+      it("stays as the reader left it between conferences still sitting", () => {
+        const { container, rerender } = render(
+          <ConferenceDetails {...page(privacy)} />
+        )
+        const details = container.querySelector("details")!
+        details.open = true
+        fireEvent(details, new Event("toggle"))
+
+        rerender(<ConferenceDetails {...page(phoneFree)} />)
+        expect(folds(container)).toEqual([true])
+      })
+    }
+  )
 })

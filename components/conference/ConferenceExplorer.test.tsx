@@ -163,10 +163,13 @@ describe("ConferenceExplorer", () => {
     expect(screen.getByText("seats_lit senate 4 40")).toBeInTheDocument()
     expect(screen.getByText("seats_lit house 4 160")).toBeInTheDocument()
     expect(screen.getByText("explorer_empty")).toBeInTheDocument()
-    // The narrow layout's list links straight to each page.
-    expect(
-      container.querySelector('a[href="/conferences/194/data-privacy"]')
-    ).toBeTruthy()
+    // The narrow layout says the explorer isn't available there, and links
+    // back to Conference Home.
+    const unavailable = screen.getByText("explorer_unavailable").parentElement!
+    expect(unavailable.querySelector("a")).toHaveAttribute(
+      "href",
+      "/conferences"
+    )
   })
 
   it("holds a conference: its six, its seats and its page", () => {

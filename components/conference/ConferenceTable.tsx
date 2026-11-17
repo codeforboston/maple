@@ -65,13 +65,40 @@ const Table = styled.table`
   tbody tr[aria-selected="true"] {
     background: var(--maple-surface-page);
   }
+  /* Between the chambers: 2.375rem from 1200 up, narrowing with the window
+     to 1.5rem at 992, below which the faces aren't shown. */
+  --chamber-gap: clamp(
+    1.5rem,
+    calc(1.5rem + (100vw - 992px) * 0.0673),
+    2.375rem
+  );
   .gap {
-    width: 1.5rem;
+    width: var(--chamber-gap);
     padding: 0;
   }
-  @media (min-width: 1200px) {
+  /* What holds the gap open: an empty cell's width gives way first where the
+     table is short of room, so the chambers would meet. */
+  .gap::before {
+    content: "";
+    display: block;
+    width: var(--chamber-gap);
+  }
+
+  /* Below 1200, where the card is short of room, the Chair and Minority
+     labels go: wider than the faces, they hold the face columns open. */
+  @media (max-width: 1199.98px) {
+    .sublabels {
+      display: none;
+    }
+  }
+
+  /* Below 992, the names alone: no faces, so no chambers over them and no
+     room between them. */
+  @media (max-width: 991.98px) {
+    thead,
+    td.face,
     .gap {
-      width: 2.375rem;
+      display: none;
     }
   }
 `
@@ -90,8 +117,10 @@ const NameButton = styled.button<{
   $tone: "strong" | "mid" | "near" | "faint"
 }>`
   display: block;
-  /* Wider than the mockup's 150px, so fewer names wrap. */
-  width: 190px;
+  /* Wider than the mockup's 150px, so fewer names wrap: 190px from 1200 up,
+     narrowing with the window to 160px at 992 and on down, never less, so the
+     names keep their lines. */
+  width: clamp(160px, calc(160px + (100vw - 992px) * 0.1442), 190px);
   padding: 0;
   border: 0;
   background: none;
@@ -129,15 +158,15 @@ const Bills = styled.span`
   }
 `
 
-/** The table's faces: 22px, 26px once the card has the room. */
+/** The table's faces, 26px, and 22px below 1200. */
 const Face = styled.span<{ $dim: boolean; $soft: boolean; $gray: boolean }>`
   display: block;
   opacity: ${({ $dim, $soft }) => (!$dim ? 1 : $soft ? SOFT_DIM : DIM)};
   filter: ${({ $gray }) => ($gray ? "grayscale(1)" : "none")};
   transition: opacity 150ms ease-out, filter 200ms ease-out;
 
-  @media (min-width: 1200px) {
-    --portrait-size: 26px;
+  @media (max-width: 1199.98px) {
+    --portrait-size: 22px;
   }
 `
 
@@ -206,7 +235,7 @@ export function ConferenceTable({
           ])}
           <td />
         </tr>
-        <tr>
+        <tr className="sublabels">
           <td />
           {chamberCells(chamber => [
             <td key={`${chamber}-chair`}>
@@ -284,7 +313,7 @@ export function ConferenceTable({
                         (mode === "held" && ringed === personKey(p)))
                   )
                   return (
-                    <td key={`${chamber}-${slot}`}>
+                    <td key={`${chamber}-${slot}`} className="face">
                       {p && (
                         <Face
                           $dim={highlighted ? !lit : !on && !lit}
@@ -299,7 +328,7 @@ export function ConferenceTable({
                             hovered !== c.id
                           }
                         >
-                          <ConfereeFace c={p} size={22} lit={lit} labelled />
+                          <ConfereeFace c={p} size={26} lit={lit} labelled />
                         </Face>
                       )}
                     </td>

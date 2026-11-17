@@ -63,6 +63,11 @@ export {
   unfollowUserV2,
   getFollowersV2
 } from "./subscriptions"
+export {
+  compileConferenceUpdates,
+  recordConferenceInput
+} from "./conferenceUpdates"
+export { mailConferenceLetters } from "./conferenceLetters"
 export { scrapeElections } from "./legislators"
 
 export { transcriptionV2 } from "./webhooks"
