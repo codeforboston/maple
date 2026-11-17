@@ -7,10 +7,13 @@ import {
   useRef,
   useState
 } from "react"
+import { Timestamp } from "firebase/firestore"
 import { Trans, useTranslation } from "next-i18next"
 import styled, { keyframes } from "styled-components"
+import { useAuth } from "components/auth"
 import {
   ConferencePosition,
+  ConferenceTestimony,
   hasDraftChanged,
   Testimony,
   UseEditConferenceTestimony,
@@ -19,7 +22,14 @@ import {
 } from "components/db"
 import { Internal } from "components/links"
 import { hasLegislators } from "functions/src/conferenceLetters/letter"
-import { LetterReview, NoLine } from "./Review"
+import type { ConfereeView } from "../types"
+import {
+  CountsOnce,
+  LetterReview,
+  NoLine,
+  OnRecord,
+  SitePreview
+} from "./Review"
 import { conferencePositions, positionColours } from "./positions"
 import { brand, ink, line, red, wash } from "./tokens"
 import { useAutosave } from "./useAutosave"
@@ -277,6 +287,7 @@ export function ReviewStep({
   reason,
   onReason,
   onBack,
+  onAddLine = onBack,
   onCancel,
   onPost,
   ...letter
@@ -290,13 +301,12 @@ export function ReviewStep({
   reason: string
   onReason: (reason: string) => void
   onBack: () => void
+  /** Add Your Voice, on a cosign without words: back to writing them. */
+  onAddLine?: () => void
   onCancel: () => void
   onPost: () => void
 }) {
   const { t } = useTranslation("conferences")
-  const { profile } = useProfile()
-  // Whether the letter goes anywhere, from the profile alone.
-  const sends = hasLegislators(profile ?? {})
   // Republishing needs a reason for the change, as it does everywhere else.
   const editing = !!edit.publication
   const changed =
@@ -319,8 +329,27 @@ export function ReviewStep({
   return (
     <Body>
       <Scroll>
-        {cosign && !letter.content.trim() && <NoLine onAdd={onBack} />}
-        <LetterReview {...letter} testimonyId={edit.publication?.id} />
+        <LetterReview
+          {...letter}
+          // Under a cosign's card: that it is their one input, and, without
+          // words of its own, that a line would carry more weight. Under
+          // input's: that it stays on the record.
+          preview={
+            cosign ? (
+              <>
+                {letter.preview}
+                <CountsOnce />
+                {!letter.content.trim() && <NoLine onAdd={onAddLine} />}
+              </>
+            ) : (
+              <>
+                {letter.preview}
+                <OnRecord />
+              </>
+            )
+          }
+          testimonyId={edit.publication?.id}
+        />
         {needsReason && <ReasonField value={reason} onChange={onReason} />}
         {problem}
       </Scroll>
@@ -334,15 +363,7 @@ export function ReviewStep({
             {t("input.cancel")}
           </Muted>
           <Primary type="button" disabled={!canPost} onClick={onPost}>
-            {t(
-              cosign
-                ? sends
-                  ? "review.cosign_and_send"
-                  : "input.cosign"
-                : sends
-                ? "review.post_and_send"
-                : "input.post"
-            )}
+            {t(cosign ? "input.cosign" : "review.submit")}
           </Primary>
         </Actions>
       </div>
@@ -368,8 +389,8 @@ export function InputForm({
 }: {
   court: number
   conferenceId: string
-  /** Initials of the conferees, for the weekly update's row. */
-  conferees: string[]
+  /** The conferees, for the weekly update's row. */
+  conferees: ConfereeView[]
   /** The user's draft and publication on the conference. */
   edit: UseEditConferenceTestimony
   subject: string
@@ -381,6 +402,7 @@ export function InputForm({
 }) {
   const { t } = useTranslation("conferences")
   const { profile } = useProfile()
+  const { user, claims } = useAuth()
   const { saveDraft, publishTestimony, discardDraft } = edit
 
   const [position, setPosition] = useState<ConferencePosition>(
@@ -452,6 +474,17 @@ export function InputForm({
   const showDelete = !!edit.draft && save === "none" && !dirty
 
   const name = profile?.fullName || t("input.anonymous")
+  // The input as it will be filed, for the review's preview of it on MAPLE.
+  const preview = {
+    authorUid: user?.uid,
+    id: "preview",
+    position,
+    content,
+    authorRole: claims?.role ?? "user",
+    authorDisplayName: name,
+    fullName: name,
+    publishedAt: Timestamp.now()
+  } as unknown as ConferenceTestimony
 
   if (step !== "review")
     return (
@@ -535,6 +568,7 @@ export function InputForm({
       conference={subject}
       position={position}
       content={content}
+      preview={<SitePreview testimony={preview} />}
       ready={written}
       posting={posting}
       problem={failed && <Problem role="alert">{t("input.error")}</Problem>}

@@ -39,7 +39,6 @@ import { useAppDispatch } from "../hooks"
 import { Internal, maple, siteUrl } from "../links"
 import { useFitText, usePhone, usePinnedNavbar, useRailLift } from "./hooks"
 import { InputContext } from "./input/context"
-import { initialsOf } from "./input/accounts"
 import { CosignForm } from "./input/CosignForm"
 import { CosignLetter } from "./input/CosignLetter"
 import { InputForm, Step } from "./input/InputForm"
@@ -826,10 +825,6 @@ function InputPanel({
   onPosted: () => void
 }) {
   const { t } = useTranslation("conferences")
-  const initials = useMemo(
-    () => conferees.map(c => initialsOf(c.name)),
-    [conferees]
-  )
   const edit = useEditConferenceTestimony(
     uid,
     conference.court,
@@ -872,7 +867,7 @@ function InputPanel({
           court={conference.court}
           conferenceId={conference.id}
           subject={subject}
-          conferees={initials}
+          conferees={conferees}
           step={step}
           onStep={onStep}
           onCancel={onClose}
@@ -882,7 +877,7 @@ function InputPanel({
         <InputForm
           court={conference.court}
           conferenceId={conference.id}
-          conferees={initials}
+          conferees={conferees}
           edit={edit}
           subject={subject}
           step={step}

@@ -234,12 +234,14 @@ const Text = styled.div<{ $wide: boolean; $banded: boolean }>`
       : "12px 0 4px"};
 `
 
+/** The date at the foot of a narrow card, at the size it has at a wide
+ * card's corner (When). */
 const FootDate = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 6px;
   margin-top: 12px;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: ${ink.mid};
 `
 

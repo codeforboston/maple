@@ -2,6 +2,38 @@ import "@testing-library/jest-dom"
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import type { UseEditConferenceTestimony } from "components/db"
 import { InputForm } from "./InputForm"
+import type { ConfereeView } from "../types"
+
+// jsdom has none of these, and the review's preview card and its clamp watch
+// their width, as in PublicInput.test.tsx.
+class Observer {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+Object.assign(global, { ResizeObserver: Observer })
+
+/** Two invented conferees, for the weekly update's row on the review. */
+const conferees: ConfereeView[] = [
+  {
+    memberCode: "AQ1",
+    branch: "Senate",
+    chair: true,
+    name: "Avery Quinlan",
+    party: "Democrat",
+    district: "First Essex",
+    seat: null
+  },
+  {
+    memberCode: "BR2",
+    branch: "House",
+    chair: true,
+    name: "Blair Rowe",
+    party: "Democrat",
+    district: "2nd Middlesex",
+    seat: null
+  }
+]
 
 jest.mock("next-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: "en" } }),
@@ -51,7 +83,7 @@ const review = (edit: UseEditConferenceTestimony) =>
     <InputForm
       court={194}
       conferenceId="H1-S1"
-      conferees={["CC", "BF"]}
+      conferees={conferees}
       edit={edit}
       subject="Phone-Free Schools"
       step="review"
@@ -66,7 +98,7 @@ const write = (edit: UseEditConferenceTestimony) =>
     <InputForm
       court={194}
       conferenceId="H1-S1"
-      conferees={["CC", "BF"]}
+      conferees={conferees}
       edit={edit}
       subject="Phone-Free Schools"
       step="write"
@@ -126,12 +158,19 @@ describe("InputForm", () => {
     it("shows where the input goes and the letter as it will be sent", () => {
       review(editing())
       expect(screen.getByText("review.goes_input")).toBeInTheDocument()
+      // The input as MAPLE will show it first, and the letter a switch away.
       expect(
-        screen.getByText("Dear Representative Rae Rep and Senator Sam Sen,")
-      ).toBeInTheDocument()
-      expect(screen.getByText("Pass it, please.")).toBeInTheDocument()
+        screen.getByRole("button", { name: "review.preview_web" })
+      ).toHaveAttribute("aria-pressed", "true")
+      fireEvent.click(
+        screen.getByRole("button", { name: "review.preview_email" })
+      )
+      const greeting = screen.getByText(
+        "Dear Representative Rae Rep and Senator Sam Sen,"
+      )
+      expect(greeting.parentElement).toHaveTextContent("Pass it, please.")
       expect(
-        screen.getByRole("button", { name: "review.post_and_send" })
+        screen.getByRole("button", { name: "review.submit" })
       ).toBeInTheDocument()
     })
 
@@ -140,7 +179,12 @@ describe("InputForm", () => {
       const edit = editing({
         publication
       } as Partial<UseEditConferenceTestimony>)
+      const email = () =>
+        fireEvent.click(
+          screen.getByRole("button", { name: "review.preview_email" })
+        )
       const { unmount } = review(edit)
+      email()
       expect(screen.getByText(/^Phone-Free Schools: /)).not.toHaveTextContent(
         "(updated)"
       )
@@ -148,6 +192,7 @@ describe("InputForm", () => {
 
       mockOnRecord.add("t1")
       review(edit)
+      email()
       expect(screen.getByText(/^Phone-Free Schools: /)).toHaveTextContent(
         /\(updated\)$/
       )
@@ -158,9 +203,13 @@ describe("InputForm", () => {
       mockProfile.current = { fullName: "Gina K." }
       review(editing())
       expect(screen.getByText("review.emailed_none")).toBeInTheDocument()
-      expect(screen.queryByText("review.preview_label")).not.toBeInTheDocument()
+      // No letter, so nothing to switch to: the web preview alone.
+      expect(screen.queryByText("review.from")).not.toBeInTheDocument()
       expect(
-        screen.getByRole("button", { name: "input.post" })
+        screen.queryByRole("button", { name: "review.preview_email" })
+      ).not.toBeInTheDocument()
+      expect(
+        screen.getByRole("button", { name: "review.submit" })
       ).toBeInTheDocument()
     })
 
@@ -177,9 +226,7 @@ describe("InputForm", () => {
       const reason = screen.getByPlaceholderText("publish.reasonPlaceholder")
       expect(reason).toHaveValue("Clearer")
       await act(async () =>
-        fireEvent.click(
-          screen.getByRole("button", { name: "review.post_and_send" })
-        )
+        fireEvent.click(screen.getByRole("button", { name: "review.submit" }))
       )
       expect(edit.publishTestimony.execute).toHaveBeenCalled()
       expect(reason).toHaveValue("")
