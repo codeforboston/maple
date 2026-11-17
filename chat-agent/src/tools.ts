@@ -94,12 +94,10 @@ export function buildTools(deps: ToolDeps) {
   const listSponsors = tool(
     async ({ query }, runtime: ToolRuntime) => {
       runtime.writer?.("Looking up sponsors")
-      // mcp-server returns names only and has no name filter.
+      // mcp-server returns every sponsor in the session (~260), names only, with no name filter.
       const names = (await deps.mcp("list_sponsors", {})) as string[]
       const q = query?.toLowerCase()
-      return json(
-        names.filter(n => !q || n.toLowerCase().includes(q)).slice(0, 200)
-      )
+      return json(names.filter(n => !q || n.toLowerCase().includes(q)))
     },
     {
       name: "list_sponsors",

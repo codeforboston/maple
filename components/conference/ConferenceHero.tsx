@@ -1,28 +1,21 @@
-import { forwardRef } from "react"
 import { Trans, useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faArrowDown, faArrowRight } from "@fortawesome/free-solid-svg-icons"
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons"
 import { External, Internal, maple } from "../links"
 import { PageColumn } from "./styles"
+import { ConferenceLanding } from "./types"
 
 const JOINT_RULES = "https://malegislature.gov/Laws/Rules/Joint"
 const MAPLE_PROCESS = "https://www.mapletestimony.org/learn/legislative-process"
 
-/**
- * A screen of its own above the conference, so the conference begins below
- * the fold and the button is what says it is there. One of the page's two
- * resting places for scroll snapping, the conference being the other.
- */
+/** A screen under the navbar, with the block centred down it. */
 const Section = styled(PageColumn)`
-  min-height: calc(100lvh - var(--conference-nav, var(--maple-navbar-height)));
-  scroll-margin-top: var(--conference-nav, 0px);
+  min-height: calc(100lvh - var(--maple-navbar-height));
   padding-top: 2rem;
   padding-bottom: 2rem;
   display: flex;
   flex-direction: column;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
 
   .block {
     margin: auto 0;
@@ -109,8 +102,7 @@ const StepList = styled.div`
     min-width: 0;
     padding-top: 5px;
   }
-  h2,
-  h3 {
+  h2 {
     margin: 0;
     font-size: 1rem;
     font-weight: 600;
@@ -147,7 +139,7 @@ const StepList = styled.div`
   }
 `
 
-const Button = styled.button`
+const SeeLink = styled(Internal)`
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -158,9 +150,11 @@ const Button = styled.button`
   font-weight: 600;
   background: var(--maple-brand-primary);
   color: #fff;
+  text-decoration: none;
 
   &:hover {
     background: var(--maple-brand-primary-strong);
+    color: #fff;
   }
 `
 
@@ -173,27 +167,24 @@ const ExplorerLink = styled(Internal)`
 `
 
 /**
- * What a conference committee is and the five steps it goes through, above
- * whichever conference is open. `onSee` takes the reader down to the
- * conference; the explorer is reached from here.
+ * What a conference committee is and the five steps it goes through: the
+ * Conference Committees page. It leads on to a conference (`landing`, where
+ * the court has one) and to the explorer.
  */
-export const ConferenceHero = forwardRef<
-  HTMLElement,
-  { onSee: () => void; landing?: boolean }
->(function ConferenceHero({ onSee, landing = false }, ref) {
+export function ConferenceHero({
+  landing
+}: {
+  landing: ConferenceLanding | null
+}) {
   const { t } = useTranslation("conferences")
-  const Heading = landing ? "h1" : "h2"
-  // A level under the hero's own heading, whichever that is.
-  const Step = landing ? "h2" : "h3"
   const steps = t("hero.steps", { returnObjects: true }) as {
     h: string
     p: string
   }[]
   return (
-    <Section as="section" ref={ref}>
+    <Section as="section">
       <div className="block">
-        {/* Conference addresses have their own h1. */}
-        <Heading className="title">{t("index_title")}</Heading>
+        <h1 className="title">{t("index_title")}</h1>
         <p className="lead">{t("hero.lead")}</p>
         <StepList>
           <ol>
@@ -202,7 +193,7 @@ export const ConferenceHero = forwardRef<
                 {i < steps.length - 1 && <span className="line" aria-hidden />}
                 <span className="num">{i + 1}</span>
                 <div className="text">
-                  <Step>{step.h}</Step>
+                  <h2>{step.h}</h2>
                   <p>{step.p}</p>
                 </div>
               </li>
@@ -220,10 +211,12 @@ export const ConferenceHero = forwardRef<
           />
         </p>
         <div className="actions">
-          <Button type="button" onClick={onSee}>
-            {t("hero.see")}
-            <FontAwesomeIcon icon={faArrowDown} aria-hidden />
-          </Button>
+          {landing && (
+            <SeeLink href={maple.conference(landing)}>
+              {t("hero.see")}
+              <FontAwesomeIcon icon={faArrowRight} aria-hidden />
+            </SeeLink>
+          )}
           <ExplorerLink href={maple.conferenceExplorer()}>
             {t("explorer")}
             <FontAwesomeIcon icon={faArrowRight} aria-hidden />
@@ -232,4 +225,4 @@ export const ConferenceHero = forwardRef<
       </div>
     </Section>
   )
-})
+}

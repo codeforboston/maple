@@ -27,6 +27,26 @@ function Icon({
 
 type Props = { size?: number; strokeWidth?: number; fill?: string }
 
+export const House = (p: Props) => (
+  <Icon {...p}>
+    <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
+    <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+  </Icon>
+)
+export const Mail = (p: Props) => (
+  <Icon {...p}>
+    <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+    <rect x="2" y="4" width="20" height="16" rx="2" />
+  </Icon>
+)
+export const CalendarDays = (p: Props) => (
+  <Icon {...p}>
+    <path d="M8 2v4" />
+    <path d="M16 2v4" />
+    <rect width="18" height="18" x="3" y="4" rx="2" />
+    <path d="M3 10h18" />
+  </Icon>
+)
 export const Megaphone = (p: Props) => (
   <Icon {...p}>
     <path d="m3 11 18-5v12L3 14v-3z" />
@@ -123,6 +143,13 @@ export const Check = (p: Props) => (
     <path d="M20 6 9 17l-5-5" />
   </Icon>
 )
+export const Link2 = (p: Props) => (
+  <Icon {...p}>
+    <path d="M9 17H7A5 5 0 0 1 7 7h2" />
+    <path d="M15 7h2a5 5 0 1 1 0 10h-2" />
+    <line x1="8" x2="16" y1="12" y2="12" />
+  </Icon>
+)
 export const SquarePen = (p: Props) => (
   <Icon {...p}>
     <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -144,5 +171,58 @@ export const ArrowUpRight = (p: Props) => (
 export const Star = (p: Props) => (
   <Icon {...p}>
     <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
+  </Icon>
+)
+export const UsersRound = (p: Props) => (
+  <Icon {...p}>
+    <path d="M18 21a8 8 0 0 0-16 0" />
+    <circle cx="10" cy="8" r="5" />
+    <path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3" />
+  </Icon>
+)
+export const BadgeCheck = (p: Props) => (
+  <Icon {...p}>
+    <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
+    <path d="m9 12 2 2 4-4" />
+  </Icon>
+)
+export const Maximize2 = (p: Props) => (
+  <Icon {...p}>
+    <path d="M15 3h6v6" />
+    <path d="m21 3-7 7" />
+    <path d="m3 21 7-7" />
+    <path d="M9 21H3v-6" />
+  </Icon>
+)
+export const Minimize2 = (p: Props) => (
+  <Icon {...p}>
+    <path d="m14 10 7-7" />
+    <path d="M20 10h-6V4" />
+    <path d="m3 21 7-7" />
+    <path d="M4 14h6v6" />
+  </Icon>
+)
+
+const BellBase = () => <path d="M10.268 21a2 2 0 0 0 3.464 0" />
+export const Bell = (p: Props) => (
+  <Icon {...p}>
+    <BellBase />
+    <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
+  </Icon>
+)
+export const BellRing = (p: Props) => (
+  <Icon {...p}>
+    <BellBase />
+    <path d="M22 8c0-2.3-.8-4.3-2-6" />
+    <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
+    <path d="M4 2C2.8 3.7 2 5.7 2 8" />
+  </Icon>
+)
+export const BellOff = (p: Props) => (
+  <Icon {...p}>
+    <BellBase />
+    <path d="M17 17H4a1 1 0 0 1-.74-1.673C4.59 13.956 6 12.499 6 8a6 6 0 0 1 .258-1.742" />
+    <path d="m2 2 20 20" />
+    <path d="M8.668 3.01A6 6 0 0 1 18 8c0 2.687.77 4.653 1.707 6.05" />
   </Icon>
 )

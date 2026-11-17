@@ -11,7 +11,7 @@ import {
   Avatar,
   NavbarLinkAskMaple,
   NavbarLinkBallotQuestions,
-  NavbarLinkConferences,
+  NavbarConferenceItems,
   DESKTOP_NAV_ITEM_CLASS,
   NavbarLinkAI,
   NavbarLinkBills,
@@ -80,7 +80,12 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           <NavbarLinkBallotQuestions handleClick={closeNav} />
         ) : null}
         {flags().conferences ? (
-          <NavbarLinkConferences handleClick={closeNav} />
+          <NavDropdown
+            className={"navLink-primary"}
+            title={t("navigation.conferences")}
+          >
+            <NavbarConferenceItems handleClick={closeNav} />
+          </NavDropdown>
         ) : null}
         {flags().hearingsAndTranscriptions ? (
           <NavbarLinkHearings handleClick={closeNav} />
@@ -235,7 +240,17 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 
       {flags().conferences ? (
         <div className={`align-self-center`}>
-          <NavbarLinkConferences />
+          <Dropdown>
+            <Dropdown.Toggle
+              variant="light"
+              className={`${DESKTOP_NAV_ITEM_CLASS}`}
+            >
+              {t("navigation.conferences")}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <NavbarConferenceItems />
+            </Dropdown.Menu>
+          </Dropdown>
         </div>
       ) : null}
 

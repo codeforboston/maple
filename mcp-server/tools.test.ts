@@ -284,3 +284,120 @@ describe("shapeBallotQuestion", () => {
     expect(result.relevanceScore).toBeCloseTo(0.95, 3)
   })
 })
+
+// ---------------------------------------------------------------------------
+// list_sponsors, list_committees and the current court
+// ---------------------------------------------------------------------------
+
+/** Bills per court, and every field list a query selected. */
+let mockBills: Record<number, Record<string, any>[]> = {}
+const mockSelects: string[][] = []
+
+// Hoisted by jest above the imports; only the shape tests above load ./tools
+// without calling Firestore.
+jest.mock("firebase-admin", () => ({
+  firestore: () => ({ collection: mockCollection })
+}))
+
+function mockCollection(path: string) {
+  if (path === "generalCourts")
+    return {
+      // Like Firestore, includes courts whose only data is in subcollections.
+      listDocuments: async () => Object.keys(mockBills).map(id => ({ id }))
+    }
+  const bills = mockBills[Number(path.split("/")[1])] ?? []
+  const docs = bills.map(data => ({
+    get: (field: string) =>
+      field.split(".").reduce((value: any, key) => value?.[key], data)
+  }))
+  const result = (n: number) => ({
+    get: async () => ({ empty: !docs.length, docs: docs.slice(0, n) })
+  })
+  return {
+    select: (...fields: string[]) => {
+      mockSelects.push(fields)
+      return { ...result(docs.length), limit: (n: number) => result(n) }
+    }
+  }
+}
+
+/** Calls a tool's handler as the MCP server would, with a fresh cache. */
+function loadTool(name: string) {
+  let handler: (args: object) => Promise<any> = async () => undefined
+  jest.isolateModules(() => {
+    require("./tools").registerTools({
+      registerTool: (tool: string, _def: unknown, fn: typeof handler) => {
+        if (tool === name) handler = fn
+      }
+    })
+  })
+  return async (args: object = {}) =>
+    JSON.parse((await handler(args)).content[0].text)
+}
+
+const bill = (sponsor: string, committee?: string) => ({
+  content: { PrimarySponsor: { Name: sponsor } },
+  ...(committee && { currentCommittee: { name: committee } })
+})
+
+describe("list tools", () => {
+  beforeEach(() => {
+    delete process.env.CURRENT_COURT
+    mockSelects.length = 0
+  })
+
+  it("lists the sponsors of every bill, reading only that field", async () => {
+    // The first 1,000 bills by id are all House bills.
+    mockBills = {
+      194: [
+        ...Array.from({ length: 1000 }, () => bill("Representative A")),
+        bill("Senator B")
+      ]
+    }
+    expect(await loadTool("list_sponsors")({ court: 194 })).toEqual([
+      "Representative A",
+      "Senator B"
+    ])
+    expect(mockSelects).toEqual([["content.PrimarySponsor.Name"]])
+  })
+
+  it("lists the committees of every bill", async () => {
+    mockBills = {
+      194: [
+        ...Array.from({ length: 1000 }, () => bill("A", "Committee on X")),
+        bill("B", "Committee on Y"),
+        bill("C")
+      ]
+    }
+    expect(await loadTool("list_committees")({ court: 194 })).toEqual([
+      "Committee on X",
+      "Committee on Y"
+    ])
+  })
+
+  it("defaults to the newest court with bills", async () => {
+    // 195 has data (e.g. members) but no bills yet.
+    mockBills = { 193: [bill("Old")], 194: [bill("Current")], 195: [] }
+    expect(await loadTool("list_sponsors")()).toEqual(["Current"])
+  })
+
+  it("uses CURRENT_COURT when it's set", async () => {
+    process.env.CURRENT_COURT = "193"
+    mockBills = { 193: [bill("Old")], 194: [bill("Current")] }
+    expect(await loadTool("list_sponsors")()).toEqual(["Old"])
+  })
+
+  it("reads a session's list once every 12 hours", async () => {
+    mockBills = { 194: [bill("Current")] }
+    const now = jest.spyOn(Date, "now").mockReturnValue(0)
+    const listSponsors = loadTool("list_sponsors")
+    await listSponsors({ court: 194 })
+    now.mockReturnValue(12 * 60 * 60 * 1000 - 1)
+    await listSponsors({ court: 194 })
+    expect(mockSelects).toHaveLength(1)
+    now.mockReturnValue(12 * 60 * 60 * 1000)
+    await listSponsors({ court: 194 })
+    expect(mockSelects).toHaveLength(2)
+    now.mockRestore()
+  })
+})

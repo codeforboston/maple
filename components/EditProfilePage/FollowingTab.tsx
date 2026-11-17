@@ -2,10 +2,13 @@ import { flags } from "components/featureFlags"
 import { dbService } from "components/db/api"
 import { useBill } from "components/db"
 import { formatBillId } from "components/formatting"
-import { Internal } from "components/links"
+import { Internal, maple } from "components/links"
+import { conferenceName, isShown } from "components/conference/types"
+import { getConference } from "components/db/conferences"
 import {
   FollowBallotQuestionButton,
-  FollowBillButton
+  FollowBillButton,
+  FollowConferenceTopicButton
 } from "components/shared/FollowButton"
 import { collection, onSnapshot, query, where } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
@@ -23,6 +26,7 @@ import {
 export function FollowingTab({ className }: { className?: string }) {
   const { t } = useTranslation("editProfile")
   const followedBallotQuestions = useFollowedBallotQuestions()
+  const followedConferences = useFollowedConferences()
   return (
     <>
       <PaginatedItemsCard
@@ -37,6 +41,14 @@ export function FollowingTab({ className }: { className?: string }) {
           title={t("follow.ballotQuestions")}
           ItemCard={FollowedBallotQuestionCard}
           {...followedBallotQuestions}
+        />
+      )}
+      {flags().conferences && (
+        <PaginatedItemsCard
+          className={className}
+          title={t("follow.conferences")}
+          ItemCard={FollowedConferenceCard}
+          {...followedConferences}
         />
       )}
       <PaginatedItemsCard
@@ -57,12 +69,24 @@ const useFollowedBallotQuestions = (): LoadableItemsState<
   ComponentProps<typeof FollowedBallotQuestionCard>
 > => useTopicSubscription("ballotQuestion")
 
+const useFollowedConferences = (): LoadableItemsState<
+  ComponentProps<typeof FollowedConferenceCard>
+> => useTopicSubscription("conference")
+
 const useFollowedUsers = (): LoadableItemsState<
   ComponentProps<typeof FollowUserCard>
 > => useTopicSubscription("testimony")
 
+/** The field of a subscription doc that says what is followed, by type. */
+const TOPIC_KEYS = {
+  bill: "billLookup",
+  ballotQuestion: "ballotQuestionLookup",
+  conference: "conferenceLookup",
+  testimony: "userLookup"
+} as const
+
 function useTopicSubscription<T extends object>(
-  type: "bill" | "ballotQuestion" | "testimony"
+  type: keyof typeof TOPIC_KEYS
 ): LoadableItemsState<T> {
   const [state, setState] = useState<LoadableItemsState<T>>({
     items: [],
@@ -78,12 +102,7 @@ function useTopicSubscription<T extends object>(
         : null,
     [uid]
   )
-  const topicKey =
-    type === "bill"
-      ? "billLookup"
-      : type === "ballotQuestion"
-      ? "ballotQuestionLookup"
-      : "userLookup"
+  const topicKey = TOPIC_KEYS[type]
 
   useEffect(() => {
     if (!subscriptionRef || !uid) return
@@ -184,6 +203,52 @@ function FollowedBallotQuestionCard({
         </Col>
         <Col xs="auto" className="d-flex justify-content-end ms-auto p-0">
           <FollowBallotQuestionButton ballotQuestion={bq} />
+        </Col>
+      </Row>
+      <hr className={`mt-3`} />
+    </div>
+  )
+}
+
+/** A followed conference. One that is hidden, no longer taking input while
+ * closed conferences are off, keeps its row without a link, so the reader can
+ * still unfollow it. */
+function FollowedConferenceCard({
+  conferenceId,
+  court
+}: {
+  conferenceId: string
+  court: number
+}) {
+  const { t } = useTranslation("editProfile")
+  const uid = useAuth().user?.uid
+  const {
+    loading,
+    error,
+    result: conference
+  } = useAsync(() => getConference(court, conferenceId), [court, conferenceId])
+  if (loading) return <Spinner animation="border" className="mx-auto" />
+  if (error) return <Alert variant="danger">{t("content.error")}</Alert>
+
+  const shown = conference && isShown(conference)
+
+  return (
+    <div className={`fs-3 lh-lg`}>
+      <Row className={`align-items-center flex-column flex-md-row`}>
+        <Col xs={12} md={8} className={`d-flex`}>
+          {shown ? (
+            <Internal href={maple.conference({ court, id: conferenceId })}>
+              {conferenceName(conference)}
+            </Internal>
+          ) : (
+            <h6>{conference ? conferenceName(conference) : conferenceId}</h6>
+          )}
+        </Col>
+        <Col xs="auto" className="d-flex justify-content-end ms-auto p-0">
+          <FollowConferenceTopicButton
+            conference={{ id: conferenceId, court }}
+            confirmUnfollow
+          />
         </Col>
       </Row>
       <hr className={`mt-3`} />

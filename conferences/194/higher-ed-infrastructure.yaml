@@ -6,6 +6,7 @@ senateBillId: S2993
 houseBillId: H4769
 canonicalBillId: H4769
 status: appointed
+covered: false
 conferees:
   - memberCode: DMR1
     branch: House

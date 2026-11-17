@@ -5,6 +5,8 @@
  * CSS custom properties (var(--maple-*)) are not used here because Recharts
  * renders into SVG/Canvas where CSS vars are not reliably resolved — hard-coded
  * hex values that match the SCSS source of truth are the correct approach.
+ * The lobbying position colours are the exception: they come from the
+ * Lobbying Explorer redesign, not the SCSS.
  */
 
 import React, { useEffect, useState } from "react"
@@ -14,6 +16,7 @@ import type {
   Payload,
   ValueType
 } from "recharts/types/component/DefaultTooltipContent"
+import type { Position, PositionCategory } from "./activity"
 
 // ── Token mirrors ─────────────────────────────────────────────────────────────
 // Keep in sync with styles/bootstrap.scss.
@@ -27,6 +30,9 @@ export const MAPLE_COLORS = {
   green: "#3d9922",
   stagePast: "#8ebc81",
   periwinkle: "#8c98c2",
+  // Not in styles/bootstrap.scss: marks organizations that reported more
+  // than one position on a bill.
+  purple: "#9a5fd0",
 
   // Text
   textBody: "#334155",
@@ -44,11 +50,6 @@ export const MAPLE_COLORS = {
   blueSubtleBg: "#e8efff",
   blueSubtleText: "#1d3f8a",
   blueBorder: "#c9d8ff",
-  greenSubtleBg: "#e8f6ea",
-  greenSubtleText: "#1d5d2d",
-  greenBorder: "#c8e7cf",
-  orangeSubtleBg: "#fff4e8",
-  orangeSubtleText: "#7a3800",
   redSubtleBg: "#fde8ef",
   redSubtleText: "#902141",
   graySubtleBg: "#f1f5f9",
@@ -68,15 +69,89 @@ export const DATA_PALETTE: readonly string[] = [
   MAPLE_COLORS.danger
 ]
 
-/** Lobbying position colours. Aligned to MAPLE bill position palette. */
-export const POSITION_COLORS = {
-  support: MAPLE_COLORS.green,
-  oppose: MAPLE_COLORS.accent,
-  neutral: MAPLE_COLORS.primary,
-  none: MAPLE_COLORS.graySubtleBorder
-} as const
+type PositionTone = {
+  // Bars, legend swatches.
+  bar: string
+  // Large text on white (counts).
+  text: string
+  // A position chip: a light tint with dark text.
+  chip: React.CSSProperties
+  // A small lettered square: solid, with a letter that reads on it.
+  square: React.CSSProperties
+}
 
-export type LobbyingPosition = keyof typeof POSITION_COLORS
+/** Each position's colours, from the redesign canvas: blue support, orange
+ * oppose, grey neutral. Every text colour here is 4.5:1 or better on its
+ * background. */
+export const POSITION_TONES: Record<Position, PositionTone> = {
+  support: {
+    bar: "#2f62c9",
+    text: "#2f62c9",
+    chip: {
+      background: "#e9effb",
+      color: "#1f4a9e",
+      border: "1px solid #bccdf0"
+    },
+    square: { background: "#2f62c9", color: "#fff" }
+  },
+  oppose: {
+    bar: "#d4731c",
+    text: "#b45f12",
+    chip: {
+      background: "#fbf0e6",
+      color: "#8a4a0e",
+      border: "1px solid #e9b98a"
+    },
+    // The darker orange, so the white letter reads at this size.
+    square: { background: "#b45f12", color: "#fff" }
+  },
+  neutral: {
+    bar: "#aeb4bd",
+    text: MAPLE_COLORS.graySubtleText,
+    chip: {
+      background: "#f1f3f5",
+      color: MAPLE_COLORS.graySubtleText,
+      border: "1px solid #aeb4bd"
+    },
+    square: { background: "#aeb4bd", color: MAPLE_COLORS.textStrong }
+  },
+  none: {
+    bar: MAPLE_COLORS.graySubtleBorder,
+    text: MAPLE_COLORS.textMuted,
+    chip: {
+      background: MAPLE_COLORS.graySubtleBg,
+      color: MAPLE_COLORS.textMuted,
+      border: `1px solid ${MAPLE_COLORS.graySubtleBorder}`
+    },
+    square: {
+      background: MAPLE_COLORS.graySubtleBg,
+      color: MAPLE_COLORS.graySubtleText
+    }
+  }
+}
+
+// An organization that reported more than one position.
+const MULTIPLE_TEXT = "#7a43b0"
+
+/** Bar and legend colours, including "multiple". */
+export const POSITION_COLORS: Record<PositionCategory, string> = {
+  support: POSITION_TONES.support.bar,
+  oppose: POSITION_TONES.oppose.bar,
+  neutral: POSITION_TONES.neutral.bar,
+  none: POSITION_TONES.none.bar,
+  multiple: MAPLE_COLORS.purple
+}
+
+/** Colours for large position counts on white, including "multiple". */
+export const POSITION_TEXT_COLORS: Record<
+  Exclude<PositionCategory, "none">,
+  string
+> = {
+  support: POSITION_TONES.support.text,
+  oppose: POSITION_TONES.oppose.text,
+  neutral: POSITION_TONES.neutral.text,
+  multiple: MULTIPLE_TEXT
+}
 
 // ── Axis / grid props ─────────────────────────────────────────────────────────
 // Spread directly onto <XAxis>, <YAxis>, <CartesianGrid>.

@@ -7,12 +7,70 @@ import { z } from "zod"
 // Lazily initialize db so we don't call admin.firestore() before initializeApp() runs in index.ts
 export const getDb = () => admin.firestore()
 
-// Current General Court session.
-// Source of truth: functions/src/shared/constants.ts → currentGeneralCourt
-// Override at deploy time via CURRENT_COURT env var; fallback keeps local dev working.
-const CURRENT_COURT = process.env.CURRENT_COURT
-  ? parseInt(process.env.CURRENT_COURT, 10)
-  : 194
+// The bill scraper updates each bill about once a day, and the current court
+// changes every two years, so they're cached for 12 hours.
+const CACHE_TTL_MS = 12 * 60 * 60 * 1000
+const cache = new Map<string, { value: Promise<any>; at: number }>()
+
+function cached<T>(key: string, load: () => Promise<T>): Promise<T> {
+  const hit = cache.get(key)
+  if (hit && Date.now() - hit.at < CACHE_TTL_MS) return hit.value
+  const value = load()
+  cache.set(key, { value, at: Date.now() })
+  // Don't keep a failure: the next call tries again.
+  value.catch(() => {
+    if (cache.get(key)?.value === value) cache.delete(key)
+  })
+  return value
+}
+
+/**
+ * The current General Court session: CURRENT_COURT if set, else the newest
+ * court with bills in Firestore. MAPLE's bill scraper only fetches the current
+ * court (currentGeneralCourt in functions/src/shared/constants.ts), so a new
+ * session is picked up once its first bills are scraped, without a redeploy.
+ */
+export function currentCourt(): Promise<number> {
+  if (process.env.CURRENT_COURT)
+    return Promise.resolve(parseInt(process.env.CURRENT_COURT, 10))
+  return cached("currentCourt", async () => {
+    const courts = (await getDb().collection("generalCourts").listDocuments())
+      .map(ref => Number(ref.id))
+      .filter(Number.isInteger)
+      .sort((a, b) => b - a)
+    for (const court of courts) {
+      const bills = await getDb()
+        .collection(`generalCourts/${court}/bills`)
+        .select()
+        .limit(1)
+        .get()
+      if (!bills.empty) return court
+    }
+    throw new Error("No General Court with bills found")
+  })
+}
+
+/**
+ * The distinct values of one bill field in a session, sorted. Reads every bill
+ * (a session has about 9,000), but only that field.
+ */
+export function distinctBillValues(
+  court: number,
+  field: string
+): Promise<string[]> {
+  return cached(`${field}:${court}`, async () => {
+    const snapshot = await getDb()
+      .collection(`generalCourts/${court}/bills`)
+      .select(field)
+      .get()
+    const values = new Set<string>()
+    snapshot.docs.forEach(doc => {
+      const value = doc.get(field)
+      if (value) values.add(value)
+    })
+    return [...values].sort()
+  })
+}
 
 // Vertex AI Configuration
 const project = process.env.FIREBASE_PROJECT_ID
@@ -239,9 +297,8 @@ export const SearchSchema = {
   court: z
     .number()
     .optional()
-    .default(CURRENT_COURT)
     .describe(
-      `Legislature session (General Court) number. Defaults to the current ${CURRENT_COURT}th session. Pass an older number (e.g. 193) to search a prior session.`
+      "Legislature session (General Court) number. Defaults to the current session. Pass an older number (e.g. 193) to search a prior session."
     ),
   includeFullText: z
     .boolean()
@@ -273,9 +330,8 @@ export const TestimonySearchSchema = {
   court: z
     .number()
     .optional()
-    .default(CURRENT_COURT)
     .describe(
-      `Legislature session (General Court) number. Defaults to the current ${CURRENT_COURT}th session. Pass an older number (e.g. 193) to search a prior session.`
+      "Legislature session (General Court) number. Defaults to the current session. Pass an older number (e.g. 193) to search a prior session."
     ),
   includeFullText: z
     .boolean()
@@ -290,9 +346,8 @@ export const ListSchema = {
   court: z
     .number()
     .optional()
-    .default(CURRENT_COURT)
     .describe(
-      `Legislature session (General Court) number. Defaults to the current ${CURRENT_COURT}th session.`
+      "Legislature session (General Court) number. Defaults to the current session."
     )
 }
 
@@ -345,7 +400,7 @@ export function applyBillPostFilters(
 // Queries
 // ---------------------------------------------------------------------------
 // Each parses its arguments with the tool's schema, so callers outside the MCP
-// SDK get the same defaults (limit, court, includeFullText).
+// SDK get the same defaults (limit, includeFullText); court defaults to currentCourt().
 
 /** For a process that doesn't run index.ts: initializes the same firebase-admin these queries use. */
 export function initFirestore() {
@@ -353,7 +408,7 @@ export function initFirestore() {
 }
 
 export async function searchBills(args: unknown) {
-  const {
+  let {
     query,
     limit,
     court,
@@ -363,6 +418,7 @@ export async function searchBills(args: unknown) {
     primarySponsor,
     includeFullText
   } = z.object(SearchSchema).parse(args)
+  court ??= await currentCourt()
   const embedding = await getEmbedding(query, true)
   const hasPostFilters = !!(
     legislationType ||
@@ -398,7 +454,7 @@ export async function searchBills(args: unknown) {
 }
 
 export async function searchTestimony(args: unknown) {
-  const {
+  let {
     query,
     court,
     policyType,
@@ -407,6 +463,7 @@ export async function searchTestimony(args: unknown) {
     limit,
     includeFullText
   } = z.object(TestimonySearchSchema).parse(args)
+  court ??= await currentCourt()
   const embedding = await getEmbedding(query, true)
   let testimonyRef: any = getDb().collectionGroup("publishedTestimony")
   let courtPostFilter = false
@@ -453,15 +510,8 @@ export async function searchTestimony(args: unknown) {
 
 export async function listSponsors(args: unknown) {
   const { court } = z.object(ListSchema).parse(args)
-  const snapshot = await getDb()
-    .collection(`generalCourts/${court}/bills`)
-    .limit(1000)
-    .get()
-
-  const sponsors = new Set<string>()
-  snapshot.docs.forEach((doc: any) => {
-    const name = doc.data().content?.PrimarySponsor?.Name
-    if (name) sponsors.add(name)
-  })
-  return [...sponsors].sort()
+  return distinctBillValues(
+    court ?? (await currentCourt()),
+    "content.PrimarySponsor.Name"
+  )
 }

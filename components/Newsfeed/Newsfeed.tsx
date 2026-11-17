@@ -252,9 +252,12 @@ export default function Newsfeed() {
                             billId={element.billId}
                             bodyText={element.bodyText}
                             conferenceId={element.conferenceId}
+                            conferenceName={element.conferenceName}
+                            cosignOf={element.cosignOf}
                             court={element.court}
                             header={element.header}
                             isBillMatch={element.isBillMatch}
+                            isConferenceMatch={element.isConferenceMatch}
                             isUserMatch={element.isUserMatch}
                             isBallotQuestionMatch={
                               element.isBallotQuestionMatch

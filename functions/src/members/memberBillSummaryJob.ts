@@ -7,7 +7,7 @@ import { FieldValue, db } from "../firebase"
 import { currentGeneralCourt } from "../shared"
 
 export const buildMemberBillSummaries = onSchedule(
-  { schedule: "every 24 hours", timeoutSeconds: 540 },
+  { schedule: "every 24 hours", memory: "512MiB", timeoutSeconds: 540 },
   async () => {
     const court = currentGeneralCourt
     const [memberSnapshot, billSnapshot] = await Promise.all([

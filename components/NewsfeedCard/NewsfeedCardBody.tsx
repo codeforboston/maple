@@ -5,7 +5,8 @@ import { Col, Row } from "../bootstrap"
 import { Internal } from "components/links"
 import { truncateText } from "components/formatting"
 import { ConferencePosition } from "components/db"
-import { PositionChip } from "components/conference/input/Entry"
+import { Cosigned, PositionChip } from "components/conference/input/Entry"
+import { CosignOf } from "../Newsfeed/NotificationProps"
 
 export const NewsfeedBallotQuestionCardBody = ({
   ballotQuestionId,
@@ -196,16 +197,22 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
   )
 }
 
-/** Testimony on a committee of conference: the stance is the conference
- * page's chip, and the card leads to the conference, not the bill. */
+/**
+ * Testimony on a committee of conference: the stance is the conference page's
+ * chip, and the card leads to the conference, not the bill. A cosign is
+ * tagged, with the cosigner's own line first when they wrote one and the
+ * input they cosigned quoted under it, as the email to their legislators sets
+ * it out. That quote arrives already trimmed.
+ */
 export const NewsfeedConferenceTestimonyCardBody = (props: {
   billText?: string
   conferenceHref: string
+  cosignOf?: CosignOf | null
   position?: string
   text?: string
   timestamp?: string
 }) => {
-  const { billText, conferenceHref, text, timestamp } = props
+  const { billText, conferenceHref, cosignOf, text, timestamp } = props
   const { t } = useTranslation("common")
 
   return (
@@ -215,13 +222,28 @@ export const NewsfeedConferenceTestimonyCardBody = (props: {
           <strong>{billText}</strong>
         </CardBootstrap.Text>
         <div className={`bg-body mx-0 mt-1 p-3 rounded`}>
-          {ConferencePosition.guard(props.position) && (
-            <PositionChip position={props.position} long />
+          <div className={`d-flex flex-wrap align-items-center gap-2`}>
+            {ConferencePosition.guard(props.position) && (
+              <PositionChip position={props.position} long />
+            )}
+            {cosignOf && <Cosigned>{t("newsfeed.cosigned")}</Cosigned>}
+          </div>
+          {(text || !cosignOf) && (
+            <strong className={`d-block mt-2`}>{`"${truncateText(
+              text,
+              600
+            )}"`}</strong>
           )}
-          <strong className={`d-block mt-2`}>{`"${truncateText(
-            text,
-            600
-          )}"`}</strong>
+          {cosignOf && (
+            <>
+              <div className={`mt-2`}>
+                {t("newsfeed.cosignedInput", { name: cosignOf.authorName })}
+              </div>
+              <blockquote className={`border-start border-3 ps-3 mt-1 mb-0`}>
+                {cosignOf.content}
+              </blockquote>
+            </>
+          )}
         </div>
         <div className={`d-flex flex-wrap justify-content-between mt-2 mb-2`}>
           <div>

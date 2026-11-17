@@ -1,7 +1,6 @@
 import { districtId } from "functions/src/districts/normalize"
 import { currentGeneralCourt } from "functions/src/shared"
 import type { Branch } from "../../functions/src/common"
-import type { ConferenceSource } from "../../functions/src/conferences/types"
 import {
   Conference,
   getConferenceForBill,
@@ -18,12 +17,13 @@ import {
 import { cells } from "./map/geometry"
 import {
   byActivity,
+  isShown,
   ConfereeView,
   ConferenceIndexProps,
+  ConferenceLanding,
   ConferencePageProps,
   ConferenceSummary,
-  HearingView,
-  SourceView
+  HearingView
 } from "./types"
 
 const summarize = (c: Conference): ConferenceSummary => ({
@@ -34,12 +34,19 @@ const summarize = (c: Conference): ConferenceSummary => ({
   senateBillId: c.senateBillId,
   houseBillId: c.houseBillId,
   canonicalBillId: c.canonicalBillId,
-  status: c.status
+  status: c.status,
+  // Read without validation: a document synced before these fields existed
+  // has neither.
+  covered: c.covered !== false,
+  reportBillId: c.reportBillId ?? null
 })
 
-/** As props: Next refuses undefined, so what is left out arrives as null. */
-const sourceView = (s?: ConferenceSource): SourceView | null =>
-  s ? { ...s, publishedAt: s.publishedAt ?? null } : null
+/** Every conference in the court the site shows. */
+const listShown = async (court: number) =>
+  (await listConferences(court)).filter(isShown)
+
+/** Conferences as the rail lists them: active first, then by name. */
+const railOf = (all: Conference[]) => all.map(summarize).sort(byActivity)
 
 /** The member's cell on the map: their district id, or null where the map has
  * no such seat. */
@@ -115,26 +122,27 @@ export async function loadConferencePage(
   id: string
 ): Promise<ConferencePageProps | null> {
   // The rail needs every conference, and the page's own is among them.
-  return pageFor(court, await listConferences(court), id)
+  return pageFor(court, await listShown(court), id)
 }
 
-/** The page for the first conference in the rail's order, which the landing
- * opens on; null where the court has none. */
-export async function loadLandingPage(
+/** Where the landing's button goes: the first covered conference in the
+ * rail's order, else the rail's first; null where the court has none. */
+export async function loadLanding(
   court: number
-): Promise<ConferencePageProps | null> {
-  return pageFor(court, await listConferences(court))
+): Promise<ConferenceLanding | null> {
+  const rail = railOf(await listShown(court))
+  const landing = rail.find(c => c.covered) ?? rail[0]
+  return landing ? { court: landing.court, id: landing.id } : null
 }
 
-/** The page for conference `id` among `all`, or for the rail's first where
- * there is no `id`. */
+/** The page for conference `id` among `all`. */
 async function pageFor(
   court: number,
   all: Conference[],
-  id?: string
+  id: string
 ): Promise<ConferencePageProps | null> {
-  const rail = all.map(summarize).sort(byActivity)
-  const summary = rail.find(c => c.id === (id ?? rail[0]?.id))
+  const rail = railOf(all)
+  const summary = rail.find(c => c.id === id)
   const conference = all.find(c => c.id === summary?.id)
   if (!summary || !conference) return null
   const [members, hearings] = await Promise.all([
@@ -160,13 +168,18 @@ async function pageFor(
       senate: d.senate ?? null,
       house: d.house ?? null,
       notes: d.notes ?? {},
-      source: sourceView(d.source)
+      outcome: d.outcome ?? null,
+      edited: d.edited ?? null,
+      addressedBy: d.addressedBy ?? null,
+      resolution: d.resolution ?? null,
+      law: d.law ?? null,
+      why: d.why ?? null
     })),
     similarities: conference.similarities.map(d => ({
       heading: d.heading,
-      body: d.body,
-      source: sourceView(d.source)
-    }))
+      body: d.body
+    })),
+    testimonyCount: conference.testimonyCount ?? 0
   }
 }
 
@@ -181,14 +194,14 @@ export async function loadConferenceIndex(
 ): Promise<ConferenceIndexProps> {
   // The index doesn't depend on the conferences, so read both at once.
   const [all, index] = await Promise.all([
-    listConferences(court),
+    listShown(court),
     court === currentGeneralCourt ? getMemberSearchIndex() : undefined
   ])
   const members = index
     ? membersFromIndex(index)
     : await membersByRead(court, confereeCodes(all))
   return {
-    conferences: all.map(summarize).sort(byActivity),
+    conferences: railOf(all),
     conferees: resolveConferees(all, members)
   }
 }
@@ -199,7 +212,7 @@ export async function loadConferenceForBill(
   billId: string
 ): Promise<ConferenceSummary | null> {
   const c = await getConferenceForBill(court, billId)
-  return c ? summarize(c) : null
+  return c && isShown(c) ? summarize(c) : null
 }
 
 /** The conference a hearing belongs to, by the hearing page's numeric id. */
@@ -212,5 +225,5 @@ export async function loadConferenceForHearing(
     Number(generalCourtNumber),
     `hearing-${hearingId}`
   )
-  return c ? summarize(c) : null
+  return c && isShown(c) ? summarize(c) : null
 }

@@ -9,6 +9,7 @@ import { Chair, Conferees, ConfereeFace, yoursKey } from "./Conferees"
 import { ConferenceList, ConferenceTable } from "./ConferenceTable"
 import { DistrictMap, seatsOf } from "./DistrictMap"
 import { useHover, useMyLegislators } from "./hooks"
+import { OverviewLink } from "./OverviewLink"
 import { Card, DottedInternal, Eyebrow, PageColumn, Title } from "./styles"
 import {
   CHAMBERS,
@@ -35,6 +36,25 @@ type Sitting = {
 
 const Page = styled(PageColumn)`
   padding-top: 1.25rem;
+`
+
+/** The title, with the overview link at its right; over it below md, as on
+ * the conference pages. */
+const Heading = styled.div`
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "title link";
+  align-items: center;
+  gap: 0.5rem 1.5rem;
+
+  @media (max-width: 767.98px) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "link" "title";
+  }
+`
+
+const HeadingTitle = styled(Title)`
+  grid-area: title;
 `
 
 const Intro = styled.p`
@@ -296,7 +316,10 @@ export function ConferenceExplorer({
 
   return (
     <Page>
-      <Title>{t("index_title")}</Title>
+      <Heading>
+        <HeadingTitle>{t("index_title")}</HeadingTitle>
+        <OverviewLink />
+      </Heading>
       <Intro>{t("index_intro")}</Intro>
       <Card>
         <Narrow>

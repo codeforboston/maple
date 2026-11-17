@@ -21,9 +21,32 @@ export const ConferenceSource = Record({
   publishedAt: Optional(String)
 })
 
+/** How the law settled a question: in one chamber's text, assembled from
+ * both, one chamber's provision changed in substance, text neither passed, or
+ * left out. */
+export type ConferenceOutcome = Static<typeof ConferenceOutcome>
+export const ConferenceOutcome = Union(
+  L("senate"),
+  L("house"),
+  L("combined"),
+  L("modified"),
+  L("new"),
+  L("dropped")
+)
+
+/** Which chambers' bills took up a question. */
+export type ConferenceAddressedBy = Static<typeof ConferenceAddressedBy>
+export const ConferenceAddressedBy = Union(
+  L("both"),
+  L("house"),
+  L("senate"),
+  L("neither")
+)
+
 /** One point the chambers disagree on, with a short blob per chamber. Written
  * by journalists, never computed from the texts. A chamber left out has
- * nothing on it in its bill. */
+ * nothing on it in its bill. Once a report is filed, each says how the law
+ * resolved it. */
 export type ConferenceDifference = Static<typeof ConferenceDifference>
 export const ConferenceDifference = Record({
   heading: String,
@@ -31,8 +54,31 @@ export const ConferenceDifference = Record({
   house: Optional(String),
   /** Phrases in either blob that open a note, each with its points. */
   notes: Optional(Dictionary(Array(String), String)),
-  source: Optional(ConferenceSource)
+  source: Optional(ConferenceSource),
+  outcome: Optional(ConferenceOutcome),
+  /** Small wording changes made in conference that leave the outcome
+   * standing, in a few words. */
+  edited: Optional(String),
+  /** Which bills took it up. A silent chamber's blob may still say what it
+   * lacked. */
+  addressedBy: Optional(ConferenceAddressedBy),
+  /** How it was resolved, in a line. */
+  resolution: Optional(String),
+  /** What the law says on it. */
+  law: Optional(String),
+  why: Optional(String)
 })
+
+/** The fields that say how the law resolved a question, which only a
+ * conference with a report may set. */
+export const conferenceResolutionFields = [
+  "outcome",
+  "addressedBy",
+  "edited",
+  "resolution",
+  "law",
+  "why"
+] as const
 
 /** One point where the two texts match, with a short explanation. */
 export type ConferenceSimilarity = Static<typeof ConferenceSimilarity>
@@ -72,13 +118,20 @@ export const Conference = withDefaults(
     /** A short name for headings and lists ("Phone-Free Schools"), as the
      * press refers to it. Pages fall back to the title. */
     name: Optional(String),
-    /** What the bill is, in one sentence, above what is unresolved. */
+    /** What the bills are, in a short paragraph of markdown, above what is
+     * unresolved. */
     gist: Optional(String),
     senateBillId: Id,
     houseBillId: Id,
     /** The bill whose history carries the appointment actions, one of the
      * pair. Testimony on the conference is filed against this bill. */
     canonicalBillId: Id,
+    /** False while we haven't written up this conference: its page carries a
+     * notice and takes no testimony. */
+    covered: Boolean,
+    /** The conference report, which the legislature files as a bill of its
+     * own once the committee agrees. */
+    reportBillId: Optional(Id),
     conferees: Array(Conferee),
     status: ConferenceStatus,
     /** Linked by hand: conference hearings arrive with an empty agenda and no
@@ -93,6 +146,7 @@ export const Conference = withDefaults(
     passHouseVersionCount: Number
   }),
   {
+    covered: true,
     hearingIds: [],
     differences: [],
     similarities: [],

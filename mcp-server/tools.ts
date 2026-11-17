@@ -5,6 +5,8 @@ import {
   SearchSchema,
   TestimonySearchSchema,
   applyBillPostFilters,
+  currentCourt,
+  distinctBillValues,
   getDb,
   getEmbedding,
   listSponsors,
@@ -131,6 +133,7 @@ export function registerTools(server: McpServer) {
       primarySponsor,
       includeFullText
     }: any) => {
+      court ??= await currentCourt()
       const embedding = await getEmbedding(query as string, true)
       const hasPostFilters = !!(
         legislationType ||
@@ -237,22 +240,16 @@ export function registerTools(server: McpServer) {
       inputSchema: ListSchema
     },
     async ({ court }: any) => {
-      const snapshot = await getDb()
-        .collection(`generalCourts/${court}/bills`)
-        .limit(1000)
-        .get()
-
-      const committees = new Set<string>()
-      snapshot.docs.forEach((doc: any) => {
-        const name = doc.data().currentCommittee?.name
-        if (name) committees.add(name)
-      })
+      const committees = await distinctBillValues(
+        court ?? (await currentCourt()),
+        "currentCommittee.name"
+      )
 
       return {
         content: [
           {
             type: "text" as const,
-            text: JSON.stringify([...committees].sort(), null, 2)
+            text: JSON.stringify(committees, null, 2)
           }
         ]
       }

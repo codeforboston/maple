@@ -73,7 +73,10 @@ const SubLabel = styled.span`
   opacity: 0.7;
 `
 
-const NameButton = styled.button<{ $tone: "strong" | "mid" | "faint" }>`
+const NameButton = styled.button<{
+  $tone: "strong" | "mid" | "faint"
+  $covered: boolean
+}>`
   display: block;
   width: 150px;
   padding: 0;
@@ -82,8 +85,10 @@ const NameButton = styled.button<{ $tone: "strong" | "mid" | "faint" }>`
   text-align: left;
   font-size: 0.875rem;
   line-height: 1.3;
-  color: ${({ $tone }) =>
-    $tone === "faint" ? "var(--maple-text-muted)" : "var(--maple-text-strong)"};
+  color: ${({ $tone, $covered }) =>
+    $tone === "faint" || !$covered
+      ? "var(--maple-text-muted)"
+      : "var(--maple-text-strong)"};
   font-weight: ${({ $tone }) => ($tone === "mid" ? 700 : 400)};
   &[aria-pressed="true"] {
     font-weight: 600;
@@ -219,6 +224,7 @@ export function ConferenceTable({
                   type="button"
                   aria-pressed={isSelected}
                   $tone={tone}
+                  $covered={c.covered}
                   onFocus={() => hover(c.id)}
                   onBlur={() => hover(null)}
                 >
@@ -278,7 +284,7 @@ const List = styled.ul`
   }
 `
 
-const ListRow = styled(Internal)`
+const ListRow = styled(Internal)<{ $covered: boolean }>`
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -290,6 +296,8 @@ const ListRow = styled(Internal)`
   .name {
     display: block;
     font-weight: 600;
+    color: ${({ $covered }) =>
+      $covered ? "inherit" : "var(--maple-text-muted)"};
   }
   .text {
     flex: 1 1 auto;
@@ -328,7 +336,7 @@ export const ConferenceList = memo(function ConferenceList({
     <List>
       {conferences.map(c => (
         <li key={c.id}>
-          <ListRow href={maple.conference(c)}>
+          <ListRow href={maple.conference(c)} $covered={c.covered}>
             <span className="text">
               <span className="name">{conferenceName(c)}</span>
               <Bills>

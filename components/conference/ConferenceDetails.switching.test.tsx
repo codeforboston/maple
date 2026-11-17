@@ -16,13 +16,25 @@ jest.mock("next-i18next", () => ({
 jest.mock("next/router", () => ({
   __esModule: true,
   default: { events: { on: () => {} } },
-  useRouter: () => ({ asPath: "/conferences/194/a" })
+  useRouter: () => ({ asPath: "/conferences/194/a", query: {} })
 }))
 jest.mock("usehooks-ts", () => ({ useMediaQuery: () => false }))
+// react-markdown ships ESM only, and the gist here is empty.
+jest.mock("react-markdown", () => ({ __esModule: true, default: () => null }))
 jest.mock("../featureFlags", () => ({
   useFlags: () => ({ legislators: false, hearingsAndTranscriptions: true })
 }))
 jest.mock("../hooks", () => ({ useAppDispatch: () => jest.fn() }))
+// Following has its own tests; here it is a switch.
+let mockFollowVisible = false
+jest.mock("./FollowConference", () => ({
+  ...jest.requireActual("./FollowConference"),
+  useConferenceFollow: () => ({
+    visible: mockFollowVisible,
+    following: false,
+    toggle: jest.fn()
+  })
+}))
 jest.mock("./input/useFollowedAuthors", () => ({
   useFollowedAuthors: () => new Set()
 }))
@@ -47,6 +59,7 @@ jest.mock("../auth", () => ({
 const mounted: string[] = []
 jest.mock("../db", () => ({
   useProfile: () => ({ profile: {} }),
+  useMember: () => ({ member: undefined }),
   hasDraftChanged: () => false,
   useConferenceTestimony: () => ({ items: [], loading: false }),
   useEditConferenceTestimony: (
@@ -82,7 +95,9 @@ const summary = (id: string, senate: string, house: string) => ({
   senateBillId: senate,
   houseBillId: house,
   canonicalBillId: senate,
-  status: "appointed" as const
+  status: "appointed" as const,
+  covered: true,
+  reportBillId: null
 })
 const phoneFree = summary(
   "student-learning-and-mental-health",
@@ -90,15 +105,20 @@ const phoneFree = summary(
   "H5366"
 )
 const privacy = summary("data-privacy", "S2619", "H5479")
+const enacted = {
+  ...summary("home-care", "S3183", "H4706"),
+  status: "enacted" as const
+}
 
 const page = (conference: ConferencePageProps["conference"]) => ({
   conference,
-  conferences: [phoneFree, privacy],
+  conferences: [phoneFree, privacy, enacted],
   conferees: [],
   hearings: [],
   gist: null,
   differences: [],
-  similarities: []
+  similarities: [],
+  testimonyCount: 0
 })
 
 describe("moving between conferences", () => {
@@ -120,5 +140,44 @@ describe("moving between conferences", () => {
     expect(field()).toHaveValue("")
     // ...and the draft hook was mounted afresh, so it files on the new one.
     expect(mounted).toEqual([phoneFree.id, privacy.id])
+  })
+
+  describe("the group of conferences no longer taking input", () => {
+    // The rail's: the picker's menu holds a copy only once it is opened.
+    const folds = (c: HTMLElement) =>
+      [...c.querySelectorAll("details")].map(d => d.open)
+
+    it("starts folded on a conference still sitting", () => {
+      const { container } = render(<ConferenceDetails {...page(privacy)} />)
+      expect(folds(container)).toEqual([false])
+    })
+
+    it("opens on arriving at a conference in it", () => {
+      const { container, rerender } = render(
+        <ConferenceDetails {...page(privacy)} />
+      )
+      rerender(<ConferenceDetails {...page(enacted)} />)
+      expect(folds(container)).toEqual([true])
+    })
+
+    it("stays open on moving back to a conference still sitting", () => {
+      const { container, rerender } = render(
+        <ConferenceDetails {...page(enacted)} />
+      )
+      rerender(<ConferenceDetails {...page(privacy)} />)
+      expect(folds(container)).toEqual([true])
+    })
+
+    it("stays as the reader left it between conferences still sitting", () => {
+      const { container, rerender } = render(
+        <ConferenceDetails {...page(privacy)} />
+      )
+      const details = container.querySelector("details")!
+      details.open = true
+      fireEvent(details, new Event("toggle"))
+
+      rerender(<ConferenceDetails {...page(phoneFree)} />)
+      expect(folds(container)).toEqual([true])
+    })
   })
 })

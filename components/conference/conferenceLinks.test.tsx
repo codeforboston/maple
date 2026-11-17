@@ -24,7 +24,9 @@ const conference: ConferenceSummary = {
   senateBillId: "S2500",
   houseBillId: "H4000",
   canonicalBillId: "S2500",
-  status: "appointed"
+  status: "appointed",
+  covered: true,
+  reportBillId: null
 }
 
 describe("conference links", () => {

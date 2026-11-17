@@ -2,7 +2,7 @@ import { Trans, useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { formatBillId } from "../formatting"
 import { maple } from "../links"
-import { DottedInternal } from "./styles"
+import { DottedInternal, Notice } from "./styles"
 import { ConferenceSummary } from "./types"
 
 const Line = styled.p`
@@ -31,7 +31,8 @@ const Status = styled.span`
 /**
  * What the committee is, in the legislature's own construction: the act it
  * exists to pass, and the two texts it reconciles to pass it. Each number goes
- * to its own bill page.
+ * to its own bill page. Under it, the report that resolved it, and a notice
+ * where we haven't covered it.
  */
 export function ConferenceByline({
   conference
@@ -63,6 +64,17 @@ export function ConferenceByline({
       {conference.status !== "appointed" && (
         <Status>{t(`status.${conference.status}`)}</Status>
       )}
+      {conference.reportBillId && (
+        <Notice>
+          <Trans
+            t={t}
+            i18nKey="notice.resolved"
+            values={{ report: formatBillId(conference.reportBillId) }}
+            components={{ 1: bill(conference.reportBillId) }}
+          />
+        </Notice>
+      )}
+      {!conference.covered && <Notice>{t("notice.not_covered")}</Notice>}
     </div>
   )
 }

@@ -41,6 +41,21 @@ locals {
     "s1._domainkey CNAME" = { ttl = 14400, rrdatas = ["s1.domainkey.u32856346.wl097.sendgrid.net."] }
     "s2._domainkey CNAME" = { ttl = 14400, rrdatas = ["s2.domainkey.u32856346.wl097.sendgrid.net."] }
 
+    # SendGrid domain authentication for the conference streams: letters from
+    # readers to their legislators, and MAPLE's weekly update to conferees.
+    # Each sends from its own subdomain so a reputation problem in one cannot
+    # reach the other or the main domain. No MX on purpose: replies go to
+    # Reply-To, and mail to a sending address bounces. The _dmarc records
+    # repeat what the apex already says so either policy can diverge later.
+    "em759.letters CNAME"         = { ttl = 14400, rrdatas = ["u32856346.wl097.sendgrid.net."] }
+    "s1._domainkey.letters CNAME" = { ttl = 14400, rrdatas = ["s1.domainkey.u32856346.wl097.sendgrid.net."] }
+    "s2._domainkey.letters CNAME" = { ttl = 14400, rrdatas = ["s2.domainkey.u32856346.wl097.sendgrid.net."] }
+    "_dmarc.letters TXT"          = { ttl = 14400, rrdatas = ["\"v=DMARC1; p=none;\""] }
+    "em9068.updates CNAME"        = { ttl = 14400, rrdatas = ["u32856346.wl097.sendgrid.net."] }
+    "s1._domainkey.updates CNAME" = { ttl = 14400, rrdatas = ["s1.domainkey.u32856346.wl097.sendgrid.net."] }
+    "s2._domainkey.updates CNAME" = { ttl = 14400, rrdatas = ["s2.domainkey.u32856346.wl097.sendgrid.net."] }
+    "_dmarc.updates TXT"          = { ttl = 14400, rrdatas = ["\"v=DMARC1; p=none;\""] }
+
     # Firebase's custom mail domain, mail.mapletestimony.org: its own SPF, the
     # project verification token, and the two DKIM CNAMEs beneath it. This is
     # the envelope domain for password resets and digest mail.

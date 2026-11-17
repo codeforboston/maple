@@ -21,6 +21,14 @@ export async function listConferences(court: number) {
   return snap.docs.map(d => d.data() as Conference)
 }
 
+/** The conferences still sitting, unordered. */
+export async function listAppointedConferences(court: number) {
+  const snap = await getDocs(
+    query(conferences(court), where("status", "==", "appointed"))
+  )
+  return snap.docs.map(d => d.data() as Conference)
+}
+
 export async function getConference(court: number, id: string) {
   const snap = await getDoc(doc(conferences(court), id))
   return snap.data() as Conference | undefined

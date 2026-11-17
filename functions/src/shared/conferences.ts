@@ -1,6 +1,31 @@
-import type { ConferenceStatus } from "../conferences/types"
+import type { Conference } from "../conferences/types"
+import type { ConferencePosition } from "../testimony/types"
+
+/** Once the report is filed, the committee has decided: each question says
+ * how the law resolved it. */
+export const hasReport = (c: Pick<Conference, "status">) =>
+  c.status === "reportFiled" || c.status === "enacted"
+
+/** The committee is still deciding which version to report: neither a report
+ * filed, nor enacted, nor dissolved. */
+export const isSitting = (c: Pick<Conference, "status">) =>
+  c.status === "appointed"
 
 /** Testimony is taken while the committee is still deciding which version to
- * report. */
-export const takesTestimony = (status: ConferenceStatus) =>
-  status === "appointed"
+ * report, on the conferences we cover. A document synced before `covered`
+ * existed counts as covered. */
+export const takesTestimony = (c: Pick<Conference, "status" | "covered">) =>
+  isSitting(c) && c.covered !== false
+
+type Named = { name?: string | null; title?: string | null }
+
+/** The short name where there is one, else the act title. */
+export const conferenceName = (c: Named) =>
+  c.name?.trim() || c.title?.trim() || ""
+// The site's wording, conferences input.position.*.long; a test holds them equal.
+export const CONFERENCE_STANCES: Record<ConferencePosition, string> = {
+  passSomething: "Pass a final bill",
+  passSenateVersion: "Pass the Senate version",
+  passHouseVersion: "Pass the House version",
+  passNothing: "Don’t pass a final bill"
+}

@@ -2,6 +2,7 @@ id: data-privacy
 name: Data Privacy
 court: 194
 title: An Act establishing the Massachusetts data privacy act
+gist: Both bills create a consumer data privacy law (new G.L. c.93M) giving residents rights to see, correct and delete their data and to opt out of targeted ads and data sales. Both ban selling precise location data and minors' data and are enforced by the Attorney General. They disagree on which businesses are covered, how tightly collection and sensitive data are limited, whether selling sensitive data is banned or allowed with consent, and whether individuals can sue the largest companies.
 senateBillId: S2619
 houseBillId: H5479
 canonicalBillId: S2619
@@ -24,5 +25,73 @@ conferees:
 hearingIds:
   - hearing-5739
   - hearing-5752
-differences: []
-similarities: []
+differences:
+  - heading: Should individuals be able to sue companies that break the law, or only the Attorney General?
+    senate: Only the Attorney General may sue. The bill overrides the parts of the state consumer protection law (c.93A) that would otherwise let consumers sue. (§1, new c.93M §10(b))
+    house: Yes, against the largest companies. Individuals may sue "large data holders" (companies with data on more than 2,000,000 consumers, or sensitive data on more than 200,000) under the state consumer protection law (c.93A), including in class actions. Only the Attorney General may sue other companies. Money awarded in a class action is reduced by anything the Attorney General recovers for the same violation, and damages are put on hold until the Attorney General says whether it is seeking recovery, for up to 1 year after liability is found. (§1, new c.93M §1, §14(a))
+  - heading: Should companies get a chance to fix a violation before the Attorney General sues?
+    senate: Yes. The Attorney General must first send notice and give the company 60 days to fix the problem, unless the Attorney General decides it can't be fixed. This rule ends June 1, 2027. (§1, new c.93M §10(d); §§2, 4)
+    house: No. The bill has no waiting period. (§1, new c.93M §14)
+  - heading: Should selling sensitive data be banned, or allowed with the consumer's consent?
+    senate: Banned. The ban also applies to organizations otherwise exempt from the law, if they meet its size thresholds. (§1, new c.93M §3(a), §5(a)(iv))
+    house: Allowed if the consumer gives affirmative consent, except precise location data, which may never be sold. Organizations otherwise exempt from the law must follow this rule too. (§1, new c.93M §3(b), §7(a)(i))
+  - heading: When may companies collect and use sensitive data, such as health or biometric data?
+    senate: Only when "strictly necessary" to provide a product or service the consumer asked for. Passing it to others also requires the consumer's affirmative consent. (§1, new c.93M §5(a)(iii), (v))
+    house: Whenever the consumer gives affirmative consent. There is no "strictly necessary" limit. (§1, new c.93M §6(3))
+  - heading: Should union membership, military or veteran status, and data from fitness and wellness apps count as sensitive data?
+    senate: Not listed as sensitive. Wellness data counts only if it reveals a health condition, diagnosis, disability or treatment. (§1, new c.93M §1 "sensitive data")
+    house: Yes, all three are listed as sensitive. (§1, new c.93M §1 "sensitive data," "consumer health and wellness data")
+  - heading: How much personal data may companies collect in general?
+    senate: Only what is "reasonably necessary to provide or maintain a specific product or service requested by the consumer." (§1, new c.93M §5(a)(i)–(ii))
+    house: What is "reasonably necessary and proportionate" to the purposes the company has disclosed, consistent with what consumers would reasonably expect. (§1, new c.93M §6(1)–(2))
+  - heading: Should companies have to delete data on a schedule and tell consumers how long they keep it?
+    house: Yes. Companies must delete personal data when the law requires it or when it is no longer needed, and privacy notices must say how long each kind of data is kept or how that is decided. (§1, new c.93M §6(4), §8(a)(vi))
+  - heading: Which businesses should the law cover?
+    senate: Businesses that, in the prior year, handled data on at least 60,000 Massachusetts residents; or on at least 20,000 residents while earning at least 20% of their revenue from selling data; or any reproductive or sexual health data. Affiliates that passed sensitive data to such a business are also covered. Data used only to process payments doesn't count. (§1, new c.93M §2)
+    house: Businesses that operate in or target Massachusetts and, in the prior year, handled data on at least 100,000 residents; or earned at least $100,000 from selling data; or handled any sensitive data. Data used only to process payments doesn't count. (§1, new c.93M §2)
+  - heading: Should health care organizations covered by federal HIPAA rules, educational nonprofits and colleges, and blood banks be exempt?
+    senate: HIPAA-covered organizations are exempt only if they handled data on 60,000 or fewer consumers. Health information protected by HIPAA is exempt either way. Educational nonprofits and blood banks are not exempt. (§1, new c.93M §3(a)(vii), (b)(i))
+    house: All HIPAA-covered organizations are exempt regardless of size, as are educational nonprofits "including an institution of higher education" and nonprofit blood banks. They must still follow the rules on selling data. (§1, new c.93M §3(a)(6), (7), (9), §3(b))
+  - heading: Should all data about minors count as sensitive data?
+    senate: Only data about a "child" as defined by the federal children's online privacy law (COPPA), which covers children under 13. (§1, new c.93M §1 "sensitive data" (vi))
+    house: Yes, data about anyone the company knows, or willfully disregards, is under 18. Products used mostly by minors also need a risk assessment. (§1, new c.93M §1; §10(a)(5))
+  - heading: What must a company know about a user's age before the ban on targeted ads to minors and selling minors' data applies?
+    senate: That it "knows or should have known" the user is under 18. (§1, new c.93M §5(a)(vi))
+    house: That it "has actual knowledge or willfully disregards" that the user is under 18. (§1, new c.93M §7(a)(ii))
+  - heading: What can parents do on their children's behalf, and what limits apply to data about a minor's LGBTQ+ status?
+    senate: Parents of a "child" (as COPPA defines it) may use the child's privacy rights for them, and the law does not stop parents from seeing their child's data. (§1, new c.93M §4(g)(2), §9(c)(iv))
+    house: Parents of any minor may use the minor's privacy rights for them. Companies may not share data related to a minor's "LGBTQ+ protected status" with someone acting on the minor's behalf. (§1, new c.93M §5(a))
+  - heading: When automated profiling is used in a major decision about someone, such as a loan, housing or a job, should the person get an explanation and a chance to challenge it?
+    senate: Yes, for decisions on lending, housing, insurance, education, jobs, health care and similar matters. People may learn the reasons, what they could have done differently and what data was used, and may have wrong data corrected and the decision reconsidered. (§1, new c.93M §4(b))
+    house: Not in the House bill. Both bills let consumers opt out of this kind of profiling. (§1, new c.93M §4(a)(6))
+  - heading: Must the Attorney General write regulations, and by when?
+    senate: No. The Attorney General "may" write rules, with no deadline. (§1, new c.93M §10(a))
+    house: Yes. The Attorney General "shall" write rules by May 1, 2027 on de-identification, data security, deceptive design ("dark patterns"), unfair data practices, risk assessments and privacy notices. (§1, new c.93M §13; §3)
+  - heading: When can the Attorney General see companies' risk assessments, and are they kept from public records requests?
+    senate: Whenever the Attorney General asks. They are confidential and exempt from the public records law. (§1, new c.93M §7(e))
+    house: Only when relevant to an investigation, and not before July 1, 2028. The bill does not exempt them from the public records law. (§1, new c.93M §10(d), (g); §2)
+  - heading: Should the state study how to regulate data brokers, and should the Attorney General report on enforcement each year?
+    house: Yes. The Office of Consumer Affairs and Business Regulation studies data broker regulation, including the cost of a registry, by July 1, 2027. The Attorney General reports on enforcement every year starting March 1, 2028. (§1A; §1, new c.93M §14(c); §4)
+similarities:
+  - heading: What privacy rights would residents get?
+    body: To find out whether a company has their data and get a copy (including conclusions drawn from it), correct it, delete it, take it to another service, and opt out of targeted ads, data sales and automated profiling used for major decisions.
+  - heading: Should selling precise location data be banned?
+    body: Yes. Location data precise to within 1,750 feet, collected in Massachusetts, may never be sold, even with consent.
+  - heading: Should targeting ads at minors or selling their data be banned?
+    body: Yes, for anyone under 18. What the company must know about the user's age differs (see above).
+  - heading: How would the law be enforced?
+    body: A violation counts as an unfair or deceptive business practice under the state consumer protection law (c.93A). The Attorney General may seek court orders, damages including punitive damages, refunds, surrender of profits and fines up to $5,000 per violation, and must offer a way for consumers to report violations. Who else may sue, and the waiting period before a suit, differ (see above).
+  - heading: Which organizations are exempt in both bills?
+    body: Government agencies, nonprofits that fight insurance fraud, securities and futures industry bodies, regulated banks and credit unions, and regulated brokers and investment advisers. Neither bill exempts nonprofits in general; the House adds more exemptions (see above).
+  - heading: Which kinds of data are exempt because other laws already cover them?
+    body: Health information protected by HIPAA, certain research data, and data covered by federal laws on financial privacy (Gramm-Leach-Bliley), credit reports (FCRA), driver records and student records (FERPA), plus employment and benefits data.
+  - heading: What counts as a "sale," and what counts as consent?
+    body: A sale is passing data to someone else for money or other valuable consideration, with standard exceptions. Consent must be a clear, specific, informed act. Accepting broad terms of use or being steered by deceptive design doesn't count, and withdrawing consent must be as easy as giving it.
+  - heading: Can companies punish consumers for using their rights?
+    body: No. Companies may not deny service or charge more to people who use their rights, though genuine loyalty programs are allowed.
+  - heading: May companies use personal data to discriminate?
+    body: No. Both bar using personal data to discriminate on race, sex, sexual orientation, gender identity, disability, religion, immigration status or other grounds protected by the state anti-discrimination law (c.151B).
+  - heading: Must companies keep data secure and assess high-risk uses?
+    body: Yes. Both require reasonable data security and written risk assessments for targeted ads, data sales, risky profiling and sensitive data.
+  - heading: How do consumers make requests and appeal a refusal?
+    body: Companies must offer at least two secure ways to make a request without creating an account, explain any refusal within 45 days, and decide appeals within 60 days, telling consumers how to complain to the Attorney General.

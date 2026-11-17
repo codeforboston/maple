@@ -2,6 +2,10 @@ id: public-records
 name: Public Records
 court: 194
 title: An Act promoting transparency and public access in state government
+gist: |-
+  Both bills would let the public request a set list of the Legislature's records through a separate process run by a records officer in each chamber, and both would bring the Governor's office under the public records law. They differ most on how courts review denials, whether the State Auditor may audit the Legislature (House only), which exemptions apply, and a journalist shield law (Senate only).
+
+  Both bills were written before voters approved [Question 1](https://www.sec.state.ma.us/divisions/elections/research-and-statistics/2026-Information-for-voters/2026-ballot-question1.htm) on Nov. 3, 2026. Starting Jan. 1, 2027, that law puts the Legislature and the Governor's office under the general public records law, with new exemptions for constituent casework and for documents about developing policy. A final bill based on either version would replace that approach for the Legislature's records.
 senateBillId: S3244
 houseBillId: H5469
 canonicalBillId: H5469
@@ -23,5 +27,45 @@ conferees:
     branch: Senate
 hearingIds:
   - hearing-5767
-differences: []
-similarities: []
+differences:
+  - heading: If the Legislature turns down a records request, which court can review it, and how closely?
+    senate: A petition for review in Suffolk Superior Court, filed within 60 days. The court looks only at the existing record (it may view the withheld documents privately) and decides only whether there were "substantial errors of law." It cannot issue orders such as injunctions, and cannot award costs, fees or damages except under G.L. c.231 §6F. (§5, new c.66 §22(e)(5))
+    house: A petition to the Supreme Judicial Court, which decides the question fresh ("de novo") and as quickly as feasible. Every record is presumed public, and the records officer must show by a preponderance of the evidence that it may be withheld. (§3, new c.3 §77(f)(5))
+  - heading: Should legislative records officers also be able to use the exemptions in the general public records law?
+    senate: Yes. Besides the reasons in the bill, an officer may withhold or black out anything covered by the general public records law's exemptions (G.L. c.4 §7, clause Twenty-sixth). (§5, new c.66 §22(e)(1))
+    house: "The bill does not refer to those exemptions. It lists its own reasons only: the record is not on the list, its release would conflict with Article XXI of the Massachusetts Declaration of Rights (which protects legislative debate), or the section otherwise allows it. (§3, new c.3 §77(f)(1))"
+  - heading: Should the Governor's office be able to withhold documents about policies still being developed, beyond the standard exemptions?
+    senate: Yes. In addition to the general exemptions, the office may withhold "communications, memoranda, drafts or other documents relating to developing policy positions." The office must name at least one records officer. (§2, new c.66 §6A(g))
+    house: The bill has no extra exemption for the Governor's office. It adds the office's records from January 7, 2027 on to the public records law and lists the office as an "agency" under that law. (§§4, 6)
+  - heading: Should the State Auditor be able to audit the Legislature's budgets, spending and settlements?
+    house: 'Yes, starting with fiscal year 2021: budgets, audits, spending, and payments to settle claims with members, officers or employees. The Auditor may request four kinds of records (answer due in 60 days) and interviews that the presiding officer authorizes (answer due in 30 days). If the presiding officer declines, the only remedy is a "statement of dispute" in the published audit; no court may order the records produced. (§3, new c.3 §76; §5, c.11 §12)'
+  - heading: Should there be a law limiting when journalists can be forced to reveal confidential sources?
+    senate: "Yes. Courts, grand juries and others with subpoena power could not force a journalist or news organization to reveal a confidential source. The exception: after notice and a hearing, a court finds by clear and convincing evidence that the information is material, critical to a claim or defense, and not available elsewhere, and that there is an overriding public interest in disclosure. It also covers subpoenas to third parties holding journalists' records. Criminal defendants' constitutional rights are not affected. (§6, new c.233 §20P)"
+  - heading: Should the new process reach Legislature records created before 2027?
+    senate: No. It applies to records made or received on or after January 6, 2027. Records officers may still help people find earlier records that are readily available. (§7)
+    house: The bill sets no starting date for legislative records and has no effective-date section. The Auditor's authority reaches back to fiscal year 2021. (§3, new c.3 §§76(a), 77(a))
+  - heading: Beyond the records both bills list, what else should be open, and whose records count?
+    senate: Adds names, office addresses, job titles and salaries of members and staff as kept by human resources, plus contracts and purchasing records (with exceptions). Covers records kept by caucuses as well as members and staff. Covers only testimony "solicited and received by a committee." Officers may not release public records that aren't on the list. (§5, new c.66 §22(a), (c))
+    house: Adds lists of legislative caucuses and their members, and final State Auditor reports. Covers records "made or received" by the Legislature, its members, officers and employees. (§3, new c.3 §77(a))
+  - heading: Should the Legislature be able to charge fees for records, and with what limits?
+    senate: The bill says nothing about fees.
+    house: "Yes, up to actual cost: no more than 5 cents a page, and no more than $25 an hour for staff time after the first 4 hours. Higher fees are allowed for commercial or justified requests. No fee if the 10-business-day deadline is missed, and fees may be waived for requests in the public interest or for people who can't pay. (§3, new c.3 §77(e), (d)(2)(viii))"
+  - heading: Should the bill include money to carry out the new rules?
+    house: "Yes, $1,000,000 for fiscal year 2026: $250,000 each for the Governor's office, the Senate, the House and joint legislative operations. That fiscal year has ended. (§§1–2)"
+similarities:
+  - heading: How would requests for the Legislature's records work?
+    body: Only a set list of final legislative records would be available, through the Legislature's own process. That process would be the only way to get them; the general public records law would not apply to the Legislature.
+  - heading: Which Legislature records would be covered?
+    body: Bills, amendments, summaries and fiscal notes, with their sponsors; hearing notices, attendance and recordings or transcripts; written testimony (subject to committee rules on sensitive information); committee votes and reports; rules, calendars, journals and roll calls; leadership, committee and office assignments; employee manuals and policies; appointment notices; reports required by law; spending records sent to the Comptroller, including salaries and payments to vendors; final internal audits; ethics disclosures; the State House press list; and approved district maps.
+  - heading: Who would handle requests?
+    body: Each chamber appoints a records officer, whose contact information is posted. Officers help people find records and publish guidelines for making requests.
+  - heading: How fast would the Legislature have to respond?
+    body: Within 10 business days. If records will be held back or the request is unduly burdensome, the Legislature must explain in writing within 10 business days and produce records within 30 business days, unless the requester agrees to more time. Records come electronically where possible, and no new records have to be created.
+  - heading: What could be withheld under both bills?
+    body: Records that would endanger people or property if released, such as blueprints and security plans; records not on the list; and records whose release would conflict with Article XXI of the Declaration of Rights. A refusal must be in writing and give specific reasons.
+  - heading: How could someone challenge a refusal before going to court?
+    body: Ask the records officer to reconsider within 30 days. The final decision comes within 10 business days and goes to the chamber's Rules Committee, which may reverse or change it by majority vote. The state Supervisor of Records has no role.
+  - heading: Would the Governor's office be covered by the public records law?
+    body: "Yes, for records from early January 2027 on (House: January 7; Senate: January 6). Earlier records are not covered."
+  - heading: Would the rules change for state agencies and cities and towns?
+    body: No. Both bills change the public records law only for the Governor's office and the Legislature.
