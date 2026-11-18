@@ -238,7 +238,7 @@ function BillLobbyingPage() {
 }
 
 export default createPage({
-  titleI18nKey: "titles.lobbying",
+  titleI18nKey: "titles.lobbying.bill",
   Page: BillLobbyingPage
 })
 

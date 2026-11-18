@@ -292,7 +292,7 @@ function registeredText(
 }
 
 export default createPage({
-  titleI18nKey: "titles.lobbying",
+  titleI18nKey: "titles.lobbying.client",
   Page: ClientDetail
 })
 
