@@ -268,8 +268,42 @@ export function PastFold({
   )
 }
 
+/** Why the conferences we don't cover are listed but take no input: small,
+ * italic and muted, in the body face, its left edge in line with the rail's
+ * names (RailRow: their 3px edge and 1rem). The picker's lists set their own
+ * sides (.uncovered-note, ConferencePicker.tsx). */
+const NoteText = styled.p`
+  margin: 0.875rem 0 0;
+  padding: 0 0.75rem 0 calc(1rem + 3px);
+  font-family: var(--maple-font-body);
+  font-size: 0.75rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--maple-text-muted);
+`
+
+/** Under a list of conferences, where any of them is one we don't cover
+ * (the bond bills, "Not covered"). */
+export function UncoveredNote({
+  conferences
+}: {
+  conferences: ConferenceSummary[]
+}) {
+  const { t } = useTranslation("conferences")
+  if (conferences.every(c => c.covered)) return null
+  return <NoteText className="uncovered-note">{t("rail_not_covered")}</NoteText>
+}
+
+/** The conferences a list shows: those still sitting, and the past ones
+ * where they are listed at all (SHOW_PAST_CONFERENCES). */
+export const listedConferences = ({
+  sitting,
+  past
+}: ReturnType<typeof railConferences>) =>
+  SHOW_PAST_CONFERENCES ? [...sitting, ...past] : sitting
+
 /** The rail's rows (railConferences): those still sitting, then the past
- * ones in their fold. */
+ * ones in their fold, then the note on those we don't cover. */
 export function RailList({
   conferences,
   current,
@@ -279,7 +313,8 @@ export function RailList({
   current: string
   fold: ClosedFold
 }) {
-  const { sitting, past } = railConferences(conferences)
+  const listed = railConferences(conferences)
+  const { sitting, past } = listed
   const rows = (cs: ConferenceSummary[]) => (
     <List>
       {cs.map(c => (
@@ -308,6 +343,7 @@ export function RailList({
           {rows(past)}
         </PastFold>
       )}
+      <UncoveredNote conferences={listedConferences(listed)} />
     </>
   )
 }
