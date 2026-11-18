@@ -57,34 +57,24 @@ const Body = styled.div`
   }
 `
 
-/** A short paragraph on what the bills are, its lines kept to a readable
- * length (90ch) rather than the card's full width, with the invitation to
- * send feedback under it, one sentence on a line of its own. */
+/** A short paragraph on what the bills are, under its own label as the
+ * open questions and the matches are under theirs, as far under it as the
+ * questions are under theirs (List's 12px). It sits in the questions' column
+ * (Grid), so its lines end where theirs do. */
 const Gist = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   margin: 0 0 2px;
-  padding-left: 16px;
-  border-left: 2px solid ${line.strong};
 
-  p {
-    max-width: 90ch;
+  /* The paragraph's own text, not the label above it. */
+  > div p {
     margin: 0;
     font-size: 0.875rem;
     line-height: 1.65;
     color: ${ink.mid};
   }
-  /* The feedback line beneath the gist. */
-  > div + p {
-    max-width: none;
-    margin-top: 8px;
-    font-size: 0.8125rem;
-    color: ${ink.faint};
-  }
-`
-
-/** The gist's own text, written as markdown, so its paragraphs are told
- * apart from the feedback line. */
-const GistText = styled.div`
-  p + p {
+  > div p + p {
     margin-top: 8px;
   }
 `
@@ -564,25 +554,29 @@ export function ConferenceDifferences({
         {t(resolved ? "resolved.list_title" : "decided.title")}
       </CardTitle>
       <Body ref={body}>
+        {/* On the whole section, not one part of it, so above them all. */}
+        {!resolved && <AnalysisDisclosure conference={conference} />}
         {gist && (
-          <Gist>
-            <GistText>
-              <ReactMarkdown
-                components={{
-                  a: ({ node: _node, ...props }) => (
-                    <DottedLink
-                      {...props}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    />
-                  )
-                }}
-              >
-                {gist}
-              </ReactMarkdown>
-            </GistText>
-            <AnalysisDisclosure conference={conference} />
-          </Gist>
+          <Grid $wide={wide}>
+            <Gist>
+              <Label>{t("decided.overview")}</Label>
+              <div>
+                <ReactMarkdown
+                  components={{
+                    a: ({ node: _node, ...props }) => (
+                      <DottedLink
+                        {...props}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      />
+                    )
+                  }}
+                >
+                  {gist}
+                </ReactMarkdown>
+              </div>
+            </Gist>
+          </Grid>
         )}
         {resolved ? (
           <Resolved

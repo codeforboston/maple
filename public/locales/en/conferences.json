@@ -115,7 +115,8 @@
   "tab_input": "Public Input",
   "tab_text": "Bill Text",
   "decided": {
-    "title": "Overview",
+    "title": "The House and Senate versions",
+    "overview": "Overview",
     "open": "Open questions",
 
     "match": "Where bill texts match",
@@ -124,8 +125,8 @@
     "yours_both": "Both of your legislators are on this committee, <0>{{a}}</0> and <1>{{b}}</1>."
   },
   "analysis": {
-    "line": "MAPLE prepared this overview by comparing the Senate and House texts ({{senate}} and {{house}}) with the help of AI tools, reviewed by our team. It is not an official summary from the Legislature and may not cover every difference. Last updated {{date}}. Notice something missing or wrong? <0>Send us feedback</0>. <1>About this analysis</1>",
-    "line_undated": "MAPLE prepared this overview by comparing the Senate and House texts ({{senate}} and {{house}}) with the help of AI tools, reviewed by our team. It is not an official summary from the Legislature and may not cover every difference. Notice something missing or wrong? <0>Send us feedback</0>. <1>About this analysis</1>",
+    "line": "MAPLE wrote the overview, the open questions and the points where the bill texts match by comparing the Senate and House texts ({{senate}} and {{house}}), with the help of AI tools and reviewed by our team. None of it is an official summary from the Legislature, and it may not cover every difference. <0>About this analysis</0>",
+    "updated": "Last updated {{date}}.",
     "about": {
       "read": {
         "title": "What we read.",
@@ -145,7 +146,7 @@
       },
       "corrections": {
         "title": "Corrections.",
-        "body": "If you spot an error, tell us and we’ll fix it and update the date above."
+        "body": "If you spot an error, tell us at <0>{{email}}</0>."
       },
       "beta": {
         "title": "This is a beta.",
