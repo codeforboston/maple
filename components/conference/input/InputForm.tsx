@@ -338,8 +338,8 @@ export function ReviewStep({
             cosign ? (
               <>
                 {letter.preview}
-                <CountsOnce />
                 {!letter.content.trim() && <NoLine onAdd={onAddLine} />}
+                <CountsOnce />
               </>
             ) : (
               <>

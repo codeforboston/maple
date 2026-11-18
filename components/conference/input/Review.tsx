@@ -216,7 +216,7 @@ const SwitchOption = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 8px;
+  padding: 8px 10px;
   border: 0;
   /* The track's corner (Switch) less its 2px padding, so the two curves run
      alike. */
