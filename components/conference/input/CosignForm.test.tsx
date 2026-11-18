@@ -1,7 +1,9 @@
 import "@testing-library/jest-dom"
-import { act, fireEvent, render, screen } from "@testing-library/react"
+import { fireEvent, render, screen, waitFor } from "@testing-library/react"
+import { useState } from "react"
 import type {
   ConferenceTestimony,
+  ConferenceWorkingDraft,
   UseEditConferenceTestimony
 } from "components/db"
 import { CosignForm } from "./CosignForm"
@@ -79,8 +81,12 @@ const legislators = {
   representative: { id: "r1", name: "Rae Rep", district: "3rd Middlesex" },
   senator: { id: "s1", name: "Sam Sen", district: "Middlesex and Suffolk" }
 }
+const saved = jest.fn()
+const published = jest.fn()
 beforeEach(() => {
   mockProfile.current = { fullName: "Gina K.", ...legislators }
+  saved.mockReset()
+  published.mockReset().mockResolvedValue(undefined)
 })
 
 const parent = {
@@ -95,25 +101,38 @@ const parent = {
   publishedAt: { toDate: () => new Date(2026, 9, 1) }
 } as unknown as ConferenceTestimony
 
-/** The draft hook as the form drives it: each call recorded, nothing saved. */
-const editing = (
-  overrides: Partial<UseEditConferenceTestimony> = {}
-): UseEditConferenceTestimony =>
-  ({
-    saveDraft: { execute: jest.fn().mockResolvedValue(undefined) },
-    publishTestimony: { execute: jest.fn().mockResolvedValue(undefined) },
-    discardDraft: { execute: jest.fn().mockResolvedValue(undefined) },
+type Start = Partial<Pick<UseEditConferenceTestimony, "draft" | "publication">>
+type More = {
+  start?: Start
+  onStep?: jest.Mock
+  onPosted?: jest.Mock
+  publishError?: Error
+}
+
+/** The form on the edit hook as it drives it: a save lands as the draft, as
+ * its snapshot would, and each call is recorded. */
+function Form({
+  step,
+  start = {},
+  onStep,
+  onPosted,
+  publishError
+}: More & { step: Step }) {
+  const [draft, setDraft] = useState(start.draft)
+  const edit = {
     loading: false,
     draftLoading: false,
-    ...overrides
-  } as unknown as UseEditConferenceTestimony)
-
-const mount = (
-  edit: UseEditConferenceTestimony,
-  step: Step,
-  more: { onStep?: jest.Mock; onPosted?: jest.Mock } = {}
-) =>
-  render(
+    ...start,
+    draft,
+    saveDraft: {
+      execute: async (request: ConferenceWorkingDraft) => {
+        saved(request)
+        setDraft(request)
+      }
+    },
+    publishTestimony: { execute: published, error: publishError }
+  } as unknown as UseEditConferenceTestimony
+  return (
     <CosignForm
       edit={edit}
       parent={parent}
@@ -122,20 +141,31 @@ const mount = (
       subject="Phone-Free Schools"
       conferees={conferees}
       step={step}
-      onStep={more.onStep ?? jest.fn()}
+      onStep={onStep ?? jest.fn()}
       onCancel={jest.fn()}
-      onPosted={more.onPosted ?? jest.fn()}
+      onPosted={onPosted ?? jest.fn()}
     />
   )
+}
+
+const mount = (step: Step, more: More = {}) =>
+  render(<Form step={step} {...more} />)
+
+/** Writes `words` as the cosign's note and goes on to review. */
+const compose = (words: string, more: More = {}) => {
+  const view = mount("write", more)
+  fireEvent.change(screen.getByRole("textbox"), { target: { value: words } })
+  view.rerender(<Form step="review" {...more} />)
+  return view
+}
 
 const press = (name: string) =>
   fireEvent.click(screen.getByRole("button", { name }))
 
 describe("CosignForm", () => {
   it("asks the reader to say they have read it before going on", () => {
-    const edit = editing()
     const onStep = jest.fn()
-    mount(edit, "confirm", { onStep })
+    mount("confirm", { onStep })
     expect(screen.getByText("Example Coalition")).toBeInTheDocument()
     press("input.cosign_continue")
     expect(onStep).not.toHaveBeenCalled()
@@ -143,43 +173,22 @@ describe("CosignForm", () => {
     fireEvent.click(screen.getByRole("checkbox"))
     press("input.cosign_continue")
     expect(onStep).toHaveBeenCalledWith("write")
-    // Agreeing makes the draft a cosign of the parent, at its position.
-    expect(edit.saveDraft.execute).toHaveBeenCalledWith(
-      expect.objectContaining({
-        cosignOfId: "p1",
-        cosignOfAuthorUid: "org",
-        position: "passSenateVersion",
-        content: ""
-      })
-    )
+    // Agreeing keeps nothing; only Post writes.
+    expect(saved).not.toHaveBeenCalled()
   })
 
-  it("warns that agreeing writes over a note cosigning another", () => {
-    mount(
-      editing({
-        draft: { cosignOfId: "p0", content: "My note." }
-      } as Partial<UseEditConferenceTestimony>),
-      "confirm"
-    )
-    expect(screen.getByRole("note")).toHaveTextContent(
-      "input.cosign_replaces_gone"
-    )
+  it("does not start from a note drafted before", () => {
+    mount("write", {
+      start: {
+        draft: { cosignOfId: "p1", content: "My note." }
+      } as Start
+    })
+    expect(screen.getByRole("textbox")).toHaveValue("")
   })
 
-  it.each([
-    ["this parent", { cosignOfId: "p1", content: "My note." }],
-    ["no words", { cosignOfId: "p0", content: " " }]
-  ])("does not warn over a draft cosigning %s", (_, draft) => {
-    mount(editing({ draft } as Partial<UseEditConferenceTestimony>), "confirm")
-    expect(screen.queryByRole("note")).not.toBeInTheDocument()
-  })
-
-  it("asks for words or for none before filing", async () => {
-    const draft = { cosignOfId: "p1", content: "" }
-    const edit = editing({ draft } as Partial<UseEditConferenceTestimony>)
-    const onPosted = jest.fn()
+  it("asks for words or for none before filing", () => {
     const onStep = jest.fn()
-    mount(edit, "write", { onPosted, onStep })
+    mount("write", { onStep })
     press("input.cosign_review")
     expect(onStep).not.toHaveBeenCalled()
 
@@ -190,7 +199,7 @@ describe("CosignForm", () => {
     expect(screen.getByRole("textbox")).toBeDisabled()
     press("input.cosign_review")
     expect(onStep).toHaveBeenCalledWith("review")
-    expect(edit.publishTestimony.execute).not.toHaveBeenCalled()
+    expect(published).not.toHaveBeenCalled()
 
     // Unticking the box is the way back to writing.
     fireEvent.click(noWords())
@@ -198,20 +207,15 @@ describe("CosignForm", () => {
   })
 
   describe("review", () => {
-    const draft = { cosignOfId: "p1", content: "My note." }
-
     it("shows where the cosign goes and the letter as sent, and posts it", async () => {
-      const edit = editing({ draft } as Partial<UseEditConferenceTestimony>)
       const onPosted = jest.fn()
-      mount(edit, "review", { onPosted })
+      compose("My note.", { onPosted })
       expect(screen.getByText("review.goes_cosign")).toBeInTheDocument()
       // The cosign as MAPLE will show it first, and the letter a switch away.
       expect(
         screen.getByRole("button", { name: "review.preview_web" })
       ).toHaveAttribute("aria-pressed", "true")
-      fireEvent.click(
-        screen.getByRole("button", { name: "review.preview_email" })
-      )
+      press("review.preview_email")
       expect(
         screen.getByText("Dear Representative Rae Rep and Senator Sam Sen,")
       ).toBeInTheDocument()
@@ -221,93 +225,64 @@ describe("CosignForm", () => {
       expect(screen.getByText("The letter.")).toBeInTheDocument()
       // The reader is copied, and replies go to them.
       expect(screen.getAllByText("gina@example.org").length).toBeGreaterThan(1)
-      await act(async () => press("input.cosign"))
-      expect(edit.publishTestimony.execute).toHaveBeenCalled()
-      expect(onPosted).toHaveBeenCalled()
+      press("input.cosign")
+      await waitFor(() => expect(onPosted).toHaveBeenCalled())
+      // Post writes the cosign, of the parent at its position, then publishes.
+      expect(saved).toHaveBeenCalledTimes(1)
+      expect(saved).toHaveBeenCalledWith(
+        expect.objectContaining({
+          cosignOfId: "p1",
+          cosignOfAuthorUid: "org",
+          position: "passSenateVersion",
+          content: "My note."
+        })
+      )
+      expect(published).toHaveBeenCalledTimes(1)
     })
 
     it("tells a cosign without words of its own that it still counts", () => {
       const onStep = jest.fn()
-      mount(
-        editing({
-          draft: { cosignOfId: "p1", content: "" }
-        } as Partial<UseEditConferenceTestimony>),
-        "review",
-        { onStep }
-      )
+      mount("review", { onStep })
       expect(screen.getByText(/review\.no_line/)).toBeInTheDocument()
       press("review.add_line")
       expect(onStep).toHaveBeenCalledWith("write")
     })
 
     it("unticks no words when they go to add their voice", () => {
-      const edit = editing({
-        draft: { cosignOfId: "p1", content: "" }
-      } as Partial<UseEditConferenceTestimony>)
       const onStep = jest.fn()
-      const { rerender } = mount(edit, "write", { onStep })
+      const { rerender } = mount("write", { onStep })
       fireEvent.click(
         screen.getByRole("checkbox", { name: "input.cosign_no_words_label" })
       )
-      const at = (step: Step) =>
-        rerender(
-          <CosignForm
-            edit={edit}
-            parent={parent}
-            court={194}
-            conferenceId="H1-S1"
-            subject="Phone-Free Schools"
-            conferees={conferees}
-            step={step}
-            onStep={onStep}
-            onCancel={jest.fn()}
-            onPosted={jest.fn()}
-          />
-        )
-      at("review")
+      rerender(<Form step="review" onStep={onStep} />)
       press("review.add_line")
       expect(onStep).toHaveBeenCalledWith("write")
-      at("write")
+      rerender(<Form step="write" onStep={onStep} />)
       expect(screen.getByRole("textbox")).toBeEnabled()
       expect(screen.getByRole("textbox")).toHaveFocus()
     })
 
     it("puts the caret after the words on the way back to them", () => {
-      const edit = editing({ draft } as Partial<UseEditConferenceTestimony>)
-      const { rerender } = mount(edit, "review")
-      rerender(
-        <CosignForm
-          edit={edit}
-          parent={parent}
-          court={194}
-          conferenceId="H1-S1"
-          subject="Phone-Free Schools"
-          conferees={conferees}
-          step="write"
-          onStep={jest.fn()}
-          onCancel={jest.fn()}
-          onPosted={jest.fn()}
-        />
-      )
+      const { rerender } = compose("My note.")
+      rerender(<Form step="write" />)
       const field = screen.getByRole("textbox") as HTMLTextAreaElement
       expect(field).toHaveFocus()
       expect(field.selectionStart).toBe("My note.".length)
     })
 
     it("says no banner over a cosign with words", () => {
-      mount(editing({ draft } as Partial<UseEditConferenceTestimony>), "review")
+      compose("My note.")
       expect(screen.queryByText(/review\.no_line/)).not.toBeInTheDocument()
     })
 
     it("says so, and sends no letter, when MAPLE has no one to notify", async () => {
       mockProfile.current = { fullName: "Gina K." }
-      const edit = editing({ draft } as Partial<UseEditConferenceTestimony>)
-      mount(edit, "review")
+      compose("My note.")
       expect(screen.getByText("review.emailed_none")).toBeInTheDocument()
       // No letter to preview.
       expect(screen.queryByText("review.from")).not.toBeInTheDocument()
-      await act(async () => press("input.cosign"))
-      expect(edit.publishTestimony.execute).toHaveBeenCalled()
+      press("input.cosign")
+      await waitFor(() => expect(published).toHaveBeenCalled())
     })
   })
 
@@ -316,33 +291,26 @@ describe("CosignForm", () => {
     ["conferenceClosed", "input.cosign_closed"],
     ["any other", "input.error"]
   ])("words %s refusal for the reader", (refusal, message) => {
-    const error = Object.assign(new Error("refused"), {
+    const publishError = Object.assign(new Error("refused"), {
       details: { refusal }
     })
-    mount(
-      editing({
-        publishTestimony: { execute: jest.fn(), error }
-      } as unknown as Partial<UseEditConferenceTestimony>),
-      "write"
-    )
+    mount("write", { publishError })
     expect(screen.getByRole("alert")).toHaveTextContent(message)
   })
 
   describe("editing a posted cosign", () => {
-    const publication = {
-      id: "c1",
-      cosignOfId: "p1",
-      position: "passSenateVersion",
-      content: "Before."
-    }
+    const start = {
+      publication: {
+        id: "c1",
+        cosignOfId: "p1",
+        position: "passSenateVersion",
+        content: "Before."
+      }
+    } as Start
 
     it("changes its words alone, and goes to review to post them", () => {
       const onStep = jest.fn()
-      mount(
-        editing({ publication } as Partial<UseEditConferenceTestimony>),
-        "write",
-        { onStep }
-      )
+      mount("write", { start, onStep })
       expect(screen.getByRole("textbox")).toHaveValue("Before.")
       // No way to pick another position, to leave the parent, or to post
       // without seeing the letter.
@@ -358,13 +326,7 @@ describe("CosignForm", () => {
     })
 
     it("asks for a reason for the change at review", () => {
-      mount(
-        editing({
-          publication,
-          draft: { cosignOfId: "p1", content: "After." }
-        } as Partial<UseEditConferenceTestimony>),
-        "review"
-      )
+      compose("After.", { start })
       const send = screen.getByRole("button", {
         name: "input.cosign"
       })
@@ -377,15 +339,17 @@ describe("CosignForm", () => {
     })
 
     it("posts the change with its reason", async () => {
-      const edit = editing({
-        publication,
-        draft: { cosignOfId: "p1", content: "After.", editReason: "Clearer" }
-      } as Partial<UseEditConferenceTestimony>)
       const onPosted = jest.fn()
-      mount(edit, "review", { onPosted })
-      await act(async () => press("input.cosign"))
-      expect(edit.publishTestimony.execute).toHaveBeenCalled()
-      expect(onPosted).toHaveBeenCalled()
+      compose("After.", { start, onPosted })
+      fireEvent.change(
+        screen.getByPlaceholderText("publish.reasonPlaceholder"),
+        { target: { value: "Clearer" } }
+      )
+      press("input.cosign")
+      await waitFor(() => expect(onPosted).toHaveBeenCalled())
+      expect(saved).toHaveBeenCalledWith(
+        expect.objectContaining({ content: "After.", editReason: "Clearer" })
+      )
       // The form stays mounted, so the next edit starts without this reason.
       expect(
         screen.getByPlaceholderText("publish.reasonPlaceholder")
@@ -393,13 +357,7 @@ describe("CosignForm", () => {
     })
 
     it("cannot post it unchanged", () => {
-      mount(
-        editing({
-          publication,
-          draft: { cosignOfId: "p1", content: "Before." }
-        } as Partial<UseEditConferenceTestimony>),
-        "review"
-      )
+      mount("review", { start })
       expect(
         screen.getByRole("button", { name: "input.cosign" })
       ).toBeDisabled()

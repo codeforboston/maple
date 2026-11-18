@@ -91,6 +91,8 @@ Object.assign(global, { ResizeObserver: Observer })
 
 const profile = { representative: { id: "AHP1" } }
 let mockItems: object[] = []
+// A draft left on the reader's slot from before.
+let mockDraft: object | undefined
 jest.mock("../db", () => ({
   useProfile: () => ({ profile }),
   useConferenceTestimony: () => ({ items: mockItems, loading: false }),
@@ -100,6 +102,7 @@ jest.mock("../db", () => ({
     return {
       loading: false,
       draftLoading: false,
+      draft: mockDraft,
       saveDraft: noop,
       publishTestimony: noop,
       discardDraft: noop
@@ -622,11 +625,23 @@ describe("ConferenceDetails", () => {
     beforeEach(() => {
       mockItems = [letter]
       mockQuery = { cosign: "t1" }
+      mockDraft = undefined
       // Landing on Your Input asks whether to move smoothly.
       window.matchMedia = jest.fn(() => ({ matches: true })) as never
     })
 
     it("opens the cosign panel for a signed-in reader, and lets go of the link", () => {
+      mockUser = { uid: "reader", emailVerified: true }
+      render(<ConferenceDetails {...props} />)
+      expect(
+        screen.getByRole("dialog", { name: "input.cosign_title" })
+      ).toBeInTheDocument()
+      letGo()
+    })
+
+    it("opens it over words of the reader's own left in a draft", () => {
+      // Nothing is kept before Post, so a draft from before holds no input.
+      mockDraft = { cosignOfId: null, content: "Old words." }
       mockUser = { uid: "reader", emailVerified: true }
       render(<ConferenceDetails {...props} />)
       expect(
