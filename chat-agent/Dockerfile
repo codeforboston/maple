@@ -1,6 +1,6 @@
 # ── Build stage ───────────────────────────────────────────────────────────────
 # Built from the repo root (deploy.sh), so the image can include mcp-server's queries.
-FROM node:22-slim AS builder
+FROM node:24-slim AS builder
 
 WORKDIR /app/chat-agent
 
@@ -15,7 +15,7 @@ COPY mcp-server/queries.ts /app/mcp-server/
 RUN yarn build
 
 # ── Runtime stage ─────────────────────────────────────────────────────────────
-FROM node:22-slim AS runtime
+FROM node:24-slim AS runtime
 
 WORKDIR /app
 
