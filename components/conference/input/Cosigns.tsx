@@ -5,23 +5,7 @@ import { TABS_H } from "../ConferenceTabs"
 import { ConferenceTestimony } from "components/db"
 import { jumpToSection } from "../navbar"
 import { Pill, useCosign } from "./CosignButton"
-import { ClampedText } from "./ClampedText"
-import {
-  Corner,
-  Cosigned,
-  Dated,
-  Descriptor,
-  Disc,
-  LATEST_BESIDE,
-  NoWords,
-  OwnChip,
-  When,
-  Who,
-  filedOn,
-  lastCosignedOn
-} from "./Entry"
-import { AccountTypeIcon } from "./Pickers"
-import { accountTypeOf, initialsOf, nameOf } from "./accounts"
+import { Descriptor, Disc, Entry } from "./Entry"
 import { BadgeCheck, UsersRound } from "./icons"
 import { brand, ink, line, wash } from "./tokens"
 
@@ -138,29 +122,9 @@ const Count = styled.span`
   }
 `
 
-/** In a narrow window, a narrow card's latest date moves to its foot line
- * (Entry's LatestBeside); a wide card has none, so keeps it here. */
-const Latest = styled.span<{ $wide: boolean }>`
-  float: right;
-  margin-left: 12px;
-  line-height: 24px;
-  white-space: nowrap;
-  @media ${LATEST_BESIDE} {
-    display: ${({ $wide }) => ($wide ? "inline" : "none")};
-  }
-`
-
-/** The card's floor: how many cosigned, and when the latest did. */
-export function Floor({
-  testimony,
-  wide
-}: {
-  testimony: ConferenceTestimony
-  /** The card is wide, so it has no foot line to take the latest date. */
-  wide: boolean
-}) {
-  const { t, i18n } = useTranslation("conferences")
-  const latest = lastCosignedOn(testimony, i18n.language)
+/** The card's floor: how many cosigned. */
+export function Floor({ testimony }: { testimony: ConferenceTestimony }) {
+  const { t } = useTranslation("conferences")
   return (
     <Base>
       <Count>
@@ -168,107 +132,85 @@ export function Floor({
         <b>{testimony.cosignCount}</b>
         <span>{t("input.cosigned")}</span>
       </Count>
-      {latest && (
-        <Latest $wide={wide}>
-          {t("input.last_cosigned", { date: latest })}
-        </Latest>
-      )}
     </Base>
   )
 }
 
-/** The cosigns under a card, a tier quieter than it: a hairline rather than a
- * card of their own, a smaller portrait, and the words clamped short. The
- * card's name and chip are not repeated; the rows hang under them. */
+/** The cosigns under a card, each a cosign in the context of that card's
+ * input (Entry's `inContext`), under a hairline. */
 const List = styled.ul<{ $wide: boolean }>`
+  /* No gap: the line between cosigns holds their room (Row), and the way
+     to the rest its own (MoreItem). */
   display: flex;
   flex-direction: column;
-  gap: 14px;
   margin: 20px -20px 0;
-  padding: 16px 20px 0 ${({ $wide }) => ($wide ? "78px" : "20px")};
+  /* At the foot, the room the last cosign's words no longer keep under
+     themselves in context (Entry's Text), so the card ends as it did. */
+  padding: 16px 20px 8px ${({ $wide }) => ($wide ? "78px" : "20px")};
   border-top: 1px solid ${line.default};
   list-style: none;
 
   @media (max-width: 450px) {
     margin: 16px -14px 0;
-    padding: 14px 14px 0;
+    padding: 14px 14px 4px;
   }
 `
 
-/** The reader's own row is tinted as their card is, set in a little so its
- * words keep the other rows' line. */
-const Row = styled.li<{ $own: boolean }>`
-  display: flex;
-  gap: 12px;
-  ${({ $own }) =>
-    $own
-      ? `margin: 0 -12px;
-  padding: 10px 12px;
-  background: ${brand.soft};
-  border: 1px solid ${brand.edge};
-  border-radius: 8px;`
-      : ""}
+/** One cosign, which a jump to the reader's own parks under the bars. From
+ * the second on, a faint line between it and the one above, the line
+ * holding the room on both sides of itself: 20px over it and 24px under
+ * (18px and 22px on a phone), the 4px more under making up for the room the
+ * words above keep under their last line. Its black at 7%, between the
+ * panel's two washes (wash.default's 5% and wash.strong's 9%). */
+const Row = styled.li`
   ${parked}
-`
 
-const Small = styled(Disc)`
-  width: 28px;
-  height: 28px;
-  font-size: 0.625rem;
+  & + &::before {
+    content: "";
+    display: block;
+    height: 1px;
+    margin: 20px 0 24px;
+    background: rgba(0, 0, 0, 0.07);
+  }
   @media (max-width: 450px) {
-    width: 22px;
-    height: 22px;
-    font-size: 0.5625rem;
+    & + &::before {
+      margin: 18px 0 22px;
+    }
   }
 `
 
-const Head = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
+/** The way to the rest, 14px under the last cosign shown. */
+const MoreItem = styled.li`
+  margin-top: 14px;
 `
 
-const NameRow = styled.p`
-  /* Names in Lexend, as the cosign card's, in Nunito cards too. */
-  font-family: var(--maple-font-heading);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin: 0;
-  font-size: 0.8125rem;
-  font-weight: 400;
-  line-height: 1.2;
-  color: ${ink.strong};
-
-  svg {
-    width: 14px;
-    height: 14px;
+/** A cosign's initials (Disc) where the cosign is drawn on its own, as the
+ * cosign form's preview draws it: a step under the card's (Entry's
+ * Portrait) on its 6px scale, where each step takes 2px off the letters:
+ * 34px (11px letters), 28px under 768px, 22px on a phone. Doubled (&&) so it
+ * holds over Disc's own size whatever order the styles load in. */
+export const CosignDisc = styled(Disc)`
+  && {
+    --disc: 34px;
+  }
+  @media (max-width: 767px) {
+    && {
+      --disc: 28px;
+    }
+  }
+  @media (max-width: 450px) {
+    && {
+      --disc: 22px;
+    }
   }
 `
 
-const Name = styled.span`
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`
-
-const RowDescriptor = styled(Descriptor)`
-  margin-top: 4px;
-`
-
-const Note = styled.div`
-  margin-top: 8px;
-  color: ${ink.mid};
-  p {
-    color: inherit;
+/** A cosign's kind of account (Descriptor) where the cosign is drawn on its
+ * own, closer under its smaller name: the cosign form's preview. */
+export const CosignDescriptor = styled(Descriptor)`
+  && {
+    margin-top: 2px;
   }
-`
-
-const NarrowDate = styled.div`
-  margin-top: 6px;
-  font-size: 0.75rem;
-  color: ${ink.mid};
 `
 
 const More = styled(Link)`
@@ -282,7 +224,8 @@ export function CosignList({
   cosigns,
   mine,
   wide,
-  actions
+  actions,
+  showNoWords = false
 }: {
   cosigns: ConferenceTestimony[]
   /** The reader's own filing: if it is one of these, its row is theirs. */
@@ -291,69 +234,39 @@ export function CosignList({
   wide: boolean
   /** The kebab on each cosign. */
   actions: (cosign: ConferenceTestimony) => ReactNode
+  /** A cosign without words says so (Entry's `showNoWords`). Off by
+   * default. */
+  showNoWords?: boolean
 }) {
-  const { t, i18n } = useTranslation("conferences")
+  const { t } = useTranslation("conferences")
   const [all, setAll] = useState(false)
   if (cosigns.length === 0) return null
   const hidden = cosigns.length - COSIGNS_SHOWN
   const shown = all ? cosigns : cosigns.slice(0, COSIGNS_SHOWN)
   return (
     <List $wide={wide}>
-      {shown.map(c => {
-        const name = nameOf(c)
-        const type = accountTypeOf(c.authorRole)
-        const date = filedOn(c, i18n.language)
-        return (
-          <Row
-            key={`${c.authorUid}-${c.id}`}
-            id={c === mine ? "your-input" : undefined}
-            $own={c === mine}
-          >
-            <Small>{initialsOf(name)}</Small>
-            <Who>
-              <Head>
-                <Who>
-                  <NameRow>
-                    <Name title={name}>{name}</Name>
-                    <AccountTypeIcon type={type} />
-                    <Cosigned>{t("input.cosigned")}</Cosigned>
-                    {c === mine && <OwnChip>{t("input.you")}</OwnChip>}
-                  </NameRow>
-                  <RowDescriptor>{t(`input.descriptor_${type}`)}</RowDescriptor>
-                </Who>
-                <Corner>
-                  {wide && (
-                    <When $quiet={false} $banded={false}>
-                      {date}
-                    </When>
-                  )}
-                  {actions(c)}
-                </Corner>
-              </Head>
-              <Note>
-                {c.content ? (
-                  <ClampedText text={c.content} lines={3} small />
-                ) : (
-                  <NoWords $small>{t("input.cosign_no_words")}</NoWords>
-                )}
-              </Note>
-              {!wide && (
-                <NarrowDate>
-                  <Dated date={date} />
-                </NarrowDate>
-              )}
-            </Who>
-          </Row>
-        )
-      })}
+      {shown.map(c => (
+        <Row
+          key={`${c.authorUid}-${c.id}`}
+          id={c === mine ? "your-input" : undefined}
+        >
+          <Entry
+            testimony={c}
+            inContext
+            showNoWords={showNoWords}
+            own={c === mine}
+            actions={actions(c)}
+          />
+        </Row>
+      ))}
       {hidden > 0 && (
-        <li>
+        <MoreItem>
           <More type="button" onClick={() => setAll(x => !x)}>
             {all
               ? t("input.cosign_fewer")
               : t("input.cosign_more", { count: hidden })}
           </More>
-        </li>
+        </MoreItem>
       )}
     </List>
   )

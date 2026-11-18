@@ -9,6 +9,7 @@ import {
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { useMatches } from "../hooks"
+import { navbarBottom } from "../navbar"
 import { FULL_LAYOUT, MOBILE_LAYOUT, PANEL_W } from "../styles"
 import { Maximize2, Minimize2, X } from "./icons"
 import { useLockedScroll } from "./useLockedScroll"
@@ -89,9 +90,9 @@ const Aside = styled.aside<{
 
   /* Beside the page from lg up: pinned in its column at the navbar's edge, as
      the page's rail and title are, and carried in by the column opening
-     rather than sliding. It is as tall as the window less what is over the
-     column at the page's top, so its buttons show there; once the navbar has
-     scrolled away, that room is left under them. */
+     rather than sliding. It is as tall as the window less what is over it
+     now (--beside-top), so its buttons keep to the window's foot: growing as
+     the navbar and the beta note scroll away, as fluidly as they go. */
   ${({ $full, $open }) =>
     $full
       ? ""
@@ -100,7 +101,7 @@ const Aside = styled.aside<{
           top: var(--maple-navbar-height);
           bottom: auto;
           width: var(--rail-w);
-          height: calc(100vh - var(--row-top, 0px));
+          height: calc(100vh - var(--beside-top, 0px));
           transform: none;
           /* Its column's opening is all the slide it has: no slide of its
              own, even coming from a window it was closed from. */
@@ -355,22 +356,34 @@ export function Panel({
   // with no drawer to fold back to, always laid out across the window.
   const spread = full || folding || sheet
 
-  // Where the column starts down the page, for the panel's height in it.
-  // What is over the column changes the page's size when it changes.
+  // Where the panel's top is in the window now, for its height beside the
+  // page: its column's top, or once that has gone up under the navbar or the
+  // beta note, their edge, which it pins at (navbarBottom, the edge
+  // usePinnedNavbar in hooks.ts publishes for its pinning). Again on every
+  // scroll, in the same moment the navbar moves, so the panel grows as it
+  // goes; and whenever what is over the column changes the page's size.
   const slot = useRef<HTMLDivElement>(null)
   useLayoutEffect(() => {
     const el = slot.current
     if (!el || typeof ResizeObserver === "undefined") return
     let published = ""
     const measure = () => {
-      const value = `${el.getBoundingClientRect().top + window.scrollY}px`
+      const top = Math.max(navbarBottom(), el.getBoundingClientRect().top)
+      const value = `${top}px`
       if (value === published) return
       published = value
-      el.style.setProperty("--row-top", value)
+      el.style.setProperty("--beside-top", value)
     }
+    measure()
     const observer = new ResizeObserver(measure)
     observer.observe(document.body)
-    return () => observer.disconnect()
+    window.addEventListener("scroll", measure, { passive: true })
+    window.addEventListener("resize", measure)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener("scroll", measure)
+      window.removeEventListener("resize", measure)
+    }
   }, [])
 
   return (

@@ -62,9 +62,12 @@ const Head = styled.div`
   }
 `
 
+/** Doubled (&&) so it holds over Disc's own size whatever order the styles
+ * load in. */
 const Portrait = styled(Disc)`
-  width: 44px;
-  height: 44px;
+  && {
+    --disc: 44px;
+  }
 `
 
 const Name = styled.p`

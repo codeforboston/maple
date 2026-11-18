@@ -20,14 +20,8 @@ import { MOBILE_LAYOUT } from "../styles"
 import type { ConfereeView } from "../types"
 import { Body as Words } from "./ClampedText"
 import { accountTypeOf, initialsOf, nameOf } from "./accounts"
-import {
-  Cosigned,
-  Descriptor,
-  Disc,
-  filedOn,
-  NoWords,
-  PositionChip
-} from "./Entry"
+import { CosignDescriptor, CosignDisc } from "./Cosigns"
+import { Cosigned, filedOn, NoWords, PositionChip } from "./Entry"
 import {
   Actions,
   Body,
@@ -152,15 +146,13 @@ const Para = styled.p`
   }
 `
 
-/** A checkbox row: the reader answering for themselves, the whole row a
- * target. Asked and unanswered, it goes red, and `$washed` too. */
-/** Under the no-words checkbox while it's ticked, in line with its words
- * (Tick: 12px in, the 16px box, 12px): the case for adding a line, set as
- * the mockup's note under its weekly-email checkbox (DigestChoice in its
- * compose.tsx). */
+/** Under the no-words checkbox while it's ticked, in line with the box, 6px
+ * in from the field above as the box is (NoWordsTick): the case for adding
+ * a line, set as the mockup's note under its weekly-email checkbox
+ * (DigestChoice in its compose.tsx). */
 const AreYouSure = styled.p`
   margin: -5px 0 0;
-  padding: 0 12px;
+  padding: 0 6px;
   font-family: var(--maple-font-body);
   font-weight: 300;
   font-style: italic;
@@ -169,6 +161,8 @@ const AreYouSure = styled.p`
   color: ${ink.mid};
 `
 
+/** A checkbox row: the reader answering for themselves, the whole row a
+ * target. Asked and unanswered, it goes red, and `$washed` too. */
 const Tick = styled.label<{ $asked: boolean; $washed?: boolean }>`
   display: flex;
   flex-shrink: 0;
@@ -200,28 +194,35 @@ const Tick = styled.label<{ $asked: boolean; $washed?: boolean }>`
   }
 `
 
-/** Dressed as disabled but pressable: the press is how the reader finds out
- * what is missing, so it does not light up under the pointer either. */
-const Press = styled(Primary)`
-  @media (max-width: 639.98px) {
-    padding: 14px 24px;
-  }
-  &[aria-disabled="true"],
-  &[aria-disabled="true"]:hover {
-    background: rgba(31, 59, 97, 0.35);
+/** The no-words checkbox under the field: 6px of padding at its sides, inside
+ * its hover's wash, so the box sits 6px in from the field above. The
+ * letter's own checkbox (CosignConfirm) keeps its 12px, for the wash it
+ * takes when asked. */
+const NoWordsTick = styled(Tick)`
+  && {
+    padding-left: 6px;
+    padding-right: 6px;
   }
 `
 
-/** The mockup sets this one a shade paler than the form's own. */
+/** Dressed as disabled but pressable (Primary's aria-disabled): the press is
+ * how the reader finds out what is missing. A thumb's worth of target on a
+ * phone. */
+const Press = styled(Primary)`
+  @media (max-width: 639.98px) {
+    && {
+      padding: 14px 24px;
+    }
+  }
+`
+
+/** Agreeing to the letter: the whole column's width, and taller. */
 const Continue = styled(Press)`
-  flex-shrink: 0;
-  width: 100%;
-  margin-top: 12px;
-  padding: 11px 22px;
-  font-size: 0.875rem;
-  &[aria-disabled="true"],
-  &[aria-disabled="true"]:hover {
-    background: rgba(31, 59, 97, 0.4);
+  && {
+    flex-shrink: 0;
+    width: 100%;
+    margin-top: 12px;
+    padding: 11px 22px;
   }
 `
 
@@ -271,26 +272,19 @@ const PreviewWell = styled.div`
   border-radius: 5px;
 `
 
-/** The preview set as a cosign is shown on MAPLE, a row under the input it
- * cosigns (CosignList in Cosigns.tsx): its 28px initials. */
-const PreviewDisc = styled(Disc)`
-  width: 28px;
-  height: 28px;
-  font-size: 0.625rem;
-`
-
-/** The cosign row's name line (Cosigns.tsx), 13px in Lexend; the position
+/** The cosign row's name line (Cosigns.tsx), 13px in Nunito; the position
  * chip at its size everywhere else, 11px. */
 const PreviewName = styled.p`
-  /* Names in Lexend, as the cosign card's, in Nunito cards too. */
-  font-family: var(--maple-font-heading);
+  /* Names in the card's Nunito, as Entry's are, at 500; "cosigned"
+     (Cosigned) and the chip keep their own weights. */
+  font-family: var(--maple-font-body);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
   margin: 0;
   font-size: 0.8125rem;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.2;
   color: ${ink.strong};
 `
@@ -311,9 +305,10 @@ const PreviewText = styled.div`
   > :nth-child(3) * {
     color: ${ink.mid};
   }
-  /* The note on a cosign with none, a touch lighter than words. */
+  /* The note on a cosign with none, in the card's own grey for it (Entry's
+     NoWords), not the words'. */
   ${NoWords} {
-    color: ${ink.muted};
+    color: ${ink.faint};
   }
 `
 
@@ -627,7 +622,8 @@ export function CosignForm({
   // How the cosign will look on MAPLE, for the review's preview of it.
   const card = (said: ReactNode) => (
     <Preview>
-      <PreviewDisc>{initialsOf(name)}</PreviewDisc>
+      {/* As the cosign row it previews draws it (Cosigns.tsx). */}
+      <CosignDisc>{initialsOf(name)}</CosignDisc>
       <PreviewText>
         <PreviewName>
           {name}
@@ -635,12 +631,14 @@ export function CosignForm({
           <span>{nameOf(parent)}</span>
           <PositionChip position={parent.position} />
         </PreviewName>
-        <Descriptor>{t(`input.descriptor_${type}`)}</Descriptor>
+        <CosignDescriptor>{t(`input.descriptor_${type}`)}</CosignDescriptor>
         {said}
       </PreviewText>
     </Preview>
   )
-  // At the cards' smaller size (14px), the note and the words alike.
+  // At the cards' smaller size (13px), the note and the words alike. As the
+  // reader writes (`hold`), the words are cut to the room the card holds;
+  // on the review step, whole, as they will be posted.
   const preview = (hold: boolean) => (
     <Stack $hold={hold}>
       {/* Hidden, the card with the note, holding its height. */}
@@ -655,7 +653,13 @@ export function CosignForm({
         card(<NoWords $small>{t("input.cosign_no_words")}</NoWords>)
       ) : note.trim() ? (
         // The reader's words as they write them.
-        card(<CutWords text={note} lines={lines} />)
+        card(
+          hold ? (
+            <CutWords text={note} lines={lines} />
+          ) : (
+            <Words $small>{note}</Words>
+          )
+        )
       ) : (
         // Nothing to show yet: where the card will be, in its room.
         <Empty>{t("input.cosign_preview_empty")}</Empty>
@@ -717,7 +721,7 @@ export function CosignForm({
             setNote(e.target.value)
           }}
         />
-        <Tick
+        <NoWordsTick
           $asked={ask.refused}
           style={{ marginTop: 8, alignItems: "center" }}
         >
@@ -731,7 +735,7 @@ export function CosignForm({
             }}
           />
           <span>{t("input.cosign_no_words_label")}</span>
-        </Tick>
+        </NoWordsTick>
         {noWords && <AreYouSure>{t("input.cosign_no_words_sure")}</AreYouSure>}
         {problem}
       </Scroll>

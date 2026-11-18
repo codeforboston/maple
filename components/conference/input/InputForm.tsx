@@ -11,6 +11,7 @@ import { Timestamp } from "firebase/firestore"
 import { Trans, useTranslation } from "next-i18next"
 import styled, { keyframes } from "styled-components"
 import { useAuth } from "components/auth"
+import { LoadingButton } from "components/buttons"
 import {
   ConferencePosition,
   ConferenceTestimony,
@@ -107,16 +108,16 @@ const Parts = styled.div<{ $full: boolean }>`
   }
 `
 
-/** The words and their label, the field taking the room left; side by side
- * with the positions (Parts), all of its column's height rather than the
- * drawer's 280px most. */
-const Writing = styled.div<{ $full: boolean }>`
+/** The words and their label, the field taking the room left: from md, in
+ * the drawer, the sheet and the window alike, all of it, down to the
+ * buttons, rather than the field's 280px most, which holds on a phone. */
+const Writing = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
   min-height: 0;
 
-  @media ${({ $full }) => ($full ? FULL_LAYOUT : SHEET_SPREAD)} {
+  @media ${FULL_LAYOUT} {
     textarea {
       max-height: none;
     }
@@ -204,20 +205,49 @@ export const Muted = styled(Quiet)`
   color: ${ink.muted};
 `
 
-export const Primary = styled.button`
-  padding: 8px 18px;
-  border: 0;
-  border-radius: 8px;
-  background: ${brand.fill};
-  color: #fff;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  &:hover:not(:disabled) {
-    background: ${brand.hover};
+/**
+ * The panel's go-ahead: MAPLE's primary button (MAPLE blue,
+ * styles/globals.css), set as Share your input beside the page's title is
+ * (ShareButton.tsx), Lexend, medium, a step bolder below 992px, 6px above and
+ * below and 16px a side, at the site's corners; but in the panel's 13px, on
+ * Share's 21px line, so as tall. A loading button (components/buttons.tsx),
+ * spinning while `loading`.
+ *
+ * Disabled, or dressed as disabled but still pressable (aria-disabled, where
+ * a press shows what is missing), it takes the paler fill, and under the
+ * pointer only a shade darker, never the hover's full blue. `&&` lifts these
+ * over Bootstrap's own .btn rules whatever order the stylesheets load in.
+ */
+export const Primary = styled(LoadingButton).attrs({ variant: "primary" })`
+  && {
+    padding: 0.375rem 1rem;
+    font-family: var(--maple-font-heading);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 21px;
+    white-space: nowrap;
   }
-  &:disabled,
-  &[aria-disabled="true"] {
+  @media (max-width: 991.98px) {
+    && {
+      font-weight: 600;
+    }
+  }
+  &&:disabled,
+  &&[aria-disabled="true"] {
+    border-color: transparent;
     background: ${brand.fillDisabled};
+    opacity: 1;
+  }
+  &&[aria-disabled="true"]:hover {
+    background: rgba(31, 59, 97, 0.45);
+  }
+`
+
+/** Posting, on the review step: one width whatever it says, Submit Input or
+ * Cosign, and whether it spins. */
+const Submit = styled(Primary)`
+  && {
+    min-width: 9rem;
   }
 `
 
@@ -391,9 +421,15 @@ export function ReviewStep({
           <Muted type="button" onClick={onCancel}>
             {t("input.cancel")}
           </Muted>
-          <Primary type="button" disabled={!canPost} onClick={onPost}>
+          {/* Spinning from the press until it is posted and the panel goes. */}
+          <Submit
+            type="button"
+            disabled={!canPost}
+            loading={posting || edit.publishTestimony.loading}
+            onClick={onPost}
+          >
             {t(cosign ? "input.cosign" : "review.submit")}
-          </Primary>
+          </Submit>
         </Actions>
       </div>
     </Body>
@@ -554,7 +590,7 @@ export function InputForm({
                 })}
               </Options>
             </div>
-            <Writing $full={full}>
+            <Writing>
               <Label>{t("input.body_label")}</Label>
               <Field
                 ref={field}

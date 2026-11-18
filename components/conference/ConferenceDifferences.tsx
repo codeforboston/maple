@@ -165,12 +165,13 @@ const Toggle = styled.button`
   border: 0;
   border-radius: 8px;
   text-align: left;
-  /* The question in the card's Nunito, a step above its regular weight. */
+  /* The question in the card's Nunito, a step lighter than the texts under
+     it. */
   font-family: var(--maple-font-body);
-  font-weight: 500;
-  font-size: 0.9375rem;
+  font-weight: 400;
+  font-size: 1rem;
   line-height: 1.35;
-  color: ${ink.strong};
+  color: ${ink.midheavy};
 
   ${Chevron} {
     margin-top: 1px;
@@ -190,10 +191,13 @@ const Toggle = styled.button`
   }
 `
 
+/** The two chambers' cards, under an open question, with room under them
+ * before the next question; closed, they and that room are gone. */
 const Answers = styled.div`
   display: flex;
   gap: 14px;
   margin-top: 14px;
+  margin-bottom: 8px;
 
   @media (min-width: 390px) {
     padding-left: 27px;
@@ -229,17 +233,15 @@ const Chamber = styled(Label)<{ $ink: string }>`
 /** Faint italic is for the bare fallback alone: an absence, not content. */
 const AnswerText = styled.p<{ $absent: boolean }>`
   margin: 2px 0 0;
-  /* Lexend, light; its chamber's label (Label) keeps the card's Nunito. */
-  font-family: var(--maple-font-heading);
-  font-weight: 300;
-  font-size: 0.8125rem;
+  /* In the card's Nunito, as its chamber's label (Label) and the question
+     over it (Toggle) are. 14px from 768px. */
+  font-family: var(--maple-font-body);
+  font-weight: 400;
+  font-size: 0.875rem;
   line-height: 1.4;
   color: ${({ $absent }) => ($absent ? ink.faint : ink.strong)};
   font-style: ${({ $absent }) => ($absent ? "italic" : "normal")};
 
-  @media (min-width: 390px) {
-    font-size: 0.875rem;
-  }
   /* 2px smaller in the mobile layout: 11px, and 12px from 390px. */
   @media ${MOBILE_LAYOUT} {
     font-size: 0.6875rem;

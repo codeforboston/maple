@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
+import { sc } from "./scale"
 import { brand, ink, red } from "./tokens"
 
 const Wrap = styled.div`
@@ -8,12 +9,13 @@ const Wrap = styled.div`
 `
 
 /** The text and its measuring twin are set identically; Entry sets unclamped
- * text with it too. */
+ * text with it too, scaled with its card (sc). */
 export const Body = styled.p<{ $small: boolean }>`
   margin: 0;
-  font-size: ${({ $small }) => ($small ? "0.875rem" : "0.9375rem")};
+  font-size: ${({ $small }) => ($small ? sc(13) : sc(14))};
   line-height: 1.55;
-  color: ${ink.strong};
+  /* A step under the names' near-black. */
+  color: ${ink.midheavy};
   white-space: pre-line;
 `
 
@@ -27,7 +29,8 @@ const More = styled.button`
   border: 0;
   padding: 0;
   background: none;
-  font-size: 0.875rem;
+  /* At the words' own size, as it runs on from them (Body). */
+  font-size: inherit;
   font-weight: 600;
   color: ${brand.fill};
   &:hover {

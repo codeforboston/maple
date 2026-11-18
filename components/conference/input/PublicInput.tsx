@@ -21,9 +21,6 @@ import {
 import { accountTypeOf, nameOf } from "./accounts"
 import { brand, ink, line } from "./tokens"
 
-/** Filters appear only once the feed reaches this many entries, or when it has
- * none, so that an empty feed still shows what could narrow it. */
-const FEED_CONTROLS_MIN = 4
 const PAGE_SIZE = 5
 
 /** A card with the cosigns of it the feed holds, newest first. A cosign whose
@@ -169,7 +166,6 @@ export function PublicInput({
     [items, uid]
   )
 
-  const showFilters = items.length === 0 || items.length >= FEED_CONTROLS_MIN
   // Ranked with every cosign, so one without words still brings its card up.
   const ranked = useMemo(() => unitsOf(items), [items])
   // The reader's own card stands first with the cosigns under it, if it has
@@ -197,13 +193,12 @@ export function PublicInput({
   )
   // A card and its cosigns are narrowed as one: either matching keeps both.
   const shown = useMemo(() => {
-    if (!showFilters) return units
     const matches = (x: ConferenceTestimony) =>
       (position === "all" || x.position === position) &&
       (type === "all" || accountTypeOf(x.authorRole) === type) &&
       (pickedAuthors.length === 0 || pickedAuthors.includes(x.authorUid))
     return units.filter(u => matches(u.lead) || u.cosigns.some(matches))
-  }, [units, position, type, pickedAuthors, showFilters])
+  }, [units, position, type, pickedAuthors])
   const cosigned = useMemo(() => items.some(x => x.cosignOfId), [items])
 
   // The accounts being followed that have filed here, which is what the
@@ -266,9 +261,7 @@ export function PublicInput({
           band={
             banded && <Band testimony={x} yours={mine?.cosignOfId === x.id} />
           }
-          floor={
-            banded ? wide => <Floor testimony={x} wide={wide} /> : undefined
-          }
+          floor={banded ? () => <Floor testimony={x} /> : undefined}
           actions={<Kebab testimony={x} onView={() => setOpened(x)} />}
           onOpen={setOpened}
         >
@@ -288,22 +281,23 @@ export function PublicInput({
   return (
     <Section id="input">
       <CardTitle>{t("input.title")}</CardTitle>
-      {showFilters && (
-        <Controls>
-          <AccountTypePicker value={type} onChange={narrowing(setType)} />
-          <PositionPicker value={position} onChange={narrowing(setPosition)} />
-          {(followable.length > 0 || cosigned) && (
-            <MoreFilters
-              followable={followable}
-              picked={pickedAuthors}
-              onPick={narrowing(setPickedAuthors)}
-              cosigns={cosigned}
-              wordless={wordless}
-              onWordless={narrowing(setWordless)}
-            />
-          )}
-        </Controls>
-      )}
+      {/* Always, however few have filed: an empty feed shows what could
+          narrow it, and a short one keeps the way to cosigns without words
+          (MoreFilters). */}
+      <Controls>
+        <AccountTypePicker value={type} onChange={narrowing(setType)} />
+        <PositionPicker value={position} onChange={narrowing(setPosition)} />
+        {(followable.length > 0 || cosigned) && (
+          <MoreFilters
+            followable={followable}
+            picked={pickedAuthors}
+            onPick={narrowing(setPickedAuthors)}
+            cosigns={cosigned}
+            wordless={wordless}
+            onWordless={narrowing(setWordless)}
+          />
+        )}
+      </Controls>
       {loading ? null : (
         <>
           {(ownUnit || paged.length > 0) && (

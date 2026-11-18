@@ -44,7 +44,7 @@ import { CosignLetter } from "./input/CosignLetter"
 import { InputForm, Step } from "./input/InputForm"
 import { Panel } from "./input/Panel"
 import { PublicInput } from "./input/PublicInput"
-import { ShareButton, ShareFab } from "./input/ShareButton"
+import { ShareButton, ShareFab, ViewFab } from "./input/ShareButton"
 import { useFollowedAuthors } from "./input/useFollowedAuthors"
 import { Close } from "./input/Close"
 import { X } from "./input/icons"
@@ -53,6 +53,7 @@ import {
   BESIDE,
   COMMITTEE_PAGE_MAX,
   FULL_RAIL_FROM,
+  LAYOUT_WIDE,
   MOBILE_LAYOUT,
   Notice,
   PageColumn,
@@ -211,6 +212,19 @@ const TitleShare = styled.div`
     padding-top: 0.375rem !important;
     padding-bottom: 0.375rem !important;
   }
+  /* Its wrapper as tall as the button, so the two buttons are centred on
+     each other: as a block, the wrapper sets the button on a line of text,
+     which can stand taller than it. */
+  && .follow-button {
+    display: flex;
+  }
+
+  /* In the wide layout (LAYOUT_WIDE, styles.ts), beside the 36px title: the
+     two 2px down together, so their 39px is centred on the title's 43.2px
+     first line. */
+  @media ${LAYOUT_WIDE} {
+    margin-top: 2px;
+  }
 
   @media ${RAIL_HIDDEN} {
     display: none;
@@ -243,7 +257,8 @@ const TitleCell = styled.div`
 
 /** Where the floating buttons are held on mobile, without the rail
  * (RAIL_HIDDEN, styles.ts): the way to the other conferences at the left
- * (SwitcherSlot), and the way to share input at the right (ShareFab). At
+ * (SwitcherSlot), and the way to share input at the right (ShareFab), or
+ * once it is shared, to view it (ViewFab). At
  * the end of the page's column, pinned 24px off the bottom of the screen
  * while the column runs on under it, and left at the column's end when it
  * stops, so it never floats over the footer. Its row lets taps through
@@ -818,7 +833,8 @@ function Details({
               </Section>
               {/* On mobile, the floating buttons: the way to the other
                   conferences at the left, and the way in at the right, gone
-                  while the panel is out and once something is filed. */}
+                  while the panel is out; once something is filed, the way
+                  to it in the feed. */}
               <FabDock>
                 <SwitcherSlot>
                   <ConferenceSwitcher
@@ -827,7 +843,13 @@ function Details({
                     fold={fold}
                   />
                 </SwitcherSlot>
-                {taking && !mine && !open && <ShareFab onClick={share} />}
+                {taking &&
+                  !open &&
+                  (mine ? (
+                    <ViewFab onClick={() => jumpToSection("your-input")} />
+                  ) : (
+                    <ShareFab onClick={share} />
+                  ))}
               </FabDock>
             </Main>
           </Page>

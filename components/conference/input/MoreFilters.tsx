@@ -23,6 +23,12 @@ const Mark = styled.button`
     background: ${wash.default};
     color: ${ink.strong};
   }
+  /* Something inside it set, its count showing (Badge): edged as the pills
+     beside it are (Pickers.tsx's Pill). Its ground still changes only under
+     the pointer (above). */
+  &[data-set="true"] {
+    border: 1px solid ${line.default};
+  }
 `
 
 const Badge = styled.span`
@@ -191,7 +197,12 @@ export function MoreFilters({
 
   return (
     <Anchor align="end" autoClose="outside">
-      <Toggle as={Mark} type="button" aria-label={t("input.filters")}>
+      <Toggle
+        as={Mark}
+        type="button"
+        aria-label={t("input.filters")}
+        data-set={set > 0}
+      >
         <ListFilter size={17} />
         {set > 0 && <Badge>{set}</Badge>}
       </Toggle>
