@@ -1,3 +1,6 @@
+/** The public production site, for links and share tags that must be absolute. */
+export const SITE_URL = "https://mapletestimony.org"
+/** The SendGrid-hosted signup form. Share /newsletter rather than this URL. */
 export const NEWSLETTER_SIGNUP_URL =
   "https://cdn.forms-content.sg-form.com/66e4c174-72e5-11f0-847b-fe4d8dd139cf"
 export const TRAINING_CALENDAR_URL =
