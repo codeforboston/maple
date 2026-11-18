@@ -6,7 +6,7 @@ import { ComponentType } from "react"
 import styled from "styled-components"
 import AboutPagesCard from "../../AboutPagesCard/AboutPagesCard"
 import { FEEDBACK_URL } from "../../common"
-import { ArrowRightIcon } from "../../learn/icons"
+import { ArrowRightIcon, CheckIcon } from "../../learn/icons"
 import { Internal } from "../../links"
 import LearnBreadcrumb from "../../learn/LearnBreadcrumb"
 import LearnHeader from "../../learn/LearnHeader"
@@ -34,6 +34,9 @@ const OTHER_WAYS: OtherWay[] = [
   },
   { key: "feedback", Icon: ChatBubbleOutlineIcon, href: FEEDBACK_URL }
 ]
+
+/* What a gift pays for, in the order shown (keys in supportmaple.json). */
+const GIFT_USES = ["access", "data", "next"] as const
 
 /* The donate card's body: the case for giving beside the give box. */
 const DonateBody = styled.div`
@@ -63,9 +66,54 @@ const DonateBody = styled.div`
       margin: 0 0 0.875rem;
       line-height: 1.65;
       color: var(--maple-text-body);
+    }
 
-      &:last-child {
-        margin-bottom: 0;
+    h4 {
+      margin: 1.5rem 0 0.875rem;
+      font-family: var(--maple-font-heading);
+      font-weight: 700;
+      font-size: 1.125rem;
+      color: var(--maple-text-strong);
+    }
+
+    .uses {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+
+      li {
+        display: flex;
+        gap: 0.75rem;
+        line-height: 1.6;
+        color: var(--maple-text-body);
+      }
+
+      strong {
+        color: var(--maple-text-strong);
+      }
+    }
+
+    .check {
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.75rem;
+      height: 1.75rem;
+      margin-top: 0.0625rem;
+      border-radius: var(--maple-radius-pill);
+      background: color-mix(
+        in srgb,
+        var(--maple-brand-primary) 10%,
+        var(--maple-surface-base)
+      );
+      color: var(--maple-brand-primary);
+
+      svg {
+        font-size: 1.125rem;
       }
     }
   }
@@ -197,8 +245,21 @@ const SupportMaple = () => {
         <DonateBody>
           <div className="case">
             <h3>{t("donate.heading")}</h3>
-            <p>{t("donate.case")}</p>
-            <p>{t("donate.use")}</p>
+            <p>{t("donate.intro")}</p>
+            <h4>{t("donate.usesHeading")}</h4>
+            <ul className="uses">
+              {GIFT_USES.map(key => (
+                <li key={key}>
+                  <span className="check">
+                    <CheckIcon aria-hidden="true" />
+                  </span>
+                  <span>
+                    <strong>{t(`donate.uses.${key}.title`)}</strong>{" "}
+                    {t(`donate.uses.${key}.body`)}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </div>
           <GiveBox />
         </DonateBody>

@@ -5,8 +5,22 @@
   "donate": {
     "header": "Donate",
     "heading": "Help keep MAPLE free for everyone",
-    "case": "Public infrastructure is hard to fund. It isn't flashy, and it doesn't take sides on the issues people care most about. Keeping MAPLE free takes everyone chipping in.",
-    "use": "Your gift goes to developing MAPLE: new features, better data on the Massachusetts legislature, and keeping the site running.",
+    "intro": "MAPLE is a free, impartial place to follow bills and tell the legislature what you think. That makes it hard to fund: it isn't flashy, and it doesn't fit neatly into advocacy budgets. It stays free when the people who use it chip in.",
+    "usesHeading": "Your gift pays for",
+    "uses": {
+      "access": {
+        "title": "Free access for everyone.",
+        "body": "The hosting, data and upkeep behind the site."
+      },
+      "data": {
+        "title": "Information that's hard to find.",
+        "body": "Hearing transcripts, lobbying data and conference committees."
+      },
+      "next": {
+        "title": "What comes next.",
+        "body": "New tools for the session that starts in January, like legislator profiles."
+      }
+    },
     "frequency": "How often",
     "once": "One-time",
     "monthly": "Monthly",
