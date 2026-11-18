@@ -24,6 +24,10 @@ const JOINT_RULES = "https://malegislature.gov/Laws/Rules/Joint"
 const STACKED = "(max-width: 991.98px)"
 const MAPLE_PROCESS = "https://www.mapletestimony.org/learn/legislative-process"
 
+/** The step the conferences on MAPLE are at, marked "We are here": the
+ * negotiation (hero.steps in conferences.json), where MAPLE takes input. */
+const HERE_STEP = 2
+
 /**
  * The Conference Committees page: what a conference committee is, and
  * buttons on to a conference and the explorer. At least the rest of the first
@@ -206,6 +210,28 @@ const StepList = styled.div`
     min-width: 0;
     padding-top: 5px;
   }
+  /* The step we are at: its number ringed, and a tag. Stacked, the tag sits
+     under the step's title, the title kept in line with its number (below);
+     side by side, beside the number, on the page's ground so the line runs
+     on from its far side (further below). */
+  li.here .num {
+    box-shadow: 0 0 0 4px var(--maple-color-red-subtle-border);
+  }
+  .here-tag {
+    display: inline-block;
+    margin-bottom: 4px;
+    padding: 2px 10px;
+    border: 1px solid var(--maple-color-red-subtle-border);
+    border-radius: 999px;
+    background: var(--maple-color-red-subtle-bg);
+    color: var(--maple-color-red-subtle-text);
+    font-size: 0.6875rem;
+    font-weight: 800;
+    line-height: 1.4;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
   h2 {
     margin: 0;
     font-size: 0.9375rem;
@@ -264,6 +290,16 @@ const StepList = styled.div`
     }
     .text {
       flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .here-tag {
+      order: 1;
+      align-self: flex-start;
+      margin: 6px 0 0;
+    }
+    .text p {
+      order: 2;
     }
   }
 
@@ -311,6 +347,15 @@ const StepList = styled.div`
     }
     .text {
       padding: 0 0.5rem 0 0;
+    }
+    /* Beside the number, over the line, the page's ground behind it so the
+       line breaks around the tag and runs on from its far side. */
+    .here-tag {
+      position: absolute;
+      top: 5px;
+      left: 44px;
+      margin: 0;
+      box-shadow: 0 0 0 8px var(--bs-body-bg);
     }
   }
 `
@@ -465,10 +510,21 @@ export function ConferenceHero({
         <StepList>
           <ol>
             {steps.map((step, i) => (
-              <li key={i} className={open.includes(i) ? "open" : undefined}>
+              <li
+                key={i}
+                className={
+                  [open.includes(i) && "open", i === HERE_STEP && "here"]
+                    .filter(Boolean)
+                    .join(" ") || undefined
+                }
+              >
                 {i < steps.length - 1 && <span className="line" aria-hidden />}
                 <span className="num">{i + 1}</span>
                 <div className="text">
+                  {/* Outside the h2, so the step's heading stays its title. */}
+                  {i === HERE_STEP && (
+                    <span className="here-tag">{t("hero.here")}</span>
+                  )}
                   <h2>
                     {folds ? (
                       <button
