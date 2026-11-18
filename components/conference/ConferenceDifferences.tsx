@@ -57,34 +57,24 @@ const Body = styled.div`
   }
 `
 
-/** A short paragraph on what the bills are, its lines kept to a readable
- * length (90ch) rather than the card's full width, with the invitation to
- * send feedback under it, one sentence on a line of its own. */
+/** A short paragraph on what the bills are, under its own label as the
+ * open questions and the matches are under theirs, its lines kept to a
+ * readable length (90ch) rather than the card's full width. */
 const Gist = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   margin: 0 0 2px;
-  padding-left: 16px;
-  border-left: 2px solid ${line.strong};
 
-  p {
+  /* The paragraph's own text, not the label above it. */
+  > div p {
     max-width: 90ch;
     margin: 0;
     font-size: 0.875rem;
     line-height: 1.65;
     color: ${ink.mid};
   }
-  /* The feedback line beneath the gist. */
-  > div + p {
-    max-width: none;
-    margin-top: 8px;
-    font-size: 0.8125rem;
-    color: ${ink.faint};
-  }
-`
-
-/** The gist's own text, written as markdown, so its paragraphs are told
- * apart from the feedback line. */
-const GistText = styled.div`
-  p + p {
+  > div p + p {
     margin-top: 8px;
   }
 `
@@ -564,9 +554,12 @@ export function ConferenceDifferences({
         {t(resolved ? "resolved.list_title" : "decided.title")}
       </CardTitle>
       <Body ref={body}>
+        {/* On the whole section, not one part of it, so above them all. */}
+        {!resolved && <AnalysisDisclosure conference={conference} />}
         {gist && (
           <Gist>
-            <GistText>
+            <Label>{t("decided.overview")}</Label>
+            <div>
               <ReactMarkdown
                 components={{
                   a: ({ node: _node, ...props }) => (
@@ -580,8 +573,7 @@ export function ConferenceDifferences({
               >
                 {gist}
               </ReactMarkdown>
-            </GistText>
-            <AnalysisDisclosure conference={conference} />
+            </div>
           </Gist>
         )}
         {resolved ? (

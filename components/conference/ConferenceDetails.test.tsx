@@ -861,11 +861,20 @@ describe("ConferenceDetails", () => {
       ).toBeInTheDocument()
     })
 
-    it("says where the overview comes from, and opens what it is in place", () => {
+    it("discloses where the whole section comes from, above all of it", () => {
       const { container } = render(<ConferenceDetails {...props} />)
-      expect(screen.getByTestId("analysis.line")).toHaveTextContent(
-        "S.2581 H.5366 November 18, 2026"
-      )
+      const line = screen.getByTestId("analysis.line")
+      expect(line).toHaveTextContent("S.2581 H.5366")
+      // Not the date: that closes the panel.
+      expect(line).not.toHaveTextContent("November 18, 2026")
+      // Before the overview's label, not inside the overview.
+      const overview = screen.getByText("decided.overview")
+      expect(
+        line.compareDocumentPosition(overview) &
+          Node.DOCUMENT_POSITION_FOLLOWING
+      ).toBeTruthy()
+      expect(overview.parentElement).not.toContainElement(line)
+
       const about = container.querySelector<HTMLButtonElement>(
         "button[aria-controls]"
       )!
@@ -877,21 +886,35 @@ describe("ConferenceDetails", () => {
       fireEvent.click(about)
       expect(about).toHaveAttribute("aria-expanded", "true")
       expect(panel).toBeVisible()
-      expect(panel).toHaveTextContent("analysis.about.read.title")
-      expect(panel).toHaveTextContent("analysis.about.beta.body")
+      // The beta note first, the date last.
+      expect(panel.firstElementChild).toHaveTextContent(
+        "analysis.about.beta.title"
+      )
+      expect(panel.lastElementChild).toHaveTextContent(
+        "analysis.updated November 18, 2026"
+      )
+      expect(
+        within(panel).getByTestId("analysis.about.corrections.body")
+      ).toContainHTML('href="mailto:info@mapletestimony.org"')
       fireEvent.click(about)
       expect(about).toHaveAttribute("aria-expanded", "false")
     })
 
-    it("leaves the date out of the disclosure where the data has none", () => {
-      render(
+    it("leaves the date out of the panel where the data has none", () => {
+      const { container } = render(
         <ConferenceDetails
           {...props}
           conference={{ ...conference, analysisUpdatedAt: null }}
         />
       )
-      expect(screen.getByTestId("analysis.line_undated")).toBeInTheDocument()
-      expect(screen.queryByTestId("analysis.line")).not.toBeInTheDocument()
+      const about = container.querySelector<HTMLButtonElement>(
+        "button[aria-controls]"
+      )!
+      const panel = document.getElementById(
+        about.getAttribute("aria-controls")!
+      )!
+      expect(screen.getByTestId("analysis.line")).toBeInTheDocument()
+      expect(panel).not.toHaveTextContent("analysis.updated")
     })
 
     it("leaves the section and its tab out where nothing is written", () => {
@@ -961,6 +984,11 @@ describe("ConferenceDetails", () => {
         .getAllByRole("button", { expanded: false })
         .map(b => b.textContent!)
         .filter(text => text.includes("?"))
+
+    it("carries no disclosure, which speaks of open questions", () => {
+      render(<ConferenceDetails {...resolved} />)
+      expect(screen.queryByTestId("analysis.line")).not.toBeInTheDocument()
+    })
 
     it("counts the outcomes over a bar, and keys the labels", () => {
       render(<ConferenceDetails {...resolved} />)
