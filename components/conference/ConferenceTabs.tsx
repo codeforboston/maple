@@ -42,14 +42,15 @@ const Tab = styled.a`
 
 /** The page's sections, as the mockup's tab row: each tab scrolls to its
  * section, and the one being read is underlined. A row of one has nothing to
- * choose between, so it is left out. A section's label is its `tab_` string
- * unless `labels` names another. */
+ * choose between, so it is left out. Each tab shows its section's card
+ * title (`titles`). */
 export function ConferenceTabs({
   sections,
-  labels = {}
+  titles
 }: {
   sections: readonly string[]
-  labels?: Partial<Record<string, string>>
+  /** Each section's card title. */
+  titles: Record<string, string>
 }) {
   const { t } = useTranslation("conferences")
   const [current, setCurrent] = useState(sections[0])
@@ -116,7 +117,7 @@ export function ConferenceTabs({
             putHash(s)
           }}
         >
-          {t(labels[s] ?? `tab_${s}`)}
+          {t(titles[s])}
         </Tab>
       ))}
     </Row>

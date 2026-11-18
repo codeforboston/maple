@@ -5,16 +5,17 @@ import styled from "styled-components"
 import { Offcanvas } from "../bootstrap"
 import { Internal, maple } from "../links"
 import {
-  BillLine,
   ClosedFold,
-  PastFold,
+  GroupFold,
+  oneOpen,
+  RailGroup,
   railConferences,
-  SHOW_PAST_CONFERENCES
+  RowText
 } from "./ConferenceRail"
 import { useMatches, useRailHidden } from "./hooks"
 import { List } from "./input/icons"
 import { PHONE_GUTTER, SHEET } from "./styles"
-import { conferenceName, ConferenceSummary } from "./types"
+import { ConferenceSummary } from "./types"
 
 /** The way to the other conferences on mobile, where the rail is gone: a
  * white round button with a bulleted list, floating at the bottom left
@@ -120,15 +121,23 @@ const Row = styled(Internal)<{
     margin-left: 0.375rem;
     font-style: italic;
   }
+  /* A past conference's new bill number, on the same line as its name,
+     styled like .bills. */
+  .after {
+    margin-left: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: var(--maple-text-muted);
+    white-space: nowrap;
+  }
 `
 
-/** The fold the page holds where there is one (ConferenceDetails.tsx), so
- * the list's past conferences open as the rail's do; on its own (the
- * Conference Committees page's button, ConferenceHero.tsx), folded until the
- * reader opens it. */
+/** Which group is open. On a committee page, the page's state
+ * (ConferenceDetails.tsx), shared with the rail. On the Conference Committees
+ * page (ConferenceHero.tsx), its own, starting with none open. */
 function useFold(fold?: ClosedFold): ClosedFold {
-  const [open, setOpen] = useState(false)
-  return fold ?? { open, onToggle: setOpen }
+  const [open, setOpen] = useState<RailGroup | null>(null)
+  return fold ?? { open, onToggle: oneOpen(setOpen) }
 }
 
 /** The drawer risen from the screen's foot (ConferenceDrawer's bottom):
@@ -162,7 +171,7 @@ export function ConferenceDrawer({
 }) {
   const { t } = useTranslation("conferences")
   const fold = useFold(held)
-  const { sitting, past } = railConferences(conferences)
+  const { sitting, groups } = railConferences(conferences)
   const rows = (cs: ConferenceSummary[]) => (
     <ul>
       {cs.map(c => (
@@ -175,10 +184,7 @@ export function ConferenceDrawer({
             $covered={c.covered}
             onClick={onHide}
           >
-            <span className="name">{conferenceName(c)}</span>
-            <span className="bills">
-              <BillLine c={c} />
-            </span>
+            <RowText c={c} />
           </Row>
         </li>
       ))}
@@ -191,11 +197,11 @@ export function ConferenceDrawer({
       </Offcanvas.Header>
       <DrawerBody aria-label={t("in_conference")}>
         {rows(sitting)}
-        {SHOW_PAST_CONFERENCES && past.length > 0 && (
-          <PastFold count={past.length} fold={fold}>
-            {rows(past)}
-          </PastFold>
-        )}
+        {groups.map(({ group, conferences: cs }) => (
+          <GroupFold key={group} group={group} fold={fold}>
+            {rows(cs)}
+          </GroupFold>
+        ))}
       </DrawerBody>
     </Drawer>
   )
@@ -274,7 +280,7 @@ export function ConferencePopover({
 }) {
   const { t } = useTranslation("conferences")
   const fold = useFold(held)
-  const { sitting, past } = railConferences(conferences)
+  const { sitting, groups } = railConferences(conferences)
   const rows = (cs: ConferenceSummary[]) => (
     <ul>
       {cs.map(c => (
@@ -287,10 +293,7 @@ export function ConferencePopover({
             $covered={c.covered}
             onClick={onClose}
           >
-            <span className="name">{conferenceName(c)}</span>
-            <span className="bills">
-              <BillLine c={c} />
-            </span>
+            <RowText c={c} />
           </Row>
         </li>
       ))}
@@ -357,11 +360,11 @@ export function ConferencePopover({
   return createPortal(
     <Popover ref={popover} aria-label={t("in_conference")} style={at}>
       {rows(sitting)}
-      {SHOW_PAST_CONFERENCES && past.length > 0 && (
-        <PastFold count={past.length} fold={fold}>
-          {rows(past)}
-        </PastFold>
-      )}
+      {groups.map(({ group, conferences: cs }) => (
+        <GroupFold key={group} group={group} fold={fold}>
+          {rows(cs)}
+        </GroupFold>
+      ))}
     </Popover>,
     document.body
   )

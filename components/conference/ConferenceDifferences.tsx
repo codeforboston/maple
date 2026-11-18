@@ -549,6 +549,10 @@ const SettledNote = styled.span`
   color: ${ink.mid};
 `
 
+/** The card's title, resolved or not, also its tab's label (TITLES in
+ * ConferenceDetails.tsx). */
+export const OVERVIEW_TITLE = "decided.title"
+
 /**
  * What the two chambers still disagree on, with the points where their texts
  * already match beside it: written by people, set out as the mockup's "What
@@ -592,7 +596,7 @@ export function ConferenceDifferences({
       {/* The heading scrolls with the section, as the other sections'
           headings do, rather than holding under the tabs. */}
       <CardTitle id="decided-q" className="mb-0">
-        {t(resolved ? "resolved.list_title" : "decided.title")}
+        {t(OVERVIEW_TITLE)}
       </CardTitle>
       <Body ref={body}>
         {gist && (

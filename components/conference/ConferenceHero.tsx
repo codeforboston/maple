@@ -18,11 +18,17 @@ import { ConferenceSummary } from "./types"
 
 const JOINT_RULES = "https://malegislature.gov/Laws/Rules/Joint"
 
-/** Where the steps stack, one under another, rather than in a row: below
- * 992px. There they fold, the first open to begin with, and the two buttons
- * are pinned to the screen's foot. */
+/** Below 992px, the steps stack in one column instead of a row. Each step's
+ * text is collapsed under its title until tapped, with the current step
+ * expanded to start, and the two buttons are pinned to the bottom of the
+ * screen. */
 const STACKED = "(max-width: 991.98px)"
 const MAPLE_PROCESS = "https://www.mapletestimony.org/learn/legislative-process"
+
+/** The current step, counting from 0: the negotiation (hero.steps in
+ * conferences.json). Steps before it are dimmed; stacked, it starts
+ * expanded. */
+const CURRENT_STEP = 2
 
 /**
  * The Conference Committees page: what a conference committee is, and
@@ -162,9 +168,9 @@ const Section = styled(PageColumn)`
   }
 `
 
-/** Down the page where five do not fit side by side, joined by a line so they
- * read as one sequence, each step's text able to fold under its title, the
- * first open to begin with. Side by side, every step's text shows. */
+/** The five steps, joined by a line so they read as one sequence. Side by
+ * side, every step's text shows. Stacked (STACKED), each step's text
+ * collapses under its title, with the current step expanded to start. */
 const StepList = styled.div`
   margin-top: 2.25rem;
 
@@ -179,6 +185,18 @@ const StepList = styled.div`
     position: relative;
     display: flex;
     gap: 0.875rem;
+  }
+  /* Steps before the current one (CURRENT_STEP), dimmed: the number at half
+     opacity, the title in the muted grey (#64748b), the text a touch
+     lighter. */
+  li[data-past] .num {
+    opacity: 0.5;
+  }
+  li[data-past] h2 {
+    color: var(--maple-text-muted);
+  }
+  li[data-past] p {
+    color: #738297;
   }
   .line {
     position: absolute;
@@ -452,9 +470,9 @@ export function ConferenceHero({
     h: string
     p: string
   }[]
-  // Which steps are open where they fold, wherever they stack (STACKED), the
-  // first to begin with.
-  const [open, setOpen] = useState<number[]>([0])
+  // Which steps are expanded when stacked (STACKED): the current one to
+  // start.
+  const [open, setOpen] = useState<number[]>([CURRENT_STEP])
   const folds = useMatches(STACKED)
   return (
     <Section as="section">
@@ -465,7 +483,11 @@ export function ConferenceHero({
         <StepList>
           <ol>
             {steps.map((step, i) => (
-              <li key={i} className={open.includes(i) ? "open" : undefined}>
+              <li
+                key={i}
+                className={open.includes(i) ? "open" : undefined}
+                data-past={i < CURRENT_STEP || undefined}
+              >
                 {i < steps.length - 1 && <span className="line" aria-hidden />}
                 <span className="num">{i + 1}</span>
                 <div className="text">

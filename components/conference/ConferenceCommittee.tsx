@@ -94,6 +94,9 @@ const Grid = styled.div`
   }
 `
 
+/** The card's title, also its tab's label (TITLES in ConferenceDetails.tsx). */
+export const COMMITTEE_TITLE = "who"
+
 export function ConferenceCommittee({
   conferees,
   hearings
@@ -112,7 +115,7 @@ export function ConferenceCommittee({
 
   return (
     <Frame>
-      <CardTitle>{t("who")}</CardTitle>
+      <CardTitle>{t(COMMITTEE_TITLE)}</CardTitle>
       {/* The names and the maps are one area to the pointer: leaving the
           block is what lets a reading go. */}
       <Grid onPointerLeave={() => hover(null)}>

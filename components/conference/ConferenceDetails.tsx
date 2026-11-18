@@ -8,24 +8,30 @@ import {
 } from "react"
 import { useTranslation } from "next-i18next"
 import { useRouter } from "next/router"
-import {
-  hasReport,
-  isSitting,
-  takesTestimony
-} from "../../functions/src/shared"
+import { hasReport, takesTestimony } from "../../functions/src/shared"
 import { uncosignable } from "../../functions/src/testimony/cosign"
 import styled, { css } from "styled-components"
 import { ConferenceByline } from "./ConferenceByline"
-import { ConferenceCommittee } from "./ConferenceCommittee"
-import { ConferenceDifferences } from "./ConferenceDifferences"
+import { COMMITTEE_TITLE, ConferenceCommittee } from "./ConferenceCommittee"
+import { ConferenceDifferences, OVERVIEW_TITLE } from "./ConferenceDifferences"
 import { FollowConferenceTopicButton } from "../shared/FollowButton"
 import { useConferenceFollow } from "./FollowConference"
 import { BackChevron, BackToConferences } from "./BackToConferences"
 import { ConferenceSwitcher } from "./ConferencePicker"
-import { ClosedFold, ConferenceRail } from "./ConferenceRail"
-import { ConferenceResolution, OutcomeFilter } from "./ConferenceResolution"
+import {
+  ClosedFold,
+  ConferenceRail,
+  groupOf,
+  oneOpen,
+  RailGroup
+} from "./ConferenceRail"
+import {
+  ConferenceResolution,
+  OutcomeFilter,
+  RESOLUTION_TITLE
+} from "./ConferenceResolution"
 import { ConferenceTabs, TABS_H } from "./ConferenceTabs"
-import { ConferenceText } from "./ConferenceText"
+import { ConferenceText, TEXT_TITLE } from "./ConferenceText"
 import { useAuth } from "../auth"
 import { authStepChanged } from "../auth/redux"
 import {
@@ -43,7 +49,8 @@ import { CosignForm } from "./input/CosignForm"
 import { CosignLetter } from "./input/CosignLetter"
 import { InputForm, Step } from "./input/InputForm"
 import { Panel } from "./input/Panel"
-import { PublicInput } from "./input/PublicInput"
+import { INPUT_TITLE, PublicInput } from "./input/PublicInput"
+import { brand } from "./input/tokens"
 import { ShareButton, ShareFab, ViewFab } from "./input/ShareButton"
 import { useFollowedAuthors } from "./input/useFollowedAuthors"
 import { Close } from "./input/Close"
@@ -327,6 +334,29 @@ const PageTitle = styled(Title)<{ $muted: boolean }>`
   }
 `
 
+/** The status of a conference that's no longer sitting ("Enacted", "Report
+ * filed", "Dissolved"): a round pill in the avatars' colours (brand in
+ * input/tokens.ts), to the right of the title. On mobile, where the title
+ * fills its row, it sits centred under the title. */
+const StatusChip = styled.span`
+  flex: none;
+  align-self: center;
+  padding: 0.125rem 0.625rem;
+  border: 1px solid ${brand.edge};
+  border-radius: var(--maple-radius-pill);
+  background: ${brand.soft};
+  color: ${brand.ink};
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+
+  @media ${MOBILE_LAYOUT} {
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
+`
+
 /** Why a link to cosign an input did not open the panel, with a way to put
  * it away. */
 const LinkNotice = styled(Notice)`
@@ -403,12 +433,26 @@ const Section = styled.div`
   );
 `
 
-/** In the mockup's order, which goes on to the sections still to come. A
- * conference with nothing written on what is unresolved has no such section. */
-const SECTIONS = ["committee", "decided", "input", "text"] as const
+/** In the mockup's order, which goes on to the sections still to come. The
+ * resolution shows only on a resolved conference, above the rest; the
+ * overview only where something is written. */
+const SECTIONS = [
+  "resolution",
+  "committee",
+  "decided",
+  "input",
+  "text"
+] as const
 
-/** Once resolved, the questions are the resolved text. */
-const RESOLVED_LABELS = { decided: "tab_resolved" }
+/** Each section's tab label: its card's own title, so the two always
+ * match. */
+const TITLES = {
+  resolution: RESOLUTION_TITLE,
+  committee: COMMITTEE_TITLE,
+  decided: OVERVIEW_TITLE,
+  input: INPUT_TITLE,
+  text: TEXT_TITLE
+}
 
 /**
  * One conference: who is deciding, and the two texts they are deciding
@@ -424,21 +468,20 @@ export function ConferenceDetails(props: ConferencePageProps) {
 }
 
 /**
- * Whether the rail's group of past conferences is open (PastFold,
- * ConferenceRail.tsx), held above the keyed page so it lasts from one
- * conference to the next. It starts open only on a conference in the group,
- * and opens on arriving at one, so the conference being read is never folded
- * away; otherwise it stays as the reader left it.
+ * Which of the rail's groups is open (GroupFold in ConferenceRail.tsx). Kept
+ * above the keyed page so it carries over between conferences. Arriving at a
+ * conference inside a group opens that group, so the current conference is
+ * always visible; otherwise it stays as the reader left it.
  */
 function useClosedFold(conference: ConferenceSummary): ClosedFold {
-  const closed = !isSitting(conference)
-  const [open, setOpen] = useState(closed)
+  const group = groupOf(conference)
+  const [open, setOpen] = useState<RailGroup | null>(group)
   const [at, setAt] = useState(conference.id)
   if (at !== conference.id) {
     setAt(conference.id)
-    if (closed) setOpen(true)
+    if (group) setOpen(group)
   }
-  return { open, onToggle: setOpen }
+  return { open, onToggle: oneOpen(setOpen) }
 }
 
 function Details({
@@ -512,9 +555,12 @@ function Details({
   const sections = useMemo(
     () =>
       SECTIONS.filter(
-        s => (s !== "decided" || decided) && (s !== "input" || heard)
+        s =>
+          (s !== "resolution" || resolved) &&
+          (s !== "decided" || decided) &&
+          (s !== "input" || heard)
       ),
-    [decided, heard]
+    [resolved, decided, heard]
   )
 
   const close = useCallback(() => setOpen(false), [])
@@ -752,6 +798,11 @@ function Details({
                     <PageTitle ref={titleText} $muted={!conference.covered}>
                       {subject}
                     </PageTitle>
+                    {conference.status !== "appointed" && (
+                      <StatusChip>
+                        {t(`status.${conference.status}`)}
+                      </StatusChip>
+                    )}
                   </TitleCell>
                   {(taking || follow.visible) && (
                     <TitleShare>
@@ -784,13 +835,10 @@ function Details({
                 $top="calc(var(--maple-navbar-height) + var(--rail-lift, 0px) + var(--title-h, 5rem) - 1px)"
                 $z={13}
               >
-                <ConferenceTabs
-                  sections={sections}
-                  labels={resolved ? RESOLVED_LABELS : undefined}
-                />
+                <ConferenceTabs sections={sections} titles={TITLES} />
               </Band>
               {resolved && (
-                <Section>
+                <Section id="resolution">
                   <ConferenceResolution
                     differences={differences}
                     settled={similarities.length}

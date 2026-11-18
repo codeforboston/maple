@@ -311,7 +311,7 @@ const props: ConferencePageProps = {
 /** Neither the Public Input section nor its tab. */
 const expectNoPublicInput = () => {
   expect(screen.queryByText("input.empty_title")).not.toBeInTheDocument()
-  expect(screen.queryByRole("link", { name: "tab_input" })).toBeNull()
+  expect(screen.queryByRole("link", { name: "input.title" })).toBeNull()
 }
 
 /** What useWide reads: jsdom lays nothing out, so every element is 0 wide. */
@@ -742,11 +742,12 @@ describe("ConferenceDetails", () => {
     const tabs = within(screen.getByRole("navigation", { name: "tabs_label" }))
       .getAllByRole("link")
       .map(a => [a.textContent, a.getAttribute("href")])
+    // Each tab shows its card's title.
     expect(tabs).toEqual([
-      ["tab_committee", "#committee"],
-      ["tab_decided", "#decided"],
-      ["tab_input", "#input"],
-      ["tab_text", "#text"]
+      ["who", "#committee"],
+      ["decided.title", "#decided"],
+      ["input.title", "#input"],
+      ["bill_text", "#text"]
     ])
     for (const [, href] of tabs)
       expect(container.querySelector(href!)).toBeTruthy()
@@ -772,19 +773,19 @@ describe("ConferenceDetails", () => {
         .getAllByRole("link")
         .filter(a => a.getAttribute("aria-current") === "true")
         .map(a => a.textContent)
-    expect(lit()).toEqual(["tab_committee"])
+    expect(lit()).toEqual(["who"])
     // The last section lights too, once a jump has parked it.
     tops.decided = -1800
     tops.input = -900
     tops.text = 0
     fireEvent.scroll(document)
-    expect(lit()).toEqual(["tab_text"])
+    expect(lit()).toEqual(["bill_text"])
     // A section can move with no scroll, when one above it grows.
     tops.decided = 900
     tops.input = 1800
     tops.text = 2700
     act(() => resized.forEach(heard => heard()))
-    expect(lit()).toEqual(["tab_committee"])
+    expect(lit()).toEqual(["who"])
     rect.mockRestore()
   })
 
@@ -867,9 +868,11 @@ describe("ConferenceDetails", () => {
     it("says nothing of how it was resolved before a report", () => {
       render(<ConferenceDetails {...props} />)
       expect(screen.queryByText("resolved.title")).not.toBeInTheDocument()
-      expect(screen.getByText("decided.title")).toBeInTheDocument()
       expect(
-        screen.getByRole("link", { name: "tab_decided" })
+        screen.getByRole("heading", { name: "decided.title" })
+      ).toBeInTheDocument()
+      expect(
+        screen.getByRole("link", { name: "decided.title" })
       ).toBeInTheDocument()
     })
 
@@ -877,8 +880,8 @@ describe("ConferenceDetails", () => {
       render(
         <ConferenceDetails {...props} differences={[]} similarities={[]} />
       )
+      // No card title, and no tab.
       expect(screen.queryByText("decided.title")).not.toBeInTheDocument()
-      expect(screen.queryByText("tab_decided")).not.toBeInTheDocument()
     })
   })
 
@@ -962,11 +965,27 @@ describe("ConferenceDetails", () => {
       expect(card).toHaveTextContent("resolved.meaning.modified")
     })
 
+    it("gives the resolution its own tab, first, named by its card", () => {
+      const { container } = render(<ConferenceDetails {...resolved} />)
+      const tabs = within(
+        screen.getByRole("navigation", { name: "tabs_label" })
+      )
+        .getAllByRole("link")
+        .map(a => [a.textContent, a.getAttribute("href")])
+      expect(tabs[0]).toEqual(["resolved.title", "#resolution"])
+      expect(container.querySelector("#resolution")).toContainElement(
+        screen.getByRole("heading", { name: "resolved.title" })
+      )
+    })
+
     it("groups the questions by which bills took them up", () => {
       render(<ConferenceDetails {...resolved} />)
-      expect(screen.getByText("resolved.list_title")).toBeInTheDocument()
+      // The same title and tab as before it was resolved.
       expect(
-        screen.getByRole("link", { name: "tab_resolved" })
+        screen.getByRole("heading", { name: "decided.title" })
+      ).toBeInTheDocument()
+      expect(
+        screen.getByRole("link", { name: "decided.title" })
       ).toBeInTheDocument()
       expect(
         screen

@@ -17,9 +17,9 @@ const Wrap = styled.div`
  * title band, whose own 12px is the gap. */
 const Line = styled.p`
   margin: 0;
-  /* A readable measure, about 60 characters, rather than the column's whole
+  /* A readable measure, about 76 characters, rather than the column's whole
      width. */
-  max-width: 60ch;
+  max-width: 76ch;
   font-family: var(--maple-font-body);
   font-size: 1.25rem;
   font-weight: 400;
@@ -41,23 +41,12 @@ const BlueNotice = styled(Notice)`
   }
 `
 
-const Status = styled.span`
-  display: inline-block;
-  margin-top: 0.75rem;
-  padding: 0.125rem 0.625rem;
-  border-radius: var(--maple-radius-pill);
-  background: var(--maple-color-gray-subtle-bg);
-  border: 1px solid var(--maple-color-gray-subtle-border);
-  color: var(--maple-color-gray-subtle-text);
-  font-size: 0.75rem;
-  font-weight: 600;
-`
-
 /**
  * What the committee is, in the legislature's own construction: the act it
  * exists to pass, and the two texts it reconciles to pass it. Each number goes
  * to its own bill page. Under it, the report that resolved it, and a notice
- * where we haven't covered it.
+ * where we haven't covered it. Its status, once it's no longer sitting,
+ * shows beside the title (StatusChip in ConferenceDetails.tsx).
  */
 export function ConferenceByline({
   conference
@@ -86,9 +75,6 @@ export function ConferenceByline({
           }}
         />
       </Line>
-      {conference.status !== "appointed" && (
-        <Status>{t(`status.${conference.status}`)}</Status>
-      )}
       {conference.reportBillId && (
         <Notice>
           <Trans

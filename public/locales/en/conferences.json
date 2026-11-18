@@ -13,7 +13,7 @@
     "resolved": "Resolved by <1>{{report}}</1>.",
     "not_covered": "We’re trialling these pages with a limited set of conference committees, and this isn’t one of them yet. You can’t add your input here."
   },
-  "who": "Who’s in the committee?",
+  "who": "Committee",
   "view_committees": "View the committees →",
   "senate": "Senate",
   "house": "House",
@@ -26,7 +26,6 @@
   "hearing_scheduled": "Hearing scheduled for {{date}}",
   "no_hearings": "No hearings have been disclosed.",
   "pick_conference": "Choose a conference committee",
-  "rail_closed": "Past Conferences",
   "bill_banner": {
     "appointed": "This bill is in a conference committee: <1>{{name}}</1>",
     "reportFiled": "The conference committee on this bill has filed its report: <1>{{name}}</1>",
@@ -37,8 +36,6 @@
   "map_label": "Massachusetts {{chamber}} districts, with the committee's seats marked",
   "index_title": "Conference Committees",
   "index_intro": "In Massachusetts, when the House and Senate pass different versions of a bill, six legislators negotiate the final text in a conference committee. It's the last point where a bill can still change, and it's normally an opaque process. This is the group of legislators determining the fate of these future laws.",
-  "chair_col": "Chair",
-  "minority_col": "Minority",
   "explorer": "Conference Explorer",
   "explorer_panel": "Committee Members",
   "what_is_conference_committee": "What is a conference committee?",
@@ -96,11 +93,6 @@
   "text_missing": "The text of {{bill}} isn’t on MAPLE yet.",
   "text_pdf": "Read the PDF",
   "tabs_label": "Sections of this conference committee",
-  "tab_committee": "Committee",
-  "tab_decided": "Unresolved Text",
-  "tab_resolved": "Resolved Text",
-  "tab_input": "Public Input",
-  "tab_text": "Bill Text",
   "decided": {
     "title": "What needs to be resolved?",
     "gist": "Below are some of the places where the House and Senate text differ. Notice something missing or wrong? <0>Send us feedback</0>.",

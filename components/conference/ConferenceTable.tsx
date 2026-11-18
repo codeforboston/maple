@@ -84,14 +84,6 @@ const Table = styled.table`
     width: var(--chamber-gap);
   }
 
-  /* Below 1200, where the card is short of room, the Chair and Minority
-     labels go: wider than the faces, they hold the face columns open. */
-  @media (max-width: 1199.98px) {
-    .sublabels {
-      display: none;
-    }
-  }
-
   /* Below 992, the names alone: no faces, so no chambers over them and no
      room between them. */
   @media (max-width: 991.98px) {
@@ -101,13 +93,6 @@ const Table = styled.table`
       display: none;
     }
   }
-`
-
-const SubLabel = styled.span`
-  display: block;
-  font-size: 0.6875rem;
-  color: var(--maple-text-muted);
-  opacity: 0.7;
 `
 
 /** `near`: a row brought near the held one (pointed at while another is
@@ -243,19 +228,6 @@ export function ConferenceTable({
             <th key={chamber} colSpan={3} scope="colgroup">
               <Eyebrow>{t(chamber.toLowerCase())}</Eyebrow>
             </th>
-          ])}
-          <td />
-        </tr>
-        <tr className="sublabels">
-          <td />
-          {chamberCells(chamber => [
-            <td key={`${chamber}-chair`}>
-              <SubLabel>{t("chair_col")}</SubLabel>
-            </td>,
-            <td key={`${chamber}-member`} />,
-            <td key={`${chamber}-minority`}>
-              <SubLabel>{t("minority_col")}</SubLabel>
-            </td>
           ])}
           <td />
         </tr>

@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef } from "react"
+import { Dispatch, ReactNode, SetStateAction, useEffect, useRef } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -97,21 +97,37 @@ const RailRow = styled(Internal)<{
         ? "var(--maple-brand-primary)"
         : "var(--maple-text-strong)"};
   }
+  /* A touch lighter than the muted grey (#64748b), 10% of the way to
+     white. */
   .bills {
     display: block;
     margin-top: 1px;
     font-size: 0.75rem;
     line-height: 1.35;
-    color: var(--maple-text-muted);
+    color: #738297;
   }
   .status {
     margin-left: 0.375rem;
     font-style: italic;
   }
+  /* "Not covered", one weight lighter than the rest of the line. */
+  .uncovered {
+    font-weight: 300;
+  }
+  /* A past conference's new bill number, on the same line as its name,
+     styled like .bills. */
+  .after {
+    margin-left: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: #738297;
+    white-space: nowrap;
+  }
 `
 
 /** "S.1234 · H.5678", the status once the conference has finished, and a
- * label where we haven't covered it. The caller styles `.status`. */
+ * label where we haven't covered it. The caller styles `.status`, and
+ * `.uncovered` for the "Not covered" label. */
 export function BillLine({
   c,
   noteUncovered = true
@@ -129,9 +145,34 @@ export function BillLine({
         <span className="status">{t(`status.${c.status}`)}</span>
       )}
       {noteUncovered && !c.covered && (
-        <span className="status">{t("not_covered")}</span>
+        <span className="status uncovered">{t("not_covered")}</span>
       )}
     </>
+  )
+}
+
+/** One conference's text in the rail and the picker's lists. Still sitting:
+ * its name, with its two bill numbers under it, and "Not covered" when
+ * FOLD_UNCOVERED is off. Past: its name, with its new bill number beside it
+ * ("H.5350"); the group heading shows its status. The caller styles
+ * `.name`, `.bills`, `.after`, `.status` and `.uncovered`. */
+export function RowText({ c }: { c: ConferenceSummary }) {
+  if (isSitting(c))
+    return (
+      <>
+        <span className="name">{conferenceName(c)}</span>
+        <span className="bills">
+          <BillLine c={c} noteUncovered={!FOLD_UNCOVERED} />
+        </span>
+      </>
+    )
+  return (
+    <span className="name">
+      {conferenceName(c)}
+      {c.reportBillId && (
+        <span className="after">{formatBillId(c.reportBillId)}</span>
+      )}
+    </span>
   )
 }
 
@@ -177,44 +218,82 @@ export function ConferenceRail({
   )
 }
 
-/** The conferences the rail lists, and the picker that stands in for it
- * (ConferencePicker.tsx): those still sitting, then the rest, past, folded
- * under them (PastFold); in each, those not in the trial ("Not covered") at
- * the bottom, each group in its order. */
-export const railConferences = (conferences: ConferenceSummary[]) => {
-  const sorted = [...conferences].sort(
-    (a, b) => Number(!a.covered) - Number(!b.covered)
-  )
-  return {
-    sitting: sorted.filter(isSitting),
-    past: sorted.filter(c => !isSitting(c))
-  }
-}
+/** The collapsible groups below the main list, in order: "Not covered"
+ * (still sitting, but not covered), then the past ones by status, in the
+ * order they happen: "Report filed", "Enacted", "Dissolved". */
+export const RAIL_GROUPS = [
+  "uncovered",
+  "reportFiled",
+  "enacted",
+  "dissolved"
+] as const
+export type RailGroup = (typeof RAIL_GROUPS)[number]
 
-/** Whether the past conferences are listed at all, in their fold under the
- * ones still sitting (PastFold), in the rail and the picker's lists alike.
- * Off for now: only the conferences still sitting are listed, so none
- * enacted shows. */
+/** Whether past conferences are listed, in their groups below the main list,
+ * in the rail and the picker alike. Off for now, so no enacted conference
+ * shows. Not covered conferences are still sitting, so they're listed either
+ * way. */
 export const SHOW_PAST_CONFERENCES = false
 
-/** Whether the group of past conferences is open, and how the reader opens
- * or folds it. The page holds it (ConferenceDetails.tsx), so the rail and
- * the picker share it and it lasts between conferences. */
-export type ClosedFold = {
-  open: boolean
-  onToggle: (open: boolean) => void
+/** Whether not covered conferences get their own collapsible group ("Not
+ * covered"), or stay at the bottom of the main list, each marked "Not
+ * covered". Off for now: at the bottom. */
+export const FOLD_UNCOVERED = false
+
+/** The group a conference goes in, if any: a past one, by its status; a
+ * sitting one, none, unless it's not covered and FOLD_UNCOVERED is on. */
+export function groupOf(
+  c: Pick<ConferenceSummary, "status" | "covered">
+): RailGroup | null {
+  if (c.status !== "appointed") return c.status
+  return !c.covered && FOLD_UNCOVERED ? "uncovered" : null
 }
 
-/** The past conferences, folded under the ones still sitting. */
-const Closed = styled.details`
-  margin-top: 0.75rem;
+/** What the rail and the picker (ConferencePicker.tsx) list: the sitting
+ * conferences, not covered ones last; then each group that has any, in
+ * RAIL_GROUPS order. */
+export const railConferences = (conferences: ConferenceSummary[]) => ({
+  sitting: conferences
+    .filter(c => groupOf(c) === null)
+    .sort((a, b) => Number(!a.covered) - Number(!b.covered)),
+  groups: RAIL_GROUPS.filter(g =>
+    g === "uncovered" ? FOLD_UNCOVERED : SHOW_PAST_CONFERENCES
+  )
+    .map(group => ({
+      group,
+      conferences: conferences.filter(c => groupOf(c) === group)
+    }))
+    .filter(g => g.conferences.length > 0)
+})
 
+/** Which group is open (one at most), and how to open or close one. The page
+ * holds it (ConferenceDetails.tsx), so the rail and the picker share it and
+ * it carries over between conferences. */
+export type ClosedFold = {
+  open: RailGroup | null
+  onToggle: (group: RailGroup, open: boolean) => void
+}
+
+/** ClosedFold's onToggle, keeping one group open at a time. Opening a group
+ * closes the one that was open. The browser then reports that one closing,
+ * which must not close the new one. */
+export const oneOpen =
+  (set: Dispatch<SetStateAction<RailGroup | null>>) =>
+  (group: RailGroup, open: boolean) =>
+    set(was => (open ? group : was === group ? null : was))
+
+/** One collapsible group, below the main list. */
+const Closed = styled.details`
+  /* The group's heading: full width, chevron at the right, and the whole
+     area between its lines clickable, like a row. */
   > summary {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 0.375rem;
-    /* In line with the rows' names (RailRow): their 3px edge and 1rem. */
-    padding: 0.4375rem 0.5rem 0.4375rem calc(1rem + 3px);
+    /* Lined up with the rows' names (RailRow's 3px edge and 1rem); 22px
+       above and below. */
+    padding: 22px 0.5rem 22px calc(1rem + 3px);
     border-radius: 0 var(--maple-radius-md) var(--maple-radius-md) 0;
     font-size: 0.75rem;
     line-height: 1.35;
@@ -244,27 +323,39 @@ const Closed = styled.details`
   > ul {
     margin-top: 2px;
   }
+  /* Inside a group, lines only between rows: none above the first or below
+     the last. */
+  > ul li:first-child {
+    border-top: 0;
+  }
+  > ul li:last-child {
+    border-bottom: 0;
+  }
+  /* A line between one group and the next. */
+  & + & {
+    border-top: 1px solid ${RULE};
+  }
 `
 
-/** The fold the past conferences sit in, for the rail and the picker's
- * lists alike. */
-export function PastFold({
-  count,
+/** One collapsible group, headed by its name ("Not covered", "Enacted"), in
+ * the rail and the picker alike. */
+export function GroupFold({
+  group,
   fold,
   children
 }: {
-  count: number
+  group: RailGroup
   fold: ClosedFold
   children: ReactNode
 }) {
   const { t } = useTranslation("conferences")
   return (
     <Closed
-      open={fold.open}
-      onToggle={e => fold.onToggle(e.currentTarget.open)}
+      open={fold.open === group}
+      onToggle={e => fold.onToggle(group, e.currentTarget.open)}
     >
       <summary>
-        {t("rail_closed", { count })}
+        {t(group === "uncovered" ? "not_covered" : `status.${group}`)}
         <FontAwesomeIcon className="chevron" icon={faChevronDown} />
       </summary>
       {children}
@@ -272,8 +363,8 @@ export function PastFold({
   )
 }
 
-/** The rail's rows (railConferences): those still sitting, then the past
- * ones in their fold. */
+/** The rail's list: the sitting conferences, then each group
+ * (railConferences). */
 export function RailList({
   conferences,
   current,
@@ -283,7 +374,7 @@ export function RailList({
   current: string
   fold: ClosedFold
 }) {
-  const { sitting, past } = railConferences(conferences)
+  const { sitting, groups } = railConferences(conferences)
   const rows = (cs: ConferenceSummary[]) => (
     <List>
       {cs.map(c => (
@@ -295,10 +386,7 @@ export function RailList({
             $filed={c.status === "reportFiled"}
             $covered={c.covered}
           >
-            <span className="name">{conferenceName(c)}</span>
-            <span className="bills">
-              <BillLine c={c} />
-            </span>
+            <RowText c={c} />
           </RailRow>
         </li>
       ))}
@@ -307,11 +395,11 @@ export function RailList({
   return (
     <>
       {rows(sitting)}
-      {SHOW_PAST_CONFERENCES && past.length > 0 && (
-        <PastFold count={past.length} fold={fold}>
-          {rows(past)}
-        </PastFold>
-      )}
+      {groups.map(({ group, conferences: cs }) => (
+        <GroupFold key={group} group={group} fold={fold}>
+          {rows(cs)}
+        </GroupFold>
+      ))}
     </>
   )
 }
