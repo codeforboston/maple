@@ -1,4 +1,11 @@
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react"
+import {
+  ChangeEvent,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from "react"
 import { FunctionsError } from "firebase/functions"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
@@ -9,6 +16,7 @@ import {
   useProfile
 } from "components/db"
 import type { RefusalDetails } from "functions/src/testimony/types"
+import type { ConfereeView } from "../types"
 import { Body as Words } from "./ClampedText"
 import { accountTypeOf, initialsOf, nameOf } from "./accounts"
 import {
@@ -24,7 +32,6 @@ import {
   Body,
   ConductRule,
   Field,
-  Hint,
   Label,
   Muted,
   Primary,
@@ -39,7 +46,7 @@ import {
 } from "./InputForm"
 import { useInputContext } from "./context"
 import { UsersRound } from "./icons"
-import { brand, caution, ink, line, red, wash } from "./tokens"
+import { brand, caution, ink, line, red, sunken, wash } from "./tokens"
 import { useAutosave } from "./useAutosave"
 
 /** Below lg, where the letter sits above it, the agreeing step takes the room
@@ -128,6 +135,21 @@ const Para = styled.p`
 
 /** A checkbox row: the reader answering for themselves, the whole row a
  * target. Asked and unanswered, it goes red, and `$washed` too. */
+/** Under the no-words checkbox while it's ticked, in line with its words
+ * (Tick: 12px in, the 16px box, 12px): the case for adding a line, set as
+ * the mockup's note under its weekly-email checkbox (DigestChoice in its
+ * compose.tsx). */
+const AreYouSure = styled.p`
+  margin: -5px 0 0;
+  padding: 0 12px;
+  font-family: var(--maple-font-body);
+  font-weight: 300;
+  font-style: italic;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: ${ink.mid};
+`
+
 const Tick = styled.label<{ $asked: boolean; $washed?: boolean }>`
   display: flex;
   flex-shrink: 0;
@@ -191,22 +213,55 @@ const Leave = styled(Muted)`
   }
 `
 
-/** Where the cosign will land: the card's own pieces, in its type (Entry.tsx),
- * without its date and actions, since nothing here is filed yet. */
+/** Where the cosign will land, on the writing step and in the review step's
+ * On MAPLE preview (Review.tsx): the card's own pieces, in its type (Entry.tsx), without its
+ * date and actions, since nothing here is filed yet. */
 const Preview = styled.div`
   display: flex;
   flex-shrink: 0;
-  gap: 14px;
+  gap: 12px;
   font-family: var(--maple-font-body);
-  margin-bottom: 20px;
   padding: 14px 16px 20px;
   background: var(--maple-surface-base);
   border: 1px solid ${line.default};
   border-radius: 8px;
 `
 
-const PreviewDisc = Disc
+/** The preview on the writing step, its label and card, over the field with
+ * room under it (on the review step the well gives its own). Never more than
+ * half the panel's height, so the field below always has room; a longer
+ * card scrolls in its well. */
+const PreviewHold = styled.div`
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  max-height: 50%;
+  margin-bottom: 20px;
+`
 
+/** The card in a recessed well, as the review step's previews are
+ * (Review.tsx), scrolling in it without springing past its ends when the
+ * card is taller than the well. */
+const PreviewWell = styled.div`
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: none;
+  padding: 12px;
+  background: ${sunken};
+  border: 1px solid var(--maple-surface-border);
+  border-radius: 5px;
+`
+
+/** The preview set as a cosign is shown on MAPLE, a row under the input it
+ * cosigns (CosignList in Cosigns.tsx): its 28px initials. */
+const PreviewDisc = styled(Disc)`
+  width: 28px;
+  height: 28px;
+  font-size: 0.625rem;
+`
+
+/** The cosign row's name line (Cosigns.tsx), 13px in Lexend; the position
+ * chip at its size everywhere else, 11px. */
 const PreviewName = styled.p`
   /* Names in Lexend, as the cosign card's, in Nunito cards too. */
   font-family: var(--maple-font-heading);
@@ -215,39 +270,155 @@ const PreviewName = styled.p`
   align-items: center;
   gap: 6px;
   margin: 0;
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   font-weight: 400;
-  line-height: 1;
+  line-height: 1.2;
   color: ${ink.strong};
-
-  .position-chip {
-    font-size: 0.75rem;
-  }
 `
 
+/** As the cosign row has them: the name line, the account type 4px under
+ * it, and 8px under that, in the muted grey, the reader's words as they
+ * write them, or the note on a cosign with none. */
 const PreviewText = styled.div`
   flex: 1;
   min-width: 0;
-  > :last-child {
-    margin-top: 10px;
+  > :nth-child(2) {
+    margin-top: 4px;
+  }
+  > :nth-child(3) {
+    margin-top: 8px;
+  }
+  > :nth-child(3),
+  > :nth-child(3) * {
+    color: ${ink.mid};
+  }
+  /* The note on a cosign with none, a touch lighter than words. */
+  ${NoWords} {
+    color: ${ink.muted};
   }
 `
+
+/** The card over a hidden copy of it with the note on a cosign with none, so
+ * what holds it keeps that height at any width: the card itself is only as
+ * tall as what it shows, growing with the words until they are cut at the
+ * note's last line (CutWords). */
+const Stack = styled.div<{ $hold: boolean }>`
+  display: grid;
+  > * {
+    grid-area: 1 / 1;
+    align-self: start;
+  }
+  > [aria-hidden] {
+    visibility: hidden;
+    /* Not holding the height (the review step, where notes follow the card),
+       the copy is still laid out, for the words' cut, at no height. */
+    ${({ $hold }) => ($hold ? "" : "height: 0; overflow: hidden;")}
+  }
+`
+
+/** The words, and their hidden measuring copy. */
+const Cut = styled.div`
+  position: relative;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  > [aria-hidden] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    visibility: hidden;
+  }
+`
+
+/** Kept free after the ellipsis on the last line, so it reads as one. */
+const Room = styled.span`
+  display: inline-block;
+  width: 24px;
+`
+
+/**
+ * The words cut to `lines` lines, the ellipsis ending short of the last
+ * line's end; only that line is shortened. The cut is found by measuring a
+ * hidden copy, as ClampedText does.
+ */
+function CutWords({ text, lines }: { text: string; lines: number }) {
+  const [cut, setCut] = useState<number | null>(null)
+  const measureRef = useRef<HTMLParagraphElement>(null)
+  const textRef = useRef<HTMLSpanElement>(null)
+  const roomRef = useRef<HTMLSpanElement>(null)
+
+  useEffect(() => {
+    const m = measureRef.current
+    const s = textRef.current
+    const room = roomRef.current
+    if (!m || !s || !room) return
+    // Only a new width moves the cut; trying cuts changes the height alone.
+    let measured = -1
+    const compute = () => {
+      if (m.clientWidth === measured) return
+      measured = m.clientWidth
+      const line = parseFloat(getComputedStyle(m).lineHeight)
+      if (!line) return
+      const max = line * lines + 2
+      const fits = (shown: string, withRoom: boolean) => {
+        s.textContent = shown
+        room.style.display = withRoom ? "" : "none"
+        return m.offsetHeight <= max
+      }
+      if (fits(text, false)) return setCut(null)
+      let lo = 0
+      let hi = text.length
+      while (lo < hi) {
+        const mid = Math.ceil((lo + hi) / 2)
+        if (fits(`${text.slice(0, mid).trimEnd()}…`, true)) lo = mid
+        else hi = mid - 1
+      }
+      setCut(lo)
+    }
+    compute()
+    const ro = new ResizeObserver(compute)
+    ro.observe(m)
+    return () => ro.disconnect()
+  }, [text, lines])
+
+  return (
+    <Cut>
+      <Words $small>
+        {cut === null ? text : `${text.slice(0, cut).trimEnd()}…`}
+      </Words>
+      <Words $small aria-hidden ref={measureRef}>
+        <span ref={textRef} />
+        <Room ref={roomRef} />
+      </Words>
+    </Cut>
+  )
+}
+
+/** How many lines `el` takes, again whenever its width changes. */
+function useLinesOf(el: HTMLElement | null) {
+  const [lines, setLines] = useState(2)
+  useEffect(() => {
+    if (!el) return
+    const measure = () => {
+      const line = parseFloat(getComputedStyle(el).lineHeight)
+      if (line) setLines(Math.max(1, Math.round(el.offsetHeight / line)))
+    }
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [el])
+  return lines
+}
 
 const Optional = styled(Cosigned)`
   color: ${ink.faint};
 `
 
-/** Where the reader's line lands in the letter. */
-const LineHint = styled(Hint)`
-  margin: -4px 0 8px;
-  text-align: left;
-`
-
-const NoteField = styled(Field)`
-  &:disabled {
-    background: ${wash.default};
-    cursor: not-allowed;
-  }
+/** `$off` while the reader has said they'll add no words: greyed, and
+ * disabled until they untick the box. */
+const NoteField = styled(Field)<{ $off: boolean }>`
+  ${({ $off }) => ($off ? `background: ${wash.default};` : "")}
 `
 
 /** A refusal the server words for the reader's situation, rather than the
@@ -278,8 +449,8 @@ export function CosignForm({
   conferenceId: string
   /** What the conference is called, for the letter's subject. */
   subject: string
-  /** Initials of the conferees, for the weekly update's row. */
-  conferees: string[]
+  /** The conferees, for the weekly update's row. */
+  conferees: ConfereeView[]
   /** The user's draft and publication on the conference. */
   edit: UseEditConferenceTestimony
   /** What is being cosigned. */
@@ -298,6 +469,9 @@ export function CosignForm({
 
   const [note, setNote] = useState("")
   const [noWords, setNoWords] = useState(false)
+  // The preview's hidden note, whose lines the words are cut to.
+  const [held, setHeld] = useState<HTMLElement | null>(null)
+  const lines = useLinesOf(held)
   const [reason, setReason] = useState("")
   const field = useRef<HTMLTextAreaElement>(null)
   const ask = useAsk(field)
@@ -342,9 +516,16 @@ export function CosignForm({
     }
   })
 
-  // Ready to write on arrival, without scrolling the preview out of view.
+  // Ready to write on arrival, the panel left at its top; not while they've
+  // said no words, when the field is off.
   useEffect(() => {
-    if (step === "write") field.current?.focus({ preventScroll: true })
+    const el = field.current
+    if (step !== "write" || noWords || !el) return
+    el.focus({ preventScroll: true })
+    // The caret after what they have written, to carry on from there.
+    el.setSelectionRange(el.value.length, el.value.length)
+    // Only on arrival: ticking or unticking the box moves no focus.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step])
 
   const ready = !!note.trim() || noWords
@@ -410,6 +591,43 @@ export function CosignForm({
 
   const name = profile?.fullName || t("input.anonymous")
   const type = accountTypeOf(claims?.role ?? "user")
+  // How the cosign will look on MAPLE, for the review's preview of it.
+  const card = (said: ReactNode) => (
+    <Preview>
+      <PreviewDisc>{initialsOf(name)}</PreviewDisc>
+      <PreviewText>
+        <PreviewName>
+          {name}
+          <Cosigned>{t("input.cosigned")}</Cosigned>
+          <span>{nameOf(parent)}</span>
+          <PositionChip position={parent.position} />
+        </PreviewName>
+        <Descriptor>{t(`input.descriptor_${type}`)}</Descriptor>
+        {said}
+      </PreviewText>
+    </Preview>
+  )
+  // At the cards' smaller size (14px), the note and the words alike.
+  const preview = (hold: boolean) => (
+    <Stack $hold={hold}>
+      {/* Hidden, the card with the note, holding its height. */}
+      <div aria-hidden>
+        {card(
+          <NoWords $small ref={setHeld}>
+            {t("input.cosign_no_words")}
+          </NoWords>
+        )}
+      </div>
+      {card(
+        noWords ? (
+          <NoWords $small>{t("input.cosign_no_words")}</NoWords>
+        ) : (
+          // The reader's words as they write them.
+          note.trim() && <CutWords text={note} lines={lines} />
+        )
+      )}
+    </Stack>
+  )
   if (step === "review")
     return (
       <ReviewStep
@@ -422,12 +640,18 @@ export function CosignForm({
         position={parent.position}
         content={content}
         cosign={{ author: nameOf(parent), content: parent.content }}
+        preview={preview(false)}
         ready={ready}
         posting={posting}
         problem={problem}
         reason={reason}
         onReason={setReason}
         onBack={() => onStep("write")}
+        // Unticks "no words of my own", so they arrive in the field to write.
+        onAddLine={() => {
+          setNoWords(false)
+          onStep("write")
+        }}
         onCancel={onCancel}
         onPost={post}
       />
@@ -435,35 +659,21 @@ export function CosignForm({
   return (
     <Body>
       <Scroll>
-        <Label>{t("input.preview_label")}</Label>
-        <Preview>
-          <PreviewDisc>{initialsOf(name)}</PreviewDisc>
-          <PreviewText>
-            <PreviewName>
-              {name}
-              <Cosigned>{t("input.cosigned")}</Cosigned>
-              <span>{nameOf(parent)}</span>
-              <PositionChip position={parent.position} />
-            </PreviewName>
-            <Descriptor>{t(`input.descriptor_${type}`)}</Descriptor>
-            {noWords ? (
-              <NoWords $small={false}>{t("input.cosign_no_words")}</NoWords>
-            ) : (
-              <Words $small={false}>{t("input.cosign_lands")}</Words>
-            )}
-          </PreviewText>
-        </Preview>
+        <PreviewHold>
+          <Label>{t("input.cosign_preview_label")}</Label>
+          <PreviewWell>{preview(true)}</PreviewWell>
+        </PreviewHold>
         <Label>
           {t("input.cosign_body_label")}{" "}
           <Optional>{t("input.cosign_optional")}</Optional>
         </Label>
-        <LineHint>
-          {t("input.cosign_line_hint", { name: nameOf(parent) })}
-        </LineHint>
         <NoteField
           ref={field}
           value={content}
+          // Off while they've said no words: no focus, caret or typing until
+          // they untick the box, which brings back what they had written.
           disabled={noWords}
+          $off={noWords}
           placeholder={noWords ? "" : t("input.cosign_prompt")}
           $refused={ask.refused}
           $asking={ask.asking}
@@ -488,6 +698,7 @@ export function CosignForm({
           />
           <span>{t("input.cosign_no_words_label")}</span>
         </Tick>
+        {noWords && <AreYouSure>{t("input.cosign_no_words_sure")}</AreYouSure>}
         {problem}
       </Scroll>
       <Actions>
