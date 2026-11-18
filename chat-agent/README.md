@@ -27,7 +27,7 @@ yarn setup-db          # once: chat tables and LangGraph checkpoint tables
 yarn start             # http://127.0.0.1:2024
 ```
 
-The bill, testimony and sponsor tools need the root `yarn install` (for `mcp-server/queries.ts`'s dependencies) and Google credentials that can read the dev Firestore: `gcloud auth application-default login`, once a maintainer has added you to `digital-testimony-dev`.
+`yarn start` needs the root `yarn install`, because the agent loads `mcp-server/queries.ts`. From a checkout, though, the bill, testimony and sponsor tools fail with "The default Firebase app does not exist": `queries.ts` resolves `firebase-admin` from `mcp-server/` or the repo root, a different copy from the one the agent initializes. They work in the Docker image, which has one copy (`docker build -f chat-agent/Dockerfile .` from the repo root), with Google credentials that can read the dev Firestore: `gcloud auth application-default login`, once a maintainer has added you to `digital-testimony-dev`. Chat, memory, budgets and Stop work either way.
 
 Then run the site with these server env vars, and open `/chat` signed in:
 

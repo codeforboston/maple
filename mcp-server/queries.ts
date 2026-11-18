@@ -402,11 +402,6 @@ export function applyBillPostFilters(
 // Each parses its arguments with the tool's schema, so callers outside the MCP
 // SDK get the same defaults (limit, includeFullText); court defaults to currentCourt().
 
-/** For a process that doesn't run index.ts: initializes the same firebase-admin these queries use. */
-export function initFirestore() {
-  if (!admin.apps.length) admin.initializeApp()
-}
-
 export async function searchBills(args: unknown) {
   let {
     query,

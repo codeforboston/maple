@@ -1,5 +1,5 @@
+import * as admin from "firebase-admin"
 import {
-  initFirestore,
   listSponsors,
   searchBills,
   searchTestimony
@@ -40,7 +40,7 @@ const direct: Record<string, (args: unknown) => Promise<unknown>> = {
 
 /** Runs the MCP server's queries in-process, against the Firestore of this service's project. */
 export function directCaller(): McpCall {
-  initFirestore()
+  if (!admin.apps.length) admin.initializeApp()
   return async (name, args) => {
     const query = direct[name]
     if (!query) throw new Error(`Unknown MAPLE tool ${name}`)
