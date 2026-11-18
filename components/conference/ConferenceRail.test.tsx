@@ -115,3 +115,32 @@ describeFold("RailList", () => {
     expect(screen.queryByText("rail_closed")).not.toBeInTheDocument()
   })
 })
+
+describe("RailList's note on the conferences we don't cover", () => {
+  it("explains them under the list where one is listed", () => {
+    render(
+      <RailList
+        conferences={[
+          conference("sitting"),
+          { ...conference("bond"), covered: false }
+        ]}
+        current="sitting"
+        fold={folded}
+      />
+    )
+
+    expect(screen.getByText("rail_not_covered")).toBeInTheDocument()
+  })
+
+  it("leaves it out where every one listed is covered", () => {
+    render(
+      <RailList
+        conferences={[conference("sitting")]}
+        current="sitting"
+        fold={folded}
+      />
+    )
+
+    expect(screen.queryByText("rail_not_covered")).not.toBeInTheDocument()
+  })
+})

@@ -7,9 +7,11 @@ import { Internal, maple } from "../links"
 import {
   BillLine,
   ClosedFold,
+  listedConferences,
   PastFold,
   railConferences,
-  SHOW_PAST_CONFERENCES
+  SHOW_PAST_CONFERENCES,
+  UncoveredNote
 } from "./ConferenceRail"
 import { useMatches, useRailHidden } from "./hooks"
 import { List } from "./input/icons"
@@ -67,6 +69,12 @@ const DrawerBody = styled(Offcanvas.Body)`
   }
   li + li {
     border-top: 1px solid rgba(15, 23, 42, 0.06);
+  }
+  /* The note on the conferences we don't cover (UncoveredNote), its sides
+     the rows' (Row). */
+  && .uncovered-note {
+    margin: 1rem 0 0.5rem;
+    padding: 0 ${PHONE_GUTTER};
   }
 `
 
@@ -162,7 +170,8 @@ export function ConferenceDrawer({
 }) {
   const { t } = useTranslation("conferences")
   const fold = useFold(held)
-  const { sitting, past } = railConferences(conferences)
+  const listed = railConferences(conferences)
+  const { sitting, past } = listed
   const rows = (cs: ConferenceSummary[]) => (
     <ul>
       {cs.map(c => (
@@ -196,6 +205,7 @@ export function ConferenceDrawer({
             {rows(past)}
           </PastFold>
         )}
+        <UncoveredNote conferences={listedConferences(listed)} />
       </DrawerBody>
     </Drawer>
   )
@@ -246,6 +256,12 @@ const Popover = styled.nav`
   && .bills {
     display: none;
   }
+  /* The note on the conferences we don't cover (UncoveredNote), its sides
+     the rows' (above). */
+  && .uncovered-note {
+    margin: 0.75rem 0 0.375rem;
+    padding: 0 1rem;
+  }
 `
 
 /**
@@ -274,7 +290,8 @@ export function ConferencePopover({
 }) {
   const { t } = useTranslation("conferences")
   const fold = useFold(held)
-  const { sitting, past } = railConferences(conferences)
+  const listed = railConferences(conferences)
+  const { sitting, past } = listed
   const rows = (cs: ConferenceSummary[]) => (
     <ul>
       {cs.map(c => (
@@ -362,6 +379,7 @@ export function ConferencePopover({
           {rows(past)}
         </PastFold>
       )}
+      <UncoveredNote conferences={listedConferences(listed)} />
     </Popover>,
     document.body
   )

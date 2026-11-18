@@ -27,9 +27,10 @@
     "dissolved": "Dissolved"
   },
   "not_covered": "Not covered",
+  "rail_not_covered": "We don’t write up bond bills, which are long and heavily amended. They’re listed so you can see who’s negotiating, but they don’t take input.",
   "notice": {
     "resolved": "Resolved by <1>{{report}}</1>.",
-    "not_covered": "We’re trialling these pages with a limited set of conference committees, and this isn’t one of them yet. You can’t add your input here."
+    "not_covered": "We haven’t written up this conference. It’s a bond bill, which authorizes state borrowing for many projects at once. Bond bills are long, heavily amended, and don’t break down into a few open questions the way the other bills in conference do. Here you can see who’s negotiating and read both versions, but you can’t add input through MAPLE. We’re working on features that will let us cover bond bills in the future."
   },
   "who": "Who’s in the committee?",
   "view_committees": "View the committees →",
