@@ -72,7 +72,7 @@
   "office_house": "State Representative, {{district}}",
   "conference": "Conference",
   "hero": {
-    "lead": "When the House and Senate pass different versions of a bill, six legislators work out one final text in a conference committee. Learn how it works, see who’s negotiating and what’s still unresolved, and share your input while they’re still deciding.",
+    "lead": "When the House and Senate pass different versions of a bill, six legislators work out one final text in a conference committee. See who’s negotiating, what’s still being worked out, and share your input while they’re still deciding.",
     "steps": [
       {
         "h": "Two versions pass",
@@ -84,19 +84,20 @@
       },
       {
         "h": "They negotiate",
-        "p": "The first meeting is public. The rest are as well, unless a majority votes to close them. A final bill only proceeds once 2/3 of the conferees from each chamber agree."
+        "p": "Conferees weigh the two versions and the tradeoffs between them. MAPLE gathers public input on what’s still open and shares it with conferees."
       },
       {
         "h": "The report is posted",
-        "p": "Once it goes up on the legislature's website, the legislators have at least 24 hours to read it before either chamber can vote."
+        "p": "The final text is posted publicly. If no agreement is reached before the session ends, the bill doesn’t move forward."
       },
       {
-        "h": "Yes or no",
-        "p": "Each chamber votes without amendments. If either rejects it, the bill can return to a new conference committee, or otherwise it doesn't pass."
+        "h": "Final vote",
+        "p": "Both chambers vote on the deal. If it passes, it goes to the governor."
       }
     ],
     "sources": "From MAPLE’s <1>guide to the legislative process</1> and the legislature’s <3>Joint Rules</3>.",
     "see": "See the committees",
+    "here": "We are here",
     "see_unavailable": "Conference committees didn't load. Please try again in a minute."
   },
   "bill_text": "Bill Text",
