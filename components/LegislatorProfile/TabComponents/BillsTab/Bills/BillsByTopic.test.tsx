@@ -1,5 +1,6 @@
 import React from "react"
 import { fireEvent, render, screen } from "@testing-library/react"
+import { MemberContent } from "components/db"
 import { MemberBillSummary } from "functions/src/members/memberBillSummary"
 import { BillsByTopic } from "./BillsByTopic"
 
@@ -8,6 +9,8 @@ jest.mock("next-i18next", () => ({
 }))
 
 describe("BillsByTopic", () => {
+  const member = { Name: "Test Member" } as unknown as MemberContent
+
   const summary: MemberBillSummary = {
     schemaVersion: 2,
     all: { count: 3, topics: [] },
@@ -45,7 +48,7 @@ describe("BillsByTopic", () => {
   }
 
   it("shows each bill group's own count, with all counting the unique union", () => {
-    render(<BillsByTopic summary={summary} court={194} />)
+    render(<BillsByTopic summary={summary} court={194} member={member} />)
 
     const buttons = screen.getAllByRole("button")
 
@@ -59,7 +62,7 @@ describe("BillsByTopic", () => {
   })
 
   it("renders only bills from the selected group and updates active button state", () => {
-    render(<BillsByTopic summary={summary} court={194} />)
+    render(<BillsByTopic summary={summary} court={194} member={member} />)
 
     fireEvent.click(screen.getByRole("button", { name: /cosponsored/ }))
 

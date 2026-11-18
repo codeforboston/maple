@@ -38,7 +38,7 @@ const mockMember = {
 jest.mock("./TabComponents/PrioritiesTab", () => ({
   PrioritiesTab: () => null
 }))
-jest.mock("./TabComponents/BillsTab/BillsTab", () => ({
+jest.mock("./TabComponents/BillsTab", () => ({
   BillsTab: ({ member }: { member: MemberContent }) => (
     <div data-testid="bills-tab-content">{member.MemberCode}</div>
   )
