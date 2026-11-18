@@ -19,6 +19,8 @@ browser ──Firebase ID token──▶ /api/copilotkit, /api/chat/*  (Next.js)
 
 ## Run locally
 
+Needs Node 24.
+
 ```bash
 cd chat-agent
 yarn install
