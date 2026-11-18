@@ -16,6 +16,7 @@ import {
   useProfile
 } from "components/db"
 import type { RefusalDetails } from "functions/src/testimony/types"
+import { MOBILE_LAYOUT } from "../styles"
 import type { ConfereeView } from "../types"
 import { Body as Words } from "./ClampedText"
 import { accountTypeOf, initialsOf, nameOf } from "./accounts"
@@ -46,14 +47,18 @@ import {
 } from "./InputForm"
 import { useInputContext } from "./context"
 import { UsersRound } from "./icons"
-import { brand, caution, ink, line, red, sunken, wash } from "./tokens"
+import { brand, caution, ink, line, recess, red, wash } from "./tokens"
 import { useAutosave } from "./useAutosave"
 
-/** Below lg, where the letter sits above it, the agreeing step takes the room
- * it needs and leaves the letter the rest. */
+/** On mobile, where the letter sits above it, the agreeing step is as tall as
+ * what it holds and does not scroll by itself: it scrolls with the letter, in
+ * the panel (Split in Panel.tsx). */
 const Column = styled(Body)<{ $natural?: boolean }>`
-  @media (max-width: 1023.98px) {
-    ${({ $natural }) => ($natural ? "flex: none;" : "")}
+  @media ${MOBILE_LAYOUT} {
+    ${({ $natural }) =>
+      $natural
+        ? `flex: none; ${Scroll} { flex: none; overflow: visible; }`
+        : ""}
   }
 `
 
@@ -65,13 +70,27 @@ const Card = styled.div`
   border-radius: 16px;
 `
 
+/** Who and when, over the card. Not on mobile, where the letter just above
+ * says it. */
 const CardHead = styled.div`
   padding: 20px 22px 16px;
+
+  @media ${MOBILE_LAYOUT} {
+    display: none;
+  }
 `
 
+/** Each part of the card, ruled off from the one above; on mobile, with no
+ * head over it, the first opens on the card's rounded top. */
 const CardSection = styled.div`
   padding: 18px 22px;
   border-top: 1px solid ${line.default};
+
+  @media ${MOBILE_LAYOUT} {
+    ${CardHead} + & {
+      border-top: 0;
+    }
+  }
 `
 
 const Signing = styled.p`
@@ -247,7 +266,7 @@ const PreviewWell = styled.div`
   overflow-y: auto;
   overscroll-behavior: none;
   padding: 12px;
-  background: ${sunken};
+  background: ${recess};
   border: 1px solid var(--maple-surface-border);
   border-radius: 5px;
 `
@@ -314,6 +333,20 @@ const Stack = styled.div<{ $hold: boolean }>`
        the copy is still laid out, for the words' cut, at no height. */
     ${({ $hold }) => ($hold ? "" : "height: 0; overflow: hidden;")}
   }
+`
+
+/** In place of the card until the reader writes, or says they won't: in its
+ * room (Stack), centred, muted, as the review's Coming soon! is (Review.tsx). */
+const Empty = styled.p`
+  && {
+    align-self: stretch;
+  }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  font-size: 0.8125rem;
+  color: ${ink.mid};
 `
 
 /** The words, and their hidden measuring copy. */
@@ -618,13 +651,14 @@ export function CosignForm({
           </NoWords>
         )}
       </div>
-      {card(
-        noWords ? (
-          <NoWords $small>{t("input.cosign_no_words")}</NoWords>
-        ) : (
-          // The reader's words as they write them.
-          note.trim() && <CutWords text={note} lines={lines} />
-        )
+      {noWords ? (
+        card(<NoWords $small>{t("input.cosign_no_words")}</NoWords>)
+      ) : note.trim() ? (
+        // The reader's words as they write them.
+        card(<CutWords text={note} lines={lines} />)
+      ) : (
+        // Nothing to show yet: where the card will be, in its room.
+        <Empty>{t("input.cosign_preview_empty")}</Empty>
       )}
     </Stack>
   )

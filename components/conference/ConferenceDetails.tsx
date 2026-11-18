@@ -1,5 +1,4 @@
 import {
-  CSSProperties,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -21,7 +20,7 @@ import { ConferenceCommittee } from "./ConferenceCommittee"
 import { ConferenceDifferences } from "./ConferenceDifferences"
 import { FollowConferenceTopicButton } from "../shared/FollowButton"
 import { useConferenceFollow } from "./FollowConference"
-import { BackChevron } from "./BackToConferences"
+import { BackChevron, BackToConferences } from "./BackToConferences"
 import { ConferenceSwitcher } from "./ConferencePicker"
 import { ClosedFold, ConferenceRail } from "./ConferenceRail"
 import { ConferenceResolution, OutcomeFilter } from "./ConferenceResolution"
@@ -42,7 +41,7 @@ import { InputContext } from "./input/context"
 import { CosignForm } from "./input/CosignForm"
 import { CosignLetter } from "./input/CosignLetter"
 import { InputForm, Step } from "./input/InputForm"
-import { Panel, usePanelWidth } from "./input/Panel"
+import { Panel } from "./input/Panel"
 import { PublicInput } from "./input/PublicInput"
 import { ShareButton, ShareFab } from "./input/ShareButton"
 import { useFollowedAuthors } from "./input/useFollowedAuthors"
@@ -118,17 +117,18 @@ const SideRail = styled(ConferenceRail)`
   }
 `
 
-/** The page steps aside for the panel at lg and up, where the panel stands
- * beside it rather than over it. The width comes in as --shift, so dragging
- * the panel does not mint a class per pixel. */
-const Shift = styled.div`
-  @media (min-width: 1024px) {
-    padding-right: var(--shift);
-    transition: padding-right 400ms ease-out;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-  }
+/** The page and, from lg up, the input panel's column beside it (Panel.tsx),
+ * under the beta note, which runs across the window over both. The panel
+ * pins in its column as the rail does in the page, and leaves with the page's
+ * end; below lg it is a sheet over the window instead. */
+const Row = styled.div`
+  display: flex;
+`
+
+/** The way back and the page, in what the panel leaves them. */
+const Column = styled.div`
+  flex: 1;
+  min-width: 0;
 `
 
 /** The title, with the way to share input at its end, from md: the button
@@ -376,8 +376,8 @@ function Details({
   testimonyCount,
   fold
 }: ConferencePageProps & { fold: ClosedFold }) {
-  // The page, which holds the rail and the main column; usePinnedNavbar and
-  // useRailLift both measure it.
+  // The page, which holds the rail and the main column; useRailLift measures
+  // it.
   const top = useRef<HTMLDivElement>(null)
   const { t } = useTranslation("conferences")
   const { user, authenticated, loading: authLoading, authFlowStep } = useAuth()
@@ -413,7 +413,6 @@ function Details({
     },
     []
   )
-  const { width, drag } = usePanelWidth()
   const followed = useFollowedAuthors(user?.uid)
   const subject = conferenceName(conference)
   const taking = takesTestimony(conference)
@@ -587,9 +586,11 @@ function Details({
   const titleText = useRef<HTMLHeadingElement>(null)
   const phone = usePhone()
   useFitText(titleText, phone, 20, subject)
-  // On the whole page, not only the main column, so the rail pins at the
-  // navbar's edge with the title (ConferenceRail.tsx).
-  usePinnedNavbar(top)
+  // On the page and the panel's column beside it, not only the main column,
+  // so the rail (ConferenceRail.tsx) and the panel (Panel.tsx) pin at the
+  // navbar's edge with the title.
+  const row = useRef<HTMLDivElement>(null)
+  usePinnedNavbar(row)
   // The title and the tabs leave with the rail once the page's end pushes it
   // up, rather than holding on after it.
   useRailLift(top, main)
@@ -639,152 +640,145 @@ function Details({
   // Signing fills the window with what is signed beside the form; once agreed,
   // the reader may fold it back to the drawer.
   const filled = !!cosigning && (step === "confirm" || full)
-  const shift = open && !filled ? width : 0
-  // The room the panel takes, for what sits outside the page (the beta
-  // note, styles/globals.css) to step aside for it too.
-  useEffect(() => {
-    const root = document.documentElement
-    root.style.setProperty("--conference-shift", `${shift}px`)
-    return () => {
-      root.style.removeProperty("--conference-shift")
-    }
-  }, [shift])
   return (
     <InputContext.Provider value={input}>
-      <Shift style={{ "--shift": `${shift}px` } as CSSProperties}>
-        <Page ref={top}>
-          <SideRail
-            conferences={conferences}
-            current={conference.id}
-            fold={fold}
-          />
-          <Main ref={main}>
-            <TitleBand
-              ref={band}
-              $top="calc(var(--maple-navbar-height) + var(--rail-lift, 0px))"
-              $z={14}
-            >
-              <TitleRow>
-                <TitleCell>
-                  <BackChevron />
-                  <PageTitle ref={titleText} $muted={!conference.covered}>
-                    {subject}
-                  </PageTitle>
-                </TitleCell>
-                {(taking || follow.visible) && (
-                  <TitleShare>
-                    {follow.visible && (
-                      <FollowConferenceTopicButton conference={conference} />
-                    )}
-                    {taking && (
-                      <ShareButton onClick={share} disabled={Boolean(mine)} />
-                    )}
-                  </TitleShare>
+      <Row ref={row}>
+        <Column>
+          {/* Not on mobile, where a chevron before the title is the way back
+              instead. */}
+          <BackToConferences divider notMobile committee />
+          <Page ref={top}>
+            <SideRail
+              conferences={conferences}
+              current={conference.id}
+              fold={fold}
+            />
+            <Main ref={main}>
+              <TitleBand
+                ref={band}
+                $top="calc(var(--maple-navbar-height) + var(--rail-lift, 0px))"
+                $z={14}
+              >
+                <TitleRow>
+                  <TitleCell>
+                    <BackChevron />
+                    <PageTitle ref={titleText} $muted={!conference.covered}>
+                      {subject}
+                    </PageTitle>
+                  </TitleCell>
+                  {(taking || follow.visible) && (
+                    <TitleShare>
+                      {follow.visible && (
+                        <FollowConferenceTopicButton conference={conference} />
+                      )}
+                      {taking && (
+                        <ShareButton onClick={share} disabled={Boolean(mine)} />
+                      )}
+                    </TitleShare>
+                  )}
+                </TitleRow>
+                {refusal && (
+                  <LinkNotice role="status">
+                    {t(`input.cosign_link_${refusal}`)}
+                    <Close
+                      type="button"
+                      aria-label={t("input.close")}
+                      onClick={() => setRefusal(undefined)}
+                    >
+                      <X size={16} />
+                    </Close>
+                  </LinkNotice>
                 )}
-              </TitleRow>
-              {refusal && (
-                <LinkNotice role="status">
-                  {t(`input.cosign_link_${refusal}`)}
-                  <Close
-                    type="button"
-                    aria-label={t("input.close")}
-                    onClick={() => setRefusal(undefined)}
-                  >
-                    <X size={16} />
-                  </Close>
-                </LinkNotice>
+              </TitleBand>
+              <ConferenceByline conference={conference} />
+              <Band
+                // 1px under the title's band, which sits above it, so no seam
+                // opens between the two however the heights round.
+                $top="calc(var(--maple-navbar-height) + var(--rail-lift, 0px) + var(--title-h, 5rem) - 1px)"
+                $z={13}
+              >
+                <ConferenceTabs
+                  sections={sections}
+                  labels={resolved ? RESOLVED_LABELS : undefined}
+                />
+              </Band>
+              {resolved && (
+                <Section>
+                  <ConferenceResolution
+                    differences={differences}
+                    settled={similarities.length}
+                    filter={filter}
+                    onFilter={pick}
+                  />
+                </Section>
               )}
-            </TitleBand>
-            <ConferenceByline conference={conference} />
-            <Band
-              // 1px under the title's band, which sits above it, so no seam
-              // opens between the two however the heights round.
-              $top="calc(var(--maple-navbar-height) + var(--rail-lift, 0px) + var(--title-h, 5rem) - 1px)"
-              $z={13}
-            >
-              <ConferenceTabs
-                sections={sections}
-                labels={resolved ? RESOLVED_LABELS : undefined}
-              />
-            </Band>
-            {resolved && (
-              <Section>
-                <ConferenceResolution
-                  differences={differences}
-                  settled={similarities.length}
-                  filter={filter}
-                  onFilter={pick}
-                />
-              </Section>
-            )}
-            <Section id="committee">
-              {/* Keyed so a pinned seat does not outlive its conference. */}
-              <ConferenceCommittee
-                key={conference.id}
-                court={conference.court}
-                conferees={conferees}
-                hearings={hearings}
-              />
-            </Section>
-            {decided && (
-              <Section id="decided">
-                <ConferenceDifferences
-                  gist={gist}
-                  differences={differences}
-                  similarities={similarities}
+              <Section id="committee">
+                {/* Keyed so a pinned seat does not outlive its conference. */}
+                <ConferenceCommittee
+                  key={conference.id}
+                  court={conference.court}
                   conferees={conferees}
-                  onShare={taking ? share : undefined}
-                  posted={Boolean(mine)}
-                  resolved={resolved}
-                  filter={filter}
-                  onFilter={setFilter}
+                  hearings={hearings}
                 />
               </Section>
-            )}
-            {heard && (
-              <Section>
-                <PublicInput items={items} loading={loading} focus={focus} />
+              {decided && (
+                <Section id="decided">
+                  <ConferenceDifferences
+                    gist={gist}
+                    differences={differences}
+                    similarities={similarities}
+                    conferees={conferees}
+                    onShare={taking ? share : undefined}
+                    posted={Boolean(mine)}
+                    resolved={resolved}
+                    filter={filter}
+                    onFilter={setFilter}
+                  />
+                </Section>
+              )}
+              {heard && (
+                <Section>
+                  <PublicInput items={items} loading={loading} focus={focus} />
+                </Section>
+              )}
+              <Section id="text">
+                {/* Keyed so a picked version does not outlive its conference. */}
+                <ConferenceText key={conference.id} conference={conference} />
               </Section>
-            )}
-            <Section id="text">
-              {/* Keyed so a picked version does not outlive its conference. */}
-              <ConferenceText key={conference.id} conference={conference} />
-            </Section>
-            {/* On mobile, the floating buttons: the way to the other
-                conferences at the left, and the way in at the right, gone
-                while the panel is out and once something is filed. */}
-            <FabDock>
-              <SwitcherSlot>
-                <ConferenceSwitcher
-                  conferences={conferences}
-                  current={conference}
-                  fold={fold}
-                />
-              </SwitcherSlot>
-              {taking && !mine && !open && <ShareFab onClick={share} />}
-            </FabDock>
-          </Main>
-        </Page>
-      </Shift>
-      {authenticated && user && (
-        <InputPanel
-          uid={user.uid}
-          conference={conference}
-          conferees={conferees}
-          subject={subject}
-          open={open}
-          width={width}
-          onDrag={drag}
-          onClose={close}
-          step={step}
-          onStep={setStep}
-          cosigning={cosigning}
-          full={filled}
-          onFull={setFull}
-          onDraft={onDraft}
-          onPosted={posted}
-        />
-      )}
+              {/* On mobile, the floating buttons: the way to the other
+                  conferences at the left, and the way in at the right, gone
+                  while the panel is out and once something is filed. */}
+              <FabDock>
+                <SwitcherSlot>
+                  <ConferenceSwitcher
+                    conferences={conferences}
+                    current={conference}
+                    fold={fold}
+                  />
+                </SwitcherSlot>
+                {taking && !mine && !open && <ShareFab onClick={share} />}
+              </FabDock>
+            </Main>
+          </Page>
+        </Column>
+        {authenticated && user && (
+          <InputPanel
+            uid={user.uid}
+            conference={conference}
+            conferees={conferees}
+            subject={subject}
+            open={open}
+            onClose={close}
+            step={step}
+            onStep={setStep}
+            cosigning={cosigning}
+            full={filled}
+            onFull={setFull}
+            onDraft={onDraft}
+            onPosted={posted}
+          />
+        )}
+      </Row>
     </InputContext.Provider>
   )
 }
@@ -797,8 +791,6 @@ function InputPanel({
   conferees,
   subject,
   open,
-  width,
-  onDrag,
   onClose,
   step,
   onStep,
@@ -813,8 +805,6 @@ function InputPanel({
   conferees: ConfereeView[]
   subject: string
   open: boolean
-  width: number
-  onDrag: (px: number) => void
   onClose: () => void
   step: Step
   onStep: (s: Step) => void
@@ -851,10 +841,11 @@ function InputPanel({
       open={open}
       title={t(title)}
       closeLabel={t("input.close_panel")}
-      width={width}
-      onDrag={onDrag}
       onClose={onClose}
       beside={cosigning && <CosignLetter parent={cosigning} />}
+      // Below lg, stacked over the form, the letter is read once, to agree
+      // to it, and not again while writing.
+      besideStacked={step === "confirm"}
       full={full}
       onFull={cosigning && step === "write" ? onFull : undefined}
     >

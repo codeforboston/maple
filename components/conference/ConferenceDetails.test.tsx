@@ -118,11 +118,24 @@ jest.mock("components/api/report", () => ({
 }))
 jest.mock("components/TestimonyCard/ReportModal", () => ({}))
 jest.mock("components/TestimonyCard/ReportToast", () => () => null)
-// The panel stands for itself by its title, open or not.
+// The panel stands for itself by its title, open or not, with its close.
 jest.mock("./input/Panel", () => ({
-  Panel: ({ open, title }: { open: boolean; title: string }) =>
-    open ? <div role="dialog" aria-label={title} /> : null,
-  usePanelWidth: () => ({ width: 480, drag: jest.fn() })
+  Panel: ({
+    open,
+    title,
+    onClose
+  }: {
+    open: boolean
+    title: string
+    onClose: () => void
+  }) =>
+    open ? (
+      <div role="dialog" aria-label={title}>
+        <button type="button" onClick={onClose}>
+          close
+        </button>
+      </div>
+    ) : null
 }))
 const mockDispatch = jest.fn()
 jest.mock("../hooks", () => ({ useAppDispatch: () => mockDispatch }))
@@ -576,6 +589,35 @@ describe("ConferenceDetails", () => {
       expect(
         screen.queryByRole("button", { name: "input.cosign" })
       ).not.toBeInTheDocument()
+    } finally {
+      mockItems = []
+    }
+  })
+
+  it("opens the cosign panel again after it is closed", () => {
+    mockUser = { uid: "reader", emailVerified: true }
+    mockItems = [
+      {
+        id: "t1",
+        authorUid: "org",
+        authorDisplayName: "Example Coalition",
+        fullName: "Example Coalition",
+        authorRole: "organization",
+        position: "passSomething",
+        content: "The letter.",
+        publishedAt: { toDate: () => new Date(2026, 9, 1) }
+      }
+    ]
+    try {
+      render(<ConferenceDetails {...props} />)
+      const cosign = () =>
+        fireEvent.click(screen.getByRole("button", { name: "input.cosign" }))
+      cosign()
+      expect(screen.getByRole("dialog")).toBeInTheDocument()
+      fireEvent.click(screen.getByRole("button", { name: "close" }))
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+      cosign()
+      expect(screen.getByRole("dialog")).toBeInTheDocument()
     } finally {
       mockItems = []
     }

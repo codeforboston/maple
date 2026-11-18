@@ -21,7 +21,7 @@ import { useMyLegislators } from "../hooks"
 import { ConfereeView } from "../types"
 import { Entry } from "./Entry"
 import { CalendarDays, CircleCheck, Globe, Info, Mail, Send } from "./icons"
-import { brand, ink, line, sunken, wash } from "./tokens"
+import { brand, ink, line, recess, wash } from "./tokens"
 
 const Heading = styled.p`
   margin: 0 0 10px;
@@ -90,7 +90,7 @@ const Photos = styled.div`
 `
 
 /** Each photo (ConfereeFace), 20px, a little over the last, edged in the
- * well's grey (sunken) so the overlaps read as cut out of it. The reader's
+ * well's grey (recess) so the overlaps read as cut out of it. The reader's
  * own legislator's star (ConfereeFace's, the one span with a label) at the
  * mockup's size: an 8px star in a 12px circle, 1px out from the photo's
  * corner. */
@@ -98,7 +98,7 @@ const Photo = styled.span`
   margin-left: -3px;
 
   img {
-    box-shadow: 0 0 0 2px ${sunken};
+    box-shadow: 0 0 0 2px ${recess};
   }
   span[aria-label] {
     width: 12px;
@@ -253,7 +253,7 @@ const Well = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: ${sunken};
+  background: ${recess};
   border: 1px solid var(--maple-surface-border);
   border-radius: 5px;
 `
@@ -276,7 +276,7 @@ const WellScroll = styled.div`
 const WellFoot = styled.div`
   flex: none;
   padding: 10px 12px 12px;
-  background: ${sunken};
+  background: ${recess};
 `
 
 /** In a well with no preview yet (the weekly update's): centred in it,

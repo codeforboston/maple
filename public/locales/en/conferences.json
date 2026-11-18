@@ -285,6 +285,7 @@
     "cosign_wordless": "Show cosigns without content",
     "cosign_wordless_note": "Hidden by default. Each card's cosigned count includes them either way.",
     "cosign_preview_label": "How it shows up on MAPLE",
+    "cosign_preview_empty": "Preview will appear here once you type!",
     "cosign_no_words": "Each individual can provide input or cosign one position. This individual decided not to publicly share additional input.",
     "cosign_body_label": "Your Input",
     "cosign_optional": "(optional)",
