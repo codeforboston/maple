@@ -2,43 +2,56 @@ import "@testing-library/jest-dom"
 import { render, screen } from "@testing-library/react"
 import { ConferenceHero } from "./ConferenceHero"
 
-const steps = Array.from({ length: 5 }, (_, i) => ({
-  h: `step ${i + 1}`,
-  p: `about step ${i + 1}`
-}))
-
 jest.mock("next-i18next", () => ({
   useTranslation: () => ({
-    t: (key: string, opts?: { returnObjects?: boolean }) =>
-      key === "hero.steps" && opts?.returnObjects ? steps : key
+    t: (key: string, opts?: Record<string, unknown>) =>
+      opts?.returnObjects
+        ? // The hero's five steps.
+          Array.from({ length: 5 }, (_, i) => ({
+            h: `${key}.${i}.h`,
+            p: `${key}.${i}.p`
+          }))
+        : key
   }),
-  Trans: ({ i18nKey }: { i18nKey: string }) => i18nKey
+  Trans: ({ i18nKey }: { i18nKey: string }) => <span>{i18nKey}</span>
+}))
+
+// Not a phone: every step's text shows, nothing folds. And wide enough for
+// a conference's rail, so the button goes straight to the conference.
+jest.mock("./hooks", () => ({
+  useMatches: () => false,
+  useRailHidden: () => false
 }))
 
 describe("ConferenceHero", () => {
-  it("is the page's one h1, with the five steps under it", () => {
-    render(<ConferenceHero landing={null} />)
+  it("is the page's one h1, over the five steps", () => {
+    render(<ConferenceHero see="/conferences/194/data-privacy" />)
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1)
-    expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(5)
+    for (let i = 0; i < 5; i++)
+      expect(
+        screen.getByRole("heading", { name: `hero.steps.${i}.h` })
+      ).toBeInTheDocument()
   })
 
-  it("leads on to the landing conference and the explorer", () => {
-    render(<ConferenceHero landing={{ court: 194, id: "data-privacy" }} />)
+  it("links on to the conference it is given, and to the explorer", () => {
+    render(<ConferenceHero see="/conferences/194/data-privacy" />)
     expect(screen.getByRole("link", { name: /hero.see/ })).toHaveAttribute(
       "href",
       "/conferences/194/data-privacy"
     )
-    expect(screen.getByRole("link", { name: /explorer/ })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "explorer" })).toHaveAttribute(
       "href",
       "/conferences/explorer"
     )
   })
 
-  it("leads only to the explorer in a court with no conferences", () => {
-    render(<ConferenceHero landing={null} />)
+  it("disables its button, saying why, where no conference came back", () => {
+    render(<ConferenceHero see={null} />)
+    const button = screen.getByRole("button", { name: /hero.see/ })
+    expect(button).toHaveAttribute("aria-disabled", "true")
+    expect(button).toHaveAttribute("title", "hero.see_unavailable")
     expect(
       screen.queryByRole("link", { name: /hero.see/ })
     ).not.toBeInTheDocument()
-    expect(screen.getByRole("link", { name: /explorer/ })).toBeInTheDocument()
   })
 })

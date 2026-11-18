@@ -164,7 +164,11 @@ export const SearchPage = <TRecord extends Hit>({
                 <CurrentRefinements {...currentRefinementsProps} />
               </ControlsBar>
               <Row>
-                <Col xs={12} lg={3} className="mb-3 mb-lg-0">
+                <Col
+                  xs={12}
+                  lg={3}
+                  className="search-filter-column mb-3 mb-lg-0"
+                >
                   {filterPanel}
                 </Col>
                 <Col className="d-flex flex-column">

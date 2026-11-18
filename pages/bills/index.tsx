@@ -1,5 +1,7 @@
 import { useTranslation } from "next-i18next"
-import { Container } from "components/bootstrap"
+import { PageColumn } from "components/shared/PageColumn"
+import { FooterStatehouse } from "components/shared/FooterStatehouse"
+import styled from "styled-components"
 import { createPage } from "components/page"
 import { BillSearch } from "components/search"
 import { createGetStaticTranslationProps } from "components/translations"
@@ -10,13 +12,20 @@ export default createPage({
     const { t } = useTranslation("search")
 
     return (
-      <Container fluid="md" className="mt-3">
+      <ArtColumn $width="xwide" className="mt-3">
         <h1>{t("browse_bills")}</h1>
+        {/* The statehouse on the footer's edge, at the left. */}
+        <FooterStatehouse />
         <BillSearch />
-      </Container>
+      </ArtColumn>
     )
   }
 })
+
+/* Positioned, as it has been since the page carried art placed against it. */
+const ArtColumn = styled(PageColumn)`
+  position: relative;
+`
 
 export const getStaticProps = createGetStaticTranslationProps([
   "auth",

@@ -12,6 +12,7 @@ const Card = styled.section`
   background: var(--maple-surface-base);
   border-radius: var(--maple-radius-xl);
   box-shadow: var(--maple-shadow-sm);
+  border: 1px solid var(--maple-card-edge);
   overflow: hidden;
 
   > h2 {

@@ -2,6 +2,7 @@ import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import type { Branch } from "../../functions/src/common"
 import { shortName } from "../formatting"
+import { ground, line, sunken } from "./input/tokens"
 import { box, cells, outline, seatCount } from "./map/geometry"
 import { Eyebrow, partyColor } from "./styles"
 import { ConfereeView } from "./types"
@@ -24,11 +25,15 @@ export const seatsOf = (conferees: ConfereeView[]) =>
 const Svg = styled.svg`
   display: block;
   width: 100%;
+  /* Room to grow with a wider page, but no more than 300px. */
+  max-width: 300px;
   height: auto;
 
+  /* The mockup's greys: empty seats in its sunken grey, every seat edged in
+     its page grey. */
   polygon {
-    fill: var(--maple-surface-page);
-    stroke: var(--maple-surface-base);
+    fill: ${sunken};
+    stroke: ${ground};
     stroke-width: 1.2;
     vector-effect: non-scaling-stroke;
     transition: fill-opacity 120ms ease;
@@ -103,7 +108,7 @@ export function DistrictMap({
         </defs>
         {/* The coastline under the cells, so any sliver a cell does not
             reach still reads as land. */}
-        <Outline fill="var(--maple-surface-page)" />
+        <Outline fill={sunken} />
         <g clipPath={`url(#${clipId})`}>
           {Object.entries(own).map(([key, points]) => {
             const person = people[key]
@@ -152,7 +157,7 @@ export function DistrictMap({
         </g>
         {/* The coastline again as a hairline, so the state has an edge of
             its own rather than ending wherever the cells happen to. */}
-        <Outline fill="none" stroke="var(--maple-border-default)" />
+        <Outline fill="none" stroke={line.strong} />
       </Svg>
     </div>
   )

@@ -24,11 +24,10 @@ import { createLobbyingListProps } from "components/lobbying/listPageProps"
 import {
   bigFigureRowStyle,
   bigFigureStyle,
-  FilterLabel,
+  FloatingSearch,
   LobbyingFilterBar,
   LobbyingLoadError,
   LobbyingPanel,
-  searchStyle,
   sessionSelectStyle,
   summaryNoteStyle,
   summaryStyle
@@ -109,8 +108,6 @@ function ClientDetail({ clientNameNorm, summary, current }: ClientDetailProps) {
 
   const displayName =
     summary?.clientName ?? filings?.[0]?.clientName ?? clientNameNorm
-  const sessionLabel =
-    session === "all" ? t("filters.allSessions") : courtName(session)
 
   return (
     <>
@@ -157,40 +154,39 @@ function ClientDetail({ clientNameNorm, summary, current }: ClientDetailProps) {
 
         {failed && <LobbyingLoadError error={failure} />}
 
+        {/* The session sets both panels below, so its select sits above
+            them, as on the overview. */}
+        <LobbyingFilterBar boxed="open">
+          <SessionSelect
+            id="client-session"
+            sessions={sessions}
+            value={session}
+            onChange={setChosen}
+            current={current}
+            style={sessionSelectStyle}
+          />
+        </LobbyingFilterBar>
+
         {summary && <ClientSummary summary={summary} session={session} />}
 
         <LobbyingPanel
-          title={t("client.billsPanel", { session: sessionLabel })}
-          aside={t("client.billsHint")}
+          // The client page's panels leave out "in 2025–26": the session
+          // select sits right above them.
+          title={t("client.billsPanel")}
+          hint={t("client.billsHint")}
         >
           <LobbyingFilterBar>
-            <FilterLabel htmlFor="client-session">
-              {t("filters.session")}
-            </FilterLabel>
-            <SessionSelect
-              id="client-session"
-              sessions={sessions}
-              value={session}
-              onChange={setChosen}
-              current={current}
-              style={sessionSelectStyle}
-            />
-            <FilterLabel htmlFor="client-position">
-              {t("filters.position")}
-            </FilterLabel>
             <PositionSelect
               id="client-position"
               value={position}
               onChange={setPosition}
               allLabel={t("filters.anyPosition")}
             />
-            <input
-              type="search"
-              placeholder={`${t("activity.billSearch")}…`}
-              aria-label={t("client.filterBills")}
+            <FloatingSearch
+              id="client-bills-search"
+              label={t("client.filterBills")}
               value={search}
-              onChange={e => setSearch(e.target.value)}
-              style={searchStyle}
+              onChange={setSearch}
             />
           </LobbyingFilterBar>
           {!shown ? (
@@ -238,9 +234,8 @@ function ClientSummary({
 
   return (
     <LobbyingPanel
-      title={t("client.summary", {
-        session: all ? t("filters.allSessions") : courtName(session)
-      })}
+      // As the bills panel, without "in 2025–26".
+      title={t("client.summary")}
     >
       <div style={summaryStyle}>
         <div style={{ flex: "0 1 240px" }}>

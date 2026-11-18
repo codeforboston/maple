@@ -15,15 +15,77 @@
   padding: 5rem 0;
 }
 
+/* The testimony section's heading row: 5rem above, as the other sections
+   keep (2rem on phones), and below it more room than their titles have: the
+   title's own 2.25rem (.sectionTitle), the heading's margin and 1rem here. */
 .peopleSaying {
   padding: 5rem 0 1rem 0;
 }
 
+/* Browse All Testimony as a text link with an arrow under the testimony
+   (components/TestimonyCallout/TestimonyCalloutSection). */
+.browseTestimony {
+  display: flex;
+  justify-content: flex-end;
+  /* In line with the right edge of the feed, which is as wide as this,
+     centred (components/TestimonyCallout/TestimonyFeed). Then the 5rem the
+     sections keep at their bottoms, inside the section's grey band
+     (.testimonyBand). */
+  margin: 0 auto;
+  max-width: 48rem;
+  padding: 3.5rem 0 5rem;
+}
+
+/* Under the feed as cards, which above 768px takes the whole column, so
+   the link does too, to stay in line with its right edge. */
+@media (min-width: 769px) {
+  .browseTestimonyWide {
+    max-width: none;
+  }
+}
+
+.browseTestimonyLink {
+  align-items: center;
+  color: var(--maple-brand-primary);
+  display: inline-flex;
+  font-weight: 600;
+  gap: 0.45rem;
+  text-decoration: none;
+}
+
+.browseTestimonyLink:hover,
+.browseTestimonyLink:focus-visible {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .browseTestimony {
+    justify-content: center;
+    padding: 2.25rem 0 0;
+  }
+}
+
 .heroSection {
+  /* Hero tokens. Every hero rule that sets a colour reads one of these, so the
+     hero is restyled by giving them new values rather than by overriding the
+     rules. These defaults are main's blue band with white ink; the :root
+     rules further down replace them. */
+  --hero-bg: var(--maple-brand-primary);
+  --hero-ink: #ffffff;
+  --hero-heading-ink: var(--hero-ink);
+  --hero-ink-body: #ffffff;
+  --hero-lead-ink: var(--hero-ink-body);
+  --hero-link: #ffffff;
+  --hero-skyline: rgba(255, 255, 255, 0.08);
+  /* The copy column runs to the hero's bottom edge so the statehouse under the
+     copy sits on it, as the original hero's did. */
+  --hero-pad-bottom: 0;
+  --hero-content-align: stretch;
+  --hero-content-pad-bottom: 0;
+
   position: relative;
   width: 100%;
-  background: var(--maple-brand-primary);
-  overflow: hidden;
+  background: var(--hero-bg);
 }
 
 .hero {
@@ -31,7 +93,7 @@
   grid-template-columns: minmax(30rem, 1.05fr) minmax(30rem, 2fr);
   align-items: center;
   gap: clamp(1.8rem, 4vw, 10rem);
-  min-height: 38rem;
+  min-height: 35rem;
   padding-top: 0rem;
   padding-bottom: 1rem;
 }
@@ -42,13 +104,78 @@
   right: 0;
   bottom: 0;
   height: 100%;
-  background-image: url("/skyline.svg");
-  background-repeat: no-repeat;
-  background-position: bottom center;
-  background-size: 100% auto;
-  opacity: 0.2;
   z-index: 0;
   pointer-events: none;
+}
+
+/* The skyline itself: a stretch of skyline-long.svg (4337 wide). A mask, so
+   the colour comes from --hero-skyline. On a pseudo-element so the mask does
+   not also clip the artwork placed inside this layer.
+
+   The cuts are in the drawing's units, off each end. What is left fills the
+   width; x is the share of the overhang taken from the left end. */
+.skylineBackground::before {
+  /* 32 more off each end than the original 1046 and 2202, about 6% bigger
+     around the same middle. */
+  --skyline-cut-left: 1078;
+  --skyline-cut-right: 2234;
+  --skyline-zoom: calc(
+    4337 / (4337 - var(--skyline-cut-left) - var(--skyline-cut-right))
+  );
+  --skyline-x: calc(
+    100% * var(--skyline-cut-left) /
+      (var(--skyline-cut-left) + var(--skyline-cut-right))
+  );
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* Raised this far off the bottom of the hero. */
+  bottom: 3rem;
+  background-color: var(--hero-skyline);
+  /* 30px further right than the cuts alone place it, at every width, and
+     2rem lower, its foot cut off by the hero's bottom edge. */
+  -webkit-mask: url("/skyline-long.svg") no-repeat left
+    calc(var(--skyline-x) + 30px) bottom -2rem / calc(
+      100% * var(--skyline-zoom)
+    ) auto;
+  mask: url("/skyline-long.svg") no-repeat left calc(var(--skyline-x) + 30px)
+    bottom -2rem / calc(100% * var(--skyline-zoom)) auto;
+}
+
+/* No skyline where the bar is the mobile one (768px and below, as
+   components/Navbar.tsx switches): its mask is a large, masked drawing,
+   redrawn on every frame the hero moves while the mobile menu opens above
+   it, which made opening the menu lag. */
+@media (max-width: 768px) {
+  .skylineBackground::before {
+    display: none;
+  }
+}
+
+/* From 1500px down the skyline eases back to its original size, 4337 / 1089
+   of the hero's width (the cuts 1046 and 2202), and up to the hero's bottom
+   edge, in step over the next 450px, reaching both at 1050px and keeping
+   them below that. The size comes down by 0.58px for each pixel the window
+   loses: the difference between the two zooms (about 0.249) across a 1050px
+   hero, over those 450px. The 30px to the right stays. */
+@media (max-width: 1499px) {
+  .skylineBackground::before {
+    --skyline-ease: calc(1500px - 100vw);
+    -webkit-mask-size: max(
+        calc(100% * 4337 / 1089),
+        calc(100% * var(--skyline-zoom) - var(--skyline-ease) * 0.58)
+      )
+      auto;
+    mask-size: max(
+        calc(100% * 4337 / 1089),
+        calc(100% * var(--skyline-zoom) - var(--skyline-ease) * 0.58)
+      )
+      auto;
+    -webkit-mask-position: left calc(var(--skyline-x) + 30px) bottom
+      min(0px, calc(-2rem + var(--skyline-ease) * 32 / 450));
+    mask-position: left calc(var(--skyline-x) + 30px) bottom
+      min(0px, calc(-2rem + var(--skyline-ease) * 32 / 450));
+  }
 }
 
 .heroVisual {
@@ -78,18 +205,24 @@
 }
 
 .heroTitle {
-  color: white;
-  font-size: clamp(2.5rem, 3vw, 3rem);
+  color: var(--hero-heading-ink);
+  /* Caps at 38px and scales down on narrow viewports. */
+  font-size: clamp(1.9rem, 3vw, 38px);
   line-height: 1.08;
   margin: 0 0 1.35rem;
 }
 
 .heroBody {
-  color: white;
+  color: var(--hero-ink-body);
   font-size: 1.125rem;
   line-height: 1.62;
   margin: 0 0 1.9rem;
   max-width: 50rem;
+}
+
+/* Was an inline style on the anchor, which no rule here could override. */
+.heroLink {
+  color: var(--hero-link);
 }
 
 .heroActions {
@@ -145,7 +278,7 @@
 .hearingsActionDesktop:focus-visible,
 .hearingsActionMobile:hover,
 .hearingsActionMobile:focus-visible {
-  background: #f0f2f8;
+  background: #f9fafb;
   color: var(--maple-brand-primary-strong);
 }
 
@@ -154,6 +287,13 @@
   font-size: clamp(2rem, 3vw, 2.8rem);
   line-height: 1.15;
   margin: 0 0 2.25rem;
+}
+
+/* What people are saying... on a full-width band of the page's grey, the
+   hero's ground, with its content in the usual column, so the feed's white
+   panel stands on it. */
+.testimonyBand {
+  background: var(--maple-surface-page);
 }
 
 .factGrid {
@@ -225,6 +365,12 @@
   border-radius: 0.25rem;
 }
 
+/* The MAPLE logo beside What does MAPLE do?, a little smaller than the
+   column it sits in. */
+.appPreview {
+  width: min(100%, 18rem);
+}
+
 .featurePreview {
   box-shadow: 0 0.7rem 1.5rem rgba(17, 25, 58, 0.18);
 }
@@ -249,6 +395,11 @@
 .featureList {
   display: grid;
   gap: 1.55rem;
+}
+
+/* Get Started, after the three features, at its own width. */
+.featuresAction {
+  justify-self: start;
 }
 
 .featureItem {
@@ -309,6 +460,18 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.15rem 2rem;
+}
+
+/* The hearings indented to start and end where Did You Know?'s facts do,
+   while the title and Browse Hearings keep the full width. Each fact's text
+   is at most 18rem (.factText), centred in a third of the row less the grid's
+   gaps (5rem) and the card's padding (0.75rem a side), so its outer edge is
+   0.75rem in, plus half of whatever room the text leaves: 100% / 6 - 9.83rem.
+   Above 900px, where the facts sit three across. */
+@media (min-width: 901px) {
+  .hearingGrid {
+    padding-inline: max(0.75rem, calc(100% / 6 - 9.83rem));
+  }
 }
 
 .hearingCard {
@@ -413,8 +576,11 @@
 }
 
 @media (max-width: 900px) {
-  .sectionShell {
-    width: calc(100% - 1rem);
+  /* Room under Browse All Testimony, the testimony section's last line, as
+     the sections below keep under theirs, so the gap before the next section
+     matches the gaps between them. */
+  .browseTestimony {
+    padding-bottom: 2rem;
   }
 
   .hero,
@@ -422,6 +588,10 @@
   .features,
   .hearings {
     padding: 2rem 0;
+  }
+
+  .peopleSaying {
+    padding-top: 2rem;
   }
 
   .heroSection {
@@ -455,12 +625,6 @@
     left: auto;
   }
 
-  .skylineBackground {
-    height: 50%;
-    background-size: contain;
-    background-position: bottom center;
-  }
-
   .heroContent {
     order: 2;
     padding-top: 6rem;
@@ -474,7 +638,6 @@
   }
 
   .heroTitle {
-    font-size: 2.75rem;
     line-height: 1.1;
     margin-bottom: 1.25rem;
     font-weight: 700;
@@ -507,6 +670,10 @@
     font-size: 1.85rem;
     margin-bottom: 1.2rem;
     text-align: center;
+  }
+
+  .featuresAction {
+    justify-self: center;
   }
 
   .factText {
@@ -548,9 +715,11 @@
     grid-template-columns: 1fr;
   }
 
+  /* Each icon beside its words, as wider up, rather than over them, where
+     it sat indented in its circle above the line's start. */
   .featureItem {
-    grid-template-columns: 1fr;
-    gap: 0.6rem;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    gap: 0.75rem;
     align-items: center;
     text-align: left;
   }
@@ -652,5 +821,1011 @@
   .heroBody {
     margin-left: auto;
     margin-right: auto;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Digital Democracy skin.
+
+   The hero inverts: a light band with dark ink instead of a solid blue band.
+   That is what both Digital Democracy editions do, and it is what makes a blue
+   primary button possible here at all, since blue on blue does not work.
+
+   Colours come from the hero tokens set on .heroSection below; the rules here
+   are for its layout and artwork.
+   --------------------------------------------------------------------------- */
+
+:root .heroSection {
+  --hero-bg: var(--maple-surface-page);
+  --hero-ink: var(--maple-text-strong);
+  /* MAPLE's near-black with a blue tint, for the title. */
+  --hero-heading-ink: var(--maple-brand-dark);
+  --hero-ink-body: var(--maple-text-body);
+  /* A lighter charcoal for the paragraph, between body text (#334155) and
+     muted (#64748b). */
+  --hero-lead-ink: #475569;
+  --hero-link: var(--maple-brand-primary);
+  --hero-pad-bottom: 10rem;
+  --hero-content-align: center;
+  --hero-content-pad-bottom: 1.5rem;
+}
+
+/* Experiment: this skin with the coloured statehouse grounded under the copy,
+   as in the current MAPLE look. Delete this block, and restore the parked rule
+   and markup, to go back. */
+:root .heroSection {
+  --hero-pad-bottom: 0;
+  --hero-content-align: stretch;
+  --hero-content-pad-bottom: 0;
+}
+
+/* The original asset (skyline.svg) bakes opacity into its path, so it can
+   never render at more than about 5% ink. So the element draws no image of
+   its own: its ::before (above) uses skyline-long.svg as a mask, so the colour
+   comes from CSS and the skyline can sit at full strength the way the Civil
+   Beat hero does. */
+:root .skylineBackground {
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background-image: none;
+  opacity: 1;
+}
+
+/* Primary action moves from red to blue, per the skin's rule that red is
+   reserved rather than used for the default action. */
+:root .primaryAction {
+  background: var(--maple-brand-primary);
+  border-color: var(--maple-brand-primary);
+  color: var(--maple-text-inverse);
+}
+
+:root .primaryAction:hover,
+:root .primaryAction:focus-visible {
+  background: var(--maple-brand-primary-strong);
+  border-color: var(--maple-brand-primary-strong);
+  color: var(--maple-text-inverse);
+}
+
+:root .secondaryAction {
+  border-color: var(--maple-surface-border);
+}
+
+/* The explainer's Get Started as the secondary action, white with the thin
+   outline, rather than solid blue (components/homepage/ExplainerSection). */
+:root .primaryAction.explainerAction {
+  background: var(--maple-surface-base);
+  border-color: var(--maple-surface-border);
+  color: var(--maple-brand-primary-strong);
+}
+
+:root .primaryAction.explainerAction:hover,
+:root .primaryAction.explainerAction:focus-visible {
+  background: #f0f2f8;
+  border-color: var(--maple-surface-border);
+  color: var(--maple-brand-primary-strong);
+}
+
+/* A lighter hero: the band no longer has to be tall enough to justify a slab
+   of solid blue, so it tightens up. */
+.hero {
+  /* No floor here: the height is the content plus this padding, as in the
+     Digital Democracy hero (whose bottom padding is 96px; this is close).
+     The artwork behind is absolutely positioned and adds no height. From
+     901px, the Statehouse hero sets its own minimum height (85vh, below). */
+  min-height: 0;
+  padding-top: 4.75rem;
+  padding-bottom: var(--hero-pad-bottom);
+}
+
+.heroContent {
+  padding-bottom: 3rem;
+}
+
+.heroVisual {
+  min-height: 18rem;
+}
+
+/* Lexend, the Digital Democracy skin's face. */
+:root .heroTitle {
+  font-family: var(--maple-font-heading);
+  letter-spacing: -0.015em;
+}
+
+:root .heroTitle {
+  font-weight: 600;
+}
+
+/* From 901px the .heroStatehouse rules further down set all three of these.
+   Below that the grid is one column (the 900px block), so the gap here is the
+   space between the stacked statehouse and copy. */
+.hero {
+  grid-template-columns: max-content max-content;
+  justify-content: space-between;
+  gap: clamp(3rem, 6vw, 12rem);
+}
+
+.heroMain {
+  display: contents;
+}
+
+.heroVisual {
+  display: none;
+}
+
+.heroContent {
+  align-self: var(--hero-content-align);
+  grid-column: 1;
+  grid-row: 1;
+  max-width: 38rem;
+  padding-top: 0;
+  padding-bottom: var(--hero-content-pad-bottom);
+  /* A column, so the copy inside can stretch to the full height and push the
+     statehouse to the bottom. */
+  display: flex;
+  flex-direction: column;
+}
+
+/* The sections below the hero sit in Bootstrap's container widths: the full
+   width less 1rem a side on phones, then 540px, 720px, 960px (lg) and 1140px
+   (xl) from Bootstrap's sm, md, lg and xl breakpoints up, so their titles sit
+   in from the window's edges at every width. From xxl (1400px) up they keep
+   the 1260px they had before. */
+:root .sectionShell {
+  width: calc(100% - 2rem);
+}
+
+@media (min-width: 576px) {
+  :root .sectionShell {
+    max-width: 540px;
+  }
+}
+
+@media (min-width: 768px) {
+  :root .sectionShell {
+    max-width: 720px;
+  }
+}
+
+@media (min-width: 992px) {
+  :root .sectionShell {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  :root .sectionShell {
+    max-width: 1140px;
+  }
+}
+
+@media (min-width: 1400px) {
+  :root .sectionShell {
+    max-width: 1260px;
+  }
+}
+
+/* The hero keeps its own, slightly wider content column than the default
+   1120px, free of the widths above. */
+.heroSection .sectionShell {
+  width: min(1260px, calc(100% - 2rem));
+  max-width: none;
+}
+
+/* Every section, the hero's too, 1.5rem in from the window's edges at 900px
+   and below (from 1rem), up to the container widths above. */
+@media (max-width: 900px) {
+  :root .sectionShell,
+  :root .heroSection .sectionShell {
+    width: calc(100% - 3rem);
+  }
+}
+
+/* Below the hero's single-column breakpoint everything stacks in flow:
+   statehouse, then the copy. */
+@media (max-width: 900px) {
+  /* One column: the two-column template above is collapsed here.
+     minmax(0, ...) rather than a bare 1fr, which can never be narrower than
+     its content. */
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* The statehouse stops being scenery, and the explicit column placements are
+     released, or they would force a second column back into the grid. */
+  .heroMain {
+    display: contents;
+  }
+
+  .heroVisual {
+    order: 1;
+    position: static;
+    grid-column: auto;
+    grid-row: auto;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .statehouse {
+    width: min(24rem, 70%);
+  }
+
+  .heroContent {
+    order: 2;
+    grid-column: auto;
+    grid-row: auto;
+    max-width: none;
+    padding-top: 0;
+  }
+
+  /* The copy is pinned to a fixed measure on desktop, which is wider than a
+     phone. Released here so it fills the column instead of overflowing it, and
+     centred with the rest of the stack. */
+  .heroCopy {
+    min-width: 0;
+    max-width: 30rem;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
+}
+
+/* The hero measures like the Digital Democracy one: full width with a fixed
+   horizontal padding, rather than a capped column that is centred. A max-width
+   plus centring behaves two different ways either side of its cap, holding the
+   content still while the gutters grow, then shrinking the content once the
+   window is narrower than the cap. Crossing between those is what made the
+   whole layout jump. Fixed padding has no such crossover: the content always
+   starts the same distance from the edge and the columns simply scale. */
+@media (min-width: 901px) {
+  .heroSection .sectionShell {
+    /* Fixed padding for the gutter, plus a cap so the content stops spreading
+       on very wide displays. That pairing is what their layout does: global
+       padding on the section, a constrained wrapper above it. Neither one
+       changes behaviour at a threshold, so nothing jumps. */
+    width: 100%;
+    max-width: 1600px;
+    margin-left: auto;
+    margin-right: auto;
+    /* Scales gently with the window instead of being a fixed value: a fixed
+       gutter is proportionally huge on a narrow window and thin on a wide one,
+       which is why the two resolutions looked so different. Held at 3rem
+       (48px) up to 1350px, then one straight line up to the 12rem cap at
+       2000px, so there is no step. */
+    padding-left: clamp(3rem, calc(48px + (100vw - 1350px) * 144 / 650), 12rem);
+    padding-right: clamp(
+      3rem,
+      calc(48px + (100vw - 1350px) * 144 / 650),
+      12rem
+    );
+  }
+}
+
+/* The copy's own box inside the hero column: its measure lives here rather than
+   on the column, so changing one does not disturb the other. Fixed width, so
+   the text never reflows as the column around it changes. */
+.heroCopy {
+  order: 1;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+@media (min-width: 1400px) {
+  .heroCopy {
+    max-width: 29.5rem;
+    min-width: 29.5rem;
+  }
+}
+
+/* The hero's two columns: on the left the copy, with a 19.5rem statehouse
+   under it, near the bottom edge; on the right the panel, 42rem wide, its
+   top level with the copy's. The content is capped at 1200px, wider than
+   main's 1120px, to give the panel its room. Stacked, the statehouse comes
+   first, then the copy, then the panel. Prefixed with .heroSection so these
+   win over the base hero rules. */
+.statehouseColumn {
+  display: block;
+  aspect-ratio: 487 / 326;
+  background: url("/statehouse.svg") no-repeat bottom center / contain;
+  pointer-events: none;
+  /* Above the skyline layer (.skylineBackground) at every width, or the
+     skyline's navy paints over it and it looks see-through. */
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 901px) {
+  /* The content is 1200px, centred, but its left edge never comes further
+     left than the right edge of the header's logo, so "Your Voice Matters"
+     stays clear of it; narrower than that, the content gives up room on the
+     right instead. The logo's right edge is the header bar's 1.5rem
+     (.desktop-navbar-bar), the logo link's 0.5rem and the logo, 72px tall
+     and 119 by 118 (styles/globals.css, public/logo-ple-neutral-bg.svg). On
+     the right, at least 2.5rem. */
+  .heroSection.heroStatehouse .sectionShell {
+    --hero-logo-edge: calc(2rem + 72px * 119 / 118);
+    width: auto;
+    max-width: none;
+    margin-left: max(var(--hero-logo-edge), calc((100% - 1200px) / 2));
+    margin-right: max(2.5rem, calc((100% - 1200px) / 2));
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  /* At least about the Digital Democracy hero's height, which the skyline is
+     sized for (it scales with the width, not the height). The copy and its
+     buttons on the left and the topics panel on the right, each centred down
+     the band, with the statehouse behind the panel (below). Positioned, so
+     the statehouse can be placed against the panel's column. The gap is
+     between the columns only. The panel's 42rem suits its two features;
+     with different or more features, it may need adjusting to fit them. */
+  .heroSection.heroStatehouse .hero {
+    position: relative;
+    grid-template-columns: minmax(0, 1fr) 42rem;
+    grid-template-rows: 1fr;
+    justify-content: normal;
+    align-items: center;
+    column-gap: clamp(1.8rem, 4vw, 10rem);
+    row-gap: 0;
+    padding-top: 3rem;
+    padding-bottom: 0;
+    /* 85% of the window's height, so the hero fills most of the first
+       screen on any window. */
+    min-height: 85vh;
+  }
+
+  /* Centred down the band, then 2rem higher. */
+  .heroSection.heroStatehouse .heroContent {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+    padding-top: 0;
+    padding-bottom: 3rem;
+    transform: translateY(-2rem);
+  }
+
+  /* The panel and the statehouse move right together, by a third of the
+     margin beyond the 1200px content edge, so they sit further into the
+     right-hand area. With no margin they stay in place. */
+  .heroSection.heroStatehouse :is(.heroTopics, .statehouseColumn) {
+    transform: translateX(max(0px, calc((100vw - 1200px) / 6)));
+  }
+
+  /* Centred down the band, then 3.55rem higher: halfway between level with
+     the copy (2rem higher, .heroContent) and the 5.1rem it was. The
+     transform repeats the sideways move above, as it replaces it. */
+  .heroSection.heroStatehouse .heroTopics {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    transform: translate(max(0px, calc((100vw - 1200px) / 6)), -3.55rem);
+  }
+
+  /* Behind the panel: out of the flow, placed against the panel's column
+     (the grid area is its containing block), centred under the panel and
+     flush on the bottom edge. Under the panel (which is z-index 1) but over
+     the skyline layer, which comes before it. It moves sideways with the
+     panel (above), so it stays centred under it. */
+  .heroSection.heroStatehouse .statehouseColumn {
+    position: absolute;
+    z-index: 0;
+    grid-column: 2;
+    grid-row: 1;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    /* 396px: 23.5rem and 20px. */
+    width: 24.75rem;
+  }
+}
+
+/* From 901px to 1399px the copy and the panel's column share the row 1 to
+   1.5, rather than the column holding 42rem, and the gap between them grows
+   from 1.5rem to 4rem. From 1400px (Bootstrap's xxl), where the content is back to its full
+   1200px beside the logo's edge (.sectionShell above), the column holds 42rem
+   and the copy takes the rest, at its own fixed width (.heroCopy). */
+@media (min-width: 901px) and (max-width: 1399.98px) {
+  /* "Your Voice Matters" at its full 38px beside the panel, rather than
+     scaling down with the window (.heroTitle) before the hero stacks at
+     900px. From 1400px the scale is at or near 38px. */
+  .heroSection.heroStatehouse .heroTitle {
+    font-size: 38px;
+  }
+
+  .heroSection.heroStatehouse .hero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+    column-gap: clamp(1.5rem, 8vw - 3rem, 4rem);
+  }
+
+  /* The panel fills its column, over the statehouse (.statehouseColumn). */
+  .heroSection.heroStatehouse .heroTopics {
+    justify-self: center;
+    width: 100%;
+  }
+
+  /* The statehouse at its 24.75rem, or as wide as the panel's column when
+     that is narrower. */
+  .heroSection.heroStatehouse .statehouseColumn {
+    width: min(24.75rem, 100%);
+  }
+}
+
+/* From 1199px down, the left padding and the gap between the columns shrink
+   with the window rather than the copy holding at the logo's edge: the
+   padding by 20% of each pixel the window loses, from the logo's edge,
+   104.6px, at 1199px, down to 2rem, in line with the logo's left edge; the
+   gap by 8%, from its 48px at 1199px (above), down to 1.5rem; the right
+   padding in step with the left, from its 40px at 1199px (40 / 104.6 of the
+   left's rate), down to 1.5rem. None steps at 1199px. */
+@media (min-width: 901px) and (max-width: 1199px) {
+  .heroSection.heroStatehouse .sectionShell {
+    margin-left: max(2rem, 20vw - 135.2px);
+    margin-right: max(1.5rem, 7.65vw - 51.7px);
+  }
+
+  .heroSection.heroStatehouse .hero {
+    column-gap: max(1.5rem, 8vw - 48px);
+  }
+}
+
+/* The hero's white button with a stronger grey edge than the site's 12%, so
+   it reads as the same size as the solid button beside it. */
+.heroSection.heroStatehouse .secondaryAction {
+  border-color: rgba(15, 23, 42, 0.18);
+}
+
+.heroSection.heroStatehouse .secondaryAction:hover,
+.heroSection.heroStatehouse .secondaryAction:focus-visible {
+  border-color: rgba(15, 23, 42, 0.26);
+}
+
+/* Side by side (from 901px), the white button 1px taller above and below
+   than the solid one, the two centred on each other rather than stretched
+   to one height. Both its minimum height and its padding grow, so it is
+   taller whichever of the two sets its height. */
+@media (min-width: 901px) {
+  .heroSection.heroStatehouse .heroActions {
+    align-items: center;
+  }
+  .heroSection.heroStatehouse .secondaryAction {
+    min-height: calc(2.55rem + 2px);
+  }
+}
+@media (min-width: 992px) {
+  .heroSection.heroStatehouse .secondaryAction {
+    padding-top: calc(0.55rem + 1px);
+    padding-bottom: calc(0.55rem + 1px);
+  }
+}
+
+/* Up to 991px (below Bootstrap's lg), where the copy narrows most, the hero's buttons stay side by
+   side, smaller (from 1rem text, 1.3rem sides and a 10.5rem minimum,
+   .primaryAction), rather than wrapping onto two lines. */
+@media (min-width: 901px) and (max-width: 991.98px) {
+  .heroSection.heroStatehouse .heroActions {
+    flex-wrap: nowrap;
+    gap: 0.75rem;
+  }
+
+  .heroSection.heroStatehouse :is(.primaryAction, .secondaryAction) {
+    font-size: 0.875rem;
+    min-width: 8.5rem;
+    padding: 0.45rem 1rem;
+  }
+  .heroSection.heroStatehouse .secondaryAction {
+    padding-top: calc(0.45rem + 1px);
+    padding-bottom: calc(0.45rem + 1px);
+  }
+}
+
+/* The hero's panel, holding the new features (NewFeaturesCard), with no
+   shadow. */
+.heroTopics {
+  /* White from 90% at the bottom, over the statehouse, to 72% halfway up,
+     and 72% from there to the top. */
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.72) 50%,
+    rgba(255, 255, 255, 0.72) 100%
+  );
+  /* A hairline edge all round in MAPLE's near-black at 3%. The background
+     stops inside it, so the panel's own gradient does not show through the
+     edge. */
+  border: 1px solid rgba(15, 23, 42, 0.03);
+  background-clip: padding-box;
+  padding: 2rem 1.5rem;
+  /* Above the skyline layer (.skylineBackground), as the copy is, or the
+     skyline's navy paints over the panel and dims it. */
+  position: relative;
+  z-index: 1;
+}
+
+.heroTopicsLabel {
+  color: var(--hero-heading-ink);
+  font-size: 1.3rem;
+  /* Lighter than the hero title, so the panel heading sits below it. */
+  font-weight: 500;
+  margin: 0 0 1.5rem;
+}
+
+/* Two even columns rather than wrapping flex, so the rows line up instead of
+   breaking wherever the labels happen to run out. */
+.topicChips {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+/* Each chip is a link, its whole area clickable: padded, with the padding
+   taken back by a negative margin so the discs still line up with the
+   heading. */
+.topicChip {
+  align-items: center;
+  border-radius: var(--maple-radius-md);
+  color: var(--hero-ink-body);
+  display: flex;
+  font-family: var(--maple-font-body);
+  font-size: 0.95rem;
+  gap: 0.45rem;
+  line-height: 1.2;
+  margin: -0.35rem -0.5rem;
+  padding: 0.35rem 0.5rem;
+  text-decoration: none;
+  transition: background-color var(--maple-transition-fast);
+  white-space: nowrap;
+}
+
+/* On hover, a neutral shade (black at 3%) rather than a tinted grey; the
+   text keeps its colour rather than taking a link's. */
+.topicChip:hover,
+.topicChip:focus-visible {
+  background-color: rgba(0, 0, 0, 0.03);
+  color: var(--hero-ink-body);
+}
+
+/* Keyboard focus still shows, as a ring round the chip. */
+.topicChip:focus-visible {
+  box-shadow: 0 0 0 0.25rem var(--maple-focus-ring);
+  outline: none;
+}
+
+.topicChipDisc {
+  align-items: center;
+  border-radius: 50%;
+  display: flex;
+  flex: 0 0 auto;
+  font-size: 1.15rem;
+  height: 2.8rem;
+  justify-content: center;
+  width: 2.8rem;
+}
+
+/* The topics as their circles alone, three across (TopicChips, the "circles"
+   variant): each 22% of the width the topics have, set 1.5rem in from either
+   side, with the room left over shared between them. The words are hidden by
+   sizing them to 0, so screen readers still read each link's name, and each
+   names itself in a tooltip instead. Each link is the circle itself, so the
+   hover and the focus ring are round, and the hover shades the circle. The
+   icon is 32% of its circle, sized against the chip (a size container). */
+.topicChips.topicChipsCircles {
+  grid-template-columns: repeat(3, calc((100% + 3rem) * 0.22));
+  justify-content: space-between;
+  gap: 1rem 0;
+  padding-inline: 1.5rem;
+}
+
+.topicChipsCircles .topicChip {
+  border-radius: 50%;
+  container-type: inline-size;
+  font-size: 0;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.topicChipsCircles .topicChip:hover,
+.topicChipsCircles .topicChip:focus-visible {
+  background-color: transparent;
+}
+
+.topicChipsCircles .topicChipDisc {
+  aspect-ratio: 1;
+  font-size: 32cqi;
+  height: auto;
+  transition: box-shadow var(--maple-transition-fast);
+  width: 100%;
+}
+
+/* Shaded, as a layer between the circle's tint and its icon. */
+.topicChipsCircles .topicChip:hover .topicChipDisc {
+  box-shadow: inset 0 0 0 100vmax rgba(0, 0, 0, 0.05);
+}
+
+/* One column on a phone: the labels do not wrap, so two columns would run past
+   the edge of the screen. */
+@media (max-width: 900px) {
+  .topicChips {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* From 901px to 1159px the panel fills its column, which takes a little
+   more of the row than the copy (1.2 to 1), so the panel's title has room
+   for one line. */
+@media (min-width: 901px) and (max-width: 1159px) {
+  .heroSection.heroStatehouse .hero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  }
+
+  .heroSection.heroStatehouse .heroTopics {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* Taller where the features' tiles sit side by side (1289px and up), with
+   more room below (from 2rem), and the tiles taller, with more room at their
+   top (from 10rem and 1.25rem, .newFeatureTile). Stacked, all keep theirs. */
+@media (min-width: 1289px) {
+  .heroSection.heroStatehouse .heroTopics {
+    padding-bottom: 2.25rem;
+  }
+
+  .heroSection.heroStatehouse .newFeatureTile {
+    min-height: 10.75rem;
+    padding-top: 2rem;
+  }
+}
+
+/* The new features in the panel (NewFeaturesCard): the headline, then a tile
+   each, side by side where two fit at 17rem or more, about what "Conference
+   Committees" and its tag need on one line, and one under the other where
+   they do not. Each tile is a link, white with a thin edge, its name in
+   Lexend with its BETA tag, its line in Nunito and "Try it" at its foot,
+   also in Nunito, at the size of the Learn hub's "Explore"
+   (components/learn/Hub/LearnHub.tsx), in the brand's blue, lifting on
+   hover as that hub's cards do (.newFeatureTile:hover). */
+.newFeaturesTitle {
+  color: var(--hero-heading-ink);
+  font-family: var(--maple-font-heading);
+  /* 1px over 1.2rem (19.2px). */
+  font-size: 1.2625rem;
+  font-weight: 500;
+  line-height: 1.2;
+  margin: 0 0 0.375rem;
+}
+
+/* The title and the *NEW* badge on one line, the badge at the far right,
+   level with the title's first line when the title wraps. */
+.newFeaturesTitleRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* The *NEW* badge, a touch under its own 12px (FeatureCalloutButton).
+   Doubled to outrank Bootstrap's .btn size and padding. */
+.newTag.newTag {
+  flex: none;
+  /* The statehouse's bushes' green (public/statehouse.svg, #3d9922),
+     Bootstrap's own green, a shade darker, with white words. */
+  background: color-mix(in srgb, var(--bs-success) 90%, #000);
+  border-color: color-mix(in srgb, var(--bs-success) 90%, #000);
+  color: #fff;
+  /* At the very top of the title's line. */
+  margin-top: 0;
+  font-size: 11px;
+  padding: 0.1rem 0.35rem;
+  line-height: 1.3;
+}
+
+/* A line break in the subtitle on a phone only (below 576px), before "Send
+   feedback". */
+.phoneBreak {
+  display: none;
+}
+
+@media (max-width: 575.98px) {
+  .phoneBreak {
+    display: inline;
+  }
+}
+
+/* The line under the headline: the hero's body ink, in Lexend, light, with
+   the room before the tiles the headline had (1.5rem). */
+.newFeaturesSubtitle {
+  color: var(--hero-ink-body);
+  font-family: var(--maple-font-heading);
+  font-size: 0.9375rem;
+  /* A notch under the body's 400. */
+  font-weight: 300;
+  line-height: 1.45;
+  margin: 0 0 1.5rem;
+}
+
+/* The email in it (CopyEmail): light, rather than the banners' bold, and
+   underlined only while pointed at. */
+.newFeaturesSubtitle button {
+  font-weight: 300;
+  text-decoration: none;
+}
+
+.newFeaturesSubtitle button:hover {
+  text-decoration: underline;
+}
+
+.newFeatures {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* At 1288px and below, the tiles stack, wherever they would fit. */
+@media (max-width: 1288px) {
+  .newFeatures {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.newFeatureTile {
+  background: var(--maple-surface-base);
+  border: 1px solid var(--maple-surface-border);
+  border-radius: var(--maple-radius-md);
+  color: var(--hero-ink-body);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  height: 100%;
+  /* Taller than its content, with "Try it" at its foot (.newFeatureAction).
+     Side by side, taller still, with more room at the top (below). */
+  min-height: 10rem;
+  padding: 1.25rem;
+  text-decoration: none;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+/* On hover, and on keyboard focus, the edge darkens a little: its own
+   near-black, from 12% (--maple-surface-border) to 16%. On hover the tile
+   also lifts, as the Learn hub's cards do (CardLink, components/learn/Hub/
+   LearnHub.tsx), with the site's hover shadow, and "Try it"'s arrow steps
+   right (.newFeatureAction). */
+.newFeatureTile:hover,
+.newFeatureTile:focus-visible {
+  border-color: rgba(15, 23, 42, 0.16);
+  color: var(--hero-ink-body);
+}
+
+/* On hover, a slight rise. */
+.newFeatureTile:hover {
+  box-shadow: var(--maple-shadow-hover);
+  transform: translateY(-2px);
+}
+
+.newFeatureTile:focus-visible {
+  box-shadow: 0 0 0 0.25rem var(--maple-focus-ring);
+  outline: none;
+}
+
+/* Each tile's BETA tag, as the header's (BetaTag), after the name. BetaTag
+   takes its line height from around it: the site's is 1.5, the name's 1.25,
+   which would make it shorter here, so the site's is set on it. */
+.newFeatureName .newFeatureBeta {
+  line-height: 1.5;
+  margin-left: 0.45rem;
+}
+
+/* Wherever the tiles stack (1288px and down: beside the copy, and on a
+   phone), the tag sits with the chevron instead: just left of it, centred
+   down the tile as it is, the text kept clear of both. */
+@media (max-width: 1288px) {
+  .newFeatureName .newFeatureBeta {
+    position: absolute;
+    top: 50%;
+    right: 2.75rem;
+    margin: 0;
+    transform: translateY(-50%);
+  }
+}
+
+.newFeatureName {
+  color: var(--hero-heading-ink);
+  font-family: var(--maple-font-heading);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.newFeatureBody {
+  font-family: var(--maple-font-body);
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* At the tile's foot, whatever the length of the line above. */
+.newFeatureAction {
+  align-items: center;
+  color: var(--maple-brand-primary);
+  display: inline-flex;
+  font-family: var(--maple-font-body);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  gap: 0.45rem;
+  margin-top: auto;
+  padding-top: 0.6rem;
+}
+
+.newFeatureAction svg {
+  transition: transform 0.2s ease;
+}
+
+.newFeatureTile:hover .newFeatureAction svg {
+  transform: translateX(4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .newFeatureTile,
+  .newFeatureAction svg {
+    transition: none;
+  }
+
+  .newFeatureTile:hover,
+  .newFeatureTile:hover .newFeatureAction svg {
+    transform: none;
+  }
+}
+
+.newFeatureChevron {
+  display: none;
+}
+
+/* Wherever the tiles stack (1288px and down: beside the copy, and on a
+   phone, under it), each tile is only as tall as its name and its line, with
+   a chevron at its right, centred down it and kept clear of the text, in
+   place of "Try it". */
+@media (max-width: 1288px) {
+  /* Room at the right for the chevron and the tag left of it (2.75rem in,
+     about 2.6rem wide), clear of both by about 0.65rem. */
+  .newFeatureTile {
+    min-height: 0;
+    padding-right: 6rem;
+    position: relative;
+  }
+
+  .newFeatureAction {
+    display: none;
+  }
+
+  .newFeatureChevron {
+    color: var(--maple-brand-primary);
+    display: block;
+    position: absolute;
+    right: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+/* Main's copy (showBody and showActions), its paragraphs set like this hero's
+   lead, at every width. */
+.heroSection.heroStatehouse .heroBody {
+  color: var(--hero-lead-ink);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+  /* Stacked under the buttons, the panel is as wide as they are (24rem,
+     .heroActions below) and has no ground, edge or padding of its own, so its
+     tiles line up with the buttons above them. */
+  .heroSection.heroStatehouse .heroTopics {
+    order: 3;
+    justify-self: center;
+    width: 100%;
+    max-width: 24rem;
+    /* Room above, as its own padding gave it, the buttons ending right
+       above it (.heroContent's padding-bottom, below). */
+    margin-top: 2.5rem;
+    margin-bottom: 2rem;
+    padding: 0;
+    background: none;
+    border: 0;
+    /* Left-aligned, as it is beside the copy, not centred with the hero's
+       copy above it (.hero). */
+    text-align: left;
+  }
+
+  /* The line under the title centred with it. */
+  .heroSection.heroStatehouse .newFeaturesSubtitle {
+    text-align: center;
+  }
+
+  /* Its title a section heading's size here, with no card around it: over
+     the tiles' names (1rem), under the page's section titles (1.85rem,
+     .sectionTitle). */
+  .heroSection.heroStatehouse .newFeaturesTitle {
+    font-size: 1.5rem;
+  }
+
+  /* Its title centred, and a little wider than the tiles under it: up to
+     28rem, or the screen less 20px a side, reaching out evenly past the
+     panel's 24rem. */
+  .heroSection.heroStatehouse .newFeaturesTitleRow {
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 0.5rem;
+    text-align: center;
+    margin-left: calc((100% - min(28rem, 100vw - 2.5rem)) / 2);
+    margin-right: calc((100% - min(28rem, 100vw - 2.5rem)) / 2);
+  }
+
+  /* No *NEW* badge here. */
+  .heroSection.heroStatehouse .newFeaturesTitleRow .newTag {
+    display: none;
+  }
+
+  .heroSection.heroStatehouse .statehouseColumn {
+    order: 1;
+    justify-self: center;
+    width: min(16rem, 60%);
+  }
+
+  /* Stacked, the buttons stack too, centred under the centred copy, as in
+     the 900px block above. No room below them: the topics panel follows, and
+     the grid's gap is the space between them. */
+  .heroSection.heroStatehouse .heroContent {
+    padding-bottom: 0;
+  }
+
+  .heroSection.heroStatehouse .heroActions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    width: 100%;
+    max-width: 24rem;
+    margin: 0 auto;
+  }
+
+  .heroSection.heroStatehouse :is(.primaryAction, .secondaryAction) {
+    width: 100%;
+    min-height: 3.5rem;
+    padding: 0.75rem 1.5rem;
+  }
+}
+
+/* Shown in this skin, framed by the shared rule, in skyline_blue.svg's
+   #1a3185 at 6%. */
+:root .skylineBackground::before {
+  content: "";
+  background-color: #1a3185;
+  opacity: 0.06;
+  /* Pinned to the hero's bottom edge rather than raised off it. */
+  bottom: 0;
+}
+
+/* The section headings (Did You Know?, the features, Upcoming Hearings and
+   What does MAPLE do?) at the size of "What people are saying..."
+   (components/TestimonyCallout/TestimonyCalloutSection.tsx), a plain h2 at
+   Bootstrap's size, at every width. */
+:root .sectionTitle,
+:root .hearingsTitle,
+:root .explainerTitle {
+  font-size: calc(1.3625rem + 1.35vw);
+}
+
+@media (min-width: 1200px) {
+  :root .sectionTitle,
+  :root .hearingsTitle,
+  :root .explainerTitle {
+    font-size: 2.375rem;
   }
 }

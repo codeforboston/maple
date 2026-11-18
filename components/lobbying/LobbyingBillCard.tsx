@@ -7,6 +7,9 @@ import { usePagination } from "./usePagination"
 import { MAPLE_COLORS, POSITION_COLORS } from "./chartTheme"
 import { normalizePosition } from "./activity"
 import { BetaTag } from "components/shared/CommonComponents"
+import { LobbyingPanel } from "./LobbyingPanel"
+import { LegendSwatch, legendStyle } from "./PositionBar"
+import styles from "./lobbying.module.css"
 
 const PAGE_SIZE = 10
 
@@ -32,24 +35,50 @@ export const LobbyingBillCard: React.FC<LobbyingBillCardProps> = ({
     PAGE_SIZE
   )
 
+  // The Lobbying Explorer's panel (LobbyingPanel), its title with the BETA
+  // tag, and "Open in Lobbying Explorer" at its right once there is
+  // something to open.
+  const explorerHref = `/lobbying/bills/${court}/${billId}`
+  const frame = (body: React.ReactNode, link = false) => (
+    <div className={className}>
+      <LobbyingPanel
+        title={
+          <span className="d-inline-flex align-items-center">
+            {t("lobbying:billCard.title")}
+            <BetaTag>{t("common:beta_feature")}</BetaTag>
+          </span>
+        }
+        aside={
+          link ? (
+            <a
+              href={explorerHref}
+              className={styles.quietLink}
+              style={viewAllLinkStyle}
+            >
+              {t("lobbying:billCard.viewAll")}
+            </a>
+          ) : undefined
+        }
+      >
+        {body}
+      </LobbyingPanel>
+    </div>
+  )
+
   if (status === "loading" || status === "not-requested") {
-    return (
-      <div style={cardStyle} className={className}>
-        <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 14, margin: 0 }}>
-          {t("lobbying:loading")}
-        </p>
-      </div>
+    return frame(
+      <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 14, margin: 0 }}>
+        {t("lobbying:loading")}
+      </p>
     )
   }
 
   if (status === "error") {
     if (process.env.NODE_ENV === "development") {
-      return (
-        <div style={cardStyle} className={className}>
-          <p style={{ color: MAPLE_COLORS.danger, fontSize: 13, margin: 0 }}>
-            Lobbying data error: {error?.message}
-          </p>
-        </div>
+      return frame(
+        <p style={{ color: MAPLE_COLORS.danger, fontSize: 13, margin: 0 }}>
+          Lobbying data error: {error?.message}
+        </p>
       )
     }
     return null
@@ -64,23 +93,11 @@ export const LobbyingBillCard: React.FC<LobbyingBillCardProps> = ({
   }
   const total = filings.length
 
-  const explorerHref = `/lobbying/bills/${court}/${billId}`
-
-  return (
-    <div style={cardStyle} className={className}>
-      <div style={headerStyle}>
-        <span style={titleStyle}>
-          {t("lobbying:billCard.title")}
-          <BetaTag>{t("common:beta_feature")}</BetaTag>
-        </span>
-        <a href={explorerHref} style={viewAllLinkStyle}>
-          {t("lobbying:billCard.viewAll")}
-        </a>
-      </div>
-
+  return frame(
+    <>
       <PositionBar counts={counts} total={total} />
 
-      <div style={legendRowStyle}>
+      <ul style={{ ...legendStyle, margin: "0.5rem 0 1rem" }}>
         <LegendItem
           label={t("lobbying:position.support")}
           color={POSITION_COLORS.support}
@@ -96,9 +113,9 @@ export const LobbyingBillCard: React.FC<LobbyingBillCardProps> = ({
           color={POSITION_COLORS.neutral}
           count={counts.neutral}
         />
-      </div>
+      </ul>
 
-      <LobbyingFilingsTable filings={pageItems} showClient showFirm bordered />
+      <LobbyingFilingsTable filings={pageItems} showClient showFirm />
       <LobbyingPaginationBar
         page={page}
         totalPages={totalPages}
@@ -107,72 +124,38 @@ export const LobbyingBillCard: React.FC<LobbyingBillCardProps> = ({
         onPage={setPage}
         itemLabel={t("lobbying:billCard.filingsLabel")}
       />
-    </div>
+    </>,
+    true
   )
 }
 
+/** The filings by position, in the shared bar's shape (PositionBar.tsx: 10px
+ * tall, fully rounded) and colours. Its own, as it counts filings, where the
+ * shared one counts organizations. */
 const PositionBar: React.FC<{
   counts: { support: number; oppose: number; neutral: number; none: number }
   total: number
 }> = ({ counts, total }) => {
   if (total === 0) return null
-  const pct = (n: number) => `${((n / total) * 100).toFixed(1)}%`
+  const segments = [
+    { n: counts.support, color: POSITION_COLORS.support },
+    { n: counts.oppose, color: POSITION_COLORS.oppose },
+    { n: counts.neutral, color: POSITION_COLORS.neutral },
+    { n: counts.none, color: MAPLE_COLORS.graySubtleBorder }
+  ].filter(s => s.n > 0)
   return (
-    <div style={barContainerStyle} title="Support / Oppose / Neutral">
-      {counts.support > 0 && (
+    <div style={barStyle}>
+      {segments.map((s, i) => (
         <div
-          style={{
-            ...barSegmentStyle,
-            width: pct(counts.support),
-            background: POSITION_COLORS.support,
-            borderRadius:
-              counts.oppose === 0 && counts.neutral === 0
-                ? "4px"
-                : "4px 0 0 4px"
-          }}
+          key={i}
+          style={{ width: `${(s.n / total) * 100}%`, background: s.color }}
         />
-      )}
-      {counts.oppose > 0 && (
-        <div
-          style={{
-            ...barSegmentStyle,
-            width: pct(counts.oppose),
-            background: POSITION_COLORS.oppose,
-            borderRadius:
-              counts.support === 0 && counts.neutral === 0
-                ? "4px"
-                : counts.support === 0
-                ? "4px 0 0 4px"
-                : counts.neutral === 0
-                ? "0 4px 4px 0"
-                : "0"
-          }}
-        />
-      )}
-      {counts.neutral > 0 && (
-        <div
-          style={{
-            ...barSegmentStyle,
-            width: pct(counts.neutral),
-            background: POSITION_COLORS.neutral,
-            borderRadius: "0 4px 4px 0"
-          }}
-        />
-      )}
-      {counts.none > 0 && (
-        <div
-          style={{
-            ...barSegmentStyle,
-            width: pct(counts.none),
-            background: MAPLE_COLORS.graySubtleBorder,
-            borderRadius: "0 4px 4px 0"
-          }}
-        />
-      )}
+      ))}
     </div>
   )
 }
 
+/** A legend entry, as the shared legend's (PositionBar.tsx). */
 const LegendItem: React.FC<{
   label: string
   color: string
@@ -180,78 +163,31 @@ const LegendItem: React.FC<{
 }> = ({ label, color, count }) => {
   if (count === 0) return null
   return (
-    <span style={legendItemStyle}>
-      <span
-        style={{
-          width: 8,
-          height: 8,
-          borderRadius: "50%",
-          background: color,
-          display: "inline-block",
-          marginRight: 4
-        }}
-      />
+    <li style={legendItemStyle}>
+      <LegendSwatch background={color} />
       {label} ({count})
-    </span>
+    </li>
   )
 }
 
-const cardStyle: React.CSSProperties = {
-  background: MAPLE_COLORS.surfaceBase,
-  border: `1px solid ${MAPLE_COLORS.borderDefault}`,
-  borderRadius: 8,
-  boxShadow: "0 0.25rem 1rem rgba(15, 23, 42, 0.06)",
-  padding: "1rem"
-}
-
-const headerStyle: React.CSSProperties = {
+const barStyle: React.CSSProperties = {
   display: "flex",
-  justifyContent: "space-between",
-  alignItems: "baseline",
-  marginBottom: "0.75rem"
-}
-
-const titleStyle: React.CSSProperties = {
-  fontFamily: "Nunito, system-ui, sans-serif",
-  fontWeight: 700,
-  fontSize: 13,
-  color: MAPLE_COLORS.textMuted,
-  textTransform: "uppercase",
-  letterSpacing: "0.06em"
-}
-
-const barContainerStyle: React.CSSProperties = {
-  display: "flex",
-  height: 8,
-  borderRadius: 4,
-  overflow: "hidden",
-  marginBottom: "0.5rem",
-  background: MAPLE_COLORS.graySubtleBorder
-}
-
-const barSegmentStyle: React.CSSProperties = {
-  height: "100%",
-  transition: "width 0.2s ease"
-}
-
-const legendRowStyle: React.CSSProperties = {
-  display: "flex",
-  gap: "0.75rem",
-  marginBottom: "0.75rem",
-  flexWrap: "wrap"
+  height: 10,
+  borderRadius: 5,
+  overflow: "hidden"
 }
 
 const legendItemStyle: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
-  fontSize: 12,
+  gap: "0.4rem",
+  fontSize: 13,
   color: MAPLE_COLORS.textMuted
 }
 
 const viewAllLinkStyle: React.CSSProperties = {
-  fontSize: 12,
+  fontSize: 14,
   fontWeight: 600,
   color: MAPLE_COLORS.primary,
-  textDecoration: "none",
   whiteSpace: "nowrap"
 }

@@ -24,7 +24,7 @@ export const ChooseStance = styled(({ ...rest }) => {
   const hasPosition = Boolean(currentPosition)
   return (
     <div {...rest}>
-      <StepHeader step={1}>
+      <StepHeader>
         {copy(
           "submitTestimonyForm.chooseStance",
           "ballotQuestion.submitTestimonyForm.chooseStance"

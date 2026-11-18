@@ -19,8 +19,10 @@ import styled from "styled-components"
 import { ConferenceByline } from "./ConferenceByline"
 import { ConferenceCommittee } from "./ConferenceCommittee"
 import { ConferenceDifferences } from "./ConferenceDifferences"
-import { FollowConferenceButton, useConferenceFollow } from "./FollowConference"
-import { ConferencePicker } from "./ConferencePicker"
+import { FollowConferenceTopicButton } from "../shared/FollowButton"
+import { useConferenceFollow } from "./FollowConference"
+import { BackChevron } from "./BackToConferences"
+import { ConferenceSwitcher } from "./ConferencePicker"
 import { ClosedFold, ConferenceRail } from "./ConferenceRail"
 import { ConferenceResolution, OutcomeFilter } from "./ConferenceResolution"
 import { ConferenceTabs, TABS_H } from "./ConferenceTabs"
@@ -34,8 +36,8 @@ import {
   useEditConferenceTestimony
 } from "../db"
 import { useAppDispatch } from "../hooks"
-import { maple, siteUrl } from "../links"
-import { usePinnedNavbar } from "./hooks"
+import { Internal, maple, siteUrl } from "../links"
+import { useFitText, usePhone, usePinnedNavbar, useRailLift } from "./hooks"
 import { InputContext } from "./input/context"
 import { initialsOf } from "./input/accounts"
 import { CosignForm } from "./input/CosignForm"
@@ -43,13 +45,22 @@ import { CosignLetter } from "./input/CosignLetter"
 import { InputForm, Step } from "./input/InputForm"
 import { Panel, usePanelWidth } from "./input/Panel"
 import { PublicInput } from "./input/PublicInput"
-import { ShareButton } from "./input/ShareButton"
+import { ShareButton, ShareFab } from "./input/ShareButton"
 import { useFollowedAuthors } from "./input/useFollowedAuthors"
 import { Close } from "./input/Close"
 import { X } from "./input/icons"
 import { jumpToSection } from "./navbar"
-import { OverviewLink } from "./OverviewLink"
-import { Notice, PageColumn, Title } from "./styles"
+import {
+  COMMITTEE_PAGE_MAX,
+  MOBILE_LAYOUT,
+  Notice,
+  PageColumn,
+  PHONE_GUTTER,
+  RAIL_COMPACT,
+  RAIL_HIDDEN,
+  RAIL_SHOWN,
+  Title
+} from "./styles"
 import {
   conferenceName,
   ConferencePageProps,
@@ -57,14 +68,54 @@ import {
   ConfereeView
 } from "./types"
 
-/** The mockup's column, widened to 1320 once the rail sits beside it. */
+/** The shared column, widened once the rail sits beside it, its content
+ * inside the column's 2rem a side. Doubled (&&) so it outranks PageColumn's
+ * own max-width whichever of the two is written to the page last, as a live
+ * reload of styles.ts writes PageColumn's again. */
 const Page = styled(PageColumn)`
   display: flex;
-  gap: 1.5rem;
+  /* The room between the rail and the page: 56px from 1440px, where the page
+     stops widening, narrowing evenly with the window as soon as it does, to
+     24px at 1024px and on down to md, where the rail comes in. Never a jump
+     that pulls the page toward the rail. */
+  --rail-gap: clamp(24px, calc(24px + (100vw - 1024px) * 0.0769), 56px);
+  gap: var(--rail-gap);
 
+  /* Beside the compact rail (RAIL_COMPACT, styles.ts), 20px a side rather
+     than the column's 2rem, so the page has more of the width. */
+  @media ${RAIL_COMPACT} {
+    && {
+      padding-left: 1.25rem;
+      padding-right: 1.25rem;
+    }
+  }
+
+  /* The committee's column from 992px (COMMITTEE_PAGE_MAX, styles.ts). */
   @media (min-width: 992px) {
-    max-width: 1320px;
-    gap: 3.5rem;
+    && {
+      max-width: ${COMMITTEE_PAGE_MAX};
+    }
+  }
+`
+
+/** The list of every conference down the left, from RAIL_FROM (styles.ts):
+ * compact at first (RAIL_COMPACT), about 160px across, the names at 13px
+ * over their bills in tighter rows; its full size from FULL_RAIL_FROM. */
+const SideRail = styled(ConferenceRail)`
+  @media ${RAIL_HIDDEN} {
+    display: none;
+  }
+
+  @media ${RAIL_COMPACT} {
+    && {
+      width: 160px;
+    }
+    && a {
+      padding: 6px 8px 6px 10px;
+    }
+    && .name {
+      font-size: 0.8125rem;
+    }
   }
 `
 
@@ -81,38 +132,99 @@ const Shift = styled.div`
   }
 `
 
-/** The title level with the share button, and the overview link over the
- * button; level with the title itself where there is no button. Below md the
- * picker stands for the title, with the link over it and the button under it
- * at the left. */
-const TitleRow = styled.div<{ $actions: boolean }>`
+/** The title, with the way to share input at its end, from md: the button
+ * keeps its own width (ShareButton.tsx) and the title takes the rest,
+ * wrapping as narrow as it has to rather than putting the button under it.
+ * On mobile it floats at the bottom right instead (ShareFab, FabDock), so
+ * no column, and no gap, for it. */
+const TitleRow = styled.div`
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-areas: ${({ $actions }) =>
-    $actions ? `". link" "title share"` : `"title link"`};
-  align-items: center;
-  gap: 0.5rem 24px;
+  align-items: start;
+  gap: 24px;
 
-  @media (max-width: 767.98px) {
+  @media ${RAIL_HIDDEN} {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: ${({ $actions }) =>
-      $actions ? `"link" "picker" "share"` : `"link" "picker"`};
   }
 `
 
-const Picker = styled.div`
-  grid-area: picker;
-`
-
-const Share = styled.div`
-  grid-area: share;
-  justify-self: end;
+/** Following the conference and the way to share input, at the title's
+ * end, from md (TitleRow). */
+const TitleShare = styled.div`
   display: flex;
   align-items: center;
   gap: 18px;
 
-  @media (max-width: 767.98px) {
-    justify-self: start;
+  /* The Follow button (components/shared/FollowButton.tsx) 6px above and
+     below, as Share your input is (ShareButton.tsx). !important outranks
+     its py-1, which is !important itself. */
+  && .follow-button .btn {
+    padding-top: 0.375rem !important;
+    padding-bottom: 0.375rem !important;
+  }
+
+  @media ${RAIL_HIDDEN} {
+    display: none;
+  }
+`
+
+/** The title, and on mobile, below md, the way back before it
+ * (BackChevron). */
+const TitleCell = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+
+  /* In the mobile layout, the title centred across the row, the way back at the left
+     (its 26px in the row, the rest over the page's edge, BackChevron) and as
+     much room kept empty at the right, so the title's middle is the row's.
+     Both centred on the title's one line, whatever size that fits at
+     (useFitText). */
+  @media ${MOBILE_LAYOUT} {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr) 26px;
+    align-items: center;
+    gap: 8px;
+  }
+`
+
+/** Where the floating buttons are held on mobile, without the rail
+ * (RAIL_HIDDEN, styles.ts): the way to the other conferences at the left
+ * (SwitcherSlot), and the way to share input at the right (ShareFab). At
+ * the end of the page's column, pinned 24px off the bottom of the screen
+ * while the column runs on under it, and left at the column's end when it
+ * stops, so it never floats over the footer. Its row lets taps through
+ * around the buttons. */
+const FabDock = styled.div`
+  position: sticky;
+  bottom: 24px;
+  z-index: 15;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
+  /* The way in at the right, with or without the way to the others. */
+  > :last-child {
+    margin-left: auto;
+  }
+
+  /* With the rail, the way in is at the title's end, and the rail is there
+     to move between conferences by. */
+  @media ${RAIL_SHOWN} {
+    display: none;
+  }
+`
+
+/** The way to the other conferences in the dock, only where the rail is
+ * gone. */
+const SwitcherSlot = styled.div`
+  @media ${RAIL_SHOWN} {
+    display: none;
   }
 `
 
@@ -122,19 +234,29 @@ const Main = styled.div`
   flex: 1 1 auto;
 `
 
-/** Below md the picker shows the name, so the heading is there for screen
- * readers alone. */
-const PageTitle = styled(Title)`
-  grid-area: title;
+/** `$muted`: a conference we haven't covered, its name in the rail's muted
+ * grey (ConferenceRail.tsx). 29.7px up to 992px, growing evenly to 36px at
+ * 1440px. */
+const PageTitle = styled(Title)<{ $muted: boolean }>`
+  && {
+    font-size: clamp(29.7px, calc(29.7px + (100vw - 992px) * 0.01406), 36px);
+  }
+  min-width: 0;
+  ${({ $muted }) => ($muted ? "color: var(--maple-text-muted);" : "")}
 
-  @media (max-width: 767.98px) {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    margin: -1px;
+  /* In the mobile layout, a step larger, 32px, centred in the row's middle (TitleCell),
+     and always one line, the type stepped down to fit it where the name is
+     longer than that (useFitText), and cut short with an ellipsis past
+     that. */
+  @media ${MOBILE_LAYOUT} {
+    && {
+      font-size: 32px;
+    }
+    grid-column: 2;
+    text-align: center;
     overflow: hidden;
-    clip: rect(0, 0, 0, 0);
     white-space: nowrap;
+    text-overflow: ellipsis;
   }
 `
 
@@ -157,28 +279,48 @@ type LinkRefusal =
   | "drafting"
 
 /** A band that holds at the top while the sections scroll under it, run out
- * to the page's gutters so what passes behind it is covered. */
+ * to the page's gutters so what passes behind it is covered. On the left,
+ * from md, where the rail is beside it, only as far as the rail (the
+ * page's --rail-gap): no further, or it would paint over the rail's edge
+ * where the gap is under the 2rem. */
 const Band = styled.div<{ $top: string; $z: number }>`
   position: sticky;
   top: ${({ $top }) => $top};
   z-index: ${({ $z }) => $z};
-  margin: 0 -1.25rem;
-  padding: 0 1.25rem;
+  margin: 0 calc(-1 * ${PHONE_GUTTER});
+  padding: 0 ${PHONE_GUTTER};
   background: var(--maple-surface-page);
 
   @media (min-width: 576px) {
     margin: 0 -2rem;
     padding: 0 2rem;
   }
+
+  @media ${RAIL_SHOWN} {
+    margin-left: calc(-1 * var(--rail-gap));
+    padding-left: var(--rail-gap);
+  }
+
+  /* Out to the page's narrower right side beside the compact rail (Page). */
+  @media ${RAIL_COMPACT} {
+    margin-right: -1.25rem;
+    padding-right: 1.25rem;
+  }
 `
 
 const TitleBand = styled(Band)`
   padding-top: 1.625rem;
   padding-bottom: 0.75rem;
+
+  /* In the mobile layout, more room between the title and the byline under
+     it. */
+  @media ${MOBILE_LAYOUT} {
+    padding-bottom: 1rem;
+  }
 `
 
 /** A section the tabs lead to, parked under the title and the tabs with the
- * mockup's 24px under them. */
+ * mockup's 24px under them, and 24px from the section before. */
 const Section = styled.div`
   margin-top: 1.5rem;
   scroll-margin-top: calc(
@@ -207,11 +349,11 @@ export function ConferenceDetails(props: ConferencePageProps) {
 }
 
 /**
- * Whether the rail's group of conferences no longer taking input is open,
- * held above the keyed page so it lasts from one conference to the next. It
- * starts open only on a conference in the group, and opens on arriving at
- * one, so the conference being read is never folded away; otherwise it stays
- * as the reader left it.
+ * Whether the rail's group of past conferences is open (PastFold,
+ * ConferenceRail.tsx), held above the keyed page so it lasts from one
+ * conference to the next. It starts open only on a conference in the group,
+ * and opens on arriving at one, so the conference being read is never folded
+ * away; otherwise it stays as the reader left it.
  */
 function useClosedFold(conference: ConferenceSummary): ClosedFold {
   const closed = !isSitting(conference)
@@ -235,6 +377,9 @@ function Details({
   testimonyCount,
   fold
 }: ConferencePageProps & { fold: ClosedFold }) {
+  // The page, which holds the rail and the main column; usePinnedNavbar and
+  // useRailLift both measure it.
+  const top = useRef<HTMLDivElement>(null)
   const { t } = useTranslation("conferences")
   const { user, authenticated, loading: authLoading, authFlowStep } = useAuth()
   const dispatch = useAppDispatch()
@@ -274,7 +419,6 @@ function Details({
   const subject = conferenceName(conference)
   const taking = takesTestimony(conference)
   const follow = useConferenceFollow(conference)
-  const actions = taking || follow.visible
   const decided = differences.length > 0 || similarities.length > 0
   // Once the report is filed, each question says how the law resolved it.
   const resolved = hasReport(conference) && differences.length > 0
@@ -439,12 +583,28 @@ function Details({
   // The tabs hold under the title, so they need its height.
   const main = useRef<HTMLDivElement>(null)
   const band = useRef<HTMLDivElement>(null)
-  usePinnedNavbar(main)
+  // On mobile, the title's one line fitted to its room, from 32px down to
+  // 20px (PageTitle).
+  const titleText = useRef<HTMLHeadingElement>(null)
+  const phone = usePhone()
+  useFitText(titleText, phone, 20, subject)
+  // On the whole page, not only the main column, so the rail pins at the
+  // navbar's edge with the title (ConferenceRail.tsx).
+  usePinnedNavbar(top)
+  // The title and the tabs leave with the rail once the page's end pushes it
+  // up, rather than holding on after it.
+  useRailLift(top, main)
   useLayoutEffect(() => {
     const el = band.current
     if (!el) return
-    const read = () =>
-      main.current?.style.setProperty("--title-h", `${el.offsetHeight}px`)
+    const read = () => {
+      // Exact sizes, not offsetHeight's whole pixels, which can fall short of
+      // a fractional height and leave a seam under it.
+      main.current?.style.setProperty(
+        "--title-h",
+        `${el.getBoundingClientRect().height}px`
+      )
+    }
     read()
     const ro = new ResizeObserver(read)
     ro.observe(el)
@@ -480,44 +640,47 @@ function Details({
   // Signing fills the window with what is signed beside the form; once agreed,
   // the reader may fold it back to the drawer.
   const filled = !!cosigning && (step === "confirm" || full)
+  const shift = open && !filled ? width : 0
+  // The room the panel takes, for what sits outside the page (the beta
+  // note, styles/globals.css) to step aside for it too.
+  useEffect(() => {
+    const root = document.documentElement
+    root.style.setProperty("--conference-shift", `${shift}px`)
+    return () => {
+      root.style.removeProperty("--conference-shift")
+    }
+  }, [shift])
   return (
     <InputContext.Provider value={input}>
-      <Shift
-        style={
-          { "--shift": `${open && !filled ? width : 0}px` } as CSSProperties
-        }
-      >
-        <Page>
-          <ConferenceRail
-            className="d-none d-md-block"
+      <Shift style={{ "--shift": `${shift}px` } as CSSProperties}>
+        <Page ref={top}>
+          <SideRail
             conferences={conferences}
             current={conference.id}
             fold={fold}
           />
           <Main ref={main}>
-            <TitleBand ref={band} $top="var(--maple-navbar-height)" $z={14}>
-              <TitleRow $actions={actions}>
-                <Picker className="d-md-none">
-                  <ConferencePicker
-                    conferences={conferences}
-                    current={conference}
-                    fold={fold}
-                  />
-                </Picker>
-                <PageTitle>{subject}</PageTitle>
-                <OverviewLink />
-                {actions && (
-                  <Share>
+            <TitleBand
+              ref={band}
+              $top="calc(var(--maple-navbar-height) + var(--rail-lift, 0px))"
+              $z={14}
+            >
+              <TitleRow>
+                <TitleCell>
+                  <BackChevron />
+                  <PageTitle ref={titleText} $muted={!conference.covered}>
+                    {subject}
+                  </PageTitle>
+                </TitleCell>
+                {(taking || follow.visible) && (
+                  <TitleShare>
                     {follow.visible && (
-                      <FollowConferenceButton
-                        following={follow.following}
-                        toggle={follow.toggle}
-                      />
+                      <FollowConferenceTopicButton conference={conference} />
                     )}
                     {taking && (
                       <ShareButton onClick={share} disabled={Boolean(mine)} />
                     )}
-                  </Share>
+                  </TitleShare>
                 )}
               </TitleRow>
               {refusal && (
@@ -535,7 +698,9 @@ function Details({
             </TitleBand>
             <ConferenceByline conference={conference} />
             <Band
-              $top="calc(var(--maple-navbar-height) + var(--title-h, 5rem))"
+              // 1px under the title's band, which sits above it, so no seam
+              // opens between the two however the heights round.
+              $top="calc(var(--maple-navbar-height) + var(--rail-lift, 0px) + var(--title-h, 5rem) - 1px)"
               $z={13}
             >
               <ConferenceTabs
@@ -586,6 +751,19 @@ function Details({
               {/* Keyed so a picked version does not outlive its conference. */}
               <ConferenceText key={conference.id} conference={conference} />
             </Section>
+            {/* On mobile, the floating buttons: the way to the other
+                conferences at the left, and the way in at the right, gone
+                while the panel is out and once something is filed. */}
+            <FabDock>
+              <SwitcherSlot>
+                <ConferenceSwitcher
+                  conferences={conferences}
+                  current={conference}
+                  fold={fold}
+                />
+              </SwitcherSlot>
+              {taking && !mine && !open && <ShareFab onClick={share} />}
+            </FabDock>
           </Main>
         </Page>
       </Shift>

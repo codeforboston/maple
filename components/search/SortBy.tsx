@@ -41,6 +41,25 @@ const StyledSelect = styled(Select)`
   .s__indicator:hover {
     color: var(--bs-gray-500);
   }
+
+  /* The sort text a step smaller, menu included. */
+  *:root & .s__control,
+  *:root & .s__menu {
+    font-size: 0.875rem;
+  }
+
+  /* The selected value a step bolder; the menu stays regular. */
+  *:root & .s__control {
+    font-weight: 500;
+  }
+
+  /* Below 992px, where the filters collapse to the filter button
+     (components/search/useFiltersInline.ts), a step bolder again. */
+  @media (max-width: 991.98px) {
+    *:root & .s__control {
+      font-weight: 600;
+    }
+  }
 `
 
 export type SortByWithConfigurationItem = SortByItem & {

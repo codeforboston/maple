@@ -1,7 +1,24 @@
 import { useTranslation } from "next-i18next"
 import { Internal } from "components/links"
 import { useCalendarEvents } from "components/HearingsScheduled/calendarEvents"
+import { currentGeneralCourt } from "functions/src/shared"
 import styles from "./Homepage.module.css"
+
+/** Browse Hearings from here opens the hearings search on Upcoming rather
+ * than its default, Past (newest first), in the current session. The search
+ * keeps its state in the address under its default index, and these are its
+ * sort values (components/search/hearings/HearingSearch). Without the
+ * default's "has video" filter, as upcoming hearings have no video yet. */
+const upcomingHearingsHref = (() => {
+  const index = "hearings/sort/startsAt:desc"
+  const params = new URLSearchParams()
+  params.append(`${index}[sortBy]`, "hearings/sort/startsAt:asc")
+  params.append(
+    `${index}[refinementList][court][]`,
+    String(currentGeneralCourt)
+  )
+  return `/hearings?${params}`
+})()
 
 export type HomepageHearingEvent = {
   type: "hearing"
@@ -39,7 +56,10 @@ export function HearingsSectionContent({
           <h2 id="homepage-upcoming-hearings" className={styles.hearingsTitle}>
             {t("hearings.title")}
           </h2>
-          <Internal href="/hearings" className={styles.hearingsActionDesktop}>
+          <Internal
+            href={upcomingHearingsHref}
+            className={styles.hearingsActionDesktop}
+          >
             {t("hearings.action")}
           </Internal>
         </div>
@@ -78,7 +98,10 @@ export function HearingsSectionContent({
             {t("hearingsScheduled.noEvents")}
           </p>
         )}
-        <Internal href="/hearings" className={styles.hearingsActionMobile}>
+        <Internal
+          href={upcomingHearingsHref}
+          className={styles.hearingsActionMobile}
+        >
           {t("hearings.action")}
         </Internal>
       </div>

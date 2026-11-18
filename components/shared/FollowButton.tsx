@@ -1,3 +1,5 @@
+import { faXmark } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { StyledImage } from "components/ProfilePage/StyledProfileComponents"
 import { useTranslation } from "next-i18next"
 import { useRouter } from "next/router"
@@ -70,6 +72,7 @@ export function FollowBillButton({
       displayName={useTranslation("testimony").t("bill", {
         billId: formatBillId(bill.id)
       })}
+      large
     />
   )
 }
@@ -129,7 +132,8 @@ export const BaseFollowButton = ({
   hide,
   confirmFollow = false,
   confirmUnfollow = false,
-  displayName = ""
+  displayName = "",
+  large = false
 }: {
   topicName: string
   followAction: () => Promise<void>
@@ -138,6 +142,9 @@ export const BaseFollowButton = ({
   confirmFollow?: boolean
   confirmUnfollow?: boolean
   displayName?: string
+  /** Keep the full-size button (the bill page's). Elsewhere it is set like
+   * the sort control (styles/globals.css). */
+  large?: boolean
 }) => {
   const { t } = useTranslation(["profile"])
 
@@ -159,10 +166,36 @@ export const BaseFollowButton = ({
   return (
     <>
       {!hide && (
-        <div className="follow-button">
-          <Button onClick={handleClick} className={`btn btn-lg py-1`}>
-            {t(`button.${isFollowing ? "unfollow" : "follow"}`)}
-            {isFollowing && <StyledImage src="/check-white.svg" alt="" />}
+        <div className={`follow-button ${large ? "follow-button-large" : ""}`}>
+          <Button
+            onClick={handleClick}
+            className={`btn btn-lg py-1 ${
+              isFollowing ? "follow-button-following" : ""
+            }`}
+            // A toggle, pressed while following, so a screen reader hears that
+            // pressing it again unfollows as well as reading "Following".
+            aria-pressed={isFollowing}
+          >
+            {!isFollowing && t("button.follow")}
+            {isFollowing && (
+              <>
+                {/* "Following" with the check, as a mask in the text's colour,
+                    turning to "Unfollow" with an x on hover or focus
+                    (styles/globals.css). */}
+                <span className="follow-label-following">
+                  {t("button.following")}
+                  <span className="follow-check-mask" aria-hidden="true" />
+                </span>
+                <span className="follow-label-unfollow">
+                  {t("button.unfollow")}
+                  <FontAwesomeIcon
+                    icon={faXmark}
+                    className="follow-x"
+                    aria-hidden="true"
+                  />
+                </span>
+              </>
+            )}
           </Button>
         </div>
       )}

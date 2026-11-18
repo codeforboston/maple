@@ -3,6 +3,7 @@ import { Stage, useBillTracker } from "components/db/useBillStatus"
 import styled from "styled-components"
 import { BillProps, BillTracker } from "./types"
 import { Row } from "react-bootstrap"
+import { CardHead } from "./SponsorsAndCommittees"
 import { useTranslation } from "next-i18next"
 
 export default function BillTrackerConnectedView({
@@ -22,6 +23,7 @@ export const BillTrackerView = ({
   tracker: BillTracker
   className?: string
 }): JSX.Element => {
+  const { t } = useTranslation("common")
   const currentStage =
     tracker.label?.status ?? tracker.prediction?.status ?? Stage.billIntroduced
 
@@ -35,7 +37,12 @@ export const BillTrackerView = ({
   return (
     <MapleCard
       className={className}
-      header={useTranslation("common").t("bill.bill_tracker")}
+      // In the blue bar the page's other cards have (CardHead).
+      headerElement={
+        <CardHead className="bg-secondary text-light">
+          {t("bill.bill_tracker")}
+        </CardHead>
+      }
       body={body}
     />
   )

@@ -1,17 +1,30 @@
 import { useTranslation } from "next-i18next"
+import { createContext, useContext } from "react"
 import { useRouter } from "next/router"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "./auth"
-import { Dropdown, Nav, NavDropdown } from "./bootstrap"
-import { conferenceName } from "./conference/types"
+import { Nav, NavDropdown } from "./bootstrap"
 import { useProfile } from "./db"
-import { useAppointedConferences } from "./conference/hooks"
 import { NavLink } from "./Navlink"
 import { maple, Wrap } from "./links"
 import { BetaTag } from "./shared/CommonComponents"
 
-export const DESKTOP_NAV_ITEM_CLASS = "desktop-navbar-link px-3 py-1"
+// No py-1: its !important would undo the items' taller padding
+// (styles/globals.css).
+export const DESKTOP_NAV_ITEM_CLASS = "desktop-navbar-link px-3 py-2"
+
+/**
+ * Whether the navbar is in its mobile (hamburger) layout, at 768px and below.
+ * MainNavbar provides it; outside the navbar, the width decides.
+ */
+export const NavbarMobileContext = createContext<boolean | null>(null)
+
+const useNavbarIsMobile = () => {
+  const fromNavbar = useContext(NavbarMobileContext)
+  const narrow = useMediaQuery("(max-width: 768px)")
+  return fromNavbar ?? narrow
+}
 
 const NavbarDropdownLink: React.FC<
   React.PropsWithChildren<{
@@ -63,24 +76,18 @@ export const Avatar = () => {
   const result = useProfile()
   let isOrg = result?.profile?.role === "organization"
 
+  const kind = isOrg ? "org" : "individual"
+
+  // The blue icon, for the neutral bar, where styles/globals.css shows it
+  // (navbar-avatar-dark), as it does the logo.
   return (
-    <>
-      {isOrg ? (
-        <Image
-          src="/profile-org-white.svg"
-          alt={t("profileMenu")}
-          width="35"
-          height="35"
-        />
-      ) : (
-        <Image
-          src="/profile-individual-white.svg"
-          alt={t("profileMenu")}
-          width="35"
-          height="35"
-        />
-      )}
-    </>
+    <Image
+      className="navbar-avatar-dark"
+      src={`/profile-${kind}-blue.svg`}
+      alt={t("profileMenu")}
+      width="35"
+      height="35"
+    />
   )
 }
 
@@ -90,7 +97,7 @@ export const NavbarLinkAiTools: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <NavbarDropdownLink
@@ -104,33 +111,13 @@ export const NavbarLinkAiTools: React.FC<
   )
 }
 
-export const NavbarLinkAI: React.FC<
-  React.PropsWithChildren<{
-    handleClick?: any
-    other?: any
-  }>
-> = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
-  const { t } = useTranslation(["common", "auth"])
-  return (
-    <NavbarDropdownLink
-      className={isMobile ? "navLink-primary" : ""}
-      href="/about/how-maple-uses-ai"
-      handleClick={handleClick}
-      other={other}
-    >
-      {t("navigation.ai")}
-    </NavbarDropdownLink>
-  )
-}
-
 export const NavbarLinkBills: React.FC<
   React.PropsWithChildren<{
     handleClick?: any
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <Nav.Item onClick={handleClick}>
@@ -151,7 +138,7 @@ export const NavbarLinkAskMaple: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <Nav.Item onClick={handleClick}>
@@ -170,10 +157,28 @@ export const NavbarLinkLobbying: React.FC<
   React.PropsWithChildren<{
     handleClick?: any
     other?: any
+    /** In the Browse More menu (components/Navbar.tsx) rather than on the
+     * bar. */
+    dropdown?: boolean
   }>
-> = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+> = ({ handleClick, other, dropdown = false }) => {
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
+  const { pathname } = useRouter()
+  if (dropdown) {
+    return (
+      <NavbarDropdownLink
+        href="/lobbying"
+        handleClick={handleClick}
+        other={{ active: pathname.startsWith("/lobbying"), ...other }}
+      >
+        {t("navigation.lobbying")}
+        {/* BETA in the menu only, where there is room for it; the bar keeps
+            its links plain. */}
+        <BetaTag>{t("beta_feature")}</BetaTag>
+      </NavbarDropdownLink>
+    )
+  }
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
@@ -182,7 +187,6 @@ export const NavbarLinkLobbying: React.FC<
         {...other}
       >
         {t("navigation.lobbying")}
-        <BetaTag>{t("beta_feature")}</BetaTag>
       </NavLink>
     </Nav.Item>
   )
@@ -194,7 +198,7 @@ export const NavbarLinkBallotQuestions: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <Nav.Item onClick={handleClick}>
@@ -209,41 +213,44 @@ export const NavbarLinkBallotQuestions: React.FC<
   )
 }
 
-/**
- * The Conference Committees menu's items, which the navbar puts in a menu as
- * it does About's and Learn's: the explorer, then the conferences taking
- * input.
- */
-export const NavbarConferenceItems: React.FC<{ handleClick?: any }> = ({
-  handleClick
-}) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+export const NavbarLinkConferences: React.FC<
+  React.PropsWithChildren<{
+    handleClick?: any
+    other?: any
+    /** In the Browse More menu (components/Navbar.tsx) rather than on the
+     * bar. */
+    dropdown?: boolean
+  }>
+> = ({ handleClick, other, dropdown = false }) => {
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
-  const conferences = useAppointedConferences()
-  const link = (href: string, label: string) => (
-    <NavbarDropdownLink
-      key={href}
-      className={isMobile ? "navLink-primary" : ""}
-      href={href}
-      handleClick={handleClick}
-    >
-      {label}
-    </NavbarDropdownLink>
-  )
+  const { pathname } = useRouter()
+  if (dropdown) {
+    return (
+      <NavbarDropdownLink
+        href={maple.conferences()}
+        handleClick={handleClick}
+        other={{ active: pathname.startsWith(maple.conferences()), ...other }}
+      >
+        {t("navigation.conferences")}
+        <BetaTag>{t("beta_feature")}</BetaTag>
+      </NavbarDropdownLink>
+    )
+  }
   return (
-    <>
-      {link(maple.conferenceExplorer(), t("navigation.conferenceExplorer"))}
-      {conferences.length > 0 && (
-        <>
-          {/* The explorer set apart, and the list said for what it is. */}
-          <Dropdown.Divider />
-          <Dropdown.Header>
-            {t("navigation.conferencesTakingInput")}
-          </Dropdown.Header>
-          {conferences.map(c => link(maple.conference(c), conferenceName(c)))}
-        </>
-      )}
-    </>
+    <Nav.Item onClick={handleClick}>
+      <NavLink
+        className={isMobile ? "navLink-primary" : DESKTOP_NAV_ITEM_CLASS}
+        href={maple.conferences()}
+        // The landing, the explorer and every conference are this section.
+        other={{
+          active: pathname.startsWith(maple.conferences()),
+          ...other
+        }}
+      >
+        {t("navigation.conferences")}
+      </NavLink>
+    </Nav.Item>
   )
 }
 
@@ -251,10 +258,24 @@ export const NavbarLinkHearings: React.FC<
   React.PropsWithChildren<{
     handleClick?: any
     other?: any
+    /** In the Browse More menu (components/Navbar.tsx) rather than on the
+     * bar. */
+    dropdown?: boolean
   }>
-> = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+> = ({ handleClick, other, dropdown = false }) => {
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
+  if (dropdown) {
+    return (
+      <NavbarDropdownLink
+        href="/hearings"
+        handleClick={handleClick}
+        other={other}
+      >
+        {t("navigation.hearings")}
+      </NavbarDropdownLink>
+    )
+  }
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
@@ -276,7 +297,7 @@ export const NavbarLinkEditProfile: React.FC<
     dropdown?: boolean
   }>
 > = ({ handleClick, other, tab, dropdown = false }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth", "profile"])
   const href =
     tab == "navigation.editProfile"
@@ -310,7 +331,7 @@ export const NavbarLinkEffective: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <NavbarDropdownLink
@@ -324,22 +345,23 @@ export const NavbarLinkEffective: React.FC<
   )
 }
 
-export const NavbarLinkWritingTestimony: React.FC<
+/** The Policies landing page, in the About menu. */
+export const NavbarLinkPolicies: React.FC<
   React.PropsWithChildren<{
     handleClick?: any
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
-  const { t } = useTranslation(["common", "auth"])
+  const isMobile = useNavbarIsMobile()
+  const { t } = useTranslation("footer")
   return (
     <NavbarDropdownLink
       className={isMobile ? "navLink-primary" : ""}
-      href="/learn/writing-effective-testimony"
+      href="/policies"
       handleClick={handleClick}
       other={other}
     >
-      {t("navigation.writingTestimony")}
+      {t("headers.policies")}
     </NavbarDropdownLink>
   )
 }
@@ -350,7 +372,7 @@ export const NavbarLinkFAQ: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <NavbarDropdownLink
@@ -370,7 +392,7 @@ export const NavbarLinkGoals: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <NavbarDropdownLink
@@ -390,7 +412,7 @@ export const NavbarLinkLogo: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <div
@@ -400,10 +422,12 @@ export const NavbarLinkLogo: React.FC<
       onClick={handleClick}
     >
       <NavLink className={isMobile ? "" : "py-0 px-2"} href="/" {...other}>
+        {/* The neutral bar's logo, which styles/globals.css shows there
+            (navbar-logo-dark). */}
         <Image
-          src="/maple-logo-white-no-tagline.svg"
+          src="/logo-ple-neutral-bg.svg"
           alt={t("navigation.logo")}
-          className={isMobile ? "w-100" : ""}
+          className={`navbar-logo navbar-logo-dark ${isMobile ? "w-100" : ""}`}
           width={isMobile ? "60" : "80"}
           height={isMobile ? "60" : "80"}
         />
@@ -418,7 +442,7 @@ export const NavbarLinkNewsfeed: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth", "profile"])
   return (
     <Nav.Item onClick={handleClick}>
@@ -439,7 +463,7 @@ export const NavbarLinkProcess: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <NavbarDropdownLink
@@ -460,7 +484,7 @@ export const NavbarLinkSignOut: React.FC<
     dropdown?: boolean
   }>
 > = ({ handleClick, other, dropdown = false }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
 
   if (dropdown && !isMobile) {
@@ -476,7 +500,10 @@ export const NavbarLinkSignOut: React.FC<
       <button
         type="button"
         onClick={handleClick}
-        className={`nav-link border-0 bg-transparent p-0 ${
+        // px-0 rather than p-0: no side padding, so it lines up with the
+        // links above it, but their padding above and below, so it is spaced
+        // as they are.
+        className={`nav-link border-0 bg-transparent px-0 ${
           isMobile ? "navLink-primary" : ""
         }`}
         {...other}
@@ -493,7 +520,7 @@ export const NavbarLinkSupport: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <NavbarDropdownLink
@@ -513,7 +540,7 @@ export const NavbarLinkTeam: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <NavbarDropdownLink
@@ -531,10 +558,24 @@ export const NavbarLinkTestimony: React.FC<
   React.PropsWithChildren<{
     handleClick?: any
     other?: any
+    /** In the Browse More menu (components/Navbar.tsx) rather than on the
+     * bar. */
+    dropdown?: boolean
   }>
-> = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+> = ({ handleClick, other, dropdown = false }) => {
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
+  if (dropdown) {
+    return (
+      <NavbarDropdownLink
+        href="/testimony"
+        handleClick={handleClick}
+        other={other}
+      >
+        {t("navigation.testimony")}
+      </NavbarDropdownLink>
+    )
+  }
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
@@ -557,7 +598,7 @@ export const NavbarLinkViewProfile: React.FC<
 > = ({ handleClick, other, dropdown = false }) => {
   const { user } = useAuth()
   const userLink = "/profile?id=" + user?.uid
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
 
   if (dropdown && !isMobile) {
@@ -590,7 +631,7 @@ export const NavbarLinkWhyUse: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return (
     <NavbarDropdownLink
@@ -610,7 +651,7 @@ export const NavbarLinkInTheNews: React.FC<
     other?: any
   }>
 > = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useNavbarIsMobile()
   const { t } = useTranslation(["common", "auth"])
   return isMobile ? (
     <NavDropdown.Item onClick={handleClick}>
