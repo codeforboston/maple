@@ -1,27 +1,38 @@
 {
-  "title": "How to Support MAPLE",
-  "subhead": "MAPLE is a volunteer-powered nonprofit. Here are a few ways you can help.",
+  "title": "Support MAPLE",
+  "subhead": "MAPLE is free to use and built largely by volunteers. It's a project of Partners in Democracy – Education, a 501(c)(3) nonprofit.",
   "breadcrumb": "Support MAPLE",
-  "useMAPLE": {
-    "header": "Use our Platform!",
-    "bodytext": "The best way to support MAPLE is by using our platform and sharing it with friends and colleagues! That is the best endorsement we could receive."
-  },
   "donate": {
     "header": "Donate",
-    "bodytextOne": "MAPLE is an initiative of Partners in Democracy - Education, a 501(c)(3) non profit organization. You can donate directly to the development of MAPLE through this ",
-    "donorsLink": "link"
+    "heading": "Help keep MAPLE free for everyone",
+    "case": "Public infrastructure is hard to fund. It isn't flashy, and it doesn't take sides on the issues people care most about. Keeping MAPLE free takes everyone chipping in.",
+    "use": "Your gift goes to developing MAPLE: new features, better data on the Massachusetts legislature, and keeping the site running.",
+    "frequency": "How often",
+    "once": "One-time",
+    "monthly": "Monthly",
+    "amount": "Amount",
+    "other": "Other",
+    "cta": "Donate {{amount}}",
+    "ctaMonthly": "Donate {{amount}} a month",
+    "ctaOther": "Donate",
+    "ctaOtherMonthly": "Donate monthly",
+    "finePrint": "Secure payment through Partners in Democracy. Gifts are tax-deductible to the extent allowed by law.",
+    "fallback": "Checkout not opening? <0>Donate on the Partners in Democracy site</0>."
+  },
+  "otherWays": "Other ways to help",
+  "useMAPLE": {
+    "header": "Use and share MAPLE",
+    "body": "The best endorsement we can get is people using MAPLE and telling friends and colleagues about it.",
+    "cta": "Start exploring"
   },
   "volunteer": {
     "header": "Volunteer",
-    "bodytextOne": "MAPLE is volunteer-powered. Over one hundred developers, designers and researchers contributed to MAPLE (check us out on ",
-    "githubLink": "our github",
-    "bodytextTwo": "and that doesn't include our advisors, partners and communication team! If you'd like to get involved, email "
+    "body": "More than 100 volunteers have contributed to <0>MAPLE's code</0>. Developers, designers and researchers are all welcome.",
+    "cta": "Get in touch"
   },
   "feedback": {
-    "header": "Share Feedback",
-    "bodytextOne": "If you would like to share thoughts on your experience using MAPLE or suggest improvements for the platform, please use our ",
-    "feedbackForm": "feedback form!",
-    "bodytextTwo": "You can also let us know about 'bugs' you've encountered in our ",
-    "bugForm": "report a bug form."
+    "header": "Share feedback",
+    "body": "Tell us what's working, what isn't, or what you'd like MAPLE to do next. If something's broken, use the same form and tell us which page you were on.",
+    "cta": "Send feedback"
   }
 }
