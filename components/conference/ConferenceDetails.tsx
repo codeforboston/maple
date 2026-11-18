@@ -729,6 +729,7 @@ function Details({
             {decided && (
               <Section id="decided">
                 <ConferenceDifferences
+                  conference={conference}
                   gist={gist}
                   differences={differences}
                   similarities={similarities}

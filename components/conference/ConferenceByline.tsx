@@ -60,10 +60,12 @@ const Status = styled.span`
 `
 
 /**
- * What the committee is, in the legislature's own construction: the act it
- * exists to pass, and the two texts it reconciles to pass it. Each number goes
- * to its own bill page. Under it, the report that resolved it, and a notice
- * where we haven't covered it.
+ * Who the committee is and what it is doing: how many members each chamber
+ * appointed, the two texts they are reconciling, and the act. While it sits,
+ * what happens to its report; once it no longer sits, only that they were
+ * appointed, the status saying the rest. Each number goes to its own bill
+ * page. Under it, the report that resolved it, and a notice where we haven't
+ * covered it.
  */
 export function ConferenceByline({
   conference
@@ -71,6 +73,13 @@ export function ConferenceByline({
   conference: ConferenceSummary
 }) {
   const { t } = useTranslation("conferences")
+  // Spelled out ("three"), digits past ten.
+  const number = (n: number) => t(`number.${n}`, { defaultValue: `${n}` })
+  const { senate, house } = conference.confereeCounts
+  const senators = t("byline_senators", {
+    count: senate,
+    number: number(senate)
+  })
   const bill = (id: string) => (
     <DottedInternal href={maple.bill({ court: conference.court, id })} />
   )
@@ -79,8 +88,16 @@ export function ConferenceByline({
       <Line>
         <Trans
           t={t}
-          i18nKey="byline"
+          i18nKey={
+            conference.status === "appointed" ? "byline" : "byline_closed"
+          }
           values={{
+            // The sentence starts with it.
+            senators: senators.charAt(0).toUpperCase() + senators.slice(1),
+            representatives: t("byline_representatives", {
+              count: house,
+              number: number(house)
+            }),
             title: conference.title.trim(),
             senate: formatBillId(conference.senateBillId),
             house: formatBillId(conference.houseBillId)

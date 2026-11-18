@@ -2,7 +2,6 @@ import { Fragment, KeyboardEvent, useRef, useState } from "react"
 import { Trans, useTranslation } from "next-i18next"
 import ReactMarkdown from "react-markdown"
 import styled from "styled-components"
-import { FEEDBACK_URL } from "../common"
 import { shortName } from "../formatting"
 import { yoursKey } from "./Conferees"
 import { useMyLegislators } from "./hooks"
@@ -21,6 +20,7 @@ import {
   yea
 } from "./input/tokens"
 import { useWide } from "./input/useWide"
+import { AnalysisDisclosure } from "./AboutThisAnalysis"
 import { CardTitle, CommitteeCard } from "./styles"
 import {
   Chip,
@@ -31,7 +31,13 @@ import {
   OutcomeFilter,
   countOutcomes
 } from "./ConferenceResolution"
-import { CHAMBERS, ConfereeView, DifferenceView, SimilarityView } from "./types"
+import {
+  CHAMBERS,
+  ConfereeView,
+  ConferenceSummary,
+  DifferenceView,
+  SimilarityView
+} from "./types"
 
 /** The mockup's card, which keeps its gutters at every width: 32px at the
  * left as at the right, so its content lines up with the committee card's
@@ -515,6 +521,7 @@ const SettledNote = styled.span`
  * needs to be resolved?". Left out where a conference has neither.
  */
 export function ConferenceDifferences({
+  conference,
   gist,
   differences,
   similarities,
@@ -525,6 +532,8 @@ export function ConferenceDifferences({
   filter,
   onFilter
 }: {
+  /** Whose texts the overview compares, and when it was last checked. */
+  conference: ConferenceSummary
   gist: string | null
   differences: DifferenceView[]
   similarities: SimilarityView[]
@@ -572,20 +581,7 @@ export function ConferenceDifferences({
                 {gist}
               </ReactMarkdown>
             </GistText>
-            <p>
-              <Trans
-                t={t}
-                i18nKey="decided.gist"
-                components={[
-                  <DottedLink
-                    key="feedback"
-                    href={FEEDBACK_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  />
-                ]}
-              />
-            </p>
+            <AnalysisDisclosure conference={conference} />
           </Gist>
         )}
         {resolved ? (
@@ -599,7 +595,12 @@ export function ConferenceDifferences({
         ) : (
           <Grid $wide={wide}>
             <div>
-              <List $gap={26} aria-label={t("decided.differ")}>
+              {/* Named and counted as the matches beside them are. */}
+              <Label id="open-questions">
+                {t("decided.open")}
+                <Count>{differences.length}</Count>
+              </Label>
+              <List $gap={26} aria-labelledby="open-questions">
                 {differences.map((d, i) => (
                   <Difference key={d.heading} d={d} defaultOpen={i === 0} />
                 ))}

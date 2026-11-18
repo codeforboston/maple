@@ -48,6 +48,12 @@ export const script: Script = async ({ db, args }) => {
     if (unknown.length)
       errors.push(`${file}: unknown field(s) ${unknown.join(", ")}`)
     errors.push(...resolutionErrors(conf).map(e => `${file}: ${e}`))
+    // The page formats it as a calendar date.
+    if (
+      conf.analysisUpdatedAt !== undefined &&
+      !/^\d{4}-\d{2}-\d{2}$/.test(conf.analysisUpdatedAt)
+    )
+      errors.push(`${file}: analysisUpdatedAt must be a date, "YYYY-MM-DD"`)
     // getConferenceForBill picks the field to query from the bill's prefix.
     if (!conf.senateBillId.startsWith("S") || !conf.houseBillId.startsWith("H"))
       errors.push(

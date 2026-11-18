@@ -64,7 +64,9 @@ const props: ConferenceIndexProps = {
       canonicalBillId: "S2581",
       status: "appointed",
       covered: true,
-      reportBillId: null
+      reportBillId: null,
+      confereeCounts: { senate: 3, house: 3 },
+      analysisUpdatedAt: "2026-11-18"
     },
     {
       id: "data-privacy",
@@ -76,7 +78,9 @@ const props: ConferenceIndexProps = {
       canonicalBillId: "S2619",
       status: "reportFiled",
       covered: true,
-      reportBillId: null
+      reportBillId: null,
+      confereeCounts: { senate: 3, house: 3 },
+      analysisUpdatedAt: "2026-11-18"
     }
   ],
   conferees: {

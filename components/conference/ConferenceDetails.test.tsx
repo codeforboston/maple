@@ -176,7 +176,9 @@ const conference: ConferencePageProps["conference"] = {
   canonicalBillId: "S2581",
   status: "appointed",
   covered: true,
-  reportBillId: null
+  reportBillId: null,
+  confereeCounts: { senate: 3, house: 3 },
+  analysisUpdatedAt: "2026-11-18"
 }
 
 /** A question before any report: nothing on how it was resolved. */
@@ -203,7 +205,9 @@ const props: ConferencePageProps = {
       canonicalBillId: "S2619",
       status: "appointed",
       covered: true,
-      reportBillId: null
+      reportBillId: null,
+      confereeCounts: { senate: 3, house: 3 },
+      analysisUpdatedAt: "2026-11-18"
     }
   ],
   conferees: [
@@ -357,6 +361,9 @@ describe("ConferenceDetails", () => {
     expect(screen.getAllByText("chair")).toHaveLength(2)
 
     const byline = screen.getByTestId("byline")
+    // Each chamber's count, from the appointment.
+    expect(byline).toHaveTextContent(/^Byline_senators 3 number\.3 3 /)
+    expect(byline).toHaveTextContent("byline_representatives 3 number.3 3")
     expect(byline).toHaveTextContent("S.2581")
     expect(byline).toHaveTextContent("H.5366")
     expect(container.querySelector('a[href="/bills/194/S2581"]')).toBeTruthy()
@@ -368,6 +375,17 @@ describe("ConferenceDetails", () => {
     )
     expect(screen.getByText("seats_lit senate 3 40")).toBeInTheDocument()
     expect(screen.getByText("seats_lit house 3 160")).toBeInTheDocument()
+  })
+
+  it("says only that they were appointed once the committee no longer sits", () => {
+    render(
+      <ConferenceDetails
+        {...props}
+        conference={{ ...conference, status: "dissolved" }}
+      />
+    )
+    expect(screen.getByTestId("byline_closed")).toBeInTheDocument()
+    expect(screen.queryByTestId("byline")).not.toBeInTheDocument()
   })
 
   it("marks the viewer's own legislator", () => {
@@ -545,7 +563,9 @@ describe("ConferenceDetails", () => {
     const enacted = {
       ...conference,
       status: "enacted" as const,
-      reportBillId: "H5350"
+      reportBillId: "H5350",
+      confereeCounts: { senate: 3, house: 3 },
+      analysisUpdatedAt: "2026-11-18"
     }
     render(<ConferenceDetails {...props} conference={enacted} />)
     expect(screen.getByTestId("notice.resolved")).toHaveTextContent("H.5350")
@@ -826,6 +846,52 @@ describe("ConferenceDetails", () => {
       expect(
         screen.getByRole("link", { name: "tab_decided" })
       ).toBeInTheDocument()
+    })
+
+    it("heads the questions with their count, as the matches are headed", () => {
+      widen(800)
+      render(<ConferenceDetails {...props} />)
+      expect(screen.getByText("decided.open")).toHaveTextContent(
+        `decided.open${props.differences.length}`
+      )
+      expect(
+        screen.getByRole("list", {
+          name: `decided.open ${props.differences.length}`
+        })
+      ).toBeInTheDocument()
+    })
+
+    it("says where the overview comes from, and opens what it is in place", () => {
+      const { container } = render(<ConferenceDetails {...props} />)
+      expect(screen.getByTestId("analysis.line")).toHaveTextContent(
+        "S.2581 H.5366 November 18, 2026"
+      )
+      const about = container.querySelector<HTMLButtonElement>(
+        "button[aria-controls]"
+      )!
+      const panel = document.getElementById(
+        about.getAttribute("aria-controls")!
+      )!
+      expect(about).toHaveAttribute("aria-expanded", "false")
+      expect(panel).not.toBeVisible()
+      fireEvent.click(about)
+      expect(about).toHaveAttribute("aria-expanded", "true")
+      expect(panel).toBeVisible()
+      expect(panel).toHaveTextContent("analysis.about.read.title")
+      expect(panel).toHaveTextContent("analysis.about.beta.body")
+      fireEvent.click(about)
+      expect(about).toHaveAttribute("aria-expanded", "false")
+    })
+
+    it("leaves the date out of the disclosure where the data has none", () => {
+      render(
+        <ConferenceDetails
+          {...props}
+          conference={{ ...conference, analysisUpdatedAt: null }}
+        />
+      )
+      expect(screen.getByTestId("analysis.line_undated")).toBeInTheDocument()
+      expect(screen.queryByTestId("analysis.line")).not.toBeInTheDocument()
     })
 
     it("leaves the section and its tab out where nothing is written", () => {
