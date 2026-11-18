@@ -58,17 +58,17 @@ const Body = styled.div`
 `
 
 /** A short paragraph on what the bills are, under its own label as the
- * open questions and the matches are under theirs, its lines kept to a
- * readable length (90ch) rather than the card's full width. */
+ * open questions and the matches are under theirs, as far under it as the
+ * questions are under theirs (List's 12px). It sits in the questions' column
+ * (Grid), so its lines end where theirs do. */
 const Gist = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   margin: 0 0 2px;
 
   /* The paragraph's own text, not the label above it. */
   > div p {
-    max-width: 90ch;
     margin: 0;
     font-size: 0.875rem;
     line-height: 1.65;
@@ -557,24 +557,26 @@ export function ConferenceDifferences({
         {/* On the whole section, not one part of it, so above them all. */}
         {!resolved && <AnalysisDisclosure conference={conference} />}
         {gist && (
-          <Gist>
-            <Label>{t("decided.overview")}</Label>
-            <div>
-              <ReactMarkdown
-                components={{
-                  a: ({ node: _node, ...props }) => (
-                    <DottedLink
-                      {...props}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    />
-                  )
-                }}
-              >
-                {gist}
-              </ReactMarkdown>
-            </div>
-          </Gist>
+          <Grid $wide={wide}>
+            <Gist>
+              <Label>{t("decided.overview")}</Label>
+              <div>
+                <ReactMarkdown
+                  components={{
+                    a: ({ node: _node, ...props }) => (
+                      <DottedLink
+                        {...props}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      />
+                    )
+                  }}
+                >
+                  {gist}
+                </ReactMarkdown>
+              </div>
+            </Gist>
+          </Grid>
         )}
         {resolved ? (
           <Resolved
