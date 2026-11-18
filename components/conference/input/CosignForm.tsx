@@ -1,11 +1,4 @@
-import {
-  ChangeEvent,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-  useState
-} from "react"
+import { ChangeEvent, ReactNode, useEffect, useRef, useState } from "react"
 import { FunctionsError } from "firebase/functions"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
@@ -36,18 +29,15 @@ import {
   Muted,
   Primary,
   Problem,
-  Quiet,
   ReviewStep,
   Rules,
   Scroll,
-  Status,
   Step,
   useAsk
 } from "./InputForm"
-import { useInputContext } from "./context"
 import { UsersRound } from "./icons"
-import { brand, caution, ink, line, red, sunken, wash } from "./tokens"
-import { useAutosave } from "./useAutosave"
+import { brand, ink, line, red, sunken, wash } from "./tokens"
+import { usePost } from "./usePost"
 
 /** Below lg, where the letter sits above it, the agreeing step takes the room
  * it needs and leaves the letter the rest. */
@@ -102,19 +92,6 @@ const Facts = styled.p`
 
 const Dot = styled.span`
   color: ${ink.faint};
-`
-
-/** The reader's other cosign note, which agreeing here writes over. */
-const Replaces = styled.p`
-  flex-shrink: 0;
-  margin: 16px 0 0;
-  padding: 10px 12px;
-  border-left: 3px solid ${caution};
-  border-radius: 4px;
-  background: ${wash.default};
-  font-size: 0.8125rem;
-  line-height: 1.45;
-  color: ${ink.strong};
 `
 
 const Tally = styled.span`
@@ -430,8 +407,8 @@ const refusalOf = (error?: Error) =>
 /**
  * Cosigning someone else's input, in the panel's three steps: agreeing to
  * what is signed, an optional note of one's own, and the review every input
- * goes through. Editing a cosign starts at the note, and changes it only. The
- * cosign is the user's one draft on the conference, kept as they type.
+ * goes through. Editing a cosign starts at the note, and changes it only.
+ * Nothing is kept before Post.
  */
 export function CosignForm({
   edit,
@@ -451,7 +428,8 @@ export function CosignForm({
   subject: string
   /** The conferees, for the weekly update's row. */
   conferees: ConfereeView[]
-  /** The user's draft and publication on the conference. */
+  /** The user's publication on the conference, and the draft it posts
+   * through. */
   edit: UseEditConferenceTestimony
   /** What is being cosigned. */
   parent: ConferenceTestimony
@@ -463,9 +441,8 @@ export function CosignForm({
 }) {
   const { t } = useTranslation("conferences")
   const { claims } = useAuth()
-  const { byId } = useInputContext()
   const { profile } = useProfile()
-  const { saveDraft, publishTestimony, discardDraft } = edit
+  const { saveDraft, publishTestimony } = edit
 
   const [note, setNote] = useState("")
   const [noWords, setNoWords] = useState(false)
@@ -476,24 +453,19 @@ export function CosignForm({
   const field = useRef<HTMLTextAreaElement>(null)
   const ask = useAsk(field)
 
-  // Start from what the user already has on this parent: their draft, else
-  // what they posted. A cosign posted without words is edited as one.
+  // Start from what the user posted, if anything; a draft left from before is
+  // not theirs to resume. A cosign posted without words is edited as one.
   const seeded = useRef(false)
   useEffect(() => {
     if (edit.loading || seeded.current) return
     seeded.current = true
-    const seed =
-      edit.draft?.cosignOfId === parent.id
-        ? edit.draft.content ?? ""
-        : edit.publication?.content ?? ""
-    setNote(seed)
-    // Words drafted since are kept over the posted cosign's having none.
-    if (edit.publication && !edit.publication.content && !seed) setNoWords(true)
-    if (edit.draft?.editReason) setReason(edit.draft.editReason)
-  }, [edit.loading, edit.draft, edit.publication, parent.id])
+    const posted = edit.publication
+    setNote(posted?.content ?? "")
+    if (posted && !posted.content) setNoWords(true)
+  }, [edit.loading, edit.publication])
 
   const content = noWords ? "" : note
-  const { save, dirty, posting, post, flush, reset } = useAutosave({
+  const { posting, post } = usePost({
     edit,
     fields: { content, reason },
     matches: (draft, f) =>
@@ -508,7 +480,6 @@ export function CosignForm({
         cosignOfAuthorUid: parent.authorUid,
         editReason: f.reason || undefined
       }),
-    active: step !== "confirm",
     // As InputForm's: the form outlives the post, so its reason goes too.
     onPosted: () => {
       setReason("")
@@ -529,24 +500,7 @@ export function CosignForm({
   }, [step])
 
   const ready = !!note.trim() || noWords
-  const editing = !!edit.publication
-  // Delete Draft is offered once there are words kept to delete.
-  const kept = edit.draft?.cosignOfId === parent.id && !!edit.draft.content
-  const showDelete = !editing && kept && save === "none" && !dirty
-
-  const discard = useCallback(async () => {
-    await discardDraft.execute()
-    setNote("")
-    setNoWords(false)
-    reset()
-    onCancel()
-  }, [discardDraft, onCancel, reset])
-
-  const failed =
-    edit.error ||
-    saveDraft.error ||
-    publishTestimony.error ||
-    discardDraft.error
+  const failed = edit.error || saveDraft.error || publishTestimony.error
   const refusal = refusalOf(publishTestimony.error)
   const problem = failed && (
     <Problem role="alert">
@@ -560,32 +514,12 @@ export function CosignForm({
     </Problem>
   )
 
-  // The one draft holds one cosign, so agreeing here writes over a note
-  // drafted for another.
-  const other =
-    edit.draft?.cosignOfId !== parent.id &&
-    edit.draft?.content?.trim() &&
-    edit.draft.cosignOfId
-  const replaced = other ? byId.get(other) : undefined
-  const replaces = other && (
-    <Replaces role="note">
-      {replaced
-        ? t("input.cosign_replaces", { name: nameOf(replaced) })
-        : t("input.cosign_replaces_gone")}
-    </Replaces>
-  )
   if (step === "confirm")
     return (
       <CosignConfirm
         parent={parent}
-        replaces={replaces}
         problem={problem}
-        onAgree={() => {
-          // Agreeing makes this the user's draft, on this parent. A failure
-          // shows through saveDraft.error.
-          flush().catch(() => {})
-          onStep("write")
-        }}
+        onAgree={() => onStep("write")}
       />
     )
 
@@ -702,15 +636,6 @@ export function CosignForm({
         {problem}
       </Scroll>
       <Actions>
-        <Status style={{ opacity: save === "fading" ? 0 : 1 }}>
-          {save === "saving" && t("input.saving")}
-          {(save === "saved" || save === "fading") && t("input.saved")}
-          {showDelete && (
-            <Quiet type="button" onClick={discard} style={{ marginLeft: -8 }}>
-              {t("input.delete_draft")}
-            </Quiet>
-          )}
-        </Status>
         <Leave type="button" onClick={onCancel}>
           {t("input.cancel")}
         </Leave>
@@ -730,13 +655,10 @@ export function CosignForm({
  * they have read it. */
 function CosignConfirm({
   parent,
-  replaces,
   problem,
   onAgree
 }: {
   parent: ConferenceTestimony
-  /** The warning that agreeing writes over a note cosigning another. */
-  replaces: React.ReactNode
   problem: React.ReactNode
   onAgree: () => void
 }) {
@@ -779,7 +701,6 @@ function CosignConfirm({
             </Rules>
           </CardSection>
         </Card>
-        {replaces}
         <Tick
           $asked={asked && !agreed}
           $washed={asked && !agreed}
