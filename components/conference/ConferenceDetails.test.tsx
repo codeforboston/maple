@@ -414,12 +414,16 @@ describe("ConferenceDetails", () => {
       expect(name).toHaveAttribute("target", "_blank")
     })
 
-    it("keeps the name in the app when legislator pages are on", () => {
+    it("sends the name to malegislature.gov even when legislator pages are on", () => {
       mockLegislators = true
       render(<ConferenceDetails {...props} />)
       const name = screen.getByText("A. Peisch").closest("a")!
-      expect(name.getAttribute("href")).toMatch(/^\/legislators\/194\//)
-      expect(name).not.toHaveAttribute("target")
+      expect(name).toHaveAttribute(
+        "href",
+        expect.stringMatching(
+          /^https:\/\/malegislature\.gov\/Legislators\/Profile\//
+        )
+      )
     })
   })
 
@@ -446,18 +450,17 @@ describe("ConferenceDetails", () => {
 
   it("lights a district when a conferee is pointed at", () => {
     const { container } = render(<ConferenceDetails {...props} />)
-    const peisch = screen.getByRole("button", { name: /Peisch,/ })
-    fireEvent.pointerEnter(peisch.parentElement!)
-    expect(peisch).toHaveAttribute("aria-pressed", "true")
-    const cell = container.querySelector(
-      'polygon[aria-label="A. Peisch"][aria-pressed="true"]'
-    )
+    const peisch = screen.getByText("A. Peisch").closest("a")!
+    fireEvent.pointerEnter(peisch)
+    const cell = container.querySelector('polygon[aria-label="A. Peisch"]')
     // Painted by party, and painted inline so the shared polygon rule in the
     // stylesheet cannot cover it; the other lit seats sit back.
     expect(cell).toHaveStyle({ fill: "#4682d5", fillOpacity: 1 })
     expect(
       container.querySelector('polygon[aria-label="D. Vieira"]')
     ).toHaveStyle({ fill: "#b53333", fillOpacity: 0.45 })
+    // Nothing here is picked: the map's seats answer the pointer alone.
+    expect(cell).not.toHaveAttribute("role")
   })
 
   it("takes input only while the conference is appointed", () => {

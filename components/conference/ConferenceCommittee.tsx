@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo, useState } from "react"
+import { Fragment, useMemo } from "react"
 import { useTranslation } from "next-i18next"
 import styled, { css } from "styled-components"
 import { Conferees } from "./Conferees"
@@ -95,27 +95,20 @@ const Grid = styled.div`
 `
 
 export function ConferenceCommittee({
-  court,
   conferees,
   hearings
 }: {
-  court: number
   conferees: ConfereeView[]
   hearings: HearingView[]
 }) {
   const { t } = useTranslation("conferences")
   const mine = useMyLegislators()
-  const [hovered, hover] = useHover<string>()
-  const [pinned, setPinned] = useState<string | null>(null)
-  const selected = hovered ?? pinned
+  // The one being read, pointed at in the names or on the maps: nothing here
+  // is picked (Conferees).
+  const [selected, hover] = useHover<string>()
 
   // Who each lit seat is, for the maps.
   const people = useMemo(() => seatsOf(conferees), [conferees])
-
-  const pin = useCallback(
-    (key: string) => setPinned(v => (v === key ? null : key)),
-    []
-  )
 
   return (
     <Frame>
@@ -126,20 +119,17 @@ export function ConferenceCommittee({
         {CHAMBERS.map(chamber => (
           <Fragment key={chamber}>
             <Conferees
-              court={court}
               chamber={chamber}
               conferees={conferees}
               mine={mine}
               selected={selected}
               onHover={hover}
-              onPin={pin}
             />
             <DistrictMap
               chamber={chamber}
               people={people}
               selected={selected}
               onHover={hover}
-              onPin={pin}
             />
           </Fragment>
         ))}

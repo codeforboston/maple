@@ -788,7 +788,6 @@ function Details({
                 {/* Keyed so a pinned seat does not outlive its conference. */}
                 <ConferenceCommittee
                   key={conference.id}
-                  court={conference.court}
                   conferees={conferees}
                   hearings={hearings}
                 />

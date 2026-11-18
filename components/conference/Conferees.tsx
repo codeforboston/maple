@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "next-i18next"
-import styled, { css, keyframes } from "styled-components"
+import styled, { keyframes } from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faStar } from "@fortawesome/free-solid-svg-icons"
-import { useFlags } from "../featureFlags"
 import { shortName } from "../formatting"
-import { External, Internal, maple } from "../links"
 import type { Branch } from "../../functions/src/common"
+import { ChevronRight } from "./input/icons"
+import { wash } from "./input/tokens"
 import { Eyebrow, partyColor } from "./styles"
 import { ConfereeView, personKey } from "./types"
 
@@ -19,29 +19,57 @@ const List = styled.ul`
   gap: 0.625rem;
 `
 
-const Row = styled.div<{ $back: boolean }>`
-  position: relative;
+/** One person, the whole row one link out to their profile on
+ * malegislature.gov, in a new tab. Pointed at, it rings their portrait
+ * (Conferees), takes a slightly darker ground and shows the way out at its
+ * right (Go). The ground is a pill reaching 4px past what is in the row,
+ * which keeps its place; its round left end sits around the portrait. */
+const Row = styled.a<{ $back: boolean }>`
   display: flex;
   align-items: center;
-  gap: 0.625rem;
+  margin: -4px;
+  padding: 4px;
+  border-radius: 9999px;
+  color: inherit;
+  text-decoration: none;
   opacity: ${({ $back }) => ($back ? 0.45 : 1)};
-  transition: opacity 120ms ease;
+  transition: opacity 120ms ease, background-color 120ms ease;
+  &:hover {
+    color: inherit;
+    background: ${wash.default};
+  }
+  &:focus-visible {
+    outline: 2px solid var(--maple-focus-ring);
+    outline-offset: 2px;
+    background: ${wash.default};
+  }
 `
 
-/** The portrait is the row's button; its pseudo-element stretches over the
- * whole row so the row stays one target, while the name beside it stays a
- * sibling link rather than a control inside a control. */
-const Pick = styled.button`
-  flex: 0 0 auto;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
+/** The name and the line under it, 10px from the portrait, taking the row's
+ * width up to the chevron's slot (Go), and giving it up as the row narrows. */
+const Text = styled.span`
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-left: 0.625rem;
+`
 
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
+/** The way out, a chevron centred in a slot at the row's right edge, shown
+ * while the row is pointed at; the slot is there all the same, so nothing
+ * moves. */
+const Go = styled.span`
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  color: var(--maple-text-muted);
+  visibility: hidden;
+
+  ${Row}:hover & {
+    visibility: visible;
+  }
+  ${Row}:focus-visible & {
+    visibility: visible;
   }
 `
 
@@ -64,6 +92,14 @@ const skeleton = keyframes`
  * img transition). */
 const FADE_MS = 200
 
+/** The party's ring around a portrait `size` across: 2.5px under 32px, 3px,
+ * and 4px from 48px (the explorer panel's card). */
+const partyRing = (size: number) => (size < 32 ? 2.5 : size >= 48 ? 4 : 3)
+
+/** The white gap in the selection ring (Portrait's `$lit`), between the
+ * party's ring and the dark line: 2px under 32px, 2.5px, and 3px from 48px. */
+const selectionGap = (size: number) => (size < 32 ? 2 : size >= 48 ? 3 : 2.5)
+
 /** 36px unless `$size` says otherwise; a parent can resize it through
  * `--portrait-size`. */
 const Portrait = styled.span<{
@@ -84,12 +120,17 @@ const Portrait = styled.span<{
     border-radius: 50%;
     object-fit: cover;
     background: var(--maple-surface-page);
-    border: ${({ $size = 36 }) => ($size < 32 ? 2 : 3)}px solid
+    border: ${({ $size = 36 }) => partyRing($size)}px solid
       ${({ $ring }) => $ring};
-    box-shadow: ${({ $lit }) =>
-      $lit
-        ? "0 0 0 2px var(--maple-surface-base), 0 0 0 4px var(--maple-text-strong)"
-        : "none"};
+    /* Lit, the selection ring: a white gap (selectionGap), then a 2px dark
+       line. */
+    box-shadow: ${({ $lit, $size = 36 }) => {
+      if (!$lit) return "none"
+      const gap = selectionGap($size)
+      return `0 0 0 ${gap}px var(--maple-surface-base), 0 0 0 ${
+        gap + 2
+      }px var(--maple-text-strong)`
+    }};
     transition: box-shadow 120ms ease, opacity ${FADE_MS}ms ease;
   }
   /* The skeleton (ConfereeFace): while the photo loads, and on under it
@@ -99,8 +140,7 @@ const Portrait = styled.span<{
      the photo keeps its full size underneath and fades in without a jump. */
   &[data-skeleton] {
     border-radius: 50%;
-    box-shadow: inset 0 0 0 ${({ $size = 36 }) => ($size < 32 ? 2 : 3)}px
-      #dcdee2;
+    box-shadow: inset 0 0 0 ${({ $size = 36 }) => partyRing($size)}px #dcdee2;
     background-image: linear-gradient(
       135deg,
       #eceef1 30%,
@@ -159,26 +199,6 @@ const Sub = styled.span`
   font-size: 0.75rem;
   line-height: 1.4;
   color: var(--maple-text-muted);
-`
-
-const linkStyle = css`
-  position: relative;
-  z-index: 1;
-  color: inherit;
-  text-decoration: none;
-  &:hover {
-    color: var(--maple-brand-primary);
-    text-decoration: underline dotted;
-    text-underline-offset: 3px;
-  }
-`
-
-const NameLink = styled(Internal)`
-  ${linkStyle}
-`
-
-const ExternalNameLink = styled(External)`
-  ${linkStyle}
 `
 
 /** The reader's word for one of their own legislators. */
@@ -243,30 +263,28 @@ export function ConfereeFace({
 }
 
 /**
- * One chamber's three, to stand beside that chamber's map. Pointing at a
- * person lights their district; the ring on the portrait marks the one being
- * read so the list can answer the map as well as the other way round.
+ * One chamber's three, to stand beside that chamber's map. Nothing here is
+ * picked: pointing at a person rings their portrait, lights their district
+ * and sets the others back, so the list can answer the map as well as the
+ * other way round, and clicking them opens their profile on
+ * malegislature.gov.
  */
 export function Conferees({
-  court,
   chamber,
   conferees,
   mine,
   selected,
-  onHover,
-  onPin
+  onHover
 }: {
-  court: number
   chamber: Branch
   conferees: ConfereeView[]
   /** Member codes of the viewer's own legislators. */
   mine: Set<string>
+  /** The one being read, pointed at here or on the map. */
   selected: string | null
   onHover: (key: string | null) => void
-  onPin: (key: string) => void
 }) {
   const { t } = useTranslation("conferences")
-  const flags = useFlags()
   return (
     <div>
       <Eyebrow className="mb-2">{t(chamber.toLowerCase())}</Eyebrow>
@@ -282,45 +300,28 @@ export function Conferees({
             return (
               <li key={c.memberCode}>
                 <Row
+                  // Their profile on malegislature.gov, whether or not
+                  // MAPLE's own legislator pages are on.
+                  href={`https://malegislature.gov/Legislators/Profile/${c.memberCode}`}
+                  target="_blank"
+                  rel="noreferrer"
                   $back={Boolean(selected) && !lit}
                   onPointerEnter={() => onHover(key)}
                   onPointerLeave={() => onHover(null)}
                   onFocus={() => onHover(key)}
                   onBlur={() => onHover(null)}
                 >
-                  <Pick
-                    type="button"
-                    aria-pressed={lit}
-                    aria-label={`${c.name}, ${
-                      own ? t(yoursKey(c)) : c.district
-                    }`}
-                    onClick={() => onPin(key)}
-                  >
-                    <ConfereeFace c={c} lit={lit} own={own} />
-                  </Pick>
-                  <span className="min-w-0">
+                  <ConfereeFace c={c} lit={lit} own={own} />
+                  <Text>
                     <Name>
-                      {flags.legislators ? (
-                        <NameLink
-                          href={maple.legislator({
-                            court,
-                            memberCode: c.memberCode
-                          })}
-                        >
-                          {shortName(c.name)}
-                        </NameLink>
-                      ) : (
-                        <ExternalNameLink
-                          href={`https://malegislature.gov/Legislators/Profile/${c.memberCode}`}
-                          plain
-                        >
-                          {shortName(c.name)}
-                        </ExternalNameLink>
-                      )}
+                      {shortName(c.name)}
                       {c.chair && <Chair>{t("chair")}</Chair>}
                     </Name>
                     <Sub>{own ? t(yoursKey(c)) : c.district}</Sub>
-                  </span>
+                  </Text>
+                  <Go aria-hidden>
+                    <ChevronRight size={16} />
+                  </Go>
                 </Row>
               </li>
             )
