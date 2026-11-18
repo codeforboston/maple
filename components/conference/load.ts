@@ -38,7 +38,12 @@ const summarize = (c: Conference): ConferenceSummary => ({
   // Read without validation: a document synced before these fields existed
   // has neither.
   covered: c.covered !== false,
-  reportBillId: c.reportBillId ?? null
+  reportBillId: c.reportBillId ?? null,
+  confereeCounts: {
+    senate: c.conferees.filter(m => m.branch === "Senate").length,
+    house: c.conferees.filter(m => m.branch === "House").length
+  },
+  analysisUpdatedAt: c.analysisUpdatedAt ?? null
 })
 
 /** Every conference in the court the site shows. */

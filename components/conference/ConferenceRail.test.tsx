@@ -20,7 +20,9 @@ const conference = (
   canonicalBillId: "S1",
   status,
   covered: true,
-  reportBillId: null
+  reportBillId: null,
+  confereeCounts: { senate: 3, house: 3 },
+  analysisUpdatedAt: "2026-11-18"
 })
 
 const conferences = [

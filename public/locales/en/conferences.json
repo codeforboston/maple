@@ -2,7 +2,25 @@
   "in_conference": "In conference",
   "back_to_home": "Back to Conference Home",
   "beta_feedback": "Conference committee pages are in beta. Send feedback to",
-  "byline": "Conference committee to pass <1>{{title}}</1> by resolving differences between <3>{{senate}}</3> and <5>{{house}}</5>",
+  "byline": "{{senators}} and {{representatives}} are negotiating a compromise between the Senate’s version (<3>{{senate}}</3>) and the House’s version (<5>{{house}}</5>) of <1>{{title}}</1>. Their report goes back to both chambers for a final vote.",
+  "byline_closed": "{{senators}} and {{representatives}} were appointed to negotiate a compromise between the Senate’s version (<3>{{senate}}</3>) and the House’s version (<5>{{house}}</5>) of <1>{{title}}</1>.",
+  "byline_senators_one": "{{number}} senator",
+  "byline_senators_other": "{{number}} senators",
+  "byline_representatives_one": "{{number}} representative",
+  "byline_representatives_other": "{{number}} representatives",
+  "number": {
+    "0": "no",
+    "1": "one",
+    "2": "two",
+    "3": "three",
+    "4": "four",
+    "5": "five",
+    "6": "six",
+    "7": "seven",
+    "8": "eight",
+    "9": "nine",
+    "10": "ten"
+  },
   "status": {
     "reportFiled": "Report filed",
     "enacted": "Enacted",
@@ -91,18 +109,48 @@
   "text_pdf": "Read the PDF",
   "tabs_label": "Sections of this conference committee",
   "tab_committee": "Committee",
-  "tab_decided": "Unresolved Text",
+  "tab_decided": "Open Questions",
   "tab_resolved": "Resolved Text",
   "tab_input": "Public Input",
   "tab_text": "Bill Text",
   "decided": {
-    "title": "What needs to be resolved?",
-    "gist": "Below are some of the places where the House and Senate text differ. Notice something missing or wrong? <0>Send us feedback</0>.",
-    "differ": "Where bill texts differ",
+    "title": "Overview",
+    "open": "Open questions",
+
     "match": "Where bill texts match",
     "not_in_bill": "Not in the bill",
     "yours_one": "{{who}} is on this committee, <0>{{name}}</0>.",
     "yours_both": "Both of your legislators are on this committee, <0>{{a}}</0> and <1>{{b}}</1>."
+  },
+  "analysis": {
+    "line": "MAPLE prepared this overview by comparing the Senate and House texts ({{senate}} and {{house}}) with the help of AI tools, reviewed by our team. It is not an official summary from the Legislature and may not cover every difference. Last updated {{date}}. Notice something missing or wrong? <0>Send us feedback</0>. <1>About this analysis</1>",
+    "line_undated": "MAPLE prepared this overview by comparing the Senate and House texts ({{senate}} and {{house}}) with the help of AI tools, reviewed by our team. It is not an official summary from the Legislature and may not cover every difference. Notice something missing or wrong? <0>Send us feedback</0>. <1>About this analysis</1>",
+    "about": {
+      "read": {
+        "title": "What we read.",
+        "body": "We compare the text each chamber passed, linked above. We don’t rely on news coverage, press releases or advocacy materials."
+      },
+      "written": {
+        "title": "How it’s written.",
+        "body": "Our team, using AI tools, identifies where the two texts differ and phrases each difference as a question the conferees will need to answer. A member of our team checks each question against the bill text before it’s published."
+      },
+      "labels": {
+        "title": "What the labels mean.",
+        "body": "“Open questions” are provisions where the two texts differ, including provisions that appear in only one version. “Where bill texts match” means the two versions are the same in substance, not necessarily word for word."
+      },
+      "isnt": {
+        "title": "What this isn’t.",
+        "body": "MAPLE does not take positions on bills. We write the questions to describe the choice in front of the conferees, not to suggest an answer. This is not legal advice and not an official product of the Legislature."
+      },
+      "corrections": {
+        "title": "Corrections.",
+        "body": "If you spot an error, tell us and we’ll fix it and update the date above."
+      },
+      "beta": {
+        "title": "This is a beta.",
+        "body": "We’re still testing these pages and refining how we write them. For the next legislative session, we plan to work with local media and academic partners to review and curate this material."
+      }
+    }
   },
   "resolved": {
     "title": "How the conference resolved it",
