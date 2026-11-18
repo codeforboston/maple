@@ -321,6 +321,7 @@ export function Entry({
   lead,
   onOpen,
   bare = false,
+  undated = false,
   own = false,
   fullBody = false,
   band,
@@ -336,6 +337,9 @@ export function Entry({
   onOpen?: (testimony: ConferenceTestimony) => void
   /** Without the card's own edge, for a caller that draws one around it. */
   bare?: boolean
+  /** Without its date, in the corner or at the foot: for a preview of what
+   * is not filed yet (Review.tsx's SitePreview). */
+  undated?: boolean
   /** The reader's own filing, marked as theirs. */
   own?: boolean
   /** The words whole, with no clamp: for where the entry is the point. */
@@ -392,7 +396,7 @@ export function Entry({
         </Who>
         <Corner>
           {lead}
-          {wide && (
+          {wide && !undated && (
             <When $quiet={!!latest} $banded={!!band}>
               {date}
             </When>
@@ -410,7 +414,7 @@ export function Entry({
           ) : (
             <ClampedText text={testimony.content} small={!wide} />
           )}
-          {!wide && (
+          {!wide && !undated && (
             <FootDate>
               {latest && (
                 <LatestBeside>

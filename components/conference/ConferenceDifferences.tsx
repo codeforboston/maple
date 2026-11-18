@@ -21,7 +21,7 @@ import {
   yea
 } from "./input/tokens"
 import { useWide } from "./input/useWide"
-import { CardTitle, CommitteeCard } from "./styles"
+import { CardTitle, CommitteeCard, MOBILE_LAYOUT } from "./styles"
 import {
   Chip,
   ChipCount,
@@ -33,11 +33,18 @@ import {
 } from "./ConferenceResolution"
 import { CHAMBERS, ConfereeView, DifferenceView, SimilarityView } from "./types"
 
-/** The mockup's card, which keeps its gutters at every width: 32px at the
- * left as at the right, so its content lines up with the committee card's
- * above (Card's 2rem). */
+/** The mockup's card: 32px at the left as at the right, so its content lines
+ * up with the committee card's above (Card's 2rem); in the mobile layout,
+ * 16px, as the committee card's on a phone, so the questions have the
+ * width. */
 const Frame = styled(CommitteeCard)`
   padding: 24px 32px 32px 32px;
+
+  @media ${MOBILE_LAYOUT} {
+    && {
+      padding: 20px 16px 24px;
+    }
+  }
 `
 
 const Body = styled.div`
@@ -97,8 +104,13 @@ const Grid = styled.div<{ $wide: boolean }>`
   display: grid;
   gap: 32px 80px;
   align-items: start;
+  /* Two columns. The questions (Toggle) run on past their column: 48px
+     wider, less the 16px of the Toggle's own -8px margin and 8px padding,
+     puts their words 32px into the 80px gap, 48px short of the column
+     beside. */
   ${({ $wide }) =>
-    $wide && "grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);"}
+    $wide &&
+    "grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); --question-reach: 48px;"}
 `
 
 const List = styled.ul<{ $gap: number }>`
@@ -145,17 +157,18 @@ const Toggle = styled.button`
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  width: 100%;
+  /* Its column, and past it where the grid lets it (Grid's --question-reach). */
+  width: calc(100% + var(--question-reach, 0px));
   margin: -4px -8px;
   padding: 4px 8px;
   background: none;
   border: 0;
   border-radius: 8px;
   text-align: left;
-  /* The question in Lexend, light, in the card's Nunito. */
-  font-family: var(--maple-font-heading);
-  font-weight: 300;
-  font-size: 1rem;
+  /* The question in the card's Nunito, a step above its regular weight. */
+  font-family: var(--maple-font-body);
+  font-weight: 500;
+  font-size: 0.9375rem;
   line-height: 1.35;
   color: ${ink.strong};
 
@@ -166,6 +179,15 @@ const Toggle = styled.button`
   &:hover ${Chevron} {
     color: ${ink.strong};
   }
+
+  /* In the mobile layout, where the texts under it come out to the card's
+     edge (Answers), the open chevron's stroke in line with their edge: the
+     icon draws it about 4px inside its box at 19px. */
+  @media ${MOBILE_LAYOUT} {
+    ${Chevron} {
+      margin-left: -4px;
+    }
+  }
 `
 
 const Answers = styled.div`
@@ -175,6 +197,11 @@ const Answers = styled.div`
 
   @media (min-width: 390px) {
     padding-left: 27px;
+  }
+  /* In the mobile layout, in line with the question's chevron rather than
+     its words, for the width. */
+  @media ${MOBILE_LAYOUT} {
+    padding-left: 0;
   }
 `
 
@@ -188,6 +215,11 @@ const Answer = styled.div<{ $ink: string; $silent?: boolean }>`
     ${({ $silent, $ink }) =>
       $silent ? `dashed ${line.strong}` : `solid ${$ink}`};
   border-radius: var(--maple-radius-xl);
+
+  /* Tighter in the mobile layout, so the words have more of the width. */
+  @media ${MOBILE_LAYOUT} {
+    padding: 10px;
+  }
 `
 
 const Chamber = styled(Label)<{ $ink: string }>`
@@ -197,8 +229,7 @@ const Chamber = styled(Label)<{ $ink: string }>`
 /** Faint italic is for the bare fallback alone: an absence, not content. */
 const AnswerText = styled.p<{ $absent: boolean }>`
   margin: 2px 0 0;
-  /* Lexend, light, as the question over it (Toggle); its chamber's label
-     (Label) keeps the card's Nunito. */
+  /* Lexend, light; its chamber's label (Label) keeps the card's Nunito. */
   font-family: var(--maple-font-heading);
   font-weight: 300;
   font-size: 0.8125rem;
@@ -208,6 +239,13 @@ const AnswerText = styled.p<{ $absent: boolean }>`
 
   @media (min-width: 390px) {
     font-size: 0.875rem;
+  }
+  /* 2px smaller in the mobile layout: 11px, and 12px from 390px. */
+  @media ${MOBILE_LAYOUT} {
+    font-size: 0.6875rem;
+  }
+  @media (min-width: 390px) and (max-width: 767.98px) {
+    font-size: 0.75rem;
   }
 `
 

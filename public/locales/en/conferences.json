@@ -181,23 +181,25 @@
       "passSomething": {
         "long": "Pass a final bill",
         "short": "Pass a final bill",
-        "help": "Either version or a mix of both. Tell conferees what the final bill should include.",
+        "help": "Either version or a mix of both.",
         "prompt": "What should the final bill include or leave out?"
       },
       "passSenateVersion": {
         "long": "Pass the Senate version",
         "short": "Senate version",
+        "help": "The Senate’s bill, {{senate}}, as passed.",
         "prompt": "Why should conferees adopt the Senate version?"
       },
       "passHouseVersion": {
         "long": "Pass the House version",
         "short": "House version",
+        "help": "The House’s bill, {{house}}, as passed.",
         "prompt": "Why should conferees adopt the House version?"
       },
       "passNothing": {
         "long": "Don’t pass a final bill",
         "short": "Don’t pass",
-        "help": "Neither version nor a compromise this session.",
+        "help": "Neither bill. Select this if something is missing from both.",
         "prompt": "Why shouldn’t this bill become law this session?"
       }
     },
@@ -215,8 +217,6 @@
     "close_panel": "Close Add Your Input",
     "position_label": "Your position",
     "body_label": "Your input",
-    "delivery_note": "When you post, MAPLE will email your input to your state representative and state senator and include it in the weekly update to the conferees. You’ll see exactly what they get before you post.",
-    "delivery_note_weekly": "When you post, MAPLE will include your input in the weekly update to the conferees. <1>Add your state representative and senator to your profile</1> and MAPLE will email them your input too.",
     "saving": "Saving…",
     "saved": "Saved",
     "delete_draft": "Delete Draft",
@@ -311,19 +311,19 @@
     "goes_cosign": "Where your cosign goes",
     "public_input": "Posted publicly on MAPLE",
     "emailed": "Emailed to your state legislators",
-    "emailed_none": "MAPLE doesn’t know who your state representative and state senator are, so it can’t email them. Your input is only counted for the committee.",
+    "emailed_none": "MAPLE doesn’t know who your state legislators are, so it can’t email them. <1>Add your state legislators</1>.",
     "rep": "Rep. {{name}}",
     "sen": "Sen. {{name}}",
     "and": " and ",
-    "weekly_input": "Included in MAPLE’s weekly email to the committee",
-    "weekly_cosign": "Counted in MAPLE’s weekly email to the committee.",
+    "weekly_input": "Counted in MAPLE’s weekly email to the committee",
+    "weekly_cosign": "Counted in MAPLE’s weekly email to the committee",
     "conferees": "This committee’s conferees",
     "conferees_label": "The conferees",
     "email_label": "Your email",
     "email_note": "Your email is included in the message so your legislators can reply to you directly. Replies go to you, not to MAPLE.",
     "preview_web": "On MAPLE",
     "preview_weekly": "Weekly Email",
-    "preview_weekly_soon": "Coming soon!",
+    "preview_weekly_soon": "Preview coming soon",
     "goes_to": "Goes to:",
     "going_public": "Public on MAPLE",
     "preview_email": "Your Legislators",

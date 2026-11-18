@@ -1,11 +1,18 @@
 import { Fragment, useCallback, useMemo, useState } from "react"
 import { useTranslation } from "next-i18next"
-import styled from "styled-components"
+import styled, { css } from "styled-components"
 import { Conferees } from "./Conferees"
 import { DistrictMap, seatsOf } from "./DistrictMap"
 import { ConferenceHearings } from "./ConferenceHearings"
 import { useHover, useMyLegislators } from "./hooks"
-import { CardTitle, CommitteeCard, LAYOUT_WIDE } from "./styles"
+import {
+  BESIDE,
+  CARD_WIDE,
+  CARD_WIDE_BESIDE,
+  CardTitle,
+  CommitteeCard,
+  NOT_BESIDE
+} from "./styles"
 import { CHAMBERS, ConfereeView, HearingView } from "./types"
 
 /** The card, a little tighter on a phone than the cards' 1.25rem a side
@@ -19,13 +26,43 @@ const Frame = styled(CommitteeCard)`
   }
 `
 
+/** The grid in one row: the two lists then the two maps, the maps equal and
+ * taking every pixel the names leave. */
+const wide = css`
+  grid-template-columns: max-content max-content minmax(0, 1fr) minmax(0, 1fr);
+  & > :nth-child(2) {
+    order: 3;
+  }
+  & > :nth-child(3) {
+    order: 2;
+    justify-self: start;
+    padding-right: 1.75rem;
+  }
+  & > :nth-child(4) {
+    order: 4;
+  }
+  /* Each map at its 300px most (DistrictMap.tsx), centred in its column, so
+     the room the column has over that is shared out around it, as breathing
+     room from the names, rather than left after it. */
+  & > :nth-child(2) {
+    justify-self: center;
+    width: 100%;
+    max-width: 300px;
+  }
+  & > :nth-child(4) {
+    justify-self: center;
+    width: 100%;
+    max-width: 300px;
+  }
+`
+
 /**
  * Two name lists and two maps, laid out as one grid, as the prototype does.
- * Stacked (below LAYOUT_WIDE, styles.ts), two pairs in equal halves: the
- * Senate's names then its map, and the House mirrored, its map then its
- * names, so the two maps sit together. Wide (LAYOUT_WIDE), the two lists then
- * the two maps in one row, the maps equal and taking every pixel the names
- * leave.
+ * Stacked, two pairs in equal halves: the Senate's names then its map, and
+ * the House mirrored, its map then its names, so the two maps sit together.
+ * Wide, in one row (`wide`): from CARD_WIDE's window, or with the input
+ * panel beside the page, once the page it leaves is that wide
+ * (CARD_WIDE_BESIDE, styles.ts).
  */
 const Grid = styled.div`
   display: grid;
@@ -45,27 +82,14 @@ const Grid = styled.div`
     order: 3;
   }
 
-  @media ${LAYOUT_WIDE} {
-    grid-template-columns: max-content max-content minmax(0, 1fr) minmax(0, 1fr);
-    & > :nth-child(2) {
-      order: 3;
+  @media ${CARD_WIDE} {
+    ${NOT_BESIDE} & {
+      ${wide}
     }
-    & > :nth-child(3) {
-      order: 2;
-      justify-self: start;
-      padding-right: 1.75rem;
-    }
-    & > :nth-child(4) {
-      order: 4;
-    }
-    /* Each map at its 300px most (DistrictMap.tsx), centred in its column,
-       so the room the column has over that is shared out around it, as
-       breathing room from the names, rather than left after it. */
-    & > :nth-child(2),
-    & > :nth-child(4) {
-      justify-self: center;
-      width: 100%;
-      max-width: 300px;
+  }
+  @media ${CARD_WIDE_BESIDE} {
+    ${BESIDE} & {
+      ${wide}
     }
   }
 `

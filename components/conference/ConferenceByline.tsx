@@ -12,25 +12,19 @@ const Wrap = styled.div`
   padding-bottom: 24px;
 `
 
-/** The byline in Nunito at 18px, 20px on mobile, in the site's muted
- * blue-grey: a description under the title rather than a second one (the
- * mockup's 20px and 25px). Straight under the title band, whose own 12px is
- * the gap. */
+/** The byline in Nunito at 20px, in the site's muted blue-grey: a
+ * description under the title rather than a second one. Straight under the
+ * title band, whose own 12px is the gap. */
 const Line = styled.p`
   margin: 0;
-  /* A readable measure, about 70 characters, rather than the column's whole
+  /* A readable measure, about 60 characters, rather than the column's whole
      width. */
-  max-width: 70ch;
+  max-width: 60ch;
   font-family: var(--maple-font-body);
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   font-weight: 400;
   line-height: 1.4;
   color: var(--maple-text-muted);
-
-  /* A step larger on mobile, under the larger title there. */
-  @media (max-width: 767.98px) {
-    font-size: 1.25rem;
-  }
 `
 
 /** The trial note in the site's soft blue rather than the orange note's

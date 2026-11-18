@@ -5,7 +5,14 @@ import styled from "styled-components"
 import { Internal, maple } from "../links"
 import { Back } from "../shared/CommonComponents"
 import { ChevronLeft } from "./input/icons"
-import { FULL_LAYOUT, MOBILE_LAYOUT, mobileIcon, RAIL_COMPACT } from "./styles"
+import {
+  BESIDE,
+  FULL_LAYOUT,
+  MOBILE_LAYOUT,
+  mobileIcon,
+  RAIL_COMPACT,
+  RAIL_COMPACT_BESIDE
+} from "./styles"
 
 /** Its own row under the navbar, across the full width, 2rem in from the
  * window's edges (1.25rem on a phone), outside the page's column. */
@@ -46,9 +53,14 @@ const Row = styled.div<{
     $notMobile ? `@media ${MOBILE_LAYOUT} { display: none; }` : ""}
 
   /* With committee, in line with a committee's page beside its compact
-     rail, 20px in rather than 2rem (ConferenceDetails.tsx). */
+     rail, 20px in rather than 2rem (ConferenceDetails.tsx): in a narrow
+     window, or with the input panel leaving the page that narrow
+     (RAIL_COMPACT_BESIDE). */
   ${({ $committee }) =>
-    $committee ? `@media ${RAIL_COMPACT} { --side: 1.25rem; }` : ""}
+    $committee
+      ? `@media ${RAIL_COMPACT} { --side: 1.25rem; }
+         @media ${RAIL_COMPACT_BESIDE} { ${BESIDE} & { --side: 1.25rem; } }`
+      : ""}
 `
 
 /** The way back, as the site's other back links (Back, as the bill page's

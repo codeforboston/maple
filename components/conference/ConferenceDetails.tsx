@@ -14,7 +14,7 @@ import {
   takesTestimony
 } from "../../functions/src/shared"
 import { uncosignable } from "../../functions/src/testimony/cosign"
-import styled from "styled-components"
+import styled, { css } from "styled-components"
 import { ConferenceByline } from "./ConferenceByline"
 import { ConferenceCommittee } from "./ConferenceCommittee"
 import { ConferenceDifferences } from "./ConferenceDifferences"
@@ -35,6 +35,7 @@ import {
   useEditConferenceTestimony
 } from "../db"
 import { useAppDispatch } from "../hooks"
+import { formatBillId } from "../formatting"
 import { Internal, maple, siteUrl } from "../links"
 import { useFitText, usePhone, usePinnedNavbar, useRailLift } from "./hooks"
 import { InputContext } from "./input/context"
@@ -49,12 +50,17 @@ import { Close } from "./input/Close"
 import { X } from "./input/icons"
 import { jumpToSection } from "./navbar"
 import {
+  BESIDE,
   COMMITTEE_PAGE_MAX,
+  FULL_RAIL_FROM,
   MOBILE_LAYOUT,
   Notice,
   PageColumn,
+  PANEL_BESIDE_FROM,
+  PANEL_W,
   PHONE_GUTTER,
   RAIL_COMPACT,
+  RAIL_COMPACT_BESIDE,
   RAIL_HIDDEN,
   RAIL_SHOWN,
   Title
@@ -73,16 +79,27 @@ import {
 const Page = styled(PageColumn)`
   display: flex;
   /* The room between the rail and the page: 56px from 1440px, where the page
-     stops widening, narrowing evenly with the window as soon as it does, to
-     24px at 1024px and on down to md, where the rail comes in. Never a jump
-     that pulls the page toward the rail. */
-  --rail-gap: clamp(24px, calc(24px + (100vw - 1024px) * 0.0769), 56px);
+     stops widening, narrowing evenly with the page (--page-w, Row) as soon
+     as it does, to 24px at 1024px and on down to md, where the rail comes
+     in. Never a jump that pulls the page toward the rail. */
+  --rail-gap: clamp(
+    24px,
+    calc(24px + (var(--page-w, 100vw) - 1024px) * 0.0769),
+    56px
+  );
   gap: var(--rail-gap);
 
-  /* Beside the compact rail (RAIL_COMPACT, styles.ts), 20px a side rather
-     than the column's 2rem, so the page has more of the width. */
+  /* Beside the compact rail (RAIL_COMPACT, styles.ts, or with the panel
+     open, RAIL_COMPACT_BESIDE), 20px a side rather than the column's 2rem,
+     so the page has more of the width. */
   @media ${RAIL_COMPACT} {
     && {
+      padding-left: 1.25rem;
+      padding-right: 1.25rem;
+    }
+  }
+  @media ${RAIL_COMPACT_BESIDE} {
+    ${BESIDE} && {
       padding-left: 1.25rem;
       padding-right: 1.25rem;
     }
@@ -96,24 +113,45 @@ const Page = styled(PageColumn)`
   }
 `
 
+/** The compact rail's width: 200px as it comes in under the full rail
+ * (FULL_RAIL_FROM), narrowing with the page (--page-w, Row) to 160px by
+ * COMPACT_NARROW_AT, and no narrower on down to where the rail goes for the
+ * floating switcher (RAIL_FROM). */
+const COMPACT_MIN = 160
+const COMPACT_MAX = 200
+const COMPACT_NARROW_AT = 992
+const COMPACT_WIDTH = `clamp(${COMPACT_MIN}px, calc(${COMPACT_MIN}px + (var(--page-w, 100vw) - ${COMPACT_NARROW_AT}px) * ${
+  (COMPACT_MAX - COMPACT_MIN) / (FULL_RAIL_FROM - COMPACT_NARROW_AT)
+}), ${COMPACT_MAX}px)`
+
+/** The compact rail's sizes, for `scope`: COMPACT_WIDTH across, the names at
+ * 13px over their bills in tighter rows. */
+const compactRail = (scope: string) => css`
+  ${scope} {
+    width: ${COMPACT_WIDTH};
+  }
+  ${scope} a {
+    padding: 6px 8px 6px 10px;
+  }
+  ${scope} .name {
+    font-size: 0.8125rem;
+  }
+`
+
 /** The list of every conference down the left, from RAIL_FROM (styles.ts):
- * compact at first (RAIL_COMPACT), about 160px across, the names at 13px
- * over their bills in tighter rows; its full size from FULL_RAIL_FROM. */
+ * compact at first (RAIL_COMPACT), and beside the panel while the page it
+ * leaves is that narrow or narrower (RAIL_COMPACT_BESIDE); its full size
+ * from FULL_RAIL_FROM. */
 const SideRail = styled(ConferenceRail)`
   @media ${RAIL_HIDDEN} {
     display: none;
   }
 
   @media ${RAIL_COMPACT} {
-    && {
-      width: 160px;
-    }
-    && a {
-      padding: 6px 8px 6px 10px;
-    }
-    && .name {
-      font-size: 0.8125rem;
-    }
+    ${compactRail("&&")}
+  }
+  @media ${RAIL_COMPACT_BESIDE} {
+    ${compactRail(`${BESIDE} &`)}
   }
 `
 
@@ -123,6 +161,16 @@ const SideRail = styled(ConferenceRail)`
  * end; below lg it is a sheet over the window instead. */
 const Row = styled.div`
   display: flex;
+  /* The page's width, for what sizes itself by it (the rail and the gap
+     after it): the window's, less the panel while it stands beside the page
+     (data-panel, BESIDE in styles.ts). */
+  --page-w: 100vw;
+
+  @media (min-width: ${PANEL_BESIDE_FROM}px) {
+    &${BESIDE} {
+      --page-w: calc(100vw - ${PANEL_W}px);
+    }
+  }
 `
 
 /** The way back and the page, in what the panel leaves them. */
@@ -131,28 +179,30 @@ const Column = styled.div`
   min-width: 0;
 `
 
-/** The title, with the way to share input at its end, from md: the button
- * keeps its own width (ShareButton.tsx) and the title takes the rest,
- * wrapping as narrow as it has to rather than putting the button under it.
- * On mobile it floats at the bottom right instead (ShareFab, FabDock), so
- * no column, and no gap, for it. */
+/** The title, with the ways to follow and to share input at its end, from
+ * md, while the title fits beside them on one line. Once it would wrap there,
+ * it takes a line of its own under them (wrap-reverse stacks its line under
+ * theirs), the buttons kept to the right over it. The title's own length
+ * decides, whatever the window or the panel beside the page. On mobile the
+ * buttons float at the foot instead (ShareFab, FabDock), and the title has
+ * the row. */
 const TitleRow = styled.div`
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: start;
-  gap: 24px;
-
-  @media ${RAIL_HIDDEN} {
-    grid-template-columns: minmax(0, 1fr);
-  }
+  display: flex;
+  flex-wrap: wrap-reverse;
+  /* Wrapping reversed, the line's top is its cross end. */
+  align-items: flex-end;
+  gap: 16px 24px;
 `
 
 /** Following the conference and the way to share input, at the title's
  * end, from md (TitleRow). */
 const TitleShare = styled.div`
   display: flex;
+  flex: none;
   align-items: center;
   gap: 18px;
+  /* At the right, beside the title or over it. */
+  margin-left: auto;
 
   /* The Follow button (components/shared/FollowButton.tsx) 6px above and
      below, as Share your input is (ShareButton.tsx). !important outranks
@@ -171,6 +221,9 @@ const TitleShare = styled.div`
  * (BackChevron). */
 const TitleCell = styled.div`
   display: flex;
+  /* As wide as the title on one line, to share the row with the buttons
+     (TitleRow); narrower only on a line of its own. */
+  flex: 1 1 auto;
   align-items: flex-start;
   gap: 10px;
   min-width: 0;
@@ -300,10 +353,18 @@ const Band = styled.div<{ $top: string; $z: number }>`
     padding-left: var(--rail-gap);
   }
 
-  /* Out to the page's narrower right side beside the compact rail (Page). */
+  /* Out to the page's narrower right side beside the compact rail (Page):
+     in a narrow window, or with the input panel leaving the page that
+     narrow. */
   @media ${RAIL_COMPACT} {
     margin-right: -1.25rem;
     padding-right: 1.25rem;
+  }
+  @media ${RAIL_COMPACT_BESIDE} {
+    ${BESIDE} && {
+      margin-right: -1.25rem;
+      padding-right: 1.25rem;
+    }
   }
 `
 
@@ -399,6 +460,9 @@ function Details({
   // `cosigning`. Both are the reader's one draft on the conference.
   const [cosigning, setCosigning] = useState<ConferenceTestimony>()
   const [full, setFull] = useState(true)
+  // The reader's own input in the drawer until they open it out to the
+  // window, and only while writing.
+  const [inputFull, setInputFull] = useState(false)
   // What the reader's draft holds, as far as the page cares: what it
   // cosigns, if anything, and whether it has words.
   const [draftOf, setDraftOf] = useState<string | null>(null)
@@ -442,6 +506,7 @@ function Details({
   const compose = useCallback(() => {
     setCosigning(undefined)
     setStep("write")
+    setInputFull(false)
     setOpen(true)
   }, [])
   const resumeCosign = useCallback((parent: ConferenceTestimony) => {
@@ -638,11 +703,18 @@ function Details({
     ]
   )
   // Signing fills the window with what is signed beside the form; once agreed,
-  // the reader may fold it back to the drawer.
-  const filled = !!cosigning && (step === "confirm" || full)
+  // the reader may fold it back to the drawer. The reader's own input opens in
+  // the drawer and fills the window only while they write and ask it to; its
+  // review is always the drawer.
+  const filled = cosigning
+    ? step === "confirm" || full
+    : inputFull && step === "write"
   return (
     <InputContext.Provider value={input}>
-      <Row ref={row}>
+      {/* Whether the panel stands beside the page, for what sizes itself
+          by the page it leaves rather than the window (BESIDE and
+          NOT_BESIDE, styles.ts). */}
+      <Row ref={row} data-panel={open && !filled ? "beside" : "none"}>
         <Column>
           {/* Not on mobile, where a chevron before the title is the way back
               instead. */}
@@ -773,7 +845,7 @@ function Details({
             onStep={setStep}
             cosigning={cosigning}
             full={filled}
-            onFull={setFull}
+            onFull={cosigning ? setFull : setInputFull}
             onDraft={onDraft}
             onPosted={posted}
           />
@@ -847,7 +919,7 @@ function InputPanel({
       // to it, and not again while writing.
       besideStacked={step === "confirm"}
       full={full}
-      onFull={cosigning && step === "write" ? onFull : undefined}
+      onFull={step === "write" ? onFull : undefined}
     >
       {cosigning ? (
         // Keyed so another parent starts from its own draft.
@@ -871,6 +943,11 @@ function InputPanel({
           conferees={conferees}
           edit={edit}
           subject={subject}
+          bills={{
+            senate: formatBillId(conference.senateBillId),
+            house: formatBillId(conference.houseBillId)
+          }}
+          full={full}
           step={step}
           onStep={onStep}
           onCancel={onClose}

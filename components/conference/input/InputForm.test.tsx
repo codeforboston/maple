@@ -86,6 +86,7 @@ const review = (edit: UseEditConferenceTestimony) =>
       conferees={conferees}
       edit={edit}
       subject="Phone-Free Schools"
+      bills={{ senate: "S.1", house: "H.1" }}
       step="review"
       onStep={jest.fn()}
       onCancel={jest.fn()}
@@ -101,6 +102,7 @@ const write = (edit: UseEditConferenceTestimony) =>
       conferees={conferees}
       edit={edit}
       subject="Phone-Free Schools"
+      bills={{ senate: "S.1", house: "H.1" }}
       step="write"
       onStep={jest.fn()}
       onCancel={jest.fn()}
@@ -109,17 +111,6 @@ const write = (edit: UseEditConferenceTestimony) =>
   )
 
 describe("InputForm", () => {
-  it("promises the email to legislators only when the profile has some", () => {
-    const { unmount } = write(editing())
-    expect(screen.getByText("input.delivery_note")).toBeInTheDocument()
-    unmount()
-
-    mockProfile.current = { fullName: "Gina K." }
-    write(editing())
-    expect(screen.getByText("input.delivery_note_weekly")).toBeInTheDocument()
-    expect(screen.queryByText("input.delivery_note")).not.toBeInTheDocument()
-  })
-
   it("leaves a cosign's draft alone while it sits behind a closed panel", () => {
     jest.useFakeTimers()
     const edit = {
@@ -141,6 +132,7 @@ describe("InputForm", () => {
         conferees={[]}
         edit={edit}
         subject="Phone-Free Schools"
+        bills={{ senate: "S.1", house: "H.1" }}
         step="write"
         onStep={jest.fn()}
         onCancel={jest.fn()}

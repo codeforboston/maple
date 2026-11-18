@@ -1,5 +1,6 @@
-import { useTranslation } from "next-i18next"
+import { Trans, useTranslation } from "next-i18next"
 import { ReactNode, useState } from "react"
+import { Internal } from "components/links"
 import styled from "styled-components"
 import { useAuth } from "components/auth"
 import {
@@ -21,7 +22,7 @@ import { useMyLegislators } from "../hooks"
 import { ConfereeView } from "../types"
 import { Entry } from "./Entry"
 import { CalendarDays, CircleCheck, Globe, Info, Mail, Send } from "./icons"
-import { brand, ink, line, recess, wash } from "./tokens"
+import { brand, ink, line, recess, sunken, wash } from "./tokens"
 
 const Heading = styled.p`
   margin: 0 0 10px;
@@ -38,7 +39,7 @@ const Goes = styled.ul`
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 `
 
 /** One place the input goes (Place): the icon and the words, in the type of
@@ -89,16 +90,16 @@ const Photos = styled.div`
   padding-left: 3px;
 `
 
-/** Each photo (ConfereeFace), 20px, a little over the last, edged in the
- * well's grey (recess) so the overlaps read as cut out of it. The reader's
- * own legislator's star (ConfereeFace's, the one span with a label) at the
- * mockup's size: an 8px star in a 12px circle, 1px out from the photo's
- * corner. */
+/** Each photo (ConfereeFace), 24px, a little over the last, edged in the
+ * grey of the well's foot (sunken, WellFoot) so the overlaps read as cut out
+ * of it. The reader's own legislator's star (ConfereeFace's, the one span
+ * with a label) at the mockup's size: an 8px star in a 12px circle, 1px out
+ * from the photo's corner. */
 const Photo = styled.span`
   margin-left: -3px;
 
   img {
-    box-shadow: 0 0 0 2px ${recess};
+    box-shadow: 0 0 0 2px ${sunken};
   }
   span[aria-label] {
     width: 12px;
@@ -169,7 +170,7 @@ function Audience({
           <Photo key={c.memberCode}>
             <ConfereeFace
               c={c}
-              size={20}
+              size={24}
               own={mine.has(c.memberCode)}
               labelled
             />
@@ -193,19 +194,24 @@ const PreviewBox = styled.div`
 export function SitePreview({ testimony }: { testimony: ConferenceTestimony }) {
   return (
     <PreviewBox>
-      <Entry testimony={testimony} bare />
+      {/* Undated, as the cosign's preview is: nothing is filed yet. */}
+      <Entry testimony={testimony} bare undated />
     </PreviewBox>
   )
 }
 
-/** Which preview shows (Previews), across the panel: the panel's wash for
- * the track, the one showing in white on it. */
+/** Which preview shows (Previews), across the top of the well, flush with
+ * its edges, in the grey of its foot (WellFoot); the one showing in white on
+ * it. Outside what scrolls, so it stays as the preview moves under it. */
 const Switch = styled.div`
   display: flex;
-  margin-bottom: 10px;
-  padding: 2px;
-  border-radius: 8px;
-  background: ${wash.strong};
+  flex: none;
+  /* A pixel more under the tabs than over them, where the well's border
+     already sits. */
+  padding: 5px 5px 6px;
+  background: ${sunken};
+  /* A faint edge between it and the preview. */
+  border-bottom: 1px solid ${wash.strong};
 `
 
 /** Each the same width, whatever its label, the label centred both ways and
@@ -276,7 +282,9 @@ const WellScroll = styled.div`
 const WellFoot = styled.div`
   flex: none;
   padding: 10px 12px 12px;
-  background: ${recess};
+  /* A step darker than the well over it, with a faint edge between. */
+  background: ${sunken};
+  border-top: 1px solid ${wash.strong};
 `
 
 /** In a well with no preview yet (the weekly update's): centred in it,
@@ -313,7 +321,8 @@ function Previews({
   legislators: { people: ConfereeView[]; label: string }
 }) {
   const { t } = useTranslation("conferences")
-  const views = (["web", "weekly", "email"] as View[]).filter(v =>
+  // The weekly update's tab is left out until its preview exists.
+  const views = (["web", /* "weekly", */ "email"] as View[]).filter(v =>
     v === "web" ? !!web : v === "email" ? !!email : true
   )
   const [picked, setPicked] = useState<View>()
@@ -340,21 +349,21 @@ function Previews({
   return (
     <>
       <Heading>{t("input.preview_label")}</Heading>
-      {views.length > 1 && (
-        <Switch role="group" aria-label={t("input.preview_label")}>
-          {views.map(v => (
-            <SwitchOption
-              key={v}
-              type="button"
-              aria-pressed={showing === v}
-              onClick={() => setPicked(v)}
-            >
-              {t(`review.preview_${v}`)}
-            </SwitchOption>
-          ))}
-        </Switch>
-      )}
       <Well>
+        {views.length > 1 && (
+          <Switch role="group" aria-label={t("input.preview_label")}>
+            {views.map(v => (
+              <SwitchOption
+                key={v}
+                type="button"
+                aria-pressed={showing === v}
+                onClick={() => setPicked(v)}
+              >
+                {t(`review.preview_${v}`)}
+              </SwitchOption>
+            ))}
+          </Switch>
+        )}
         {/* Keyed so each preview opens scrolled to its top. */}
         <WellScroll key={showing}>{body[showing]}</WellScroll>
         <WellFoot>{foot[showing]}</WellFoot>
@@ -527,8 +536,7 @@ export function useLegislators(court: number) {
 /**
  * Where conference input goes: public on MAPLE, to the reader's rep and
  * senator, and into the conferees' weekly update. A reader whose profile has
- * neither is told whom MAPLE can't notify, and that only the update counts
- * them.
+ * neither is told MAPLE can't email them, with the way to add them.
  */
 export function Delivery({
   cosign,
@@ -542,6 +550,12 @@ export function Delivery({
 }) {
   const { t } = useTranslation("conferences")
   const known = hasLegislators({ representative, senator })
+  const weekly = (
+    <Place
+      icon={<CalendarDays size={17} strokeWidth={1.8} />}
+      title={t(cosign ? "review.weekly_cosign" : "review.weekly_input")}
+    />
+  )
   return (
     <>
       <Heading>
@@ -552,20 +566,35 @@ export function Delivery({
           icon={<CircleCheck size={17} strokeWidth={1.8} />}
           title={t("review.public_input")}
         />
-        <Place
-          icon={<CalendarDays size={17} strokeWidth={1.8} />}
-          title={t(cosign ? "review.weekly_cosign" : "review.weekly_input")}
-        />
+        {/* Where it goes before where it doesn't yet: emailed, then the
+            weekly update; or the weekly update, then the way to have it
+            emailed too. */}
         {known ? (
-          <Place
-            icon={<Mail size={17} strokeWidth={1.8} />}
-            title={t("review.emailed")}
-          />
+          <>
+            <Place
+              icon={<Mail size={17} strokeWidth={1.8} />}
+              title={t("review.emailed")}
+            />
+            {weekly}
+          </>
         ) : (
-          <Place
-            icon={<Mail size={17} strokeWidth={1.8} />}
-            title={t("review.emailed_none")}
-          />
+          <>
+            {weekly}
+            <Place
+              icon={<Mail size={17} strokeWidth={1.8} />}
+              title={
+                // Not emailed: the way to it, in their profile.
+                <Trans t={t} i18nKey="review.emailed_none">
+                  MAPLE doesn’t know who your state legislators are, so it can’t
+                  email them.
+                  <Internal href="/edit-profile/about-you">
+                    Add your state legislators
+                  </Internal>
+                  .
+                </Trans>
+              }
+            />
+          </>
         )}
       </Goes>
     </>
