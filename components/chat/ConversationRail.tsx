@@ -17,7 +17,7 @@ const Nav = styled.nav<{ $open: boolean }>`
 
   @media (max-width: 820px) {
     position: fixed;
-    top: var(--chat-bar-height, 64px);
+    top: var(--chat-top-offset, 64px);
     bottom: 0;
     height: auto;
     left: 0;
@@ -41,7 +41,7 @@ const Scrim = styled.div`
   @media (max-width: 820px) {
     display: block;
     position: fixed;
-    inset: var(--chat-bar-height, 64px) 0 0 0;
+    inset: var(--chat-top-offset, 64px) 0 0 0;
     background: var(--maple-overlay-backdrop-subtle);
     z-index: 3;
   }
