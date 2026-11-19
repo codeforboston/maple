@@ -1,0 +1,71 @@
+{
+  "_source": "Written against a snapshot of the repo's test data (court 192). Expected bill ids must be re-checked against the MCP server the agent points at before these cases gate anything; E5-E8 (isolation, Stop, limits, resume) do not depend on data.",
+  "cases": [
+    {
+      "id": "E1",
+      "name": "rent bills",
+      "turns": [
+        "My landlord keeps raising my rent. Are there any bills about limiting rent increases?"
+      ],
+      "expect": {
+        "toolsCalled": ["search_bills"],
+        "anyBillLinked": ["H1440", "S889", "H1378", "S886", "H1784"],
+        "linksPresent": true
+      }
+    },
+    {
+      "id": "E2",
+      "name": "testimony summary with both positions",
+      "turns": [
+        "What do people who testified think about H1000, the bill to assist municipal and district ratepayers?"
+      ],
+      "expect": {
+        "toolsCalled": ["search_testimony"],
+        "toolArgs": {
+          "search_testimony": {
+            "billId": "H1000"
+          }
+        },
+        "mentions": ["support", "oppos"],
+        "billLinked": ["H1000"],
+        "linksPresent": true
+      }
+    },
+    {
+      "id": "E3a",
+      "name": "sponsor, found",
+      "turns": ["Who filed the universal school meals bill in the House?"],
+      "expect": {
+        "toolsCalled": ["search_bills"],
+        "billLinked": ["H714"],
+        "mentions": ["Vargas"]
+      }
+    },
+    {
+      "id": "E3b",
+      "name": "sponsor, miss",
+      "turns": ["What bills has Elizabeth Warren sponsored?"],
+      "expect": {
+        "toolsCalled": ["list_sponsors"],
+        "saysNotFound": true,
+        "noBillLinked": true
+      }
+    },
+    {
+      "id": "E4",
+      "name": "follow-up uses earlier context",
+      "turns": [
+        "Are there bills that would let cities and towns add their own tenant protections?",
+        "Is there a Senate version of that one?"
+      ],
+      "expect": {
+        "turn1": {
+          "anyBillLinked": ["H1378", "S886"]
+        },
+        "turn2": {
+          "billLinked": ["S886"]
+        }
+      }
+    }
+  ]
+}
