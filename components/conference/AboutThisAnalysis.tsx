@@ -33,7 +33,7 @@ const Box = styled.div`
   background: ${wash.default};
   font-size: 0.8125rem;
   line-height: 1.6;
-  color: ${ink.midheavy};
+  color: var(--maple-text-body);
 
   p {
     margin: 0;

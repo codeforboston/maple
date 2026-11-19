@@ -36,12 +36,41 @@ export const RAIL_FROM = 768
 export const RAIL_SHOWN = `(min-width: ${RAIL_FROM}px)`
 export const RAIL_HIDDEN = `(max-width: ${RAIL_FROM - 0.02}px)`
 
-/** Where the rail is at its full size: Bootstrap's lg. */
-export const FULL_RAIL_FROM = 992
+/** Where the rail is at its full size: Bootstrap's xl. Below it the compact
+ * rail leaves the page room for the committee card's one row
+ * (CARD_WIDE_FROM). */
+export const FULL_RAIL_FROM = 1200
 
 /** The compact rail, between md and FULL_RAIL_FROM. */
 export const RAIL_COMPACT = `(min-width: ${RAIL_FROM}px) and (max-width: ${
   FULL_RAIL_FROM - 0.02
+}px)`
+
+/** Where the input panel stands beside a committee page rather than over
+ * it (input/Panel.tsx): lg. */
+export const PANEL_BESIDE_FROM = 1024
+/** The panel's width beside the page, the same at every window, so the page
+ * beside it is the window less this. */
+export const PANEL_W = 450
+/** Below lg, where the panel is a sheet over the window, from md: laid out
+ * as it is opened out to the window, its parts side by side, with no drawer
+ * to fold it back to. On mobile, below md, its parts stack. */
+export const SHEET_SPREAD = `(min-width: 768px) and (max-width: ${
+  PANEL_BESIDE_FROM - 0.02
+}px)`
+
+/** Whether the panel stands beside the page, as the page's row says
+ * (data-panel, ConferenceDetails.tsx), for rules that follow the page it
+ * leaves rather than the window: an ancestor selector, `${BESIDE} &`. */
+export const BESIDE = `[data-panel="beside"]`
+export const NOT_BESIDE = `[data-panel="none"]`
+
+/** With the panel beside the page (BESIDE), where the page it leaves is as
+ * narrow as a window that brings the compact rail in, and narrower: the
+ * compact rail is the page's last size before its mobile layout, which only
+ * a narrow window brings. */
+export const RAIL_COMPACT_BESIDE = `(min-width: ${PANEL_BESIDE_FROM}px) and (max-width: ${
+  FULL_RAIL_FROM + PANEL_W - 0.02
 }px)`
 
 /** Where the list of conferences, opened from a button (ConferencePicker.tsx,
@@ -57,11 +86,19 @@ export const SHEET = "(max-width: 575.98px)"
 export const MOBILE_LAYOUT = "(max-width: 767.98px)"
 export const FULL_LAYOUT = "(min-width: 768px)"
 
-/** The committee page's wide layout, from Bootstrap's xl: the committee
- * card in one row (ConferenceCommittee.tsx) and the 36px title
- * (ConferenceDetails.tsx). Below it, the card stacks. */
+/** The committee page's wide layout, from Bootstrap's xl: the Share your
+ * input button beside the 36px title (input/ShareButton.tsx). The committee
+ * card has its own (CARD_WIDE). */
 export const WIDE_FROM = 1200
 export const LAYOUT_WIDE = `(min-width: ${WIDE_FROM}px)`
+/** Where the committee card's grid goes to one row (ConferenceCommittee.tsx):
+ * where, beside the compact rail, its block has about 708px (the page less
+ * its 20px sides, the rail, the gap after it, and the card's border and
+ * padding), enough for the names and the two maps in a row. With the panel
+ * beside the page (BESIDE), where the page it leaves is that wide. */
+export const CARD_WIDE_FROM = 1000
+export const CARD_WIDE = `(min-width: ${CARD_WIDE_FROM}px)`
+export const CARD_WIDE_BESIDE = `(min-width: ${CARD_WIDE_FROM + PANEL_W}px)`
 
 /** The site's eyebrow, a size down: the mockup sets these at 11px. */
 export const Eyebrow = styled.p.attrs((props): { className: string } => ({

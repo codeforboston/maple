@@ -19,8 +19,15 @@ jest.mock("../featureFlags", () => ({
   useFlags: () => ({ legislators: false })
 }))
 
-const profile = { representative: { id: "AHP1" } }
-jest.mock("../db", () => ({ useProfile: () => ({ profile }) }))
+/** The reader's profile: their representative alone, unless a test says
+ * otherwise. */
+const mockProfile: { current?: object } = {}
+jest.mock("../db", () => ({
+  useProfile: () => ({ profile: mockProfile.current })
+}))
+beforeEach(() => {
+  mockProfile.current = { representative: { id: "AHP1" } }
+})
 
 const person = (
   memberCode: string,
@@ -230,5 +237,35 @@ describe("ConferenceExplorer", () => {
     expect(screen.getByText("Alice Hanlon Peisch")).toBeInTheDocument()
     expect(screen.getByText("seats_lit house 1 160")).toBeInTheDocument()
     expect(screen.getByText("seats_lit senate 0 40")).toBeInTheDocument()
+    // The profile names no senator: the way to add one, under the list.
+    expect(screen.getByText("mine_add_senator")).toHaveAttribute(
+      "href",
+      "/edit-profile/about-you"
+    )
+  })
+
+  it("names the legislator who serves on none, and asks for the other", () => {
+    mockProfile.current = { senator: { id: "NOBODY", name: "Pat Doe" } }
+    render(<ConferenceExplorer {...props} />)
+    fireEvent.click(screen.getByLabelText("my_legislators"))
+    expect(screen.getByText("mine_none_senator Pat Doe")).toBeInTheDocument()
+    expect(screen.getByText("mine_add_representative")).toBeInTheDocument()
+  })
+
+  it("asks a reader whose profile names neither to add them", () => {
+    mockProfile.current = {}
+    render(<ConferenceExplorer {...props} />)
+    fireEvent.click(screen.getByLabelText("my_legislators"))
+    expect(screen.getByText("mine_unknown")).toBeInTheDocument()
+    expect(screen.getByText("mine_add_legislators")).toHaveAttribute(
+      "href",
+      "/edit-profile/about-you"
+    )
+  })
+
+  it("offers no switch to a reader who is signed out", () => {
+    mockProfile.current = undefined
+    render(<ConferenceExplorer {...props} />)
+    expect(screen.queryByLabelText("my_legislators")).not.toBeInTheDocument()
   })
 })

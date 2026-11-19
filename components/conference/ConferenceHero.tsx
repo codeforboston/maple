@@ -4,6 +4,7 @@ import styled, { css } from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowRight, faChevronDown } from "@fortawesome/free-solid-svg-icons"
 import { Internal, maple } from "../links"
+import { FeatureCalloutButton } from "../shared/CommonComponents"
 import { ConferenceDrawer, ConferencePopover } from "./ConferencePicker"
 import { useMatches, useRailHidden } from "./hooks"
 import {
@@ -14,13 +15,15 @@ import {
   RAIL_SHOWN,
   SHEET
 } from "./styles"
+import { brand } from "./input/tokens"
 import { ConferenceSummary } from "./types"
 
 const JOINT_RULES = "https://malegislature.gov/Laws/Rules/Joint"
 
-/** Where the steps stack, one under another, rather than in a row: below
- * 992px. There they fold, the first open to begin with, and the two buttons
- * are pinned to the screen's foot. */
+/** Below 992px, the steps stack in one column instead of a row. Each step's
+ * text is collapsed under its title until tapped, with the current step
+ * expanded to start, and the two buttons are pinned to the bottom of the
+ * screen. */
 const STACKED = "(max-width: 991.98px)"
 const MAPLE_PROCESS = "https://www.mapletestimony.org/learn/legislative-process"
 
@@ -166,9 +169,9 @@ const Section = styled(PageColumn)`
   }
 `
 
-/** Down the page where five do not fit side by side, joined by a line so they
- * read as one sequence, each step's text able to fold under its title, the
- * first open to begin with. Side by side, every step's text shows. */
+/** The five steps, joined by a line so they read as one sequence. Side by
+ * side, every step's text shows. Stacked (STACKED), each step's text
+ * collapses under its title, with the current step expanded to start. */
 const StepList = styled.div`
   margin-top: 2.25rem;
 
@@ -183,6 +186,18 @@ const StepList = styled.div`
     position: relative;
     display: flex;
     gap: 0.875rem;
+  }
+  /* Steps before the current one (HERE_STEP), dimmed: the number at half
+     opacity, the title in the muted grey (#64748b), the text a touch
+     lighter. */
+  li.past .num {
+    opacity: 0.5;
+  }
+  li.past h2 {
+    color: var(--maple-text-muted);
+  }
+  li.past p {
+    color: #738297;
   }
   .line {
     position: absolute;
@@ -215,22 +230,23 @@ const StepList = styled.div`
      side by side, beside the number, on the page's ground so the line runs
      on from its far side (further below). */
   li.here .num {
-    box-shadow: 0 0 0 4px var(--maple-color-red-subtle-border);
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--maple-brand-primary);
   }
+  /* The *NEW* badge (FeatureCalloutButton) at its size on the homepage
+     (Homepage.module.css's newTag), in capitals as *NEW* is; its colours
+     turned round, as the avatars' are: MAPLE's soft blue, its edge, and dark
+     blue words (brand, input/tokens.ts). */
   .here-tag {
     display: inline-block;
     margin-bottom: 4px;
-    padding: 2px 10px;
-    border: 1px solid var(--maple-color-red-subtle-border);
-    border-radius: 999px;
-    background: var(--maple-color-red-subtle-bg);
-    color: var(--maple-color-red-subtle-text);
-    font-size: 0.6875rem;
-    font-weight: 800;
-    line-height: 1.4;
-    letter-spacing: 0.04em;
+    font-size: 11px;
+    padding: 0.1rem 0.35rem;
+    line-height: 1.3;
     text-transform: uppercase;
     white-space: nowrap;
+    background: ${brand.soft};
+    border-color: ${brand.edge};
+    color: ${brand.ink};
   }
   h2 {
     margin: 0;
@@ -497,9 +513,8 @@ export function ConferenceHero({
     h: string
     p: string
   }[]
-  // Which steps are open where they fold, wherever they stack (STACKED), the
-  // first to begin with.
-  const [open, setOpen] = useState<number[]>([0])
+  // Which steps are expanded when stacked (STACKED). Opens on HERE_STEP.
+  const [open, setOpen] = useState<number[]>([HERE_STEP])
   const folds = useMatches(STACKED)
   return (
     <Section as="section">
@@ -513,7 +528,11 @@ export function ConferenceHero({
               <li
                 key={i}
                 className={
-                  [open.includes(i) && "open", i === HERE_STEP && "here"]
+                  [
+                    open.includes(i) && "open",
+                    i === HERE_STEP && "here",
+                    i < HERE_STEP && "past"
+                  ]
                     .filter(Boolean)
                     .join(" ") || undefined
                 }
@@ -523,7 +542,9 @@ export function ConferenceHero({
                 <div className="text">
                   {/* Outside the h2, so the step's heading stays its title. */}
                   {i === HERE_STEP && (
-                    <span className="here-tag">{t("hero.here")}</span>
+                    <FeatureCalloutButton className="btn btn-secondary here-tag">
+                      {t("hero.here")}
+                    </FeatureCalloutButton>
                   )}
                   <h2>
                     {folds ? (

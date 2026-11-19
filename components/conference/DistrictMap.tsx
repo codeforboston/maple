@@ -62,7 +62,8 @@ const Outline = (props: { fill: string; stroke?: string }) => (
  * and the rest of the chamber stays blank: three cells lit in a chamber of a
  * hundred and sixty says how few people are in the room better than a
  * sentence. While one seat is being read the other lit seats sit back and the
- * one being read takes a thick edge.
+ * one being read takes a thick edge. Clicking a seat picks it where the page
+ * allows it (`onPin`); elsewhere the seats answer the pointer alone.
  */
 export function DistrictMap({
   chamber,
@@ -77,7 +78,9 @@ export function DistrictMap({
   /** The seat being read, if any; a key from either chamber. */
   selected: string | null
   onHover: (key: string | null) => void
-  onPin: (key: string) => void
+  /** Picking a seat by clicking it. Without it, the seats answer the
+   * pointer alone. */
+  onPin?: (key: string) => void
 }) {
   const { t } = useTranslation("conferences")
   const [x, y, w, h] = box
@@ -121,21 +124,23 @@ export function DistrictMap({
                   fill: partyColor(person.party),
                   fillOpacity: selected && key !== selected ? 0.45 : 1
                 }}
-                role="button"
-                tabIndex={0}
-                aria-pressed={key === selected}
                 aria-label={person.name}
                 onPointerEnter={() => onHover(key)}
                 onPointerLeave={() => onHover(null)}
-                onFocus={() => onHover(key)}
-                onBlur={() => onHover(null)}
-                onClick={() => onPin(key)}
-                onKeyDown={e => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault()
-                    onPin(key)
+                {...(onPin && {
+                  role: "button",
+                  tabIndex: 0,
+                  "aria-pressed": key === selected,
+                  onFocus: () => onHover(key),
+                  onBlur: () => onHover(null),
+                  onClick: () => onPin(key),
+                  onKeyDown: (e: React.KeyboardEvent) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault()
+                      onPin(key)
+                    }
                   }
-                }}
+                })}
               />
             )
           })}

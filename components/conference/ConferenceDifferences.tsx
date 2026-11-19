@@ -21,7 +21,7 @@ import {
 } from "./input/tokens"
 import { useWide } from "./input/useWide"
 import { AnalysisDisclosure } from "./AboutThisAnalysis"
-import { CardTitle, CommitteeCard } from "./styles"
+import { CardTitle, CommitteeCard, Eyebrow, MOBILE_LAYOUT } from "./styles"
 import {
   Chip,
   ChipCount,
@@ -39,11 +39,18 @@ import {
   SimilarityView
 } from "./types"
 
-/** The mockup's card, which keeps its gutters at every width: 32px at the
- * left as at the right, so its content lines up with the committee card's
- * above (Card's 2rem). */
+/** The mockup's card: 32px at the left as at the right, so its content lines
+ * up with the committee card's above (Card's 2rem); in the mobile layout,
+ * 16px, as the committee card's on a phone, so the questions have the
+ * width. */
 const Frame = styled(CommitteeCard)`
   padding: 24px 32px 32px 32px;
+
+  @media ${MOBILE_LAYOUT} {
+    && {
+      padding: 20px 16px 24px;
+    }
+  }
 `
 
 const Body = styled.div`
@@ -57,22 +64,20 @@ const Body = styled.div`
   }
 `
 
-/** A short paragraph on what the bills are, under its own label as the
- * open questions and the matches are under theirs, as far under it as the
- * questions are under theirs (List's 12px). It sits in the questions' column
- * (Grid), so its lines end where theirs do. */
 const Gist = styled.div`
+  grid-column: 1 / -1;
   display: flex;
   flex-direction: column;
   gap: 12px;
   margin: 0 0 2px;
 
-  /* The paragraph's own text, not the label above it. */
+  /* The paragraph's own text, not the label above it, in the questions'
+     grey (#40403d). */
   > div p {
     margin: 0;
-    font-size: 0.875rem;
+    font-size: 1rem;
     line-height: 1.65;
-    color: ${ink.mid};
+    color: ${ink.midheavy};
   }
   > div p + p {
     margin-top: 8px;
@@ -93,8 +98,13 @@ const Grid = styled.div<{ $wide: boolean }>`
   display: grid;
   gap: 32px 80px;
   align-items: start;
+  /* Two columns. The questions (Toggle) run on past their column: 48px
+     wider, less the 16px of the Toggle's own -8px margin and 8px padding,
+     puts their words 32px into the 80px gap, 48px short of the column
+     beside. */
   ${({ $wide }) =>
-    $wide && "grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);"}
+    $wide &&
+    "grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); --question-reach: 48px;"}
 `
 
 const List = styled.ul<{ $gap: number }>`
@@ -106,17 +116,13 @@ const List = styled.ul<{ $gap: number }>`
   list-style: none;
 `
 
-/** The SENATE and HOUSE labels' small caps, for a column. */
-const Label = styled.p`
+/** The site's eyebrow, as the SENATE and HOUSE labels are (Eyebrow,
+ * styles.ts), for a column: in a row with what follows it, such as a
+ * count. */
+const Label = styled(Eyebrow)`
   display: flex;
   align-items: baseline;
   gap: 8px;
-  margin: 0;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: ${ink.mid};
 `
 
 const Count = styled.span`
@@ -141,19 +147,21 @@ const Toggle = styled.button`
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  width: 100%;
+  /* Its column, and past it where the grid lets it (Grid's --question-reach). */
+  width: calc(100% + var(--question-reach, 0px));
   margin: -4px -8px;
   padding: 4px 8px;
   background: none;
   border: 0;
   border-radius: 8px;
   text-align: left;
-  /* The question in Lexend, light, in the card's Nunito. */
-  font-family: var(--maple-font-heading);
-  font-weight: 300;
+  /* The question in the card's Nunito, a step lighter than the texts under
+     it. */
+  font-family: var(--maple-font-body);
+  font-weight: 400;
   font-size: 1rem;
   line-height: 1.35;
-  color: ${ink.strong};
+  color: ${ink.midheavy};
 
   ${Chevron} {
     margin-top: 1px;
@@ -162,28 +170,61 @@ const Toggle = styled.button`
   &:hover ${Chevron} {
     color: ${ink.strong};
   }
+
+  /* In the mobile layout, where the texts under it come out to the card's
+     edge (Answers), the open chevron's stroke in line with their edge: the
+     icon draws it about 4px inside its box at 19px. */
+  @media ${MOBILE_LAYOUT} {
+    ${Chevron} {
+      margin-left: -4px;
+    }
+  }
 `
 
+/** The two chambers' cards, under an open question, with room under them
+ * before the next question; closed, they and that room are gone. */
 const Answers = styled.div`
   display: flex;
   gap: 14px;
   margin-top: 14px;
+  margin-bottom: 8px;
 
   @media (min-width: 390px) {
     padding-left: 27px;
   }
+  /* In the mobile layout, in line with the question's chevron rather than
+     its words, for the width. */
+  @media ${MOBILE_LAYOUT} {
+    padding-left: 0;
+  }
 `
 
 /** Each chamber's text on its own surface, outlined in the chamber's ink. */
-const Answer = styled.div<{ $ink: string; $silent?: boolean }>`
+/** The Senate and House boxes' tints: the outcome chips' (outcomeInk in
+ * input/tokens.ts), at 30% opacity. */
+const ANSWER_TINT = {
+  senate: "rgba(234, 241, 251, 0.3)",
+  house: "rgba(251, 243, 227, 0.3)"
+}
+
+/** "Not in the bill" in each box: the House in the warm grey ink.muted was
+ * before (#94938d), the Senate in its cool opposite, as light. */
+const ABSENT_INK = { senate: "#919298", house: "#94938d" }
+
+const Answer = styled.div<{ $ink: string; $silent?: boolean; $tint?: string }>`
   flex: 1 1 0;
   min-width: 0;
   padding: 16px;
-  background: var(--maple-surface-base);
+  background: ${({ $tint }) => $tint ?? "var(--maple-surface-base)"};
   border: 1px
     ${({ $silent, $ink }) =>
       $silent ? `dashed ${line.strong}` : `solid ${$ink}`};
   border-radius: var(--maple-radius-xl);
+
+  /* Tighter in the mobile layout, so the words have more of the width. */
+  @media ${MOBILE_LAYOUT} {
+    padding: 10px;
+  }
 `
 
 const Chamber = styled(Label)<{ $ink: string }>`
@@ -191,19 +232,24 @@ const Chamber = styled(Label)<{ $ink: string }>`
 `
 
 /** Faint italic is for the bare fallback alone: an absence, not content. */
-const AnswerText = styled.p<{ $absent: boolean }>`
+const AnswerText = styled.p<{ $absent: boolean; $absentInk?: string }>`
   margin: 2px 0 0;
-  /* Lexend, light, as the question over it (Toggle); its chamber's label
-     (Label) keeps the card's Nunito. */
-  font-family: var(--maple-font-heading);
-  font-weight: 300;
+  /* In the card's Nunito, as its chamber's label (Label) and the question
+     over it (Toggle) are. 13px from 768px. */
+  font-family: var(--maple-font-body);
+  font-weight: 500;
   font-size: 0.8125rem;
   line-height: 1.4;
-  color: ${({ $absent }) => ($absent ? ink.faint : ink.strong)};
+  color: ${({ $absent, $absentInk }) =>
+    $absent ? $absentInk ?? ink.faint : ink.strong};
   font-style: ${({ $absent }) => ($absent ? "italic" : "normal")};
 
-  @media (min-width: 390px) {
-    font-size: 0.875rem;
+  /* 2px smaller in the mobile layout: 11px, and 12px from 390px. */
+  @media ${MOBILE_LAYOUT} {
+    font-size: 0.6875rem;
+  }
+  @media (min-width: 390px) and (max-width: 767.98px) {
+    font-size: 0.75rem;
   }
 `
 
@@ -265,11 +311,12 @@ const Law = styled(Answer)`
   background: ${lawInk.tint};
 `
 
+/** The 4px under it as padding: the eyebrow's m-0 holds its margins at 0. */
 const LawLabel = styled(Label)`
   justify-content: space-between;
   flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 4px;
+  padding-bottom: 4px;
   color: ${lawInk.fill};
 `
 
@@ -311,8 +358,9 @@ const Note = styled.span<{ $up: boolean }>`
   font-style: normal;
 `
 
+/** The 8px under it as padding, as LawLabel's. */
 const NoteTitle = styled(Label).attrs({ as: "span" })`
-  margin-bottom: 8px;
+  padding-bottom: 8px;
   letter-spacing: 0.07em;
 `
 
@@ -656,11 +704,16 @@ function ChamberAnswers({ d }: { d: DifferenceView }) {
         const absent =
           !!addressedBy && addressedBy !== "both" && addressedBy !== key
         return (
-          <Answer key={chamber} $ink={chamberInk[chamber]} $silent={absent}>
+          <Answer
+            key={chamber}
+            $ink={chamberInk[chamber]}
+            $silent={absent}
+            $tint={absent ? undefined : ANSWER_TINT[key]}
+          >
             <Chamber $ink={absent ? ink.mid : chamberInk[chamber]}>
               {t(key)}
             </Chamber>
-            <AnswerText $absent={!text}>
+            <AnswerText $absent={!text} $absentInk={ABSENT_INK[key]}>
               {text ? (
                 <Marked text={text} notes={d.notes} />
               ) : (

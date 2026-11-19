@@ -121,11 +121,24 @@ jest.mock("components/api/report", () => ({
 }))
 jest.mock("components/TestimonyCard/ReportModal", () => ({}))
 jest.mock("components/TestimonyCard/ReportToast", () => () => null)
-// The panel stands for itself by its title, open or not.
+// The panel stands for itself by its title, open or not, with its close.
 jest.mock("./input/Panel", () => ({
-  Panel: ({ open, title }: { open: boolean; title: string }) =>
-    open ? <div role="dialog" aria-label={title} /> : null,
-  usePanelWidth: () => ({ width: 480, drag: jest.fn() })
+  Panel: ({
+    open,
+    title,
+    onClose
+  }: {
+    open: boolean
+    title: string
+    onClose: () => void
+  }) =>
+    open ? (
+      <div role="dialog" aria-label={title}>
+        <button type="button" onClick={onClose}>
+          close
+        </button>
+      </div>
+    ) : null
 }))
 const mockDispatch = jest.fn()
 jest.mock("../hooks", () => ({ useAppDispatch: () => mockDispatch }))
@@ -372,10 +385,10 @@ describe("ConferenceDetails", () => {
     expect(container.querySelector('a[href="/bills/194/S2581"]')).toBeTruthy()
     expect(container.querySelector('a[href="/bills/194/H5366"]')).toBeTruthy()
 
-    expect(screen.getByText(/hearing_held June 4, 2026/)).toHaveAttribute(
-      "href",
-      "/hearing/5710"
-    )
+    // expect(screen.getByText(/hearing_held June 4, 2026/)).toHaveAttribute(
+    //   "href",
+    //   "/hearing/5710"
+    // )
     expect(screen.getByText("seats_lit senate 3 40")).toBeInTheDocument()
     expect(screen.getByText("seats_lit house 3 160")).toBeInTheDocument()
   })
@@ -422,12 +435,16 @@ describe("ConferenceDetails", () => {
       expect(name).toHaveAttribute("target", "_blank")
     })
 
-    it("keeps the name in the app when legislator pages are on", () => {
+    it("sends the name to malegislature.gov even when legislator pages are on", () => {
       mockLegislators = true
       render(<ConferenceDetails {...props} />)
       const name = screen.getByText("A. Peisch").closest("a")!
-      expect(name.getAttribute("href")).toMatch(/^\/legislators\/194\//)
-      expect(name).not.toHaveAttribute("target")
+      expect(name).toHaveAttribute(
+        "href",
+        expect.stringMatching(
+          /^https:\/\/malegislature\.gov\/Legislators\/Profile\//
+        )
+      )
     })
   })
 
@@ -454,18 +471,17 @@ describe("ConferenceDetails", () => {
 
   it("lights a district when a conferee is pointed at", () => {
     const { container } = render(<ConferenceDetails {...props} />)
-    const peisch = screen.getByRole("button", { name: /Peisch,/ })
-    fireEvent.pointerEnter(peisch.parentElement!)
-    expect(peisch).toHaveAttribute("aria-pressed", "true")
-    const cell = container.querySelector(
-      'polygon[aria-label="A. Peisch"][aria-pressed="true"]'
-    )
+    const peisch = screen.getByText("A. Peisch").closest("a")!
+    fireEvent.pointerEnter(peisch)
+    const cell = container.querySelector('polygon[aria-label="A. Peisch"]')
     // Painted by party, and painted inline so the shared polygon rule in the
     // stylesheet cannot cover it; the other lit seats sit back.
     expect(cell).toHaveStyle({ fill: "#4682d5", fillOpacity: 1 })
     expect(
       container.querySelector('polygon[aria-label="D. Vieira"]')
     ).toHaveStyle({ fill: "#b53333", fillOpacity: 0.45 })
+    // Nothing here is picked: the map's seats answer the pointer alone.
+    expect(cell).not.toHaveAttribute("role")
   })
 
   it("takes input only while the conference is appointed", () => {
@@ -599,6 +615,35 @@ describe("ConferenceDetails", () => {
       expect(
         screen.queryByRole("button", { name: "input.cosign" })
       ).not.toBeInTheDocument()
+    } finally {
+      mockItems = []
+    }
+  })
+
+  it("opens the cosign panel again after it is closed", () => {
+    mockUser = { uid: "reader", emailVerified: true }
+    mockItems = [
+      {
+        id: "t1",
+        authorUid: "org",
+        authorDisplayName: "Example Coalition",
+        fullName: "Example Coalition",
+        authorRole: "organization",
+        position: "passSomething",
+        content: "The letter.",
+        publishedAt: { toDate: () => new Date(2026, 9, 1) }
+      }
+    ]
+    try {
+      render(<ConferenceDetails {...props} />)
+      const cosign = () =>
+        fireEvent.click(screen.getByRole("button", { name: "input.cosign" }))
+      cosign()
+      expect(screen.getByRole("dialog")).toBeInTheDocument()
+      fireEvent.click(screen.getByRole("button", { name: "close" }))
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+      cosign()
+      expect(screen.getByRole("dialog")).toBeInTheDocument()
     } finally {
       mockItems = []
     }

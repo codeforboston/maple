@@ -1,53 +1,70 @@
 import {
   CSSProperties,
   ReactNode,
-  useCallback,
   useEffect,
+  useLayoutEffect,
+  useRef,
   useState
 } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
+import { useMatches } from "../hooks"
 import { navbarBottom } from "../navbar"
+import { FULL_LAYOUT, MOBILE_LAYOUT, PANEL_W } from "../styles"
 import { Maximize2, Minimize2, X } from "./icons"
 import { useLockedScroll } from "./useLockedScroll"
 import { ink, line, wash } from "./tokens"
 
-/** The panel's resting width: a third of the window, held between 400 and 520. */
-const DRAWER_MIN = 400
-const DRAWER_VW = 0.34
-const DRAWER_MAX = 520
-/** The most a drag may take, and the room the page keeps. */
-const RAIL_MAX_SHARE = 0.48
-const PAGE_MIN = 236 + 64 + 64 + 390
+/** Where the panel is a sheet over the window rather than beside the page. */
+const AS_SHEET = "(max-width: 1023.98px)"
 
-const resting = () =>
-  Math.min(Math.max(DRAWER_MIN, DRAWER_VW * window.innerWidth), DRAWER_MAX)
-
-/** How wide the panel is drawn, which the page also needs so it can step aside.
- * `drag` takes a pointer position; `null` is not dragged. */
-export function usePanelWidth() {
-  const [width, setWidth] = useState(DRAWER_MIN)
-  const [dragged, setDragged] = useState<number | null>(null)
-
-  useEffect(() => {
-    const read = () => setWidth(resting())
-    read()
-    window.addEventListener("resize", read)
-    return () => window.removeEventListener("resize", read)
-  }, [])
-
-  const drag = useCallback((px: number) => {
-    const ceiling = Math.max(
-      resting(),
-      Math.min(RAIL_MAX_SHARE * window.innerWidth, window.innerWidth - PAGE_MIN)
-    )
-    setDragged(Math.round(Math.min(Math.max(px, resting()), ceiling)))
-  }, [])
-
-  return { width: dragged ?? width, drag }
+/** Where what heads the window ends on screen now: the conference's beta note
+ * (ConferenceBetaBanner.tsx), wherever the page's scroll has put it, else the
+ * navbar, none once it has scrolled away. */
+const headBottom = () => {
+  const head =
+    document.querySelector(".conference-beta-banner") ??
+    document.querySelector(".main-navbar")
+  return head ? Math.max(0, head.getBoundingClientRect().bottom) : 0
 }
 
-const Aside = styled.aside<{ $open: boolean; $full: boolean }>`
+/** The panel's column beside the page from lg up (Row in
+ * ConferenceDetails.tsx): the drawer's width while the panel stands beside
+ * the page, opening and closing over 400ms as the page's padding did when
+ * the panel stood over it, and none otherwise. It carries the panel in as it
+ * opens, clipping it rather than hiding what overflows, which would stop the
+ * panel pinning in it. Its edge runs the page's whole height, on under the
+ * panel. */
+const Slot = styled.div<{ $beside: boolean; $eases: boolean }>`
+  /* The drawer's width (PANEL_W, styles.ts), the same at every window it
+     stands beside the page in, and the form's column when the cosign fills
+     the window. */
+  --rail-w: ${PANEL_W}px;
+  flex: none;
+  width: 0;
+  overflow: clip;
+
+  @media (min-width: 1024px) {
+    width: ${({ $beside }) => ($beside ? "var(--rail-w)" : "0px")};
+    box-shadow: inset 1px 0 ${line.default};
+    /* Easing only as the panel opens or closes (\`$eases\`); opened out to
+       the window or folded back, the page makes its room at once. */
+    transition: ${({ $eases }) => ($eases ? "width 400ms ease-out" : "none")};
+  }
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+`
+
+/** Over the window, under what heads it (--panel-top), sliding in from the
+ * right: the cosign's full window from lg up, and the sheet below lg. Beside
+ * the page from lg up it is pinned in its column instead (Slot). */
+const Aside = styled.aside<{
+  $open: boolean
+  $full: boolean
+  $folding: boolean
+  $swipe: boolean
+}>`
   /* Nunito throughout, as the mockup sets the panel, over the site's Lexend
      body face (styles/bootstrap.scss); its title and the cosign card's name
      set Lexend themselves. */
@@ -55,7 +72,7 @@ const Aside = styled.aside<{ $open: boolean; $full: boolean }>`
   position: fixed;
   z-index: 40;
   right: 0;
-  top: var(--panel-top, var(--maple-navbar-height));
+  top: var(--panel-top, 0px);
   bottom: 0;
   display: flex;
   flex-direction: column;
@@ -71,35 +88,84 @@ const Aside = styled.aside<{ $open: boolean; $full: boolean }>`
     transition: none;
   }
 
-  /* Its width is the drawer's from lg up; filling the window, it covers the
-     page rather than standing beside it. */
-  @media (min-width: 1024px) {
-    width: ${({ $full }) => ($full ? "auto" : "var(--rail-w)")};
-  }
+  /* Beside the page from lg up: pinned in its column at the navbar's edge, as
+     the page's rail and title are, and carried in by the column opening
+     rather than sliding. It is as tall as the window less what is over it
+     now (--beside-top), so its buttons keep to the window's foot: growing as
+     the navbar and the beta note scroll away, as fluidly as they go. */
+  ${({ $full, $open }) =>
+    $full
+      ? ""
+      : `@media (min-width: 1024px) {
+          position: sticky;
+          top: var(--maple-navbar-height);
+          bottom: auto;
+          width: var(--rail-w);
+          height: calc(100vh - var(--beside-top, 0px));
+          transform: none;
+          /* Its column's opening is all the slide it has: no slide of its
+             own, even coming from a window it was closed from. */
+          transition: visibility 0s linear ${$open ? "0s" : "400ms"};
+        }`}
+
+  /* Filling the window, it covers the page rather than standing beside it. */
   ${({ $full }) => ($full ? `left: 0; z-index: 60; border-left: 0;` : "")}
 
-  /* Below lg the panel is a sheet over the whole window. */
-  @media (max-width: 1023.98px) {
-    top: 0;
+  /* Folding back from the window to the drawer (\`$folding\`), from lg up,
+     still over the page for the slide's 400ms, then taking its column. With
+     something beside the form (\`$swipe\`, the cosign's letter): the form
+     and the header already stand where the drawer does, at the right, so
+     they stay, on the panel's ground there, and what is beside them swipes
+     away to the right (Beside), the page showing through as it goes. With
+     nothing beside it: its left edge eases from the window's to the
+     drawer's. */
+  ${({ $folding, $swipe }) =>
+    !$folding
+      ? ""
+      : $swipe
+      ? `@media (min-width: 1024px) {
+          position: fixed;
+          z-index: 60;
+          top: var(--panel-top, 0px);
+          right: 0;
+          bottom: 0;
+          left: 0;
+          width: auto;
+          height: auto;
+          border-left: 0;
+          transform: none;
+          background: linear-gradient(
+            to right,
+            transparent calc(100% - var(--rail-w)),
+            ${line.default} calc(100% - var(--rail-w)),
+            ${line.default} calc(100% - var(--rail-w) + 1px),
+            var(--maple-surface-page) calc(100% - var(--rail-w) + 1px)
+          );
+        }`
+      : `@media (min-width: 1024px) {
+          position: fixed;
+          z-index: 60;
+          top: var(--panel-top, 0px);
+          right: 0;
+          bottom: 0;
+          left: calc(100% - var(--rail-w));
+          width: auto;
+          height: auto;
+          border-left: 1px solid ${line.default};
+          transform: none;
+          transition: left 400ms ease-out;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          transition: none;
+        }`}
+
+  /* Below lg the panel is a sheet over the window, under what heads it, so
+     the beta note shows over it as everywhere. */
+  @media ${AS_SHEET} {
     left: 0;
     width: auto;
     z-index: 1045;
     border-left: 0;
-  }
-`
-
-const Edge = styled.div`
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 10;
-  width: 6px;
-  margin-left: -3px;
-  cursor: col-resize;
-
-  @media (max-width: 1023.98px) {
-    display: none;
   }
 `
 
@@ -117,7 +183,7 @@ const HeaderRow = styled.div<{ $full: boolean }>`
   align-items: center;
   gap: 12px;
 
-  @media (min-width: 1024px) {
+  @media ${FULL_LAYOUT} {
     ${({ $full }) =>
       $full
         ? `flex: none; margin-left: auto; width: calc(var(--rail-w) - 36px);`
@@ -125,9 +191,9 @@ const HeaderRow = styled.div<{ $full: boolean }>`
   }
 `
 
-/** What is being read beside what is being written, where there is room for
- * both, the form in the drawer's own column; below lg the one goes above the
- * other. */
+/** What is being read beside what is being written, the form in the drawer's
+ * own column, down to the mobile layout (styles.ts); on mobile the one goes
+ * above the other. */
 const Split = styled.div`
   display: flex;
   flex-direction: column;
@@ -135,7 +201,7 @@ const Split = styled.div`
   min-height: 0;
   overflow-y: auto;
 
-  @media (min-width: 1024px) {
+  @media ${FULL_LAYOUT} {
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--rail-w);
     overflow: visible;
@@ -143,16 +209,36 @@ const Split = styled.div`
 `
 
 /** The reading side, inset as the form insets itself: together the gap
- * between them is the mockup's 32px. */
-const Beside = styled.div`
+ * between them is the mockup's 32px. On mobile, over the form, it takes the
+ * room it needs, and the two scroll together; or it is not shown at all
+ * (`$stacked` false). */
+const Beside = styled.div<{ $stacked: boolean; $swiping: boolean }>`
   display: flex;
   flex: 1 1 0;
   min-height: 0;
   padding: 12px 18px 8px;
 
-  @media (min-width: 1024px) {
+  @media ${MOBILE_LAYOUT} {
+    ${({ $stacked }) => ($stacked ? "flex: none;" : "display: none;")}
+  }
+  @media ${FULL_LAYOUT} {
     padding: 12px 14px 22px 18px;
   }
+
+  /* Folding back to the drawer (Aside's $swipe): what is read swipes out to
+     the right, clipped at the form's edge so it never crosses the form or
+     the header's controls, though it still rises into the header's band. */
+  ${({ $swiping }) =>
+    $swiping
+      ? `overflow-x: clip;
+        > * {
+          transform: translateX(calc(100% + 40px));
+          transition: transform 400ms ease-out;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          > * { transition: none; }
+        }`
+      : ""}
 `
 
 const Controls = styled.div`
@@ -184,18 +270,27 @@ const Close = styled.button`
   }
 `
 
-/** The side panel the mockup files input in: under the navigation on the
- * right, a sheet below lg, its left edge draggable. `full`, it fills the
- * window with what is to be read `beside` the form; `onFull` offers the
- * reader the choice. */
+/** Filling the window or not, which means nothing in the sheet below lg: it
+ * fills the window already, laid out as opened out from md (SHEET_SPREAD,
+ * styles.ts), and stacked on mobile. */
+const Toggle = styled(Close)`
+  @media ${AS_SHEET} {
+    display: none;
+  }
+`
+
+/** The side panel the mockup files input in: in its own column beside the
+ * page, pinned as the page scrolls, a sheet below lg. `full`, it fills the
+ * window with what is to be read `beside` the form, and on mobile, where the
+ * two stack, shows it only while `besideStacked`; `onFull` offers the reader
+ * the choice from lg up. As a sheet it is always laid out as `full`. */
 export function Panel({
   open,
   title,
   closeLabel,
-  width,
-  onDrag,
   onClose,
   beside,
+  besideStacked = true,
   full = false,
   onFull,
   children
@@ -203,10 +298,9 @@ export function Panel({
   open: boolean
   title: string
   closeLabel: string
-  width: number
-  onDrag: (px: number) => void
   onClose: () => void
   beside?: ReactNode
+  besideStacked?: boolean
   full?: boolean
   onFull?: (full: boolean) => void
   children: ReactNode
@@ -220,71 +314,127 @@ export function Panel({
     return () => document.removeEventListener("keydown", key)
   }, [open, onClose])
 
-  // Filling the window, the panel is the whole surface: the page behind it
-  // should not scroll under a wheel over the letter. It starts where the
-  // navbar ends, which the locked page then holds still.
-  const filled = open && full
-  useLockedScroll(filled)
+  // Over the page, filling the window or as a sheet, the panel is the whole
+  // surface: the page behind it should not scroll under a wheel over it. It
+  // starts where what heads the window ends, which the locked page then holds
+  // still.
+  const sheet = useMatches(AS_SHEET)
+  const covering = open && (full || sheet)
+  useLockedScroll(covering)
+  // Measured as it comes over the page, and kept after, so it keeps that top
+  // as it slides away or folds back rather than jumping to the window's.
   const [top, setTop] = useState<number>()
-  useEffect(() => setTop(filled ? navbarBottom() : undefined), [filled])
+  useEffect(() => {
+    if (covering) setTop(headBottom())
+  }, [covering])
   const toggle = t(full ? "input.leave_full" : "input.fill_window")
 
+  // What changed last, for how the panel moves. Opening and closing ease the
+  // column's width (Slot's $eases), the panel coming in beside the page and
+  // going; opening out to the window or folding back to the drawer leave the
+  // page to make its room at once. Folding back, the panel narrows to the
+  // right over the page for the slide's 400ms (Aside's $folding), and only
+  // then takes its column. Worked out as the change renders, so the column
+  // and the panel take their way of moving in the same frame as the change.
+  const [last, setLast] = useState({ open, full })
+  const [eases, setEases] = useState(false)
+  const [folding, setFolding] = useState(false)
+  if (open !== last.open || full !== last.full) {
+    setLast({ open, full })
+    setEases(open !== last.open)
+    // Only folding back while it stays open: opening in the drawer after
+    // closing from the window is an opening, which slides in as one.
+    setFolding(open && last.open && last.full && !full)
+  }
+  useEffect(() => {
+    if (!folding) return
+    const done = setTimeout(() => setFolding(false), 400)
+    return () => clearTimeout(done)
+  }, [folding])
+  // While it folds back, laid out as it was across the window, so the letter
+  // narrows away beside the form rather than leaving at once. As a sheet,
+  // with no drawer to fold back to, always laid out across the window.
+  const spread = full || folding || sheet
+
+  // Where the panel's top is in the window now, for its height beside the
+  // page: its column's top, or once that has gone up under the navbar or the
+  // beta note, their edge, which it pins at (navbarBottom, the edge
+  // usePinnedNavbar in hooks.ts publishes for its pinning). Again on every
+  // scroll, in the same moment the navbar moves, so the panel grows as it
+  // goes; and whenever what is over the column changes the page's size.
+  const slot = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => {
+    const el = slot.current
+    if (!el || typeof ResizeObserver === "undefined") return
+    let published = ""
+    const measure = () => {
+      const top = Math.max(navbarBottom(), el.getBoundingClientRect().top)
+      const value = `${top}px`
+      if (value === published) return
+      published = value
+      el.style.setProperty("--beside-top", value)
+    }
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(document.body)
+    window.addEventListener("scroll", measure, { passive: true })
+    window.addEventListener("resize", measure)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener("scroll", measure)
+      window.removeEventListener("resize", measure)
+    }
+  }, [])
+
   return (
-    <Aside
-      $open={open}
-      $full={full}
-      style={
-        {
-          "--rail-w": `${width}px`,
-          ...(top !== undefined && { "--panel-top": `${top}px` })
-        } as CSSProperties
-      }
-      aria-label={title}
-      aria-hidden={!open}
-    >
-      <Edge
-        onPointerDown={e => {
-          e.currentTarget.setPointerCapture(e.pointerId)
-          e.preventDefault()
-          onDrag(window.innerWidth - e.clientX)
-        }}
-        onPointerMove={e => {
-          if (e.currentTarget.hasPointerCapture(e.pointerId))
-            onDrag(window.innerWidth - e.clientX)
-        }}
-        onPointerUp={e => e.currentTarget.releasePointerCapture(e.pointerId)}
-        onPointerCancel={e =>
-          e.currentTarget.releasePointerCapture(e.pointerId)
+    <Slot ref={slot} $beside={open && !full} $eases={eases}>
+      <Aside
+        $open={open}
+        $full={full}
+        $folding={folding}
+        $swipe={!!beside}
+        style={
+          (top !== undefined
+            ? { "--panel-top": `${top}px` }
+            : {}) as CSSProperties
         }
-      />
-      <Header>
-        <HeaderRow $full={full}>
-          <Title>{title}</Title>
-          <Controls>
-            {onFull && (
-              <Close
-                type="button"
-                onClick={() => onFull(!full)}
-                aria-label={toggle}
-                title={toggle}
-              >
-                {full ? <Minimize2 size={17} /> : <Maximize2 size={17} />}
+        aria-label={title}
+        aria-hidden={!open}
+      >
+        <Header>
+          <HeaderRow $full={spread && !!beside}>
+            <Title>{title}</Title>
+            <Controls>
+              {onFull && (
+                <Toggle
+                  type="button"
+                  onClick={() => onFull(!full)}
+                  aria-label={toggle}
+                  title={toggle}
+                >
+                  {full ? <Minimize2 size={17} /> : <Maximize2 size={17} />}
+                </Toggle>
+              )}
+              <Close type="button" onClick={onClose} aria-label={closeLabel}>
+                <X size={18} />
               </Close>
-            )}
-            <Close type="button" onClick={onClose} aria-label={closeLabel}>
-              <X size={18} />
-            </Close>
-          </Controls>
-        </HeaderRow>
-      </Header>
-      {full ? (
-        <Split>
-          <Beside>{beside}</Beside>
-          {children}
-        </Split>
-      ) : (
-        children
-      )}
-    </Aside>
+            </Controls>
+          </HeaderRow>
+        </Header>
+        {/* Filling the window with something to read beside the form (the
+            cosign's letter); with nothing beside it, the form lays itself
+            out across the window (InputForm's Parts). */}
+        {spread && beside ? (
+          <Split>
+            <Beside $stacked={besideStacked} $swiping={folding}>
+              {beside}
+            </Beside>
+            {children}
+          </Split>
+        ) : (
+          children
+        )}
+      </Aside>
+    </Slot>
   )
 }

@@ -175,7 +175,6 @@ export default function ProfileTypeModal({
                 <p className="description">{t("orgDescription")}</p>
               </StyledButton>
             </CardRow>
-            <p>{t("orgVetting")}</p>
             <hr />
             {/* Coloured as the Settings dialog's secondary Cancel
                 (components/EditProfilePage/ProfileSettingsModal.tsx), at this

@@ -3,6 +3,7 @@ import { BackChevron, BackToConferences } from "./BackToConferences"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { Form } from "../bootstrap"
+import { useProfile } from "../db"
 import { Internal, maple } from "../links"
 import { Chair, Conferees, ConfereeFace, yoursKey } from "./Conferees"
 import { ConferenceTable } from "./ConferenceTable"
@@ -26,10 +27,11 @@ import {
   personKey
 } from "./types"
 
-/** What the explorer is holding: one conference (and perhaps one of its six),
- * one legislator, or the reader's own two. */
+/** What the explorer is holding: one conference, one legislator (picked on
+ * the map), or the reader's own two. A held conference's six are read by
+ * pointing at them, not held. */
 type Selection =
-  | { kind: "conference"; id: string; seat?: string }
+  | { kind: "conference"; id: string }
   | { kind: "seat"; key: string }
   | { kind: "mine" }
   | null
@@ -187,7 +189,7 @@ const PanelTitle = styled.h2`
 
 const CommitteeLink = styled(Internal)`
   font-family: "Nunito", var(--bs-body-font-family);
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--maple-brand-primary-strong);
   text-decoration: none;
@@ -215,6 +217,15 @@ const Empty = styled.p`
   max-width: 22rem;
   text-align: center;
   font-size: 0.875rem;
+  color: var(--maple-text-muted);
+`
+
+/** Under the reader's own legislators, or the line that they serve on none:
+ * the one of the two their profile doesn't name (MissingLegislator). */
+const Missing = styled.span`
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 0.8125rem;
   color: var(--maple-text-muted);
 `
 
@@ -308,13 +319,15 @@ const PersonCard = styled.div`
 `
 
 /** One legislator in the panel: who they are, and every conference they sit
- * on. */
+ * on. Ringed, as their face is in the table while they are read here (a
+ * seat picked on the map, or the reader's own), so the two answer each
+ * other, as a held conference's six do (Conferees). */
 function Legislator({ sitting, own }: { sitting: Sitting; own: boolean }) {
   const { t } = useTranslation("conferences")
   const { person, on } = sitting
   return (
     <PersonCard>
-      <ConfereeFace c={person} size={48} own={own} />
+      <ConfereeFace c={person} size={48} own={own} lit />
       <div className="min-w-0">
         <div className="name">{person.name}</div>
         {own && <div className="sub">{t(yoursKey(person))}</div>}
@@ -340,6 +353,27 @@ function Legislator({ sitting, own }: { sitting: Sitting; own: boolean }) {
   )
 }
 
+/** Where to add the reader's legislators: their profile, as the review step
+ * sends them (input/Review.tsx). */
+const ADD_LEGISLATORS_HREF = "/edit-profile/about-you"
+
+/** The way to add what of the reader's two legislators their profile doesn't
+ * name: one of them, or both (`legislators`). */
+function MissingLegislator({
+  which
+}: {
+  which: "representative" | "senator" | "legislators"
+}) {
+  const { t } = useTranslation("conferences")
+  return (
+    <Missing>
+      <DottedInternal href={ADD_LEGISLATORS_HREF}>
+        {t(`mine_add_${which}`)}
+      </DottedInternal>
+    </Missing>
+  )
+}
+
 /**
  * Every conference in the court and everyone sitting on them. The table on
  * the left and the maps on the right answer each other: choose a conference
@@ -362,6 +396,24 @@ export function ConferenceExplorer({
     [allConferences]
   )
   const mine = useMyLegislators()
+  // Which of their two legislators the reader's profile names. With one,
+  // their switch's view names that one and offers the way to add the other
+  // (MissingLegislator); with neither, the way to add both. Signed out, no
+  // profile, and no switch.
+  const { profile } = useProfile()
+  const hasRep = !!profile?.representative?.id
+  const hasSen = !!profile?.senator?.id
+  const known =
+    hasRep && !hasSen ? "representative" : hasSen && !hasRep ? "senator" : null
+  const knownName = known ? profile?.[known]?.name : undefined
+  const missing =
+    known === "representative"
+      ? "senator"
+      : known === "senator"
+      ? "representative"
+      : !hasRep && !hasSen
+      ? "legislators"
+      : null
   const [selected, setSelected] = useState<Selection>(null)
   // Pointing at a seat paints the maps only; the table and the panel wait
   // for a click.
@@ -409,13 +461,10 @@ export function ConferenceExplorer({
     : selected?.kind === "mine"
     ? seatsOf(mineSittings.map(s => s.person))
     : everyone
-  const mapSelected =
-    hoveredSeat ??
-    (selected?.kind === "conference"
-      ? selected.seat ?? null
-      : selected?.kind === "seat"
-      ? selected.key
-      : null)
+  // The seat being read: the one pointed at, on the maps or in the panel,
+  // else the one picked on the map.
+  const pickedSeat = selected?.kind === "seat" ? selected.key : null
+  const mapSelected = hoveredSeat ?? pickedSeat
 
   const selectRow = (id: string) =>
     setSelected(
@@ -423,13 +472,11 @@ export function ConferenceExplorer({
         ? null
         : { kind: "conference", id }
     )
-  // Inside a held conference a seat is one of its six; otherwise it is the
-  // legislator to read.
+  // A seat clicked on the map, with no conference held: the legislator to
+  // read. In a held conference the maps answer only the pointer.
   const pinSeat = (key: string) =>
     setSelected(
-      selected?.kind === "conference"
-        ? { ...selected, seat: selected.seat === key ? undefined : key }
-        : selected?.kind === "seat" && selected.key === key
+      selected?.kind === "seat" && selected.key === key
         ? null
         : { kind: "seat", key }
     )
@@ -465,10 +512,10 @@ export function ConferenceExplorer({
               conferees={conferees}
               selected={held?.id ?? null}
               highlighted={highlighted}
-              // In a held conference, the legislator pointed at or pinned in
-              // the panel or on the maps, ringed in the table, and the other
-              // conferences they sit on brought forward.
-              ringed={held ? mapSelected : null}
+              // In a held conference, the legislator pointed at in the panel or
+              // on the maps, ringed in the table, and the other conferences
+              // they sit on brought forward.
+              ringed={held ? hoveredSeat : null}
               onSelect={selectRow}
             />
             <Explorer>
@@ -495,26 +542,42 @@ export function ConferenceExplorer({
                     {CHAMBERS.map(chamber => (
                       <Conferees
                         key={chamber}
-                        court={held.court}
                         chamber={chamber}
                         conferees={heldConferees}
                         mine={mine}
-                        selected={mapSelected}
+                        selected={hoveredSeat}
                         onHover={hoverSeat}
-                        onPin={pinSeat}
                       />
                     ))}
                   </Chambers>
                 ) : shown?.length ? (
-                  shown.map(s => (
-                    <Legislator
-                      key={s.person.memberCode}
-                      sitting={s}
-                      own={mine.has(s.person.memberCode)}
-                    />
-                  ))
+                  <>
+                    {shown.map(s => (
+                      <Legislator
+                        key={s.person.memberCode}
+                        sitting={s}
+                        own={mine.has(s.person.memberCode)}
+                      />
+                    ))}
+                    {selected?.kind === "mine" && missing && (
+                      <MissingLegislator which={missing} />
+                    )}
+                  </>
                 ) : (
-                  <Empty>{t(shown ? "mine_none" : "explorer_empty")}</Empty>
+                  // Their legislators serving on none: both of them, or the
+                  // one the profile names, by name, then the way to add the
+                  // other. With neither on the profile, that MAPLE doesn't
+                  // know them, then the way to add them.
+                  <Empty>
+                    {!shown
+                      ? t("explorer_empty")
+                      : missing === "legislators"
+                      ? t("mine_unknown")
+                      : known
+                      ? t(`mine_none_${known}`, { name: knownName })
+                      : t("mine_none")}
+                    {shown && missing && <MissingLegislator which={missing} />}
+                  </Empty>
                 )}
               </Panel>
               <Maps>
@@ -525,21 +588,25 @@ export function ConferenceExplorer({
                     people={people}
                     selected={mapSelected}
                     onHover={hoverSeat}
-                    onPin={pinSeat}
+                    // Clicking picks a legislator only with no conference
+                    // held; in one, the maps answer the pointer alone.
+                    onPin={held ? undefined : pinSeat}
                   />
                 ))}
               </Maps>
               <Below>
                 {/* A committee held: the way to its page. Otherwise the way to
                     the committees' pages, beside the reader's own
-                    legislators' switch where they have any. */}
+                    legislators' switch once they are signed in, whether or
+                    not their profile names any (the panel then says how to
+                    add them). */}
                 {held ? (
                   <DottedInternal href={maple.conference(held)}>
                     {t("go_to_conference")}
                   </DottedInternal>
                 ) : (
                   <>
-                    {mine.size > 0 && (
+                    {profile && (
                       <LegislatorsSwitch
                         type="switch"
                         id="conference-my-legislators"

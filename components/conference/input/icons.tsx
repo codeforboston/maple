@@ -183,6 +183,12 @@ export const Link2 = (p: Props) => (
     <line x1="8" x2="16" y1="12" y2="12" />
   </Icon>
 )
+export const SquareCheck = (p: Props) => (
+  <Icon {...p}>
+    <rect width="18" height="18" x="3" y="3" rx="2" />
+    <path d="m9 12 2 2 4-4" />
+  </Icon>
+)
 export const SquarePen = (p: Props) => (
   <Icon {...p}>
     <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />

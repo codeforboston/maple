@@ -10,6 +10,7 @@ import { Timestamp } from "firebase/firestore"
 import { Trans, useTranslation } from "next-i18next"
 import styled, { keyframes } from "styled-components"
 import { useAuth } from "components/auth"
+import { LoadingButton } from "components/buttons"
 import {
   ConferencePosition,
   ConferenceTestimony,
@@ -20,7 +21,7 @@ import {
   WorkingDraft
 } from "components/db"
 import { Internal } from "components/links"
-import { hasLegislators } from "functions/src/conferenceLetters/letter"
+import { FULL_LAYOUT, SHEET_SPREAD } from "../styles"
 import type { ConfereeView } from "../types"
 import {
   CountsOnce,
@@ -89,12 +90,48 @@ const OptionTitle = styled.span`
   font-family: var(--maple-font-heading);
 `
 
-/** What a position means, under its label where it needs saying. */
-const OptionHelp = styled.span`
+/** The writing step's two parts, the positions and then the words: one over
+ * the other in the drawer and on mobile; side by side from md, the words
+ * with twice the positions' room, when the panel fills the window (`$full`)
+ * or is a sheet (SHEET_SPREAD, styles.ts). */
+const Parts = styled.div<{ $full: boolean }>`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+
+  @media ${({ $full }) => ($full ? FULL_LAYOUT : SHEET_SPREAD)} {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    column-gap: 32px;
+  }
+`
+
+/** The words and their label, the field taking the room left: from md, in
+ * the drawer, the sheet and the window alike, all of it, down to the
+ * buttons, rather than the field's 280px most, which holds on a phone. */
+const Writing = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+
+  @media ${FULL_LAYOUT} {
+    textarea {
+      max-height: none;
+    }
+  }
+`
+
+/** What a position means, under its label where it needs saying: in the
+ * panel's muted grey, or picked (`$on`), in the position's own colour, as
+ * its label is. */
+const OptionHelp = styled.span<{ $on: boolean }>`
   display: block;
   margin-top: 2px;
   font-size: 0.75rem;
   font-weight: 300;
+  ${({ $on }) => ($on ? "" : `color: ${ink.mid};`)}
 `
 
 const ask = keyframes`
@@ -158,20 +195,49 @@ export const Muted = styled(Quiet)`
   color: ${ink.muted};
 `
 
-export const Primary = styled.button`
-  padding: 8px 18px;
-  border: 0;
-  border-radius: 8px;
-  background: ${brand.fill};
-  color: #fff;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  &:hover:not(:disabled) {
-    background: ${brand.hover};
+/**
+ * The panel's go-ahead: MAPLE's primary button (MAPLE blue,
+ * styles/globals.css), set as Share your input beside the page's title is
+ * (ShareButton.tsx), Lexend, medium, a step bolder below 992px, 6px above and
+ * below and 16px a side, at the site's corners; but in the panel's 13px, on
+ * Share's 21px line, so as tall. A loading button (components/buttons.tsx),
+ * spinning while `loading`.
+ *
+ * Disabled, or dressed as disabled but still pressable (aria-disabled, where
+ * a press shows what is missing), it takes the paler fill, and under the
+ * pointer only a shade darker, never the hover's full blue. `&&` lifts these
+ * over Bootstrap's own .btn rules whatever order the stylesheets load in.
+ */
+export const Primary = styled(LoadingButton).attrs({ variant: "primary" })`
+  && {
+    padding: 0.375rem 1rem;
+    font-family: var(--maple-font-heading);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 21px;
+    white-space: nowrap;
   }
-  &:disabled,
-  &[aria-disabled="true"] {
+  @media (max-width: 991.98px) {
+    && {
+      font-weight: 600;
+    }
+  }
+  &&:disabled,
+  &&[aria-disabled="true"] {
+    border-color: transparent;
     background: ${brand.fillDisabled};
+    opacity: 1;
+  }
+  &&[aria-disabled="true"]:hover {
+    background: rgba(31, 59, 97, 0.45);
+  }
+`
+
+/** Posting, on the review step: one width whatever it says, Submit Input or
+ * Cosign, and whether it spins. */
+const Submit = styled(Primary)`
+  && {
+    min-width: 9rem;
   }
 `
 
@@ -200,13 +266,6 @@ export const Hint = styled.p`
   text-align: right;
   font-size: 0.75rem;
   color: ${ink.mid};
-`
-
-/** Where posted input goes, under the field it is written in. */
-const Delivery = styled(Hint)`
-  margin-top: 8px;
-  text-align: left;
-  line-height: 1.5;
 `
 
 /** A field that asks for what is missing: pressed on without it, the field
@@ -353,9 +412,15 @@ export function ReviewStep({
           <Muted type="button" onClick={onCancel}>
             {t("input.cancel")}
           </Muted>
-          <Primary type="button" disabled={!canPost} onClick={onPost}>
+          {/* Spinning from the press until it is posted and the panel goes. */}
+          <Submit
+            type="button"
+            disabled={!canPost}
+            loading={posting || edit.publishTestimony.loading}
+            onClick={onPost}
+          >
             {t(cosign ? "input.cosign" : "review.submit")}
-          </Primary>
+          </Submit>
         </Actions>
       </div>
     </Body>
@@ -373,6 +438,8 @@ export function InputForm({
   conferees,
   edit,
   subject,
+  bills,
+  full = false,
   step,
   onStep,
   onCancel,
@@ -386,6 +453,12 @@ export function InputForm({
    * through. */
   edit: UseEditConferenceTestimony
   subject: string
+  /** Each chamber's bill, as written (S.2916), for the positions that pass
+   * one as it stands. */
+  bills: { senate: string; house: string }
+  /** The panel fills the window: the positions and the words side by side
+   * (Parts). */
+  full?: boolean
   step: Step
   onStep: (s: Step) => void
   onCancel: () => void
@@ -465,52 +538,49 @@ export function InputForm({
     return (
       <Body>
         <Scroll>
-          <Label>{t("input.position_label")}</Label>
-          <Options>
-            {conferencePositions.map(p => {
-              const help = t(`input.position.${p}.help`, { defaultValue: "" })
-              return (
-                <Option
-                  key={p}
-                  type="button"
-                  $on={p === position}
-                  $position={p}
-                  aria-pressed={p === position}
-                  onClick={() => setPosition(p)}
-                >
-                  <OptionTitle>{t(`input.position.${p}.long`)}</OptionTitle>
-                  {help && <OptionHelp>{help}</OptionHelp>}
-                </Option>
-              )
-            })}
-          </Options>
-          <Label>{t("input.body_label")}</Label>
-          <Field
-            ref={field}
-            value={content}
-            placeholder={t(`input.position.${position}.prompt`)}
-            $refused={ask.refused}
-            $asking={ask.asking}
-            onAnimationEnd={ask.asked}
-            onChange={e => {
-              if (e.target.value.trim()) ask.settle()
-              setContent(e.target.value)
-            }}
-          />
-          <Delivery>
-            {hasLegislators(profile ?? {}) ? (
-              t("input.delivery_note")
-            ) : (
-              <Trans t={t} i18nKey="input.delivery_note_weekly">
-                When you post, MAPLE will include your input in the weekly
-                update to the conferees.
-                <Internal href="/edit-profile/about-you">
-                  Add your representative and senator to your profile
-                </Internal>
-                and MAPLE will email them your input too.
-              </Trans>
-            )}
-          </Delivery>
+          <Parts $full={full}>
+            <div>
+              <Label>{t("input.position_label")}</Label>
+              <Options>
+                {conferencePositions.map(p => {
+                  const help = t(`input.position.${p}.help`, {
+                    ...bills,
+                    defaultValue: ""
+                  })
+                  return (
+                    <Option
+                      key={p}
+                      type="button"
+                      $on={p === position}
+                      $position={p}
+                      aria-pressed={p === position}
+                      onClick={() => setPosition(p)}
+                    >
+                      <OptionTitle>{t(`input.position.${p}.long`)}</OptionTitle>
+                      {help && (
+                        <OptionHelp $on={p === position}>{help}</OptionHelp>
+                      )}
+                    </Option>
+                  )
+                })}
+              </Options>
+            </div>
+            <Writing>
+              <Label>{t("input.body_label")}</Label>
+              <Field
+                ref={field}
+                value={content}
+                placeholder={t(`input.position.${position}.prompt`)}
+                $refused={ask.refused}
+                $asking={ask.asking}
+                onAnimationEnd={ask.asked}
+                onChange={e => {
+                  if (e.target.value.trim()) ask.settle()
+                  setContent(e.target.value)
+                }}
+              />
+            </Writing>
+          </Parts>
           {failed && <Problem role="alert">{t("input.error")}</Problem>}
         </Scroll>
         <Actions>

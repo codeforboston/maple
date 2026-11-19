@@ -84,14 +84,6 @@ const Table = styled.table`
     width: var(--chamber-gap);
   }
 
-  /* Below 1200, where the card is short of room, the Chair and Minority
-     labels go: wider than the faces, they hold the face columns open. */
-  @media (max-width: 1199.98px) {
-    .sublabels {
-      display: none;
-    }
-  }
-
   /* Below 992, the names alone: no faces, so no chambers over them and no
      room between them. */
   @media (max-width: 991.98px) {
@@ -101,13 +93,6 @@ const Table = styled.table`
       display: none;
     }
   }
-`
-
-const SubLabel = styled.span`
-  display: block;
-  font-size: 0.6875rem;
-  color: var(--maple-text-muted);
-  opacity: 0.7;
 `
 
 /** `near`: a row brought near the held one (pointed at while another is
@@ -189,7 +174,10 @@ const Clear = styled.button<{ $shown: boolean }>`
  * Every conference, one row each, with its six faces under the chamber they
  * sit for. Pointing at a row sets the others back; choosing one holds it and
  * greys the rest. While legislators are highlighted from the map or the
- * toggle, the rows they sit on stay and their faces take the ring.
+ * toggle, the rows they sit on stay and their faces take the ring. Held or
+ * highlighted, the row pointed at comes partway forward, to show it can be
+ * chosen. Highlighting legislators who sit on none of these conferences
+ * changes nothing.
  */
 export function ConferenceTable({
   conferences,
@@ -215,9 +203,17 @@ export function ConferenceTable({
 }) {
   const { t } = useTranslation("conferences")
   const [hovered, hover] = useHover<string>()
+  // Highlighted legislators who sit on none of these conferences (the
+  // reader's own, where their profile names none, or none of them serves)
+  // leave the table as it is with nothing chosen.
+  const highlighting =
+    !!highlighted &&
+    conferences.some(c =>
+      (conferees[c.id] ?? []).some(p => highlighted.has(personKey(p)))
+    )
   const mode = selected
     ? "held"
-    : highlighted
+    : highlighting
     ? "highlight"
     : hovered
     ? "hover"
@@ -232,19 +228,6 @@ export function ConferenceTable({
             <th key={chamber} colSpan={3} scope="colgroup">
               <Eyebrow>{t(chamber.toLowerCase())}</Eyebrow>
             </th>
-          ])}
-          <td />
-        </tr>
-        <tr className="sublabels">
-          <td />
-          {chamberCells(chamber => [
-            <td key={`${chamber}-chair`}>
-              <SubLabel>{t("chair_col")}</SubLabel>
-            </td>,
-            <td key={`${chamber}-member`} />,
-            <td key={`${chamber}-minority`}>
-              <SubLabel>{t("minority_col")}</SubLabel>
-            </td>
           ])}
           <td />
         </tr>
@@ -275,12 +258,15 @@ export function ConferenceTable({
             : mode === "highlight" || mode === "hover"
             ? "mid"
             : "strong"
-          // In a held conference, the row pointed at, and the ringed
-          // legislator's other rows, are brought near: at 600, in the
-          // lighter colour (NameButton).
-          const near =
-            !isSelected &&
-            (sharesRinged || (mode === "held" && hovered === c.id))
+          // The row pointed at while a conference is held or legislators are
+          // highlighted, which still shows it can be chosen, though less
+          // than with nothing chosen.
+          const pointed =
+            (mode === "held" || mode === "highlight") && hovered === c.id
+          // The row pointed at, where it isn't already forward, and in a held
+          // conference the ringed legislator's other rows, are brought near:
+          // at 600, in the lighter colour (NameButton).
+          const near = !isSelected && (sharesRinged || (pointed && !on))
           const rowTone = near ? "near" : tone
           return (
             <tr
@@ -316,11 +302,11 @@ export function ConferenceTable({
                     <td key={`${chamber}-${slot}`} className="face">
                       {p && (
                         <Face
-                          $dim={highlighted ? !lit : !on && !lit}
-                          // Pointed at while another is held: less dimmed.
-                          $soft={
-                            mode === "held" && !isSelected && hovered === c.id
-                          }
+                          // Highlighting, only the highlighted faces stay.
+                          $dim={mode === "highlight" ? !lit : !on && !lit}
+                          // Pointed at while another is held, or while
+                          // legislators are highlighted: less dimmed.
+                          $soft={pointed && !isSelected}
                           $gray={
                             mode === "held" &&
                             !isSelected &&

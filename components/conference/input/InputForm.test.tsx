@@ -118,6 +118,7 @@ function Form({
       conferees={conferees}
       edit={edit}
       subject="Phone-Free Schools"
+      bills={{ senate: "S.1", house: "H.1" }}
       step={step}
       onStep={jest.fn()}
       onCancel={jest.fn()}
@@ -143,17 +144,6 @@ const email = () =>
   fireEvent.click(screen.getByRole("button", { name: "review.preview_email" }))
 
 describe("InputForm", () => {
-  it("promises the email to legislators only when the profile has some", () => {
-    const { unmount } = render(<Form step="write" />)
-    expect(screen.getByText("input.delivery_note")).toBeInTheDocument()
-    unmount()
-
-    mockProfile.current = { fullName: "Gina K." }
-    render(<Form step="write" />)
-    expect(screen.getByText("input.delivery_note_weekly")).toBeInTheDocument()
-    expect(screen.queryByText("input.delivery_note")).not.toBeInTheDocument()
-  })
-
   it.each([
     ["a draft left from before", { draft: { content: "Old words." } }],
     [

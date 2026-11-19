@@ -7,64 +7,157 @@ import { Body, ClampedText } from "./ClampedText"
 import { accountTypeOf, initialsOf, nameOf } from "./accounts"
 import { useInputContext } from "./context"
 import { positionColours } from "./positions"
+import { sc, SMALL_SCALE } from "./scale"
 import { brand, ink, line, shadow } from "./tokens"
 import { useWide } from "./useWide"
 
-/** Its text in Nunito, as the page's other cards' is. */
-const Card = styled.article<{ $bare: boolean; $own: boolean }>`
+/** Its text in Nunito, as the page's other cards' is. Every length in it
+ * scales with `--entry-scale` (sc, scale.ts): small (`$small`), it is the
+ * card at SMALL_SCALE. Flush (`$flush`, a cosign in context, Entry's
+ * `inContext`), it has no padding of its own, the list it hangs in placing
+ * it (Cosigns.tsx). */
+const Card = styled.article<{
+  $bare: boolean
+  $small: boolean
+  $flush: boolean
+}>`
   position: relative;
   padding: 20px;
   font-family: var(--maple-font-body);
-  ${({ $bare, $own }) =>
+  /* The reader's own card is set as any other (YouMark). */
+  ${({ $bare }) =>
     $bare
       ? ""
-      : `background: ${$own ? brand.soft : "var(--maple-surface-base)"};
-  border: 1px solid ${$own ? brand.edge : line.default};
+      : `background: var(--maple-surface-base);
+  border: 1px solid ${line.default};
   border-radius: 5px;
   box-shadow: ${shadow.raised};`}
 
   @media (max-width: 450px) {
     padding: 14px;
   }
+
+  ${({ $small }) => ($small ? `--entry-scale: ${SMALL_SCALE};` : "")}
+  ${({ $flush }) =>
+    $flush
+      ? `&& {
+    padding: 0;
+  }`
+      : ""}
 `
 
+/** The portrait and who it is, the two centred on each other at every
+ * width; the corner keeps to the top (Corner). */
 const Head = styled.div<{ $wide: boolean }>`
   display: flex;
-  align-items: ${({ $wide }) => ($wide ? "center" : "flex-start")};
-  gap: ${({ $wide }) => ($wide ? "18px" : "14px")};
+  align-items: center;
+  gap: ${({ $wide }) => ($wide ? sc(18) : sc(14))};
 
   @media (max-width: 450px) {
-    gap: ${({ $wide }) => ($wide ? "18px" : "9px")};
+    gap: ${({ $wide }) => ($wide ? sc(18) : sc(9))};
   }
 `
 
-export const Disc = styled.div`
+/** A person's initials in a disc, 40px unless `--disc` says otherwise. The
+ * initials and the room between them are always the same share of the
+ * disc, 13px letters 1px apart at 40px, so a smaller or larger disc sets
+ * only `--disc` and they scale with it. The reader's own (`$own`) is the
+ * same disc inside, ringed around in MAPLE blue, with "You" over its foot
+ * (YouBand). */
+export const Disc = styled.div<{ $own?: boolean }>`
+  --disc: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 40px;
-  height: 40px;
+  width: var(--disc);
+  height: var(--disc);
   border-radius: 9999px;
   background: ${brand.soft};
-  border: 1px solid ${brand.edge};
-  font-size: 0.8125rem;
+  /* The reader's own, from the inside out: its usual 1px edge moved 1px in,
+     its edge white, and around the disc a 2px white gap and a 2px MAPLE blue
+     ring at 40px, scaling with the disc. Drawn, not laid out, so nothing
+     around the disc moves. (Tried after, then dropped: the edge alone in
+     its usual colour at 2px and 3px reaching out, or 2px reaching in; a 1px
+     blue edge with a 1px ring of the usual colour, either way round; a 2px
+     blue rim inside the disc, with and without a 2px white ring.) */
+  border: 1px solid
+    ${({ $own }) => ($own ? "var(--maple-surface-base)" : brand.edge)};
+  box-shadow: ${({ $own }) =>
+    $own
+      ? `inset 0 0 0 1px ${brand.edge},
+    0 0 0 calc(var(--disc) * 0.05) var(--maple-surface-base),
+    0 0 0 calc(var(--disc) * 0.1) var(--maple-brand-primary)`
+      : "none"};
+  /* The initials in the card's Nunito, semibold. (In Lexend at 500 for a
+     while: font-family var(--maple-font-heading).) */
+  font-size: calc(var(--disc) * 0.325);
   font-weight: 600;
-  letter-spacing: 0.02em;
+  letter-spacing: calc(var(--disc) * 0.025);
+  /* Letter spacing also falls after the last letter, which would sit the
+     initials left of centre by half of it: as much room before the first. */
+  padding-left: calc(var(--disc) * 0.025);
   color: ${brand.ink};
+
+  /* The reader's own carries a pill (YouBand) laid over its foot; the disc
+     itself, initials and all, is as any other's. */
+  ${({ $own }) => ($own ? "position: relative;" : "")}
 `
 
-/** The card's own portrait, which the mockup brings down with the type: 34
- * at the site's narrow width, 26 on a phone, its letters a step smaller. */
+/** "You" in a MAPLE blue pill hovering over the foot of the reader's own
+ * avatar (Disc's `$own`), centred, edged in white so it stands off the
+ * avatar and the card; sized from the disc as its initials are, and the
+ * disc does not move for it. The word is drawn from `data-label` rather
+ * than written in the page, so the page says it once, in the name line,
+ * where a screen reader hears it (YouMark). */
+const YouBand = styled.span`
+  position: absolute;
+  left: 50%;
+  /* Its middle 2px under the disc's foot at 40px, the pill 12px tall: 1px
+     above where it sat, middle on a blue ring's, before the experiments
+     with it (disc * -0.225). (Tried since, then dropped: its middle on the
+     disc's foot, disc * -0.15; under the avatar; clipped to the avatar's
+     circle, with a light pill.) */
+  bottom: calc(var(--disc) * -0.2);
+  transform: translateX(-50%);
+  height: calc(var(--disc) * 0.3);
+  display: flex;
+  align-items: center;
+  padding: 0 calc(var(--disc) * 0.15);
+  border-radius: 9999px;
+  background: var(--maple-brand-primary);
+  box-shadow: 0 0 0 calc(var(--disc) * 0.0375) var(--maple-surface-base);
+  color: #fff;
+  /* "YOU" in the initials' face, bold capitals a little apart. */
+  font-size: calc(var(--disc) * 0.175);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  &::after {
+    content: attr(data-label);
+  }
+`
+
+/** The card's own portrait, which the mockup brings down with the type: 40,
+ * 34 at the site's narrow width, 26 on a phone, each scaled with the card
+ * (sc). Doubled (&&) so each holds over Disc's own size whatever order the
+ * styles load in. */
 const Portrait = styled(Disc)`
+  && {
+    --disc: ${sc(40)};
+  }
   @media (max-width: 767px) {
-    width: 34px;
-    height: 34px;
-    font-size: 0.6875rem;
+    && {
+      --disc: ${sc(34)};
+    }
   }
   @media (max-width: 450px) {
-    width: 26px;
-    height: 26px;
+    && {
+      --disc: ${sc(26)};
+    }
   }
 `
 
@@ -74,46 +167,83 @@ export const Who = styled.div`
 `
 
 const NameRow = styled.p`
-  /* Names in Lexend, as the cosign card's, in Nunito cards too. */
-  font-family: var(--maple-font-heading);
+  /* Names in the card's Nunito, 500, 15px at every width; the names with
+     their icons (Names) and the chip on one centre line. */
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: ${sc(6)};
   margin: 0;
-  font-size: 0.9375rem;
-  font-weight: 400;
+  font-size: ${sc(15)};
+  font-weight: 500;
   line-height: 1;
   color: ${ink.strong};
 
-  /* The position chip a pixel up on the card; the newsfeed's keeps its own. */
+  /* The position chip at 11px on the card, at every width; the newsfeed's
+     keeps its own. */
   .position-chip {
-    font-size: 0.75rem;
+    font-size: ${sc(11)};
   }
 
+  /* The account icons: 15px, 13px under 768px, 12px on a phone. */
   svg {
-    width: 16px;
-    height: 16px;
+    width: ${sc(15)};
+    height: ${sc(15)};
   }
 
   @media (max-width: 767px) {
     svg {
-      width: 14px;
-      height: 14px;
+      width: ${sc(13)};
+      height: ${sc(13)};
     }
   }
   @media (max-width: 450px) {
-    gap: 4px;
-    font-size: 0.875rem;
+    gap: ${sc(4)};
     svg {
-      width: 13px;
-      height: 13px;
+      width: ${sc(12)};
+      height: ${sc(12)};
     }
   }
 `
 
+/** Who filed it: the author (Person), and on a cosign, "cosigned" and the
+ * cosigned author (ParentName), standing on one baseline with each other,
+ * their letters on one line and any descenders hanging below it; the whole
+ * is centred on the chip beside it (NameRow). Spaced as the line is. */
+const Names = styled.span`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: inherit;
+  min-width: 0;
+`
+
+/** How far an account icon drops below the name's baseline: about half the
+ * room the font keeps under its letters, so it sits between standing on the
+ * letters' line and the bottom of the name's line. */
+const iconDrop = `
+  svg {
+    position: relative;
+    top: 0.09em;
+  }
+`
+
+/** One person in the name line: the author's name and account icon, the
+ * icon on the name's baseline, dropped a little below it (iconDrop), as the
+ * cosigned author's is (ParentName). */
+const Person = styled.span`
+  display: inline-flex;
+  align-items: baseline;
+  ${iconDrop}
+  gap: inherit;
+  min-width: 0;
+`
+
+/** The author's name, its letters a little apart (2%), as the cosigned
+ * author's are (ParentName). */
 const Name = styled.span`
   min-width: 0;
+  letter-spacing: 0.02em;
 `
 
 export const Cosigned = styled.span`
@@ -121,26 +251,38 @@ export const Cosigned = styled.span`
   color: ${ink.mid};
 `
 
-/** The cosigned entry's name, which opens it where the caller can. */
+/** The cosigned entry's name and account icon, one target that opens it
+ * where the caller can. The dotted line runs under both, so it is drawn as
+ * the button's bottom edge: an underline would stop at the icon. Inside,
+ * the icon sits by the name's baseline as the author's does (Person). */
 const ParentName = styled.button`
+  display: inline-flex;
+  align-items: baseline;
+  ${iconDrop}
+  gap: inherit;
   min-width: 0;
-  padding: 0;
+  /* The dotted line 4px further under the name; the room it and the line's
+     own 1px add below are taken back, so the name line is no taller. */
+  padding: 0 0 4px;
+  margin-bottom: -5px;
   border: 0;
+  border-bottom: 1px dotted ${ink.faint};
   background: none;
   font: inherit;
+  letter-spacing: 0.02em;
   color: inherit;
   text-align: left;
-  text-decoration: underline dotted ${ink.faint};
-  text-underline-offset: 3px;
   &:disabled {
     cursor: text;
   }
   &:hover:not(:disabled) {
-    text-decoration-color: ${ink.mid};
+    border-bottom-color: ${ink.mid};
   }
 `
 
-/** A cosign posted without words of its own says so, set apart from words. */
+/** A cosign posted without words of its own says so, set apart from words,
+ * except under its input (Entry's `inContext`), where it says nothing unless
+ * asked to (Entry's `showNoWords`). */
 export const NoWords = styled(Body)`
   font-style: italic;
   color: ${ink.faint};
@@ -150,18 +292,18 @@ const Chip = styled.span<{ $bg: string; $ink: string }>`
   /* Lexend, as every chip on the conference pages, in Nunito cards too. */
   font-family: var(--maple-font-heading);
   flex-shrink: 0;
-  padding: 1px 8px;
+  padding: ${sc(2)} ${sc(9)};
   border-radius: 9999px;
   background: ${({ $bg }) => $bg};
   color: ${({ $ink }) => $ink};
-  font-size: 0.6875rem;
+  font-size: ${sc(11)};
   font-weight: 600;
   line-height: 1.5;
   white-space: nowrap;
 
   @media (max-width: 450px) {
-    padding: 1px 6px;
-    font-size: 0.625rem;
+    padding: ${sc(2)} ${sc(7)};
+    font-size: ${sc(10)};
   }
 `
 
@@ -183,21 +325,32 @@ export function PositionChip({
   )
 }
 
-export const OwnChip = styled(Chip).attrs({ $bg: brand.fill, $ink: "#fff" })``
+/** What marks the reader's own filing in its name line, for a screen reader
+ * alone: the eye has the "You" on the avatar (YouBand), which a screen reader
+ * does not hear. */
+export function YouMark() {
+  const { t } = useTranslation("conferences")
+  return <span className="visually-hidden">{t("input.you")}</span>
+}
 
+/** The kind of account, under the name and close to it: one line, cut
+ * rather than wrapped, so no taller than its letters need. */
 export const Descriptor = styled.p`
-  margin: 8px 0 0;
-  font-size: 0.8125rem;
-  line-height: 1.4;
+  margin: ${sc(4)} 0 0;
+  font-size: ${sc(13)};
+  line-height: 1.2;
   color: ${ink.faint};
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 `
 
-export const When = styled.span<{ $quiet: boolean; $banded: boolean }>`
-  margin-right: 2px;
-  font-size: ${({ $banded }) => ($banded ? "0.875rem" : "0.8125rem")};
+/** The date a card was filed, at its corner: 13px and in the date's grey on
+ * every card, a cosigned one too. Quiet, on a cosign under its card, a step
+ * lighter. */
+export const When = styled.span<{ $quiet?: boolean }>`
+  margin-right: ${sc(2)};
+  font-size: ${sc(13)};
   white-space: nowrap;
   color: ${({ $quiet }) => ($quiet ? ink.faint : ink.mid)};
 `
@@ -206,43 +359,48 @@ export const Corner = styled.div`
   display: flex;
   align-items: center;
   align-self: flex-start;
-  gap: 2px;
-  margin: -5px -6px 0 0;
+  gap: ${sc(2)};
+  margin: ${sc(-5)} ${sc(-6)} 0 0;
   flex-shrink: 0;
 `
 
 const Words = styled.div`
   display: flex;
-  gap: 18px;
+  gap: ${sc(18)};
 `
 
+/** As wide as the portrait (Portrait's 40px), so the words start under the
+ * name. */
 const Indent = styled.div`
-  width: 40px;
+  width: ${sc(40)};
   flex-shrink: 0;
 `
 
-const Text = styled.div<{ $wide: boolean; $banded: boolean }>`
+/** The words. Flush (a cosign row, Cosigns.tsx), with no room under them,
+ * so the line between cosigns has as much over it as under it. */
+const Text = styled.div<{ $wide: boolean; $banded: boolean; $flush: boolean }>`
   flex: 1;
   min-width: 0;
   padding: ${({ $wide, $banded }) =>
     $banded
       ? $wide
-        ? "12px 12px 0 0"
-        : "16px 0 0"
+        ? `${sc(12)} ${sc(12)} 0 0`
+        : `${sc(16)} 0 0`
       : $wide
-      ? "8px 12px 8px 0"
-      : "12px 0 4px"};
+      ? `${sc(8)} ${sc(12)} ${sc(8)} 0`
+      : `${sc(12)} 0 ${sc(4)}`};
+  ${({ $flush }) => ($flush ? "padding-bottom: 0;" : "")}
 `
 
-/** The date at the foot of a narrow card, at the size it has at a wide
- * card's corner (When). */
-const FootDate = styled.div`
+/** The date at the foot of a narrow card, at the size and grey it has at a
+ * wide card's corner (When). */
+const FootDate = styled.div<{ $quiet?: boolean }>`
   display: flex;
   justify-content: flex-end;
-  gap: 6px;
-  margin-top: 12px;
-  font-size: 0.8125rem;
-  color: ${ink.mid};
+  gap: ${sc(6)};
+  margin-top: ${sc(12)};
+  font-size: ${sc(13)};
+  color: ${({ $quiet }) => ($quiet ? ink.faint : ink.mid)};
 `
 
 /** A day written out. */
@@ -290,29 +448,6 @@ const Short = styled.span`
   }
 `
 
-/** When the latest cosign was filed, written out. */
-export const lastCosignedOn = (
-  testimony: Pick<ConferenceTestimony, "lastCosignedAt">,
-  language: string
-) => testimony.lastCosignedAt && longDate(testimony.lastCosignedAt, language)
-
-/** The screen width at and under which the floor has no room for the latest
- * cosign's date, which moves to the foot line beside the filing's own. */
-export const LATEST_BESIDE = "(max-width: 900px)"
-
-const LatestBeside = styled.span`
-  display: none;
-  white-space: nowrap;
-  @media ${LATEST_BESIDE} {
-    display: inline;
-  }
-`
-
-const Dot = styled.span`
-  margin-left: 6px;
-  color: ${ink.faint};
-`
-
 /** One filing: who wrote it, what they asked for, and their words. A cosign
  * names what it cosigns, and its position is that entry's. */
 export function Entry({
@@ -321,6 +456,10 @@ export function Entry({
   lead,
   onOpen,
   bare = false,
+  small = false,
+  inContext = false,
+  showNoWords = false,
+  undated = false,
   own = false,
   fullBody = false,
   band,
@@ -336,6 +475,23 @@ export function Entry({
   onOpen?: (testimony: ConferenceTestimony) => void
   /** Without the card's own edge, for a caller that draws one around it. */
   bare?: boolean
+  /** The card made smaller (SMALL_SCALE), every length with it. Unused for
+   * now: the cosign rows were drawn so, and are the card's size again. */
+  small?: boolean
+  /** A cosign shown in the context of the input it cosigns, in the list under
+   * that input's card (Cosigns.tsx). For now it is drawn as a cosign is
+   * anywhere else, only without the card's edge and padding, the list
+   * placing it. What the in-context look changes belongs here, so the
+   * default stays as it is: the cosign with all its context, which names
+   * and links the input it cosigns, the source of truth for sharing a
+   * cosign on its own (as over the AT Protocol). */
+  inContext?: boolean
+  /** In context, a cosign without words of its own says so (NoWords), as it
+   * does anywhere else. Off by default: in context it says nothing. */
+  showNoWords?: boolean
+  /** Without its date, in the corner or at the foot: for a preview of what
+   * is not filed yet (Review.tsx's SitePreview). */
+  undated?: boolean
   /** The reader's own filing, marked as theirs. */
   own?: boolean
   /** The words whole, with no clamp: for where the entry is the point. */
@@ -355,69 +511,74 @@ export function Entry({
     ? byId.get(testimony.cosignOfId)
     : undefined
   const ref = useRef<HTMLElement>(null)
-  const wide = useWide(ref, 600)
+  // Wide from 600px, or the same share of that for a smaller card.
+  const wide = useWide(ref, small ? 600 * SMALL_SCALE : 600)
   const type = accountTypeOf(testimony.authorRole)
   const date = filedOn(testimony, i18n.language)
   const name = nameOf(testimony)
-  // A cosigned card carries the latest cosign's date too, which makes the
-  // filing's own the quieter of two.
-  const latest = band ? lastCosignedOn(testimony, i18n.language) : undefined
 
   return (
-    <Card ref={ref} $bare={bare} $own={own}>
+    <Card ref={ref} $bare={bare || inContext} $small={small} $flush={inContext}>
       {band}
       <Head $wide={wide}>
-        <Portrait>{initialsOf(name)}</Portrait>
+        <Portrait $own={own}>
+          {initialsOf(name)}
+          {own && <YouBand aria-hidden data-label={t("input.you")} />}
+        </Portrait>
         <Who>
           <NameRow>
-            <Name title={name}>{name}</Name>
-            <AccountTypeIcon type={type} />
-            {parent && (
-              <>
-                <Cosigned>{t("input.cosigned")}</Cosigned>
-                <ParentName
-                  type="button"
-                  disabled={!onOpen}
-                  onClick={() => onOpen?.(parent)}
-                >
-                  {nameOf(parent)}
-                </ParentName>
-                <AccountTypeIcon type={accountTypeOf(parent.authorRole)} />
-              </>
-            )}
-            <PositionChip position={testimony.position} />
-            {own && <OwnChip>{t("input.you")}</OwnChip>}
+            <Names>
+              <Person>
+                <Name title={name}>{name}</Name>
+                <AccountTypeIcon type={type} />
+              </Person>
+              {/* In context, under the input it cosigns, a cosign says it
+                  cosigned "this position" rather than naming it, and does not
+                  repeat its position: both are the card's above it. */}
+              {parent && inContext && (
+                <Cosigned>{t("input.cosigned_this")}</Cosigned>
+              )}
+              {parent && !inContext && (
+                <>
+                  <Cosigned>{t("input.cosigned")}</Cosigned>
+                  <ParentName
+                    type="button"
+                    disabled={!onOpen}
+                    onClick={() => onOpen?.(parent)}
+                  >
+                    {nameOf(parent)}
+                    <AccountTypeIcon type={accountTypeOf(parent.authorRole)} />
+                  </ParentName>
+                </>
+              )}
+            </Names>
+            {!inContext && <PositionChip position={testimony.position} />}
+            {own && <YouMark />}
           </NameRow>
           <Descriptor>{t(`input.descriptor_${type}`)}</Descriptor>
         </Who>
         <Corner>
           {lead}
-          {wide && (
-            <When $quiet={!!latest} $banded={!!band}>
-              {date}
-            </When>
-          )}
+          {wide && !undated && <When $quiet={inContext}>{date}</When>}
           {actions}
         </Corner>
       </Head>
       <Words>
         {wide && <Indent aria-hidden />}
-        <Text $wide={wide} $banded={!!band}>
+        <Text $wide={wide} $banded={!!band} $flush={inContext}>
           {testimony.cosignOfId && !testimony.content ? (
-            <NoWords $small={!wide}>{t("input.cosign_no_words")}</NoWords>
+            // Under its input, a cosign without words says nothing, unless
+            // asked to (showNoWords).
+            (!inContext || showNoWords) && (
+              <NoWords $small={!wide}>{t("input.cosign_no_words")}</NoWords>
+            )
           ) : fullBody ? (
             <Body $small={!wide}>{testimony.content}</Body>
           ) : (
             <ClampedText text={testimony.content} small={!wide} />
           )}
-          {!wide && (
-            <FootDate>
-              {latest && (
-                <LatestBeside>
-                  {t("input.last_cosigned_short", { date: shortMonth(latest) })}
-                  <Dot aria-hidden>·</Dot>
-                </LatestBeside>
-              )}
+          {!wide && !undated && (
+            <FootDate $quiet={inContext}>
               <Dated date={date} />
             </FootDate>
           )}

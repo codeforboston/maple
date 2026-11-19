@@ -1,8 +1,7 @@
 import { Button } from "components/bootstrap"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
-import { LAYOUT_WIDE } from "../styles"
-import { Plus } from "./icons"
+import { Plus, SquareCheck } from "./icons"
 import { brand } from "./tokens"
 
 /* The site's primary button (MAPLE blue, styles/globals.css). && lifts these over Bootstrap's own .btn rules whatever order the
@@ -13,8 +12,8 @@ const ShareCta = styled(Button)`
     align-items: center;
     justify-content: center;
     gap: 6px;
-    /* At the top of the title's first line beside the 29.7px title, and
-       2px down beside the 36px one in the wide layout (below). */
+    /* At the top of its row (TitleShare in ConferenceDetails.tsx), which
+       takes it and Follow 2px down together in the wide layout. */
     margin-top: 0;
     /* Set like the Follow button beside it (components/shared/FollowButton.tsx,
        styles/globals.css): 14px in the row's face, medium, a step bolder
@@ -29,13 +28,6 @@ const ShareCta = styled(Button)`
   @media (max-width: 991.98px) {
     && {
       font-weight: 600;
-    }
-  }
-  /* In the wide layout (LAYOUT_WIDE, styles.ts), beside the 36px title: 2px
-     down so its 39px is centred on the title's 43.2px first line. */
-  @media ${LAYOUT_WIDE} {
-    && {
-      margin-top: 2px;
     }
   }
   /* Once the reader has filed: the paler fill, and still under the pointer,
@@ -106,14 +98,26 @@ const Fab = styled.button`
 `
 
 /** "Share your input" as a floating button, for mobile (ConferenceDetails.tsx
- * floats it below md, and only while there is nothing filed and the panel
- * is put away). */
+ * floats it below md, while there is nothing filed and the panel is put
+ * away). */
 export function ShareFab({ onClick }: { onClick: () => void }) {
   const { t } = useTranslation("conferences")
   return (
     <Fab type="button" onClick={onClick}>
       <Plus size={22} />
       {t("input.share")}
+    </Fab>
+  )
+}
+
+/** In its place once the reader has filed: "View your input", with a
+ * checkbox, ticked. */
+export function ViewFab({ onClick }: { onClick: () => void }) {
+  const { t } = useTranslation("conferences")
+  return (
+    <Fab type="button" onClick={onClick}>
+      <SquareCheck size={20} />
+      {t("input.view_yours")}
     </Fab>
   )
 }

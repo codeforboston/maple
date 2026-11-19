@@ -14,10 +14,14 @@ import { conferenceName, ConferenceSummary } from "./types"
 const Nav = styled.nav`
   font-family: var(--maple-font-heading);
   flex: 0 0 auto;
-  /* 288px at 1440px, giving up 1px for every 10px the window narrows, to
-     about 243px at 992px, where the compact rail takes over
-     (ConferenceDetails.tsx). */
-  width: clamp(200px, calc(243.2px + (100vw - 992px) * 0.1), 288px);
+  /* 288px at 1440px, giving up 1px for every 10px the page narrows (the
+     window, less the input panel beside it: --page-w, ConferenceDetails.tsx),
+     until the compact rail takes over (FULL_RAIL_FROM, styles.ts). */
+  width: clamp(
+    200px,
+    calc(243.2px + (var(--page-w, 100vw) - 992px) * 0.1),
+    288px
+  );
   position: sticky;
   top: var(--maple-navbar-height);
   align-self: flex-start;
