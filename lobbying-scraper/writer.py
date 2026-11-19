@@ -824,8 +824,8 @@ def compute_stats(db: firestore.Client) -> None:
                 "filedInSession": gc in filer_courts.get(fs["entityNameNorm"], ()),
             }
 
-    # The single-document writes: the stats, the filing counts, the
-    # per-session docs (inHouseFilers_{gc}: {client norm: [in-house filer
+    # The single-document writes: the stats (written last, below), the filing
+    # counts, the per-session docs (inHouseFilers_{gc}: {client norm: [in-house filer
     # norms]}; the two lists, {"rows": {norm: row}}) and clientList_all.
     # Each is a full overwrite, not a merge: a merge keeps map keys (e.g. a
     # spendByYear year or a list row) that this run no longer produces. A
@@ -861,7 +861,8 @@ def compute_stats(db: firestore.Client) -> None:
             + ". Split the doc into several, or exempt its rows from indexing, before rerunning."
         )
     for name, fields in docs.items():
-        db.collection(STATS_COLLECTION).document(name).set(fields)
+        if name != STATS_DOC_ID:
+            db.collection(STATS_COLLECTION).document(name).set(fields)
     sessions = courts.union(*by_session.values())
     for prefix, by_gc in by_session.items():
         for gc in sessions - set(by_gc):
@@ -924,6 +925,11 @@ def compute_stats(db: firestore.Client) -> None:
     if count % 400 != 0:
         batch.commit()
     pruned += _prune_stale(db, firm_coll, {_doc_id_for_norm(n) for n in firm_summaries})
+
+    # The overview's totals go last, after every list and summary they sum
+    # up: a run that fails before here leaves the previous overview in place
+    # rather than new totals over the previous run's lists and pages.
+    db.collection(STATS_COLLECTION).document(STATS_DOC_ID).set(stats)
 
     print(
         f"  stats written: {total_filings} filings, "
