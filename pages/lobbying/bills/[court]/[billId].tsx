@@ -16,7 +16,10 @@ import {
   organizationRows,
   type PositionFilter
 } from "components/lobbying/activity"
-import { ActivityTable } from "components/lobbying/ActivityTable"
+import {
+  ActivityTable,
+  POSITION_COLUMN_START
+} from "components/lobbying/ActivityTable"
 import {
   LobbyingAttribution,
   SOS_URL
@@ -24,11 +27,10 @@ import {
 import {
   bigFigureRowStyle,
   bigFigureStyle,
-  FilterLabel,
+  FloatingSearch,
   LobbyingFilterBar,
   LobbyingLoadError,
   LobbyingPanel,
-  searchStyle,
   summaryNoteStyle,
   summaryStyle
 } from "components/lobbying/LobbyingPanel"
@@ -117,14 +119,11 @@ function BillLobbyingPage() {
             >
               {t("bill.back")}
             </a>
-            <div style={eyebrowStyle}>
-              <span style={{ fontSize: 18, fontWeight: 700 }}>{billId}</span>
-              {court > 0 && <span>{courtName(court)}</span>}
-            </div>
-            {/* The page's heading, at h3 size: a bill title can run long. */}
-            <h1 className="h3" style={{ maxWidth: 900 }}>
-              {title ?? billId}
-            </h1>
+            {court > 0 && <div style={eyebrowStyle}>{courtName(court)}</div>}
+            {/* The bill number is the page's heading, and its title, which
+                can run long, the smaller line under it. */}
+            <h1 style={{ fontSize: "2.25rem", fontWeight: 500 }}>{billId}</h1>
+            {title && <p style={billTitleStyle}>{title}</p>}
             <div style={linksStyle}>
               {mapleHref && <a href={mapleHref}>{t("misc.viewOnMaple")}</a>}
               <a href={SOS_URL} target="_blank" rel="noreferrer">
@@ -194,27 +193,26 @@ function BillLobbyingPage() {
 
             <LobbyingPanel
               title={t("bill.orgsPanel", { bill: billId })}
-              aside={t("bill.orgsHint")}
+              hint={t("bill.orgsHint")}
+              filtersAt={POSITION_COLUMN_START}
+              filters={
+                <LobbyingFilterBar>
+                  <PositionSelect
+                    id="bill-position"
+                    value={position}
+                    onChange={setPosition}
+                    allLabel={t("filters.allPositions")}
+                  />
+                  <FloatingSearch
+                    id="bill-orgs-search"
+                    label={t("bill.filterOrgs")}
+                    value={search}
+                    onChange={setSearch}
+                    grow
+                  />
+                </LobbyingFilterBar>
+              }
             >
-              <LobbyingFilterBar>
-                <FilterLabel htmlFor="bill-position">
-                  {t("filters.position")}
-                </FilterLabel>
-                <PositionSelect
-                  id="bill-position"
-                  value={position}
-                  onChange={setPosition}
-                  allLabel={t("filters.allPositions")}
-                />
-                <input
-                  type="search"
-                  placeholder={`${t("bill.filterOrgs")}…`}
-                  aria-label={t("bill.filterOrgs")}
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
-                  style={searchStyle}
-                />
-              </LobbyingFilterBar>
               {shown.rows.length ? (
                 <ActivityTable
                   by="client"
@@ -223,6 +221,7 @@ function BillLobbyingPage() {
                     `/lobbying/clients/${encodeURIComponent(row.key)}`
                   }
                   itemLabel={t("bill.items")}
+                  unboxed
                 />
               ) : (
                 <p style={{ color: MAPLE_COLORS.textMuted, margin: 0 }}>
@@ -264,6 +263,12 @@ const eyebrowStyle: React.CSSProperties = {
   margin: "1.25rem 0 0.5rem",
   fontSize: 14,
   color: MAPLE_COLORS.graySubtleText
+}
+
+const billTitleStyle: React.CSSProperties = {
+  maxWidth: 1150,
+  marginBottom: "0.5rem",
+  fontSize: "1rem"
 }
 
 const linksStyle: React.CSSProperties = {

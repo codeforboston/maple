@@ -27,6 +27,49 @@ function Icon({
 
 type Props = { size?: number; strokeWidth?: number; fill?: string }
 
+export const CircleCheck = (p: Props) => (
+  <Icon {...p}>
+    <circle cx="12" cy="12" r="10" />
+    <path d="m16 9-5.5 5.5L8 12" />
+  </Icon>
+)
+export const Globe = (p: Props) => (
+  <Icon {...p}>
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+    <path d="M2 12h20" />
+  </Icon>
+)
+
+export const Info = (p: Props) => (
+  <Icon {...p}>
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 16v-4" />
+    <path d="M12 8h.01" />
+  </Icon>
+)
+
+export const Send = (p: Props) => (
+  <Icon {...p}>
+    <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" />
+    <path d="m21.854 2.147-10.94 10.939" />
+  </Icon>
+)
+
+export const Mail = (p: Props) => (
+  <Icon {...p}>
+    <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+    <rect x="2" y="4" width="20" height="16" rx="2" />
+  </Icon>
+)
+export const CalendarDays = (p: Props) => (
+  <Icon {...p}>
+    <path d="M8 2v4" />
+    <path d="M16 2v4" />
+    <rect width="18" height="18" x="3" y="4" rx="2" />
+    <path d="M3 10h18" />
+  </Icon>
+)
 export const Megaphone = (p: Props) => (
   <Icon {...p}>
     <path d="m3 11 18-5v12L3 14v-3z" />
@@ -57,6 +100,16 @@ export const Users = (p: Props) => (
 export const ChevronDown = (p: Props) => (
   <Icon {...p}>
     <path d="m6 9 6 6 6-6" />
+  </Icon>
+)
+export const List = (p: Props) => (
+  <Icon {...p}>
+    <path d="M3 6h.01" />
+    <path d="M3 12h.01" />
+    <path d="M3 18h.01" />
+    <path d="M8 6h13" />
+    <path d="M8 12h13" />
+    <path d="M8 18h13" />
   </Icon>
 )
 export const ChevronLeft = (p: Props) => (
@@ -130,6 +183,12 @@ export const Link2 = (p: Props) => (
     <line x1="8" x2="16" y1="12" y2="12" />
   </Icon>
 )
+export const SquareCheck = (p: Props) => (
+  <Icon {...p}>
+    <rect width="18" height="18" x="3" y="3" rx="2" />
+    <path d="m9 12 2 2 4-4" />
+  </Icon>
+)
 export const SquarePen = (p: Props) => (
   <Icon {...p}>
     <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -180,5 +239,29 @@ export const Minimize2 = (p: Props) => (
     <path d="M20 10h-6V4" />
     <path d="m3 21 7-7" />
     <path d="M4 14h6v6" />
+  </Icon>
+)
+
+const BellBase = () => <path d="M10.268 21a2 2 0 0 0 3.464 0" />
+export const Bell = (p: Props) => (
+  <Icon {...p}>
+    <BellBase />
+    <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
+  </Icon>
+)
+export const BellRing = (p: Props) => (
+  <Icon {...p}>
+    <BellBase />
+    <path d="M22 8c0-2.3-.8-4.3-2-6" />
+    <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
+    <path d="M4 2C2.8 3.7 2 5.7 2 8" />
+  </Icon>
+)
+export const BellOff = (p: Props) => (
+  <Icon {...p}>
+    <BellBase />
+    <path d="M17 17H4a1 1 0 0 1-.74-1.673C4.59 13.956 6 12.499 6 8a6 6 0 0 1 .258-1.742" />
+    <path d="m2 2 20 20" />
+    <path d="M8.668 3.01A6 6 0 0 1 18 8c0 2.687.77 4.653 1.707 6.05" />
   </Icon>
 )

@@ -7,6 +7,8 @@ import { LobbyingPositionChip } from "./LobbyingPositionChip"
 import { MAPLE_COLORS } from "./chartTheme"
 import { SosSourceLink } from "./SosSourceLink"
 import { filingPeriodLabel } from "./filingPeriod"
+import { thStyle } from "./SortTh"
+import styles from "./lobbying.module.css"
 
 interface LobbyingFilingsTableProps {
   filings: LobbyingFiling[]
@@ -52,15 +54,16 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
           : undefined
       }
     >
-      <Table hover responsive size="sm" style={tableStyle}>
+      <Table responsive size="sm" style={tableStyle}>
         <thead>
-          <tr style={theadRowStyle}>
-            {showClient && <th>{t("fields.clientName")}</th>}
-            {showFirm && <th>{t("fields.firmName")}</th>}
-            {showActivity && <th>{t("fields.activity")}</th>}
-            <th>{t("filters.position")}</th>
-            <th>{t("fields.period")}</th>
-            {showSource && <th>{t("fields.source")}</th>}
+          {/* The Lobbying Explorer's headers (SortTh's thStyle). */}
+          <tr>
+            {showClient && <th style={thStyle}>{t("fields.clientName")}</th>}
+            {showFirm && <th style={thStyle}>{t("fields.firmName")}</th>}
+            {showActivity && <th style={thStyle}>{t("fields.activity")}</th>}
+            <th style={thStyle}>{t("filters.position")}</th>
+            <th style={thStyle}>{t("fields.period")}</th>
+            {showSource && <th style={thStyle}>{t("fields.source")}</th>}
           </tr>
         </thead>
         <tbody>
@@ -72,7 +75,8 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
                     href={`/lobbying/clients/${encodeURIComponent(
                       f.clientNameNorm
                     )}`}
-                    style={{ color: MAPLE_COLORS.primary }}
+                    className={styles.quietLink}
+                    style={{ color: MAPLE_COLORS.primary, fontWeight: 600 }}
                   >
                     {f.clientName}
                   </a>
@@ -84,6 +88,7 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
                     href={`/lobbying/firms/${encodeURIComponent(
                       f.entityNameNorm
                     )}`}
+                    className={styles.quietLink}
                     style={{ color: MAPLE_COLORS.primary }}
                   >
                     {f.entityName}
@@ -129,25 +134,20 @@ export const LobbyingFilingsTable: React.FC<LobbyingFilingsTableProps> = ({
   )
 }
 
+/** On the card's own white, with no highlight on hover. */
 const tableStyle: React.CSSProperties = {
-  fontSize: 13,
+  fontSize: 14,
   color: MAPLE_COLORS.textBody,
-  "--bs-table-bg": "var(--bs-gray-100)",
-  "--bs-table-hover-bg": "rgba(15, 23, 42, 0.06)"
+  marginBottom: 0,
+  "--bs-table-bg": "transparent"
 } as React.CSSProperties
 
-const theadRowStyle: React.CSSProperties = {
-  fontSize: 11,
-  fontWeight: 700,
-  textTransform: "uppercase",
-  letterSpacing: "0.05em",
-  color: MAPLE_COLORS.textMuted,
-  borderBottom: `2px solid ${MAPLE_COLORS.borderDefault}`
-}
-
+/** The Lobbying Explorer's cells (ActivityTable): a light rule between rows. */
 const cellStyle: React.CSSProperties = {
   verticalAlign: "middle",
-  padding: "0.4rem 0.5rem"
+  padding: "0.6rem 0.75rem",
+  borderTop: `1px solid ${MAPLE_COLORS.borderSubtle}`,
+  borderBottom: 0
 }
 
 const truncatedNoteStyle: React.CSSProperties = {

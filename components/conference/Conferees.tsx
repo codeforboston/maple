@@ -1,11 +1,12 @@
+import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "next-i18next"
-import styled, { css } from "styled-components"
+import styled, { keyframes } from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faStar } from "@fortawesome/free-solid-svg-icons"
-import { useFlags } from "../featureFlags"
 import { shortName } from "../formatting"
-import { External, Internal, maple } from "../links"
 import type { Branch } from "../../functions/src/common"
+import { ChevronRight } from "./input/icons"
+import { wash } from "./input/tokens"
 import { Eyebrow, partyColor } from "./styles"
 import { ConfereeView, personKey } from "./types"
 
@@ -18,31 +19,86 @@ const List = styled.ul`
   gap: 0.625rem;
 `
 
-const Row = styled.div<{ $back: boolean }>`
-  position: relative;
+/** One person, the whole row one link out to their profile on
+ * malegislature.gov, in a new tab. Pointed at, it rings their portrait
+ * (Conferees), takes a slightly darker ground and shows the way out at its
+ * right (Go). The ground is a pill reaching 4px past what is in the row,
+ * which keeps its place; its round left end sits around the portrait. */
+const Row = styled.a<{ $back: boolean }>`
   display: flex;
   align-items: center;
-  gap: 0.625rem;
+  margin: -4px;
+  padding: 4px;
+  border-radius: 9999px;
+  color: inherit;
+  text-decoration: none;
   opacity: ${({ $back }) => ($back ? 0.45 : 1)};
-  transition: opacity 120ms ease;
-`
-
-/** The portrait is the row's button; its pseudo-element stretches over the
- * whole row so the row stays one target, while the name beside it stays a
- * sibling link rather than a control inside a control. */
-const Pick = styled.button`
-  flex: 0 0 auto;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
+  transition: opacity 120ms ease, background-color 120ms ease;
+  &:hover {
+    color: inherit;
+    background: ${wash.default};
+  }
+  &:focus-visible {
+    outline: 2px solid var(--maple-focus-ring);
+    outline-offset: 2px;
+    background: ${wash.default};
   }
 `
+
+/** The name and the line under it, 10px from the portrait, taking the row's
+ * width up to the chevron's slot (Go), and giving it up as the row narrows. */
+const Text = styled.span`
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-left: 0.625rem;
+`
+
+/** The way out, a chevron centred in a slot at the row's right edge, shown
+ * while the row is pointed at; the slot is there all the same, so nothing
+ * moves. */
+const Go = styled.span`
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  color: var(--maple-text-muted);
+  visibility: hidden;
+
+  ${Row}:hover & {
+    visibility: visible;
+  }
+  ${Row}:focus-visible & {
+    visibility: visible;
+  }
+`
+
+/** The empty circle's ground while a photo loads: a light grey, with a band
+ * of a deeper grey running down it on the diagonal, from the top left to the
+ * bottom right, again and again. Only the colours inside the circle change; the
+ * circle doesn't move. The gradient is three times the circle's size, and
+ * its window moves from the end of it to the start, so the band travels
+ * forward. */
+const skeleton = keyframes`
+  from {
+    background-position: 100% 100%;
+  }
+  to {
+    background-position: 0% 0%;
+  }
+`
+
+/** How long a photo takes to fade in over the skeleton, in ms (Portrait's
+ * img transition). */
+const FADE_MS = 200
+
+/** The party's ring around a portrait `size` across: 2.5px under 32px, 3px,
+ * and 4px from 48px (the explorer panel's card). */
+const partyRing = (size: number) => (size < 32 ? 2.5 : size >= 48 ? 4 : 3)
+
+/** The white gap in the selection ring (Portrait's `$lit`), between the
+ * party's ring and the dark line: 2px under 32px, 2.5px, and 3px from 48px. */
+const selectionGap = (size: number) => (size < 32 ? 2 : size >= 48 ? 3 : 2.5)
 
 /** 36px unless `$size` says otherwise; a parent can resize it through
  * `--portrait-size`. */
@@ -64,13 +120,46 @@ const Portrait = styled.span<{
     border-radius: 50%;
     object-fit: cover;
     background: var(--maple-surface-page);
-    border: ${({ $size = 36 }) => ($size < 32 ? 2 : 3)}px solid
+    border: ${({ $size = 36 }) => partyRing($size)}px solid
       ${({ $ring }) => $ring};
-    box-shadow: ${({ $lit }) =>
-      $lit
-        ? "0 0 0 2px var(--maple-surface-base), 0 0 0 4px var(--maple-text-strong)"
-        : "none"};
-    transition: box-shadow 120ms ease;
+    /* Lit, the selection ring: a white gap (selectionGap), then a 2px dark
+       line. */
+    box-shadow: ${({ $lit, $size = 36 }) => {
+      if (!$lit) return "none"
+      const gap = selectionGap($size)
+      return `0 0 0 ${gap}px var(--maple-surface-base), 0 0 0 ${
+        gap + 2
+      }px var(--maple-text-strong)`
+    }};
+    transition: box-shadow 120ms ease, opacity ${FADE_MS}ms ease;
+  }
+  /* The skeleton (ConfereeFace): while the photo loads, and on under it
+     while it fades in, so nothing flashes between the two; the photo and its
+     ring fade in together over it. Edged in a still grey as thick as the
+     party's ring, drawn inside the edge as a shadow rather than a border, so
+     the photo keeps its full size underneath and fades in without a jump. */
+  &[data-skeleton] {
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 ${({ $size = 36 }) => partyRing($size)}px #dcdee2;
+    background-image: linear-gradient(
+      135deg,
+      #eceef1 30%,
+      #dfe1e5 50%,
+      #eceef1 70%
+    );
+    background-size: 300% 300%;
+    animation: ${skeleton} 3.5s ease-in-out infinite;
+  }
+  &[data-loading] img {
+    opacity: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    &[data-skeleton] {
+      animation: none;
+    }
+    img {
+      transition: box-shadow 120ms ease;
+    }
   }
 `
 
@@ -112,26 +201,6 @@ const Sub = styled.span`
   color: var(--maple-text-muted);
 `
 
-const linkStyle = css`
-  position: relative;
-  z-index: 1;
-  color: inherit;
-  text-decoration: none;
-  &:hover {
-    color: var(--maple-brand-primary);
-    text-decoration: underline dotted;
-    text-underline-offset: 3px;
-  }
-`
-
-const NameLink = styled(Internal)`
-  ${linkStyle}
-`
-
-const ExternalNameLink = styled(External)`
-  ${linkStyle}
-`
-
 /** The reader's word for one of their own legislators. */
 export const yoursKey = (c: ConfereeView) =>
   c.branch === "House" ? "your_representative" : "your_senator"
@@ -153,13 +222,36 @@ export function ConfereeFace({
   labelled?: boolean
 }) {
   const { t } = useTranslation("conferences")
+  // Loading until the photo is in or has failed, then fading in over the
+  // skeleton, which stays under it until the fade is over (FADE_MS). A photo
+  // already in by the time the page is live (from the cache) shows at once.
+  const [stage, setStage] = useState<"loading" | "fading" | "done">("loading")
+  const img = useRef<HTMLImageElement>(null)
+  const fadeTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  useEffect(() => {
+    if (img.current?.complete) setStage("done")
+    return () => clearTimeout(fadeTimer.current)
+  }, [])
+  const arrived = () => {
+    setStage("fading")
+    fadeTimer.current = setTimeout(() => setStage("done"), FADE_MS + 50)
+  }
   return (
-    <Portrait $ring={partyColor(c.party)} $lit={lit} $size={size}>
+    <Portrait
+      $ring={partyColor(c.party)}
+      $lit={lit}
+      $size={size}
+      data-skeleton={stage !== "done" ? "" : undefined}
+      data-loading={stage === "loading" ? "" : undefined}
+    >
       <img
+        ref={img}
         src={`https://malegislature.gov/Legislators/Profile/170/${c.memberCode}.jpg`}
         alt={labelled ? c.name : ""}
         title={labelled ? c.name : undefined}
         loading="lazy"
+        onLoad={arrived}
+        onError={arrived}
       />
       {own && (
         <Star aria-label={t(yoursKey(c))}>
@@ -171,30 +263,28 @@ export function ConfereeFace({
 }
 
 /**
- * One chamber's three, to stand beside that chamber's map. Pointing at a
- * person lights their district; the ring on the portrait marks the one being
- * read so the list can answer the map as well as the other way round.
+ * One chamber's three, to stand beside that chamber's map. Nothing here is
+ * picked: pointing at a person rings their portrait, lights their district
+ * and sets the others back, so the list can answer the map as well as the
+ * other way round, and clicking them opens their profile on
+ * malegislature.gov.
  */
 export function Conferees({
-  court,
   chamber,
   conferees,
   mine,
   selected,
-  onHover,
-  onPin
+  onHover
 }: {
-  court: number
   chamber: Branch
   conferees: ConfereeView[]
   /** Member codes of the viewer's own legislators. */
   mine: Set<string>
+  /** The one being read, pointed at here or on the map. */
   selected: string | null
   onHover: (key: string | null) => void
-  onPin: (key: string) => void
 }) {
   const { t } = useTranslation("conferences")
-  const flags = useFlags()
   return (
     <div>
       <Eyebrow className="mb-2">{t(chamber.toLowerCase())}</Eyebrow>
@@ -210,45 +300,28 @@ export function Conferees({
             return (
               <li key={c.memberCode}>
                 <Row
+                  // Their profile on malegislature.gov, whether or not
+                  // MAPLE's own legislator pages are on.
+                  href={`https://malegislature.gov/Legislators/Profile/${c.memberCode}`}
+                  target="_blank"
+                  rel="noreferrer"
                   $back={Boolean(selected) && !lit}
                   onPointerEnter={() => onHover(key)}
                   onPointerLeave={() => onHover(null)}
                   onFocus={() => onHover(key)}
                   onBlur={() => onHover(null)}
                 >
-                  <Pick
-                    type="button"
-                    aria-pressed={lit}
-                    aria-label={`${c.name}, ${
-                      own ? t(yoursKey(c)) : c.district
-                    }`}
-                    onClick={() => onPin(key)}
-                  >
-                    <ConfereeFace c={c} lit={lit} own={own} />
-                  </Pick>
-                  <span className="min-w-0">
+                  <ConfereeFace c={c} lit={lit} own={own} />
+                  <Text>
                     <Name>
-                      {flags.legislators ? (
-                        <NameLink
-                          href={maple.legislator({
-                            court,
-                            memberCode: c.memberCode
-                          })}
-                        >
-                          {shortName(c.name)}
-                        </NameLink>
-                      ) : (
-                        <ExternalNameLink
-                          href={`https://malegislature.gov/Legislators/Profile/${c.memberCode}`}
-                          plain
-                        >
-                          {shortName(c.name)}
-                        </ExternalNameLink>
-                      )}
+                      {shortName(c.name)}
                       {c.chair && <Chair>{t("chair")}</Chair>}
                     </Name>
                     <Sub>{own ? t(yoursKey(c)) : c.district}</Sub>
-                  </span>
+                  </Text>
+                  <Go aria-hidden>
+                    <ChevronRight size={16} />
+                  </Go>
                 </Row>
               </li>
             )

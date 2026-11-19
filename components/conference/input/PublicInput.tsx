@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
+import { usePhone } from "../hooks"
+import { CardTitle } from "../styles"
 import { ConferenceTestimony } from "components/db"
 import { useInputContext } from "./context"
 import { CosignButton } from "./CosignButton"
@@ -20,9 +22,6 @@ import {
 import { accountTypeOf, nameOf } from "./accounts"
 import { brand, ink, line } from "./tokens"
 
-/** Filters appear only once the feed reaches this many entries, or when it has
- * none, so that an empty feed still shows what could narrow it. */
-const FEED_CONTROLS_MIN = 4
 const PAGE_SIZE = 5
 
 /** A card with the cosigns of it the feed holds, newest first. A cosign whose
@@ -73,15 +72,6 @@ const Section = styled.section`
   ${parked}
 `
 
-const Heading = styled.h2`
-  margin: 12px 0 16px;
-  font-family: var(--maple-font-heading);
-  font-weight: 400;
-  font-size: 1.375rem;
-  line-height: 1.4;
-  color: ${ink.strong};
-`
-
 const Controls = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -104,7 +94,8 @@ const Spot = styled.div`
 
 const Empty = styled.div<{ $after: boolean }>`
   margin-top: ${({ $after }) => ($after ? "20px" : "0")};
-  padding: 22px;
+  /* Taller than its 22px all round. */
+  padding: 44px 22px;
   text-align: center;
   background: var(--maple-surface-base);
   border: 1.5px dashed ${line.strong};
@@ -164,9 +155,13 @@ export function PublicInput({
   const [page, setPage] = useState(0)
   const [pickedAuthors, setPickedAuthors] = useState<string[]>([])
   const [opened, setOpened] = useState<ConferenceTestimony>()
-  // Cosigns with no words of their own wait behind a setting; their cards
-  // count them either way.
+  // Cosigns with no words of their own are listed unless the reader hides
+  // them (MoreFilters); their cards count them either way.
   const [wordless, setWordless] = useState(false)
+  // The cards whose cosigns the reader has shown or hidden (Floor), by card
+  // id. Cosigns start hidden on a phone and shown wider.
+  const [flipped, setFlipped] = useState<Set<string>>(() => new Set())
+  const phone = usePhone()
   const { uid, followed } = useInputContext()
 
   // The reader's own filing stands first whatever the controls say, so it is
@@ -176,7 +171,6 @@ export function PublicInput({
     [items, uid]
   )
 
-  const showFilters = items.length === 0 || items.length >= FEED_CONTROLS_MIN
   // Ranked with every cosign, so one without words still brings its card up.
   const ranked = useMemo(() => unitsOf(items), [items])
   // The reader's own card stands first with the cosigns under it, if it has
@@ -199,18 +193,17 @@ export function PublicInput({
     }
   }, [ranked, mine])
   const units = useMemo(
-    () => others.map(u => withWords(u, wordless)),
+    () => others.map(u => withWords(u, !wordless)),
     [others, wordless]
   )
   // A card and its cosigns are narrowed as one: either matching keeps both.
   const shown = useMemo(() => {
-    if (!showFilters) return units
     const matches = (x: ConferenceTestimony) =>
       (position === "all" || x.position === position) &&
       (type === "all" || accountTypeOf(x.authorRole) === type) &&
       (pickedAuthors.length === 0 || pickedAuthors.includes(x.authorUid))
     return units.filter(u => matches(u.lead) || u.cosigns.some(matches))
-  }, [units, position, type, pickedAuthors, showFilters])
+  }, [units, position, type, pickedAuthors])
   const cosigned = useMemo(() => items.some(x => x.cosignOfId), [items])
 
   // The accounts being followed that have filed here, which is what the
@@ -264,6 +257,14 @@ export function PublicInput({
 
   const card = ({ lead: x, cosigns }: Unit, id?: string) => {
     const banded = !!x.cosignCount && !x.cosignOfId
+    const open = flipped.has(x.id) === phone
+    const toggle = () =>
+      setFlipped(was => {
+        const next = new Set(was)
+        if (next.has(x.id)) next.delete(x.id)
+        else next.add(x.id)
+        return next
+      })
     return (
       <Spot key={`${x.authorUid}-${x.id}`} id={id} data-input={x.id}>
         <Entry
@@ -274,19 +275,32 @@ export function PublicInput({
             banded && <Band testimony={x} yours={mine?.cosignOfId === x.id} />
           }
           floor={
-            banded ? wide => <Floor testimony={x} wide={wide} /> : undefined
+            banded
+              ? wide => (
+                  <Floor
+                    testimony={x}
+                    wide={wide}
+                    open={open}
+                    onToggle={cosigns.length > 0 ? toggle : undefined}
+                  />
+                )
+              : undefined
           }
           actions={<Kebab testimony={x} onView={() => setOpened(x)} />}
           onOpen={setOpened}
         >
-          {wide => (
-            <CosignList
-              cosigns={cosigns}
-              mine={mine}
-              wide={wide}
-              actions={c => <Kebab testimony={c} onView={() => setOpened(c)} />}
-            />
-          )}
+          {wide =>
+            open && (
+              <CosignList
+                cosigns={cosigns}
+                mine={mine}
+                wide={wide}
+                actions={c => (
+                  <Kebab testimony={c} onView={() => setOpened(c)} />
+                )}
+              />
+            )
+          }
         </Entry>
       </Spot>
     )
@@ -294,23 +308,24 @@ export function PublicInput({
 
   return (
     <Section id="input">
-      <Heading>{t("input.title")}</Heading>
-      {showFilters && (
-        <Controls>
-          <AccountTypePicker value={type} onChange={narrowing(setType)} />
-          <PositionPicker value={position} onChange={narrowing(setPosition)} />
-          {(followable.length > 0 || cosigned) && (
-            <MoreFilters
-              followable={followable}
-              picked={pickedAuthors}
-              onPick={narrowing(setPickedAuthors)}
-              cosigns={cosigned}
-              wordless={wordless}
-              onWordless={narrowing(setWordless)}
-            />
-          )}
-        </Controls>
-      )}
+      <CardTitle>{t("input.title")}</CardTitle>
+      {/* Always, however few have filed: an empty feed shows what could
+          narrow it, and a short one keeps the way to cosigns without words
+          (MoreFilters). */}
+      <Controls>
+        <AccountTypePicker value={type} onChange={narrowing(setType)} />
+        <PositionPicker value={position} onChange={narrowing(setPosition)} />
+        {(followable.length > 0 || cosigned) && (
+          <MoreFilters
+            followable={followable}
+            picked={pickedAuthors}
+            onPick={narrowing(setPickedAuthors)}
+            cosigns={cosigned}
+            wordless={wordless}
+            onWordless={narrowing(setWordless)}
+          />
+        )}
+      </Controls>
       {loading ? null : (
         <>
           {(ownUnit || paged.length > 0) && (
@@ -319,7 +334,7 @@ export function PublicInput({
                   cosign in the group under the card it cosigns. */}
               {ownUnit &&
                 card(
-                  withWords(ownUnit, wordless, mine),
+                  withWords(ownUnit, !wordless, mine),
                   ownUnit.lead === mine ? "your-input" : undefined
                 )}
               {paged.map(u => card(u))}

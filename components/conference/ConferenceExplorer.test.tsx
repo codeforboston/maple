@@ -19,8 +19,15 @@ jest.mock("../featureFlags", () => ({
   useFlags: () => ({ legislators: false })
 }))
 
-const profile = { representative: { id: "AHP1" } }
-jest.mock("../db", () => ({ useProfile: () => ({ profile }) }))
+/** The reader's profile: their representative alone, unless a test says
+ * otherwise. */
+const mockProfile: { current?: object } = {}
+jest.mock("../db", () => ({
+  useProfile: () => ({ profile: mockProfile.current })
+}))
+beforeEach(() => {
+  mockProfile.current = { representative: { id: "AHP1" } }
+})
 
 const person = (
   memberCode: string,
@@ -64,7 +71,9 @@ const props: ConferenceIndexProps = {
       canonicalBillId: "S2581",
       status: "appointed",
       covered: true,
-      reportBillId: null
+      reportBillId: null,
+      confereeCounts: { senate: 3, house: 3 },
+      analysisUpdatedAt: "2026-11-18"
     },
     {
       id: "data-privacy",
@@ -76,7 +85,9 @@ const props: ConferenceIndexProps = {
       canonicalBillId: "S2619",
       status: "reportFiled",
       covered: true,
-      reportBillId: null
+      reportBillId: null,
+      confereeCounts: { senate: 3, house: 3 },
+      analysisUpdatedAt: "2026-11-18"
     }
   ],
   conferees: {
@@ -153,13 +164,6 @@ const row = (container: HTMLElement, name: string) =>
   within(table(container)).getByText(name).closest("tr")!
 
 describe("ConferenceExplorer", () => {
-  it("leads back to what a conference committee is", () => {
-    render(<ConferenceExplorer {...props} />)
-    expect(
-      screen.getByRole("link", { name: "what_is_conference_committee" })
-    ).toHaveAttribute("href", "/conferences")
-  })
-
   it("lists every conference and lights every conferee's seat", () => {
     const { container } = render(<ConferenceExplorer {...props} />)
     expect(table(container).querySelectorAll("tbody tr")).toHaveLength(2)
@@ -170,10 +174,13 @@ describe("ConferenceExplorer", () => {
     expect(screen.getByText("seats_lit senate 4 40")).toBeInTheDocument()
     expect(screen.getByText("seats_lit house 4 160")).toBeInTheDocument()
     expect(screen.getByText("explorer_empty")).toBeInTheDocument()
-    // The narrow layout's list links straight to each page.
-    expect(
-      container.querySelector('a[href="/conferences/194/data-privacy"]')
-    ).toBeTruthy()
+    // The narrow layout says the explorer isn't available there, and links
+    // back to Conference Home.
+    const unavailable = screen.getByText("explorer_unavailable").parentElement!
+    expect(unavailable.querySelector("a")).toHaveAttribute(
+      "href",
+      "/conferences"
+    )
   })
 
   it("holds a conference: its six, its seats and its page", () => {
@@ -202,8 +209,10 @@ describe("ConferenceExplorer", () => {
     // (The table sits in the wide layout, hidden at jsdom's width, so the
     // buttons are found by selector rather than by role.)
     const name = (n: string) => row(container, n).querySelector("button")!
-    expect(name("Phone-Free Schools")).toHaveStyle({ fontWeight: 700 })
-    expect(name("Data Privacy")).toHaveStyle({ fontWeight: 400 })
+    // The redesign's weights (ConferenceTable's NameButton): 600 forward,
+    // 300 set back.
+    expect(name("Phone-Free Schools")).toHaveStyle({ fontWeight: 600 })
+    expect(name("Data Privacy")).toHaveStyle({ fontWeight: 300 })
 
     fireEvent.click(
       container.querySelector('polygon[aria-label="B. Crighton"]')!
@@ -228,5 +237,35 @@ describe("ConferenceExplorer", () => {
     expect(screen.getByText("Alice Hanlon Peisch")).toBeInTheDocument()
     expect(screen.getByText("seats_lit house 1 160")).toBeInTheDocument()
     expect(screen.getByText("seats_lit senate 0 40")).toBeInTheDocument()
+    // The profile names no senator: the way to add one, under the list.
+    expect(screen.getByText("mine_add_senator")).toHaveAttribute(
+      "href",
+      "/edit-profile/about-you"
+    )
+  })
+
+  it("names the legislator who serves on none, and asks for the other", () => {
+    mockProfile.current = { senator: { id: "NOBODY", name: "Pat Doe" } }
+    render(<ConferenceExplorer {...props} />)
+    fireEvent.click(screen.getByLabelText("my_legislators"))
+    expect(screen.getByText("mine_none_senator Pat Doe")).toBeInTheDocument()
+    expect(screen.getByText("mine_add_representative")).toBeInTheDocument()
+  })
+
+  it("asks a reader whose profile names neither to add them", () => {
+    mockProfile.current = {}
+    render(<ConferenceExplorer {...props} />)
+    fireEvent.click(screen.getByLabelText("my_legislators"))
+    expect(screen.getByText("mine_unknown")).toBeInTheDocument()
+    expect(screen.getByText("mine_add_legislators")).toHaveAttribute(
+      "href",
+      "/edit-profile/about-you"
+    )
+  })
+
+  it("offers no switch to a reader who is signed out", () => {
+    mockProfile.current = undefined
+    render(<ConferenceExplorer {...props} />)
+    expect(screen.queryByLabelText("my_legislators")).not.toBeInTheDocument()
   })
 })

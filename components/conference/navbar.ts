@@ -5,7 +5,12 @@
  * is not sticky at all.
  */
 function navbar() {
-  const nav = document.querySelector<HTMLElement>(".main-navbar")
+  // On the Conference Committees page the section's beta note sticks at the
+  // top once it reaches it, where the navbar scrolls away (styles/globals.css):
+  // what pins under the navbar pins under the note there.
+  const nav =
+    document.querySelector<HTMLElement>(".conference-beta-banner") ??
+    document.querySelector<HTMLElement>(".main-navbar")
   if (!nav?.parentElement || getComputedStyle(nav).position !== "sticky")
     return { height: 0, letsGo: 0 }
   return {

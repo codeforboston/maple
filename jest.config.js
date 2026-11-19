@@ -25,11 +25,13 @@ module.exports = async () => {
   const nextConfig = await createJestConfig(config)()
   return {
     ...nextConfig,
-    // react-hotkeys-hook (used by react-admin) ships ESM only, so it must be transformed
+    // react-hotkeys-hook (used by react-admin) and react-pretty-email-wrap
+    // (used by components/shared/CommonComponents.tsx) ship ESM only, so they
+    // must be transformed
     transformIgnorePatterns: nextConfig.transformIgnorePatterns.map(pattern =>
       pattern.replace(
         "(typesense-instantsearch-adapter|",
-        "(react-hotkeys-hook|typesense-instantsearch-adapter|"
+        "(react-hotkeys-hook|react-pretty-email-wrap|typesense-instantsearch-adapter|"
       )
     )
   }

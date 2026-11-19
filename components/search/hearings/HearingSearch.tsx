@@ -1,45 +1,16 @@
 import { Hit } from "instantsearch.js"
-import { useInstantSearch } from "react-instantsearch"
 import { SearchPage, SortOptionInput } from "../shared"
 import { HearingHit } from "./HearingHit"
-import {
-  currentGeneralCourt,
-  generalCourts,
-  isCurrentCourt
-} from "functions/src/shared"
+import { SessionSubtitle } from "../SessionMark"
+import { currentGeneralCourt, generalCourts } from "functions/src/shared"
 import { useMemo, useRef } from "react"
 import type { HearingSearchRecord } from "functions/src/hearings/types"
 import { hearingsRelevanceSort, hearingsSearchParams } from "../searchParams"
 
 export type HearingHitData = Hit<HearingSearchRecord>
 
-const ordinalSuffix = (value: number) => {
-  const mod100 = value % 100
-  if (mod100 >= 11 && mod100 <= 13) return `${value}th`
-  switch (value % 10) {
-    case 1:
-      return `${value}st`
-    case 2:
-      return `${value}nd`
-    case 3:
-      return `${value}rd`
-    default:
-      return `${value}th`
-  }
-}
-
 const formatCourtFilterLabel = (number: number) =>
   generalCourts[number]?.Name ?? String(number)
-
-const formatCourtSubtitle = (number: number) => {
-  const court = generalCourts[number]
-  if (!court) return `${ordinalSuffix(number)} Session`
-  const range = `${court.FirstYear} - ${court.SecondYear}`
-  if (isCurrentCourt(number)) {
-    return `Current Session: ${range}`
-  }
-  return `${ordinalSuffix(number)} Session: ${range}`
-}
 
 /** Relevance searches every hearing, past and upcoming. Clearing the window
  * explicitly is load-bearing: SortBy calls useConfigure(selected.configure ?? {}),
@@ -103,7 +74,7 @@ export const HearingSearch = () => {
   return (
     <SearchPage
       searchType="hearing"
-      header={<HearingSearchHeader />}
+      header={<SessionSubtitle />}
       currentRefinementsProps={{ excludedAttributes: ["startsAt"] }}
       initialUiState={{
         [sortOptions[0].value]: {
@@ -148,16 +119,4 @@ export const HearingSearch = () => {
       sortOptions={sortOptions}
     />
   )
-}
-const HearingSearchHeader = () => {
-  const { indexUiState } = useInstantSearch()
-
-  const subtitle = useMemo(() => {
-    const selectedCourt = indexUiState?.refinementList?.court?.[0]
-    const parsed = Number.parseInt(selectedCourt ?? "", 10)
-    const courtNumber = Number.isNaN(parsed) ? currentGeneralCourt : parsed
-    return formatCourtSubtitle(courtNumber)
-  }, [indexUiState?.refinementList?.court])
-
-  return <p className="text-secondary mb-3">{subtitle}</p>
 }

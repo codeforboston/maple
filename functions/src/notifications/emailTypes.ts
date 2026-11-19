@@ -31,6 +31,15 @@ export type BallotQuestionDigest = {
   neutralCount: number
   opposeCount: number
 }
+/** Testimony on a followed committee of conference, counted by stance. */
+export type ConferenceDigest = {
+  conferenceId: string
+  conferenceName: string
+  court: string
+  newTestimonyCount: number
+  /** Every stance, in the site's order, so digests compare at a glance. */
+  stances: { stance: string; count: number }[]
+}
 export type NotificationEmailDigest = {
   notificationFrequency: Frequency
   startDate: Date
@@ -41,4 +50,29 @@ export type NotificationEmailDigest = {
   numUsersWithNewTestimony: number
   ballotQuestions: BallotQuestionDigest[] // cap of 4
   numBallotQuestionsWithNewTestimony: number
+  conferences: ConferenceDigest[] // cap of 4
+  numConferencesWithNewTestimony: number
+}
+
+type ConferenceUpdateRow = {
+  label: string
+  count: number
+  /** "▲ 3", "▼ 1" or "—". */
+  delta: string
+}
+export type ConferenceUpdateEmail = {
+  /** "S.2581 / H.5366" */
+  bills: string
+  title: string
+  conferenceUrl: string
+  /** "September 21–27, 2026" */
+  weekLabel: string
+  sentLabel: string
+  conferees: { name: string; chair: boolean }[]
+  total: number
+  totalDelta: string
+  groups: ConferenceUpdateRow[]
+  /** Each with its share of the bar, in whole percent, and its colour. */
+  positions: (ConferenceUpdateRow & { width: number; color: string })[]
+  changes: string[]
 }

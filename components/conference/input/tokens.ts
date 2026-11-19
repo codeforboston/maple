@@ -2,11 +2,11 @@
  * The page's own surfaces and brand come from the --maple tokens, as in
  * ../styles.ts. */
 export const ink = {
-  strong: "#141413",
-  midheavy: "#40403d",
-  mid: "#73726c",
-  muted: "#94938d",
-  faint: "#b5b4ae"
+  strong: "#141414",
+  midheavy: "#404040",
+  mid: "#727272",
+  muted: "#939393",
+  faint: "#b4b4b4"
 }
 
 export const line = {
@@ -18,6 +18,21 @@ export const wash = {
   default: "rgba(0, 0, 0, 0.05)",
   strong: "rgba(0, 0, 0, 0.09)"
 }
+
+/** The mockup's recessed grey (--color-sunken): the well a bill's text sits
+ * in (../ConferenceText.tsx), and the land and empty seats of the district
+ * maps (../DistrictMap.tsx). */
+export const sunken = "#e2e2e2"
+
+/** The input panel's recessed grey: its previews' wells and the cosign's
+ * letter. The grey of a field turned off (wash.default over the panel's
+ * #f7f7f7), made solid so what is drawn to match it on top, such as the ring
+ * around a photo, does. */
+export const recess = "#ebebeb"
+
+/** The mockup's page grey (--color-ground), the edge between the district
+ * maps' seats. */
+export const ground = "#f7f7f7"
 
 export const brand = {
   fill: "#1f3b61",

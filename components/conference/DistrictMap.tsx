@@ -2,6 +2,7 @@ import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import type { Branch } from "../../functions/src/common"
 import { shortName } from "../formatting"
+import { ground, line, sunken } from "./input/tokens"
 import { box, cells, outline, seatCount } from "./map/geometry"
 import { Eyebrow, partyColor } from "./styles"
 import { ConfereeView } from "./types"
@@ -24,11 +25,15 @@ export const seatsOf = (conferees: ConfereeView[]) =>
 const Svg = styled.svg`
   display: block;
   width: 100%;
+  /* Room to grow with a wider page, but no more than 300px. */
+  max-width: 300px;
   height: auto;
 
+  /* The mockup's greys: empty seats in its sunken grey, every seat edged in
+     its page grey. */
   polygon {
-    fill: var(--maple-surface-page);
-    stroke: var(--maple-surface-base);
+    fill: ${sunken};
+    stroke: ${ground};
     stroke-width: 1.2;
     vector-effect: non-scaling-stroke;
     transition: fill-opacity 120ms ease;
@@ -57,7 +62,8 @@ const Outline = (props: { fill: string; stroke?: string }) => (
  * and the rest of the chamber stays blank: three cells lit in a chamber of a
  * hundred and sixty says how few people are in the room better than a
  * sentence. While one seat is being read the other lit seats sit back and the
- * one being read takes a thick edge.
+ * one being read takes a thick edge. Clicking a seat picks it where the page
+ * allows it (`onPin`); elsewhere the seats answer the pointer alone.
  */
 export function DistrictMap({
   chamber,
@@ -72,7 +78,9 @@ export function DistrictMap({
   /** The seat being read, if any; a key from either chamber. */
   selected: string | null
   onHover: (key: string | null) => void
-  onPin: (key: string) => void
+  /** Picking a seat by clicking it. Without it, the seats answer the
+   * pointer alone. */
+  onPin?: (key: string) => void
 }) {
   const { t } = useTranslation("conferences")
   const [x, y, w, h] = box
@@ -103,7 +111,7 @@ export function DistrictMap({
         </defs>
         {/* The coastline under the cells, so any sliver a cell does not
             reach still reads as land. */}
-        <Outline fill="var(--maple-surface-page)" />
+        <Outline fill={sunken} />
         <g clipPath={`url(#${clipId})`}>
           {Object.entries(own).map(([key, points]) => {
             const person = people[key]
@@ -116,21 +124,23 @@ export function DistrictMap({
                   fill: partyColor(person.party),
                   fillOpacity: selected && key !== selected ? 0.45 : 1
                 }}
-                role="button"
-                tabIndex={0}
-                aria-pressed={key === selected}
                 aria-label={person.name}
                 onPointerEnter={() => onHover(key)}
                 onPointerLeave={() => onHover(null)}
-                onFocus={() => onHover(key)}
-                onBlur={() => onHover(null)}
-                onClick={() => onPin(key)}
-                onKeyDown={e => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault()
-                    onPin(key)
+                {...(onPin && {
+                  role: "button",
+                  tabIndex: 0,
+                  "aria-pressed": key === selected,
+                  onFocus: () => onHover(key),
+                  onBlur: () => onHover(null),
+                  onClick: () => onPin(key),
+                  onKeyDown: (e: React.KeyboardEvent) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault()
+                      onPin(key)
+                    }
                   }
-                }}
+                })}
               />
             )
           })}
@@ -152,7 +162,7 @@ export function DistrictMap({
         </g>
         {/* The coastline again as a hairline, so the state has an edge of
             its own rather than ending wherever the cells happen to. */}
-        <Outline fill="none" stroke="var(--maple-border-default)" />
+        <Outline fill="none" stroke={line.strong} />
       </Svg>
     </div>
   )

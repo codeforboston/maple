@@ -81,9 +81,21 @@ const mount = (
 
 // A card's own name, which comes before its cosigns' names.
 const authorOf = (a: HTMLElement) => a.querySelector("span[title]")?.textContent
+/** The input cards, not the cosigns drawn as smaller cards inside them. */
+const topCards = () =>
+  screen
+    .getAllByRole("article")
+    .filter(a => !a.parentElement?.closest("article"))
 
-const cardOf = (author: string) =>
-  screen.getAllByRole("article").find(a => authorOf(a) === author)!
+const cardOf = (author: string) => topCards().find(a => authorOf(a) === author)!
+
+/** Ticks "Hide cosigns without content" in the filters menu. */
+const hideCosignsWithoutWords = async () => {
+  fireEvent.click(screen.getByLabelText("input.filters"))
+  fireEvent.click(
+    within(await screen.findByRole("menu")).getByText("input.cosign_wordless")
+  )
+}
 
 describe("PublicInput", () => {
   it("says so when nothing is filed, and keeps the filters", () => {
@@ -100,19 +112,19 @@ describe("PublicInput", () => {
     expect(screen.queryByText("input.empty_title")).not.toBeInTheDocument()
   })
 
-  it("leaves the filters off a short feed", () => {
+  it("keeps the filters on a short feed", () => {
     render(<PublicInput items={many(3)} loading={false} />)
-    expect(screen.getAllByRole("article")).toHaveLength(3)
+    expect(topCards()).toHaveLength(3)
     expect(
-      screen.queryByLabelText("input.filter_by_position")
-    ).not.toBeInTheDocument()
+      screen.getByLabelText("input.filter_by_position")
+    ).toBeInTheDocument()
   })
 
   it("pages five at a time", () => {
     render(<PublicInput items={many(7)} loading={false} />)
-    expect(screen.getAllByRole("article")).toHaveLength(5)
+    expect(topCards()).toHaveLength(5)
     fireEvent.click(screen.getByRole("button", { name: "2" }))
-    expect(screen.getAllByRole("article")).toHaveLength(2)
+    expect(topCards()).toHaveLength(2)
   })
 
   describe("landing on a card a link names", () => {
@@ -130,7 +142,7 @@ describe("PublicInput", () => {
       // Newest first: the first is on the second page.
       render(<PublicInput items={many(7)} loading={false} focus="t1" />)
       expect(screen.getByText("Author 1")).toBeInTheDocument()
-      expect(screen.getAllByRole("article")).toHaveLength(2)
+      expect(topCards()).toHaveLength(2)
       expect(window.scrollTo).toHaveBeenCalled()
     })
 
@@ -158,7 +170,7 @@ describe("PublicInput", () => {
     fireEvent.click(within(menu).getByText("input.position.passNothing.long"))
     expect(screen.getByText("input.no_match_title")).toBeInTheDocument()
     fireEvent.click(screen.getByText("input.clear_filters"))
-    expect(screen.getAllByRole("article")).toHaveLength(4)
+    expect(topCards()).toHaveLength(4)
   })
 
   it("narrows by account type", async () => {
@@ -170,7 +182,7 @@ describe("PublicInput", () => {
         "input.account_organization"
       )
     )
-    expect(screen.getAllByRole("article")).toHaveLength(2)
+    expect(topCards()).toHaveLength(2)
   })
 
   describe("the reader's own input", () => {
@@ -191,7 +203,7 @@ describe("PublicInput", () => {
 
     it("stands first, once, and marked as theirs", () => {
       asReader(many(7))
-      const cards = screen.getAllByRole("article")
+      const cards = topCards()
       expect(cards).toHaveLength(6)
       expect(cards[0]).toHaveTextContent("Words 6")
       expect(within(cards[0]).getByText("input.you")).toBeInTheDocument()
@@ -202,7 +214,7 @@ describe("PublicInput", () => {
     it("stays first on every page, outside the five", () => {
       asReader(many(12))
       fireEvent.click(screen.getByRole("button", { name: "3" }))
-      const cards = screen.getAllByRole("article")
+      const cards = topCards()
       expect(cards[0]).toHaveTextContent("Words 6")
       // Eleven others, five a page: the third page has one.
       expect(cards).toHaveLength(2)
@@ -216,7 +228,7 @@ describe("PublicInput", () => {
           "input.position.passNothing.long"
         )
       )
-      const cards = screen.getAllByRole("article")
+      const cards = topCards()
       expect(cards).toHaveLength(1)
       expect(cards[0]).toHaveTextContent("Words 6")
       expect(screen.getByText("input.no_match_title")).toBeInTheDocument()
@@ -224,7 +236,7 @@ describe("PublicInput", () => {
 
     it("has no empty state when it is the only input", () => {
       asReader([entry(6)])
-      expect(screen.getAllByRole("article")).toHaveLength(1)
+      expect(topCards()).toHaveLength(1)
       expect(screen.queryByText("input.empty_title")).not.toBeInTheDocument()
     })
   })
@@ -241,8 +253,7 @@ describe("PublicInput", () => {
       mount(items, { uid: "me", onCosign })
 
     const cosignable = () =>
-      screen
-        .getAllByRole("article")
+      topCards()
         .filter(a => within(a).queryByRole("button", { name: "input.cosign" }))
         .map(authorOf)
         .sort()
@@ -264,12 +275,16 @@ describe("PublicInput", () => {
 
     it("lists a cosign under what it cosigns, without naming it again", () => {
       show()
-      expect(screen.getAllByRole("article")).toHaveLength(4)
+      expect(topCards()).toHaveLength(4)
       const row = within(within(cardOf("Author 1")).getByRole("listitem"))
       expect(row.getByText("Author 4")).toBeInTheDocument()
-      expect(row.getByText("input.cosigned")).toBeInTheDocument()
+      // In context: it cosigned "this position", whose author and position are
+      // the card's above it.
+      expect(row.getByText("input.cosigned_this")).toBeInTheDocument()
+      expect(row.queryByText("input.cosigned")).not.toBeInTheDocument()
+      expect(row.queryByText("Author 1")).not.toBeInTheDocument()
       expect(
-        row.queryByRole("button", { name: "Author 1" })
+        row.queryByText("input.position.passSomething.short")
       ).not.toBeInTheDocument()
     })
 
@@ -289,7 +304,7 @@ describe("PublicInput", () => {
         (_, el) => el?.tagName === "SPAN" && !!el.textContent?.startsWith(text)
       )
 
-    const authors = () => screen.getAllByRole("article").map(authorOf)
+    const authors = () => topCards().map(authorOf)
 
     const rows = (author: string) =>
       within(cardOf(author)).queryAllByRole("listitem")
@@ -307,12 +322,12 @@ describe("PublicInput", () => {
 
     it("stands a cosign alone when its card is not here", () => {
       mount([entry(1), cosignOf(2, 9)])
-      expect(screen.getAllByRole("article")).toHaveLength(2)
+      expect(topCards()).toHaveLength(2)
     })
 
     it("pages by card, with its cosigns", () => {
       mount([...many(7), cosignOf(8, 1), cosignOf(9, 2), cosignOf(10, 3)])
-      expect(screen.getAllByRole("article")).toHaveLength(5)
+      expect(topCards()).toHaveLength(5)
     })
 
     it("shows the band and the floor on a cosigned card, with Cosign in the band", () => {
@@ -344,25 +359,24 @@ describe("PublicInput", () => {
       expect(screen.queryByText(/cosign_senate|cosign_house/)).toBeNull()
     })
 
-    it("leaves a cosign without words out until asked, and counts it anyway", async () => {
+    it("shows cosigns without content by default, with an option to hide them", async () => {
       const card = entry(1, { cosignCount: 2 } as any)
-      mount([
-        card,
-        entry(2),
-        entry(3),
-        cosignOf(4, 1),
-        cosignOf(5, 1, { content: "" })
-      ])
+      const withWords = cosignOf(4, 1)
+      const withoutWords = cosignOf(5, 1, { content: "" })
+      mount([card, entry(2), entry(3), withWords, withoutWords])
+
+      // At first, both cosigns are listed under the card.
+      expect(rows("Author 1")).toHaveLength(2)
+      expect(band("2 input.cosign_count 2")).toBeInTheDocument()
+      // Under its card, a cosign without words says nothing about it.
+      expect(
+        screen.queryByText("input.cosign_no_words")
+      ).not.toBeInTheDocument()
+
+      // Hidden, only the one with words is listed, but the count stays 2.
+      await hideCosignsWithoutWords()
       expect(rows("Author 1")).toHaveLength(1)
       expect(band("2 input.cosign_count 2")).toBeInTheDocument()
-      fireEvent.click(screen.getByLabelText("input.filters"))
-      fireEvent.click(
-        within(await screen.findByRole("menu")).getByText(
-          "input.cosign_wordless"
-        )
-      )
-      expect(rows("Author 1")).toHaveLength(2)
-      expect(screen.getByText("input.cosign_no_words")).toBeInTheDocument()
     })
 
     it("keeps a card whose cosign matches a filter", async () => {
@@ -408,10 +422,10 @@ describe("PublicInput", () => {
 
     it("stands its card first on every page, and its own first under it", () => {
       asReader(feed)
-      expect(screen.getAllByRole("article")[0]).toBe(cardOf("Author 1"))
+      expect(topCards()[0]).toBe(cardOf("Author 1"))
       expect(rowsOf()[0]).toHaveTextContent("Author 20")
       fireEvent.click(screen.getByRole("button", { name: "3" }))
-      expect(screen.getAllByRole("article")[0]).toBe(cardOf("Author 1"))
+      expect(topCards()[0]).toBe(cardOf("Author 1"))
     })
 
     it("shows once, marked as theirs on its row and not on the card", () => {
@@ -431,23 +445,29 @@ describe("PublicInput", () => {
           "input.position.passNothing.long"
         )
       )
-      expect(screen.getAllByRole("article")).toHaveLength(1)
+      expect(topCards()).toHaveLength(1)
       expect(rowsOf()[0]).toHaveTextContent("Author 20")
     })
 
-    it("shows without words while others without words wait", () => {
+    it("stays visible when the reader hides cosigns without content", async () => {
+      const mineWithoutWords = { ...mine, content: "" }
+      const otherWithoutWords = cosignOf(30, 1, { content: "" })
       asReader([
         ...feed.filter(x => x !== mine),
-        { ...mine, content: "" },
-        cosignOf(30, 1, { content: "" })
+        mineWithoutWords,
+        otherWithoutWords
       ])
-      expect(rowsOf()[0]).toHaveTextContent("input.cosign_no_words")
-      expect(screen.getAllByText("input.cosign_no_words")).toHaveLength(1)
+
+      await hideCosignsWithoutWords()
+
+      // The reader's own is still first under the card; the other is hidden.
+      expect(rowsOf()[0]).toHaveTextContent("Author 20")
+      expect(screen.queryByText("Author 30")).not.toBeInTheDocument()
     })
 
     it("stands alone, marked, where its card is not here", () => {
       asReader([entry(2), cosignOf(3, 9, { authorUid: "me" })])
-      const cards = screen.getAllByRole("article")
+      const cards = topCards()
       expect(cards[0]).toHaveTextContent("Author 3")
       expect(within(cards[0]).getByText("input.you")).toBeInTheDocument()
     })

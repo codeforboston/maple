@@ -2,6 +2,7 @@ import { GetServerSideProps } from "next"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import { z } from "zod"
 import { flags } from "components/featureFlags"
+import { ConferenceBetaBanner } from "components/conference/ConferenceBetaBanner"
 import { ConferenceDetails } from "components/conference/ConferenceDetails"
 import { loadConferencePage } from "components/conference/load"
 import { ConferencePageProps } from "components/conference/types"
@@ -11,7 +12,16 @@ const Query = z.object({ court: z.coerce.number(), id: z.string() })
 
 export default createPage<ConferencePageProps>({
   titleI18nKey: "titles.conference",
-  Page: props => <ConferenceDetails {...props} />
+  // The section's beta note across the window, then the conference, which
+  // puts the way back to the Conference Committees page over its own column
+  // (ConferenceDetails.tsx).
+  Page: props => (
+    <>
+      {/* On mobile, the tag alone. */}
+      <ConferenceBetaBanner tagOnlyOnMobile />
+      <ConferenceDetails {...props} />
+    </>
+  )
 })
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
@@ -33,6 +43,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
       "common",
       "footer",
       "conferences",
+      "profile",
       "testimony"
     ])
   ])

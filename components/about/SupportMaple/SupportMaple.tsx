@@ -1,97 +1,193 @@
-import { ReactNode } from "react"
-import { useTranslation } from "next-i18next"
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline"
+import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined"
+import IosShareIcon from "@mui/icons-material/IosShare"
+import { Trans, useTranslation } from "next-i18next"
+import { ComponentType } from "react"
 import styled from "styled-components"
 import AboutPagesCard from "../../AboutPagesCard/AboutPagesCard"
 import { FEEDBACK_URL } from "../../common"
-import { ArrowRightIcon } from "../../learn/icons"
+import { ArrowRightIcon, CheckIcon } from "../../learn/icons"
 import { Internal } from "../../links"
 import LearnBreadcrumb from "../../learn/LearnBreadcrumb"
 import LearnHeader from "../../learn/LearnHeader"
 import LearnLayout from "../../learn/LearnLayout"
+import GiveBox from "./GiveBox"
 
-const DONATE_URL = "https://partnersindemocracy.us/?form=FUNMSSLLQEC"
 const GITHUB_URL = "https://github.com/codeforboston/maple/graphs/contributors"
-const BUG_URL =
-  "https://docs.google.com/forms/d/e/1FAIpQLSebZTHz0XGR4WgPf10yTPXSOuZK2P41HxK0AFGXM57KbFWuDg/viewform?usp=share_link"
+const VOLUNTEER_EMAIL = "mailto:admin@mapletestimony.org"
 
-/* An external link inside body copy. */
-const Ext = ({ href, children }: { href: string; children: ReactNode }) => (
-  <a href={href} target="_blank" rel="noopener noreferrer">
-    {children}
-  </a>
-)
-
-type Section = {
-  key: string
-  desc: ReactNode
-  cta: { label: string; href: string }
+type OtherWay = {
+  key: "useMAPLE" | "volunteer" | "feedback"
+  Icon: ComponentType<{ "aria-hidden"?: boolean | "true" }>
+  href: string
+  /** A link inside the body copy, if it has one. */
+  bodyLink?: string
 }
 
-/* eslint-disable i18next/no-literal-string -- not localised yet */
-const SECTIONS: Section[] = [
-  {
-    key: "useMAPLE",
-    desc: "The best way to support MAPLE is by using our platform and sharing it with friends and colleagues. That is the best endorsement we could receive.",
-    cta: { label: "Start exploring", href: "/bills" }
-  },
-  {
-    key: "donate",
-    desc: "MAPLE is an initiative of Partners in Democracy - Education, a 501(c)(3) non profit organization. You can donate directly to the development of MAPLE.",
-    cta: { label: "Donate now", href: DONATE_URL }
-  },
+const OTHER_WAYS: OtherWay[] = [
+  { key: "useMAPLE", Icon: IosShareIcon, href: "/bills" },
   {
     key: "volunteer",
-    desc: (
-      <>
-        MAPLE is volunteer-powered. Over{" "}
-        <Ext href={GITHUB_URL}>one hundred</Ext> developers, designers, and
-        researchers have contributed to MAPLE. If you'd like to get involved,
-        reach out.
-      </>
-    ),
-    cta: { label: "Contact us", href: "mailto:admin@mapletestimony.org" }
+    Icon: GroupsOutlinedIcon,
+    href: VOLUNTEER_EMAIL,
+    bodyLink: GITHUB_URL
   },
-  {
-    key: "feedback",
-    desc: (
-      <>
-        If you would like to share thoughts on your experience using MAPLE or
-        suggest improvements, we'd love to hear from you. You can also{" "}
-        <Ext href={BUG_URL}>report any bugs</Ext> you encounter.
-      </>
-    ),
-    cta: { label: "Submit feedback", href: FEEDBACK_URL }
-  }
+  { key: "feedback", Icon: ChatBubbleOutlineIcon, href: FEEDBACK_URL }
 ]
-/* eslint-enable i18next/no-literal-string */
 
-/* Offset pill-header card body: the description with a ghost CTA (bold text +
-   trailing arrow) pinned bottom-right. */
-const PillBody = styled.div`
+/* What a gift pays for, in the order shown (keys in supportmaple.json). */
+const GIFT_USES = ["access", "data", "next"] as const
+
+/* The donate card's body: the case for giving beside the give box. */
+const DonateBody = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 2rem 3rem;
+
+  @media (min-width: 48em) {
+    padding: 1.5rem 1rem 0.5rem;
+  }
+
+  .case {
+    flex: 1 1 20rem;
+    min-width: 0;
+
+    h3 {
+      margin: 0 0 0.875rem;
+      font-family: var(--maple-font-heading);
+      font-weight: 700;
+      font-size: 1.625rem;
+      line-height: 1.25;
+      color: var(--maple-brand-primary-strong);
+    }
+
+    p {
+      margin: 0 0 0.875rem;
+      line-height: 1.65;
+      color: var(--maple-text-body);
+    }
+
+    h4 {
+      margin: 1.5rem 0 0.875rem;
+      font-family: var(--maple-font-heading);
+      font-weight: 700;
+      font-size: 1.125rem;
+      color: var(--maple-text-strong);
+    }
+
+    .uses {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+
+      li {
+        display: flex;
+        gap: 0.75rem;
+        line-height: 1.6;
+        color: var(--maple-text-body);
+      }
+
+      strong {
+        color: var(--maple-text-strong);
+      }
+    }
+
+    .check {
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.75rem;
+      height: 1.75rem;
+      margin-top: 0.0625rem;
+      border-radius: var(--maple-radius-pill);
+      background: color-mix(
+        in srgb,
+        var(--maple-brand-primary) 10%,
+        var(--maple-surface-base)
+      );
+      color: var(--maple-brand-primary);
+
+      svg {
+        font-size: 1.125rem;
+      }
+    }
+  }
+`
+
+const OtherWays = styled.section`
+  h2 {
+    margin: 0 0 1.5rem;
+    font-family: var(--maple-font-heading);
+    font-weight: 700;
+    font-size: 1.75rem;
+    line-height: 1.2;
+    color: var(--maple-brand-primary-strong);
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1.5rem;
+  }
+`
+
+const OtherWayCard = styled.article`
   display: flex;
   flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.75rem;
+  background: var(--maple-surface-base);
+  border: 1px solid var(--maple-card-edge);
+  border-radius: 0.5rem;
 
-  .desc {
-    color: var(--maple-text-muted);
-    line-height: 1.6;
-    margin: 0;
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--maple-radius-pill);
+    background: color-mix(
+      in srgb,
+      var(--maple-brand-primary) 10%,
+      var(--maple-surface-base)
+    );
+    color: var(--maple-brand-primary);
   }
 
-  .desc a {
-    color: var(--bs-blue);
-    text-decoration: underline;
+  h3 {
+    margin: 0.25rem 0 0;
+    font-family: var(--maple-font-heading);
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 1.3;
+    color: var(--maple-text-strong);
+  }
+
+  p {
+    flex-grow: 1;
+    margin: 0;
+    line-height: 1.6;
+    color: var(--maple-text-body);
+
+    a {
+      color: var(--bs-blue);
+      text-decoration: underline;
+    }
   }
 
   .cta {
     display: inline-flex;
-    align-self: flex-end;
+    align-self: flex-start;
     align-items: center;
     gap: 0.375rem;
-    margin-top: auto;
-    padding-top: 1.25rem;
     color: var(--bs-blue);
     font-weight: 700;
-    font-size: 0.9375rem;
     text-decoration: none;
 
     svg {
@@ -133,21 +229,78 @@ const SupportMaple = () => {
 
   return (
     <LearnLayout width="medium">
-      <LearnBreadcrumb section={t("breadcrumb")} eyebrow={t("common:about")} />
+      <LearnBreadcrumb
+        section={t("breadcrumb")}
+        eyebrow={t("common:about")}
+        withoutHome
+      />
       <LearnHeader
         title={t("title")}
         subhead={t("subhead")}
         titleSize="2.25rem"
         subheadMaxWidth="none"
       />
-      {SECTIONS.map(({ key, desc, cta }) => (
-        <AboutPagesCard key={key} title={t(`${key}.header`)}>
-          <PillBody>
-            <p className="desc">{desc}</p>
-            <Cta {...cta} />
-          </PillBody>
-        </AboutPagesCard>
-      ))}
+
+      <AboutPagesCard title={t("donate.header")}>
+        <DonateBody>
+          <div className="case">
+            <h3>{t("donate.heading")}</h3>
+            <p>{t("donate.intro")}</p>
+            <h4>{t("donate.usesHeading")}</h4>
+            <ul className="uses">
+              {GIFT_USES.map(key => (
+                <li key={key}>
+                  <span className="check">
+                    <CheckIcon aria-hidden="true" />
+                  </span>
+                  <span>
+                    <strong>{t(`donate.uses.${key}.title`)}</strong>{" "}
+                    {t(`donate.uses.${key}.body`)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <GiveBox />
+        </DonateBody>
+      </AboutPagesCard>
+
+      <OtherWays
+        aria-labelledby="other-ways-heading"
+        className="mx-sm-5 mx-xs-3"
+      >
+        <h2 id="other-ways-heading">{t("otherWays")}</h2>
+        <div className="cards">
+          {OTHER_WAYS.map(({ key, Icon, href, bodyLink }) => (
+            <OtherWayCard key={key}>
+              <div className="icon">
+                <Icon aria-hidden="true" />
+              </div>
+              <h3>{t(`${key}.header`)}</h3>
+              <p>
+                <Trans
+                  t={t}
+                  i18nKey={`${key}.body`}
+                  components={
+                    bodyLink
+                      ? [
+                          // eslint-disable-next-line jsx-a11y/anchor-has-content
+                          <a
+                            href={bodyLink}
+                            key={key}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          />
+                        ]
+                      : undefined
+                  }
+                />
+              </p>
+              <Cta label={t(`${key}.cta`)} href={href} />
+            </OtherWayCard>
+          ))}
+        </div>
+      </OtherWays>
     </LearnLayout>
   )
 }

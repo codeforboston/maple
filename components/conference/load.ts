@@ -1,5 +1,5 @@
 import { districtId } from "functions/src/districts/normalize"
-import { currentGeneralCourt, isSitting } from "functions/src/shared"
+import { currentGeneralCourt } from "functions/src/shared"
 import type { Branch } from "../../functions/src/common"
 import {
   Conference,
@@ -8,7 +8,6 @@ import {
   listConferences
 } from "../db/conferences"
 import { getEventSummary } from "../db/events"
-import { flags } from "../featureFlags"
 import {
   getMember,
   getMemberSearchIndex,
@@ -18,6 +17,7 @@ import {
 import { cells } from "./map/geometry"
 import {
   byActivity,
+  isShown,
   ConfereeView,
   ConferenceIndexProps,
   ConferenceLanding,
@@ -38,17 +38,17 @@ const summarize = (c: Conference): ConferenceSummary => ({
   // Read without validation: a document synced before these fields existed
   // has neither.
   covered: c.covered !== false,
-  reportBillId: c.reportBillId ?? null
+  reportBillId: c.reportBillId ?? null,
+  confereeCounts: {
+    senate: c.conferees.filter(m => m.branch === "Senate").length,
+    house: c.conferees.filter(m => m.branch === "House").length
+  },
+  analysisUpdatedAt: c.analysisUpdatedAt ?? null
 })
-
-/** Whether the site shows a conference: one still sitting always, one no
- * longer taking input only behind the closedConferences flag. */
-const shown = (c: Pick<Conference, "status">) =>
-  isSitting(c) || flags().closedConferences
 
 /** Every conference in the court the site shows. */
 const listShown = async (court: number) =>
-  (await listConferences(court)).filter(shown)
+  (await listConferences(court)).filter(isShown)
 
 /** Conferences as the rail lists them: active first, then by name. */
 const railOf = (all: Conference[]) => all.map(summarize).sort(byActivity)
@@ -140,6 +140,21 @@ export async function loadLanding(
   return landing ? { court: landing.court, id: landing.id } : null
 }
 
+/** The landing (loadLanding) and every conference in the rail's order, for
+ * the Conference Committees page: its button, and the list the button opens
+ * on mobile. No members or hearings. */
+export async function loadLandingAndRail(court: number): Promise<{
+  landing: ConferenceLanding | null
+  conferences: ConferenceSummary[]
+}> {
+  const conferences = railOf(await listConferences(court))
+  const landing = conferences.find(c => c.covered) ?? conferences[0]
+  return {
+    landing: landing ? { court: landing.court, id: landing.id } : null,
+    conferences
+  }
+}
+
 /** The page for conference `id` among `all`. */
 async function pageFor(
   court: number,
@@ -217,7 +232,7 @@ export async function loadConferenceForBill(
   billId: string
 ): Promise<ConferenceSummary | null> {
   const c = await getConferenceForBill(court, billId)
-  return c && shown(c) ? summarize(c) : null
+  return c && isShown(c) ? summarize(c) : null
 }
 
 /** The conference a hearing belongs to, by the hearing page's numeric id. */
@@ -230,5 +245,5 @@ export async function loadConferenceForHearing(
     Number(generalCourtNumber),
     `hearing-${hearingId}`
   )
-  return c && shown(c) ? summarize(c) : null
+  return c && isShown(c) ? summarize(c) : null
 }

@@ -13,13 +13,13 @@ import { createLobbyingListProps } from "components/lobbying/listPageProps"
 import { formatCount, MAPLE_COLORS } from "components/lobbying/chartTheme"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import {
-  FilterLabel,
+  FloatingSearch,
+  listTableStyle,
+  listTdStyle,
   LobbyingFilterBar,
   LobbyingLoadError,
   LobbyingPanel,
-  listTableStyle,
-  listTdStyle,
-  listSearchStyle,
+  pageIntroStyle,
   sessionSelectStyle,
   subTextStyle
 } from "components/lobbying/LobbyingPanel"
@@ -36,8 +36,14 @@ import {
   type SessionFilter
 } from "components/lobbying/SessionSelect"
 import { matchesSearch } from "components/lobbying/searchMatch"
-import { courtName, courtShortLabel } from "components/lobbying/sessions"
-import { SortTh, thStyle, type SortDir } from "components/lobbying/SortTh"
+import { courtShortLabel } from "components/lobbying/sessions"
+import {
+  SortTh,
+  thNoteStyle,
+  thTopStyle,
+  thWithNoteStyle,
+  type SortDir
+} from "components/lobbying/SortTh"
 
 const ALL_COURTS = [194, 193, 192, 191, 190, 189, 188, 187, 186, 185, 184]
 const PAGE_SIZE = 50
@@ -101,15 +107,9 @@ function LobbyingBillsTable({ initialCourt, initialRows }: BillsPageProps) {
     setPage(1)
   }, [session, search, sortDir, setPage])
 
-  const sessionLabel =
-    session === "all" ? t("filters.allSessionsSince") : courtName(session)
-
   return (
     <>
-      <LobbyingFilterBar boxed>
-        <FilterLabel htmlFor="bills-session">
-          {t("filters.session")}
-        </FilterLabel>
+      <LobbyingFilterBar boxed="open">
         <SessionSelect
           id="bills-session"
           sessions={ALL_COURTS}
@@ -119,25 +119,29 @@ function LobbyingBillsTable({ initialCourt, initialRows }: BillsPageProps) {
           allLabel={t("filters.allSessionsSince")}
           style={sessionSelectStyle}
         />
-        <input
-          type="search"
-          placeholder={`${t("activity.billSearch")}…`}
-          aria-label={t("activity.billSearch")}
+        <FloatingSearch
+          id="bills-search"
+          label={t("activity.billSearch")}
           value={search}
-          onChange={e => setSearch(e.target.value)}
-          style={listSearchStyle}
+          onChange={setSearch}
+          grow
         />
       </LobbyingFilterBar>
 
       <LobbyingPanel
-        title={t("billList.panelTitle", { session: sessionLabel })}
+        title={t("billList.panelTitle")}
+        // The overview's Most-Lobbied Bills hint, saying sorted for ranked:
+        // the list can be sorted either way.
+        hint={t("billList.hint")}
+        session={session}
+        sessions={ALL_COURTS}
         aside={
           !loadingOther && (
-            <strong>
-              {t("billList.count", {
-                count: totalItems,
-                n: formatCount(totalItems)
-              })}
+            // The count in bold Lexend, then what it counts in light Lexend, at
+            // one size.
+            <strong style={countStyle}>
+              <span style={countNumberStyle}>{formatCount(totalItems)}</span>
+              {t("billList.count", { count: totalItems })}
             </strong>
           )
         }
@@ -160,13 +164,19 @@ function LobbyingBillsTable({ initialCourt, initialRows }: BillsPageProps) {
                 <colgroup>
                   <col style={{ width: 150 }} />
                   <col />
-                  <col style={{ width: 170 }} />
-                  <col style={{ width: 260 }} />
+                  {/* Organizations: wider, the title giving way. */}
+                  <col style={{ width: 240 }} />
+                  {/* The bar's 160px and the cell's 12px each side, so the bar
+                    ends as near the table's right edge as "Bill" starts from
+                    its left. */}
+                  <col style={{ width: 184 }} />
                 </colgroup>
                 <thead>
                   <tr>
-                    <th style={thStyle}>{t("fields.bill")}</th>
-                    <th style={thStyle}>{t("billList.title")}</th>
+                    <th style={thTopStyle}>{t("fields.bill")}</th>
+                    <th style={{ ...thTopStyle, paddingLeft: "1.5rem" }}>
+                      {t("billList.title")}
+                    </th>
                     <SortTh
                       label={t("activity.organizations")}
                       sortKey="orgs"
@@ -176,9 +186,9 @@ function LobbyingBillsTable({ initialCourt, initialRows }: BillsPageProps) {
                         setSortDir(d => (d === "asc" ? "desc" : "asc"))
                       }
                     />
-                    <th style={thStyle}>
+                    <th style={thWithNoteStyle}>
                       {t("overview.positionsReported")}{" "}
-                      <span style={{ textTransform: "none", fontWeight: 400 }}>
+                      <span style={thNoteStyle}>
                         {t("overview.hoverForCounts")}
                       </span>
                     </th>
@@ -192,7 +202,8 @@ function LobbyingBillsTable({ initialCourt, initialRows }: BillsPageProps) {
                           href={`/lobbying/bills/${b.court}/${b.billId}`}
                           style={{
                             color: MAPLE_COLORS.primary,
-                            fontWeight: 700
+                            fontWeight: 700,
+                            fontSize: 16
                           }}
                         >
                           {b.billId}
@@ -206,6 +217,10 @@ function LobbyingBillsTable({ initialCourt, initialRows }: BillsPageProps) {
                       <td
                         style={{
                           ...listTdStyle,
+                          // More room before the title, after Bill, and after it, before
+                          // Organizations.
+                          paddingLeft: "1.5rem",
+                          paddingRight: "2rem",
                           overflowWrap: "anywhere",
                           lineHeight: 1.4
                         }}
@@ -223,6 +238,7 @@ function LobbyingBillsTable({ initialCourt, initialRows }: BillsPageProps) {
                       <td style={{ ...listTdStyle, paddingTop: "1.1rem" }}>
                         <PositionBar
                           width={160}
+                          height={12}
                           counts={billPositionCounts(b)}
                         />
                       </td>
@@ -256,10 +272,12 @@ function LobbyingBillsPage(props: BillsPageProps) {
     <>
       <LobbyingSubnav />
       <Container>
-        <Row className="mt-4 mb-3">
+        {/* The title closer to the filters, the page under it where it was:
+            half the description's 1rem margin moved above the title. */}
+        <Row className="mb-3" style={{ marginTop: "1.875rem" }}>
           <Col>
             <h1>{t("titles.bills")}</h1>
-            <p style={{ color: MAPLE_COLORS.textMuted, fontSize: 14 }}>
+            <p style={{ ...pageIntroStyle, marginBottom: "0.5rem" }}>
               {t("explainers.bills")}
             </p>
           </Col>
@@ -283,3 +301,20 @@ export const getStaticProps = createLobbyingListProps(async () => {
   const initialCourt = await fetchLatestLobbyingCourt()
   return { initialCourt, initialRows: await fetchBillRows(initialCourt) }
 })
+
+const countStyle: React.CSSProperties = {
+  // Lexend at its lightest loaded weight (styles/bootstrap.scss).
+  fontFamily: "var(--maple-font-heading)",
+  fontSize: 16,
+  fontWeight: 300,
+  // The label and the count centred on each other.
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "0.3em"
+}
+
+const countNumberStyle: React.CSSProperties = {
+  fontFamily: "var(--maple-font-heading)",
+  fontSize: 16,
+  fontWeight: 700
+}

@@ -1,16 +1,23 @@
-import { useMemo, useState } from "react"
+import { ChangeEvent, useMemo, useState } from "react"
+import { BackChevron, BackToConferences } from "./BackToConferences"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faChevronRight } from "@fortawesome/free-solid-svg-icons"
 import { Form } from "../bootstrap"
+import { useProfile } from "../db"
 import { Internal, maple } from "../links"
 import { Chair, Conferees, ConfereeFace, yoursKey } from "./Conferees"
-import { ConferenceList, ConferenceTable } from "./ConferenceTable"
+import { ConferenceTable } from "./ConferenceTable"
 import { DistrictMap, seatsOf } from "./DistrictMap"
 import { useHover, useMyLegislators } from "./hooks"
-import { OverviewLink } from "./OverviewLink"
-import { Card, DottedInternal, Eyebrow, PageColumn, Title } from "./styles"
+import {
+  CommitteeCard,
+  DottedInternal,
+  Eyebrow,
+  FULL_LAYOUT,
+  MOBILE_LAYOUT,
+  PageColumn,
+  Title
+} from "./styles"
 import {
   CHAMBERS,
   conferenceName,
@@ -20,10 +27,11 @@ import {
   personKey
 } from "./types"
 
-/** What the explorer is holding: one conference (and perhaps one of its six),
- * one legislator, or the reader's own two. */
+/** What the explorer is holding: one conference, one legislator (picked on
+ * the map), or the reader's own two. A held conference's six are read by
+ * pointing at them, not held. */
 type Selection =
-  | { kind: "conference"; id: string; seat?: string }
+  | { kind: "conference"; id: string }
   | { kind: "seat"; key: string }
   | { kind: "mine" }
   | null
@@ -34,56 +42,113 @@ type Sitting = {
   on: { conference: ConferenceSummary; chair: boolean }[]
 }
 
-const Page = styled(PageColumn)`
-  padding-top: 1.25rem;
+/** The page's title in Lexend, as the conference page's "Conference
+ * Committees" is (ConferenceHero.tsx). Each conference's own title keeps the
+ * mockup's bold Nunito. */
+const ExplorerTitle = styled(Title)`
+  *:root & {
+    font-family: var(--maple-font-heading);
+  }
+
+  /* In the mobile layout, centred in the row's middle (TitleLine). */
+  @media ${MOBILE_LAYOUT} {
+    grid-column: 2;
+    text-align: center;
+  }
 `
 
-/** The title, with the overview link at its right; over it below md, as on
- * the conference pages. */
-const Heading = styled.div`
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-areas: "title link";
+/** The title, and in the mobile layout the way back before it (BackChevron),
+ * standing in for the way back's row (BackToConferences, notMobile). */
+const TitleLine = styled.div`
+  display: flex;
   align-items: center;
-  gap: 0.5rem 1.5rem;
+  gap: 10px;
+  min-width: 0;
+  /* The room the intro left under the title, while the intro is out. */
+  margin-bottom: 1rem;
 
-  @media (max-width: 767.98px) {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "link" "title";
+  /* In the mobile layout, as on a committee's page (TitleCell and TitleBand,
+     ConferenceDetails.tsx): the title centred across the row, the way back
+     at the left (its 26px in the row, the rest over the page's edge,
+     BackChevron) and as much room kept empty at the right, so the title's
+     middle is the row's; and 1.625rem above it, the room the way back's row
+     gives from md up. */
+  @media ${MOBILE_LAYOUT} {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr) 26px;
+    gap: 8px;
+    padding-top: 1.625rem;
   }
 `
 
-const HeadingTitle = styled(Title)`
-  grid-area: title;
-`
+/** Widened to 1320 from 992, as the conference page is
+ * (ConferenceDetails.tsx). From md up, the back link's row above
+ * (BackToConferences) gives the room above the title; in the mobile layout,
+ * TitleLine does. */
+const Page = styled(PageColumn)`
+  padding-top: 0;
 
-const Intro = styled.p`
-  margin: 0.375rem 0 1rem;
-  padding-left: 4px;
-  font-size: 1rem;
-  line-height: 1.55;
-  color: var(--maple-text-strong);
-
-  @media (min-width: 576px) {
-    font-size: 1.125rem;
+  @media (min-width: 992px) {
+    max-width: 1320px;
   }
 `
 
-/** Below 960 the card is a list of links; from there up, the table and the
- * explorer side by side. Both render so the server's page is the reader's. */
+/** In the mobile layout, the card says the explorer isn't available, with
+ * the way back (Unavailable); from md up, the table and the explorer side by
+ * side. Both render so the server's page is the reader's. Conference Home
+ * doesn't link here in the mobile layout (ConferenceHero.tsx); this is for a
+ * reader who lands here anyway. */
 const Narrow = styled.div`
-  @media (min-width: 960px) {
+  @media ${FULL_LAYOUT} {
     display: none;
+  }
+`
+
+/** In the gray of the members' panel (Panel), its words set as the panel's
+ * prompt is (Empty). */
+const Unavailable = styled.div`
+  padding: 2rem 1.25rem;
+  background: #f7f7f7;
+  border-radius: var(--maple-radius-xl);
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--maple-text-muted);
+
+  p {
+    margin: 0 0 0.75rem;
+  }
+`
+
+/** The card the table is in, with as much room under the table's last row
+ * as above its header: the card's 1.5rem top less the last row's 8px, plus
+ * the header's 5px. Only where the table shows (Wide); the box below that
+ * (Unavailable) keeps the card's own. */
+const ExplorerCard = styled(CommitteeCard)`
+  @media ${FULL_LAYOUT} {
+    && {
+      padding-bottom: calc(1.5rem - 3px);
+      /* The card's 2rem at the left from 1200 up, narrowing with the window
+         to 1.25rem at 992 and on down, so the room the table needs comes
+         from the white at the left of the names (and Wide's). */
+      padding-left: clamp(
+        1.25rem,
+        calc(1.25rem + (100vw - 992px) * 0.0577),
+        2rem
+      );
+    }
   }
 `
 
 const Wide = styled.div`
   display: none;
 
-  @media (min-width: 960px) {
+  @media ${FULL_LAYOUT} {
     display: flex;
     gap: 24px;
     align-items: flex-start;
+    /* More room between the card's edge and the table: 1rem from 1200 up,
+       narrowing with the window to none at 992 (ExplorerCard). */
+    padding-left: clamp(0px, calc((100vw - 992px) * 0.0769), 1rem);
   }
 `
 
@@ -98,6 +163,10 @@ const Panel = styled.div`
   padding: 1rem 1.25rem;
   background: #f7f7f7;
   border-radius: var(--maple-radius-xl);
+  /* A column, so the prompt can centre itself in the room under the heading
+     (Empty). */
+  display: flex;
+  flex-direction: column;
 `
 
 const PanelHead = styled.div`
@@ -108,26 +177,25 @@ const PanelHead = styled.div`
   margin-bottom: 1rem;
 `
 
+/** In Nunito, as the mockup sets it, at 500: the site loads Nunito at 500
+ * and 700 but not the mockup's 600, which would draw at 700. */
 const PanelTitle = styled.h2`
   margin: 0;
+  font-family: var(--maple-font-body);
   font-size: 0.9375rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--maple-text-muted);
 `
 
 const CommitteeLink = styled(Internal)`
   font-family: "Nunito", var(--bs-body-font-family);
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--maple-brand-primary-strong);
   text-decoration: none;
   &:hover {
     color: var(--maple-brand-primary-strong);
     text-decoration: underline;
-  }
-  svg {
-    margin-left: 0.375rem;
-    font-size: 0.75rem;
   }
 `
 
@@ -143,11 +211,21 @@ const ClearButton = styled.button`
   }
 `
 
+/** Centred in the panel under its heading, as the mockup's is. */
 const Empty = styled.p`
-  margin: 2.5rem auto 0;
+  margin: auto;
   max-width: 22rem;
   text-align: center;
   font-size: 0.875rem;
+  color: var(--maple-text-muted);
+`
+
+/** Under the reader's own legislators, or the line that they serve on none:
+ * the one of the two their profile doesn't name (MissingLegislator). */
+const Missing = styled.span`
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 0.8125rem;
   color: var(--maple-text-muted);
 `
 
@@ -157,8 +235,7 @@ const Chambers = styled.div`
   gap: 17px;
 `
 
-/** Side by side whenever the explorer shows: the card is wide enough from
- * 960 up. */
+/** Side by side whenever the explorer shows. */
 const Maps = styled.div`
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -168,9 +245,53 @@ const Maps = styled.div`
 
 const Below = styled.div`
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
-  margin-top: 0.75rem;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  margin-top: 1.5rem;
   font-size: 0.8125rem;
+`
+
+/** The reader's own legislators' switch, at the left of the row under the
+ * maps (Below). Off, its edge and knob in the muted text's grey
+ * (--maple-text-muted), darker than Bootstrap's, which read as disabled; on,
+ * green, rather than Bootstrap's primary, which is red here
+ * (styles/bootstrap.scss). Bootstrap draws its focus (its red ring, and the
+ * knob and edge in its focus blue) on any focus, so it stayed after a click;
+ * here the switch keeps its own look on focus, and the keyboard alone gets
+ * the site's focus ring. */
+const LegislatorsSwitch = styled(Form.Check)`
+  && {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 0;
+    margin: 0 auto 0 0;
+    padding-left: 0;
+  }
+  && .form-check-input,
+  && .form-check-input:focus {
+    float: none;
+    margin: 0;
+    cursor: pointer;
+    border-color: var(--maple-text-muted);
+    box-shadow: none;
+    --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%2364748b'/%3e%3c/svg%3e");
+  }
+  && .form-check-input:checked,
+  && .form-check-input:checked:focus {
+    background-color: var(--bs-green);
+    border-color: var(--bs-green);
+    --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+  }
+  && .form-check-input:focus-visible {
+    outline: 3px solid var(--maple-focus-ring);
+    outline-offset: 2px;
+  }
+  && .form-check-label {
+    cursor: pointer;
+  }
 `
 
 const PersonCard = styled.div`
@@ -198,13 +319,15 @@ const PersonCard = styled.div`
 `
 
 /** One legislator in the panel: who they are, and every conference they sit
- * on. */
+ * on. Ringed, as their face is in the table while they are read here (a
+ * seat picked on the map, or the reader's own), so the two answer each
+ * other, as a held conference's six do (Conferees). */
 function Legislator({ sitting, own }: { sitting: Sitting; own: boolean }) {
   const { t } = useTranslation("conferences")
   const { person, on } = sitting
   return (
     <PersonCard>
-      <ConfereeFace c={person} size={48} own={own} />
+      <ConfereeFace c={person} size={48} own={own} lit />
       <div className="min-w-0">
         <div className="name">{person.name}</div>
         {own && <div className="sub">{t(yoursKey(person))}</div>}
@@ -230,6 +353,27 @@ function Legislator({ sitting, own }: { sitting: Sitting; own: boolean }) {
   )
 }
 
+/** Where to add the reader's legislators: their profile, as the review step
+ * sends them (input/Review.tsx). */
+const ADD_LEGISLATORS_HREF = "/edit-profile/about-you"
+
+/** The way to add what of the reader's two legislators their profile doesn't
+ * name: one of them, or both (`legislators`). */
+function MissingLegislator({
+  which
+}: {
+  which: "representative" | "senator" | "legislators"
+}) {
+  const { t } = useTranslation("conferences")
+  return (
+    <Missing>
+      <DottedInternal href={ADD_LEGISLATORS_HREF}>
+        {t(`mine_add_${which}`)}
+      </DottedInternal>
+    </Missing>
+  )
+}
+
 /**
  * Every conference in the court and everyone sitting on them. The table on
  * the left and the maps on the right answer each other: choose a conference
@@ -237,11 +381,39 @@ function Legislator({ sitting, own }: { sitting: Sitting; own: boolean }) {
  * stay. The panel above the maps says who is being read.
  */
 export function ConferenceExplorer({
-  conferences,
+  conferences: allConferences,
   conferees
 }: ConferenceIndexProps) {
   const { t } = useTranslation("conferences")
+  // Enacted conferences left out, from the table and the maps alike, and
+  // those we haven't covered at the bottom, as the rail has them
+  // (ConferenceRail).
+  const conferences = useMemo(
+    () =>
+      allConferences
+        .filter(c => c.status !== "enacted")
+        .sort((a, b) => Number(!a.covered) - Number(!b.covered)),
+    [allConferences]
+  )
   const mine = useMyLegislators()
+  // Which of their two legislators the reader's profile names. With one,
+  // their switch's view names that one and offers the way to add the other
+  // (MissingLegislator); with neither, the way to add both. Signed out, no
+  // profile, and no switch.
+  const { profile } = useProfile()
+  const hasRep = !!profile?.representative?.id
+  const hasSen = !!profile?.senator?.id
+  const known =
+    hasRep && !hasSen ? "representative" : hasSen && !hasRep ? "senator" : null
+  const knownName = known ? profile?.[known]?.name : undefined
+  const missing =
+    known === "representative"
+      ? "senator"
+      : known === "senator"
+      ? "representative"
+      : !hasRep && !hasSen
+      ? "legislators"
+      : null
   const [selected, setSelected] = useState<Selection>(null)
   // Pointing at a seat paints the maps only; the table and the panel wait
   // for a click.
@@ -289,13 +461,10 @@ export function ConferenceExplorer({
     : selected?.kind === "mine"
     ? seatsOf(mineSittings.map(s => s.person))
     : everyone
-  const mapSelected =
-    hoveredSeat ??
-    (selected?.kind === "conference"
-      ? selected.seat ?? null
-      : selected?.kind === "seat"
-      ? selected.key
-      : null)
+  // The seat being read: the one pointed at, on the maps or in the panel,
+  // else the one picked on the map.
+  const pickedSeat = selected?.kind === "seat" ? selected.key : null
+  const mapSelected = hoveredSeat ?? pickedSeat
 
   const selectRow = (id: string) =>
     setSelected(
@@ -303,112 +472,165 @@ export function ConferenceExplorer({
         ? null
         : { kind: "conference", id }
     )
-  // Inside a held conference a seat is one of its six; otherwise it is the
-  // legislator to read.
+  // A seat clicked on the map, with no conference held: the legislator to
+  // read. In a held conference the maps answer only the pointer.
   const pinSeat = (key: string) =>
     setSelected(
-      selected?.kind === "conference"
-        ? { ...selected, seat: selected.seat === key ? undefined : key }
-        : selected?.kind === "seat" && selected.key === key
+      selected?.kind === "seat" && selected.key === key
         ? null
         : { kind: "seat", key }
     )
 
+  // The committees' pages from here: the session's first committee
+  // (pages/conferences/[court]), or Conference Home where there are none.
+  const committeesHref = allConferences[0]
+    ? `${maple.conferences()}/${allConferences[0].court}`
+    : maple.conferences()
+
   return (
-    <Page>
-      <Heading>
-        <HeadingTitle>{t("index_title")}</HeadingTitle>
-        <OverviewLink />
-      </Heading>
-      <Intro>{t("index_intro")}</Intro>
-      <Card>
-        <Narrow>
-          <ConferenceList conferences={conferences} conferees={conferees} />
-        </Narrow>
-        <Wide>
-          <ConferenceTable
-            conferences={conferences}
-            conferees={conferees}
-            selected={held?.id ?? null}
-            highlighted={highlighted}
-            onSelect={selectRow}
-          />
-          <Explorer>
-            <Panel>
-              <PanelHead>
+    <>
+      {/* The way back, in its own row above the page from md up; below
+          that, the chevron beside the title (TitleLine). */}
+      <BackToConferences notMobile />
+      <Page>
+        <TitleLine>
+          <BackChevron />
+          <ExplorerTitle>{t("explorer")}</ExplorerTitle>
+        </TitleLine>
+        <ExplorerCard>
+          <Narrow>
+            <Unavailable>
+              <p>{t("explorer_unavailable")}</p>
+              <Internal href={maple.conferences()}>
+                {t("back_to_home")}
+              </Internal>
+            </Unavailable>
+          </Narrow>
+          <Wide>
+            <ConferenceTable
+              conferences={conferences}
+              conferees={conferees}
+              selected={held?.id ?? null}
+              highlighted={highlighted}
+              // In a held conference, the legislator pointed at in the panel or
+              // on the maps, ringed in the table, and the other conferences
+              // they sit on brought forward.
+              ringed={held ? hoveredSeat : null}
+              onSelect={selectRow}
+            />
+            <Explorer>
+              <Panel>
+                <PanelHead>
+                  {held ? (
+                    <CommitteeLink href={maple.conference(held)}>
+                      {conferenceName(held)}
+                    </CommitteeLink>
+                  ) : (
+                    <PanelTitle>{t("explorer_panel")}</PanelTitle>
+                  )}
+                  {selected && (
+                    <ClearButton
+                      type="button"
+                      onClick={() => setSelected(null)}
+                    >
+                      {t("clear")}
+                    </ClearButton>
+                  )}
+                </PanelHead>
                 {held ? (
-                  <CommitteeLink href={maple.conference(held)}>
-                    {conferenceName(held)}
-                    <FontAwesomeIcon icon={faChevronRight} />
-                  </CommitteeLink>
+                  <Chambers onPointerLeave={() => hoverSeat(null)}>
+                    {CHAMBERS.map(chamber => (
+                      <Conferees
+                        key={chamber}
+                        chamber={chamber}
+                        conferees={heldConferees}
+                        mine={mine}
+                        selected={hoveredSeat}
+                        onHover={hoverSeat}
+                      />
+                    ))}
+                  </Chambers>
+                ) : shown?.length ? (
+                  <>
+                    {shown.map(s => (
+                      <Legislator
+                        key={s.person.memberCode}
+                        sitting={s}
+                        own={mine.has(s.person.memberCode)}
+                      />
+                    ))}
+                    {selected?.kind === "mine" && missing && (
+                      <MissingLegislator which={missing} />
+                    )}
+                  </>
                 ) : (
-                  <PanelTitle>{t("explorer")}</PanelTitle>
+                  // Their legislators serving on none: both of them, or the
+                  // one the profile names, by name, then the way to add the
+                  // other. With neither on the profile, that MAPLE doesn't
+                  // know them, then the way to add them.
+                  <Empty>
+                    {!shown
+                      ? t("explorer_empty")
+                      : missing === "legislators"
+                      ? t("mine_unknown")
+                      : known
+                      ? t(`mine_none_${known}`, { name: knownName })
+                      : t("mine_none")}
+                    {shown && missing && <MissingLegislator which={missing} />}
+                  </Empty>
                 )}
-                {selected && (
-                  <ClearButton type="button" onClick={() => setSelected(null)}>
-                    {t("clear")}
-                  </ClearButton>
-                )}
-              </PanelHead>
-              {held ? (
-                <Chambers onPointerLeave={() => hoverSeat(null)}>
-                  {CHAMBERS.map(chamber => (
-                    <Conferees
-                      key={chamber}
-                      court={held.court}
-                      chamber={chamber}
-                      conferees={heldConferees}
-                      mine={mine}
-                      selected={mapSelected}
-                      onHover={hoverSeat}
-                      onPin={pinSeat}
-                    />
-                  ))}
-                </Chambers>
-              ) : shown?.length ? (
-                shown.map(s => (
-                  <Legislator
-                    key={s.person.memberCode}
-                    sitting={s}
-                    own={mine.has(s.person.memberCode)}
+              </Panel>
+              <Maps>
+                {CHAMBERS.map(chamber => (
+                  <DistrictMap
+                    key={chamber}
+                    chamber={chamber}
+                    people={people}
+                    selected={mapSelected}
+                    onHover={hoverSeat}
+                    // Clicking picks a legislator only with no conference
+                    // held; in one, the maps answer the pointer alone.
+                    onPin={held ? undefined : pinSeat}
                   />
-                ))
-              ) : (
-                <Empty>{t(shown ? "mine_none" : "explorer_empty")}</Empty>
-              )}
-            </Panel>
-            <Maps>
-              {CHAMBERS.map(chamber => (
-                <DistrictMap
-                  key={chamber}
-                  chamber={chamber}
-                  people={people}
-                  selected={mapSelected}
-                  onHover={hoverSeat}
-                  onPin={pinSeat}
-                />
-              ))}
-            </Maps>
-            <Below>
-              {held ? (
-                <DottedInternal href={maple.conference(held)}>
-                  {t("go_to_conference")}
-                </DottedInternal>
-              ) : mine.size > 0 ? (
-                <Form.Check
-                  type="switch"
-                  id="conference-my-legislators"
-                  label={t("my_legislators")}
-                  checked={selected?.kind === "mine"}
-                  onChange={e =>
-                    setSelected(e.target.checked ? { kind: "mine" } : null)
-                  }
-                />
-              ) : null}
-            </Below>
-          </Explorer>
-        </Wide>
-      </Card>
-    </Page>
+                ))}
+              </Maps>
+              <Below>
+                {/* A committee held: the way to its page. Otherwise the way to
+                    the committees' pages, beside the reader's own
+                    legislators' switch once they are signed in, whether or
+                    not their profile names any (the panel then says how to
+                    add them). */}
+                {held ? (
+                  <DottedInternal href={maple.conference(held)}>
+                    {t("go_to_conference")}
+                  </DottedInternal>
+                ) : (
+                  <>
+                    {profile && (
+                      <LegislatorsSwitch
+                        type="switch"
+                        id="conference-my-legislators"
+                        label={t("my_legislators")}
+                        checked={selected?.kind === "mine"}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                          setSelected(
+                            e.target.checked ? { kind: "mine" } : null
+                          )
+                        }
+                      />
+                    )}
+                    {!selected && (
+                      <DottedInternal href={committeesHref}>
+                        {t("view_committees")}
+                      </DottedInternal>
+                    )}
+                  </>
+                )}
+              </Below>
+            </Explorer>
+          </Wide>
+        </ExplorerCard>
+      </Page>
+    </>
   )
 }

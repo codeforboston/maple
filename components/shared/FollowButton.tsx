@@ -1,3 +1,5 @@
+import { faXmark } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { StyledImage } from "components/ProfilePage/StyledProfileComponents"
 import { useTranslation } from "next-i18next"
 import { useRouter } from "next/router"
@@ -15,7 +17,11 @@ import {
   profileTopicName,
   ballotQuestionTopicName,
   followBallotQuestion,
-  unfollowBallotQuestion
+  unfollowBallotQuestion,
+  ConferenceRef,
+  conferenceTopicName,
+  followConference,
+  unfollowConference
 } from "./FollowingQueries"
 import { FollowContext } from "./FollowContext"
 import { Modal } from "components/bootstrap"
@@ -66,8 +72,57 @@ export function FollowBillButton({
       displayName={useTranslation("testimony").t("bill", {
         billId: formatBillId(bill.id)
       })}
+      large
     />
   )
+}
+
+/**
+ * Whether the reader follows a topic, shared through FollowContext so every
+ * control for the topic agrees, and a toggle that sends a signed-out reader
+ * to log in first. `loaded` is false until a signed-in reader's status is
+ * read.
+ */
+export function useFollowTopic(
+  topicName: string,
+  followAction: () => Promise<void>,
+  unfollowAction: () => Promise<void>,
+  /** False skips reading the follow status, for a control that can't show. */
+  enabled = true
+) {
+  const uid = useAuth().user?.uid
+  const router = useRouter()
+  const { followStatus, setFollowStatus } = useContext(FollowContext)
+
+  useEffect(() => {
+    if (!uid || !enabled) return
+    followsTopic(uid, topicName).then(result =>
+      setFollowStatus(prev => ({ ...prev, [topicName]: result }))
+    )
+  }, [uid, topicName, setFollowStatus, enabled])
+
+  const follow = async () => {
+    await followAction()
+    setFollowStatus(prev => ({ ...prev, [topicName]: true }))
+  }
+
+  const unfollow = async () => {
+    await unfollowAction()
+    setFollowStatus(prev => ({ ...prev, [topicName]: false }))
+  }
+
+  const following = !!uid && !!followStatus[topicName]
+  const loaded = !uid || topicName in followStatus
+
+  const toggle = () => {
+    if (!uid) {
+      router.push(`/login?redirect=${encodeURIComponent(router.asPath)}`)
+      return
+    }
+    return following ? unfollow() : follow()
+  }
+
+  return { following, loaded, follow, unfollow, toggle }
 }
 
 export const BaseFollowButton = ({
@@ -77,7 +132,8 @@ export const BaseFollowButton = ({
   hide,
   confirmFollow = false,
   confirmUnfollow = false,
-  displayName = ""
+  displayName = "",
+  large = false
 }: {
   topicName: string
   followAction: () => Promise<void>
@@ -86,57 +142,60 @@ export const BaseFollowButton = ({
   confirmFollow?: boolean
   confirmUnfollow?: boolean
   displayName?: string
+  /** Keep the full-size button (the bill page's). Elsewhere it is set like
+   * the sort control (styles/globals.css). */
+  large?: boolean
 }) => {
   const { t } = useTranslation(["profile"])
 
-  const { user } = useAuth()
-  const uid = user?.uid
-  const router = useRouter()
-
-  const { followStatus, setFollowStatus } = useContext(FollowContext)
   const [modalAction, setModalAction] = useState<"follow" | "unfollow" | null>(
     null
   )
+  const {
+    following: isFollowing,
+    follow: FollowClick,
+    unfollow: UnfollowClick,
+    toggle
+  } = useFollowTopic(topicName, followAction, unfollowAction)
 
-  useEffect(() => {
-    if (!uid) return
-    followsTopic(uid, topicName).then(result =>
-      setFollowStatus(prev => ({ ...prev, [topicName]: result }))
-    )
-  }, [uid, topicName, setFollowStatus])
-
-  const FollowClick = async () => {
-    await followAction()
-    setFollowStatus(prev => ({ ...prev, [topicName]: true }))
-  }
-
-  const UnfollowClick = async () => {
-    await unfollowAction()
-    setFollowStatus(prev => ({ ...prev, [topicName]: false }))
-  }
-
-  const isFollowing = followStatus[topicName]
-  const text = isFollowing ? t("button.following") : t("button.follow")
-  const checkmark = isFollowing ? (
-    <StyledImage src="/check-white.svg" alt="" />
-  ) : null
   const handleClick = (event: any) => {
     event.preventDefault()
-    if (!uid) {
-      const currentPath = router.asPath
-      router.push(`/login?redirect=${encodeURIComponent(currentPath)}`)
-      return
-    }
-    isFollowing ? UnfollowClick() : FollowClick()
+    toggle()
   }
 
   return (
     <>
       {!hide && (
-        <div className="follow-button">
-          <Button onClick={handleClick} className={`btn btn-lg py-1`}>
-            {t(`button.${isFollowing ? "unfollow" : "follow"}`)}
-            {isFollowing && <StyledImage src="/check-white.svg" alt="" />}
+        <div className={`follow-button ${large ? "follow-button-large" : ""}`}>
+          <Button
+            onClick={handleClick}
+            className={`btn btn-lg py-1 ${
+              isFollowing ? "follow-button-following" : ""
+            }`}
+            // A toggle, pressed while following, so a screen reader hears that
+            // pressing it again unfollows as well as reading "Following".
+            aria-pressed={isFollowing}
+          >
+            {!isFollowing && t("button.follow")}
+            {isFollowing && (
+              <>
+                {/* "Following" with the check, as a mask in the text's colour,
+                    turning to "Unfollow" with an x on hover or focus
+                    (styles/globals.css). */}
+                <span className="follow-label-following">
+                  {t("button.following")}
+                  <span className="follow-check-mask" aria-hidden="true" />
+                </span>
+                <span className="follow-label-unfollow">
+                  {t("button.unfollow")}
+                  <FontAwesomeIcon
+                    icon={faXmark}
+                    className="follow-x"
+                    aria-hidden="true"
+                  />
+                </span>
+              </>
+            )}
           </Button>
         </div>
       )}
@@ -219,6 +278,24 @@ export function FollowBallotQuestionButton({
       topicName={topicName}
       followAction={() => followBallotQuestion(uid, ballotQuestion)}
       unfollowAction={() => unfollowBallotQuestion(uid, ballotQuestion)}
+    />
+  )
+}
+
+export function FollowConferenceTopicButton({
+  conference,
+  confirmUnfollow
+}: {
+  conference: ConferenceRef
+  confirmUnfollow?: boolean
+}) {
+  const uid = useAuth().user?.uid
+  return (
+    <BaseFollowButton
+      topicName={conferenceTopicName(conference.court, conference.id)}
+      followAction={() => followConference(uid, conference)}
+      unfollowAction={() => unfollowConference(uid, conference)}
+      confirmUnfollow={confirmUnfollow}
     />
   )
 }

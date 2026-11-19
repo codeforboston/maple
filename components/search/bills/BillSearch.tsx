@@ -1,6 +1,5 @@
 import { TFunction, useTranslation } from "next-i18next"
 import {
-  CurrentRefinements,
   Hits,
   InstantSearch,
   Pagination,
@@ -18,6 +17,7 @@ import { Col, Container, Row, Spinner } from "../../bootstrap"
 import { NoResults } from "../NoResults"
 import { ResultCount } from "../ResultCount"
 import { SearchContainer } from "../SearchContainer"
+import { CollapsibleRefinements } from "../CollapsibleRefinements"
 import { SearchErrorBoundary } from "../SearchErrorBoundary"
 import { BillHit } from "./BillHit"
 import { useBillRefinements } from "./useBillRefinements"
@@ -135,6 +135,7 @@ const useSearchStatus = () => {
 
 const StyledLoadingContainer = styled(Container)`
   background-color: white;
+  border: 1px solid var(--maple-card-edge);
   display: flex;
   height: 300px;
   justify-content: center;
@@ -196,13 +197,13 @@ const Layout: FC<
           />
           {refinements.show}
         </RefinementRow>
-        <CurrentRefinements
+        <CollapsibleRefinements
           excludedAttributes={["nextHearingAt"]}
           transformItems={extractLastSegmentOfRefinements}
         />
       </ControlsBar>
       <Row>
-        <Col xs={0} lg={3}>
+        <Col xs={0} lg={3} className="search-filter-column">
           {refinements.options}
         </Col>
         <Col className="d-flex flex-column">

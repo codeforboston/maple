@@ -12,10 +12,15 @@ import {
   sessionPeriodsWith
 } from "./activity"
 import { MAPLE_COLORS, POSITION_TONES } from "./chartTheme"
-import { subTextStyle, toggleButtonStyle } from "./LobbyingPanel"
+import {
+  listTdStyle,
+  subTextStyle,
+  ToggleChevron,
+  toggleButtonStyle
+} from "./LobbyingPanel"
 import { LobbyingPaginationBar } from "./LobbyingPaginationBar"
 import { LobbyingPositionChip } from "./LobbyingPositionChip"
-import { SortTh, thStyle, type SortDir } from "./SortTh"
+import { SortTh, thTopStyle, type SortDir } from "./SortTh"
 import { SosSourceLink } from "./SosSourceLink"
 import { usePagination } from "./usePagination"
 
@@ -36,17 +41,38 @@ const PERIODS_PADDING = 12
 const POSITION_COL_WIDTH =
   4 * PERIOD_WIDTH + 3 * PERIOD_GAP + 2 * PERIODS_PADDING + 1
 
+// Room for "Activities" with its arrow, sorted and at the headers' 900
+// weight.
+const FILINGS_COL_WIDTH = 140
+
+/** Where the "Most recent position" column starts, across the table's width
+ * (the row label and "who lobbied" share what the two fixed columns leave):
+ * for lining up what sits above the table, such as a panel's filters
+ * (LobbyingPanel's filtersAt), whose text then starts in line with the
+ * column's, 0.75rem in. */
+export const POSITION_COLUMN_START = `calc((100% - ${
+  POSITION_COL_WIDTH + FILINGS_COL_WIDTH
+}px) / 2)`
+
 /**
  * One row per organization (on a bill's page) or per bill (on a client's
  * page). Expanding a row lists its filers with the position each reported per
  * period and links to their filings.
  */
+
+/** An opened row: a grey with a slight blue cast, at 6%, the colour halfway
+ * between MAPLE's navy (#1a3185) and its near-black (#0f172a). Its
+ * panel of filers is a quarter of the way from white to the site's page
+ * grey (--maple-surface-page). */
+const OPEN_BG = "rgba(20, 36, 88, 0.06)"
+
 export function ActivityTable({
   by,
   data,
   rowHref,
   pageSize = 25,
-  itemLabel
+  itemLabel,
+  unboxed = false
 }: {
   by: "client" | "bill"
   data: Activity
@@ -54,8 +80,14 @@ export function ActivityTable({
   pageSize?: number
   // Names the rows in the pagination count ("1–25 of 105 organizations").
   itemLabel?: string
+  // As the bills, clients and firms lists' tables (listTdStyle): no box
+  // around it, and their rows' height. The bill page's table.
+  unboxed?: boolean
 }) {
   const { t } = useTranslation("lobbying")
+  const cell = unboxed
+    ? { ...cellStyle, padding: listTdStyle.padding }
+    : cellStyle
   const idPrefix = useId()
   const [open, setOpen] = useState<Set<string>>(new Set())
   const [sortKey, setSortKey] = useState<SortKey>("label")
@@ -135,11 +167,15 @@ export function ActivityTable({
   return (
     <div>
       <div
-        style={{
-          overflowX: "auto",
-          border: `1px solid ${MAPLE_COLORS.borderSubtle}`,
-          borderRadius: 8
-        }}
+        style={
+          unboxed
+            ? { overflowX: "auto" }
+            : {
+                overflowX: "auto",
+                border: `1px solid ${MAPLE_COLORS.borderSubtle}`,
+                borderRadius: 8
+              }
+        }
       >
         <table
           style={{
@@ -155,11 +191,12 @@ export function ActivityTable({
             <col />
             <col style={{ width: POSITION_COL_WIDTH }} />
             <col />
-            <col style={{ width: 100 }} />
+            <col style={{ width: FILINGS_COL_WIDTH }} />
           </colgroup>
           <thead>
             <tr>
               <SortTh
+                byName
                 label={t(
                   by === "bill" ? "fields.bill" : "activity.column.client"
                 )}
@@ -168,8 +205,8 @@ export function ActivityTable({
                 dir={sortDir}
                 onSort={handleSort}
               />
-              <th style={thStyle}>{t("activity.column.latestPosition")}</th>
-              <th style={thStyle}>{t("activity.column.whoLobbied")}</th>
+              <th style={thTopStyle}>{t("activity.column.latestPosition")}</th>
+              <th style={thTopStyle}>{t("activity.column.whoLobbied")}</th>
               <SortTh
                 label={t("fields.filings")}
                 sortKey="filings"
@@ -190,12 +227,10 @@ export function ActivityTable({
                     onClick={e => onRowClick(e, row.key)}
                     style={{
                       cursor: "pointer",
-                      background: isOpen
-                        ? MAPLE_COLORS.blueSubtleBg
-                        : MAPLE_COLORS.surfaceBase
+                      background: isOpen ? OPEN_BG : MAPLE_COLORS.surfaceBase
                     }}
                   >
-                    <td style={cellStyle}>
+                    <td style={cell}>
                       <div style={{ display: "flex", gap: 6 }}>
                         <button
                           type="button"
@@ -210,7 +245,7 @@ export function ActivityTable({
                           onClick={() => toggle(row.key)}
                           style={toggleButtonStyle}
                         >
-                          {isOpen ? "▾" : "▸"}
+                          <ToggleChevron open={isOpen} />
                         </button>
                         <div>
                           {rowHref ? (
@@ -244,13 +279,13 @@ export function ActivityTable({
                         </div>
                       </div>
                     </td>
-                    <td style={cellStyle}>
+                    <td style={cell}>
                       <div
                         style={{
                           display: "flex",
                           flexDirection: "column",
                           alignItems: "flex-start",
-                          gap: 4
+                          gap: 8
                         }}
                       >
                         {row.latest.positions.map(p => (
@@ -264,12 +299,19 @@ export function ActivityTable({
                         ))}
                       </div>
                     </td>
-                    <td style={{ ...cellStyle, fontSize: 13 }}>
+                    {/* A grey step lighter than the body text. */}
+                    <td
+                      style={{
+                        ...cell,
+                        fontSize: 13,
+                        color: MAPLE_COLORS.graySubtleText
+                      }}
+                    >
                       {whoText(row)}
                     </td>
                     <td
                       style={{
-                        ...cellStyle,
+                        ...cell,
                         fontSize: 13,
                         whiteSpace: "nowrap"
                       }}
@@ -278,10 +320,7 @@ export function ActivityTable({
                     </td>
                   </tr>
                   {isOpen && (
-                    <tr
-                      id={panelId}
-                      style={{ background: MAPLE_COLORS.blueSubtleBg }}
-                    >
+                    <tr id={panelId} style={{ background: OPEN_BG }}>
                       {/* The filers sit under "Most recent position", as in
                           the redesign. */}
                       <td />
@@ -336,18 +375,20 @@ function FilerList({ row, data }: { row: ActivityRow; data: Activity }) {
   return (
     <div
       style={{
-        background: MAPLE_COLORS.surfaceMuted,
-        border: `1px solid ${MAPLE_COLORS.blueBorder}`,
+        background:
+          "color-mix(in srgb, var(--maple-surface-page) 25%, #ffffff)",
+        border: `1px solid ${MAPLE_COLORS.borderDefault}`,
         borderRadius: 8
       }}
     >
-      <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+      {/* Room above and below the filers. */}
+      <ul style={{ listStyle: "none", margin: 0, padding: "0.625rem 0" }}>
         {row.filers.map((filer, i) => (
           <li
             key={filer.entityNameNorm}
             style={{
               // Squares under "Most recent position", the filer under "Who
-              // lobbied" (less the box's 1px border).
+              // lobbied" (less the panel's 1px border).
               display: "grid",
               gridTemplateColumns: `${POSITION_COL_WIDTH - 1}px minmax(0, 1fr)`,
               borderTop:
@@ -514,6 +555,8 @@ const periodCaptionStyle: React.CSSProperties = {
   fontWeight: 700,
   letterSpacing: "0.04em",
   textTransform: "uppercase",
-  color: MAPLE_COLORS.textMuted,
+  // A step darker than the muted grey, which on the panel's blue-grey falls
+  // short of AA contrast.
+  color: MAPLE_COLORS.graySubtleText,
   whiteSpace: "nowrap"
 }

@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom"
 import { fireEvent, render, screen } from "@testing-library/react"
-import { RailList } from "./ConferenceRail"
+import { RailList, SHOW_PAST_CONFERENCES } from "./ConferenceRail"
 import { ConferenceSummary } from "./types"
 
 jest.mock("next-i18next", () => ({
@@ -20,7 +20,9 @@ const conference = (
   canonicalBillId: "S1",
   status,
   covered: true,
-  reportBillId: null
+  reportBillId: null,
+  confereeCounts: { senate: 3, house: 3 },
+  analysisUpdatedAt: "2026-11-18"
 })
 
 const conferences = [
@@ -32,7 +34,29 @@ const conferences = [
 const fold = () => screen.getByText("rail_closed").closest("details")!
 const folded = { open: false, onToggle: () => {} }
 
-describe("RailList", () => {
+// The fold's own behaviour, while past conferences are listed at all
+// (SHOW_PAST_CONFERENCES).
+const describeFold = SHOW_PAST_CONFERENCES ? describe : describe.skip
+
+describe("RailList without past conferences", () => {
+  // While they are off, they aren't in the page at all, folded or hidden.
+  ;(SHOW_PAST_CONFERENCES ? it.skip : it)(
+    "lists only the conferences still sitting",
+    () => {
+      const { container } = render(
+        <RailList conferences={conferences} current="sitting" fold={folded} />
+      )
+
+      expect(container.querySelector("details")).toBeNull()
+      expect(screen.queryByText("rail_closed")).not.toBeInTheDocument()
+      expect(screen.getByRole("link", { name: /sitting/ })).toBeInTheDocument()
+      expect(container.querySelector('a[href*="enacted"]')).toBeNull()
+      expect(container.querySelector('a[href*="dissolved"]')).toBeNull()
+    }
+  )
+})
+
+describeFold("RailList", () => {
   it("folds the conferences no longer taking input below the rest, closed", () => {
     render(
       <RailList conferences={conferences} current="sitting" fold={folded} />
@@ -89,5 +113,34 @@ describe("RailList", () => {
     )
 
     expect(screen.queryByText("rail_closed")).not.toBeInTheDocument()
+  })
+})
+
+describe("RailList's note on the conferences we don't cover", () => {
+  it("explains them under the list where one is listed", () => {
+    render(
+      <RailList
+        conferences={[
+          conference("sitting"),
+          { ...conference("bond"), covered: false }
+        ]}
+        current="sitting"
+        fold={folded}
+      />
+    )
+
+    expect(screen.getByText("rail_not_covered")).toBeInTheDocument()
+  })
+
+  it("leaves it out where every one listed is covered", () => {
+    render(
+      <RailList
+        conferences={[conference("sitting")]}
+        current="sitting"
+        fold={folded}
+      />
+    )
+
+    expect(screen.queryByText("rail_not_covered")).not.toBeInTheDocument()
   })
 })
