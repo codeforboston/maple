@@ -27,6 +27,12 @@ export type ConferenceSummary = {
   covered: boolean
   /** The conference report's bill, once one is filed. */
   reportBillId: string | null
+  /** How many conferees each chamber appointed, from the appointment rather
+   * than the members we could resolve. */
+  confereeCounts: { senate: number; house: number }
+  /** When the analysis was last checked against the bill texts
+   * ("2026-11-18"), or null where it doesn't say. */
+  analysisUpdatedAt: string | null
 }
 
 /** A conferee with the member document resolved and their seat on the map

@@ -4,6 +4,7 @@ import styled, { css } from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowRight, faChevronDown } from "@fortawesome/free-solid-svg-icons"
 import { Internal, maple } from "../links"
+import { FeatureCalloutButton } from "../shared/CommonComponents"
 import { ConferenceDrawer, ConferencePopover } from "./ConferencePicker"
 import { useMatches, useRailHidden } from "./hooks"
 import {
@@ -14,6 +15,7 @@ import {
   RAIL_SHOWN,
   SHEET
 } from "./styles"
+import { brand } from "./input/tokens"
 import { ConferenceSummary } from "./types"
 
 const JOINT_RULES = "https://malegislature.gov/Laws/Rules/Joint"
@@ -25,10 +27,9 @@ const JOINT_RULES = "https://malegislature.gov/Laws/Rules/Joint"
 const STACKED = "(max-width: 991.98px)"
 const MAPLE_PROCESS = "https://www.mapletestimony.org/learn/legislative-process"
 
-/** The current step, counting from 0: the negotiation (hero.steps in
- * conferences.json). Steps before it are dimmed; stacked, it starts
- * expanded. */
-const CURRENT_STEP = 2
+/** The step the conferences on MAPLE are at, marked "We are here": the
+ * negotiation (hero.steps in conferences.json), where MAPLE takes input. */
+const HERE_STEP = 2
 
 /**
  * The Conference Committees page: what a conference committee is, and
@@ -186,16 +187,16 @@ const StepList = styled.div`
     display: flex;
     gap: 0.875rem;
   }
-  /* Steps before the current one (CURRENT_STEP), dimmed: the number at half
+  /* Steps before the current one (HERE_STEP), dimmed: the number at half
      opacity, the title in the muted grey (#64748b), the text a touch
      lighter. */
-  li[data-past] .num {
+  li.past .num {
     opacity: 0.5;
   }
-  li[data-past] h2 {
+  li.past h2 {
     color: var(--maple-text-muted);
   }
-  li[data-past] p {
+  li.past p {
     color: #738297;
   }
   .line {
@@ -223,6 +224,29 @@ const StepList = styled.div`
   .text {
     min-width: 0;
     padding-top: 5px;
+  }
+  /* The step we are at: its number ringed, and a tag. Stacked, the tag sits
+     under the step's title, the title kept in line with its number (below);
+     side by side, beside the number, on the page's ground so the line runs
+     on from its far side (further below). */
+  li.here .num {
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--maple-brand-primary);
+  }
+  /* The *NEW* badge (FeatureCalloutButton) at its size on the homepage
+     (Homepage.module.css's newTag), in capitals as *NEW* is; its colours
+     turned round, as the avatars' are: MAPLE's soft blue, its edge, and dark
+     blue words (brand, input/tokens.ts). */
+  .here-tag {
+    display: inline-block;
+    margin-bottom: 4px;
+    font-size: 11px;
+    padding: 0.1rem 0.35rem;
+    line-height: 1.3;
+    text-transform: uppercase;
+    white-space: nowrap;
+    background: ${brand.soft};
+    border-color: ${brand.edge};
+    color: ${brand.ink};
   }
   h2 {
     margin: 0;
@@ -282,6 +306,16 @@ const StepList = styled.div`
     }
     .text {
       flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .here-tag {
+      order: 1;
+      align-self: flex-start;
+      margin: 6px 0 0;
+    }
+    .text p {
+      order: 2;
     }
   }
 
@@ -329,6 +363,15 @@ const StepList = styled.div`
     }
     .text {
       padding: 0 0.5rem 0 0;
+    }
+    /* Beside the number, over the line, the page's ground behind it so the
+       line breaks around the tag and runs on from its far side. */
+    .here-tag {
+      position: absolute;
+      top: 5px;
+      left: 44px;
+      margin: 0;
+      box-shadow: 0 0 0 8px var(--bs-body-bg);
     }
   }
 `
@@ -470,9 +513,8 @@ export function ConferenceHero({
     h: string
     p: string
   }[]
-  // Which steps are expanded when stacked (STACKED): the current one to
-  // start.
-  const [open, setOpen] = useState<number[]>([CURRENT_STEP])
+  // Which steps are expanded when stacked (STACKED). Opens on HERE_STEP.
+  const [open, setOpen] = useState<number[]>([HERE_STEP])
   const folds = useMatches(STACKED)
   return (
     <Section as="section">
@@ -485,12 +527,25 @@ export function ConferenceHero({
             {steps.map((step, i) => (
               <li
                 key={i}
-                className={open.includes(i) ? "open" : undefined}
-                data-past={i < CURRENT_STEP || undefined}
+                className={
+                  [
+                    open.includes(i) && "open",
+                    i === HERE_STEP && "here",
+                    i < HERE_STEP && "past"
+                  ]
+                    .filter(Boolean)
+                    .join(" ") || undefined
+                }
               >
                 {i < steps.length - 1 && <span className="line" aria-hidden />}
                 <span className="num">{i + 1}</span>
                 <div className="text">
+                  {/* Outside the h2, so the step's heading stays its title. */}
+                  {i === HERE_STEP && (
+                    <FeatureCalloutButton className="btn btn-secondary here-tag">
+                      {t("hero.here")}
+                    </FeatureCalloutButton>
+                  )}
                   <h2>
                     {folds ? (
                       <button

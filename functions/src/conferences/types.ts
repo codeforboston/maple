@@ -121,6 +121,11 @@ export const Conference = withDefaults(
     /** What the bills are, in a short paragraph of markdown, above what is
      * unresolved. */
     gist: Optional(String),
+    /** When we last checked the gist, differences and similarities against
+     * the bill texts, as a date ("2026-11-18"). The page shows it in the
+     * analysis disclosure. Quote it in YAML, which would otherwise read it as
+     * a date rather than a string. */
+    analysisUpdatedAt: Optional(String),
     senateBillId: Id,
     houseBillId: Id,
     /** The bill whose history carries the appointment actions, one of the

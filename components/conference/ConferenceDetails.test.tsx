@@ -91,6 +91,8 @@ Object.assign(global, { ResizeObserver: Observer })
 
 const profile = { representative: { id: "AHP1" } }
 let mockItems: object[] = []
+// A draft left on the reader's slot from before.
+let mockDraft: object | undefined
 jest.mock("../db", () => ({
   useProfile: () => ({ profile }),
   useConferenceTestimony: () => ({ items: mockItems, loading: false }),
@@ -100,6 +102,7 @@ jest.mock("../db", () => ({
     return {
       loading: false,
       draftLoading: false,
+      draft: mockDraft,
       saveDraft: noop,
       publishTestimony: noop,
       discardDraft: noop
@@ -189,7 +192,9 @@ const conference: ConferencePageProps["conference"] = {
   canonicalBillId: "S2581",
   status: "appointed",
   covered: true,
-  reportBillId: null
+  reportBillId: null,
+  confereeCounts: { senate: 3, house: 3 },
+  analysisUpdatedAt: "2026-11-18"
 }
 
 /** A question before any report: nothing on how it was resolved. */
@@ -216,7 +221,9 @@ const props: ConferencePageProps = {
       canonicalBillId: "S2619",
       status: "appointed",
       covered: true,
-      reportBillId: null
+      reportBillId: null,
+      confereeCounts: { senate: 3, house: 3 },
+      analysisUpdatedAt: "2026-11-18"
     }
   ],
   conferees: [
@@ -311,7 +318,7 @@ const props: ConferencePageProps = {
 /** Neither the Public Input section nor its tab. */
 const expectNoPublicInput = () => {
   expect(screen.queryByText("input.empty_title")).not.toBeInTheDocument()
-  expect(screen.queryByRole("link", { name: "input.title" })).toBeNull()
+  expect(screen.queryByRole("link", { name: "tab_input" })).toBeNull()
 }
 
 /** What useWide reads: jsdom lays nothing out, so every element is 0 wide. */
@@ -370,6 +377,9 @@ describe("ConferenceDetails", () => {
     expect(screen.getAllByText("chair")).toHaveLength(2)
 
     const byline = screen.getByTestId("byline")
+    // Each chamber's count, from the appointment.
+    expect(byline).toHaveTextContent(/^Byline_senators 3 number\.3 3 /)
+    expect(byline).toHaveTextContent("byline_representatives 3 number.3 3")
     expect(byline).toHaveTextContent("S.2581")
     expect(byline).toHaveTextContent("H.5366")
     expect(container.querySelector('a[href="/bills/194/S2581"]')).toBeTruthy()
@@ -381,6 +391,17 @@ describe("ConferenceDetails", () => {
     )
     expect(screen.getByText("seats_lit senate 3 40")).toBeInTheDocument()
     expect(screen.getByText("seats_lit house 3 160")).toBeInTheDocument()
+  })
+
+  it("says only that they were appointed once the committee no longer sits", () => {
+    render(
+      <ConferenceDetails
+        {...props}
+        conference={{ ...conference, status: "dissolved" }}
+      />
+    )
+    expect(screen.getByTestId("byline_closed")).toBeInTheDocument()
+    expect(screen.queryByTestId("byline")).not.toBeInTheDocument()
   })
 
   it("marks the viewer's own legislator", () => {
@@ -561,7 +582,9 @@ describe("ConferenceDetails", () => {
     const enacted = {
       ...conference,
       status: "enacted" as const,
-      reportBillId: "H5350"
+      reportBillId: "H5350",
+      confereeCounts: { senate: 3, house: 3 },
+      analysisUpdatedAt: "2026-11-18"
     }
     render(<ConferenceDetails {...props} conference={enacted} />)
     expect(screen.getByTestId("notice.resolved")).toHaveTextContent("H.5350")
@@ -647,11 +670,23 @@ describe("ConferenceDetails", () => {
     beforeEach(() => {
       mockItems = [letter]
       mockQuery = { cosign: "t1" }
+      mockDraft = undefined
       // Landing on Your Input asks whether to move smoothly.
       window.matchMedia = jest.fn(() => ({ matches: true })) as never
     })
 
     it("opens the cosign panel for a signed-in reader, and lets go of the link", () => {
+      mockUser = { uid: "reader", emailVerified: true }
+      render(<ConferenceDetails {...props} />)
+      expect(
+        screen.getByRole("dialog", { name: "input.cosign_title" })
+      ).toBeInTheDocument()
+      letGo()
+    })
+
+    it("opens it over words of the reader's own left in a draft", () => {
+      // Nothing is kept before Post, so a draft from before holds no input.
+      mockDraft = { cosignOfId: null, content: "Old words." }
       mockUser = { uid: "reader", emailVerified: true }
       render(<ConferenceDetails {...props} />)
       expect(
@@ -742,12 +777,11 @@ describe("ConferenceDetails", () => {
     const tabs = within(screen.getByRole("navigation", { name: "tabs_label" }))
       .getAllByRole("link")
       .map(a => [a.textContent, a.getAttribute("href")])
-    // Each tab shows its card's title.
     expect(tabs).toEqual([
-      ["who", "#committee"],
-      ["decided.title", "#decided"],
-      ["input.title", "#input"],
-      ["bill_text", "#text"]
+      ["tab_committee", "#committee"],
+      ["tab_decided", "#decided"],
+      ["tab_input", "#input"],
+      ["tab_text", "#text"]
     ])
     for (const [, href] of tabs)
       expect(container.querySelector(href!)).toBeTruthy()
@@ -773,19 +807,19 @@ describe("ConferenceDetails", () => {
         .getAllByRole("link")
         .filter(a => a.getAttribute("aria-current") === "true")
         .map(a => a.textContent)
-    expect(lit()).toEqual(["who"])
+    expect(lit()).toEqual(["tab_committee"])
     // The last section lights too, once a jump has parked it.
     tops.decided = -1800
     tops.input = -900
     tops.text = 0
     fireEvent.scroll(document)
-    expect(lit()).toEqual(["bill_text"])
+    expect(lit()).toEqual(["tab_text"])
     // A section can move with no scroll, when one above it grows.
     tops.decided = 900
     tops.input = 1800
     tops.text = 2700
     act(() => resized.forEach(heard => heard()))
-    expect(lit()).toEqual(["who"])
+    expect(lit()).toEqual(["tab_committee"])
     rect.mockRestore()
   })
 
@@ -868,20 +902,87 @@ describe("ConferenceDetails", () => {
     it("says nothing of how it was resolved before a report", () => {
       render(<ConferenceDetails {...props} />)
       expect(screen.queryByText("resolved.title")).not.toBeInTheDocument()
+      expect(screen.getByText("decided.title")).toBeInTheDocument()
       expect(
-        screen.getByRole("heading", { name: "decided.title" })
+        screen.getByRole("link", { name: "tab_decided" })
       ).toBeInTheDocument()
+    })
+
+    it("heads the questions with their count, as the matches are headed", () => {
+      widen(800)
+      render(<ConferenceDetails {...props} />)
+      expect(screen.getByText("decided.open")).toHaveTextContent(
+        `decided.open${props.differences.length}`
+      )
       expect(
-        screen.getByRole("link", { name: "decided.title" })
+        screen.getByRole("list", {
+          name: `decided.open ${props.differences.length}`
+        })
       ).toBeInTheDocument()
+    })
+
+    it("discloses where the whole section comes from, above all of it", () => {
+      const { container } = render(<ConferenceDetails {...props} />)
+      const line = screen.getByTestId("analysis.line")
+      expect(line).toHaveTextContent("S.2581 H.5366")
+      // Not the date: that closes the panel.
+      expect(line).not.toHaveTextContent("November 18, 2026")
+      // Before the overview's label, not inside the overview.
+      const overview = screen.getByText("decided.overview")
+      expect(
+        line.compareDocumentPosition(overview) &
+          Node.DOCUMENT_POSITION_FOLLOWING
+      ).toBeTruthy()
+      expect(overview.parentElement).not.toContainElement(line)
+
+      const about = container.querySelector<HTMLButtonElement>(
+        "button[aria-controls]"
+      )!
+      const panel = document.getElementById(
+        about.getAttribute("aria-controls")!
+      )!
+      expect(about).toHaveAttribute("aria-expanded", "false")
+      expect(panel).not.toBeVisible()
+      fireEvent.click(about)
+      expect(about).toHaveAttribute("aria-expanded", "true")
+      expect(panel).toBeVisible()
+      // The beta note first, the date last.
+      expect(panel.firstElementChild).toHaveTextContent(
+        "analysis.about.beta.title"
+      )
+      expect(panel.lastElementChild).toHaveTextContent(
+        "analysis.updated November 18, 2026"
+      )
+      expect(
+        within(panel).getByTestId("analysis.about.corrections.body")
+      ).toContainHTML('href="mailto:info@mapletestimony.org"')
+      fireEvent.click(about)
+      expect(about).toHaveAttribute("aria-expanded", "false")
+    })
+
+    it("leaves the date out of the panel where the data has none", () => {
+      const { container } = render(
+        <ConferenceDetails
+          {...props}
+          conference={{ ...conference, analysisUpdatedAt: null }}
+        />
+      )
+      const about = container.querySelector<HTMLButtonElement>(
+        "button[aria-controls]"
+      )!
+      const panel = document.getElementById(
+        about.getAttribute("aria-controls")!
+      )!
+      expect(screen.getByTestId("analysis.line")).toBeInTheDocument()
+      expect(panel).not.toHaveTextContent("analysis.updated")
     })
 
     it("leaves the section and its tab out where nothing is written", () => {
       render(
         <ConferenceDetails {...props} differences={[]} similarities={[]} />
       )
-      // No card title, and no tab.
       expect(screen.queryByText("decided.title")).not.toBeInTheDocument()
+      expect(screen.queryByText("tab_decided")).not.toBeInTheDocument()
     })
   })
 
@@ -944,6 +1045,11 @@ describe("ConferenceDetails", () => {
         .map(b => b.textContent!)
         .filter(text => text.includes("?"))
 
+    it("carries no disclosure, which speaks of open questions", () => {
+      render(<ConferenceDetails {...resolved} />)
+      expect(screen.queryByTestId("analysis.line")).not.toBeInTheDocument()
+    })
+
     it("counts the outcomes over a bar, and keys the labels", () => {
       render(<ConferenceDetails {...resolved} />)
       const card = screen.getByRole("region", { name: "resolved.title" })
@@ -965,27 +1071,11 @@ describe("ConferenceDetails", () => {
       expect(card).toHaveTextContent("resolved.meaning.modified")
     })
 
-    it("gives the resolution its own tab, first, named by its card", () => {
-      const { container } = render(<ConferenceDetails {...resolved} />)
-      const tabs = within(
-        screen.getByRole("navigation", { name: "tabs_label" })
-      )
-        .getAllByRole("link")
-        .map(a => [a.textContent, a.getAttribute("href")])
-      expect(tabs[0]).toEqual(["resolved.title", "#resolution"])
-      expect(container.querySelector("#resolution")).toContainElement(
-        screen.getByRole("heading", { name: "resolved.title" })
-      )
-    })
-
     it("groups the questions by which bills took them up", () => {
       render(<ConferenceDetails {...resolved} />)
-      // The same title and tab as before it was resolved.
+      expect(screen.getByText("resolved.list_title")).toBeInTheDocument()
       expect(
-        screen.getByRole("heading", { name: "decided.title" })
-      ).toBeInTheDocument()
-      expect(
-        screen.getByRole("link", { name: "decided.title" })
+        screen.getByRole("link", { name: "tab_resolved" })
       ).toBeInTheDocument()
       expect(
         screen

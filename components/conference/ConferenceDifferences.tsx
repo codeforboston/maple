@@ -2,7 +2,6 @@ import { Fragment, KeyboardEvent, useRef, useState } from "react"
 import { Trans, useTranslation } from "next-i18next"
 import ReactMarkdown from "react-markdown"
 import styled from "styled-components"
-import { FEEDBACK_URL } from "../common"
 import { shortName } from "../formatting"
 import { yoursKey } from "./Conferees"
 import { useMyLegislators } from "./hooks"
@@ -21,7 +20,8 @@ import {
   yea
 } from "./input/tokens"
 import { useWide } from "./input/useWide"
-import { CardTitle, CommitteeCard, MOBILE_LAYOUT } from "./styles"
+import { AnalysisDisclosure } from "./AboutThisAnalysis"
+import { CardTitle, CommitteeCard, Eyebrow, MOBILE_LAYOUT } from "./styles"
 import {
   Chip,
   ChipCount,
@@ -31,7 +31,13 @@ import {
   OutcomeFilter,
   countOutcomes
 } from "./ConferenceResolution"
-import { CHAMBERS, ConfereeView, DifferenceView, SimilarityView } from "./types"
+import {
+  CHAMBERS,
+  ConfereeView,
+  ConferenceSummary,
+  DifferenceView,
+  SimilarityView
+} from "./types"
 
 /** The mockup's card: 32px at the left as at the right, so its content lines
  * up with the committee card's above (Card's 2rem); in the mobile layout,
@@ -58,34 +64,27 @@ const Body = styled.div`
   }
 `
 
-/** A short paragraph on what the bills are, its lines kept to a readable
- * length (90ch) rather than the card's full width, with the invitation to
- * send feedback under it, one sentence on a line of its own. */
+/** A short paragraph on what the bills are, under its own label as the
+ * open questions and the matches are under theirs, as far under it as the
+ * questions are under theirs (List's 12px). It sits in the questions' column
+ * (Grid), so its lines end where theirs do. */
+// Ok not changing but copy should be reduced by half. As is, it does not
+// look connected to Open Questions and just oddly cut off. -GK
 const Gist = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   margin: 0 0 2px;
-  padding-left: 16px;
-  border-left: 2px solid ${line.strong};
 
-  p {
-    max-width: 90ch;
+  /* The paragraph's own text, not the label above it, in Bootstrap's grey
+     700 (#495057). */
+  > div p {
     margin: 0;
     font-size: 0.875rem;
     line-height: 1.65;
-    color: ${ink.mid};
+    color: var(--bs-gray-700);
   }
-  /* The feedback line beneath the gist. */
-  > div + p {
-    max-width: none;
-    margin-top: 8px;
-    font-size: 0.8125rem;
-    color: ${ink.faint};
-  }
-`
-
-/** The gist's own text, written as markdown, so its paragraphs are told
- * apart from the feedback line. */
-const GistText = styled.div`
-  p + p {
+  > div p + p {
     margin-top: 8px;
   }
 `
@@ -122,17 +121,13 @@ const List = styled.ul<{ $gap: number }>`
   list-style: none;
 `
 
-/** The SENATE and HOUSE labels' small caps, for a column. */
-const Label = styled.p`
+/** The site's eyebrow, as the SENATE and HOUSE labels are (Eyebrow,
+ * styles.ts), for a column: in a row with what follows it, such as a
+ * count. */
+const Label = styled(Eyebrow)`
   display: flex;
   align-items: baseline;
   gap: 8px;
-  margin: 0;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: ${ink.mid};
 `
 
 const Count = styled.span`
@@ -309,11 +304,12 @@ const Law = styled(Answer)`
   background: ${lawInk.tint};
 `
 
+/** The 4px under it as padding: the eyebrow's m-0 holds its margins at 0. */
 const LawLabel = styled(Label)`
   justify-content: space-between;
   flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 4px;
+  padding-bottom: 4px;
   color: ${lawInk.fill};
 `
 
@@ -355,8 +351,9 @@ const Note = styled.span<{ $up: boolean }>`
   font-style: normal;
 `
 
+/** The 8px under it as padding, as LawLabel's. */
 const NoteTitle = styled(Label).attrs({ as: "span" })`
-  margin-bottom: 8px;
+  padding-bottom: 8px;
   letter-spacing: 0.07em;
 `
 
@@ -455,12 +452,13 @@ const RowTitle = styled.span`
   color: ${ink.strong};
 `
 
+/** An opened match's text, in the site's muted blue-grey. */
 const RowBody = styled.p`
   margin: 0;
   padding: 0 0 12px 49px;
   font-size: 0.8125rem;
   line-height: 1.6;
-  color: ${ink.mid};
+  color: var(--maple-text-muted);
 `
 
 /** The groups a resolved conference's questions fall in: which chambers'
@@ -549,16 +547,13 @@ const SettledNote = styled.span`
   color: ${ink.mid};
 `
 
-/** The card's title, resolved or not, also its tab's label (TITLES in
- * ConferenceDetails.tsx). */
-export const OVERVIEW_TITLE = "decided.title"
-
 /**
  * What the two chambers still disagree on, with the points where their texts
  * already match beside it: written by people, set out as the mockup's "What
  * needs to be resolved?". Left out where a conference has neither.
  */
 export function ConferenceDifferences({
+  conference,
   gist,
   differences,
   similarities,
@@ -569,6 +564,8 @@ export function ConferenceDifferences({
   filter,
   onFilter
 }: {
+  /** Whose texts the overview compares, and when it was last checked. */
+  conference: ConferenceSummary
   gist: string | null
   differences: DifferenceView[]
   similarities: SimilarityView[]
@@ -596,41 +593,32 @@ export function ConferenceDifferences({
       {/* The heading scrolls with the section, as the other sections'
           headings do, rather than holding under the tabs. */}
       <CardTitle id="decided-q" className="mb-0">
-        {t(OVERVIEW_TITLE)}
+        {t(resolved ? "resolved.list_title" : "decided.title")}
       </CardTitle>
       <Body ref={body}>
+        {/* On the whole section, not one part of it, so above them all. */}
+        {!resolved && <AnalysisDisclosure conference={conference} />}
         {gist && (
-          <Gist>
-            <GistText>
-              <ReactMarkdown
-                components={{
-                  a: ({ node: _node, ...props }) => (
-                    <DottedLink
-                      {...props}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    />
-                  )
-                }}
-              >
-                {gist}
-              </ReactMarkdown>
-            </GistText>
-            <p>
-              <Trans
-                t={t}
-                i18nKey="decided.gist"
-                components={[
-                  <DottedLink
-                    key="feedback"
-                    href={FEEDBACK_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  />
-                ]}
-              />
-            </p>
-          </Gist>
+          <Grid $wide={wide}>
+            <Gist>
+              <Label>{t("decided.overview")}</Label>
+              <div>
+                <ReactMarkdown
+                  components={{
+                    a: ({ node: _node, ...props }) => (
+                      <DottedLink
+                        {...props}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      />
+                    )
+                  }}
+                >
+                  {gist}
+                </ReactMarkdown>
+              </div>
+            </Gist>
+          </Grid>
         )}
         {resolved ? (
           <Resolved
@@ -643,7 +631,12 @@ export function ConferenceDifferences({
         ) : (
           <Grid $wide={wide}>
             <div>
-              <List $gap={26} aria-label={t("decided.differ")}>
+              {/* Named and counted as the matches beside them are. */}
+              <Label id="open-questions">
+                {t("decided.open")}
+                <Count>{differences.length}</Count>
+              </Label>
+              <List $gap={26} aria-labelledby="open-questions">
                 {differences.map((d, i) => (
                   <Difference key={d.heading} d={d} defaultOpen={i === 0} />
                 ))}

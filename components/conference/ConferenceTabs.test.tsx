@@ -18,18 +18,9 @@ class Observer {
 }
 Object.assign(global, { ResizeObserver: Observer })
 
-/** The cards' titles, which the tabs read. */
-const titles = {
-  committee: "committee_title",
-  input: "input_title",
-  text: "text_title"
-}
-
 describe("ConferenceTabs", () => {
   it("leaves out a row with one section, which has nothing to choose", () => {
-    const { container } = render(
-      <ConferenceTabs sections={["committee"]} titles={titles} />
-    )
+    const { container } = render(<ConferenceTabs sections={["committee"]} />)
     expect(container).toBeEmptyDOMElement()
   })
 
@@ -51,10 +42,10 @@ describe("ConferenceTabs", () => {
     }
     document.body.append(page)
     const { getByText } = render(
-      <ConferenceTabs sections={["committee", "input"]} titles={titles} />
+      <ConferenceTabs sections={["committee", "input"]} />
     )
-    expect(getByText("input_title")).toHaveAttribute("aria-current", "true")
-    expect(getByText("committee_title")).not.toHaveAttribute("aria-current")
+    expect(getByText("tab_input")).toHaveAttribute("aria-current", "true")
+    expect(getByText("tab_committee")).not.toHaveAttribute("aria-current")
     page.remove()
   })
 
@@ -62,8 +53,8 @@ describe("ConferenceTabs", () => {
     document.body.innerHTML = `<div><section id="committee"></section><section id="text"></section></div>`
     const as = "/conferences/194/pet-equity"
     history.replaceState({ as, key: "k" }, "", as)
-    render(<ConferenceTabs sections={["committee", "text"]} titles={titles} />)
-    fireEvent.click(screen.getByText("text_title"))
+    render(<ConferenceTabs sections={["committee", "text"]} />)
+    fireEvent.click(screen.getByText("tab_text"))
     expect(history.state).toEqual({ as: `${as}#text`, key: "k" })
     expect(location.hash).toBe("#text")
   })

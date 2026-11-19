@@ -8,35 +8,28 @@ import {
 } from "react"
 import { useTranslation } from "next-i18next"
 import { useRouter } from "next/router"
-import { hasReport, takesTestimony } from "../../functions/src/shared"
+import {
+  hasReport,
+  isSitting,
+  takesTestimony
+} from "../../functions/src/shared"
 import { uncosignable } from "../../functions/src/testimony/cosign"
 import styled, { css } from "styled-components"
 import { ConferenceByline } from "./ConferenceByline"
-import { COMMITTEE_TITLE, ConferenceCommittee } from "./ConferenceCommittee"
-import { ConferenceDifferences, OVERVIEW_TITLE } from "./ConferenceDifferences"
+import { ConferenceCommittee } from "./ConferenceCommittee"
+import { ConferenceDifferences } from "./ConferenceDifferences"
 import { FollowConferenceTopicButton } from "../shared/FollowButton"
 import { useConferenceFollow } from "./FollowConference"
 import { BackChevron, BackToConferences } from "./BackToConferences"
 import { ConferenceSwitcher } from "./ConferencePicker"
-import {
-  ClosedFold,
-  ConferenceRail,
-  groupOf,
-  oneOpen,
-  RailGroup
-} from "./ConferenceRail"
-import {
-  ConferenceResolution,
-  OutcomeFilter,
-  RESOLUTION_TITLE
-} from "./ConferenceResolution"
+import { ClosedFold, ConferenceRail } from "./ConferenceRail"
+import { ConferenceResolution, OutcomeFilter } from "./ConferenceResolution"
 import { ConferenceTabs, TABS_H } from "./ConferenceTabs"
-import { ConferenceText, TEXT_TITLE } from "./ConferenceText"
+import { ConferenceText } from "./ConferenceText"
 import { useAuth } from "../auth"
 import { authStepChanged } from "../auth/redux"
 import {
   ConferenceTestimony,
-  ConferenceWorkingDraft,
   useConferenceTestimony,
   useEditConferenceTestimony
 } from "../db"
@@ -49,7 +42,7 @@ import { CosignForm } from "./input/CosignForm"
 import { CosignLetter } from "./input/CosignLetter"
 import { InputForm, Step } from "./input/InputForm"
 import { Panel } from "./input/Panel"
-import { INPUT_TITLE, PublicInput } from "./input/PublicInput"
+import { PublicInput } from "./input/PublicInput"
 import { brand } from "./input/tokens"
 import { ShareButton, ShareFab, ViewFab } from "./input/ShareButton"
 import { useFollowedAuthors } from "./input/useFollowedAuthors"
@@ -368,12 +361,7 @@ const LinkNotice = styled(Notice)`
 `
 
 /** Why a link to cosign could not open the panel. */
-type LinkRefusal =
-  | "removed"
-  | "not_cosignable"
-  | "closed"
-  | "filed"
-  | "drafting"
+type LinkRefusal = "removed" | "not_cosignable" | "closed" | "filed"
 
 /** A band that holds at the top while the sections scroll under it, run out
  * to the page's gutters so what passes behind it is covered. On the left,
@@ -433,26 +421,12 @@ const Section = styled.div`
   );
 `
 
-/** In the mockup's order, which goes on to the sections still to come. The
- * resolution shows only on a resolved conference, above the rest; the
- * overview only where something is written. */
-const SECTIONS = [
-  "resolution",
-  "committee",
-  "decided",
-  "input",
-  "text"
-] as const
+/** In the mockup's order, which goes on to the sections still to come. A
+ * conference with nothing written on what is unresolved has no such section. */
+const SECTIONS = ["committee", "decided", "input", "text"] as const
 
-/** Each section's tab label: its card's own title, so the two always
- * match. */
-const TITLES = {
-  resolution: RESOLUTION_TITLE,
-  committee: COMMITTEE_TITLE,
-  decided: OVERVIEW_TITLE,
-  input: INPUT_TITLE,
-  text: TEXT_TITLE
-}
+/** Once resolved, the questions are the resolved text. */
+const RESOLVED_LABELS = { decided: "tab_resolved" }
 
 /**
  * One conference: who is deciding, and the two texts they are deciding
@@ -461,27 +435,28 @@ const TITLES = {
  */
 export function ConferenceDetails(props: ConferencePageProps) {
   const fold = useClosedFold(props.conference)
-  // Keyed so moving to another conference starts clean: the panel's draft hook
+  // Keyed so moving to another conference starts clean: the panel's edit hook
   // is fixed to the conference it first mounted on, and would keep filing on
   // the old one.
   return <Details key={props.conference.id} {...props} fold={fold} />
 }
 
 /**
- * Which of the rail's groups is open (GroupFold in ConferenceRail.tsx). Kept
- * above the keyed page so it carries over between conferences. Arriving at a
- * conference inside a group opens that group, so the current conference is
- * always visible; otherwise it stays as the reader left it.
+ * Whether the rail's group of past conferences is open (PastFold,
+ * ConferenceRail.tsx), held above the keyed page so it lasts from one
+ * conference to the next. It starts open only on a conference in the group,
+ * and opens on arriving at one, so the conference being read is never folded
+ * away; otherwise it stays as the reader left it.
  */
 function useClosedFold(conference: ConferenceSummary): ClosedFold {
-  const group = groupOf(conference)
-  const [open, setOpen] = useState<RailGroup | null>(group)
+  const closed = !isSitting(conference)
+  const [open, setOpen] = useState(closed)
   const [at, setAt] = useState(conference.id)
   if (at !== conference.id) {
     setAt(conference.id)
-    if (group) setOpen(group)
+    if (closed) setOpen(true)
   }
-  return { open, onToggle: oneOpen(setOpen) }
+  return { open, onToggle: setOpen }
 }
 
 function Details({
@@ -515,26 +490,12 @@ function Details({
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState<Step>("write")
   // The panel files one of two things: the reader's own input, or a cosign of
-  // `cosigning`. Both are the reader's one draft on the conference.
+  // `cosigning`. Either is the reader's one input on the conference.
   const [cosigning, setCosigning] = useState<ConferenceTestimony>()
   const [full, setFull] = useState(true)
   // The reader's own input in the drawer until they open it out to the
   // window, and only while writing.
   const [inputFull, setInputFull] = useState(false)
-  // What the reader's draft holds, as far as the page cares: what it
-  // cosigns, if anything, and whether it has words.
-  const [draftOf, setDraftOf] = useState<string | null>(null)
-  const [draftWords, setDraftWords] = useState(false)
-  // Whether the reader's draft has been read, so the page decides on it.
-  const [draftRead, setDraftRead] = useState(false)
-  const onDraft = useCallback(
-    (draft?: ConferenceWorkingDraft, read = false) => {
-      setDraftOf(draft?.cosignOfId ?? null)
-      setDraftWords(!!draft?.content?.trim())
-      setDraftRead(read)
-    },
-    []
-  )
   const followed = useFollowedAuthors(user?.uid)
   const subject = conferenceName(conference)
   const taking = takesTestimony(conference)
@@ -555,12 +516,9 @@ function Details({
   const sections = useMemo(
     () =>
       SECTIONS.filter(
-        s =>
-          (s !== "resolution" || resolved) &&
-          (s !== "decided" || decided) &&
-          (s !== "input" || heard)
+        s => (s !== "decided" || decided) && (s !== "input" || heard)
       ),
-    [resolved, decided, heard]
+    [decided, heard]
   )
 
   const close = useCallback(() => setOpen(false), [])
@@ -570,17 +528,15 @@ function Details({
     setInputFull(false)
     setOpen(true)
   }, [])
-  const resumeCosign = useCallback((parent: ConferenceTestimony) => {
-    setCosigning(parent)
-    setStep("write")
-    setOpen(true)
-  }, [])
   // A posted cosign is edited as one, its note alone.
   const edit = useCallback(() => {
     if (!mine?.cosignOfId) return compose()
     const parent = byId.get(mine.cosignOfId)
-    if (parent) resumeCosign(parent)
-  }, [mine, byId, resumeCosign, compose])
+    if (!parent) return
+    setCosigning(parent)
+    setStep("write")
+    setOpen(true)
+  }, [mine, byId, compose])
   // The same doors the bill page's testimony button goes through; true once
   // the reader is through them.
   const signIn = useCallback(() => {
@@ -589,28 +545,22 @@ function Details({
     else return true
     return false
   }, [authenticated, user?.emailVerified, dispatch])
-  // A cosign the reader has written words for is what they come back to; one
-  // without words gives way to their own input.
-  const resumed = draftWords && draftOf ? byId.get(draftOf) : undefined
   const share = () => {
-    if (!signIn()) return
-    if (resumed) resumeCosign(resumed)
-    else compose()
+    if (signIn()) compose()
   }
   const startCosign = useCallback(
     (parent: ConferenceTestimony) => {
       if (!signIn()) return
-      if (draftWords && draftOf === parent.id) return resumeCosign(parent)
       setCosigning(parent)
       setStep("confirm")
       setFull(true)
       setOpen(true)
     },
-    [signIn, draftOf, draftWords, resumeCosign]
+    [signIn]
   )
   // Cosigning is the reader's one input here, so it is offered only while they
-  // have none: nothing posted, and no words of their own waiting in a draft.
-  const offerCosign = taking && !mine && !(draftWords && !draftOf)
+  // have posted none.
+  const offerCosign = taking && !mine
   // Posting puts the panel away and takes the reader to what they filed, once
   // it has arrived in the feed.
   const [landing, setLanding] = useState(false)
@@ -675,14 +625,11 @@ function Details({
       prompted.current = door
       return
     }
-    if (!draftRead) return
     if (mine) {
       setRefusal("filed")
       done().then(() => jumpToSection("your-input"))
       return
     }
-    // What is left of the rule that offers Cosign: no words of their own.
-    if (!offerCosign) return refuse("drafting")
     startCosign(parent)
     done()
   }, [
@@ -698,9 +645,7 @@ function Details({
     user?.emailVerified,
     authFlowStep,
     signIn,
-    draftRead,
     mine,
-    offerCosign,
     startCosign
   ])
 
@@ -835,10 +780,13 @@ function Details({
                 $top="calc(var(--maple-navbar-height) + var(--rail-lift, 0px) + var(--title-h, 5rem) - 1px)"
                 $z={13}
               >
-                <ConferenceTabs sections={sections} titles={TITLES} />
+                <ConferenceTabs
+                  sections={sections}
+                  labels={resolved ? RESOLVED_LABELS : undefined}
+                />
               </Band>
               {resolved && (
-                <Section id="resolution">
+                <Section>
                   <ConferenceResolution
                     differences={differences}
                     settled={similarities.length}
@@ -858,6 +806,7 @@ function Details({
               {decided && (
                 <Section id="decided">
                   <ConferenceDifferences
+                    conference={conference}
                     gist={gist}
                     differences={differences}
                     similarities={similarities}
@@ -915,7 +864,6 @@ function Details({
             cosigning={cosigning}
             full={filled}
             onFull={cosigning ? setFull : setInputFull}
-            onDraft={onDraft}
             onPosted={posted}
           />
         )}
@@ -924,8 +872,8 @@ function Details({
   )
 }
 
-/** The panel and the form in it, for a signed-in reader. The reader's draft is
- * held here for both forms, and handed up so the page knows what it holds. */
+/** The panel and the form in it, for a signed-in reader. The reader's edit
+ * hook is held here for both forms, so they share the one draft slot. */
 function InputPanel({
   uid,
   conference,
@@ -938,7 +886,6 @@ function InputPanel({
   cosigning,
   full,
   onFull,
-  onDraft,
   onPosted
 }: {
   uid: string
@@ -952,7 +899,6 @@ function InputPanel({
   cosigning?: ConferenceTestimony
   full: boolean
   onFull: (full: boolean) => void
-  onDraft: (draft?: ConferenceWorkingDraft, read?: boolean) => void
   onPosted: () => void
 }) {
   const { t } = useTranslation("conferences")
@@ -962,12 +908,6 @@ function InputPanel({
     conference.canonicalBillId,
     conference.id
   )
-  // Signing out takes the draft with it.
-  useEffect(() => {
-    onDraft(edit.draft, !edit.loading)
-    return () => onDraft(undefined)
-  }, [edit.draft, edit.loading, onDraft])
-
   const mode = cosigning ? "cosign_" : ""
   const title =
     step === "review"
@@ -991,7 +931,7 @@ function InputPanel({
       onFull={step === "write" ? onFull : undefined}
     >
       {cosigning ? (
-        // Keyed so another parent starts from its own draft.
+        // Keyed so another parent starts clean.
         <CosignForm
           key={cosigning.id}
           edit={edit}

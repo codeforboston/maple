@@ -134,10 +134,6 @@ const ClearFilters = styled.button`
   }
 `
 
-/** The section's title, also its tab's label (TITLES in
- * ConferenceDetails.tsx). */
-export const INPUT_TITLE = "input.title"
-
 /**
  * Everything filed on a conference, with the controls that narrow it. The way
  * to file is the page's own button, not part of the feed.
@@ -284,7 +280,7 @@ export function PublicInput({
 
   return (
     <Section id="input">
-      <CardTitle>{t(INPUT_TITLE)}</CardTitle>
+      <CardTitle>{t("input.title")}</CardTitle>
       {/* Always, however few have filed: an empty feed shows what could
           narrow it, and a short one keeps the way to cosigns without words
           (MoreFilters). */}

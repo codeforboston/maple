@@ -199,10 +199,6 @@ function Sheet({
   )
 }
 
-/** The section's title, also its tab's label (TITLES in
- * ConferenceDetails.tsx). */
-export const TEXT_TITLE = "bill_text"
-
 /**
  * The two texts the conference is reconciling, side by side, or one chamber's
  * at a time. Fetched in the browser rather than with the page: an omnibus
@@ -234,7 +230,7 @@ export const ConferenceText = memo(function ConferenceText({
   // well is the frame.
   return (
     <section>
-      <CardTitle>{t(TEXT_TITLE)}</CardTitle>
+      <CardTitle>{t("bill_text")}</CardTitle>
       <Picker>
         <Form.Label htmlFor="conference-text-version">
           {t("version")}

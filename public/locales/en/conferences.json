@@ -2,18 +2,37 @@
   "in_conference": "In conference",
   "back_to_home": "Back to Conference Home",
   "beta_feedback": "Conference committee pages are in beta. Send feedback to",
-  "byline": "Conference committee to pass <1>{{title}}</1> by resolving differences between <3>{{senate}}</3> and <5>{{house}}</5>",
+  "byline": "{{senators}} and {{representatives}} are negotiating a compromise between the Senate’s version <3>{{senate}}</3> and the House’s version <5>{{house}}</5> of <1>{{title}}</1>. Their report goes back to both chambers for a final vote.",
+  "byline_closed": "{{senators}} and {{representatives}} were appointed to negotiate a compromise between the Senate’s version <3>{{senate}}</3> and the House’s version <5>{{house}}</5> of <1>{{title}}</1>.",
+  "byline_senators_one": "{{number}} senator",
+  "byline_senators_other": "{{number}} senators",
+  "byline_representatives_one": "{{number}} representative",
+  "byline_representatives_other": "{{number}} representatives",
+  "number": {
+    "0": "no",
+    "1": "one",
+    "2": "two",
+    "3": "three",
+    "4": "four",
+    "5": "five",
+    "6": "six",
+    "7": "seven",
+    "8": "eight",
+    "9": "nine",
+    "10": "ten"
+  },
   "status": {
     "reportFiled": "Report filed",
     "enacted": "Enacted",
     "dissolved": "Dissolved"
   },
   "not_covered": "Not covered",
+  "rail_not_covered": "We don’t write up bond bills, which are long and heavily amended. They’re listed so you can see who’s negotiating, but they don’t take input.",
   "notice": {
     "resolved": "Resolved by <1>{{report}}</1>.",
-    "not_covered": "We’re trialling these pages with a limited set of conference committees, and this isn’t one of them yet. You can’t add your input here."
+    "not_covered": "We haven’t written up this conference. It’s a bond bill, which authorizes state borrowing for many projects at once. Bond bills are long, heavily amended, and don’t break down into a few open questions the way the other bills in conference do. Here you can see who’s negotiating and read both versions, but you can’t add input through MAPLE. We’re working on features that will let us cover bond bills in the future."
   },
-  "who": "Committee",
+  "who": "Who’s in the committee?",
   "view_committees": "View the committees →",
   "senate": "Senate",
   "house": "House",
@@ -26,6 +45,7 @@
   "hearing_scheduled": "Hearing scheduled for {{date}}",
   "no_hearings": "No hearings have been disclosed.",
   "pick_conference": "Choose a conference committee",
+  "rail_closed": "Past Conferences",
   "bill_banner": {
     "appointed": "This bill is in a conference committee: <1>{{name}}</1>",
     "reportFiled": "The conference committee on this bill has filed its report: <1>{{name}}</1>",
@@ -57,7 +77,7 @@
   "office_house": "State Representative, {{district}}",
   "conference": "Conference",
   "hero": {
-    "lead": "When the House and Senate pass different versions of a bill, six legislators work out one final text in a conference committee. Learn how it works, see who’s negotiating and what’s still unresolved, and share your input while they’re still deciding.",
+    "lead": "When the House and Senate pass different versions of a bill, six legislators work out one final text in a conference committee. See who’s negotiating, what’s still being worked out, and share your input while they’re still deciding.",
     "steps": [
       {
         "h": "Two versions pass",
@@ -69,19 +89,20 @@
       },
       {
         "h": "They negotiate",
-        "p": "The first meeting is public. The rest are as well, unless a majority votes to close them. A final bill only proceeds once 2/3 of the conferees from each chamber agree."
+        "p": "Conferees weigh the two versions and the tradeoffs between them. MAPLE gathers public input on what’s still open and shares it with conferees."
       },
       {
         "h": "The report is posted",
-        "p": "Once it goes up on the legislature's website, the legislators have at least 24 hours to read it before either chamber can vote."
+        "p": "The final text is posted publicly. If no agreement is reached before the session ends, the bill doesn’t move forward."
       },
       {
-        "h": "Yes or no",
-        "p": "Each chamber votes without amendments. If either rejects it, the bill can return to a new conference committee, or otherwise it doesn't pass."
+        "h": "Final vote",
+        "p": "Both chambers vote on the deal. If it passes, it goes to the governor."
       }
     ],
     "sources": "From MAPLE’s <1>guide to the legislative process</1> and the legislature’s <3>Joint Rules</3>.",
     "see": "See the committees",
+    "here": "We are here",
     "see_unavailable": "Conference committees didn't load. Please try again in a minute."
   },
   "bill_text": "Bill Text",
@@ -93,14 +114,50 @@
   "text_missing": "The text of {{bill}} isn’t on MAPLE yet.",
   "text_pdf": "Read the PDF",
   "tabs_label": "Sections of this conference committee",
+  "tab_committee": "Committee",
+  "tab_decided": "House and Senate",
+  "tab_resolved": "Resolved Text",
+  "tab_input": "Public Input",
+  "tab_text": "Bill Text",
   "decided": {
-    "title": "What needs to be resolved?",
-    "gist": "Below are some of the places where the House and Senate text differ. Notice something missing or wrong? <0>Send us feedback</0>.",
-    "differ": "Where bill texts differ",
+    "title": "The House and Senate versions",
+    "overview": "Overview",
+    "open": "Open questions",
+
     "match": "Where bill texts match",
     "not_in_bill": "Not in the bill",
     "yours_one": "{{who}} is on this committee, <0>{{name}}</0>.",
     "yours_both": "Both of your legislators are on this committee, <0>{{a}}</0> and <1>{{b}}</1>."
+  },
+  "analysis": {
+    "line": "MAPLE wrote the overview, the open questions and the points where the bill texts match by comparing the Senate and House texts ({{senate}} and {{house}}), with the help of AI tools and reviewed by our team. None of it is an official summary from the Legislature, and it may not cover every difference. <0>About this analysis</0>",
+    "updated": "Last updated {{date}}.",
+    "about": {
+      "read": {
+        "title": "What we read.",
+        "body": "We compare the text each chamber passed, linked above. We don’t rely on news coverage, press releases or advocacy materials."
+      },
+      "written": {
+        "title": "How it’s written.",
+        "body": "Our team, using AI tools, identifies where the two texts differ and phrases each difference as a question the conferees will need to answer. A member of our team checks each question against the bill text before it’s published."
+      },
+      "labels": {
+        "title": "What the labels mean.",
+        "body": "“Open questions” are provisions where the two texts differ, including provisions that appear in only one version. “Where bill texts match” means the two versions are the same in substance, not necessarily word for word."
+      },
+      "isnt": {
+        "title": "What this isn’t.",
+        "body": "MAPLE does not take positions on bills. We write the questions to describe the choice in front of the conferees, not to suggest an answer. This is not legal advice and not an official product of the Legislature."
+      },
+      "corrections": {
+        "title": "Corrections.",
+        "body": "If you spot an error, tell us at <0>{{email}}</0>."
+      },
+      "beta": {
+        "title": "This is a beta.",
+        "body": "We’re still testing these pages and refining how we write them. For the next legislative session, we plan to work with local media and academic partners to review and curate this material."
+      }
+    }
   },
   "resolved": {
     "title": "How the conference resolved it",
@@ -216,9 +273,6 @@
     "close_panel": "Close Add Your Input",
     "position_label": "Your position",
     "body_label": "Your input",
-    "saving": "Saving…",
-    "saved": "Saved",
-    "delete_draft": "Delete Draft",
     "cancel": "Cancel",
     "review": "Continue",
     "review_title": "Review Your Input",
@@ -262,8 +316,6 @@
     "cosign_rule_one": "You can only cosign one position.",
     "cosign_agree": "I have read {{name}}’s input and want to cosign it as my own.",
     "cosign_continue": "Continue",
-    "cosign_replaces": "You have an unposted note on your cosign of {{name}}. You can cosign only one input, so continuing will delete that note and cosign this one instead.",
-    "cosign_replaces_gone": "You have an unposted note on another cosign. You can cosign only one input, so continuing will delete that note and cosign this one instead.",
     "copy_cosign_link": "Copy cosign link",
     "cosign_link_copied": "Link copied. Anyone who opens it can cosign this input.",
     "cosign_link_not_copied": "Couldn’t copy the link. Here it is: {{link}}",
@@ -271,7 +323,6 @@
     "cosign_link_not_cosignable": "This input can’t be cosigned.",
     "cosign_link_closed": "This conference is no longer taking input, so this input can’t be cosigned.",
     "cosign_link_filed": "You’ve already given input on this conference, so you can’t cosign more.",
-    "cosign_link_drafting": "You’ve started input of your own on this conference, so you can’t cosign while it’s drafted.",
     "cosigned": "cosigned",
     "cosigned_this": "cosigned this position.",
     "cosign_including_you": ", including you! ",

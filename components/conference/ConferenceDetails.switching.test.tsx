@@ -98,7 +98,9 @@ const summary = (id: string, senate: string, house: string) => ({
   canonicalBillId: senate,
   status: "appointed" as const,
   covered: true,
-  reportBillId: null
+  reportBillId: null,
+  confereeCounts: { senate: 3, house: 3 },
+  analysisUpdatedAt: "2026-11-18"
 })
 const phoneFree = summary(
   "student-learning-and-mental-health",

@@ -199,9 +199,6 @@ const Key = styled.dl`
   }
 `
 
-/** The card's title, also its tab's label (TITLES in ConferenceDetails.tsx). */
-export const RESOLUTION_TITLE = "resolved.title"
-
 /**
  * How the conference resolved each open question, counted: a bar whose
  * segments filter the questions below, the counts as chips, and what each
@@ -227,7 +224,7 @@ export function ConferenceResolution({
   return (
     <Frame aria-labelledby="resolved-h">
       <Head>
-        <CardTitle id="resolved-h">{t(RESOLUTION_TITLE)}</CardTitle>
+        <CardTitle id="resolved-h">{t("resolved.title")}</CardTitle>
         <p>
           {t("resolved.summary", {
             count: total,

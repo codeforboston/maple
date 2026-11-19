@@ -2,7 +2,6 @@ import {
   ComponentProps,
   ReactNode,
   RefObject,
-  useCallback,
   useEffect,
   useRef,
   useState
@@ -33,7 +32,7 @@ import {
 } from "./Review"
 import { conferencePositions, positionColours } from "./positions"
 import { brand, ink, line, red, wash } from "./tokens"
-import { useAutosave } from "./useAutosave"
+import { usePost } from "./usePost"
 
 /** The panel's steps. Only a cosign is agreed to first. */
 export type Step = "confirm" | "write" | "review"
@@ -177,15 +176,6 @@ export const Actions = styled.div`
   gap: 12px;
   flex-shrink: 0;
   padding-top: 14px;
-`
-
-export const Status = styled.span`
-  display: inline-flex;
-  align-items: center;
-  margin-right: auto;
-  font-size: 0.75rem;
-  color: ${ink.mid};
-  transition: opacity 500ms;
 `
 
 export const Quiet = styled.button`
@@ -351,7 +341,8 @@ export function ReviewStep({
   onPost,
   ...letter
 }: Omit<ComponentProps<typeof LetterReview>, "testimonyId"> & {
-  /** The user's draft and publication on the conference. */
+  /** The user's publication on the conference, and the draft it posts
+   * through. */
   edit: UseEditConferenceTestimony
   /** There is something to post: input's words, or a cosign with or without. */
   ready: boolean
@@ -438,8 +429,8 @@ export function ReviewStep({
 
 /**
  * Writing, reviewing and posting testimony on a conference, in the panel's
- * two steps. The draft is the user's own, kept as they type and published
- * from the review step.
+ * two steps. Nothing is kept before Post: the words live in the form until
+ * then.
  */
 export function InputForm({
   court,
@@ -458,7 +449,8 @@ export function InputForm({
   conferenceId: string
   /** The conferees, for the weekly update's row. */
   conferees: ConfereeView[]
-  /** The user's draft and publication on the conference. */
+  /** The user's publication on the conference, and the draft it posts
+   * through. */
   edit: UseEditConferenceTestimony
   subject: string
   /** Each chamber's bill, as written (S.2916), for the positions that pass
@@ -476,7 +468,7 @@ export function InputForm({
   const { t } = useTranslation("conferences")
   const { profile } = useProfile()
   const { user, claims } = useAuth()
-  const { saveDraft, publishTestimony, discardDraft } = edit
+  const { saveDraft, publishTestimony } = edit
 
   const [position, setPosition] = useState<ConferencePosition>(
     conferencePositions[0]
@@ -486,22 +478,19 @@ export function InputForm({
   const field = useRef<HTMLTextAreaElement>(null)
   const ask = useAsk(field)
 
-  // Start from what the user already has: their draft, else what they posted.
-  // A cosign's words are not this form's, and seeding them would save over
-  // the cosign, since this form sits mounted behind a closed panel.
+  // Start from what the user posted, if anything; a draft left from before is
+  // not theirs to resume. A cosign's words are not this form's.
   const seeded = useRef(false)
   useEffect(() => {
     if (edit.loading || seeded.current) return
     seeded.current = true
-    const source = edit.draft ?? edit.publication
-    if (source?.cosignOfId) return
-    if (source?.position) setPosition(source.position)
-    if (source?.content) setContent(source.content)
-    if (edit.draft?.editReason) setReason(edit.draft.editReason)
-  }, [edit.loading, edit.draft, edit.publication])
+    const posted = edit.publication
+    if (posted?.cosignOfId) return
+    if (posted?.position) setPosition(posted.position)
+    if (posted?.content) setContent(posted.content)
+  }, [edit.loading, edit.publication])
 
-  // Keep the draft as they type, once there are words to keep.
-  const { save, dirty, posting, post, reset } = useAutosave({
+  const { posting, post } = usePost({
     edit,
     fields: { position, content, reason },
     // A cosign's draft is not this form's, whatever its words.
@@ -516,7 +505,6 @@ export function InputForm({
         content: f.content,
         editReason: f.reason || undefined
       }),
-    idle: f => !f.content.trim(),
     // Publishing clears the draft's reason; the form outlives the post, behind
     // the closed panel, so it clears its own for the next edit too.
     onPosted: () => {
@@ -531,20 +519,7 @@ export function InputForm({
     ask.ask()
   }
 
-  const discard = useCallback(async () => {
-    await discardDraft.execute()
-    setContent("")
-    setPosition(conferencePositions[0])
-    reset()
-    onCancel()
-  }, [discardDraft, onCancel, reset])
-
-  const failed =
-    edit.error ||
-    saveDraft.error ||
-    publishTestimony.error ||
-    discardDraft.error
-  const showDelete = !!edit.draft && save === "none" && !dirty
+  const failed = edit.error || saveDraft.error || publishTestimony.error
 
   const name = profile?.fullName || t("input.anonymous")
   // The input as it will be filed, for the review's preview of it on MAPLE.
@@ -609,15 +584,6 @@ export function InputForm({
           {failed && <Problem role="alert">{t("input.error")}</Problem>}
         </Scroll>
         <Actions>
-          <Status style={{ opacity: save === "fading" ? 0 : 1 }}>
-            {save === "saving" && t("input.saving")}
-            {(save === "saved" || save === "fading") && t("input.saved")}
-            {showDelete && (
-              <Quiet type="button" onClick={discard} style={{ marginLeft: -8 }}>
-                {t("input.delete_draft")}
-              </Quiet>
-            )}
-          </Status>
           <Muted type="button" onClick={onCancel}>
             {t("input.cancel")}
           </Muted>

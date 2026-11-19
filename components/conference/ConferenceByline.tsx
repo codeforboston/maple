@@ -29,7 +29,8 @@ const Line = styled.p`
 
 /** The trial note in the site's soft blue rather than the orange note's
  * (Notice): a status of this conference rather than a warning. An info icon
- * leads it, the words wrapping clear of it. */
+ * leads it, the words wrapping clear of it. Its type is the analysis
+ * disclosure's (Box in AboutThisAnalysis.tsx): the body face, 13px, 400. */
 const BlueNotice = styled(Notice)`
   && {
     display: flex;
@@ -38,15 +39,19 @@ const BlueNotice = styled(Notice)`
     background: var(--maple-color-blue-subtle-bg);
     border-color: var(--maple-color-blue-subtle-border);
     color: var(--maple-color-blue-subtle-text);
+    font-family: var(--maple-font-body);
+    font-size: 0.8125rem;
+    font-weight: 400;
   }
 `
 
 /**
- * What the committee is, in the legislature's own construction: the act it
- * exists to pass, and the two texts it reconciles to pass it. Each number goes
- * to its own bill page. Under it, the report that resolved it, and a notice
- * where we haven't covered it. Its status, once it's no longer sitting,
- * shows beside the title (StatusChip in ConferenceDetails.tsx).
+ * Who the committee is and what it is doing: how many members each chamber
+ * appointed, the two texts they are reconciling, and the act. While it sits,
+ * what happens to its report; once it no longer sits, only that they were
+ * appointed, the status beside the title saying the rest (StatusChip in
+ * ConferenceDetails.tsx). Each number goes to its own bill page. Under it,
+ * the report that resolved it, and a notice where we haven't covered it.
  */
 export function ConferenceByline({
   conference
@@ -54,6 +59,13 @@ export function ConferenceByline({
   conference: ConferenceSummary
 }) {
   const { t } = useTranslation("conferences")
+  // Spelled out ("three"), digits past ten.
+  const number = (n: number) => t(`number.${n}`, { defaultValue: `${n}` })
+  const { senate, house } = conference.confereeCounts
+  const senators = t("byline_senators", {
+    count: senate,
+    number: number(senate)
+  })
   const bill = (id: string) => (
     <DottedInternal href={maple.bill({ court: conference.court, id })} />
   )
@@ -62,8 +74,16 @@ export function ConferenceByline({
       <Line>
         <Trans
           t={t}
-          i18nKey="byline"
+          i18nKey={
+            conference.status === "appointed" ? "byline" : "byline_closed"
+          }
           values={{
+            // The sentence starts with it.
+            senators: senators.charAt(0).toUpperCase() + senators.slice(1),
+            representatives: t("byline_representatives", {
+              count: house,
+              number: number(house)
+            }),
             title: conference.title.trim(),
             senate: formatBillId(conference.senateBillId),
             house: formatBillId(conference.houseBillId)

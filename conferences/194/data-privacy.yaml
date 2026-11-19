@@ -3,6 +3,7 @@ name: Data Privacy
 court: 194
 title: An Act establishing the Massachusetts data privacy act
 gist: Both bills create a consumer data privacy law (new G.L. c.93M) giving residents rights to see, correct and delete their data and to opt out of targeted ads and data sales. Both ban selling precise location data and minors' data and are enforced by the Attorney General. They disagree on which businesses are covered, how tightly collection and sensitive data are limited, whether selling sensitive data is banned or allowed with consent, and whether individuals can sue the largest companies.
+analysisUpdatedAt: "2026-11-18"
 senateBillId: S2619
 houseBillId: H5479
 canonicalBillId: S2619
