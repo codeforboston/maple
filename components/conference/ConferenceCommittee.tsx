@@ -134,9 +134,9 @@ export function ConferenceCommittee({
           </Fragment>
         ))}
       </Grid>
-      <div className="mt-4">
+      {/* <div className="mt-4">
         <ConferenceHearings hearings={hearings} />
-      </div>
+      </div> */}
     </Frame>
   )
 }
