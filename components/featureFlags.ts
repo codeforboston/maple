@@ -60,8 +60,8 @@ const defaults: Record<Env, FeatureFlags> = {
     phoneVerificationUI: false,
     ballotQuestions: false,
     legislators: false,
-    conferences: false,
-    closedConferences: false
+    conferences: true,
+    closedConferences: true
   },
   test: {
     testimonyDiffing: false,
@@ -73,8 +73,8 @@ const defaults: Record<Env, FeatureFlags> = {
     phoneVerificationUI: true,
     ballotQuestions: false,
     legislators: false,
-    conferences: false,
-    closedConferences: false
+    conferences: true,
+    closedConferences: true
   }
 }
 
