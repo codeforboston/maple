@@ -64,25 +64,20 @@ const Body = styled.div`
   }
 `
 
-/** A short paragraph on what the bills are, under its own label as the
- * open questions and the matches are under theirs, as far under it as the
- * questions are under theirs (List's 12px). It sits in the questions' column
- * (Grid), so its lines end where theirs do. */
-// Ok not changing but copy should be reduced by half. As is, it does not
-// look connected to Open Questions and just oddly cut off. -GK
 const Gist = styled.div`
+  grid-column: 1 / -1;
   display: flex;
   flex-direction: column;
   gap: 12px;
   margin: 0 0 2px;
 
-  /* The paragraph's own text, not the label above it, in Bootstrap's grey
-     700 (#495057). */
+  /* The paragraph's own text, not the label above it, in the questions'
+     grey (#40403d). */
   > div p {
     margin: 0;
-    font-size: 0.875rem;
+    font-size: 1rem;
     line-height: 1.65;
-    color: var(--bs-gray-700);
+    color: ${ink.midheavy};
   }
   > div p + p {
     margin-top: 8px;
@@ -205,11 +200,22 @@ const Answers = styled.div`
 `
 
 /** Each chamber's text on its own surface, outlined in the chamber's ink. */
-const Answer = styled.div<{ $ink: string; $silent?: boolean }>`
+/** The Senate and House boxes' tints: the outcome chips' (outcomeInk in
+ * input/tokens.ts), at 30% opacity. */
+const ANSWER_TINT = {
+  senate: "rgba(234, 241, 251, 0.3)",
+  house: "rgba(251, 243, 227, 0.3)"
+}
+
+/** "Not in the bill" in each box: the House in the warm grey ink.muted was
+ * before (#94938d), the Senate in its cool opposite, as light. */
+const ABSENT_INK = { senate: "#919298", house: "#94938d" }
+
+const Answer = styled.div<{ $ink: string; $silent?: boolean; $tint?: string }>`
   flex: 1 1 0;
   min-width: 0;
   padding: 16px;
-  background: var(--maple-surface-base);
+  background: ${({ $tint }) => $tint ?? "var(--maple-surface-base)"};
   border: 1px
     ${({ $silent, $ink }) =>
       $silent ? `dashed ${line.strong}` : `solid ${$ink}`};
@@ -226,15 +232,16 @@ const Chamber = styled(Label)<{ $ink: string }>`
 `
 
 /** Faint italic is for the bare fallback alone: an absence, not content. */
-const AnswerText = styled.p<{ $absent: boolean }>`
+const AnswerText = styled.p<{ $absent: boolean; $absentInk?: string }>`
   margin: 2px 0 0;
   /* In the card's Nunito, as its chamber's label (Label) and the question
-     over it (Toggle) are. 14px from 768px. */
+     over it (Toggle) are. 13px from 768px. */
   font-family: var(--maple-font-body);
-  font-weight: 400;
-  font-size: 0.875rem;
+  font-weight: 500;
+  font-size: 0.8125rem;
   line-height: 1.4;
-  color: ${({ $absent }) => ($absent ? ink.faint : ink.strong)};
+  color: ${({ $absent, $absentInk }) =>
+    $absent ? $absentInk ?? ink.faint : ink.strong};
   font-style: ${({ $absent }) => ($absent ? "italic" : "normal")};
 
   /* 2px smaller in the mobile layout: 11px, and 12px from 390px. */
@@ -452,13 +459,12 @@ const RowTitle = styled.span`
   color: ${ink.strong};
 `
 
-/** An opened match's text, in the site's muted blue-grey. */
 const RowBody = styled.p`
   margin: 0;
   padding: 0 0 12px 49px;
   font-size: 0.8125rem;
   line-height: 1.6;
-  color: var(--maple-text-muted);
+  color: ${ink.mid};
 `
 
 /** The groups a resolved conference's questions fall in: which chambers'
@@ -698,11 +704,16 @@ function ChamberAnswers({ d }: { d: DifferenceView }) {
         const absent =
           !!addressedBy && addressedBy !== "both" && addressedBy !== key
         return (
-          <Answer key={chamber} $ink={chamberInk[chamber]} $silent={absent}>
+          <Answer
+            key={chamber}
+            $ink={chamberInk[chamber]}
+            $silent={absent}
+            $tint={absent ? undefined : ANSWER_TINT[key]}
+          >
             <Chamber $ink={absent ? ink.mid : chamberInk[chamber]}>
               {t(key)}
             </Chamber>
-            <AnswerText $absent={!text}>
+            <AnswerText $absent={!text} $absentInk={ABSENT_INK[key]}>
               {text ? (
                 <Marked text={text} notes={d.notes} />
               ) : (

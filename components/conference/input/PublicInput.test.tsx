@@ -89,6 +89,14 @@ const topCards = () =>
 
 const cardOf = (author: string) => topCards().find(a => authorOf(a) === author)!
 
+/** Ticks "Hide cosigns without content" in the filters menu. */
+const hideCosignsWithoutWords = async () => {
+  fireEvent.click(screen.getByLabelText("input.filters"))
+  fireEvent.click(
+    within(await screen.findByRole("menu")).getByText("input.cosign_wordless")
+  )
+}
+
 describe("PublicInput", () => {
   it("says so when nothing is filed, and keeps the filters", () => {
     render(<PublicInput items={[]} loading={false} />)
@@ -351,28 +359,24 @@ describe("PublicInput", () => {
       expect(screen.queryByText(/cosign_senate|cosign_house/)).toBeNull()
     })
 
-    it("leaves a cosign without words out until asked, and counts it anyway", async () => {
+    it("shows cosigns without content by default, with an option to hide them", async () => {
       const card = entry(1, { cosignCount: 2 } as any)
-      mount([
-        card,
-        entry(2),
-        entry(3),
-        cosignOf(4, 1),
-        cosignOf(5, 1, { content: "" })
-      ])
-      expect(rows("Author 1")).toHaveLength(1)
-      expect(band("2 input.cosign_count 2")).toBeInTheDocument()
-      fireEvent.click(screen.getByLabelText("input.filters"))
-      fireEvent.click(
-        within(await screen.findByRole("menu")).getByText(
-          "input.cosign_wordless"
-        )
-      )
+      const withWords = cosignOf(4, 1)
+      const withoutWords = cosignOf(5, 1, { content: "" })
+      mount([card, entry(2), entry(3), withWords, withoutWords])
+
+      // At first, both cosigns are listed under the card.
       expect(rows("Author 1")).toHaveLength(2)
-      // Under its input, it says nothing of having no words.
+      expect(band("2 input.cosign_count 2")).toBeInTheDocument()
+      // Under its card, a cosign without words says nothing about it.
       expect(
         screen.queryByText("input.cosign_no_words")
       ).not.toBeInTheDocument()
+
+      // Hidden, only the one with words is listed, but the count stays 2.
+      await hideCosignsWithoutWords()
+      expect(rows("Author 1")).toHaveLength(1)
+      expect(band("2 input.cosign_count 2")).toBeInTheDocument()
     })
 
     it("keeps a card whose cosign matches a filter", async () => {
@@ -445,12 +449,18 @@ describe("PublicInput", () => {
       expect(rowsOf()[0]).toHaveTextContent("Author 20")
     })
 
-    it("shows without words while others without words wait", () => {
+    it("stays visible when the reader hides cosigns without content", async () => {
+      const mineWithoutWords = { ...mine, content: "" }
+      const otherWithoutWords = cosignOf(30, 1, { content: "" })
       asReader([
         ...feed.filter(x => x !== mine),
-        { ...mine, content: "" },
-        cosignOf(30, 1, { content: "" })
+        mineWithoutWords,
+        otherWithoutWords
       ])
+
+      await hideCosignsWithoutWords()
+
+      // The reader's own is still first under the card; the other is hidden.
       expect(rowsOf()[0]).toHaveTextContent("Author 20")
       expect(screen.queryByText("Author 30")).not.toBeInTheDocument()
     })

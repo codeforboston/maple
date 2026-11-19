@@ -6,7 +6,7 @@ import { ConferenceTestimony } from "components/db"
 import { jumpToSection } from "../navbar"
 import { Pill, useCosign } from "./CosignButton"
 import { Descriptor, Disc, Entry } from "./Entry"
-import { BadgeCheck, UsersRound } from "./icons"
+import { BadgeCheck, ChevronDown, UsersRound } from "./icons"
 import { brand, ink, line, wash } from "./tokens"
 
 /** Where a jump to a block of Public Input parks it: under the bars. */
@@ -122,8 +122,50 @@ const Count = styled.span`
   }
 `
 
-/** The card's floor: how many cosigned. */
-export function Floor({ testimony }: { testimony: ConferenceTestimony }) {
+/** Hides or shows the cosigns under the card, at the floor's right; its
+ * chevron points up while they're shown. In the floor's grey, darker on
+ * hover, without the links' underline. On a wide card, out over the words'
+ * 12px right padding (Entry's Text), to the card's edge. */
+const Collapse = styled(Link)<{ $wide: boolean }>`
+  float: right;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: ${({ $wide }) => ($wide ? "-12px" : "0")};
+  font-weight: 400;
+  color: ${ink.mid};
+  text-decoration: none;
+
+  &:hover {
+    color: ${ink.strong};
+  }
+
+  /* Out over the empty side of the chevron's box (3.5px at 14px), so the
+     chevron itself ends where the date does. */
+  svg {
+    margin-right: -3.5px;
+    transition: transform 120ms;
+  }
+  &[aria-expanded="true"] svg {
+    transform: rotate(180deg);
+  }
+`
+
+/** The card's floor: how many cosigned, and, where cosigns are listed under
+ * the card, the way to hide or show them. */
+export function Floor({
+  testimony,
+  wide = false,
+  open,
+  onToggle
+}: {
+  testimony: ConferenceTestimony
+  /** The card is wide (Entry's `wide`). */
+  wide?: boolean
+  /** The cosigns under the card are shown. */
+  open?: boolean
+  onToggle?: () => void
+}) {
   const { t } = useTranslation("conferences")
   return (
     <Base>
@@ -132,6 +174,17 @@ export function Floor({ testimony }: { testimony: ConferenceTestimony }) {
         <b>{testimony.cosignCount}</b>
         <span>{t("input.cosigned")}</span>
       </Count>
+      {onToggle && (
+        <Collapse
+          type="button"
+          aria-expanded={open}
+          onClick={onToggle}
+          $wide={wide}
+        >
+          {t(open ? "input.cosigns_hide" : "input.cosigns_show")}
+          <ChevronDown size={14} />
+        </Collapse>
+      )}
     </Base>
   )
 }

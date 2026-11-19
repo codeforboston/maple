@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
+import { usePhone } from "../hooks"
 import { CardTitle } from "../styles"
 import { ConferenceTestimony } from "components/db"
 import { useInputContext } from "./context"
@@ -154,9 +155,13 @@ export function PublicInput({
   const [page, setPage] = useState(0)
   const [pickedAuthors, setPickedAuthors] = useState<string[]>([])
   const [opened, setOpened] = useState<ConferenceTestimony>()
-  // Cosigns with no words of their own wait behind a setting; their cards
-  // count them either way.
+  // Cosigns with no words of their own are listed unless the reader hides
+  // them (MoreFilters); their cards count them either way.
   const [wordless, setWordless] = useState(false)
+  // The cards whose cosigns the reader has shown or hidden (Floor), by card
+  // id. Cosigns start hidden on a phone and shown wider.
+  const [flipped, setFlipped] = useState<Set<string>>(() => new Set())
+  const phone = usePhone()
   const { uid, followed } = useInputContext()
 
   // The reader's own filing stands first whatever the controls say, so it is
@@ -188,7 +193,7 @@ export function PublicInput({
     }
   }, [ranked, mine])
   const units = useMemo(
-    () => others.map(u => withWords(u, wordless)),
+    () => others.map(u => withWords(u, !wordless)),
     [others, wordless]
   )
   // A card and its cosigns are narrowed as one: either matching keeps both.
@@ -252,6 +257,14 @@ export function PublicInput({
 
   const card = ({ lead: x, cosigns }: Unit, id?: string) => {
     const banded = !!x.cosignCount && !x.cosignOfId
+    const open = flipped.has(x.id) === phone
+    const toggle = () =>
+      setFlipped(was => {
+        const next = new Set(was)
+        if (next.has(x.id)) next.delete(x.id)
+        else next.add(x.id)
+        return next
+      })
     return (
       <Spot key={`${x.authorUid}-${x.id}`} id={id} data-input={x.id}>
         <Entry
@@ -261,18 +274,33 @@ export function PublicInput({
           band={
             banded && <Band testimony={x} yours={mine?.cosignOfId === x.id} />
           }
-          floor={banded ? () => <Floor testimony={x} /> : undefined}
+          floor={
+            banded
+              ? wide => (
+                  <Floor
+                    testimony={x}
+                    wide={wide}
+                    open={open}
+                    onToggle={cosigns.length > 0 ? toggle : undefined}
+                  />
+                )
+              : undefined
+          }
           actions={<Kebab testimony={x} onView={() => setOpened(x)} />}
           onOpen={setOpened}
         >
-          {wide => (
-            <CosignList
-              cosigns={cosigns}
-              mine={mine}
-              wide={wide}
-              actions={c => <Kebab testimony={c} onView={() => setOpened(c)} />}
-            />
-          )}
+          {wide =>
+            open && (
+              <CosignList
+                cosigns={cosigns}
+                mine={mine}
+                wide={wide}
+                actions={c => (
+                  <Kebab testimony={c} onView={() => setOpened(c)} />
+                )}
+              />
+            )
+          }
         </Entry>
       </Spot>
     )
@@ -306,7 +334,7 @@ export function PublicInput({
                   cosign in the group under the card it cosigns. */}
               {ownUnit &&
                 card(
-                  withWords(ownUnit, wordless, mine),
+                  withWords(ownUnit, !wordless, mine),
                   ownUnit.lead === mine ? "your-input" : undefined
                 )}
               {paged.map(u => card(u))}
