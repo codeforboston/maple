@@ -346,12 +346,13 @@ export const Descriptor = styled.p`
 `
 
 /** The date a card was filed, at its corner: 13px and in the date's grey on
- * every card, a cosigned one too. */
-export const When = styled.span`
+ * every card, a cosigned one too. Quiet, on a cosign under its card, a step
+ * lighter. */
+export const When = styled.span<{ $quiet?: boolean }>`
   margin-right: ${sc(2)};
   font-size: ${sc(13)};
   white-space: nowrap;
-  color: ${ink.mid};
+  color: ${({ $quiet }) => ($quiet ? ink.faint : ink.mid)};
 `
 
 export const Corner = styled.div`
@@ -391,15 +392,15 @@ const Text = styled.div<{ $wide: boolean; $banded: boolean; $flush: boolean }>`
   ${({ $flush }) => ($flush ? "padding-bottom: 0;" : "")}
 `
 
-/** The date at the foot of a narrow card, at the size it has at a wide
- * card's corner (When). */
-const FootDate = styled.div`
+/** The date at the foot of a narrow card, at the size and grey it has at a
+ * wide card's corner (When). */
+const FootDate = styled.div<{ $quiet?: boolean }>`
   display: flex;
   justify-content: flex-end;
   gap: ${sc(6)};
   margin-top: ${sc(12)};
   font-size: ${sc(13)};
-  color: ${ink.mid};
+  color: ${({ $quiet }) => ($quiet ? ink.faint : ink.mid)};
 `
 
 /** A day written out. */
@@ -558,7 +559,7 @@ export function Entry({
         </Who>
         <Corner>
           {lead}
-          {wide && !undated && <When>{date}</When>}
+          {wide && !undated && <When $quiet={inContext}>{date}</When>}
           {actions}
         </Corner>
       </Head>
@@ -577,7 +578,7 @@ export function Entry({
             <ClampedText text={testimony.content} small={!wide} />
           )}
           {!wide && !undated && (
-            <FootDate>
+            <FootDate $quiet={inContext}>
               <Dated date={date} />
             </FootDate>
           )}

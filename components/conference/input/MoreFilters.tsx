@@ -196,7 +196,7 @@ export function MoreFilters({
   const set = (picked.length > 0 ? 1 : 0) + (wordless ? 1 : 0)
 
   return (
-    <Anchor align="end" autoClose="outside">
+    <Anchor align="start" autoClose="outside">
       <Toggle
         as={Mark}
         type="button"
@@ -257,7 +257,6 @@ export function MoreFilters({
               <Box aria-hidden>{wordless && <Check size={11} />}</Box>
               <span>{t("input.cosign_wordless")}</span>
             </Dropdown.Item>
-            <Note>{t("input.cosign_wordless_note")}</Note>
           </Section>
         )}
       </FollowMenu>
