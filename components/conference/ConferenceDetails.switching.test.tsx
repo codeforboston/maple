@@ -2,7 +2,6 @@ import "@testing-library/jest-dom"
 import { fireEvent, render } from "@testing-library/react"
 import { useState } from "react"
 import { ConferenceDetails } from "./ConferenceDetails"
-import { SHOW_PAST_CONFERENCES } from "./ConferenceRail"
 import type { ConferencePageProps } from "./types"
 
 jest.mock("next-i18next", () => ({
@@ -108,14 +107,14 @@ const phoneFree = summary(
   "H5366"
 )
 const privacy = summary("data-privacy", "S2619", "H5479")
-const enacted = {
+const notCovered = {
   ...summary("home-care", "S3183", "H4706"),
-  status: "enacted" as const
+  covered: false
 }
 
 const page = (conference: ConferencePageProps["conference"]) => ({
   conference,
-  conferences: [phoneFree, privacy, enacted],
+  conferences: [phoneFree, privacy, notCovered],
   conferees: [],
   hearings: [],
   gist: null,
@@ -145,47 +144,34 @@ describe("moving between conferences", () => {
     expect(mounted).toEqual([phoneFree.id, privacy.id])
   })
 
-  // The fold's own behaviour, while past conferences are listed at all
-  // (SHOW_PAST_CONFERENCES).
-  ;(SHOW_PAST_CONFERENCES ? describe : describe.skip)(
-    "the group of conferences no longer taking input",
-    () => {
-      // The rail's: the picker's menu holds a copy only once it is opened.
-      const folds = (c: HTMLElement) =>
-        [...c.querySelectorAll("details")].map(d => d.open)
+  describe("the not covered section", () => {
+    // The rail's: the picker's menu holds a copy only once it is opened.
+    const expanded = (c: HTMLElement) =>
+      [...c.querySelectorAll("[data-section] > button")].map(
+        b => b.getAttribute("aria-expanded") === "true"
+      )
 
-      it("starts folded on a conference still sitting", () => {
-        const { container } = render(<ConferenceDetails {...page(privacy)} />)
-        expect(folds(container)).toEqual([false])
-      })
+    it("starts collapsed on an active conference", () => {
+      const { container } = render(<ConferenceDetails {...page(privacy)} />)
+      expect(expanded(container)).toEqual([false])
+    })
 
-      it("opens on arriving at a conference in it", () => {
-        const { container, rerender } = render(
-          <ConferenceDetails {...page(privacy)} />
-        )
-        rerender(<ConferenceDetails {...page(enacted)} />)
-        expect(folds(container)).toEqual([true])
-      })
+    it("stays collapsed when moving to a conference in it", () => {
+      const { container, rerender } = render(
+        <ConferenceDetails {...page(privacy)} />
+      )
+      rerender(<ConferenceDetails {...page(notCovered)} />)
+      expect(expanded(container)).toEqual([false])
+    })
 
-      it("stays open on moving back to a conference still sitting", () => {
-        const { container, rerender } = render(
-          <ConferenceDetails {...page(enacted)} />
-        )
-        rerender(<ConferenceDetails {...page(privacy)} />)
-        expect(folds(container)).toEqual([true])
-      })
+    it("stays as the user left it when moving between active conferences", () => {
+      const { container, rerender } = render(
+        <ConferenceDetails {...page(privacy)} />
+      )
+      fireEvent.click(container.querySelector("[data-section] > button")!)
 
-      it("stays as the reader left it between conferences still sitting", () => {
-        const { container, rerender } = render(
-          <ConferenceDetails {...page(privacy)} />
-        )
-        const details = container.querySelector("details")!
-        details.open = true
-        fireEvent(details, new Event("toggle"))
-
-        rerender(<ConferenceDetails {...page(phoneFree)} />)
-        expect(folds(container)).toEqual([true])
-      })
-    }
-  )
+      rerender(<ConferenceDetails {...page(phoneFree)} />)
+      expect(expanded(container)).toEqual([true])
+    })
+  })
 })
