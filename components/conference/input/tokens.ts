@@ -2,11 +2,11 @@
  * The page's own surfaces and brand come from the --maple tokens, as in
  * ../styles.ts. */
 export const ink = {
-  strong: "#141413",
-  midheavy: "#40403d",
-  mid: "#73726c",
-  muted: "#94938d",
-  faint: "#b5b4ae"
+  strong: "#141414",
+  midheavy: "#404040",
+  mid: "#727272",
+  muted: "#939393",
+  faint: "#b4b4b4"
 }
 
 export const line = {
