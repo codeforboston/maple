@@ -120,26 +120,26 @@
     "overview": "Overview",
     "open": "Open questions",
 
-    "match": "Where bill texts match",
+    "match": "Where the bills agree",
     "not_in_bill": "Not in the bill",
     "yours_one": "{{who}} is on this committee, <0>{{name}}</0>.",
     "yours_both": "Both of your legislators are on this committee, <0>{{a}}</0> and <1>{{b}}</1>."
   },
   "analysis": {
-    "line": "MAPLE wrote the overview, the open questions and the points where the bill texts match by comparing the Senate and House texts ({{senate}} and {{house}}), with the help of AI tools and reviewed by our team. None of it is an official summary from the Legislature, and it may not cover every difference. <0>About this analysis</0>",
+    "line": "MAPLE wrote the overview, the open questions and the points where the bills agree by comparing the Senate and House texts ({{senate}} and {{house}}), with the help of AI tools and reviewed by our team. None of it is an official summary from the Legislature, and it may not cover every difference. <0>About this analysis</0>",
     "updated": "Last updated {{date}}.",
     "about": {
       "read": {
         "title": "What we read.",
-        "body": "We compare the text each chamber passed, linked above. We don’t rely on news coverage, press releases or advocacy materials."
+        "body": "We compare the text each chamber passed, linked above, and the laws they would change, noting related bills and ballot questions where relevant."
       },
       "written": {
         "title": "How it’s written.",
-        "body": "Our team, using AI tools, identifies where the two texts differ and phrases each difference as a question the conferees will need to answer. A member of our team checks each question against the bill text before it’s published."
+        "body": "Our team, using AI tools, identifies where the two texts differ and phrases each difference as a question the conferees will need to answer. A member of our team checks each question and answer against both bill texts, and against the law being amended where an answer depends on it, before it’s published."
       },
       "labels": {
         "title": "What the labels mean.",
-        "body": "“Open questions” are provisions where the two texts differ, including provisions that appear in only one version. “Where bill texts match” means the two versions are the same in substance, not necessarily word for word."
+        "body": "“Open questions” are provisions where the two texts differ, including provisions that appear in only one version. “Where the bills agree” means the two versions are the same in substance, not necessarily word for word."
       },
       "isnt": {
         "title": "What this isn’t.",
