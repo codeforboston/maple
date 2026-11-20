@@ -40,13 +40,21 @@ export const CoreTeam = () => {
             <MemberItem name="Grace Kohut" role={t("team.roles.GKohut")} />
             <Divider />
             <MemberItem
+              name="Minqi Chai"
+              role={t("team.roles.MChai")}
+              descr={t("team.MChai")}
+            />
+            <Divider />
+            <MemberItem
               name="Janice Lichtman"
               role={t("team.roles.JLichtman")}
             />
             <Divider />
-            <MemberItem name="Merritt Baggett" descr={t("team.MBaggett")} />
-            <Divider />
-            <MemberItem name="Minqi Chai" descr={t("team.MChai")} />
+            <MemberItem
+              name="Merritt Baggett"
+              role={t("team.roles.MBaggett")}
+              descr={t("team.MBaggett")}
+            />
           </AboutPagesCard>
         </Col>
       </Row>
