@@ -166,11 +166,58 @@ export const twitterShareLink = (publication: Testimony, t: TFunction) => {
   return tweetUrl
 }
 
+const billRefinementKey = (attribute: string) =>
+  `${billsDefaultIndex}[refinementList][${attribute}][0]`
+
+export const billSearchByPrimarySponsor = (
+  court: number,
+  member: MemberContent
+) => {
+  const params = {
+    [billRefinementKey("primarySponsor")]: member.Name,
+    [billRefinementKey("court")]: String(court)
+  }
+
+  return `${maple.billSearch()}?${new URLSearchParams(params).toString()}`
+}
+
 export const billSearchByTopicLink = (court: number, topic: BillTopic) => {
   // Routed uiState is keyed by the page's index name.
   const params = {
     [`${billsDefaultIndex}[multiselectHierarchicalMenu][topics.lvl1][0]`]: `${topic.category} > ${topic.topic}`,
     [`${billsDefaultIndex}[refinementList][court][0]`]: `${court}`
   }
+  return `${maple.billSearch()}?${new URLSearchParams(params).toString()}`
+}
+
+export const billSearchByTopicLinkAndSponsorType = (
+  court: number,
+  topic: BillTopic,
+  member: MemberContent,
+  sponsorType: string
+) => {
+  const sponsorParameters = (sponsorType: string) => {
+    let sponsorFilter
+    if (sponsorType === "all") {
+      sponsorFilter = {
+        [billRefinementKey("primarySponsor")]: member.Name,
+        [billRefinementKey("cosponsors")]: member.Name
+      }
+    } else {
+      sponsorFilter = { [billRefinementKey(`${sponsorType}`)]: member.Name }
+    }
+    return sponsorFilter
+  }
+
+  const sponsorConverted = sponsorParameters(sponsorType)
+
+  const params = {
+    ...sponsorConverted,
+    [billRefinementKey("court")]: String(court),
+    [`${billsDefaultIndex}[multiselectHierarchicalMenu][topics.lvl1][0]`]: `${topic.category} > ${topic.topic}`
+  }
+
+  console.log(`${maple.billSearch()}?${new URLSearchParams(params).toString()}`)
+
   return `${maple.billSearch()}?${new URLSearchParams(params).toString()}`
 }

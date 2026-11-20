@@ -16,6 +16,7 @@ export type RecentSponsoredBill = {
 }
 
 export type MemberBillSummary = {
+  schemaVersion: 2
   all: BillGroupSummary
   sponsored: BillGroupSummary
   cosponsored: BillGroupSummary
@@ -25,7 +26,7 @@ export type MemberBillSummary = {
 export type MemberBillSummaryInput = {
   id: string
   content: { Title: string }
-  topics?: { topic: string }[]
+  topics?: { category: string; topic: string }[]
 }
 
 export function buildMemberBillSummary(
@@ -45,6 +46,7 @@ export function buildMemberBillSummary(
   )
 
   return {
+    schemaVersion: 2,
     all: summarizeGroup(allBills),
     sponsored: summarizeGroup(sponsoredBills),
     cosponsored: summarizeGroup(cosponsoredBills),
@@ -75,18 +77,27 @@ function summarizeGroup(bills: MemberBillSummaryInput[]): BillGroupSummary {
   >()
 
   for (const bill of bills) {
-    const topic = bill.topics?.[0]?.topic
-    if (!topic) continue
+    const categoriesSeen = new Set<string>()
+    const topicsSeen = new Set<string>()
 
-    const group = groups.get(topic) ?? { count: 0, subtopics: new Map() }
-    group.count += 1
+    for (const { category, topic } of bill.topics ?? []) {
+      const group = groups.get(category) ?? {
+        count: 0,
+        subtopics: new Map<string, number>()
+      }
 
-    const subtopic = bill.topics?.[1]?.topic
-    if (subtopic) {
-      group.subtopics.set(subtopic, (group.subtopics.get(subtopic) ?? 0) + 1)
+      if (!categoriesSeen.has(category)) {
+        group.count += 1
+        categoriesSeen.add(category)
+      }
+
+      if (!topicsSeen.has(`${category}\u0000${topic}`)) {
+        group.subtopics.set(topic, (group.subtopics.get(topic) ?? 0) + 1)
+        topicsSeen.add(`${category}\u0000${topic}`)
+      }
+
+      groups.set(category, group)
     }
-
-    groups.set(topic, group)
   }
 
   const topics = [...groups]

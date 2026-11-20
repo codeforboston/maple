@@ -57,12 +57,11 @@ function toBillSummaryInput(
 
   const rawTopics: unknown = snapshot.get("topics")
   const topics = Array.isArray(rawTopics)
-    ? rawTopics
-        .filter(
-          (topic): topic is { topic: string } =>
-            typeof topic?.topic === "string"
-        )
-        .map(({ topic }) => ({ topic }))
+    ? rawTopics.filter(
+        (topic): topic is { category: string; topic: string } =>
+          typeof topic?.category === "string" &&
+          typeof topic?.topic === "string"
+      )
     : undefined
 
   return {
