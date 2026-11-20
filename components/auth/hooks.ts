@@ -16,6 +16,7 @@ import { useAppDispatch } from "../hooks"
 import { authChanged } from "./redux"
 import { claimsOf } from "./service"
 import { completePhoneVerification, finishSignup, OrgCategory } from "./types"
+import { recordVerificationEmailSent } from "./verificationEmailCooldown"
 
 const errorMessages: Record<string, string | undefined> = {
   "auth/email-already-exists": "You already have an account.",
@@ -34,7 +35,9 @@ const errorMessages: Record<string, string | undefined> = {
   "auth/invalid-phone-number":
     "Please enter a valid phone number (e.g. 617 555-1234).",
   "auth/operation-not-allowed":
-    "Phone verification is not enabled. Please try again later or contact us at info@mapletestimony.org."
+    "Phone verification is not enabled. Please try again later or contact us at info@mapletestimony.org.",
+  "auth/too-many-requests":
+    "Too many attempts. Please wait a few minutes and try again."
 }
 
 export function getErrorMessage(errorCode?: string) {
@@ -42,8 +45,11 @@ export function getErrorMessage(errorCode?: string) {
   return niceErrorMessage || "Something went wrong!"
 }
 
+/** `messages` replaces the shared wording for a code where it means
+ * something more specific to one action. */
 function useFirebaseFunction<Params, Result>(
-  fn: (params: Params) => Promise<Result>
+  fn: (params: Params) => Promise<Result>,
+  messages: Record<string, string | undefined> = {}
 ) {
   return useAsyncCallback(async (params: Params) => {
     try {
@@ -53,11 +59,11 @@ function useFirebaseFunction<Params, Result>(
     } catch (err) {
       console.log(err)
 
-      const message = getErrorMessage(
+      const code =
         err instanceof FirebaseError
           ? err.code
           : (err as { code?: string })?.code
-      )
+      const message = (code && messages[code]) || getErrorMessage(code)
       throw new Error(message)
     }
   })
@@ -129,10 +135,16 @@ async function sendVerification(user: User) {
       throw err
     await sendEmailVerification(user)
   }
+  recordVerificationEmailSent(user.uid)
 }
 
 export function useSendEmailVerification() {
-  return useFirebaseFunction((user: User) => sendVerification(user))
+  return useFirebaseFunction((user: User) => sendVerification(user), {
+    // Firebase sends one verification email a minute to an account; asking
+    // again sooner fails with this code.
+    "auth/too-many-requests":
+      "A verification email was sent to you very recently. Check your inbox and spam folder, or try again in a minute."
+  })
 }
 
 /** Reads the signed-in reader's account again, for an email verified in
