@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import { useTranslation } from "next-i18next"
 import { MemberContent } from "components/db"
 import { doc, getDoc, getFirestore } from "firebase/firestore"
 import { Bill } from "functions/src/bills/types"
@@ -21,6 +22,7 @@ export const BillsTab = ({ member }: { member: MemberContent }) => {
     useState<MemberBillSummary>(emptySummary)
   const [loading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<boolean>(false)
+  const { t } = useTranslation("legislators")
 
   useEffect(() => {
     if (!member?.GeneralCourtNumber || !member?.MemberCode) {
@@ -43,10 +45,7 @@ export const BillsTab = ({ member }: { member: MemberContent }) => {
         )
         const summarySnapshot = await getDoc(summaryDocRef)
 
-        if (
-          summarySnapshot.exists() &&
-          summarySnapshot.get("schemaVersion") === 2
-        ) {
+        if (summarySnapshot.exists()) {
           setBillSummary(summarySnapshot.data() as MemberBillSummary)
           return
         }
@@ -109,11 +108,11 @@ export const BillsTab = ({ member }: { member: MemberContent }) => {
   }, [member?.GeneralCourtNumber, member?.MemberCode])
 
   if (loading) {
-    return <div>Loading bills...</div>
+    return <div>{t("profiles.loadingMsgs.loading")}</div>
   }
 
   if (error) {
-    return <div>Error loading bills.</div>
+    return <div>{t("profiles.loadingMsgs.errorLoading")}</div>
   }
 
   return (

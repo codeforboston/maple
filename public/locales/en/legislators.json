@@ -78,7 +78,9 @@
       "committee": "Committee",
       "header": "Committee Positions",
       "role": "Role",
-      "since": "Since"
+      "since": "Since",
+      "loading": "Loading positions...",
+      "empty": "No committee positions found."
     },
     "coSponsor": "co-sponsor",
     "primarySponsor": "primary sponsor",
@@ -89,6 +91,10 @@
       "title": "Title",
       "topics": "Topics",
       "viewBills": "View all {{number}} sponsored bills on MAPLE"
+    },
+    "loadingMsgs": {
+      "loading": "Loading bills...",
+      "errorLoading": "Error loading bills."
     }
   },
   "stateRepresentative": "State Representative",

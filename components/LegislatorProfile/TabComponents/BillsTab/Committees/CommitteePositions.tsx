@@ -146,7 +146,7 @@ export const CommitteePositions = ({
     }
 
     fetchCommittees()
-  }, [member?.MemberCode, member?.Committees])
+  }, [member?.MemberCode, member?.Committees, member?.GeneralCourtNumber])
 
   return (
     <div>
@@ -158,13 +158,13 @@ export const CommitteePositions = ({
           <thead>
             <tr>
               <StyledSubsectionTableColumnHeader>
-                Committee
+                {t("profiles.committeePositions.committee")}
               </StyledSubsectionTableColumnHeader>
               <StyledSubsectionTableColumnHeader>
-                Role
+                {t("profiles.committeePositions.role")}
               </StyledSubsectionTableColumnHeader>
               <StyledSubsectionTableColumnHeader>
-                Since
+                {t("profiles.committeePositions.since")}
               </StyledSubsectionTableColumnHeader>
             </tr>
           </thead>
@@ -172,13 +172,13 @@ export const CommitteePositions = ({
             {loading ? (
               <tr>
                 <StyledSubsectionTableColumnData colSpan={3}>
-                  Loading positions...
+                  {t("profiles.committeePositions.loading")}
                 </StyledSubsectionTableColumnData>
               </tr>
             ) : committees.length === 0 ? (
               <tr>
                 <StyledSubsectionTableColumnData colSpan={3}>
-                  No committee positions found.
+                  {t("profiles.committeePositions.empty")}
                 </StyledSubsectionTableColumnData>
               </tr>
             ) : (

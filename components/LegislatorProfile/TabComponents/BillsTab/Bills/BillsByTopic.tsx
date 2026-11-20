@@ -66,7 +66,9 @@ const BillsByTopicContainer = ({
               <StyledTopicNameBox>
                 <StyledTopicName>{group.topic}</StyledTopicName>
               </StyledTopicNameBox>
-              <StyledCountLabel>{group.count} bills</StyledCountLabel>
+              <StyledCountLabel>
+                {group.count} {t("profiles.bills")}
+              </StyledCountLabel>
             </StyledTopicMeta>
             <StyledSubtopicContainer>
               {group.subtopics.map(({ topic, count }) => (
