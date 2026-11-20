@@ -13,5 +13,13 @@
   "pid": {
     "title": "Partners in Democracy",
     "content": "MAPLE is an initiative of Partners in Democracy - Education, a 501(c)(3) non profit organization. Partners In Democracy is building nationwide partnerships and exploring how we can drive democracy renovation efforts forward in states around the country — starting by focusing our efforts here at home in Massachusetts."
+  },
+  "calmatters": {
+    "title": "CalMatters",
+    "content": "<a href=\"https://calmatters.org/\">CalMatters</a> is a nonprofit newsroom covering California state government. Its Digital Democracy project tracks public hearings, political donations, bills and votes in the California Legislature.<br/><br/>In July 2026, CalMatters and MAPLE <a href=\"https://partnersindemocracy.us/calmatters-maple-launch-landmark-partnership/\">announced a partnership</a> to share civic technology, information and expertise, including using the technology behind Digital Democracy to suggest story ideas to local media in Massachusetts."
+  },
+  "hypha": {
+    "title": "Hypha Worker Co-operative",
+    "content": "<a href=\"https://hypha.coop/\">Hypha Worker Co-operative</a> is a worker-owned technology cooperative based in Toronto.<br/><br/>MAPLE works with Hypha under contract on research and planning for adopting the AT Protocol, the open network behind Bluesky, for MAPLE accounts and for connecting MAPLE with other platforms."
   }
 }
