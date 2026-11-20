@@ -2,7 +2,7 @@ import styled from "styled-components"
 import { Col, Row } from "../bootstrap"
 import Tab from "react-bootstrap/Tab"
 import Nav from "react-bootstrap/Nav"
-import { SteeringCommittee } from "./SteeringCommittee"
+import { CoreTeam } from "./CoreTeam"
 import { AdvisoryBoard } from "./AdvisoryBoard"
 import { OurPartners } from "./Partners"
 import { useTranslation } from "next-i18next"
@@ -41,13 +41,13 @@ export const OurTeam = () => {
       />
       <LearnHeader title={t("title")} titleSize="2.25rem" />
       <TeamBody>
-        <Tab.Container defaultActiveKey="steering_committee">
+        <Tab.Container defaultActiveKey="core_team">
           <TabGroup />
           <Row className="py-2 g-0">
             <Col>
               <Tab.Content>
-                <Tab.Pane eventKey="steering_committee">
-                  <SteeringCommittee />
+                <Tab.Pane eventKey="core_team">
+                  <CoreTeam />
                 </Tab.Pane>
                 <Tab.Pane eventKey="advisory_board">
                   <AdvisoryBoard />
@@ -65,7 +65,7 @@ export const OurTeam = () => {
 }
 
 // Tabs stay in a single row at every screen size (rather than collapsing to a
-// dropdown). The three split the row evenly, so "Steering Committee" -- the
+// dropdown). The three split the row evenly, so "Advisory Board" -- the
 // longest label -- is the first to run out of room and wrap to a second line,
 // which drops its underline below the other two. On smaller screens, scale the
 // type down fluidly and keep each label on one line so all three stay aligned.
@@ -88,9 +88,7 @@ const TabGroup = () => {
       <Col className="text-center">
         <Nav className="our-team-tab flex-column">
           <Nav.Item>
-            <Nav.Link eventKey="steering_committee">
-              {t("steering.title")}
-            </Nav.Link>
+            <Nav.Link eventKey="core_team">{t("team.title")}</Nav.Link>
           </Nav.Item>
         </Nav>
       </Col>

@@ -5,22 +5,25 @@ import * as links from "../links"
 
 export const MemberItem = ({
   name,
+  role,
   email,
   descr
 }: {
   name: string
+  role?: string
   email?: string
-  descr: string
+  descr?: string
 }) => {
   return (
     <StyledContainer className="py-3 px-4">
       <NameContainer>{name}</NameContainer>
+      {role ? <RoleContainer>{role}</RoleContainer> : null}
       {email ? (
         <EmailContainer href={"mailto:" + email}>
           <PrettyEmailWrap>{email}</PrettyEmailWrap>
         </EmailContainer>
       ) : null}
-      <DescrContainer className="my-3">{descr}</DescrContainer>
+      {descr ? <DescrContainer className="my-3">{descr}</DescrContainer> : null}
     </StyledContainer>
   )
 }
@@ -46,6 +49,15 @@ export const DescrContainer = styled.div`
 export const Divider = styled.hr`
   border: 1px solid var(--maple-border-default);
   margin: 0;
+`
+
+// A person's role on the project, shown under their name.
+const RoleContainer = styled.div`
+  color: var(--maple-text-muted);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 23px;
+  text-align: left;
 `
 
 const EmailContainer = styled.a`
