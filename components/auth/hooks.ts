@@ -34,7 +34,11 @@ const errorMessages: Record<string, string | undefined> = {
   "auth/invalid-phone-number":
     "Please enter a valid phone number (e.g. 617 555-1234).",
   "auth/operation-not-allowed":
-    "Phone verification is not enabled. Please try again later or contact us at info@mapletestimony.org."
+    "Phone verification is not enabled. Please try again later or contact us at info@mapletestimony.org.",
+  // Firebase limits how often one account can try to sign in or be sent a
+  // verification email.
+  "auth/too-many-requests":
+    "Too many attempts in a short time. Please wait a few minutes and try again."
 }
 
 export function getErrorMessage(errorCode?: string) {
