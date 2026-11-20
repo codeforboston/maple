@@ -65,7 +65,10 @@ export const OurPartners = () => (
       src="/northeastern_school_of_law_logo.png"
       org="nulawlab"
     />
-    <PartnerContentCard org="calmatters" />
-    <PartnerContentCard org="hypha" />
+    <PartnerContentCard
+      src="/calmatters-digital-democracy-logo.png"
+      org="calmatters"
+    />
+    <PartnerContentCard src="/hypha-logo.png" org="hypha" />
   </Container>
 )
