@@ -24,16 +24,22 @@ locals {
     "@ A"       = { ttl = 14400, rrdatas = ["76.76.21.21"] }
     "www CNAME" = { ttl = 14400, rrdatas = ["cname.vercel-dns.com."] }
 
-    # Mail: Mailgun. MX + SPF + DKIM + DMARC must survive the move intact; a
-    # missing DKIM does not fail loudly, it just stops mail authenticating.
-    "@ MX" = { ttl = 14400, rrdatas = ["10 mxa.mailgun.org.", "10 mxb.mailgun.org."] }
+    # Mail: Google Workspace. mapletestimony.org is a secondary domain on PiD's
+    # Workspace account (Nov 2026); mvictor@ is an alias, info@ and admin@ are
+    # groups. Mailgun (Squarespace's forwarding) stays in SPF until nothing
+    # sends through it; smtp._domainkey below is its DKIM key. A missing DKIM
+    # does not fail loudly, it just stops mail authenticating.
+    "@ MX" = { ttl = 14400, rrdatas = ["1 smtp.google.com."] }
     "@ TXT" = { ttl = 14400, rrdatas = [
-      "\"v=spf1 include:mailgun.org ~all\"",
+      "\"v=spf1 include:_spf.google.com include:mailgun.org ~all\"",
       "\"google-site-verification=nNS-XwISe1mEYUkFjO_dqudsCrg4BTpMHAIOkolvhY4\"",
     ] }
     "_dmarc TXT" = { ttl = 14400, rrdatas = ["\"v=DMARC1; p=none;\""] }
     "smtp._domainkey TXT" = { ttl = 14400, rrdatas = [
       "\"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDlCCejmxwqxm/xrJqcZorDDALZrXaiOPxwklMt7K3G29Oga9Cf9ySN5/8ZofvQE6cVQpgGnhdnXmO6a/lImAtAEtPfVmnxJPL2mWnj5m0FPc0eFCwsMdSBnAIl4ei8ToIUBaGMpLrIK+q7I4xm0sPaPhqp\" \"C1767TChZNXjfU+IcwIDAQAB\"",
+    ] }
+    "google._domainkey TXT" = { ttl = 300, rrdatas = [
+      "\"v=DKIM1;k=rsa;p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyCTwbmlywus0+7zpAW2AWSFv7FhV+CWxius2QqOuk0sIkifOekSj1PVTHRUeYQUWeqwM5DknNNS8XNb7e3eC9xQYmspENQoQs66kDDDR2+DKohpisBnhNkR/z9uDGd70Hqykd8DAQR3dwU39Yl00R2U4B8bb7xYJapTvPqUczNBD2MkPbUTyND6NGX3Vo5\" \"067hi85i2C3QKRYy5URa4JFdbdEu5otMEtZ1hXWnnImaCu3GhDoMgpcdim16MDoo6KxaGb5sxj1fm0v5Rr6y+8zn5YaJzStJcpeQ4qURa4sN+005e+fF4d+vHlLOwX5Osz2ceGPvPVvphQscl6dXwDpQIDAQAB\"",
     ] }
 
     # SendGrid domain authentication. Same failure mode as the Mailgun DKIM
@@ -72,8 +78,10 @@ locals {
     # Squarespace's own Domain Connect discovery record for this domain.
     "_domainconnect CNAME" = { ttl = 14400, rrdatas = ["_domainconnect.domains.squarespace.com."] }
 
-    # Google domain/site verification CNAME (Search Console or Workspace).
+    # Google domain/site verification CNAMEs. zgnogrys2ruw verifies the domain
+    # for PiD's Google Workspace (Nov 2026).
     "islwqbu65xh4 CNAME" = { ttl = 14400, rrdatas = ["gv-qby53dgnrzih2v.dv.googlehosted.com."] }
+    "zgnogrys2ruw CNAME" = { ttl = 300, rrdatas = ["gv-lt2cq4dypfmbva.dv.googlehosted.com."] }
 
     # SendGrid link branding / click-tracking hosts for the
     # u32856346.wl097.sendgrid.net account (see the DKIM CNAMEs above).
