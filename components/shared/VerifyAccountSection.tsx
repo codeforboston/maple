@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useSendEmailVerification } from "components/auth/hooks"
+import { useRecentVerificationEmail } from "components/auth/verificationEmailCooldown"
 import { TitledSectionCard } from "components/shared"
 import { Alert, Card, Col, Row } from "components/bootstrap"
 import { User } from "firebase/auth"
@@ -22,6 +23,9 @@ export const VerifyAccountSection = ({
   onlyVisibleNote?: boolean
 }) => {
   const sendEmailVerification = useSendEmailVerification()
+  // Includes the email sent at sign-up. Firebase turns down another one
+  // within the minute, so the button waits it out.
+  const sentRecently = useRecentVerificationEmail(user.uid)
   const { t } = useTranslation("auth")
   const [showPhoneModal, setShowPhoneModal] = useState(false)
   const [localPhoneVerified, setLocalPhoneVerified] = useState(
@@ -68,7 +72,8 @@ export const VerifyAccountSection = ({
                     <p className="mb-0">
                       {t("verifyAccountSection.verifyEmailSpam")}
                     </p>
-                    {sendEmailVerification.status === "success" ? (
+                    {sendEmailVerification.status === "success" ||
+                    sentRecently ? (
                       <Alert variant="success" className="mb-0 mt-2">
                         {t("verifyAccountSection.checkEmail")}
                       </Alert>
@@ -81,8 +86,7 @@ export const VerifyAccountSection = ({
                   </>
                 )}
               </div>
-              {!user.emailVerified &&
-              sendEmailVerification.status !== "success" ? (
+              {!user.emailVerified && !sentRecently ? (
                 <div className="ms-3 flex-shrink-0">
                   <LoadingButton
                     variant="outline-secondary"

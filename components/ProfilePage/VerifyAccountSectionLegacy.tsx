@@ -1,4 +1,5 @@
 import { useSendEmailVerification } from "components/auth/hooks"
+import { useRecentVerificationEmail } from "components/auth/verificationEmailCooldown"
 import { TitledSectionCard } from "components/shared"
 import { Alert } from "react-bootstrap"
 import { User } from "firebase/auth"
@@ -13,6 +14,9 @@ export const VerifyAccountSectionLegacy = ({
   className: string
 }) => {
   const sendEmailVerification = useSendEmailVerification()
+  // Includes the email sent at sign-up. Firebase turns down another one
+  // within the minute, so the button waits it out.
+  const sentRecently = useRecentVerificationEmail(user.uid)
   const { t } = useTranslation("profile")
 
   return (
@@ -20,7 +24,7 @@ export const VerifyAccountSectionLegacy = ({
       <div>
         <p className="fw-bold">{t("verifyAccountSection.verifyAccount")}</p>
 
-        {sendEmailVerification.status === "success" ? (
+        {sendEmailVerification.status === "success" || sentRecently ? (
           <Alert variant="success">
             {" "}
             {t("verifyAccountSection.checkEmail")}{" "}
@@ -31,7 +35,7 @@ export const VerifyAccountSectionLegacy = ({
           <Alert variant="danger">{sendEmailVerification.error?.message}</Alert>
         ) : null}
 
-        {sendEmailVerification.status !== "success" ? (
+        {!sentRecently ? (
           <LoadingButton
             variant="secondary"
             className="text-white"
