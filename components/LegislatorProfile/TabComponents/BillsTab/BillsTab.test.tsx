@@ -11,6 +11,13 @@ jest.mock("firebase/firestore", () => ({
   getFirestore: jest.fn(() => ({ type: "db" }))
 }))
 
+jest.mock("next-i18next", () => ({
+  useTranslation: () => ({
+    t: (key: string) =>
+      key === "profiles.loadingMsgs.errorLoading" ? "Error loading bills." : key
+  })
+}))
+
 jest.mock("./BillsTabContainer", () => ({
   BillsTabContainer: ({ summary }: { summary: MemberBillSummary }) =>
     React.createElement(
@@ -20,9 +27,13 @@ jest.mock("./BillsTabContainer", () => ({
     )
 }))
 
-const makeSnapshot = (id: string, data: Record<string, unknown>) => ({
+const makeSnapshot = (
+  id: string,
+  data: Record<string, unknown>,
+  exists = true
+) => ({
   id,
-  exists: () => true,
+  exists: () => exists,
   data: () => data,
   get: (field: string) => data[field]
 })
@@ -64,16 +75,9 @@ describe("BillsTab", () => {
     expect(getDoc).toHaveBeenCalledTimes(1)
   })
 
-  it("falls back to member and bill reads for an older summary schema", async () => {
+  it("falls back to member and bill reads when no summary exists", async () => {
     ;(getDoc as jest.Mock)
-      .mockResolvedValueOnce(
-        makeSnapshot("ABC123", {
-          all: { count: 0, topics: [] },
-          sponsored: { count: 0, topics: [] },
-          cosponsored: { count: 0, topics: [] },
-          recentSponsoredBills: []
-        })
-      )
+      .mockResolvedValueOnce(makeSnapshot("ABC123", {}, false))
       .mockResolvedValueOnce(
         makeSnapshot("ABC123", {
           content: {
