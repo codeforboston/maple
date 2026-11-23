@@ -2,6 +2,7 @@ import { ChangeEvent, useMemo, useState } from "react"
 import { BackChevron, BackToConferences } from "./BackToConferences"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
+import { isSitting } from "../../functions/src/shared"
 import { Form } from "../bootstrap"
 import { useProfile } from "../db"
 import { Internal, maple } from "../links"
@@ -385,13 +386,12 @@ export function ConferenceExplorer({
   conferees
 }: ConferenceIndexProps) {
   const { t } = useTranslation("conferences")
-  // Enacted conferences left out, from the table and the maps alike, and
-  // those we haven't covered at the bottom, as the rail has them
-  // (ConferenceRail).
+  // The explorer shows all current (isSitting) conferences. Not covered
+  // conferences are sorted to the bottom.
   const conferences = useMemo(
     () =>
       allConferences
-        .filter(c => c.status !== "enacted")
+        .filter(isSitting)
         .sort((a, b) => Number(!a.covered) - Number(!b.covered)),
     [allConferences]
   )

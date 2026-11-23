@@ -26,8 +26,17 @@
     "enacted": "Enacted",
     "dissolved": "Dissolved"
   },
+  "category": {
+    "active": "Active",
+    "notCovered": "Not Covered",
+    "pending": "Pending",
+    "enacted": "Enacted",
+    "failed": "Failed",
+    "dissolved": "Dissolved"
+  },
   "not_covered": "Not covered",
-  "rail_not_covered": "We don’t write up bond bills, which are long and heavily amended. They’re listed so you can see who’s negotiating, but they don’t take input.",
+  "rail_selected": "1 selected",
+  "rail_not_covered": "We do not cover bond bills, which are long and heavily amended. They’re listed so you can see who’s negotiating, but they don’t take input.",
   "notice": {
     "resolved": "Resolved by <1>{{report}}</1>.",
     "not_covered": "We haven’t written up this conference. It’s a bond bill, which authorizes state borrowing for many projects at once. Bond bills are long, heavily amended, and don’t break down into a few open questions the way the other bills in conference do. Here you can see who’s negotiating and read both versions, but you can’t add input through MAPLE. We’re working on features that will let us cover bond bills in the future."
@@ -45,7 +54,7 @@
   "hearing_scheduled": "Hearing scheduled for {{date}}",
   "no_hearings": "No hearings have been disclosed.",
   "pick_conference": "Choose a conference committee",
-  "rail_closed": "Past Conferences",
+  "picker_title": "Select a committee",
   "bill_banner": {
     "appointed": "This bill is in a conference committee: <1>{{name}}</1>",
     "reportFiled": "The conference committee on this bill has filed its report: <1>{{name}}</1>",

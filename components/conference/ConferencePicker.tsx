@@ -2,17 +2,10 @@ import { RefObject, useCallback, useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
+import { takesTestimony } from "../../functions/src/shared"
 import { Offcanvas } from "../bootstrap"
 import { Internal, maple } from "../links"
-import {
-  BillLine,
-  ClosedFold,
-  listedConferences,
-  PastFold,
-  railConferences,
-  SHOW_PAST_CONFERENCES,
-  UncoveredNote
-} from "./ConferenceRail"
+import { BillLine } from "./ConferenceRail"
 import { useMatches, useRailHidden } from "./hooks"
 import { List } from "./input/icons"
 import { PHONE_GUTTER, SHEET } from "./styles"
@@ -70,12 +63,6 @@ const DrawerBody = styled(Offcanvas.Body)`
   li + li {
     border-top: 1px solid rgba(15, 23, 42, 0.06);
   }
-  /* The note on the conferences we don't cover (UncoveredNote), its sides
-     the rows' (Row). */
-  && .uncovered-note {
-    margin: 1rem 0 0.5rem;
-    padding: 0 ${PHONE_GUTTER};
-  }
 `
 
 /** A row made for a thumb, as the rail's (ConferenceRail.tsx) but larger:
@@ -130,15 +117,6 @@ const Row = styled(Internal)<{
   }
 `
 
-/** The fold the page holds where there is one (ConferenceDetails.tsx), so
- * the list's past conferences open as the rail's do; on its own (the
- * Conference Committees page's button, ConferenceHero.tsx), folded until the
- * reader opens it. */
-function useFold(fold?: ClosedFold): ClosedFold {
-  const [open, setOpen] = useState(false)
-  return fold ?? { open, onToggle: setOpen }
-}
-
 /** The drawer risen from the screen's foot (ConferenceDrawer's bottom):
  * nearly all the way up, nine tenths of the screen, a sliver of the page
  * left over it, its top corners rounded as a sheet's. */
@@ -151,27 +129,23 @@ const Drawer = styled(Offcanvas)`
 `
 
 /**
- * The rail's conferences in a sheet that rises from the screen's foot: a
- * light heading and a close, and the rows made for a thumb, `current` marked
- * where there is one. Following a row puts it away.
+ * The conferences taking input (takesTestimony) in a sheet that rises from
+ * the screen's foot: a light heading and a close, and the rows made for a
+ * thumb, `current` marked where there is one. Following a row puts it away.
  */
 export function ConferenceDrawer({
   conferences,
   current,
-  fold: held,
   show,
   onHide
 }: {
   conferences: ConferenceSummary[]
   current?: string
-  fold?: ClosedFold
   show: boolean
   onHide: () => void
 }) {
   const { t } = useTranslation("conferences")
-  const fold = useFold(held)
-  const listed = railConferences(conferences)
-  const { sitting, past } = listed
+  const active = conferences.filter(takesTestimony)
   const rows = (cs: ConferenceSummary[]) => (
     <ul>
       {cs.map(c => (
@@ -196,17 +170,9 @@ export function ConferenceDrawer({
   return (
     <Drawer show={show} onHide={onHide} placement="bottom">
       <Offcanvas.Header closeButton>
-        <DrawerTitle>{t("index_title")}</DrawerTitle>
+        <DrawerTitle>{t("picker_title")}</DrawerTitle>
       </Offcanvas.Header>
-      <DrawerBody aria-label={t("in_conference")}>
-        {rows(sitting)}
-        {SHOW_PAST_CONFERENCES && past.length > 0 && (
-          <PastFold count={past.length} fold={fold}>
-            {rows(past)}
-          </PastFold>
-        )}
-        <UncoveredNote conferences={listedConferences(listed)} />
-      </DrawerBody>
+      <DrawerBody aria-label={t("in_conference")}>{rows(active)}</DrawerBody>
     </Drawer>
   )
 }
@@ -256,42 +222,33 @@ const Popover = styled.nav`
   && .bills {
     display: none;
   }
-  /* The note on the conferences we don't cover (UncoveredNote), its sides
-     the rows' (above). */
-  && .uncovered-note {
-    margin: 0.75rem 0 0.375rem;
-    padding: 0 1rem;
-  }
 `
 
 /**
- * The rail's conferences in a popover over `anchor` (Popover), its foot 12px
- * over the anchor's top and its left, or with `align` "end" its right, in
- * line with the anchor's; measured again as the page scrolls or the window
- * changes. Put away by a press outside it or on a row, or Escape, which puts
- * the reader back on the anchor. Once drawn, the one being read takes the
- * focus, as the popover hangs off the end of the page where the keyboard
- * would not reach it from the anchor. Shown while it is rendered.
+ * The conferences taking input (takesTestimony) in a popover over `anchor`
+ * (Popover), its foot 12px over the anchor's top and its left, or with
+ * `align` "end" its right, in line with the anchor's; measured again as the
+ * page scrolls or the window changes. Put away by a press outside it or on a
+ * row, or Escape, which puts the reader back on the anchor. Once drawn, the
+ * one being read takes the focus, as the popover hangs off the end of the
+ * page where the keyboard would not reach it from the anchor. Shown while it
+ * is rendered.
  */
 export function ConferencePopover({
   conferences,
   current,
-  fold: held,
   anchor,
   onClose,
   align = "start"
 }: {
   conferences: ConferenceSummary[]
   current?: string
-  fold?: ClosedFold
   anchor: RefObject<HTMLElement | null>
   onClose: () => void
   align?: "start" | "end"
 }) {
   const { t } = useTranslation("conferences")
-  const fold = useFold(held)
-  const listed = railConferences(conferences)
-  const { sitting, past } = listed
+  const active = conferences.filter(takesTestimony)
   const rows = (cs: ConferenceSummary[]) => (
     <ul>
       {cs.map(c => (
@@ -373,13 +330,7 @@ export function ConferencePopover({
   if (!at) return null
   return createPortal(
     <Popover ref={popover} aria-label={t("in_conference")} style={at}>
-      {rows(sitting)}
-      {SHOW_PAST_CONFERENCES && past.length > 0 && (
-        <PastFold count={past.length} fold={fold}>
-          {rows(past)}
-        </PastFold>
-      )}
-      <UncoveredNote conferences={listedConferences(listed)} />
+      {rows(active)}
     </Popover>,
     document.body
   )
@@ -387,19 +338,17 @@ export function ConferencePopover({
 
 /**
  * Where the rail is gone, the way to the other conferences: a floating
- * button that opens the rail's conferences, the one being read marked.
+ * button that opens the conferences taking input, the one being read marked.
  * Below 576px, in a sheet rising from the screen's foot (ConferenceDrawer,
  * SHEET in styles.ts), as the Conference Committees page's button does;
  * wider, in a popover over the button (ConferencePopover).
  */
 export function ConferenceSwitcher({
   conferences,
-  current,
-  fold
+  current
 }: {
   conferences: ConferenceSummary[]
   current: ConferenceSummary
-  fold: ClosedFold
 }) {
   const { t } = useTranslation("conferences")
   const [open, setOpen] = useState(false)
@@ -436,7 +385,6 @@ export function ConferenceSwitcher({
         <ConferenceDrawer
           conferences={conferences}
           current={current.id}
-          fold={fold}
           show={open && sheet}
           onHide={close}
         />
@@ -445,7 +393,6 @@ export function ConferenceSwitcher({
         <ConferencePopover
           conferences={conferences}
           current={current.id}
-          fold={fold}
           anchor={button}
           onClose={close}
         />
