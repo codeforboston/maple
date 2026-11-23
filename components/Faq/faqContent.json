@@ -1,33 +1,29 @@
 {
   "title": "Frequently Asked Questions",
   "breadcrumb": "FAQ",
-  "subhead": "Common questions about MAPLE, testimony, accounts, and privacy.",
+  "subhead": "Common questions about MAPLE, testimony, MAPLE's tools, accounts, and privacy.",
   "ctaHeadline": "Still have a question?",
-  "ctaBody": "If you don't see what you are looking for please reach out with any questions.",
+  "ctaBody": "If you don't see what you're looking for, please reach out with any questions.",
   "ctaEmail": "admin@mapletestimony.org",
   "ctaButton": "Email Us",
   "card1": {
-    "heading": "General",
+    "heading": "Basics",
     "qAndA": [
       {
-        "question": "Is MAPLE associated with the state legislature or government?",
-        "answer": "No - MAPLE is a non-profit initiative of Partners in Democracy - Education, a 501c(3). MAPLE is an independent project, not affiliated with the Massachusetts legislature."
+        "question": "Is MAPLE part of the state legislature or government?",
+        "answer": "No. MAPLE is an independent project of Partners in Democracy - Education, a 501(c)(3) nonprofit. It is not affiliated with the Massachusetts Legislature or any other part of state government."
       },
       {
         "question": "What is MAPLE trying to accomplish?",
-        "answer": "MAPLE seeks to maintain an archive of public testimony, standardize the process for submitting testimony and engaging with the legislature, and foster a digital public space to improve the quality of laws that govern our lives. Note that the MA legislature rarely publishes the testimony it receives, and has exempted itself from public records laws (i.e., FOIA requests)."
+        "answer": "MAPLE helps Massachusetts residents and organizations take part in making state law: finding and following bills, writing and submitting testimony, and reading what others have said. Testimony shared on MAPLE stays in a public, searchable archive. Under the Legislature's joint rules for the 2025–2026 session, committees must make the written testimony they receive public, but each committee decides how, and the Legislature is exempt from the state's public records and open meeting laws. MAPLE aims to make more of the process visible in one place."
       },
       {
-        "question": "What is a “non-profit digital public space”?",
-        "answer": "People generally congregate online in for-profit spaces (e.g., Twitter or Facebook) which are designed to maximize clicks and generate profit. That is well and good for entertainment, but they are poor mechanisms for political energy. MAPLE is designed to maintain civility, promote meaningful engagement, and to channel the knowledge and aspirations of the electorate to our elected representatives."
+        "question": "What is a “nonprofit digital public space”?",
+        "answer": "Most online conversation about politics happens on commercial platforms such as Facebook and X, which are designed to hold attention and earn a profit. MAPLE is a nonprofit space built for a different purpose: civil, substantive discussion of proposed laws, and a direct way to bring residents' knowledge and views to their elected representatives."
       },
       {
-        "question": "Why can’t I see any “follower counts”?",
-        "answer": "We choose not to display follower counts as part of our approach to maintaining a substantive and constructive digital forum. We feel that showing the amount of followers a user has tends to incentivize performative behavior instead of sincerity."
-      },
-      {
-        "question": "How else is MAPLE different from traditional social media?",
-        "answer": "While we hope you share and connect on the website, MAPLE is different from traditional social media in critical ways. We do not sell your data. Our website does not use personalized algorithms, so it presents the same experience for everyone; and this shared experience is the foundation for common ground. We enable prolonged focus on critical issues - the proposed laws that shape our lives. We seek to optimize for civic health; not clicks and engagement."
+        "question": "How else is MAPLE different from social media?",
+        "answer": "We don't sell your data, and we don't rank posts to maximize engagement. You choose which bills, organizations and conference committees to follow, and your newsfeed shows their updates newest first. The focus stays on the proposed laws that shape our lives."
       }
     ]
   },
@@ -35,88 +31,121 @@
     "heading": "Testimony",
     "qAndA": [
       {
-        "question": "How does the testimony function work? Is testimony posted to MAPLE formal public testimony?",
-        "answer": "Posting testimony to MAPLE does not constitute formal public testimony. However, when you publish testimony, MAPLE opens your email client (e.g., Outlook) and populates an email with your testimony, addressed to the chairs of the committee hearing the relevant bill. When you send this email, you are submitting formal public testimony. The primary intended use of MAPLE is to do both; share testimony publicly on the MAPLE platform while also formally submitting it (via email) to the relevant legislators and committee."
+        "question": "Does posting testimony on MAPLE submit it to the Legislature?",
+        "answer": "Not by itself. Publishing on MAPLE shares your testimony publicly on MAPLE. When you publish, MAPLE also drafts an email with your testimony, addressed to the committee hearing the bill, in your own email program. Sending that email is how you submit it to the committee. We can't guarantee that legislators will see testimony that appears only on MAPLE. Committees set their own procedures for receiving testimony, and some hearings also accept it through the Legislature's website, so check the hearing notice on [malegislature.gov](https://malegislature.gov) for the committee's instructions."
       },
       {
-        "question": "Do I need to send an email with my testimony to the legislature?",
-        "answer": "Sending the email that MAPLE populates for you is how you submit formal public testimony. You do not need to send the email with your testimony, however, we cannot guarantee that legislators will see your testimony on MAPLE, while they should consider all formal public testimony that they receive via email."
+        "question": "Will the Legislature make my testimony public?",
+        "answer": "Under the Legislature's joint rules for the 2025–2026 session, committees must make the written testimony they receive publicly available, and each committee decides how. Testimony you publish on MAPLE is public on MAPLE either way."
       },
       {
         "question": "How do I edit my testimony?",
-        "answer": "You can edit your testimonies by visiting your profile, clicking “edit profile”, and then selecting the “testimonies” tab and the testimony that you’d like to edit. Please note, MAPLE maintains and displays previous versions of the testimonies that you’ve published and edited."
+        "answer": "Go to your profile, click “Edit Profile”, open the “Testimonies” tab, and choose the testimony you want to edit. MAPLE keeps and displays earlier versions of testimony you've published and edited."
       },
       {
         "question": "Can I delete my testimony?",
-        "answer": "Generally, we do not allow users to delete testimony. However, we will allow users to delete testimony in select circumstances, such as after accidentally posting testimony with personal or sensitive information, or after posting testimony on the wrong bill. Please email “info@mapletestimony.org” to request a deletion."
+        "answer": "Generally, no. We do allow deletion in some circumstances, such as testimony posted with personal or sensitive information, or posted on the wrong bill. To request a deletion, email [admin@mapletestimony.org](mailto:admin@mapletestimony.org)."
       }
     ]
   },
   "card3": {
-    "heading": "Accounts",
+    "heading": "Following and Updates",
     "qAndA": [
       {
-        "question": "What is the difference between “organization” and “individual” accounts?",
-        "answer": "MAPLE has two user account types: “organization” and “individual”. We verify the legitimacy of organizations (corporations, LLC’s, LP’s, etc.) with the Massachusetts Secretary of State. This helps us fight against “trolling” and “spam”, since we can guarantee the quality and authenticity of organization testimony. Organizations also play a special part in civic life as they speak on behalf of many people, and we therefore emphasize organizational testimony in certain places on MAPLE. In addition, while individual accounts can choose to have a ‘public’ or ‘private’ account (see “Privacy”, below), organization accounts must be ‘public’."
+        "question": "What can I follow on MAPLE?",
+        "answer": "You can follow bills, organizations and conference committees. Updates from what you follow appear in your [newsfeed](/newsfeed), newest first."
       },
       {
-        "question": "Does my group qualify for an organization account on MAPLE?",
-        "answer": "If your group has not formally registered with the Massachusetts Secretary of State, please sign up as an ‘individual’ account. Organizations that have not formally registered with the Secretary of State (student groups, neighborhood groups, etc.), should sign up as an ‘individual’ account. We plan to expand our account types in the future."
+        "question": "Can MAPLE email me updates?",
+        "answer": "Yes. In your profile settings, you can choose to get email updates about the bills and organizations you follow, daily, weekly or monthly, or turn them off."
+      },
+      {
+        "question": "Why can't I see follower counts?",
+        "answer": "Public profiles don't show how many followers someone has. We think follower counts encourage performance rather than sincerity. You can see your own followers on your Edit Profile page."
       }
     ]
   },
   "card4": {
-    "heading": "Privacy",
+    "heading": "Tools and Data",
     "qAndA": [
       {
-        "question": "What does it mean to have a “private” or “public” account?",
-        "answer": "Individuals can set their profile as either “public” or “private”. In the former, the user's name on the site is a clickable hyperlink directing to a profile page that displays all testimony the user has provided, and any bio/social media links added to their profile. In the latter, when the name of the private user appears on the platform, it is not clickable, and they do not have a public profile page."
+        "question": "What are MAPLE's hearing transcripts?",
+        "answer": "MAPLE publishes video and time-stamped, searchable transcripts of Massachusetts legislative committee hearings, where they are available. Transcripts are produced automatically with speech-recognition software, so they can contain errors. Find them on the [Hearings](/hearings) page."
       },
       {
-        "question": "How is my personal information treated?",
-        "answer": "All information our users share on the platform is displayed publicly. We do not sell any user data. We do not maintain the privacy of any user-provided data, other than login credentials. Read more in our Privacy Policy."
+        "question": "What is the Lobbying Explorer?",
+        "answer": "The [Lobbying Explorer](/lobbying) shows who registered to lobby Massachusetts state government, on what, and for whom, as they reported it to the Secretary of the Commonwealth. You can follow links to the original disclosures on the Secretary's website."
       },
       {
-        "question": "Can I delete my account?",
-        "answer": "Since a core function of MAPLE is to preserve and archive testimony, we do not currently allow users to delete their profile."
+        "question": "What are the conference committee pages?",
+        "answer": "When the House and Senate pass different versions of a bill, a conference committee of six legislators negotiates the final text. MAPLE's [conference committee pages](/conferences) show who is negotiating and what is still being worked out, and let you share your input."
       },
       {
-        "question": "Should I use my real name on MAPLE?",
-        "answer": "We encourage you to use your real name, as legislators will assign more weight to your testimony when they can verify you as a constituent. Journalists and researchers may also seek to leverage or share your testimony, and may seek to to contact you for further information on your testimony and experience.  You may choose to exclude certain details from the testimony you post on the MAPLE site; for example, you could exclude your address in a post on MAPLE and still choose to include it in an email you send to your legislators."
+        "question": "Does MAPLE use AI?",
+        "answer": "In some features. See [How MAPLE uses AI](/about/how-maple-uses-ai) for where and how."
       }
     ]
   },
   "card5": {
-    "heading": "Moderation + Community",
+    "heading": "Accounts and Privacy",
     "qAndA": [
       {
-        "question": "How can I report testimony?",
-        "answer": "Every posted testimony has a ‘Report’ link that you can use to flag the testimony for moderation.Simply click ‘report’ to begin the process. You will be asked to provide some basic information about why you are reporting the testimony."
+        "question": "What is the difference between “organization” and “individual” accounts?",
+        "answer": "MAPLE has two account types: organization and individual. We verify organizations (corporations, LLCs, LPs and so on) with the Massachusetts Secretary of the Commonwealth. This helps us fight trolling and spam, and lets readers trust that organization testimony is authentic. Organizations speak for many people, so MAPLE gives their testimony more prominence in some places. Individual accounts can be public or private (see below); organization accounts are always public."
       },
       {
-        "question": "How does moderation work?",
-        "answer": "When a user flags a testimony for moderation, it is surfaced for review by our moderator team. Testimony violating the Community Guidelines in our Code of Conduct may be removed at the discretion of our moderators. The moderators may also act to freeze the account that submitted the offending testimony. The process for our moderator team to review and act may take a few days."
+        "question": "Does my group qualify for an organization account?",
+        "answer": "If your group isn't formally registered with the Secretary of the Commonwealth, such as a student or neighborhood group, please sign up for an individual account. We plan to add more account types in the future."
       },
       {
-        "question": "Who are the moderators?",
-        "answer": "A team of Massachusetts-based moderators trained by members of the MAPLE organization has been entrusted to review each testimony that is published on MAPLE. These moderators include volunteer members of the MAPLE development team."
+        "question": "What does it mean to have a “private” or “public” account?",
+        "answer": "Individuals can make their profile public or private. On a public profile, your name links to a profile page showing all your testimony and any bio or social media links you've added. On a private profile, your name isn't a link and there's no public profile page."
+      },
+      {
+        "question": "How is my personal information treated?",
+        "answer": "Information you share on MAPLE is displayed publicly, and we don't sell user data. Other than login credentials, we don't keep user-provided information private. Read more in our [Privacy Policy](/policies/privacy)."
+      },
+      {
+        "question": "Can I delete my account?",
+        "answer": "Because a core function of MAPLE is to preserve and archive testimony, we don't currently allow users to delete their profiles."
+      },
+      {
+        "question": "Should I use my real name on MAPLE?",
+        "answer": "We encourage it. Legislators give more weight to testimony when they can verify that you're a constituent, and journalists and researchers may want to cite your testimony or contact you about it. You can leave some details out of what you post on MAPLE: for example, you could leave your address out of your MAPLE post and still include it in the email you send to the committee."
       }
     ]
   },
   "card6": {
-    "heading": "The MAPLE Team + Getting Involved",
+    "heading": "Moderation",
+    "qAndA": [
+      {
+        "question": "How can I report testimony?",
+        "answer": "Every published testimony has a “Report” link. Click it, and you'll be asked for some basic information about why you're reporting it."
+      },
+      {
+        "question": "How does moderation work?",
+        "answer": "Our moderators review reported testimony. Testimony that violates our [Code of Conduct](/policies/code-of-conduct) may be removed at the moderators' discretion, and they may also freeze the account that posted it. Review can take a few days."
+      },
+      {
+        "question": "Who are the moderators?",
+        "answer": "A team of Massachusetts-based moderators trained by MAPLE reviews testimony published on MAPLE. The moderators include volunteer members of the MAPLE team."
+      }
+    ]
+  },
+  "card7": {
+    "heading": "About MAPLE",
     "qAndA": [
       {
         "question": "Who is behind MAPLE?",
-        "answer": "We are a collective of open source developers, legal scholars, and policy analysts & advocates seeking to leverage digital technology to improve our capacity and ability to self-govern. The MAPLE platform is a project of the NuLawLab of Northeastern University developed with Code for Boston. We are volunteer-led and operate as an initiative for Partners In Democracy - Education, a 501(c)(3) organization."
+        "answer": "MAPLE is an initiative of Partners in Democracy - Education, a 501(c)(3) nonprofit. It was co-founded by Matthew Victor and Nathan Sanders, developed in partnership with Northeastern University School of Law's NuLawLab, and built in the open with Code for Boston volunteers. Matthew is MAPLE's only staff member; everyone else on the team volunteers. [Meet the team](/about/our-team)."
       },
       {
         "question": "How can I support MAPLE?",
-        "answer": "There are lots of ways to support MAPLE! For details on how to help MAPLE grow, share feedback, volunteer with us, or even contribute financially, please visit "
+        "answer": "There are lots of ways: share feedback, volunteer with us, help MAPLE grow, or contribute financially. See [Support MAPLE](/about/support-maple) for details."
       },
       {
         "question": "Who do I contact to learn more?",
-        "answer": "You can reach our volunteer leadership by email at admin@mapletestimony.org."
+        "answer": "Email us at [admin@mapletestimony.org](mailto:admin@mapletestimony.org)."
       }
     ]
   }
