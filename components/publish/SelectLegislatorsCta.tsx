@@ -1,5 +1,7 @@
 import { Trans, useTranslation } from "next-i18next"
 import { useProfileState } from "../db/profile/redux"
+import { useFlags } from "../featureFlags"
+import { FIND_MY_LEGISLATOR_URL } from "../legislatorLookup"
 import { Loading } from "../legislatorSearch"
 import { External } from "../links"
 import { SelectLegislators } from "../ProfilePage/SelectLegislators"
@@ -16,6 +18,7 @@ function useSelectLegislators() {
 export const SelectLegislatorsCta = ({ className }: { className?: string }) => {
   const { t } = useTranslation("testimony")
   const loading = useSelectLegislators()
+  const { legislatorAddressLookup } = useFlags()
   return loading ? (
     <Loading />
   ) : (
@@ -30,10 +33,14 @@ export const SelectLegislatorsCta = ({ className }: { className?: string }) => {
         <p>
           <Trans
             t={t}
-            i18nKey="submitTestimonyForm.selectLegislators.description"
+            i18nKey={
+              legislatorAddressLookup
+                ? "submitTestimonyForm.selectLegislators.descriptionWithLookup"
+                : "submitTestimonyForm.selectLegislators.description"
+            }
             components={[
               // eslint-disable-next-line react/jsx-key
-              <External href="https://malegislature.gov/Search/FindMyLegislator" />
+              <External href={FIND_MY_LEGISLATOR_URL} />
             ]}
           />
         </p>

@@ -48,7 +48,26 @@
     "yourLegislators": "Your Legislators",
     "politeWords": "Please use the ",
     "findTool": "find your legislator tool",
-    "findToolTip": " and select your State Representative and Senator."
+    "findToolTip": " and select your State Representative and Senator.",
+    "lookupHint": "Enter your address to fill these in, or choose them yourself. You can also use the legislature's <0>find your legislator tool</0>.",
+    "lookup": {
+      "label": "Your home address",
+      "placeholder": "e.g. 24 Beacon St, Boston",
+      "find": "Find my legislators",
+      "searching": "Looking up…",
+      "privacy": "We send your address to MassGIS, the state's mapping office, to find your districts. MAPLE doesn't save it.",
+      "found": "Matched <0>{{address}}</0>. We've filled in your legislators below, and you can still change them.",
+      "vacant": "We don't have a sitting {{chamber}} member for the {{district}} district, so that seat may be vacant.",
+      "house": "House",
+      "senate": "Senate",
+      "choose": "Which of these is your address?",
+      "noneOfThese": "Not listed? Check the street number and town, or choose your legislators below.",
+      "needsTown": "That address is in more than one town. Add your town or ZIP code.",
+      "needsHouseNumber": "Add your street number, for example \"24 Beacon St, Boston\".",
+      "notFound": "We couldn't find that address in Massachusetts. Check the street number and town, or choose your legislators below.",
+      "saveFailed": "We found your legislators but couldn't save them. Try again, or choose them below.",
+      "unavailable": "The state's address lookup isn't answering right now. Try again in a moment, or use the legislature's <0>find your legislator tool</0>."
+    }
   },
   "forms": {
     "generalInfo": "General Information",
