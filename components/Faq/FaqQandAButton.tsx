@@ -1,4 +1,4 @@
-import { useId, useState } from "react"
+import { ReactNode, useId, useState } from "react"
 import AddIcon from "@mui/icons-material/Add"
 import RemoveIcon from "@mui/icons-material/Remove"
 import styled from "styled-components"
@@ -106,16 +106,50 @@ const Item = styled.div`
   }
 `
 
+// Matches a Markdown-style link, [text](href), inside an answer.
+const LINK = /\[([^\]]+)\]\(([^)\s]+)\)/g
+
 /**
- * A single question that expands to reveal its answer. The one about supporting
- * MAPLE links to the support page, so that answer is composed rather than plain
- * text.
+ * Renders an answer, turning [text](href) into links: site paths ("/...") as
+ * internal links, email addresses ("mailto:...") as plain links, and anything
+ * else as an external link.
  */
+const AnswerText = ({ text }: { text: string }) => {
+  const parts: ReactNode[] = []
+  let last = 0
+  for (const match of text.matchAll(LINK)) {
+    const [whole, label, href] = match
+    const start = match.index ?? 0
+    if (start > last) parts.push(text.slice(last, start))
+    if (href.startsWith("/")) {
+      parts.push(
+        <Internal key={start} href={href}>
+          {label}
+        </Internal>
+      )
+    } else if (href.startsWith("mailto:")) {
+      parts.push(
+        <a key={start} href={href}>
+          {label}
+        </a>
+      )
+    } else {
+      parts.push(
+        <a key={start} href={href} target="_blank" rel="noreferrer">
+          {label}
+        </a>
+      )
+    }
+    last = start + whole.length
+  }
+  if (last < text.length) parts.push(text.slice(last))
+  return <>{parts}</>
+}
+
+/** A single question that expands to reveal its answer. */
 export const FaqQandAButton = ({ question, answer }: faqQandAProps) => {
   const [open, setOpen] = useState(false)
   const panelId = useId()
-
-  const isSupport = question === "How can I support MAPLE?"
 
   return (
     <Item>
@@ -142,14 +176,7 @@ export const FaqQandAButton = ({ question, answer }: faqQandAProps) => {
       {/* Kept mounted (hidden when collapsed) so the button's aria-controls
           always references an element that exists in the DOM. */}
       <p className="answer" id={panelId} hidden={!open}>
-        {answer}
-        {isSupport && (
-          <>
-            {" "}
-            {/* eslint-disable-next-line i18next/no-literal-string */}
-            <Internal href="/about/support-maple">this page</Internal>.
-          </>
-        )}
+        <AnswerText text={answer} />
       </p>
     </Item>
   )
