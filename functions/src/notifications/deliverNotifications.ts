@@ -351,7 +351,8 @@ const renderToHtmlString = (digestData: NotificationEmailDigest) => {
 export const deliverNotifications = onSchedule(
   {
     schedule: "47 9 * * *", // 9:47 AM every day
-    timeZone: "America/New_York"
+    timeZone: "America/New_York",
+    memory: "1GiB"
   },
   deliverEmailNotifications
 )

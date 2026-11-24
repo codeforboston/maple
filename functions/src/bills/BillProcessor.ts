@@ -1,6 +1,7 @@
 import { QuerySnapshot } from "@google-cloud/firestore"
 import { onMessagePublished } from "firebase-functions/v2/pubsub"
 import { onSchedule } from "firebase-functions/v2/scheduler"
+import type { MemoryOption } from "firebase-functions/v2"
 import { City } from "../cities/types"
 import { Committee } from "../committees/types"
 import { DocUpdate } from "../common"
@@ -39,9 +40,13 @@ export default abstract class BillProcessor {
   static scheduled(
     Processor: { new (): BillProcessor },
     schedule = "every 24 hours",
-    timeoutSeconds = 120
+    timeoutSeconds = 120,
+    memory?: MemoryOption
   ) {
-    return onSchedule({ schedule, timeoutSeconds }, () => new Processor().run())
+    return onSchedule(
+      { schedule, timeoutSeconds, ...(memory ? { memory } : {}) },
+      () => new Processor().run()
+    )
   }
 
   private async run() {
