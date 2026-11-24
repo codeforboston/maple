@@ -33,11 +33,15 @@ describe("ConferenceHero", () => {
       ).toBeInTheDocument()
   })
 
-  it("links on to the conference it is given, and to the explorer", () => {
+  it("links on to the conference it is given, the tutorial and the explorer", () => {
     render(<ConferenceHero see="/conferences/194/data-privacy" />)
     expect(screen.getByRole("link", { name: /hero.see/ })).toHaveAttribute(
       "href",
       "/conferences/194/data-privacy"
+    )
+    expect(screen.getByRole("link", { name: "tutorial.link" })).toHaveAttribute(
+      "href",
+      "/conferences/tutorial"
     )
     expect(screen.getByRole("link", { name: "explorer" })).toHaveAttribute(
       "href",

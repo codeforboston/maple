@@ -132,7 +132,6 @@
     "title": "The House and Senate versions",
     "overview": "Overview",
     "open": "Open questions",
-
     "match": "Where the bills agree",
     "not_in_bill": "Not in the bill",
     "yours_one": "{{who}} is on this committee, <0>{{name}}</0>.",
@@ -397,5 +396,24 @@
     "on_record": "Once posted, your input becomes part of the public record. You may revise it later; earlier versions remain available.",
     "no_line": "You didn’t add a line of your own. That’s fine: your cosign still counts. A sentence about why it matters to you tends to carry more weight with legislators.",
     "add_line": "Add your voice"
+  },
+  "tutorial": {
+    "link": "Watch the tutorial",
+    "title": "How to use the conference committee pages",
+    "lead": "A short walkthrough of a conference committee’s page: who is negotiating, where the two versions of the bill differ, and how to share your input.",
+    "note": "1 minute 45 seconds. There is no narration: the captions are on screen.",
+    "video_label": "Tutorial video: how to use MAPLE’s conference committee pages",
+    "unsupported": "Your browser can’t play this video. <1>Download the video</1> instead.",
+    "covers": "What the video covers",
+    "steps": [
+      "See who is on the committee: three senators and three representatives, with the chairs marked and their districts on the map.",
+      "Open the House and Senate tab for MAPLE’s overview of the two versions, the open questions and where the bills agree. Click a question to compare what each chamber’s text says.",
+      "Read what people have posted under Public Input. If you agree with someone, cosign their input. A cosign counts as your input on that bill, and you can give input only once.",
+      "Compare the full Senate and House versions side by side under Bill Text.",
+      "To write your own input instead, click Share your input, choose the outcome you want and say what the final bill should include or leave out.",
+      "Before you post, review where your input goes: it is posted publicly on MAPLE, emailed to your state legislators and counted in MAPLE’s weekly email to the committee.",
+      "Click Follow to follow a conference committee."
+    ],
+    "share_description": "A short video on using MAPLE’s conference committee pages: see who is negotiating, what is still open, and how to share your input."
   }
 }

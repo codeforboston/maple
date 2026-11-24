@@ -85,6 +85,7 @@ export const maple = {
     `/legislators/${court}/${memberCode}`,
   conferences: () => `/conferences`,
   conferenceExplorer: () => `/conferences/explorer`,
+  conferenceTutorial: () => `/conferences/tutorial`,
   /** With `cosign`, the page opens that input's cosign panel. */
   conference: ({
     court,
