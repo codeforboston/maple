@@ -24,7 +24,7 @@
       "NSanders": "Co-founder",
       "MKing": "Software Development Lead",
       "GKohut": "UX and Design Lead",
-      "JLichtman": "Front-End Software Developer",
+      "JLichtman": "Full-Stack Software Engineer",
       "MChai": "UX Research Lead",
       "MBaggett": "Front-End Developer"
     },
@@ -33,7 +33,8 @@
     "MKing": "Matt King is a Full-Stack Software Engineer. He received a Bachelor's Degree in Computer Science and Cognitive Psychology from Northeastern University.",
     "GKohut": "Grace Kohut is a design leader and builder focused on creating technology that strengthens human agency and the effectiveness of our public systems. She has over a decade of experience spanning design, front-end development, and product strategy, primarily in K-12 EdTech, where her work has supported educators, students, and families in school systems across the country.",
     "MBaggett": "Merritt Baggett is a freelance React Front-End Web Developer. He received a Bachelor's Degree in Psychology from Virginia Tech.",
-    "MChai": "Minqi Chai is a social scientist and user experience researcher, advocating for human-centered approaches in digital transformation. She received her PhD in Political Science and Government from Cornell University."
+    "MChai": "Minqi Chai is a social scientist and user experience researcher, advocating for human-centered approaches in digital transformation. She received her PhD in Political Science and Government from Cornell University.",
+    "JLichtman": "Janice Lichtman is a Full-Stack Software Engineer who is excited about building technology that serves the public good. She previously taught mathematics at Newton North High School and holds degrees from Vassar College and Harvard University."
   },
   "partners": {
     "title": "Partners"
