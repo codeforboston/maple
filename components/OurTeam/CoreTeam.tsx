@@ -52,6 +52,7 @@ export const CoreTeam = () => {
             <MemberItem
               name="Janice Lichtman"
               role={t("team.roles.JLichtman")}
+              descr={t("team.JLichtman")}
             />
             <Divider />
             <MemberItem
