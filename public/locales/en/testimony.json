@@ -113,7 +113,8 @@
     "chooseStance": "Choose Your Stance",
     "selectLegislators": {
       "title": "Select Your Legislators",
-      "description": "It looks like you haven't selected your legislators. Please use the <0>find your legislator tool</0> and select your State Representative and Senator below."
+      "description": "It looks like you haven't selected your legislators. Please use the <0>find your legislator tool</0> and select your State Representative and Senator below.",
+      "descriptionWithLookup": "It looks like you haven't selected your legislators. Enter your home address below to find your State Representative and Senator, or choose them yourself. You can also use the legislature's <0>find your legislator tool</0>."
     },
     "keepNote": {
       "header": "Keep Note",

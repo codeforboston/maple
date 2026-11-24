@@ -5,6 +5,8 @@ import {
   useMemberSearch,
   useProfile
 } from "../db"
+import { useFlags } from "../featureFlags"
+import { AddressLookup, LegislatorLookupResult } from "../legislatorLookup"
 import { Loading, Search } from "../legislatorSearch"
 import { useTranslation } from "next-i18next"
 
@@ -48,6 +50,14 @@ export const LegislatorForm: React.FC<
   }>
 > = ({ index, profile }) => {
   const { t } = useTranslation("editProfile")
+  const { legislatorAddressLookup } = useFlags()
+  // Both seats are set from the address, a vacancy (null) included, so a
+  // pick from an earlier address doesn't linger.
+  const applyLookup = ({ representative, senator }: LegislatorLookupResult) =>
+    Promise.all([
+      profile.updateRep?.(representative.member),
+      profile.updateSenator?.(senator.member)
+    ])
   const menuPortal = {
     menuPortalTarget: document.body,
     styles: {
@@ -65,6 +75,10 @@ export const LegislatorForm: React.FC<
 
   return (
     <div>
+      {legislatorAddressLookup && (
+        <AddressLookup index={index} onFound={applyLookup} />
+      )}
+
       <Form.Group className="mb-4">
         <Form.Label {...headingLabel}>
           {t("legislator.representative")}

@@ -24,7 +24,9 @@ export const FeatureFlags = z.object({
   conferences: z.boolean().default(false),
   /** Conferences no longer taking input (report filed, enacted, dissolved):
    * off, they appear nowhere and their pages are not found */
-  closedConferences: z.boolean().default(false)
+  closedConferences: z.boolean().default(false),
+  /** Find your legislators by typing your address, above the pickers */
+  legislatorAddressLookup: z.boolean().default(false)
 })
 
 export type FeatureFlags = z.infer<typeof FeatureFlags>
@@ -48,7 +50,8 @@ const defaults: Record<Env, FeatureFlags> = {
     ballotQuestions: false,
     legislators: true,
     conferences: true,
-    closedConferences: true
+    closedConferences: true,
+    legislatorAddressLookup: true
   },
   production: {
     testimonyDiffing: false,
@@ -61,7 +64,8 @@ const defaults: Record<Env, FeatureFlags> = {
     ballotQuestions: false,
     legislators: false,
     conferences: true,
-    closedConferences: true
+    closedConferences: true,
+    legislatorAddressLookup: false
   },
   test: {
     testimonyDiffing: false,
@@ -74,7 +78,8 @@ const defaults: Record<Env, FeatureFlags> = {
     ballotQuestions: false,
     legislators: false,
     conferences: true,
-    closedConferences: true
+    closedConferences: true,
+    legislatorAddressLookup: false
   }
 }
 
