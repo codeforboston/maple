@@ -26,5 +26,11 @@
     "**/*.ts",
     "**/*.tsx"
   ],
-  "exclude": ["node_modules", "analysis", "mcp-server", "functions/lib"]
+  "exclude": [
+    "node_modules",
+    "analysis",
+    "mcp-server",
+    "functions/lib",
+    "chat-agent"
+  ]
 }
