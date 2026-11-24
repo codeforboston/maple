@@ -57,6 +57,7 @@ The following cloud functions are involved in the notification process:
 
    - Sends notifications to users who have a `notificationFrequency` of 'daily' and whose `nextDigestAt` is less than or equal to the current time.
    - Populates the `emails` collection with a notification document.
+   - Prefixes digest subjects with `DEV: ` outside the production Firebase project.
 
 4. **cleanUpNotifications**:
    - Removes notifications from the users' userNotificationFeed collection that are older than 60 days.

@@ -1,6 +1,4 @@
-const PRODUCTION_PROJECT = "digital-testimony-prod"
-
-const isProduction = () => process.env.GCLOUD_PROJECT === PRODUCTION_PROJECT
+import { isProduction } from "../environment"
 
 /** Who an email to real people actually goes to. Outside production no email
  * reaches them: the To line becomes the one configured test address

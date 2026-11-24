@@ -218,5 +218,9 @@ class UpdateBillReferences extends BillProcessor {
   }
 }
 
-export const updateBillReferences =
-  BillProcessor.scheduled(UpdateBillReferences)
+export const updateBillReferences = BillProcessor.scheduled(
+  UpdateBillReferences,
+  "every 24 hours",
+  120,
+  "1GiB"
+)
