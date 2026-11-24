@@ -24,7 +24,8 @@ export const LocalizedContent = (props: {
   />
 )
 
-const PartnerContentCard = ({ src, org }: { src: string; org: string }) => {
+// The logo is optional: without one, the description takes the full width.
+const PartnerContentCard = ({ src, org }: { src?: string; org: string }) => {
   const { t } = useTranslation("partners")
   const orgTitle = t(`${org}.title`)
   return (
@@ -32,11 +33,17 @@ const PartnerContentCard = ({ src, org }: { src: string; org: string }) => {
       <Col>
         <AboutPagesCard title={orgTitle}>
           <Row className="mb-3">
-            <Col className="text-center align-self-center" md={3}>
-              <Image fluid src={src} alt={t("logo", { org: orgTitle })} />
-            </Col>
-            <Col className="align-self-center" md={9}>
-              <p className="lh-sm tracking-wide fs-6 pt-4 pt-md-0">
+            {src ? (
+              <Col className="text-center align-self-center" md={3}>
+                <Image fluid src={src} alt={t("logo", { org: orgTitle })} />
+              </Col>
+            ) : null}
+            <Col className="align-self-center" md={src ? 9 : 12}>
+              <p
+                className={`lh-sm tracking-wide fs-6 ${
+                  src ? "pt-4 pt-md-0" : ""
+                }`}
+              >
                 <LocalizedContent i18nKey={`${org}.content`} />
               </p>
             </Col>
@@ -58,5 +65,10 @@ export const OurPartners = () => (
       src="/northeastern_school_of_law_logo.png"
       org="nulawlab"
     />
+    <PartnerContentCard
+      src="/calmatters-digital-democracy-logo.png"
+      org="calmatters"
+    />
+    <PartnerContentCard src="/hypha-logo.png" org="hypha" />
   </Container>
 )

@@ -30,6 +30,8 @@ export const AdvisoryBoard = () => {
             <MemberItem name="Harlan Weber" descr={t("advisory.HWeber")} />
             <Divider />
             <MemberItem name="Liz Barry" descr={t("advisory.LBarry")} />
+            <Divider />
+            <MemberItem name="Dan Jackson" descr={t("advisory.DJackson")} />
           </AboutPagesCard>
         </Col>
       </Row>
