@@ -8,11 +8,7 @@ import {
 } from "react"
 import { useTranslation } from "next-i18next"
 import { useRouter } from "next/router"
-import {
-  hasReport,
-  isSitting,
-  takesTestimony
-} from "../../functions/src/shared"
+import { hasReport, takesTestimony } from "../../functions/src/shared"
 import { uncosignable } from "../../functions/src/testimony/cosign"
 import styled, { css } from "styled-components"
 import { ConferenceByline } from "./ConferenceByline"
@@ -22,7 +18,7 @@ import { FollowConferenceTopicButton } from "../shared/FollowButton"
 import { useConferenceFollow } from "./FollowConference"
 import { BackChevron, BackToConferences } from "./BackToConferences"
 import { ConferenceSwitcher } from "./ConferencePicker"
-import { ClosedFold, ConferenceRail } from "./ConferenceRail"
+import { ConferenceRail } from "./ConferenceRail"
 import { ConferenceResolution, OutcomeFilter } from "./ConferenceResolution"
 import { ConferenceTabs, TABS_H } from "./ConferenceTabs"
 import { ConferenceText } from "./ConferenceText"
@@ -125,17 +121,11 @@ const COMPACT_WIDTH = `clamp(${COMPACT_MIN}px, calc(${COMPACT_MIN}px + (var(--pa
   (COMPACT_MAX - COMPACT_MIN) / (FULL_RAIL_FROM - COMPACT_NARROW_AT)
 }), ${COMPACT_MAX}px)`
 
-/** The compact rail's sizes, for `scope`: COMPACT_WIDTH across, the names at
- * 13px over their bills in tighter rows. */
+/** The compact rail's width, for `scope`: COMPACT_WIDTH across. Its rows'
+ * sizes are the sidebar's own (SidebarGroups.tsx). */
 const compactRail = (scope: string) => css`
   ${scope} {
     width: ${COMPACT_WIDTH};
-  }
-  ${scope} a {
-    padding: 6px 8px 6px 10px;
-  }
-  ${scope} .name {
-    font-size: 0.8125rem;
   }
 `
 
@@ -434,29 +424,10 @@ const RESOLVED_LABELS = { decided: "tab_resolved" }
  * that the title opens it.
  */
 export function ConferenceDetails(props: ConferencePageProps) {
-  const fold = useClosedFold(props.conference)
   // Keyed so moving to another conference starts clean: the panel's edit hook
   // is fixed to the conference it first mounted on, and would keep filing on
   // the old one.
-  return <Details key={props.conference.id} {...props} fold={fold} />
-}
-
-/**
- * Whether the rail's group of past conferences is open (PastFold,
- * ConferenceRail.tsx), held above the keyed page so it lasts from one
- * conference to the next. It starts open only on a conference in the group,
- * and opens on arriving at one, so the conference being read is never folded
- * away; otherwise it stays as the reader left it.
- */
-function useClosedFold(conference: ConferenceSummary): ClosedFold {
-  const closed = !isSitting(conference)
-  const [open, setOpen] = useState(closed)
-  const [at, setAt] = useState(conference.id)
-  if (at !== conference.id) {
-    setAt(conference.id)
-    if (closed) setOpen(true)
-  }
-  return { open, onToggle: setOpen }
+  return <Details key={props.conference.id} {...props} />
 }
 
 function Details({
@@ -467,9 +438,8 @@ function Details({
   gist,
   differences,
   similarities,
-  testimonyCount,
-  fold
-}: ConferencePageProps & { fold: ClosedFold }) {
+  testimonyCount
+}: ConferencePageProps) {
   // The page, which holds the rail and the main column; useRailLift measures
   // it.
   const top = useRef<HTMLDivElement>(null)
@@ -726,11 +696,7 @@ function Details({
               instead. */}
           <BackToConferences divider notMobile committee />
           <Page ref={top}>
-            <SideRail
-              conferences={conferences}
-              current={conference.id}
-              fold={fold}
-            />
+            <SideRail conferences={conferences} current={conference.id} />
             <Main ref={main}>
               <TitleBand
                 ref={band}
@@ -837,7 +803,6 @@ function Details({
                   <ConferenceSwitcher
                     conferences={conferences}
                     current={conference}
-                    fold={fold}
                   />
                 </SwitcherSlot>
                 {taking &&

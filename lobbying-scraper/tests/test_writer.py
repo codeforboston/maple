@@ -671,6 +671,68 @@ def test_compute_stats_overwrites_stats_doc():
     assert not call[1].get("merge"), "stats doc must not be written with merge"
 
 
+def _write_order_db(log: list):
+    """A stats db that records each single-doc set and batch commit, in order."""
+    db, doc_mocks = _make_stats_db()
+
+    def _document(doc_id):
+        if doc_id not in doc_mocks:
+            doc = doc_mocks[doc_id] = MagicMock()
+            doc.set.side_effect = lambda *_a, **_k: log.append(("set", doc_id))
+        return doc_mocks[doc_id]
+
+    db.collection.return_value.document.side_effect = _document
+    db.batch.return_value.commit.side_effect = lambda: log.append(("commit", None))
+    return db
+
+
+_ORDER_FIXTURES = {
+    "filings": [_fake_doc({"year": 2025, "generalCourt": 194, "billId": "H100",
+                           "clientName": "Juniper Health Alliance",
+                           "clientNameNorm": "JUNIPER HEALTH ALLIANCE",
+                           "entityNameNorm": "LARKSPUR STRATEGIES GROUP",
+                           "position": "Support"})],
+    "registrants": [_fake_doc({"entityName": "Larkspur Strategies Group LLC",
+                               "entityNameNorm": "LARKSPUR STRATEGIES GROUP",
+                               "regType": "Employer", "year": 2025,
+                               "clients": [{"clientName": "Juniper Health Alliance",
+                                            "clientNameNorm": "JUNIPER HEALTH ALLIANCE",
+                                            "compensation": 1000.0}]})],
+}
+
+
+def test_compute_stats_writes_stats_doc_last():
+    """The overview's stats doc is the run's last write, after every bill,
+    client and firm summary it sums up, so a run that fails partway leaves
+    the previous overview in place."""
+    log: list = []
+    db = _write_order_db(log)
+    with patch("writer._iter_collection", side_effect=_stats_iter(**_ORDER_FIXTURES)):
+        compute_stats(db)
+
+    assert log[-1] == ("set", STATS_DOC_ID)
+    assert log.count(("set", STATS_DOC_ID)) == 1
+    # One batch commit each for the bill, client and firm summaries (nothing
+    # to prune here), all before the stats write above.
+    assert log.count(("commit", None)) == 3
+    for parent in ("billSummaries_194", "clientSummaries", "firmSummaries", "clientFilingCounts"):
+        assert ("set", parent) in log[:-1]
+
+
+def test_compute_stats_failed_summary_write_leaves_stats_unwritten():
+    """A summary write that fails (here, the first batch commit) stops the
+    run before the stats doc, so the overview keeps the previous run's
+    figures."""
+    log: list = []
+    db = _write_order_db(log)
+    db.batch.return_value.commit.side_effect = RuntimeError("deadline exceeded")
+    with patch("writer._iter_collection", side_effect=_stats_iter(**_ORDER_FIXTURES)):
+        with pytest.raises(RuntimeError):
+            compute_stats(db)
+
+    assert ("set", STATS_DOC_ID) not in log
+
+
 def test_firestore_size_follows_firestore_rules():
     """Strings are UTF-8 bytes + 1, numbers 8, bools and nulls 1, and each
     map field adds its name's bytes + 1."""

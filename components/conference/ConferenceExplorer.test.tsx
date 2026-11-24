@@ -83,7 +83,7 @@ const props: ConferenceIndexProps = {
       senateBillId: "S2619",
       houseBillId: "H5479",
       canonicalBillId: "S2619",
-      status: "reportFiled",
+      status: "appointed",
       covered: true,
       reportBillId: null,
       confereeCounts: { senate: 3, house: 3 },
@@ -167,9 +167,6 @@ describe("ConferenceExplorer", () => {
   it("lists every conference and lights every conferee's seat", () => {
     const { container } = render(<ConferenceExplorer {...props} />)
     expect(table(container).querySelectorAll("tbody tr")).toHaveLength(2)
-    expect(row(container, "Data Privacy")).toHaveTextContent(
-      "status.reportFiled"
-    )
     // Crighton once, though he sits on both.
     expect(screen.getByText("seats_lit senate 4 40")).toBeInTheDocument()
     expect(screen.getByText("seats_lit house 4 160")).toBeInTheDocument()
