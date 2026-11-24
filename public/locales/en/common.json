@@ -225,6 +225,13 @@
     "about_testimony": "How Testimony Works",
     "writing_testimony": "How to Write Effective Testimony"
   },
+  "head": {
+    "bill_title": "{{billNumber}}: {{title}}",
+    "bill_description": "Read testimony on {{billNumber}}, {{title}}, and submit your own to the Massachusetts Legislature.",
+    "conference_title": "{{name}} Conference Committee ({{bills}})",
+    "conference_description": "See the open questions between the House and Senate versions of {{title}}, who the conferees are, and how to share your input.",
+    "conference_description_not_covered": "See who is negotiating the final version of {{title}} in conference committee."
+  },
   "user_updates": "User Updates",
   "view": "View",
   "view_the_hearing": "View the hearing for this bill, complete with a generative AI transcript.",

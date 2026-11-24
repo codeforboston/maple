@@ -6,6 +6,7 @@ import { GetServerSideProps } from "next"
 import { z } from "zod"
 import { BillDetails } from "../../../components/bill"
 import { Bill } from "../../../components/db"
+import { formatBillId } from "../../../components/formatting"
 import { createPage } from "../../../components/page"
 import { usePublishService } from "../../../components/publish/hooks"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
@@ -15,6 +16,16 @@ const Query = z.object({ court: z.coerce.number(), billId: z.string({}) })
 export default createPage<{ bill: Bill; conference: ConferenceSummary | null }>(
   {
     titleI18nKey: "titles.bill",
+    head: ({ bill }, t) => {
+      const names = {
+        billNumber: formatBillId(bill.id),
+        title: bill.content.Title
+      }
+      return {
+        title: t("head.bill_title", names),
+        description: t("head.bill_description", names)
+      }
+    },
     Page: ({ bill, conference }) => {
       return (
         <>

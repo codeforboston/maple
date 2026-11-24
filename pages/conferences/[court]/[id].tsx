@@ -5,13 +5,32 @@ import { flags } from "components/featureFlags"
 import { ConferenceBetaBanner } from "components/conference/ConferenceBetaBanner"
 import { ConferenceDetails } from "components/conference/ConferenceDetails"
 import { loadConferencePage } from "components/conference/load"
-import { ConferencePageProps } from "components/conference/types"
+import {
+  ConferencePageProps,
+  conferenceName
+} from "components/conference/types"
+import { formatBillId } from "components/formatting"
 import { createPage } from "../../../components/page"
 
 const Query = z.object({ court: z.coerce.number(), id: z.string() })
 
 export default createPage<ConferencePageProps>({
   titleI18nKey: "titles.conference",
+  head: ({ conference }, t) => {
+    const name = conferenceName(conference)
+    const bills = [conference.senateBillId, conference.houseBillId]
+      .map(formatBillId)
+      .join(", ")
+    return {
+      title: t("head.conference_title", { name, bills }),
+      description: t(
+        conference.covered
+          ? "head.conference_description"
+          : "head.conference_description_not_covered",
+        { title: conference.title }
+      )
+    }
+  },
   // The section's beta note across the window, then the conference, which
   // puts the way back to the Conference Committees page over its own column
   // (ConferenceDetails.tsx).
