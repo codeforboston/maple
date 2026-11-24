@@ -53,12 +53,13 @@ export const MainNavbar: React.FC = () => {
   const { pathname } = useRouter()
 
   // Pinned everywhere except the homepage, where the bar scrolls away with the
-  // hero, and the Conference Committees pages (the page, the explorer and
-  // each conference), where it scrolls away, so a conference's own title and
-  // tabs hold at the top, keeping its shadow there.
+  // hero, and the Conference Committees pages (the page, the explorer, the
+  // tutorial and each conference), where it scrolls away, so a conference's
+  // own title and tabs hold at the top, keeping its shadow there.
   const conference =
     pathname === "/conferences" ||
     pathname === "/conferences/explorer" ||
+    pathname === "/conferences/tutorial" ||
     pathname === "/conferences/[court]/[id]"
   const pinned = pathname !== "/" && !conference
   // A shadow under the bar everywhere but the homepage, on desktop and

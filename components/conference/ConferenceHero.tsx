@@ -458,7 +458,7 @@ const SeeNone = styled.button`
 
 /* A link beside the button rather than a second button, at the button's
    0.9375rem bold. */
-const ExplorerLink = styled(Internal)`
+const sideLinkStyle = css`
   display: inline-flex;
   align-items: center;
   font-size: 0.9375rem;
@@ -471,6 +471,15 @@ const ExplorerLink = styled(Internal)`
   &:focus-visible {
     color: var(--maple-brand-primary-strong);
   }
+`
+
+/** The tutorial video's page (ConferenceTutorial.tsx), at every width. */
+const TutorialLink = styled(Internal)`
+  ${sideLinkStyle}
+`
+
+const ExplorerLink = styled(Internal)`
+  ${sideLinkStyle}
 
   /* Not in the mobile layout, where the explorer isn't available
      (ConferenceExplorer.tsx). */
@@ -484,7 +493,7 @@ const ExplorerLink = styled(Internal)`
  * Conference Committees page. `see` is the conference the button opens, or
  * null where the court has none yet, the button there but doing nothing; on
  * mobile the button lists `conferences` to choose from instead. The
- * explorer is reached from here too.
+ * tutorial and the explorer are reached from here too.
  */
 export function ConferenceHero({
   see,
@@ -590,9 +599,12 @@ export function ConferenceHero({
             }}
           />
         </p>
-        {/* The explorer as a link first, then the way on to a conference
-            as the button, at the right. */}
+        {/* The tutorial and the explorer as links first, then the way on to
+            a conference as the button, at the right. */}
         <div className="actions">
+          <TutorialLink href={maple.conferenceTutorial()}>
+            {t("tutorial.link")}
+          </TutorialLink>
           <ExplorerLink href={maple.conferenceExplorer()}>
             {t("explorer")}
           </ExplorerLink>
