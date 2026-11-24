@@ -1,12 +1,13 @@
-import { buildDigestData } from "./deliverNotifications"
+import { buildDigestData, deliverNotifications } from "./deliverNotifications"
 import { CONFERENCE_STANCES } from "../shared/conferences"
 import { Timestamp } from "../firebase"
 
 // Mock firebase module
 jest.mock("../firebase", () => ({
-  auth: {},
+  auth: { getUser: jest.fn() },
   db: {
-    collection: jest.fn()
+    collection: jest.fn(),
+    batch: jest.fn()
   },
   Timestamp: {
     fromDate: (d: Date) => ({ toDate: () => d, seconds: d.getTime() / 1000 }),
@@ -16,8 +17,13 @@ jest.mock("../firebase", () => ({
 
 // Mock helpers
 jest.mock("./helpers", () => ({
+  convertHtmlToText: jest.fn(() => "digest"),
   getNotificationStartDate: jest.fn((_freq, now) => now),
   getNextDigestAt: jest.fn()
+}))
+
+jest.mock("handlebars", () => ({
+  compile: jest.fn(() => () => "digest")
 }))
 
 // Mock handlebars helpers
@@ -454,5 +460,92 @@ describe("CONFERENCE_STANCES", () => {
     const { input } = require("../../../public/locales/en/conferences.json")
     for (const [position, stance] of Object.entries(CONFERENCE_STANCES))
       expect(stance).toBe(input.position[position].long)
+  })
+
+  describe("deliverNotifications", () => {
+    const originalProject = process.env.GCLOUD_PROJECT
+
+    afterEach(() => {
+      if (originalProject === undefined) delete process.env.GCLOUD_PROJECT
+      else process.env.GCLOUD_PROJECT = originalProject
+      jest.clearAllMocks()
+    })
+
+    it.each([
+      ["digital-testimony-prod", "Your Notifications Digest"],
+      ["digital-testimony-dev", "DEV: Your Notifications Digest"],
+      [undefined, "DEV: Your Notifications Digest"]
+    ])(
+      "queues the correct subject for project %s",
+      async (project, subject) => {
+        if (project === undefined) delete process.env.GCLOUD_PROJECT
+        else process.env.GCLOUD_PROJECT = project
+
+        const profile = {
+          id: "user1",
+          ref: {},
+          data: () => ({ notificationFrequency: "Daily" })
+        }
+        const profiles = {
+          where: jest.fn(),
+          limit: jest.fn(),
+          startAfter: jest.fn(),
+          get: jest
+            .fn()
+            .mockResolvedValueOnce({ empty: false, size: 1, docs: [profile] })
+            .mockResolvedValueOnce({ empty: true, size: 0, docs: [] })
+        }
+        profiles.where.mockReturnValue(profiles)
+        profiles.limit.mockReturnValue(profiles)
+        profiles.startAfter.mockReturnValue(profiles)
+
+        const notifications = {
+          where: jest.fn(),
+          get: jest.fn().mockResolvedValue({
+            docs: [
+              makeNotificationDoc({
+                isBillMatch: true,
+                billId: "H1234",
+                header: "A Bill",
+                court: "193",
+                position: "endorse"
+              })
+            ]
+          })
+        }
+        notifications.where.mockReturnValue(notifications)
+        const emailRef = {}
+        const batch = {
+          create: jest.fn(),
+          update: jest.fn(),
+          commit: jest.fn().mockResolvedValue(undefined)
+        }
+        const mockAuth = require("../firebase").auth
+        mockAuth.getUser.mockResolvedValue({
+          email: "reader@example.org",
+          emailVerified: true
+        })
+        mockDb.batch.mockReturnValue(batch)
+        mockDb.collection.mockImplementation((name: string) => {
+          if (name === "profiles") return profiles
+          if (name === "users/user1/userNotificationFeed") return notifications
+          if (name === "emails") return { doc: () => emailRef }
+          throw new Error(`Unexpected collection: ${name}`)
+        })
+
+        await deliverNotifications.run({
+          scheduleTime: new Date().toISOString()
+        })
+
+        expect(batch.create).toHaveBeenCalledWith(
+          emailRef,
+          expect.objectContaining({
+            to: ["reader@example.org"],
+            message: expect.objectContaining({ subject })
+          })
+        )
+        expect(batch.commit).toHaveBeenCalledTimes(1)
+      }
+    )
   })
 })

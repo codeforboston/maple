@@ -22,6 +22,7 @@ import { prepareHandlebars } from "../email/handlebarsHelpers"
 import { Frequency } from "../auth/types"
 import { ConferencePosition } from "../testimony/types"
 import { CONFERENCE_STANCES } from "../shared/conferences"
+import { isProduction } from "../environment"
 
 const PROFILE_BATCH_SIZE = 50
 const NUM_BILLS_TO_DISPLAY = 4
@@ -127,7 +128,9 @@ const deliverEmailNotifications = async () => {
         const email = {
           to: [verifiedEmail],
           message: {
-            subject: "Your Notifications Digest",
+            subject: `${
+              isProduction() ? "" : "DEV: "
+            }Your Notifications Digest`,
             text: convertHtmlToText(htmlString), // TODO: Just make a text template for this
             html: htmlString
           },
