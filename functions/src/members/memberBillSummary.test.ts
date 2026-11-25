@@ -10,9 +10,15 @@ const makeBill = (
 ): MemberBillSummaryInput => ({
   id,
   content: { Title: `Title ${id}` },
-  topics: [primaryTopic, subtopic]
-    .filter((topic): topic is string => !!topic)
-    .map(topic => ({ topic }))
+  topics: [
+    primaryTopic
+      ? { category: primaryTopic, topic: subtopic ?? "" }
+      : undefined,
+    subtopic ? { category: primaryTopic ?? "", topic: subtopic } : undefined
+  ].filter(
+    (topic): topic is { category: string; topic: string } =>
+      topic !== undefined && topic.category !== ""
+  )
 })
 
 describe("buildMemberBillSummary", () => {
@@ -42,6 +48,7 @@ describe("buildMemberBillSummary", () => {
     const summary = buildMemberBillSummary(sponsoredIds, cosponsoredIds, bills)
 
     expect(summary.all.count).toBe(8)
+    expect(summary.schemaVersion).toBe(2)
     expect(summary.sponsored.count).toBe(6)
     expect(summary.cosponsored.count).toBe(2)
     expect(summary.recentSponsoredBills).toEqual([
@@ -70,6 +77,34 @@ describe("buildMemberBillSummary", () => {
         count: 1,
         subtopics: [{ topic: "Voting", count: 1 }]
       }
+    ])
+  })
+
+  it("counts each bill once per category and each category-topic pair once", () => {
+    const summary = buildMemberBillSummary(
+      ["HD1", "HD2"],
+      [],
+      [
+        {
+          id: "HD1",
+          content: { Title: "First" },
+          topics: [
+            { category: "Health", topic: "Care" },
+            { category: "Health", topic: "Care" },
+            { category: "Housing", topic: "Rent" }
+          ]
+        },
+        {
+          id: "HD2",
+          content: { Title: "Second" },
+          topics: [{ category: "Health", topic: "Care" }]
+        }
+      ]
+    )
+
+    expect(summary.all.topics).toEqual([
+      { topic: "Health", count: 2, subtopics: [{ topic: "Care", count: 2 }] },
+      { topic: "Housing", count: 1, subtopics: [{ topic: "Rent", count: 1 }] }
     ])
   })
 })
