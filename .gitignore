@@ -6,6 +6,8 @@
 .pnp.js
 .yarn*
 package-lock.json
+# mcp-server installs with npm (see its Dockerfile), so its lockfile is kept
+!/mcp-server/package-lock.json
 
 # testing
 /coverage

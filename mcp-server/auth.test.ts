@@ -63,7 +63,10 @@ describe("hybridAuthMiddleware", () => {
     await hybridAuthMiddleware(req as Request, res as Response, next)
 
     expect(status).toHaveBeenCalledWith(401)
-    expect(json).toHaveBeenCalledWith({ error: "Unauthorized: Missing token" })
+    expect(json).toHaveBeenCalledWith({
+      error: "Unauthorized: Missing token",
+      help: expect.stringContaining("https://mapletestimony.org/learn/ai-tools")
+    })
     expect(next).not.toHaveBeenCalled()
   })
 
@@ -74,7 +77,10 @@ describe("hybridAuthMiddleware", () => {
     await hybridAuthMiddleware(req as Request, res as Response, next)
 
     expect(status).toHaveBeenCalledWith(401)
-    expect(json).toHaveBeenCalledWith({ error: "Unauthorized: Missing token" })
+    expect(json).toHaveBeenCalledWith({
+      error: "Unauthorized: Missing token",
+      help: expect.stringContaining("https://mapletestimony.org/learn/ai-tools")
+    })
     expect(next).not.toHaveBeenCalled()
   })
 
@@ -146,7 +152,10 @@ describe("hybridAuthMiddleware", () => {
     await hybridAuthMiddleware(req as Request, res as Response, next)
 
     expect(status).toHaveBeenCalledWith(401)
-    expect(json).toHaveBeenCalledWith({ error: "Unauthorized: Invalid token" })
+    expect(json).toHaveBeenCalledWith({
+      error: "Unauthorized: Invalid token",
+      help: expect.stringContaining("https://mapletestimony.org/learn/ai-tools")
+    })
     expect(next).not.toHaveBeenCalled()
   })
 
@@ -166,7 +175,10 @@ describe("hybridAuthMiddleware", () => {
 
     // Should be rejected — no Bearer header present
     expect(status).toHaveBeenCalledWith(401)
-    expect(json).toHaveBeenCalledWith({ error: "Unauthorized: Missing token" })
+    expect(json).toHaveBeenCalledWith({
+      error: "Unauthorized: Missing token",
+      help: expect.stringContaining("https://mapletestimony.org/learn/ai-tools")
+    })
     expect(next).not.toHaveBeenCalled()
   })
 })

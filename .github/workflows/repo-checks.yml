@@ -49,6 +49,30 @@ jobs:
         if: always()
         run: yarn check-types
 
+  check_mcp_server:
+    name: MCP Server
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mcp-server
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: mcp-server/package-lock.json
+      - run: npm ci
+
+      - name: Types
+        if: always()
+        run: npx tsc --noEmit
+
+      - name: Tests
+        if: always()
+        run: npm test
+
   integration_tests:
     name: Integration Tests
     runs-on: ubuntu-latest
