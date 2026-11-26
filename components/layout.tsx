@@ -1,5 +1,3 @@
-import { useTranslation } from "next-i18next"
-import Head from "next/head"
 import React, { FC, useEffect, useState } from "react"
 import { signOutAndRedirectToHome, useAuth } from "./auth"
 import AuthModal from "./auth/AuthModal"
@@ -14,24 +12,14 @@ export const PageContainer: FC<React.PropsWithChildren<unknown>> = ({
 }
 
 /**
- * Props for the Layout component.
- *
- * @property {string} [titleI18nKey] - The internationalization key for the title.
- * This key must be defined in the `common.json` namespace.
+ * The navbar, footer and auth modal around every page. The page's title and
+ * other head tags are set by `PageHead` (see `applyLayout`), because nothing
+ * here reaches the server-rendered HTML.
  */
-export type LayoutProps = {
-  titleI18nKey?: string
-}
-
-export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
-  children,
-  titleI18nKey
+export const Layout: React.FC<React.PropsWithChildren<unknown>> = ({
+  children
 }) => {
   const { authenticated, user } = useAuth()
-  const { t } = useTranslation("common")
-  let title = titleI18nKey
-    ? `${t(titleI18nKey)} | ${t("maple_abbr")}: ${t("maple_fullName")}`
-    : `${t("maple_abbr")}: ${t("maple_fullName")}`
 
   // isClient used to prevent hydration issues: quite possibly better solutions exist
 
@@ -46,10 +34,6 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
     <>
       {isClient ? (
         <>
-          <Head>
-            <title>{title}</title>
-            <link rel="icon" href="/favicon.ico" />
-          </Head>
           <FollowContext.Provider value={{ followStatus, setFollowStatus }}>
             <PageContainer>
               <a href="#main-content" className="skip-link">
