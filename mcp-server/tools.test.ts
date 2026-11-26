@@ -1,4 +1,11 @@
-import { shapeBill, shapeTestimony, shapeBallotQuestion } from "./tools"
+import {
+  shapeBill,
+  shapeTestimony,
+  shapeBallotQuestion,
+  shapeBillDetail,
+  normalizeBillId,
+  toIsoDate
+} from "./tools"
 
 /** Build a minimal fake Firestore document snapshot */
 function makeDoc(id: string, data: Record<string, any>, distance?: number) {
@@ -292,6 +299,8 @@ describe("shapeBallotQuestion", () => {
 /** Bills per court, and every field list a query selected. */
 let mockBills: Record<number, Record<string, any>[]> = {}
 const mockSelects: string[][] = []
+/** Bills by "court/id", for single-document reads. */
+let mockBillsById: Record<string, Record<string, any>> = {}
 
 // Hoisted by jest above the imports; only the shape tests above load ./tools
 // without calling Firestore.
@@ -317,7 +326,13 @@ function mockCollection(path: string) {
     select: (...fields: string[]) => {
       mockSelects.push(fields)
       return { ...result(docs.length), limit: (n: number) => result(n) }
-    }
+    },
+    doc: (id: string) => ({
+      get: async () => {
+        const data = mockBillsById[`${path.split("/")[1]}/${id}`]
+        return { id, exists: !!data, data: () => data }
+      }
+    })
   }
 }
 
@@ -399,5 +414,233 @@ describe("list tools", () => {
     await listSponsors({ court: 194 })
     expect(mockSelects).toHaveLength(2)
     now.mockRestore()
+  })
+})
+
+// ---------------------------------------------------------------------------
+// get_bill
+// ---------------------------------------------------------------------------
+
+const timestamp = (iso: string) => ({ toDate: () => new Date(iso) })
+
+/** Shaped like a stored bill: content is the legislature's API document. */
+const storedBill = () => ({
+  id: "H100",
+  court: 194,
+  content: {
+    Title: "An Act relating to community gardens",
+    BillNumber: "H100",
+    DocketNumber: "HD3908",
+    GeneralCourtNumber: 194,
+    PrimarySponsor: { Id: "AB1", Name: "Alex Brook", Type: 1 },
+    Cosponsors: [
+      { Id: "AB1", Name: "Alex Brook", Type: 1 },
+      { Id: "CD2", Name: "Casey Dale", Type: 1 }
+    ],
+    JointSponsor: null,
+    LegislationTypeName: "Bill",
+    Pinslip: "By Representative Brook, a petition for community gardens.",
+    DocumentText: "SECTION 1. Community gardens shall be encouraged.",
+    CommitteeRecommendations: [
+      {
+        Action: "Accompanied",
+        FiscalAmounts: [],
+        Committee: { CommitteeCode: "J33", GeneralCourtNumber: 194 },
+        Votes: []
+      }
+    ],
+    RollCalls: [],
+    Attachments: []
+  },
+  history: [
+    { Date: "2025-01-16T10:00:00", Branch: "House", Action: "Filed" },
+    {
+      Date: "2025-02-27T10:00:00",
+      Branch: "Joint",
+      Action: "Referred to the committee on Agriculture"
+    }
+  ],
+  currentCommittee: { id: "J33", name: "Joint Committee on Agriculture" },
+  hearingIds: ["5120"],
+  nextHearingAt: timestamp("1970-01-01T00:00:00Z"),
+  fetchedAt: timestamp("2026-11-25T08:00:00Z"),
+  summary: "An AI summary.",
+  topics: [{ category: "Agriculture", topic: "Urban agriculture" }],
+  similar: [],
+  vector_embedding: [0.1, 0.2]
+})
+
+describe("normalizeBillId", () => {
+  it.each([
+    ["H100", "H100"],
+    ["H.100", "H100"],
+    ["H 100", "H100"],
+    ["h-100", "H100"],
+    [" s.2 ", "S2"],
+    ["H.0100", "H100"],
+    ["HD3908", "HD3908"]
+  ])("reads %p as %p", (input, id) => {
+    expect(normalizeBillId(input)).toBe(id)
+  })
+
+  it.each(["", "100", "H.", "H.100a", "clean water"])("rejects %p", input => {
+    expect(normalizeBillId(input)).toBeNull()
+  })
+})
+
+describe("toIsoDate", () => {
+  it("converts a Firestore Timestamp", () => {
+    expect(toIsoDate(timestamp("2026-11-25T08:00:00Z"))).toBe(
+      "2026-11-25T08:00:00.000Z"
+    )
+  })
+
+  it("treats the scraper's epoch placeholder and missing values as null", () => {
+    expect(toIsoDate(timestamp("1970-01-01T00:00:00Z"))).toBeNull()
+    expect(toIsoDate(undefined)).toBeNull()
+    expect(toIsoDate(null)).toBeNull()
+  })
+})
+
+describe("shapeBillDetail", () => {
+  const shape = (includeFullText = false) =>
+    shapeBillDetail(makeDoc("H100", storedBill()), includeFullText) as any
+
+  it("keeps the legislature's record", () => {
+    const bill = shape()
+    expect(bill).toMatchObject({
+      found: true,
+      id: "H100",
+      displayNumber: "H.100",
+      court: 194,
+      docketNumber: "HD3908",
+      title: "An Act relating to community gardens",
+      legislationType: "Bill",
+      primarySponsor: { id: "AB1", name: "Alex Brook" },
+      jointSponsor: null,
+      committeeRecommendations: [
+        { committeeCode: "J33", action: "Accompanied" }
+      ],
+      hearingIds: ["5120"]
+    })
+  })
+
+  it("lists cosponsors as the legislature does, including the primary sponsor", () => {
+    expect(shape().cosponsors).toEqual([
+      { id: "AB1", name: "Alex Brook" },
+      { id: "CD2", name: "Casey Dale" }
+    ])
+  })
+
+  it("gives the full history, with the last action as latestAction", () => {
+    const bill = shape()
+    expect(bill.history).toHaveLength(2)
+    expect(bill.latestAction).toEqual({
+      date: "2025-02-27T10:00:00",
+      branch: "Joint",
+      action: "Referred to the committee on Agriculture"
+    })
+    expect(bill.status).toBeUndefined()
+  })
+
+  it("links the bill and its committee", () => {
+    const bill = shape()
+    expect(bill.links).toEqual({
+      maple: "https://mapletestimony.org/bills/194/H100",
+      malegislature: "https://malegislature.gov/Bills/194/H100"
+    })
+    expect(bill.currentCommittee.url).toBe(
+      "https://malegislature.gov/Committees/Detail/J33"
+    )
+  })
+
+  it("dates the record by when MAPLE last fetched it", () => {
+    const bill = shape()
+    expect(bill.asOf).toBe("2026-11-25T08:00:00.000Z")
+    expect(bill.text.asOf).toBe("2026-11-25T08:00:00.000Z")
+    expect(bill.sources).toEqual([
+      {
+        name: "malegislature.gov, refreshed daily by MAPLE",
+        url: "https://malegislature.gov/Bills/194/H100",
+        fetchedAt: "2026-11-25T08:00:00.000Z"
+      }
+    ])
+    expect(bill.nextHearingAt).toBeNull()
+  })
+
+  it("leaves out the text by default but says how long it is", () => {
+    const { text } = shape()
+    expect(text.documentText).toBeUndefined()
+    expect(text.available).toBe(true)
+    expect(text.length).toBe(
+      "SECTION 1. Community gardens shall be encouraged.".length
+    )
+  })
+
+  it("includes the text when asked", () => {
+    expect(shape(true).text.documentText).toBe(
+      "SECTION 1. Community gardens shall be encouraged."
+    )
+  })
+
+  it("says when there is no text", () => {
+    const data = storedBill()
+    delete (data.content as any).DocumentText
+    const { text } = shapeBillDetail(makeDoc("H100", data), true) as any
+    expect(text).toMatchObject({ available: false, length: 0 })
+    expect(text.note).toMatch(/No text was available/)
+  })
+
+  it("keeps MAPLE's AI-written fields apart from the record", () => {
+    const bill = shape()
+    expect(bill.aiGenerated).toMatchObject({
+      summary: "An AI summary.",
+      topics: [{ category: "Agriculture", topic: "Urban agriculture" }]
+    })
+    expect(bill.summary).toBeUndefined()
+    expect(bill.topics).toBeUndefined()
+    expect(bill.vector_embedding).toBeUndefined()
+  })
+})
+
+describe("get_bill", () => {
+  beforeEach(() => {
+    delete process.env.CURRENT_COURT
+    mockBills = { 193: [bill("Old")], 194: [bill("Current")] }
+    mockBillsById = { "194/H100": storedBill() }
+  })
+
+  it("finds a bill however its number is written", async () => {
+    const getBill = loadTool("get_bill")
+    for (const billId of ["H.100", "h 100", "H100"]) {
+      expect(await getBill({ billId, court: 194 })).toMatchObject({
+        found: true,
+        id: "H100"
+      })
+    }
+  })
+
+  it("defaults to the current court", async () => {
+    expect(await loadTool("get_bill")({ billId: "H.100" })).toMatchObject({
+      found: true,
+      court: 194
+    })
+  })
+
+  it("says so when the bill isn't in that court", async () => {
+    expect(await loadTool("get_bill")({ billId: "H.100", court: 193 })).toEqual(
+      {
+        found: false,
+        billId: "H100",
+        court: 193,
+        message: "No bill H.100 in the 193rd General Court."
+      }
+    )
+  })
+
+  it("says so when the input isn't a bill number", async () => {
+    expect(
+      await loadTool("get_bill")({ billId: "clean water", court: 194 })
+    ).toMatchObject({ found: false, billId: "clean water" })
   })
 })

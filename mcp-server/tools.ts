@@ -253,6 +253,91 @@ export function shapeBallotQuestion(
   return shaped
 }
 
+/**
+ * Shape a raw Firestore bill document into the full record get_bill returns.
+ *
+ * Unlike shapeBill (for search results), keeps cosponsors, joint sponsor,
+ * committee recommendations and the full history, and adds canonical links
+ * and the date MAPLE last refreshed the bill. Fields written by MAPLE's AI
+ * (summary, topics) are kept apart under aiGenerated so they aren't mistaken
+ * for the legislature's record. There is no status field: the legislature's
+ * API has none, so the latest action stands in for it.
+ */
+export function shapeBillDetail(doc: any, includeFullText: boolean): object {
+  const data = doc.data()
+  const content = data.content ?? {}
+  const court: number = data.court ?? content.GeneralCourtNumber ?? null
+  const history: any[] = data.history ?? []
+  const fetchedAt = toIsoDate(data.fetchedAt)
+  const links = billLinks(court, doc.id)
+  const documentText: string | null = content.DocumentText ?? null
+
+  const member = (m: any) =>
+    m ? { id: m.Id ?? null, name: m.Name ?? null } : null
+  const action = (a: any) => ({
+    date: a.Date ?? null,
+    branch: a.Branch ?? null,
+    action: a.Action ?? null
+  })
+
+  return {
+    found: true,
+    id: doc.id,
+    displayNumber: displayBillNumber(doc.id),
+    court,
+    docketNumber: content.DocketNumber ?? null,
+    title: content.Title ?? null,
+    legislationType: content.LegislationTypeName ?? null,
+    pinslip: content.Pinslip ?? null,
+    primarySponsor: member(content.PrimarySponsor),
+    jointSponsor: member(content.JointSponsor),
+    // As malegislature.gov lists them, which includes the primary sponsor;
+    // MAPLE's cosponsorCount counts the same list.
+    cosponsors: ((content.Cosponsors ?? []) as any[]).map(member),
+    currentCommittee: data.currentCommittee
+      ? {
+          id: data.currentCommittee.id,
+          name: data.currentCommittee.name,
+          url: `${MALEGISLATURE_SITE}/Committees/Detail/${data.currentCommittee.id}`
+        }
+      : null,
+    committeeRecommendations: (
+      (content.CommitteeRecommendations ?? []) as any[]
+    ).map(r => ({
+      committeeCode: r.Committee?.CommitteeCode ?? null,
+      action: r.Action ?? null
+    })),
+    latestAction: history.length ? action(history[history.length - 1]) : null,
+    history: history.map(action),
+    hearingIds: data.hearingIds ?? [],
+    nextHearingAt: toIsoDate(data.nextHearingAt),
+    text: {
+      available: documentText != null,
+      length: documentText?.length ?? 0,
+      asOf: fetchedAt,
+      note:
+        documentText == null
+          ? "No text was available from the legislature's API or the bill's PDF. See the malegislature.gov link."
+          : "The legislature's API gives no version or date for this text; asOf is when MAPLE last fetched it.",
+      ...(includeFullText && { documentText })
+    },
+    aiGenerated: {
+      summary: data.summary ?? null,
+      topics: data.topics ?? [],
+      note: "Written by MAPLE's AI from the bill text, not by the legislature."
+    },
+    links,
+    asOf: fetchedAt,
+    sources: [
+      {
+        name: "malegislature.gov, refreshed daily by MAPLE",
+        url: links.malegislature,
+        fetchedAt
+      }
+    ]
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Schema definitions
 // ---------------------------------------------------------------------------
@@ -345,6 +430,89 @@ const ListSchema = {
     .describe(
       "Legislature session (General Court) number. Defaults to the current session."
     )
+}
+
+const GetBillSchema = {
+  billId: z
+    .string()
+    .describe(
+      "The bill number, written any common way: 'H.100', 'H 100', 'h100' or 'S2'."
+    ),
+  court: z
+    .number()
+    .optional()
+    .describe(
+      "Legislature session (General Court) number. Defaults to the current session. Bill numbers restart each session, so pass this for a bill from an earlier one."
+    ),
+  includeFullText: z
+    .boolean()
+    .optional()
+    .default(false)
+    .describe(
+      "Include the bill's full text. Check text.length first: some bills, such as the budget, run to hundreds of pages."
+    )
+}
+
+// ---------------------------------------------------------------------------
+// Exact-lookup helpers
+// ---------------------------------------------------------------------------
+
+const MAPLE_SITE = "https://mapletestimony.org"
+const MALEGISLATURE_SITE = "https://malegislature.gov"
+
+/**
+ * The document id MAPLE stores a bill under ("H100") for the ways people write
+ * bill numbers: "H.100", "H 100", "h-100". Null when the input isn't a chamber
+ * prefix followed by a number.
+ */
+export function normalizeBillId(input: string): string | null {
+  const match = /^\s*([A-Za-z]+)[\s.-]*0*(\d+)\s*$/.exec(input)
+  return match ? `${match[1].toUpperCase()}${match[2]}` : null
+}
+
+/** "H100" as it's usually written: "H.100" (formatBillId on the website). */
+function displayBillNumber(id: string): string {
+  return id.replace(/^(\D+)(\d+)$/, "$1.$2")
+}
+
+/** 193 → "193rd", 194 → "194th" */
+function ordinal(n: number): string {
+  const suffix =
+    n % 100 >= 11 && n % 100 <= 13
+      ? "th"
+      : ({ 1: "st", 2: "nd", 3: "rd" } as Record<number, string>)[n % 10] ??
+        "th"
+  return `${n}${suffix}`
+}
+
+export function billLinks(court: number, id: string) {
+  return {
+    maple: `${MAPLE_SITE}/bills/${court}/${id}`,
+    malegislature: `${MALEGISLATURE_SITE}/Bills/${court}/${id}`
+  }
+}
+
+/**
+ * A Firestore Timestamp as an ISO 8601 string, since a raw Timestamp
+ * serializes as {_seconds, _nanoseconds}. The bill scraper writes the epoch
+ * for "no value" (MISSING_TIMESTAMP in functions/src/bills/types.ts), so that
+ * is null too.
+ */
+export function toIsoDate(value: any): string | null {
+  const date =
+    typeof value?.toDate === "function"
+      ? value.toDate()
+      : value instanceof Date
+      ? value
+      : null
+  if (typeof value === "string") return value
+  return date && date.getTime() !== 0 ? date.toISOString() : null
+}
+
+function jsonResult(value: unknown) {
+  return {
+    content: [{ type: "text" as const, text: JSON.stringify(value, null, 2) }]
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -685,6 +853,47 @@ export function registerTools(server: McpServer) {
           }
         ]
       }
+    }
+  )
+
+  // -------------------------------------------------------------------------
+  // get_bill
+  // -------------------------------------------------------------------------
+  server.registerTool(
+    "get_bill",
+    {
+      description:
+        "Look up one bill by its number and get its full record: title, docket number, sponsors and cosponsors (as malegislature.gov lists them, including the primary sponsor), current committee, committee recommendations, latest action and full history, hearings, canonical links, and when MAPLE last refreshed it from the legislature. There is no status field; use latestAction. MAPLE's AI summary and topic tags are under aiGenerated. Returns found: false, never a guess, when there is no such bill. Defaults to the current General Court session.",
+      inputSchema: GetBillSchema
+    },
+    async ({ billId, court, includeFullText }: any) => {
+      court ??= await currentCourt()
+      const id = normalizeBillId(billId)
+      if (!id) {
+        return jsonResult({
+          found: false,
+          billId,
+          court,
+          message: `"${billId}" isn't a bill number. Use a chamber letter and a number, like H.100 or S.2.`
+        })
+      }
+
+      const doc = await getDb()
+        .collection(`generalCourts/${court}/bills`)
+        .doc(id)
+        .get()
+      if (!doc.exists) {
+        return jsonResult({
+          found: false,
+          billId: id,
+          court,
+          message: `No bill ${displayBillNumber(id)} in the ${ordinal(
+            court
+          )} General Court.`
+        })
+      }
+
+      return jsonResult(shapeBillDetail(doc, includeFullText))
     }
   )
 
