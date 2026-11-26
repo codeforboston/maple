@@ -66,7 +66,7 @@ sequenceDiagram
 
 ### MCP server (`mcp-server/`)
 
-7 tools implemented in `tools.ts`:
+8 tools implemented in `tools.ts`:
 
 | Tool                      | Description                                                                                                            |
 | :------------------------ | :--------------------------------------------------------------------------------------------------------------------- |
@@ -74,6 +74,7 @@ sequenceDiagram
 | `search_testimony`        | Vector search on testimony. Filters: `policyType`, `policyId`, `authorDisplayName`, `court`                            |
 | `search_ballot_questions` | Vector search on ballot questions                                                                                      |
 | `search_policies`         | Unified search across bills + ballot questions, sorted by relevance                                                    |
+| `get_bill`                | One bill by number: sponsors, cosponsors, committee, history, links; `found: false` when absent                        |
 | `list_topics`             | Returns all valid AI-assigned topic tags by category                                                                   |
 | `list_committees`         | Returns active committee names for use as filters                                                                      |
 | `list_sponsors`           | Returns primary sponsor names for use as filters                                                                       |
