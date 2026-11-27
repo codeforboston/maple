@@ -1,8 +1,6 @@
 import { createVectorIndexer } from "../search/createVectorIndexer"
+import { ballotQuestionVectorConfig } from "../search/vectorConfigs"
 
-export const syncBallotQuestionToVectorIndex = createVectorIndexer({
-  documentTrigger: "ballotQuestions/{id}",
-  textFields: ["title", "description", "fullSummary"],
-  vectorField: "vector_embedding",
-  titleField: "title"
-})
+export const syncBallotQuestionToVectorIndex = createVectorIndexer(
+  ballotQuestionVectorConfig
+)
